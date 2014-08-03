@@ -1,0 +1,13 @@
+syntax: regexp
+
+^.*[.]directory$
+
+^out$
+^gen$
+
+^.*[.].*~$
+
+^[.]idea/workspace[.]xml
+^[.]idea\workspace[.]xml
+
+^.*[.]iml$
