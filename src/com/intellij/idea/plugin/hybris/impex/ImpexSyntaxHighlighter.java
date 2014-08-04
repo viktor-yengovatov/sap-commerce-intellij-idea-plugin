@@ -19,12 +19,12 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey COMMENT = createTextAttributesKey("IMPEX_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey SEMICOLON = createTextAttributesKey("IMPEX_SEMICOLON", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.BOLD));
-    public static final TextAttributesKey COMMA = createTextAttributesKey("IMPEX_COMMA", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.BOLD));
-    public static final TextAttributesKey ROUND_BRACKETS = createTextAttributesKey("IMPEX_ROUND_BRACKETS", new TextAttributes(JBColor.decode("#B5AA1B"), null, null, null, Font.BOLD));
-    public static final TextAttributesKey SQUARE_BRACKETS = createTextAttributesKey("IMPEX_SQUARE_BRACKETS", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.BOLD));
-    public static final TextAttributesKey INSERT_UPDATE = createTextAttributesKey("IMPEX_INSERT_UPDATE", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.BOLD));
-    public static final TextAttributesKey SINGLE_QUOTED_STRING = createTextAttributesKey("IMPEX_SINGLE_QUOTED_STRING", new TextAttributes(JBColor.decode("#298C57"), null, null, null, Font.BOLD));
+    public static final TextAttributesKey SEMICOLON = createTextAttributesKey("IMPEX_SEMICOLON", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.PLAIN));
+    public static final TextAttributesKey COMMA = createTextAttributesKey("IMPEX_COMMA", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.PLAIN));
+    public static final TextAttributesKey ROUND_BRACKETS = createTextAttributesKey("IMPEX_ROUND_BRACKETS", new TextAttributes(JBColor.decode("#B5AA1B"), null, null, null, Font.PLAIN));
+    public static final TextAttributesKey SQUARE_BRACKETS = createTextAttributesKey("IMPEX_SQUARE_BRACKETS", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.PLAIN));
+    public static final TextAttributesKey INSERT_UPDATE = createTextAttributesKey("IMPEX_INSERT_UPDATE", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.PLAIN));
+    public static final TextAttributesKey SINGLE_QUOTED_STRING = createTextAttributesKey("IMPEX_SINGLE_QUOTED_STRING", new TextAttributes(JBColor.decode("#298C57"), null, null, null, Font.PLAIN));
     public static final TextAttributesKey STRING = createTextAttributesKey("IMPEX_STRING", new TextAttributes(JBColor.decode("#5D8336"), null, null, null, Font.BOLD));
     public static final TextAttributesKey TABLE_NAME = createTextAttributesKey("IMPEX_TABLE_NAME", new TextAttributes(JBColor.decode("#978D19"), null, null, null, Font.BOLD));
 
