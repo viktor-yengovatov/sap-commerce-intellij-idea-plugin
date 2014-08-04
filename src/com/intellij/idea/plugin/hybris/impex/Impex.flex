@@ -79,9 +79,9 @@ VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
 
 {CRLF}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 
-{SINGLE_QUOTED_STRING}                                      { return CustomHighlighterTokenType.SINGLE_QUOTED_STRING; }
+{SINGLE_QUOTED_STRING}                                      { return ImpexTypes.SINGLE_QUOTED_STRING; }
 
-{STRING_DOUBLE}                                             { return CustomHighlighterTokenType.STRING; }
+{STRING_DOUBLE}                                             { return ImpexTypes.STRING; }
 
 {WHITE_SPACE}+                                              { return TokenType.WHITE_SPACE; }
 
