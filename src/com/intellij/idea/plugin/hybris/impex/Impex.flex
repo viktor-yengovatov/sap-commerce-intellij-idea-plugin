@@ -64,9 +64,9 @@ SQUARE_BRACKETS=[\[\]]
 ROUND_BRACKETS=[()]
 INSERT_UPDATE=("INSERT"|"UPDATE"|"INSERT_UPDATE")
 TABLE_NAME=[A-Za-z0-9_]+
-PROPERTY_VALUE=[^;,\r\n\[\]()'"\ ]
-SINGLE_QUOTED_STRING=\'[^\n\r\f\\]*\'
-STRING_DOUBLE=\"[^\n\r\f\\]*\"
+PROPERTY_VALUE=[^;,\r\n\[\]()'\"\ ]
+SINGLE_QUOTED_STRING=\'[^\n\r\f\\']*\'
+STRING_DOUBLE=\"[^\n\r\f\\\"]*\"
 
 FIRST_VALUE_CHARACTER=[^ \n\r\f\\]
 VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
