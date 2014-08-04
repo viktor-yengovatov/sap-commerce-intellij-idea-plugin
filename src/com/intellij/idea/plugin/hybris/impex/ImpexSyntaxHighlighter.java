@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
+import com.intellij.psi.CustomHighlighterTokenType;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
@@ -23,6 +24,8 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey ROUND_BRACKETS = createTextAttributesKey("IMPEX_ROUND_BRACKETS", new TextAttributes(JBColor.decode("#B5AA1B"), null, null, null, Font.BOLD));
     public static final TextAttributesKey SQUARE_BRACKETS = createTextAttributesKey("IMPEX_SQUARE_BRACKETS", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.BOLD));
     public static final TextAttributesKey INSERT_UPDATE = createTextAttributesKey("IMPEX_INSERT_UPDATE", new TextAttributes(JBColor.decode("#B85C0E"), null, null, null, Font.BOLD));
+    public static final TextAttributesKey SINGLE_QUOTED_STRING = createTextAttributesKey("IMPEX_SINGLE_QUOTED_STRING", new TextAttributes(JBColor.decode("#298C57"), null, null, null, Font.BOLD));
+    public static final TextAttributesKey STRING = createTextAttributesKey("IMPEX_STRING", new TextAttributes(JBColor.decode("#5D8336"), null, null, null, Font.BOLD));
     public static final TextAttributesKey TABLE_NAME = createTextAttributesKey("IMPEX_TABLE_NAME", new TextAttributes(JBColor.decode("#978D19"), null, null, null, Font.BOLD));
 
     //static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("IMPEX_BAD_CHARACTER", new TextAttributes(Color.RED, null, null, null, Font.BOLD));
@@ -34,6 +37,8 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] ROUND_BRACKETS_KEYS = new TextAttributesKey[]{ROUND_BRACKETS};
     private static final TextAttributesKey[] SQUARE_BRACKETS_KEYS = new TextAttributesKey[]{SQUARE_BRACKETS};
     private static final TextAttributesKey[] INSERT_UPDATE_KEYS = new TextAttributesKey[]{INSERT_UPDATE};
+    private static final TextAttributesKey[] SINGLE_QUOTED_STRING_KEYS = new TextAttributesKey[]{SINGLE_QUOTED_STRING};
+    private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING};
     private static final TextAttributesKey[] TABLE_NAME_KEYS = new TextAttributesKey[]{TABLE_NAME};
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
@@ -63,6 +68,10 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
             return TABLE_NAME_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
+        } else if (tokenType.equals(CustomHighlighterTokenType.SINGLE_QUOTED_STRING)) {
+            return SINGLE_QUOTED_STRING_KEYS;
+        } else if (tokenType.equals(CustomHighlighterTokenType.STRING)) {
+            return STRING_KEYS;
         } else {
             return EMPTY_KEYS;
         }

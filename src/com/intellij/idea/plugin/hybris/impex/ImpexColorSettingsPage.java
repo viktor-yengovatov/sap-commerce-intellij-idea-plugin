@@ -19,6 +19,9 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Comma", ImpexSyntaxHighlighter.COMMA),
             new AttributesDescriptor("Insert Update", ImpexSyntaxHighlighter.INSERT_UPDATE),
             new AttributesDescriptor("Table Name", ImpexSyntaxHighlighter.TABLE_NAME),
+            new AttributesDescriptor("Table Name", ImpexSyntaxHighlighter.COMMENT),
+            new AttributesDescriptor("Single Quoted String", ImpexSyntaxHighlighter.SINGLE_QUOTED_STRING),
+            new AttributesDescriptor("String", ImpexSyntaxHighlighter.STRING),
     };
 
     @Nullable

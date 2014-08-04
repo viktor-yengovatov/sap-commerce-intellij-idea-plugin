@@ -4,6 +4,7 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.CustomHighlighterTokenType;
 
 %%
 
@@ -61,13 +62,16 @@ SEMICOLON=[;]
 COMMA=[,]
 SQUARE_BRACKETS=[\[\]]
 ROUND_BRACKETS=[()]
-INSERT_UPDATE=("INSERT_UPDATE"|"UPDATE")
+INSERT_UPDATE=("INSERT"|"UPDATE"|"INSERT_UPDATE")
 TABLE_NAME=[A-Za-z0-9_]+
+PROPERTY_VALUE=[^;,\r\n\[\]()\ ]
+SINGLE_QUOTED_STRING=\'[^\n\r\f\\]*\'
+STRING_DOUBLE=\"[^\n\r\f\\]*\"
 
 FIRST_VALUE_CHARACTER=[^ \n\r\f\\]
 VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
 
-%state UNMAPPED, INSERT_UPDATE
+%state INSERT_UPDATE, SEMICOLON, COMMA
 
 %%
 
@@ -75,20 +79,25 @@ VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
 
 {CRLF}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 
-<INSERT_UPDATE> {WHITE_SPACE}                               {return TokenType.WHITE_SPACE;}
+{SINGLE_QUOTED_STRING}                                      { return CustomHighlighterTokenType.SINGLE_QUOTED_STRING; }
 
-{WHITE_SPACE}+                                              { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
+{STRING_DOUBLE}                                             { return CustomHighlighterTokenType.STRING; }
 
-<YYINITIAL, UNMAPPED> {SEMICOLON}                           {return ImpexTypes.SEMICOLON;}
+{WHITE_SPACE}+                                              { return TokenType.WHITE_SPACE; }
 
-<YYINITIAL, UNMAPPED> {COMMA}                               {return ImpexTypes.COMMA;}
+{SEMICOLON}                                                 { yybegin(SEMICOLON); return ImpexTypes.SEMICOLON; }
 
-<YYINITIAL, UNMAPPED> {SQUARE_BRACKETS}                     {return ImpexTypes.SQUARE_BRACKETS;}
+{COMMA}                                                     { yybegin(COMMA); return ImpexTypes.COMMA; }
 
-<YYINITIAL, UNMAPPED> {ROUND_BRACKETS}                      {return ImpexTypes.ROUND_BRACKETS;}
+{SQUARE_BRACKETS}                                           { return ImpexTypes.SQUARE_BRACKETS; }
 
-<YYINITIAL, UNMAPPED> {INSERT_UPDATE}                       {yybegin(INSERT_UPDATE); return ImpexTypes.INSERT_UPDATE;}
-<INSERT_UPDATE> {TABLE_NAME}                                {return ImpexTypes.TABLE_NAME;}
+{ROUND_BRACKETS}                                            { return ImpexTypes.ROUND_BRACKETS; }
 
-.                                                           { yybegin(UNMAPPED); return ImpexTypes.UNMAPPED; }
+<SEMICOLON, COMMA> {PROPERTY_VALUE}+                        { return ImpexTypes.PROPERTY_VALUE; }
+
+<YYINITIAL> {INSERT_UPDATE}                                 { yybegin(INSERT_UPDATE); return ImpexTypes.INSERT_UPDATE; }
+
+<INSERT_UPDATE> {TABLE_NAME}                                { return ImpexTypes.TABLE_NAME; }
+
+.                                                           { return ImpexTypes.UNMAPPED; }
 //.                                                           { return TokenType.BAD_CHARACTER; }
