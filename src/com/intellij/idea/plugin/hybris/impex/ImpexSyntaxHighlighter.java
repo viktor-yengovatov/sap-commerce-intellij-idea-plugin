@@ -68,9 +68,9 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
             return TABLE_NAME_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
-        } else if (tokenType.equals(CustomHighlighterTokenType.SINGLE_QUOTED_STRING)) {
+        } else if (tokenType.equals(ImpexTypes.SINGLE_QUOTED_STRING)) {
             return SINGLE_QUOTED_STRING_KEYS;
-        } else if (tokenType.equals(CustomHighlighterTokenType.STRING)) {
+        } else if (tokenType.equals(ImpexTypes.STRING)) {
             return STRING_KEYS;
         } else {
             return EMPTY_KEYS;
