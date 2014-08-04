@@ -27,6 +27,7 @@
       <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
       <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexSyntaxHighlighterFactory"/>
       <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.ImpexColorSettingsPage"/>
+      <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexCommenter"/>
   </extensions>
 
   <application-components>
