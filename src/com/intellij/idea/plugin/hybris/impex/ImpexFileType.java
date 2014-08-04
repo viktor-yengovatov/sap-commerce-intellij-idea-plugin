@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class ImpexFileType extends LanguageFileType {
+
     public static final ImpexFileType INSTANCE = new ImpexFileType();
 
     private ImpexFileType() {

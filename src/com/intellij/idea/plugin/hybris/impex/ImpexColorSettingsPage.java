@@ -13,9 +13,12 @@ import java.util.Map;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("Key", ImpexSyntaxHighlighter.KEY),
-            new AttributesDescriptor("Separator", ImpexSyntaxHighlighter.SEPARATOR),
-            new AttributesDescriptor("Value", ImpexSyntaxHighlighter.VALUE),
+            new AttributesDescriptor("Round Brackets", ImpexSyntaxHighlighter.ROUND_BRACKETS),
+            new AttributesDescriptor("Square Brackets", ImpexSyntaxHighlighter.SQUARE_BRACKETS),
+            new AttributesDescriptor("Semicolon", ImpexSyntaxHighlighter.SEMICOLON),
+            new AttributesDescriptor("Comma", ImpexSyntaxHighlighter.COMMA),
+            new AttributesDescriptor("Insert Update", ImpexSyntaxHighlighter.INSERT_UPDATE),
+            new AttributesDescriptor("Table Name", ImpexSyntaxHighlighter.TABLE_NAME),
     };
 
     @Nullable

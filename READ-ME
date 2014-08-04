@@ -2,3 +2,6 @@ Install the next plugins:
  - DevKit (optional)
  - Grammar-Kit
  - PsiViewer
+
+To attach Idea sources:
+git clone git://git.jetbrains.org/idea/community.git idea

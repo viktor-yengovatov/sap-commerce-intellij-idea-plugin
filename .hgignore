@@ -10,4 +10,7 @@ syntax: regexp
 ^[.]idea/workspace[.]xml
 ^[.]idea\workspace[.]xml
 
+^[.]idea/dictionaries
+^[.]idea\dictionaries
+
 ^.*[.]iml$

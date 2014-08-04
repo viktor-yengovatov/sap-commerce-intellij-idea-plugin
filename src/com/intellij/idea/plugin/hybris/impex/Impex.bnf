@@ -13,11 +13,12 @@
   elementTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexElementType"
   tokenTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexTokenType"
 
-  psiImplUtilClass="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiImplUtil"
+//  psiImplUtilClass="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiImplUtil"
 }
 
+//impexFile ::= item_*
+//private item_ ::= (property|COMMENT|CRLF)
+//property ::= (KEY? SEPARATOR VALUE?) | KEY {methods=[getKey getValue]}
+
 impexFile ::= item_*
-
-private item_ ::= (property|COMMENT|CRLF)
-
-property ::= (KEY? SEPARATOR VALUE?) | KEY {methods=[getKey getValue]}
+private item_ ::= (COMMENT|CRLF|UNMAPPED|SEMICOLON|COMMA|SQUARE_BRACKETS|ROUND_BRACKETS|INSERT_UPDATE|TABLE_NAME)

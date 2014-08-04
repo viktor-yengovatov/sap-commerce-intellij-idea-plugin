@@ -1,12 +1,11 @@
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <id>ccom.intellij.idea.plugin.hybris.impex</id>
+  <name>Syntax highlight for impex files</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      Syntax highlighting for Hybris impex files.
     ]]></description>
 
   <change-notes><![CDATA[
