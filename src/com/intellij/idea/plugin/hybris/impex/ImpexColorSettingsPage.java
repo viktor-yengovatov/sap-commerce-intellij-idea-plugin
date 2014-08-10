@@ -13,15 +13,15 @@ import java.util.Map;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("Round Brackets", ImpexSyntaxHighlighter.ROUND_BRACKETS),
-            new AttributesDescriptor("Square Brackets", ImpexSyntaxHighlighter.SQUARE_BRACKETS),
-            new AttributesDescriptor("Semicolon", ImpexSyntaxHighlighter.SEMICOLON),
-            new AttributesDescriptor("Comma", ImpexSyntaxHighlighter.COMMA),
-            new AttributesDescriptor("Insert Update", ImpexSyntaxHighlighter.INSERT_UPDATE),
-            new AttributesDescriptor("Table Name", ImpexSyntaxHighlighter.TABLE_NAME),
-            new AttributesDescriptor("Table Name", ImpexSyntaxHighlighter.COMMENT),
-            new AttributesDescriptor("Single Quoted String", ImpexSyntaxHighlighter.SINGLE_QUOTED_STRING),
-            new AttributesDescriptor("String", ImpexSyntaxHighlighter.STRING),
+//            new AttributesDescriptor("Round Brackets", ImpexSyntaxHighlighter.ROUND_BRACKETS),
+//            new AttributesDescriptor("Square Brackets", ImpexSyntaxHighlighter.SQUARE_BRACKETS),
+//            new AttributesDescriptor("Semicolon", ImpexSyntaxHighlighter.SEMICOLON),
+//            new AttributesDescriptor("Comma", ImpexSyntaxHighlighter.COMMA),
+//            new AttributesDescriptor("Insert Update", ImpexSyntaxHighlighter.INSERT_UPDATE),
+//            new AttributesDescriptor("Table Name", ImpexSyntaxHighlighter.TABLE_NAME),
+            new AttributesDescriptor("Comment", ImpexSyntaxHighlighter.COMMENT),
+//            new AttributesDescriptor("Single Quoted String", ImpexSyntaxHighlighter.SINGLE_QUOTED_STRING),
+//            new AttributesDescriptor("String", ImpexSyntaxHighlighter.STRING),
     };
 
     @Nullable
@@ -40,8 +40,8 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
         return "#This is a comment\n" +
-                "INSERT Product;code[unique=true];name[lang=en]; name[lang=de]\n" +
-                ";myProduct1;myProduct1's localized name;lokalisierter Name von myProduct1\n" +
+                "INSERT Product;code[unique=true];name[lang=en]; name[lang=de];someList(code)\n" +
+                ";myProduct1;myProduct1's localized name;lokalisierter Name von myProduct1;value1,value2,value3\n" +
                 ";myProduct2;myProduct2's localized name;lokalisierter Name von myProduct2\n" +
                 "\n" +
                 "INSERT_UPDATE Address;firstname;owner( Principal.uid | AbstractOrder.code )\n" +
