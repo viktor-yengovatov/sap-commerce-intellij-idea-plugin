@@ -53,51 +53,57 @@ import com.intellij.psi.CustomHighlighterTokenType;
 %function advance
 %type IElementType
 %eof{
+    return;
 %eof}
 
-CRLF= \n|\r|\r\n
-WHITE_SPACE=[\ \t\f]
-END_OF_LINE_COMMENT=\s*("#")[^\r\n]*
-SEMICOLON=[;]
-COMMA=[,]
-SQUARE_BRACKETS=[\[\]]
-ROUND_BRACKETS=[()]
-INSERT_UPDATE=("INSERT"|"UPDATE"|"INSERT_UPDATE")
-TABLE_NAME=[A-Za-z0-9_]+
-PROPERTY_VALUE=[^;,\r\n\[\]()'\"\ ]
-SINGLE_QUOTED_STRING=\'[^\n\r\f\\']*\'
-STRING_DOUBLE=\"[^\n\r\f\\\"]*\"
+crlf                = \n|\r|\r\n
+white_space         = [ \t\f]
 
-FIRST_VALUE_CHARACTER=[^ \n\r\f\\]
-VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
+end_of_line_comment = \s*("#")[^\r\n]*
 
-%state INSERT_UPDATE, SEMICOLON, COMMA
+assign_value = [=]
+
+macro_name = [$][:jletterdigit:]+
+
+header_mode = ("INSERT" | "UPDATE" | "INSERT_UPDATE" | "REMOVE")
+header_type = [:jletterdigit:]+
+
+//semicolon = ;
+//comma     = ,
+//square_brackets = [\[\]]
+//round_brackets  = [()]
+//table_name      = [A-Za-z0-9_]+
+//property_value  = [^;,\r\n\[\]()'\"\ ]
+//single_quoted_string = \'[^\n\r\f\\']*\'
+//string_double        = \"[^\n\r\f\\\"]*\"
+//
+//first_value_character = [^ \n\r\f\\]
+//value_character = [^\n\r\f\\] | "\\"{crlf} | "\\".
+
+%state COMMENT
+%state WAITING_VALUE // Waiting for some value after '=' character, e.g. for macro body or modifier malue.
+%state MACRO_DECLARATION // New macro name declararion
+%state HEADER_MODE // Declaration of an insert or any other operation
+%state HEADER_TYPE // Type declaration after insert or any other operation
 
 %%
 
-<YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return ImpexTypes.COMMENT; }
+// $catalogVersion = catalogversion(catalog(id[default=$productCatalog]),version[default='Staged'])[unique=true,default=$productCatalog:Staged]
 
-{CRLF}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
+{crlf}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 
-{SINGLE_QUOTED_STRING}                                      { return ImpexTypes.SINGLE_QUOTED_STRING; }
+{white_space}+                                              { return TokenType.WHITE_SPACE; }
 
-{STRING_DOUBLE}                                             { return ImpexTypes.STRING; }
+<YYINITIAL> {
+    {end_of_line_comment}                                   { yybegin(COMMENT); return ImpexTypes.COMMENT; }
 
-{WHITE_SPACE}+                                              { return TokenType.WHITE_SPACE; }
+    {macro_name}                                            { yybegin(MACRO_DECLARATION); return ImpexTypes.MACRO_DECLARATION; }
 
-{SEMICOLON}                                                 { yybegin(SEMICOLON); return ImpexTypes.SEMICOLON; }
+    {header_mode}                                           { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE; }
+}
 
-{COMMA}                                                     { yybegin(COMMA); return ImpexTypes.COMMA; }
+<MACRO_DECLARATION> {assign_value}                          { yybegin(WAITING_VALUE); return ImpexTypes.ASSIGN_VALUE; }
 
-{SQUARE_BRACKETS}                                           { return ImpexTypes.SQUARE_BRACKETS; }
+<HEADER_MODE> {header_type}                                 { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_TYPE; }
 
-{ROUND_BRACKETS}                                            { return ImpexTypes.ROUND_BRACKETS; }
-
-<SEMICOLON, COMMA> {PROPERTY_VALUE}+                        { return ImpexTypes.PROPERTY_VALUE; }
-
-<YYINITIAL> {INSERT_UPDATE}                                 { yybegin(INSERT_UPDATE); return ImpexTypes.INSERT_UPDATE; }
-
-<INSERT_UPDATE> {TABLE_NAME}                                { return ImpexTypes.TABLE_NAME; }
-
-.                                                           { return ImpexTypes.UNMAPPED; }
-//.                                                           { return TokenType.BAD_CHARACTER; }
+.                                                           { return TokenType.BAD_CHARACTER; }
