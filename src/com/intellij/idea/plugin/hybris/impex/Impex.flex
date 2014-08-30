@@ -8,96 +8,57 @@ import com.intellij.psi.CustomHighlighterTokenType;
 
 %%
 
-//%class ImpexLexer
-//%implements FlexLexer
-//%unicode
-//%function advance
-//%type IElementType
-//%eof{
-//  return;
-//%eof}
-//
-//CRLF= \n|\r|\r\n
-//WHITE_SPACE=[\ \t\f]
-//FIRST_VALUE_CHARACTER=[^ \n\r\f\\] | "\\"{CRLF} | "\\".
-//VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
-//END_OF_LINE_COMMENT=("#"|"!")[^\r\n]*
-//SEPARATOR=[:=]
-//KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\"{CRLF} | "\\".
-//
-//%state WAITING_VALUE
-//
-//%%
-//
-//<YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return ImpexTypes.COMMENT; }
-//
-//<YYINITIAL> {KEY_CHARACTER}+                                { yybegin(YYINITIAL); return ImpexTypes.KEY; }
-//
-//<YYINITIAL> {SEPARATOR}                                     { yybegin(WAITING_VALUE); return ImpexTypes.SEPARATOR; }
-//
-//<WAITING_VALUE> {CRLF}                                     { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
-//
-//<WAITING_VALUE> {WHITE_SPACE}+                              { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE; }
-//
-//<WAITING_VALUE> {FIRST_VALUE_CHARACTER}{VALUE_CHARACTER}*   { yybegin(YYINITIAL); return ImpexTypes.VALUE; }
-//
-//{CRLF}                                                     { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
-//
-//{WHITE_SPACE}+                                              { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-//
-//.                                                           { return TokenType.BAD_CHARACTER; }
-
 %class ImpexLexer
 %implements FlexLexer
 %unicode
 %function advance
 %type IElementType
 %eof{
+    return;
 %eof}
 
-CRLF= \n|\r|\r\n
-WHITE_SPACE=[\ \t\f]
-END_OF_LINE_COMMENT=\s*("#")[^\r\n]*
-SEMICOLON=[;]
-COMMA=[,]
-SQUARE_BRACKETS=[\[\]]
-ROUND_BRACKETS=[()]
-INSERT_UPDATE=("INSERT"|"UPDATE"|"INSERT_UPDATE")
-TABLE_NAME=[A-Za-z0-9_]+
-PROPERTY_VALUE=[^;,\r\n\[\]()'\"\ ]
-SINGLE_QUOTED_STRING=\'[^\n\r\f\\']*\'
-STRING_DOUBLE=\"[^\n\r\f\\\"]*\"
+crlf                = \n|\r|\r\n
+white_space         = [ \t\f]
 
-FIRST_VALUE_CHARACTER=[^ \n\r\f\\]
-VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
+end_of_line_comment = ("#")[^\r\n]*
 
-%state INSERT_UPDATE, SEMICOLON, COMMA
+assign_value = [=]
+
+attribute = [:jletterdigit:]+
+
+macro_name = [$][:jletterdigit:]+
+
+header_mode = ("INSERT" | "UPDATE" | "INSERT_UPDATE" | "REMOVE")
+header_type = [:jletterdigit:]+
+
+%state COMMENT
+%state WAITING_MACRO_VALUE
+%state MACRO_DECLARATION
+%state HEADER_MODE
+%state HEADER_TYPE
 
 %%
 
-<YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return ImpexTypes.COMMENT; }
+// $catalogVersion = catalogversion(catalog(id[default=$productCatalog]),version[default='Staged'])[unique=true,default=$productCatalog:Staged]
 
-{CRLF}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
+{crlf}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 
-{SINGLE_QUOTED_STRING}                                      { return ImpexTypes.SINGLE_QUOTED_STRING; }
+{white_space}+                                              { return TokenType.WHITE_SPACE; }
 
-{STRING_DOUBLE}                                             { return ImpexTypes.STRING; }
+<YYINITIAL> {
+    {end_of_line_comment}                                   { yybegin(COMMENT); return ImpexTypes.COMMENT; }
 
-{WHITE_SPACE}+                                              { return TokenType.WHITE_SPACE; }
+    {macro_name}                                            { yybegin(MACRO_DECLARATION); return ImpexTypes.MACRO_DECLARATION; }
 
-{SEMICOLON}                                                 { yybegin(SEMICOLON); return ImpexTypes.SEMICOLON; }
+    {header_mode}                                           { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE; }
+}
 
-{COMMA}                                                     { yybegin(COMMA); return ImpexTypes.COMMA; }
+<MACRO_DECLARATION> {assign_value}                          { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
 
-{SQUARE_BRACKETS}                                           { return ImpexTypes.SQUARE_BRACKETS; }
+<WAITING_MACRO_VALUE> {
+    {attribute}                                             { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
+}
 
-{ROUND_BRACKETS}                                            { return ImpexTypes.ROUND_BRACKETS; }
+<HEADER_MODE> {header_type}                                 { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_TYPE; }
 
-<SEMICOLON, COMMA> {PROPERTY_VALUE}+                        { return ImpexTypes.PROPERTY_VALUE; }
-
-<YYINITIAL> {INSERT_UPDATE}                                 { yybegin(INSERT_UPDATE); return ImpexTypes.INSERT_UPDATE; }
-
-<INSERT_UPDATE> {TABLE_NAME}                                { return ImpexTypes.TABLE_NAME; }
-
-.                                                           { return ImpexTypes.UNMAPPED; }
-//.                                                           { return TokenType.BAD_CHARACTER; }
+.                                                           { return TokenType.BAD_CHARACTER; }
