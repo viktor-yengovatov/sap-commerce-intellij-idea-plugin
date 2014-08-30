@@ -1,0 +1,53 @@
+<idea-plugin version="2">
+
+  <id>ccom.intellij.idea.plugin.hybris.impex</id>
+  <name>Syntax highlight for impex files</name>
+  <version>1.1.1</version>
+
+  <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
+
+  <description>
+      <![CDATA[
+          Syntax highlighting for Hybris impex files.
+      ]]>
+  </description>
+
+  <change-notes>
+      <![CDATA[
+          1.1.1 - The plugin was rebuilt for JDK 1.5.
+          <br/>
+          1.1 - The plugin was rebuilt for JDK 1.6_45.
+      ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="135"/>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.idea.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+      <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.ImpexFileTypeFactory"/>
+      <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
+      <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexSyntaxHighlighterFactory"/>
+      <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.ImpexColorSettingsPage"/>
+      <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexCommenter"/>
+  </extensions>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
