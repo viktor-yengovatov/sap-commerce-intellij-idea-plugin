@@ -39,12 +39,15 @@ semicolon    = [;]
 comma        = [,]
 assign_value = [=]
 
+default_path_delimiter      = [:]
+alternative_map_delimiter   = [|]
+
 boolean = (("true")|("false"))
 digit   = [[:digit:]]+
 class_with_package = ([:jletterdigit:]+[.][:jletterdigit:]+)+
 
 attribute_name  = [:jletterdigit:]+
-attribute_value = [^, \t\f\]\r\n]+
+attribute_value = [^,: \t\f\]\r\n]+
 
 header_mode_insert        = "INSERT"
 header_mode_update        = "UPDATE"
@@ -54,7 +57,7 @@ header_mode_remove        = "REMOVE"
 header_type = [:jletterdigit:]+
 
 value_subtype      = [:jletterdigit:]+
-field_value        = [^;, \t\f\r\n]+
+field_value        = [^;,: \t\f\r\n]+
 field_value_ignore = "<ignore>"
 
 %state COMMENT
@@ -109,9 +112,11 @@ field_value_ignore = "<ignore>"
     {class_with_package}                                    { yybegin(FIELD_VALUE); return ImpexTypes.CLASS_WITH_PACKAGE; }
 
     <FIELD_VALUE> {
-        {field_value}                                       { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE; }
-
         {comma}                                             { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.FIELD_LIST_ITEM_SEPARATOR; }
+        {default_path_delimiter}                            { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.DEFAULT_PATH_DELIMITER; }
+        {alternative_map_delimiter}                         { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
+
+        {field_value}                                       { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE; }
 
         <YYINITIAL> {
             {semicolon}                                     { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.FIELD_VALUE_SEPARATOR; }
@@ -149,6 +154,8 @@ field_value_ignore = "<ignore>"
     {single_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DOUBLE_STRING; }
     {class_with_package}                                    { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.CLASS_WITH_PACKAGE; }
+    {default_path_delimiter}                                { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DEFAULT_PATH_DELIMITER; }
+    {alternative_map_delimiter}                             { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
     {attribute_value}                                       { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.ATTRIBUTE_VALUE; }
 }
 
