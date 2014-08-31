@@ -20,10 +20,14 @@ import com.intellij.psi.CustomHighlighterTokenType;
 crlf                = \n|\r|\r\n
 white_space         = [ \t\f]
 
-end_of_line_comment = ("#")[^\r\n]*
+end_of_line_comment_marker = [#]
+end_of_line_comment_body = [^\r\n]*
+
+bean_shell_marker = [#][%]
 
 single_string = ['](('')|([^'\r\n])*)[']
-double_string = [\"](([\"][\"])|[^\"\r\n])*[\"]
+// Double string can contain line break
+double_string = [\"](([\"][\"])|[^\"])*[\"]
 
 assign_value = [=]
 
@@ -50,6 +54,7 @@ field_value_ignore = "<ignore>"
 %state HEADER_TYPE
 %state WAITING_FOR_FIELD_VALUE
 %state FIELD_VALUE
+%state BEAN_SHELL
 
 %%
 
@@ -60,7 +65,9 @@ field_value_ignore = "<ignore>"
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 
 <YYINITIAL> {
-    {end_of_line_comment}                                   { yybegin(COMMENT); return ImpexTypes.COMMENT; }
+    {bean_shell_marker}                                     { yybegin(BEAN_SHELL); return ImpexTypes.BEAN_SHELL_MARKER; }
+
+    {end_of_line_comment_marker}                            { yybegin(COMMENT); return ImpexTypes.COMMENT_MARKER; }
 
     {macro_declaration}                                     { yybegin(MACRO_DECLARATION); return ImpexTypes.MACRO_DECLARATION; }
 
@@ -70,6 +77,14 @@ field_value_ignore = "<ignore>"
     {header_mode_remove}                                    { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE_REMOVE; }
 
     {value_subtype}                                         { yybegin(FIELD_VALUE); return ImpexTypes.VALUE_SUBTYPE; }
+}
+
+<COMMENT> {
+    {end_of_line_comment_body}                              { return ImpexTypes.COMMENT_BODY; }
+}
+
+<BEAN_SHELL> {
+    {double_string}                                          {return ImpexTypes.BEAN_SHELL_BODY; }
 }
 
 <YYINITIAL, FIELD_VALUE, WAITING_FOR_FIELD_VALUE> {

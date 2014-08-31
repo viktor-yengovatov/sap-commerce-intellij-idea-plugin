@@ -52,7 +52,7 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(ImpexTypes.COMMENT)) {
+        if (tokenType.equals(ImpexTypes.COMMENT_BODY)) {
             return COMMENT_KEYS;
 //        } else if (tokenType.equals(ImpexTypes.SEMICOLON)) {
 //            return SEMICOLON_KEYS;
