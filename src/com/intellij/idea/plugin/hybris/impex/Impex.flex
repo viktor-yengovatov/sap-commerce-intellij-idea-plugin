@@ -30,21 +30,28 @@ single_string = ['](('')|([^'\r\n])*)[']
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
 macro_declaration = [$][:jletterdigit:]+
+macro_usage       = [$][:jletterdigit:]+
 macro_value       = (({double_string})|([^\r\n]*))*
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
 
+left_round_bracket  = [\(]
+right_round_bracket = [\)]
+
 semicolon    = [;]
 comma        = [,]
 assign_value = [=]
 
-default_path_delimiter      = [:]
-alternative_map_delimiter   = [|]
+default_path_delimiter    = [:]
+alternative_map_delimiter = [|]
 
 boolean = (("true")|("false"))
 digit   = [[:digit:]]+
 class_with_package = ([:jletterdigit:]+[.][:jletterdigit:]+)+
+
+parameter_name = [:jletterdigit:]+
+special_parameter_name = [@][:jletterdigit:]+
 
 attribute_name  = [:jletterdigit:]+
 attribute_value = [^,: \t\f\]\r\n]+
@@ -64,18 +71,15 @@ field_value_ignore = "<ignore>"
 %state WAITING_MACRO_VALUE
 %state MACRO_DECLARATION
 %state HEADER_MODE
-%state HEADER_TYPE
+%state HEADER_LINE
 %state WAITING_FOR_FIELD_VALUE
 %state FIELD_VALUE
 %state BEAN_SHELL
 %state MODYFIERS_BLOCK
-%state ATTRIBUTE_NAME
-%state WAITING_ATTRIBUTE_VALUE
-%state ATTRIBUTE_VALUE
+%state WAITING_ATTR_OR_PARAM_VALUE
+%state HEADER_PARAMETERS
 
 %%
-
-// $catalogVersion = catalogversion(catalog(id[default=$productCatalog]),version[default='Staged'])[unique=true,default=$productCatalog:Staged]
 
 {crlf}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 
@@ -101,7 +105,7 @@ field_value_ignore = "<ignore>"
 }
 
 <BEAN_SHELL> {
-    {double_string}                                         {return ImpexTypes.BEAN_SHELL_BODY; }
+    {double_string}                                         { return ImpexTypes.BEAN_SHELL_BODY; }
 }
 
 <WAITING_FOR_FIELD_VALUE> {
@@ -125,42 +129,48 @@ field_value_ignore = "<ignore>"
 }
 
 <HEADER_MODE> {
-    {header_type}                                           { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_TYPE; }
+    {header_type}                                           { yybegin(HEADER_LINE); return ImpexTypes.HEADER_TYPE; }
 }
 
-<HEADER_TYPE> {
+<HEADER_LINE> {
+    {semicolon}                                             { return ImpexTypes.PARAMETERS_SEPARATOR; }
+    {comma}                                                 { return ImpexTypes.COMMA; }
+
+    {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
+    {parameter_name}                                        { return ImpexTypes.HEADER_PARAMETER_NAME; }
+    {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
+    {assign_value}                                          { yybegin(WAITING_ATTR_OR_PARAM_VALUE); return ImpexTypes.ASSIGN_VALUE; }
+
+    {left_round_bracket}                                    { return ImpexTypes.ROUND_BRACKETS; }
+    {right_round_bracket}                                   { return ImpexTypes.ROUND_BRACKETS; }
+
     {left_square_bracket}                                   { yybegin(MODYFIERS_BLOCK); return ImpexTypes.SQUARE_BRACKETS; }
-
-    <ATTRIBUTE_VALUE> {
-        {right_square_bracket}                              { yybegin(MODYFIERS_BLOCK); return ImpexTypes.SQUARE_BRACKETS; }
-    }
-}
-
-<MODYFIERS_BLOCK> {
-    {attribute_name}                                        { yybegin(ATTRIBUTE_NAME); return ImpexTypes.ATTRIBUTE_NAME; }
-    {single_string}                                         { yybegin(ATTRIBUTE_NAME); return ImpexTypes.SINGLE_STRING; }
-    {double_string}                                         { yybegin(ATTRIBUTE_NAME); return ImpexTypes.DOUBLE_STRING; }
-
     {right_square_bracket}                                  { return ImpexTypes.SQUARE_BRACKETS; }
 }
 
-<ATTRIBUTE_NAME> {
-    {assign_value}                                          { yybegin(WAITING_ATTRIBUTE_VALUE); return ImpexTypes.ASSIGN_VALUE; }
+<MODYFIERS_BLOCK> {
+    {attribute_name}                                        { return ImpexTypes.ATTRIBUTE_NAME; }
+
+    {assign_value}                                          { yybegin(WAITING_ATTR_OR_PARAM_VALUE); return ImpexTypes.ASSIGN_VALUE; }
+
+    {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
+    {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
+
+    {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.SQUARE_BRACKETS; }
+
+    {comma}                                                 { return ImpexTypes.ATTRIBUTE_SEPARATOR; }
 }
 
-<WAITING_ATTRIBUTE_VALUE> {
-    {boolean}                                               { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.BOOLEAN; }
-    {digit}                                                 { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DIGIT; }
-    {single_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.SINGLE_STRING; }
-    {double_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DOUBLE_STRING; }
-    {class_with_package}                                    { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.CLASS_WITH_PACKAGE; }
-    {default_path_delimiter}                                { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DEFAULT_PATH_DELIMITER; }
-    {alternative_map_delimiter}                             { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
-    {attribute_value}                                       { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.ATTRIBUTE_VALUE; }
-}
-
-<ATTRIBUTE_VALUE> {
-    {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
+<WAITING_ATTR_OR_PARAM_VALUE> {
+    {boolean}                                               { yybegin(MODYFIERS_BLOCK); return ImpexTypes.BOOLEAN; }
+    {digit}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.DIGIT; }
+    {single_string}                                         { yybegin(MODYFIERS_BLOCK); return ImpexTypes.SINGLE_STRING; }
+    {double_string}                                         { yybegin(MODYFIERS_BLOCK); return ImpexTypes.DOUBLE_STRING; }
+    {class_with_package}                                    { yybegin(MODYFIERS_BLOCK); return ImpexTypes.CLASS_WITH_PACKAGE; }
+    {default_path_delimiter}                                { yybegin(MODYFIERS_BLOCK); return ImpexTypes.DEFAULT_PATH_DELIMITER; }
+    {alternative_map_delimiter}                             { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
+    {attribute_value}                                       { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_VALUE; }
+    {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.SQUARE_BRACKETS; }
 }
 
 <MACRO_DECLARATION> {
