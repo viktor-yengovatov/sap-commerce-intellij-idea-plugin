@@ -17,11 +17,11 @@ import com.intellij.psi.CustomHighlighterTokenType;
     return;
 %eof}
 
-crlf                = \n|\r|\r\n
-white_space         = [ \t\f]
+crlf        = \n|\r|\r\n
+white_space = [ \t\f]
 
 end_of_line_comment_marker = [#]
-end_of_line_comment_body = [^\r\n]*
+end_of_line_comment_body   = [^\r\n]*
 
 bean_shell_marker = [#][%]
 
@@ -29,29 +29,31 @@ single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-assign_value = [=]
-
-attribute = [:jletterdigit:]+
-
 macro_declaration = [$][:jletterdigit:]+
+attribute         = [:jletterdigit:]+
 
-left_square_bracket = [\[]
+left_square_bracket  = [\[]
 right_square_bracket = [\]]
 
-semicolon = [;]
-comma = [,]
+semicolon    = [;]
+comma        = [,]
+assign_value = [=]
 
-attribute_name = (([:jletterdigit:]+))
+boolean = (("true")|("false"))
+digit = [[:digit:]]+
+
+attribute_name  = (([:jletterdigit:]+))
 attribute_value = (([:jletterdigit:]+)|([:jletterdigit:]+[.][:jletterdigit:]+))+
 
-header_mode_insert = ("INSERT")
-header_mode_update = ("UPDATE")
+header_mode_insert        = ("INSERT")
+header_mode_update        = ("UPDATE")
 header_mode_insert_update = ("INSERT_UPDATE")
-header_mode_remove = ("REMOVE")
+header_mode_remove        = ("REMOVE")
+
 header_type = [:jletterdigit:]+
 
-value_subtype = [:jletterdigit:]+
-field_value = [^;, \r\n]+
+value_subtype      = [:jletterdigit:]+
+field_value        = [^;, \r\n]+
 field_value_ignore = "<ignore>"
 
 %state COMMENT
@@ -100,9 +102,11 @@ field_value_ignore = "<ignore>"
 
 <WAITING_FOR_FIELD_VALUE> {
     {double_string}                                         { yybegin(FIELD_VALUE); return ImpexTypes.DOUBLE_STRING; }
+    {field_value_ignore}                                    { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_IGNORE; }
+    {boolean}                                               { yybegin(FIELD_VALUE); return ImpexTypes.BOOLEAN; }
+    {digit}                                                 { yybegin(FIELD_VALUE); return ImpexTypes.DIGIT; }
 
     <FIELD_VALUE> {
-        {field_value_ignore}                                { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_IGNORE; }
         {field_value}                                       { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE; }
 
         {comma}                                             { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.FIELD_LIST_ITEM_SEPARATOR; }
@@ -111,14 +115,6 @@ field_value_ignore = "<ignore>"
             {semicolon}                                     { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.FIELD_VALUE_SEPARATOR; }
         }
     }
-}
-
-<MACRO_DECLARATION> {
-    {assign_value}                                          { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
-}
-
-<WAITING_MACRO_VALUE> {
-    {attribute}                                             { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
 }
 
 <HEADER_MODE> {
@@ -146,13 +142,23 @@ field_value_ignore = "<ignore>"
 }
 
 <WAITING_ATTRIBUTE_VALUE> {
-    {attribute_value}                                       { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.ATTRIBUTE_VALUE; }
+    {boolean}                                               { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.BOOLEAN; }
+    {digit}                                                 { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DIGIT; }
     {single_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DOUBLE_STRING; }
+    {attribute_value}                                       { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.ATTRIBUTE_VALUE; }
 }
 
 <ATTRIBUTE_VALUE> {
     {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
+}
+
+<MACRO_DECLARATION> {
+    {assign_value}                                          { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
+}
+
+<WAITING_MACRO_VALUE> {
+    {attribute}                                             { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
 }
 
 // Fallback
