@@ -30,7 +30,7 @@ single_string = ['](('')|([^'\r\n])*)[']
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
 macro_declaration = [$][:jletterdigit:]+
-attribute         = [:jletterdigit:]+
+macro_value       = (({double_string})|([^\r\n]*))*
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
@@ -161,7 +161,7 @@ field_value_ignore = "<ignore>"
 }
 
 <WAITING_MACRO_VALUE> {
-    {attribute}                                             { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
+    {macro_value}                                           { return ImpexTypes.MACRO_VALUE; }
 }
 
 // Fallback
