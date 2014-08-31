@@ -17,7 +17,7 @@ import com.intellij.psi.CustomHighlighterTokenType;
     return;
 %eof}
 
-crlf        = \n|\r|\r\n
+crlf        = (([\n])|([\r])|(\r\n))
 white_space = [ \t\f]
 
 end_of_line_comment_marker = [#]
@@ -40,15 +40,16 @@ comma        = [,]
 assign_value = [=]
 
 boolean = (("true")|("false"))
-digit = [[:digit:]]+
+digit   = [[:digit:]]+
+class_with_package = ([:jletterdigit:]+[.][:jletterdigit:]+)+
 
-attribute_name  = (([:jletterdigit:]+))
-attribute_value = (([:jletterdigit:]+)|([:jletterdigit:]+[.][:jletterdigit:]+))+
+attribute_name  = [:jletterdigit:]+
+attribute_value = [:jletterdigit:]+
 
-header_mode_insert        = ("INSERT")
-header_mode_update        = ("UPDATE")
-header_mode_insert_update = ("INSERT_UPDATE")
-header_mode_remove        = ("REMOVE")
+header_mode_insert        = "INSERT"
+header_mode_update        = "UPDATE"
+header_mode_insert_update = "INSERT_UPDATE"
+header_mode_remove        = "REMOVE"
 
 header_type = [:jletterdigit:]+
 
@@ -105,6 +106,7 @@ field_value_ignore = "<ignore>"
     {field_value_ignore}                                    { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_IGNORE; }
     {boolean}                                               { yybegin(FIELD_VALUE); return ImpexTypes.BOOLEAN; }
     {digit}                                                 { yybegin(FIELD_VALUE); return ImpexTypes.DIGIT; }
+    {class_with_package}                                    { yybegin(FIELD_VALUE); return ImpexTypes.CLASS_WITH_PACKAGE; }
 
     <FIELD_VALUE> {
         {field_value}                                       { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE; }
@@ -146,6 +148,7 @@ field_value_ignore = "<ignore>"
     {digit}                                                 { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DIGIT; }
     {single_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.DOUBLE_STRING; }
+    {class_with_package}                                    { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.CLASS_WITH_PACKAGE; }
     {attribute_value}                                       { yybegin(ATTRIBUTE_VALUE); return ImpexTypes.ATTRIBUTE_VALUE; }
 }
 
