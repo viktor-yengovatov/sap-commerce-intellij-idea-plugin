@@ -44,7 +44,7 @@ digit   = [[:digit:]]+
 class_with_package = ([:jletterdigit:]+[.][:jletterdigit:]+)+
 
 attribute_name  = [:jletterdigit:]+
-attribute_value = [:jletterdigit:]+
+attribute_value = [^, \t\f\]\r\n]+
 
 header_mode_insert        = "INSERT"
 header_mode_update        = "UPDATE"
@@ -54,7 +54,7 @@ header_mode_remove        = "REMOVE"
 header_type = [:jletterdigit:]+
 
 value_subtype      = [:jletterdigit:]+
-field_value        = [^;, \r\n]+
+field_value        = [^;, \t\f\r\n]+
 field_value_ignore = "<ignore>"
 
 %state COMMENT
