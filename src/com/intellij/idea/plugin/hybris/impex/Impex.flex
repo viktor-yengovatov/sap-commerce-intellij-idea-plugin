@@ -72,7 +72,6 @@ field_value_ignore = "<ignore>"
 %state MACRO_DECLARATION
 %state HEADER_MODE
 %state HEADER_LINE
-%state WAITING_FOR_FIELD_VALUE
 %state FIELD_VALUE
 %state BEAN_SHELL
 %state MODYFIERS_BLOCK
@@ -98,6 +97,7 @@ field_value_ignore = "<ignore>"
     {header_mode_remove}                                    { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE_REMOVE; }
 
     {value_subtype}                                         { yybegin(FIELD_VALUE); return ImpexTypes.VALUE_SUBTYPE; }
+    {semicolon}                                             { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_SEPARATOR; }
 }
 
 <COMMENT> {
@@ -108,24 +108,19 @@ field_value_ignore = "<ignore>"
     {double_string}                                         { return ImpexTypes.BEAN_SHELL_BODY; }
 }
 
-<WAITING_FOR_FIELD_VALUE> {
-    {double_string}                                         { yybegin(FIELD_VALUE); return ImpexTypes.DOUBLE_STRING; }
-    {field_value_ignore}                                    { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_IGNORE; }
-    {boolean}                                               { yybegin(FIELD_VALUE); return ImpexTypes.BOOLEAN; }
-    {digit}                                                 { yybegin(FIELD_VALUE); return ImpexTypes.DIGIT; }
-    {class_with_package}                                    { yybegin(FIELD_VALUE); return ImpexTypes.CLASS_WITH_PACKAGE; }
+<FIELD_VALUE> {
+    {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
+    {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
+    {boolean}                                               { return ImpexTypes.BOOLEAN; }
+    {digit}                                                 { return ImpexTypes.DIGIT; }
+    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
 
-    <FIELD_VALUE> {
-        {comma}                                             { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.FIELD_LIST_ITEM_SEPARATOR; }
-        {default_path_delimiter}                            { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.DEFAULT_PATH_DELIMITER; }
-        {alternative_map_delimiter}                         { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
+    {comma}                                                 { return ImpexTypes.FIELD_LIST_ITEM_SEPARATOR; }
+    {default_path_delimiter}                                { return ImpexTypes.DEFAULT_PATH_DELIMITER; }
+    {alternative_map_delimiter}                             { return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
 
-        {field_value}                                       { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE; }
-
-        <YYINITIAL> {
-            {semicolon}                                     { yybegin(WAITING_FOR_FIELD_VALUE); return ImpexTypes.FIELD_VALUE_SEPARATOR; }
-        }
-    }
+    {field_value}                                           { return ImpexTypes.FIELD_VALUE; }
+    {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
 }
 
 <HEADER_MODE> {
