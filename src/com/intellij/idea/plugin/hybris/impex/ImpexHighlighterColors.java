@@ -17,7 +17,7 @@ public class ImpexHighlighterColors {
     public static final TextAttributesKey MACRO_DECLARATION = key("MACRO_DECLARATION", INSTANCE_FIELD);
     public static final TextAttributesKey MACRO_VALUE = key("MACRO_VALUE", HighlighterColors.TEXT);
     public static final TextAttributesKey MACRO_USAGE = key("MACRO_USAGE", INSTANCE_FIELD);
-    public static final TextAttributesKey ASSIGN_VALUE = key("ASSIGN_VALUE", KEYWORD);
+    public static final TextAttributesKey ASSIGN_VALUE = key("ASSIGN_VALUE", HighlighterColors.TEXT);
     public static final TextAttributesKey HEADER_MODE_INSERT = key("HEADER_MODE_INSERT", KEYWORD);
     public static final TextAttributesKey HEADER_MODE_UPDATE = key("HEADER_MODE_UPDATE", KEYWORD);
     public static final TextAttributesKey HEADER_MODE_INSERT_UPDATE = key("HEADER_MODE_INSERT_UPDATE", KEYWORD);

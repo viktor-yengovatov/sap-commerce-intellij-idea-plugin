@@ -18,6 +18,9 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Hybris-Impex-Synax-Highlight" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 

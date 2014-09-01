@@ -2,7 +2,7 @@
 
   <id>ccom.intellij.idea.plugin.hybris.impex</id>
   <name>Syntax highlight for impex files</name>
-  <version>1.1.1</version>
+  <version>1.2</version>
 
   <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -14,7 +14,17 @@
 
   <change-notes>
       <![CDATA[
+          1.2 - Major lexer refinement.
+          <br/>
+              - Support for new constructions has been implemented.
+          <br/>
+              - Provided correct colours for the Default and Darcula color checmes.
+          <br/>
+              - The plugin was rebuilt for JDK 1.6 as idea requires 1.6+.
+          <br/>
+          <br/>
           1.1.1 - The plugin was rebuilt for JDK 1.5.
+          <br/>
           <br/>
           1.1 - The plugin was rebuilt for JDK 1.6_45.
       ]]>
@@ -36,6 +46,8 @@
       <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexSyntaxHighlighterFactory"/>
       <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.ImpexColorSettingsPage"/>
       <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexCommenter"/>
+
+      <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
       <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
   </extensions>
 
