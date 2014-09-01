@@ -16,8 +16,6 @@
       <![CDATA[
           1.2 - Lexical analyzer has been improved a lot.
           <br/>
-              - Support for new constructions has been implemented.
-          <br/>
               - Provided correct colours for the Default and Darcula color schemes.
           <br/>
               - The plugin was rebuilt for JDK 1.6 as idea requires 1.6+.
