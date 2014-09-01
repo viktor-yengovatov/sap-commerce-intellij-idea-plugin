@@ -14,7 +14,7 @@
 
   <change-notes>
       <![CDATA[
-          1.2 - Major lexer refinement.
+          1.2 - Lexical analyzer has been improved a lot.
           <br/>
               - Support for new constructions has been implemented.
           <br/>
