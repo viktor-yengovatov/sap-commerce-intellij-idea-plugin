@@ -24,13 +24,14 @@ end_of_line_comment_marker = [#]
 end_of_line_comment_body   = [^\r\n]*
 
 bean_shell_marker = [#][%]
+bean_shell_body = (({double_string})|[^\r\n]*)
 
 single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-macro_declaration = [$][:jletterdigit:]+
-macro_usage       = [$][:jletterdigit:]+
+macro_declaration = [$]([:jletterdigit:]|[-])+
+macro_usage       = [$]([:jletterdigit:]|[-])+
 macro_value       = (({double_string})|([^\r\n]*))*
 
 left_square_bracket  = [\[]
@@ -108,7 +109,7 @@ field_value_ignore = "<ignore>"
 }
 
 <BEAN_SHELL> {
-    {double_string}                                         { return ImpexTypes.BEAN_SHELL_BODY; }
+    {bean_shell_body}                                       { return ImpexTypes.BEAN_SHELL_BODY; }
 }
 
 <FIELD_VALUE> {
