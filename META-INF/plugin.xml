@@ -18,7 +18,7 @@
           <br/>
               - Support for new constructions has been implemented.
           <br/>
-              - Provided correct colours for the Default and Darcula color checmes.
+              - Provided correct colours for the Default and Darcula color schemes.
           <br/>
               - The plugin was rebuilt for JDK 1.6 as idea requires 1.6+.
           <br/>
