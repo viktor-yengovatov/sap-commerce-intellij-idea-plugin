@@ -50,11 +50,14 @@ boolean = (("true")|("false"))
 digit   = [[:digit:]]+
 class_with_package = ([:jletterdigit:]+[.][:jletterdigit:]+)+
 
-parameter_name = [:jletterdigit:]+
+parameter_name = ([:jletterdigit:]+[.]?[:jletterdigit:]+)+
+alternative_pattern = [|]
 special_parameter_name = [@][:jletterdigit:]+
 
 attribute_name  = [:jletterdigit:]+
-attribute_value = [^,: \t\f\]\r\n]+
+attribute_value = [^,:| \t\f\]\r\n]+
+
+document_id = [&][:jletterdigit:]+
 
 header_mode_insert        = "INSERT"
 header_mode_update        = "UPDATE"
@@ -64,13 +67,13 @@ header_mode_remove        = "REMOVE"
 header_type = [:jletterdigit:]+
 
 value_subtype      = [:jletterdigit:]+
-field_value        = [^;,: \t\f\r\n]+
+field_value        = [^;,:| \t\f\r\n]+
 field_value_ignore = "<ignore>"
 
 %state COMMENT
 %state WAITING_MACRO_VALUE
 %state MACRO_DECLARATION
-%state HEADER_MODE
+%state HEADER_TYPE
 %state HEADER_LINE
 %state FIELD_VALUE
 %state BEAN_SHELL
@@ -91,10 +94,10 @@ field_value_ignore = "<ignore>"
 
     {macro_declaration}                                     { yybegin(MACRO_DECLARATION); return ImpexTypes.MACRO_DECLARATION; }
 
-    {header_mode_insert}                                    { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE_INSERT; }
-    {header_mode_update}                                    { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE_UPDATE; }
-    {header_mode_insert_update}                             { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE_INSERT_UPDATE; }
-    {header_mode_remove}                                    { yybegin(HEADER_MODE); return ImpexTypes.HEADER_MODE_REMOVE; }
+    {header_mode_insert}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT; }
+    {header_mode_update}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_UPDATE; }
+    {header_mode_insert_update}                             { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT_UPDATE; }
+    {header_mode_remove}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_REMOVE; }
 
     {value_subtype}                                         { yybegin(FIELD_VALUE); return ImpexTypes.VALUE_SUBTYPE; }
     {semicolon}                                             { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_SEPARATOR; }
@@ -123,7 +126,7 @@ field_value_ignore = "<ignore>"
     {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
 }
 
-<HEADER_MODE> {
+<HEADER_TYPE> {
     {header_type}                                           { yybegin(HEADER_LINE); return ImpexTypes.HEADER_TYPE; }
 }
 
@@ -132,7 +135,9 @@ field_value_ignore = "<ignore>"
     {comma}                                                 { return ImpexTypes.COMMA; }
 
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
+    {document_id}                                           { return ImpexTypes.DOCUMENT_ID; }
     {parameter_name}                                        { return ImpexTypes.HEADER_PARAMETER_NAME; }
+    {alternative_pattern}                                   { return ImpexTypes.ALTERNATIVE_PATTERN; }
     {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
     {assign_value}                                          { yybegin(WAITING_ATTR_OR_PARAM_VALUE); return ImpexTypes.ASSIGN_VALUE; }
 
@@ -154,6 +159,8 @@ field_value_ignore = "<ignore>"
     {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.SQUARE_BRACKETS; }
 
     {comma}                                                 { return ImpexTypes.ATTRIBUTE_SEPARATOR; }
+
+    {alternative_map_delimiter}                             { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
 }
 
 <WAITING_ATTR_OR_PARAM_VALUE> {
