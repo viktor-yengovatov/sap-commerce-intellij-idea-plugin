@@ -16,6 +16,7 @@ import com.intellij.psi.CustomHighlighterTokenType;
 %eof{
     return;
 %eof}
+%ignorecase
 
 crlf        = (([\n])|([\r])|(\r\n))
 white_space = [ \t\f]
@@ -55,7 +56,7 @@ parameter_name = ([:jletterdigit:]+[.]?[:jletterdigit:]+)+
 alternative_pattern = [|]
 special_parameter_name = [@][:jletterdigit:]+
 
-attribute_name  = [:jletterdigit:]+
+attribute_name  = ([:jletterdigit:]|[-])+
 attribute_value = [^,:| \t\f\]\r\n]+
 
 document_id = [&][:jletterdigit:]+
