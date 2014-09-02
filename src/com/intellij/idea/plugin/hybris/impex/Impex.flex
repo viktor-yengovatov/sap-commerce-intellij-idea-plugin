@@ -57,7 +57,7 @@ alternative_pattern = [|]
 special_parameter_name = [@][:jletterdigit:]+
 
 attribute_name  = ([:jletterdigit:]|[-])+
-attribute_value = [^,:| \t\f\]\r\n]+
+attribute_value = [^, \t\f\]\r\n]+
 
 document_id = [&][:jletterdigit:]+
 
@@ -171,10 +171,9 @@ field_value_ignore = "<ignore>"
     {single_string}                                         { yybegin(MODYFIERS_BLOCK); return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { yybegin(MODYFIERS_BLOCK); return ImpexTypes.DOUBLE_STRING; }
     {class_with_package}                                    { yybegin(MODYFIERS_BLOCK); return ImpexTypes.CLASS_WITH_PACKAGE; }
-    {default_path_delimiter}                                { yybegin(MODYFIERS_BLOCK); return ImpexTypes.DEFAULT_PATH_DELIMITER; }
-    {alternative_map_delimiter}                             { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
     {macro_usage}                                           { yybegin(MODYFIERS_BLOCK); return ImpexTypes.MACRO_USAGE; }
-    {attribute_value}                                       { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_VALUE; }
+    {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
+    {attribute_value}                                       { return ImpexTypes.ATTRIBUTE_VALUE; }
     {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.SQUARE_BRACKETS; }
 }
 

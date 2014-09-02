@@ -2,7 +2,7 @@
 
   <id>ccom.intellij.idea.plugin.hybris.impex</id>
   <name>Syntax highlight for impex files</name>
-  <version>1.2.1</version>
+  <version>1.2.2</version>
 
   <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -14,10 +14,15 @@
 
   <change-notes>
       <![CDATA[
+          1.2.2:
+          <br/> - Header related modifier value detection rules have been fixed.
+          <br/>
+          <br/>
           1.2.1:
-          <br/> - '-' Character added to allowed chars for an attribute name.
+          <br/> - Character '-' added to allowed chars for an attribute name.
           <br/> - Ignore case option has been enabled at jFlex.
           <br/> - Colours has been fixed a bit.
+          <br/>
           <br/>
           1.2:
           <br/> - Lexical analyzer has been improved a lot.
@@ -25,10 +30,12 @@
           <br/> - The plugin was rebuilt for JDK 1.6 as idea requires 1.6+.
           <br/>
           <br/>
-          1.1.1 - The plugin was rebuilt for JDK 1.5.
+          1.1.1:
+          <br/>- The plugin was rebuilt for JDK 1.5.
           <br/>
           <br/>
-          1.1 - The plugin was rebuilt for JDK 1.6_45.
+          1.1:
+          <br/>- The plugin was rebuilt for JDK 1.6_45.
       ]]>
   </change-notes>
 
