@@ -2,7 +2,7 @@
 
   <id>ccom.intellij.idea.plugin.hybris.impex</id>
   <name>Syntax highlight for impex files</name>
-  <version>1.2.2</version>
+  <version>1.3</version>
 
   <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -14,6 +14,10 @@
 
   <change-notes>
       <![CDATA[
+          1.3:
+          <br/> - Added simple code completion within the header for modifier name and value.
+          <br/>
+          <br/>
           1.2.2:
           <br/> - Header related modifier value detection rules have been fixed.
           <br/>
