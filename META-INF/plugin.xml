@@ -55,6 +55,7 @@
       <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexSyntaxHighlighterFactory"/>
       <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.ImpexColorSettingsPage"/>
       <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexCommenter"/>
+      <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexCompletionContributor"/>
 
       <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
       <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
