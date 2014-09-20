@@ -234,6 +234,9 @@ public class ImpexCompletionContributor extends CompletionContributor {
                         try {
                             TYPECODES = new Hashtable<String, PsiClass>();
                             PsiClass itemRootClass = JavaPsiFacade.getInstance(project).findClass("de.hybris.platform.core.model.ItemModel", GlobalSearchScope.allScope(project));
+
+                            if (null == itemRootClass) return;
+
                             Collection<PsiClass> inheritedClasses = ClassInheritorsSearch.search(itemRootClass).findAll();
                             // adding Item class itself
                             inheritedClasses.add(itemRootClass);
