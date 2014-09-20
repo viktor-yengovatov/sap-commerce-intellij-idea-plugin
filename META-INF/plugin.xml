@@ -74,7 +74,11 @@
   </project-components>
 
   <actions>
-    <!-- Add your actions here -->
+    <action id="Impex.IndexHybrisItemTypes" class="com.intellij.idea.plugin.hybris.impex.IndexItemTypesAction"
+                text="Index [y]-types"
+                description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+    </action>
   </actions>
 
 </idea-plugin>
