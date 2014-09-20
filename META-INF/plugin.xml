@@ -2,20 +2,49 @@
 
   <id>ccom.intellij.idea.plugin.hybris.impex</id>
   <name>Syntax highlight for impex files</name>
-  <version>1.3</version>
+  <version>1.3.1</version>
 
   <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
   <description>
       <![CDATA[
-          Syntax highlighting for Hybris impex files.
+          Features:
+          <br/>
+          - Syntax highlighting for Hybris impex files.
+
+          <br/>
+          - Autocompletion within the header for modifier name and value.
+
+          <br/>
+          - Autocompletion for hybris types based on the current IntelliJ-Project (hybris coretypes + your custom types).
+
+          <br/>
+          - Autocompletion for hybris attributes based on the current IntelliJ-Project (hybris coretypes + your custom types).
+
+          <br/>
+          <br/>
+          Due autocompletion based on the IntelliJ-Class-Index this feature is only available after the IntelliJ-indexing
+          process is finished. The indexing is automatically ran on the first completion-action. After an *-item.xml change or
+          adding a new hybris-extension - and ant install - you can rerun the "indexing" mechanism with Tools -> Index [y]-types.
+
+          <br/>
+          <br/>
+          Developers:
+          <br/>
+          - Alexander Bartash
+          <br/>
+          - Markus Priegl
       ]]>
   </description>
 
   <change-notes>
       <![CDATA[
+          1.3.1:
+          <br/> - Added autocompletion for Hybris type system based on ItemModel-inheritance. (Thanks to Markus Priegl)
+          <br/>
+          <br/>
           1.3:
-          <br/> - Added simple code completion within the header for modifier name and value.
+          <br/> - Added simple code completion within the header for modifier name and value. (Thanks to Markus Priegl)
           <br/>
           <br/>
           1.2.2:
