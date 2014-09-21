@@ -72,14 +72,33 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return "#This is a comment\n" +
-                "INSERT Product;code[unique=true];name[lang=en]; name[lang=de];someList(code)\n" +
-                ";myProduct1;myProduct1's localized name;lokalisierter Name von myProduct1;value1,value2,value3\n" +
-                ";myProduct2;myProduct2's localized name;lokalisierter Name von myProduct2\n" +
+        return "# Comment\n" +
+                "$lang=en\n" +
+                "$contentCatalog=projectContentCatalog\n" +
+                "$contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default='Staged'])[default=$contentCatalog:Staged]\n" +
+                "$macro=qwe;qwe,qwe,;qwe\n" +
                 "\n" +
-                "INSERT_UPDATE Address;firstname;owner( Principal.uid | AbstractOrder.code )\n" +
-                ";Hans;\"Double quoted string\"\n" +
-                ";Klaus;'Single quoted string'\n";
+                "#% impex.setLocale( Locale.GERMAN );\n" +
+                "\n" +
+                "INSERT_UPDATE SomeType;$contentCV[unique=true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss];uid[unique=true];title[lang=$lang]\n" +
+                "Subtype;;account;\"Your Account\"\n" +
+                ";;<ignore>;\"Add/Edit Address\"\n" +
+                ";;key -> vaue | key -> vaue;\"Address Book\"\n" +
+                ";;value1,value2,value3;12345;com.domain.Class; qwe : asd\n" +
+                "\n" +
+                "INSERT Address[impex.legacy.mode = true, batchmode = true];firstname;owner( Principal.uid | AbstractOrder.code )\n" +
+                ";Hans;admin\n" +
+                "\n" +
+                "UPDATE Address;firstname;owner( Principal.uid | AbstractOrder.code );&docId\n" +
+                ";Hans;admin;id\n" +
+                "\n" +
+                "remove Address;firstname;owner( Principal.uid | AbstractOrder.code )\n" +
+                ";Hans;admin\n" +
+                "\n" +
+                "INSERT_UPDATE Media@media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator];mime[default='image/png']\n" +
+                ";;$contentResource/images/logo.png\n" +
+                "\n" +
+                "@@@@@\n";
     }
 
     @Nullable

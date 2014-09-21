@@ -210,7 +210,6 @@ field_value_ignore = "<ignore>"
 
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }
-    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
     {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
 
     {comma}                                                 { return ImpexTypes.COMMA; }
