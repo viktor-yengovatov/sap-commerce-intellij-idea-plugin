@@ -45,11 +45,13 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Digit", DIGIT),
             new AttributesDescriptor("Class with package", CLASS_WITH_PACKAGE),
             new AttributesDescriptor("Alternative map delimiter", ALTERNATIVE_MAP_DELIMITER),
+            new AttributesDescriptor("Default key-value delimiter", DEFAULT_KEY_VALUE_DELIMITER),
             new AttributesDescriptor("Default path delimiter", DEFAULT_PATH_DELIMITER),
             new AttributesDescriptor("Parameter name", HEADER_PARAMETER_NAME),
             new AttributesDescriptor("Special parameter name", HEADER_SPECIAL_PARAMETER_NAME),
             new AttributesDescriptor("Parameters separator", PARAMETERS_SEPARATOR),
             new AttributesDescriptor("Comma", COMMA),
+            new AttributesDescriptor("Semicolon", SEMICOLON),
             new AttributesDescriptor("Alternative pattern", ALTERNATIVE_PATTERN),
             new AttributesDescriptor("Document id", DOCUMENT_ID),
             new AttributesDescriptor("Bac character", HighlighterColors.BAD_CHARACTER)
