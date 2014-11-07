@@ -24,6 +24,7 @@ import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.util.ProcessingContext;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -206,13 +207,17 @@ public class ImpexCompletionContributor extends CompletionContributor {
         return null;
     }
 
+    @Contract("null -> null")
     public static PsiElement calculateHeaderElementOfAttribute(PsiElement psiElement) {
+        if (null == psiElement || null == psiElement.getNode()) {
+            return null;
+        }
 
-        while (!psiElement.getNode().getElementType().equals(ImpexTypes.HEADER_TYPE)) {
+        while (!ImpexTypes.HEADER_TYPE.equals(psiElement.getNode().getElementType())) {
             psiElement = psiElement.getPrevSibling();
         }
 
-        if (psiElement.getNode().getElementType().equals(ImpexTypes.HEADER_TYPE)) {
+        if (ImpexTypes.HEADER_TYPE.equals(psiElement.getNode().getElementType())) {
             return psiElement;
         } else {
             return null;
@@ -331,6 +336,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
                     && context.getPrevSibling().getPrevSibling().getPrevSibling().getPrevSibling().getNode().getElementType().equals(ImpexTypes.HEADER_TYPE);
         }
 
+        @Contract(value = "_ -> true", pure = true)
         public boolean isClassAcceptable(Class hintClass) {
             return true;
         }
