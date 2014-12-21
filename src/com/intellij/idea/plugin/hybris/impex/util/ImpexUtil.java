@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.impex;
+package com.intellij.idea.plugin.hybris.impex.util;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 //import com.intellij.idea.plugin.hybris.impex.psi.ImpexProperty;

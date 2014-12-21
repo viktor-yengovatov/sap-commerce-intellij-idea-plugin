@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.impex;
+package com.intellij.idea.plugin.hybris.impex.commenter;
 
 import com.intellij.lang.Commenter;
 import org.jetbrains.annotations.Nullable;

@@ -91,12 +91,12 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-      <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.ImpexFileTypeFactory"/>
+      <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
       <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
-      <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexSyntaxHighlighterFactory"/>
-      <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.ImpexColorSettingsPage"/>
-      <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexCommenter"/>
-      <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexCompletionContributor"/>
+      <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+      <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
+      <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
+      <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
 
       <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
       <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
@@ -111,7 +111,7 @@
   </project-components>
 
   <actions>
-    <action id="Impex.IndexHybrisItemTypes" class="com.intellij.idea.plugin.hybris.impex.IndexItemTypesAction"
+    <action id="Impex.IndexHybrisItemTypes" class="com.intellij.idea.plugin.hybris.impex.indexer.IndexItemTypesAction"
                 text="Index [y]-types"
                 description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
             <add-to-group group-id="ToolsMenu" anchor="last"/>

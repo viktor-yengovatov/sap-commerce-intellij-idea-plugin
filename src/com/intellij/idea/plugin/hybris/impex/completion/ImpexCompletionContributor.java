@@ -1,8 +1,9 @@
-package com.intellij.idea.plugin.hybris.impex;
+package com.intellij.idea.plugin.hybris.impex.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.DataManager;
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;

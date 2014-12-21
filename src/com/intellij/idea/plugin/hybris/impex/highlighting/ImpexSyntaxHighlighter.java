@@ -1,5 +1,6 @@
-package com.intellij.idea.plugin.hybris.impex;
+package com.intellij.idea.plugin.hybris.impex.highlighting;
 
+import com.intellij.idea.plugin.hybris.impex.ImpexLexerAdapter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.HighlighterColors;
@@ -9,7 +10,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.impex.ImpexHighlighterColors.*;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.*;
 
 public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
 

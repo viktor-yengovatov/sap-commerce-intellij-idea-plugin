@@ -1,5 +1,6 @@
-package com.intellij.idea.plugin.hybris.impex;
+package com.intellij.idea.plugin.hybris.impex.highlighting;
 
+import com.intellij.idea.plugin.hybris.impex.file.ImpexIcons;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Map;
 
-import static com.intellij.idea.plugin.hybris.impex.ImpexHighlighterColors.*;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.*;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{

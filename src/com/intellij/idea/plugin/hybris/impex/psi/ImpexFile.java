@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi;
 
 import com.intellij.extapi.psi.PsiFileBase;
-import com.intellij.idea.plugin.hybris.impex.ImpexFileType;
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;

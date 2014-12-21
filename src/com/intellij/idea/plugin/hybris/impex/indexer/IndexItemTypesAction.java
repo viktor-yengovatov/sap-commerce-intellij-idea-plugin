@@ -1,5 +1,6 @@
-package com.intellij.idea.plugin.hybris.impex;
+package com.intellij.idea.plugin.hybris.impex.indexer;
 
+import com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
