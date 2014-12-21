@@ -18,22 +18,25 @@ import com.intellij.psi.CustomHighlighterTokenType;
 %eof}
 %ignorecase
 
+identifier  = [a-zA-Z0-9_-]
+
 crlf        = (([\n])|([\r])|(\r\n))
+not_crlf    = [^\r\n]
 white_space = [ \t\f]
 
 end_of_line_comment_marker = [#]
-end_of_line_comment_body   = [^\r\n]*
+end_of_line_comment_body   = {not_crlf}*
 
 bean_shell_marker = [#][%]
-bean_shell_body = (({double_string})|[^\r\n]*)
+bean_shell_body = (({double_string})|{not_crlf}*)
 
 single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-macro_declaration = [$]([:jletterdigit:]|[-])+[ \t\f]*[=]
-macro_usage       = [$]([:jletterdigit:]|[-])+
-macro_value       = ([^\r\n]|[:jletterdigit:]+)
+macro_declaration = [$]({identifier})+{white_space}*[=]
+macro_usage       = [$]({identifier})+
+macro_value       = ({not_crlf}|{identifier}+)
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
@@ -51,26 +54,26 @@ alternative_map_delimiter   = [|]
 
 boolean = (("true")|("false"))
 digit   = [[:digit:]]+
-class_with_package = ([:jletterdigit:]+[.][:jletterdigit:]+)+
+class_with_package = ({identifier}+[.]{identifier}+)+
 
-parameter_name = ([:jletterdigit:]+[.]?[:jletterdigit:]+)+
+parameter_name = ({identifier}+[.]?{identifier}+)+
 alternative_pattern = [|]
-special_parameter_name = [@][:jletterdigit:]+
+special_parameter_name = [@]{identifier}+
 
-attribute_name  = ([:jletterdigit:]|[-]|[.])+
+attribute_name  = ({identifier}|[.])+
 attribute_value = [^, \t\f\]\r\n]+
 
-document_id = [&][:jletterdigit:]+
+document_id = [&]{identifier}+
 
 header_mode_insert        = "INSERT"
 header_mode_update        = "UPDATE"
 header_mode_insert_update = "INSERT_UPDATE"
 header_mode_remove        = "REMOVE"
 
-header_type = [:jletterdigit:]+
+header_type = {identifier}+
 
-value_subtype      = [:jletterdigit:]+
-field_value        = ([^\r\n]|[:jletterdigit:]+)
+value_subtype      = {identifier}+
+field_value        = ({not_crlf}|{identifier}+)
 field_value_ignore = "<ignore>"
 
 %state COMMENT
@@ -179,12 +182,12 @@ field_value_ignore = "<ignore>"
 }
 
 <WAITING_ATTR_OR_PARAM_VALUE> {
-    {boolean}                                               { yybegin(MODYFIERS_BLOCK); return ImpexTypes.BOOLEAN; }
-    {digit}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.DIGIT; }
-    {single_string}                                         { yybegin(MODYFIERS_BLOCK); return ImpexTypes.SINGLE_STRING; }
-    {double_string}                                         { yybegin(MODYFIERS_BLOCK); return ImpexTypes.DOUBLE_STRING; }
-    {class_with_package}                                    { yybegin(MODYFIERS_BLOCK); return ImpexTypes.CLASS_WITH_PACKAGE; }
-    {macro_usage}                                           { yybegin(MODYFIERS_BLOCK); return ImpexTypes.MACRO_USAGE; }
+    {boolean}                                               { return ImpexTypes.BOOLEAN; }
+    {digit}                                                 { return ImpexTypes.DIGIT; }
+    {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
+    {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
+    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
+    {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpexTypes.ATTRIBUTE_VALUE; }
     {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.SQUARE_BRACKETS; }

@@ -1,8 +1,8 @@
 <idea-plugin version="2">
 
   <id>ccom.intellij.idea.plugin.hybris.impex</id>
-  <name>Syntax highlight for impex files</name>
-  <version>1.3.2</version>
+  <name>Hybris impex plugin</name>
+  <version>1.3.3</version>
 
   <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -39,6 +39,10 @@
 
   <change-notes>
       <![CDATA[
+          1.3.3:
+          <br/> - Fixes for reported syntax highlighting bugs.
+          <br/>
+          <br/>
           1.3.2:
           <br/> - Various lexer improvements. Macros syntax highlighting fixed.
           <br/>
