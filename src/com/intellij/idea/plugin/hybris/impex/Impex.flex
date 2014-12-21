@@ -93,6 +93,7 @@ field_value_ignore = "<ignore>"
 
 <YYINITIAL> {
     {bean_shell_marker}                                     { yybegin(BEAN_SHELL); return ImpexTypes.BEAN_SHELL_MARKER; }
+    {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 
     {end_of_line_comment_marker}                            { yybegin(COMMENT); return ImpexTypes.COMMENT_MARKER; }
 
