@@ -1,16 +1,18 @@
 <idea-plugin version="2">
 
-  <id>ccom.intellij.idea.plugin.hybris.impex</id>
-  <name>Hybris impex plugin</name>
-  <version>1.3.3</version>
+    <id>ccom.intellij.idea.plugin.hybris.impex</id>
+    <name>Hybris impex plugin</name>
+    <version>1.4</version>
 
-  <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
+    <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
-  <description>
-      <![CDATA[
+    <description>
+        <![CDATA[
           Features:
           <br/>
           - Syntax highlighting for Hybris impex files.
+          <br/>
+          - Automatic alignment into columns via "Reformat code".
 
           <br/>
           - Autocompletion within the header for modifier name and value.
@@ -35,10 +37,14 @@
           <br/>
           - Markus Priegl
       ]]>
-  </description>
+    </description>
 
-  <change-notes>
-      <![CDATA[
+    <change-notes>
+        <![CDATA[
+          1.4:
+          <br/> - Implemented automatic alignment into columns via "Reformat code" feature.
+          <br/>
+          <br/>
           1.3.3:
           <br/> - Fixes for reported syntax highlighting bugs.
           <br/>
@@ -78,44 +84,60 @@
           1.1:
           <br/>- The plugin was rebuilt for JDK 1.6_45.
       ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="135"/>
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="135"/>
 
-  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.idea.modules.lang</depends>
-  -->
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.idea.modules.lang</depends>
+    -->
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-      <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
-      <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
-      <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
-      <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
-      <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
-      <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
 
-      <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
-      <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
-  </extensions>
+        <lang.parserDefinition language="Impex"
+                               implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
 
-  <application-components>
-    <!-- Add your application components here -->
-  </application-components>
+        <lang.syntaxHighlighterFactory key="Impex"
+                                       implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
 
-  <project-components>
-    <!-- Add your project components here -->
-  </project-components>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
 
-  <actions>
-    <action id="Impex.IndexHybrisItemTypes" class="com.intellij.idea.plugin.hybris.impex.indexer.IndexItemTypesAction"
+        <lang.commenter language="Impex"
+                        implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
+
+        <lang.formatter language="Impex"
+                        implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
+        <codeStyleSettingsProvider
+                implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider
+                implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
+
+        <completion.contributor language="Impex"
+                                implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+    </extensions>
+
+    <application-components>
+        <!-- Add your application components here -->
+    </application-components>
+
+    <project-components>
+        <!-- Add your project components here -->
+    </project-components>
+
+    <actions>
+        <action id="Impex.IndexHybrisItemTypes"
+                class="com.intellij.idea.plugin.hybris.impex.indexer.IndexItemTypesAction"
                 text="Index [y]-types"
                 description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
-    </action>
-  </actions>
+        </action>
+    </actions>
 
 </idea-plugin>
