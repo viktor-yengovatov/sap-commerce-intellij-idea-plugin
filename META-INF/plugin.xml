@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.4</version>
+    <version>1.5</version>
 
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -11,8 +11,12 @@
           Features:
           <br/>
           - Syntax highlighting for Hybris impex files.
+
           <br/>
           - Automatic alignment into columns via "Reformat code".
+
+          <br/>
+          - Code folding to improve readability.
 
           <br/>
           - Autocompletion within the header for modifier name and value.
@@ -41,6 +45,10 @@
 
     <change-notes>
         <![CDATA[
+          1.5:
+          <br/> - Square and round brackets folding support.
+          <br/>
+          <br/>
           1.4:
           <br/> - Implemented automatic alignment into columns via "Reformat code" feature.
           <br/>
@@ -99,28 +107,23 @@
         <!-- Add your extensions here -->
         <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
 
-        <lang.parserDefinition language="Impex"
-                               implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
+        <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
 
-        <lang.syntaxHighlighterFactory key="Impex"
-                                       implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
 
-        <lang.commenter language="Impex"
-                        implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
+        <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
 
-        <lang.formatter language="Impex"
-                        implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
-        <codeStyleSettingsProvider
-                implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
-        <langCodeStyleSettingsProvider
-                implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
+        <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
-        <completion.contributor language="Impex"
-                                implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+        <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+
+        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
     </extensions>
 
     <application-components>

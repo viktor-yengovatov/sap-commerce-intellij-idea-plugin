@@ -27,45 +27,55 @@ public class ImpexParserDefinition implements ParserDefinition{
 
     @NotNull
     @Override
-    public Lexer createLexer(Project project) {
+    public Lexer createLexer(final Project project) {
         return new FlexAdapter(new ImpexLexer((Reader) null));
     }
 
     @NotNull
+    @Override
     public TokenSet getWhitespaceTokens() {
         return WHITE_SPACES;
     }
 
     @NotNull
+    @Override
     public TokenSet getCommentTokens() {
         return COMMENTS;
     }
 
     @NotNull
+    @Override
     public TokenSet getStringLiteralElements() {
         return TokenSet.EMPTY;
     }
 
     @NotNull
+    @Override
     public PsiParser createParser(final Project project) {
         return new ImpexParser();
     }
 
+    @NotNull
     @Override
     public IFileElementType getFileNodeType() {
         return FILE;
     }
 
-    public PsiFile createFile(FileViewProvider viewProvider) {
+    @NotNull
+    @Override
+    public PsiFile createFile(final FileViewProvider viewProvider) {
         return new ImpexFile(viewProvider);
     }
 
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    @NotNull
+    @Override
+    public SpaceRequirements spaceExistanceTypeBetweenTokens(final ASTNode left, final ASTNode right) {
         return SpaceRequirements.MAY;
     }
 
     @NotNull
-    public PsiElement createElement(ASTNode node) {
+    @Override
+    public PsiElement createElement(final ASTNode node) {
         return ImpexTypes.Factory.createElement(node);
     }
 }

@@ -159,11 +159,11 @@ field_value_ignore = "<ignore>"
     {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
     {assign_value}                                          { yybegin(WAITING_ATTR_OR_PARAM_VALUE); return ImpexTypes.ASSIGN_VALUE; }
 
-    {left_round_bracket}                                    { return ImpexTypes.ROUND_BRACKETS; }
-    {right_round_bracket}                                   { return ImpexTypes.ROUND_BRACKETS; }
+    {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
+    {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
 
-    {left_square_bracket}                                   { yybegin(MODYFIERS_BLOCK); return ImpexTypes.SQUARE_BRACKETS; }
-    {right_square_bracket}                                  { return ImpexTypes.SQUARE_BRACKETS; }
+    {left_square_bracket}                                   { yybegin(MODYFIERS_BLOCK); return ImpexTypes.LEFT_SQUARE_BRACKET; }
+    {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
 }
 
 <MODYFIERS_BLOCK> {
@@ -174,7 +174,7 @@ field_value_ignore = "<ignore>"
     {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 
-    {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.SQUARE_BRACKETS; }
+    {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.RIGHT_SQUARE_BRACKET; }
 
     {comma}                                                 { return ImpexTypes.ATTRIBUTE_SEPARATOR; }
 
@@ -190,7 +190,7 @@ field_value_ignore = "<ignore>"
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpexTypes.ATTRIBUTE_VALUE; }
-    {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.SQUARE_BRACKETS; }
+    {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.RIGHT_SQUARE_BRACKET; }
 }
 
 <MACRO_DECLARATION> {
@@ -204,11 +204,11 @@ field_value_ignore = "<ignore>"
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
 
-    {left_round_bracket}                                    { return ImpexTypes.ROUND_BRACKETS; }
-    {right_round_bracket}                                   { return ImpexTypes.ROUND_BRACKETS; }
+    {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
+    {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
 
-    {left_square_bracket}                                   { return ImpexTypes.SQUARE_BRACKETS; }
-    {right_square_bracket}                                  { return ImpexTypes.SQUARE_BRACKETS; }
+    {left_square_bracket}                                   { return ImpexTypes.LEFT_SQUARE_BRACKET; }
+    {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
 
     {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
 

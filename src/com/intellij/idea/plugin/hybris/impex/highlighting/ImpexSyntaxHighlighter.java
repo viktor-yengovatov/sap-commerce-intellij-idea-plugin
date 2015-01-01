@@ -64,7 +64,7 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
 
     @NotNull
     @Override
-    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+    public TextAttributesKey[] getTokenHighlights(@NotNull final IElementType tokenType) {
         if (tokenType.equals(ImpexTypes.ALTERNATIVE_MAP_DELIMITER)) {
             return ALTERNATIVE_MAP_DELIMITER_KEYS;
         } else if (tokenType.equals(ImpexTypes.DEFAULT_KEY_VALUE_DELIMITER)) {
@@ -129,11 +129,11 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
             return MACRO_VALUE_KEYS;
         } else if (tokenType.equals(ImpexTypes.PARAMETERS_SEPARATOR)) {
             return PARAMETERS_SEPARATOR_KEYS;
-        } else if (tokenType.equals(ImpexTypes.ROUND_BRACKETS)) {
+        } else if (tokenType.equals(ImpexTypes.LEFT_ROUND_BRACKET) || tokenType.equals(ImpexTypes.RIGHT_ROUND_BRACKET)) {
             return ROUND_BRACKETS_KEYS;
         } else if (tokenType.equals(ImpexTypes.SINGLE_STRING)) {
             return SINGLE_STRING_KEYS;
-        } else if (tokenType.equals(ImpexTypes.SQUARE_BRACKETS)) {
+        } else if (tokenType.equals(ImpexTypes.LEFT_SQUARE_BRACKET) || tokenType.equals(ImpexTypes.RIGHT_SQUARE_BRACKET)) {
             return SQUARE_BRACKETS_KEYS;
         } else if (tokenType.equals(ImpexTypes.VALUE_SUBTYPE)) {
             return VALUE_SUBTYPE_KEYS;

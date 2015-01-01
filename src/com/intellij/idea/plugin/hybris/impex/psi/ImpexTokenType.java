@@ -6,7 +6,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class ImpexTokenType extends IElementType {
-    public ImpexTokenType(@NotNull @NonNls String debugName) {
+
+    public ImpexTokenType(@NotNull @NonNls final String debugName) {
         super(debugName, ImpexLanguage.INSTANCE);
     }
 

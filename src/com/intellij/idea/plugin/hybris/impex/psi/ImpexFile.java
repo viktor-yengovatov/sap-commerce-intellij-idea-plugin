@@ -11,7 +11,7 @@ import javax.swing.*;
 
 public class ImpexFile extends PsiFileBase {
 
-    public ImpexFile(@NotNull FileViewProvider viewProvider) {
+    public ImpexFile(@NotNull final FileViewProvider viewProvider) {
         super(viewProvider, ImpexLanguage.INSTANCE);
     }
 
@@ -21,13 +21,14 @@ public class ImpexFile extends PsiFileBase {
         return ImpexFileType.INSTANCE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Impex File";
     }
 
     @Override
-    public Icon getIcon(int flags) {
+    public Icon getIcon(final int flags) {
         return super.getIcon(flags);
     }
 }
