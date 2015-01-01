@@ -35,43 +35,19 @@ public class ImpexBlock extends AbstractBlock {
     protected List<Block> buildChildren() {
         final List<Block> blocks = new ArrayList<Block>();
 
+        final AlignmentStrategy alignmentStrategy = new ColumnsAlignmentStrategy();
         ASTNode currentNode = myNode.getFirstChildNode();
 
-        int column = 0;
-        List<Alignment> alignments = new ArrayList<Alignment>();
-
         while (currentNode != null) {
-            if (currentNode.getElementType() == ImpexTypes.CRLF) {
-                column = 0;
-            }
 
-            if (currentNode.getElementType() == ImpexTypes.HEADER_MODE_INSERT
-                || currentNode.getElementType() == ImpexTypes.HEADER_MODE_REMOVE
-                || currentNode.getElementType() == ImpexTypes.HEADER_MODE_UPDATE
-                || currentNode.getElementType() == ImpexTypes.HEADER_MODE_INSERT_UPDATE) {
-                alignments = new ArrayList<Alignment>();
-            }
+            alignmentStrategy.processNode(currentNode);
 
-            if (currentNode.getElementType() != TokenType.WHITE_SPACE && currentNode.getElementType() != ImpexTypes.CRLF) {
-
-                final Alignment alignment;
-
-                if (currentNode.getElementType() == ImpexTypes.FIELD_VALUE_SEPARATOR) {
-                    if (column >= alignments.size()) {
-                        alignment = Alignment.createAlignment(true, Alignment.Anchor.LEFT);
-                        alignments.add(alignment);
-                    } else {
-                        alignment = alignments.get(column);
-                    }
-                    column++;
-                } else {
-                    alignment = Alignment.createAlignment();
-                }
+            if (isNotWhitespaceOrNewLine(currentNode)) {
 
                 final Block block = new ImpexBlock(
                         currentNode,
                         Wrap.createWrap(WrapType.NONE, false),
-                        alignment,
+                        alignmentStrategy.getAlignment(currentNode),
                         spacingBuilder);
 
                 blocks.add(block);
@@ -81,6 +57,11 @@ public class ImpexBlock extends AbstractBlock {
         }
 
         return blocks;
+    }
+
+    private boolean isNotWhitespaceOrNewLine(final ASTNode currentNode) {
+        return TokenType.WHITE_SPACE != currentNode.getElementType()
+               && ImpexTypes.CRLF != currentNode.getElementType();
     }
 
     @Override
