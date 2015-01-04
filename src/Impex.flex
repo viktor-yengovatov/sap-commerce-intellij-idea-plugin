@@ -34,7 +34,7 @@ single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-macro_declaration = [$]({identifier})+{white_space}*[=]
+macro_name_declaration = [$]({identifier})+{white_space}*[=]
 macro_usage       = [$]({identifier})+
 macro_value       = ({not_crlf}|{identifier}+)
 
@@ -101,7 +101,7 @@ field_value_ignore = "<ignore>"
     {end_of_line_comment_marker}                            { yybegin(COMMENT); return ImpexTypes.COMMENT_MARKER; }
 
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
-    {macro_declaration}                                     { yybegin(MACRO_DECLARATION); /* Push back '='. */ yypushback(1); return ImpexTypes.MACRO_DECLARATION; }
+    {macro_name_declaration}                                { yybegin(MACRO_DECLARATION); /* Push back '='. */ yypushback(1); return ImpexTypes.MACRO_NAME_DECLARATION; }
 
     {header_mode_insert}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT; }
     {header_mode_update}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_UPDATE; }

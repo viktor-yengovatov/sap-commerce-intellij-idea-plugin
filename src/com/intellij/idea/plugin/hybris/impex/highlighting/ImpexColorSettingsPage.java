@@ -19,7 +19,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comment marker (#)", COMMENT_MARKER),
             new AttributesDescriptor("Comment body", COMMENT_BODY),
-            new AttributesDescriptor("Macro declaration", MACRO_DECLARATION),
+            new AttributesDescriptor("Macro name declaration", MACRO_NAME_DECLARATION),
             new AttributesDescriptor("Macro value", MACRO_VALUE),
             new AttributesDescriptor("Macro usage", MACRO_USAGE),
             new AttributesDescriptor("Assign value", ASSIGN_VALUE),

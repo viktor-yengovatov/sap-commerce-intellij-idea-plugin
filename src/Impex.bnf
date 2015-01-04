@@ -18,16 +18,17 @@
 
 impexFile ::= root*
 
-private root ::= (line_break | ( !<<eof>> root_group line_break))
+private root ::= (line_break | ( !<<eof>> root_group (line_break | <<eof>> )))
 {recoverWhile = recover_root}
 
 private root_group ::= (
-      header_line
+      root_macro_usage
+    | header_line
     | value_line
     | comment
-    | bean_shell_block
+    | bean_shell
     | string
-    | macro_declaration_block
+    | macro_declaration
 )
 {recoverWhile = not_line_break}
 
@@ -46,24 +47,26 @@ private recover_root ::= !(
   |  VALUE_SUBTYPE
   |  FIELD_VALUE_SEPARATOR
   |  COMMENT_MARKER
-  |  MACRO_DECLARATION
+  |  MACRO_NAME_DECLARATION
   |  BEAN_SHELL_MARKER
   |  DOUBLE_STRING
   |  SINGLE_STRING
+  |  MACRO_USAGE
 )
 
 private not_line_break ::= !(CRLF)
 private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR)
 private recover_parameter_name ::= !(LEFT_SQUARE_BRACKET | LEFT_ROUND_BRACKET | PARAMETERS_SEPARATOR | CRLF)
 private recover_header_type ::= !(LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | CRLF)
-private recover_parameters_block ::= !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR)
-private recover_modifiers_block ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET)
+private recover_parameters ::= !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR)
+private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET)
 
 
 /*#################################################################################*/
 /*                                     Root                                        */
 /*#################################################################################*/
 
+root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 
 line_break ::= CRLF
 
@@ -76,11 +79,11 @@ comment ::= COMMENT_MARKER COMMENT_BODY?
 {pin = 1}
 
 
-macro_declaration_block ::=  MACRO_DECLARATION ASSIGN_VALUE (MACRO_VALUE | DOUBLE_STRING | MACRO_USAGE)+
+macro_declaration ::=  MACRO_NAME_DECLARATION ASSIGN_VALUE (MACRO_VALUE | DOUBLE_STRING | MACRO_USAGE)+
 {pin = 1}
 
 
-bean_shell_block ::= BEAN_SHELL_MARKER (BEAN_SHELL_BODY | MACRO_USAGE)?
+bean_shell ::= BEAN_SHELL_MARKER (BEAN_SHELL_BODY | MACRO_USAGE)?
 {pin = 1}
 
 
@@ -115,14 +118,14 @@ value ::= (((  FIELD_VALUE
 any_header_mode ::= HEADER_MODE_INSERT | HEADER_MODE_UPDATE | HEADER_MODE_INSERT_UPDATE | HEADER_MODE_REMOVE
 
 
-full_header_type ::= header_type modifiers_block?
+full_header_type ::= header_type modifiers?
 {recoverWhile = not_line_break_or_parameters_separator}
 
 private header_type ::= HEADER_TYPE
 {recoverWhile = recover_header_type}
 
 
-full_header_parameter ::= any_header_parameter_name parameters_block? modifiers_block*
+full_header_parameter ::= any_header_parameter_name parameters? modifiers*
 {pin = 1 recoverWhile = not_line_break_or_parameters_separator}
 
 any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | MACRO_USAGE | DOCUMENT_ID
@@ -134,29 +137,29 @@ any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_N
 /*#################################################################################*/
 
 
-parameters_block ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
-{pin = 1 recoverWhile = recover_parameters_block}
+parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
+{pin = 1 recoverWhile = recover_parameters}
 
-parameter ::= (HEADER_PARAMETER_NAME | MACRO_USAGE | DOCUMENT_ID) sub_parameters_block? modifiers_block*
+parameter ::= (HEADER_PARAMETER_NAME | MACRO_USAGE | DOCUMENT_ID) sub_parameters? modifiers*
 {pin = 1}
 
-sub_parameters_block ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
-{pin = 1 extends = parameters_block}
+sub_parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
+{pin = 1 extends = parameters}
 
 /*#################################################################################*/
 /*                                Modifiers Block                                  */
 /*#################################################################################*/
 
 
-modifiers_block ::= LEFT_SQUARE_BRACKET (attribute_block (ATTRIBUTE_SEPARATOR attribute_block)* ) RIGHT_SQUARE_BRACKET
-{pin = 1 recoverWhile = recover_modifiers_block}
+modifiers ::= LEFT_SQUARE_BRACKET (attribute (ATTRIBUTE_SEPARATOR attribute)* ) RIGHT_SQUARE_BRACKET
+{pin = 1 recoverWhile = recover_modifiers}
 
-attribute_block ::= attribute_name_block ASSIGN_VALUE attribute_value_block
+attribute ::= any_attribute_name ASSIGN_VALUE any_attribute_value
 {pin = 1}
 
-attribute_name_block ::= (ATTRIBUTE_NAME | string)+
+any_attribute_name ::= (ATTRIBUTE_NAME | string)+
 
-attribute_value_block ::= (
+any_attribute_value ::= (
   ATTRIBUTE_VALUE
   | BOOLEAN
   | DIGIT

@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.impex.folding;
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiersBlock;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexParametersBlock;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiElementFilter;
 import org.jetbrains.annotations.Nullable;
@@ -25,8 +25,8 @@ public class FoldingBlocksFilter implements PsiElementFilter {
             return false;
         }
 
-        return element instanceof ImpexModifiersBlock
-               || element instanceof ImpexParametersBlock
+        return element instanceof ImpexModifiers
+               || element instanceof ImpexParameters
                || isLineBreak(element);
     }
 

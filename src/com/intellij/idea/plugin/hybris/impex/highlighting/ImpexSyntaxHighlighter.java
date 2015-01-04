@@ -16,7 +16,7 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey[] COMMENT_MARKER_KEYS = pack(COMMENT_MARKER);
     public static final TextAttributesKey[] COMMENT_BODY_KEYS = pack(COMMENT_BODY);
-    public static final TextAttributesKey[] MACRO_DECLARATION_KEYS = pack(MACRO_DECLARATION);
+    public static final TextAttributesKey[] MACRO_NAME_DECLARATION_KEYS = pack(MACRO_NAME_DECLARATION);
     public static final TextAttributesKey[] MACRO_VALUE_KEYS = pack(MACRO_VALUE);
     public static final TextAttributesKey[] MACRO_USAGE_KEYS = pack(MACRO_USAGE);
     public static final TextAttributesKey[] ASSIGN_VALUE_KEYS = pack(ASSIGN_VALUE);
@@ -116,7 +116,7 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
         } else if (tokenType.equals(ImpexTypes.HEADER_TYPE)) {
             return HEADER_TYPE_KEYS;
         } else if (tokenType.equals(ImpexTypes.MACRO_DECLARATION)) {
-            return MACRO_DECLARATION_KEYS;
+            return MACRO_NAME_DECLARATION_KEYS;
         } else if (tokenType.equals(ImpexTypes.MACRO_USAGE)) {
             return MACRO_USAGE_KEYS;
         } else if (tokenType.equals(ImpexTypes.MACRO_VALUE)) {

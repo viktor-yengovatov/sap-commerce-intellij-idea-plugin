@@ -25,7 +25,7 @@
             <option name="FOREGROUND" value="579A7C"/>
         </value>
     </option>
-    <option name="MACRO_DECLARATION">
+    <option name="MACRO_NAME_DECLARATION">
         <value>
             <option name="FOREGROUND" value="9876AA"/>
             <!--<option name="BACKGROUND" value=""/>-->
