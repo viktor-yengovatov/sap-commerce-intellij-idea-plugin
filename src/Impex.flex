@@ -34,7 +34,7 @@ single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-macro_declaration = [$]({identifier})+{white_space}*[=]
+macro_name_declaration = [$]({identifier})+{white_space}*[=]
 macro_usage       = [$]({identifier})+
 macro_value       = ({not_crlf}|{identifier}+)
 
@@ -54,7 +54,7 @@ alternative_map_delimiter   = [|]
 
 boolean = (("true")|("false"))
 digit   = [[:digit:]]+
-class_with_package = ({identifier}+[.]{identifier}+)+
+//class_with_package = ({identifier}+[.]{identifier}+)+
 
 parameter_name = ({identifier}+[.]?{identifier}+)+
 alternative_pattern = [|]
@@ -100,8 +100,8 @@ field_value_ignore = "<ignore>"
 
     {end_of_line_comment_marker}                            { yybegin(COMMENT); return ImpexTypes.COMMENT_MARKER; }
 
-    {macro_usage}                                           { yybegin(MACRO_USAGE); return ImpexTypes.MACRO_USAGE; }
-    {macro_declaration}                                     { yybegin(MACRO_DECLARATION); /* Push back '='. */ yypushback(1); return ImpexTypes.MACRO_DECLARATION; }
+    {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
+    {macro_name_declaration}                                { yybegin(MACRO_DECLARATION); /* Push back '='. */ yypushback(1); return ImpexTypes.MACRO_NAME_DECLARATION; }
 
     {header_mode_insert}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT; }
     {header_mode_update}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_UPDATE; }
@@ -112,11 +112,11 @@ field_value_ignore = "<ignore>"
     {semicolon}                                             { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_SEPARATOR; }
 }
 
-<MACRO_USAGE> {
+//<MACRO_USAGE> {
     //$START_USERRIGHTS;;;;;;;;;
     //$END_USERRIGHTS;;;;;
-    {semicolon}                                             { return ImpexTypes.SEMICOLON; }
-}
+//    {semicolon}                                             { return ImpexTypes.SEMICOLON; }
+//}
 
 <COMMENT> {
     {end_of_line_comment_body}                              { return ImpexTypes.COMMENT_BODY; }
@@ -132,7 +132,7 @@ field_value_ignore = "<ignore>"
     {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }
-    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
+//    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
 
     {comma}                                                 { return ImpexTypes.FIELD_LIST_ITEM_SEPARATOR; }
     {default_path_delimiter}                                { return ImpexTypes.DEFAULT_PATH_DELIMITER; }
@@ -186,7 +186,7 @@ field_value_ignore = "<ignore>"
     {digit}                                                 { return ImpexTypes.DIGIT; }
     {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
-    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
+//    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpexTypes.ATTRIBUTE_VALUE; }
@@ -198,31 +198,31 @@ field_value_ignore = "<ignore>"
 }
 
 <WAITING_MACRO_VALUE> {
-    {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
+//    {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
-
+//
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
-    {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
-
-    {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
-    {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
-
-    {left_square_bracket}                                   { return ImpexTypes.LEFT_SQUARE_BRACKET; }
-    {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
-
-    {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
-
-    {boolean}                                               { return ImpexTypes.BOOLEAN; }
-    {digit}                                                 { return ImpexTypes.DIGIT; }
-    {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
-
-    {comma}                                                 { return ImpexTypes.COMMA; }
-    {semicolon}                                             { return ImpexTypes.SEMICOLON; }
-
-    {header_mode_insert}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT; }
-    {header_mode_update}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_UPDATE; }
-    {header_mode_insert_update}                             { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT_UPDATE; }
-    {header_mode_remove}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_REMOVE; }
+//    {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
+//
+//    {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
+//    {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
+//
+//    {left_square_bracket}                                   { return ImpexTypes.LEFT_SQUARE_BRACKET; }
+//    {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
+//
+//    {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
+//
+//    {boolean}                                               { return ImpexTypes.BOOLEAN; }
+//    {digit}                                                 { return ImpexTypes.DIGIT; }
+//    {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
+//
+//    {comma}                                                 { return ImpexTypes.COMMA; }
+//    {semicolon}                                             { return ImpexTypes.SEMICOLON; }
+//
+//    {header_mode_insert}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT; }
+//    {header_mode_update}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_UPDATE; }
+//    {header_mode_insert_update}                             { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_INSERT_UPDATE; }
+//    {header_mode_remove}                                    { yybegin(HEADER_TYPE); return ImpexTypes.HEADER_MODE_REMOVE; }
 
     {macro_value}                                           { return ImpexTypes.MACRO_VALUE; }
 }

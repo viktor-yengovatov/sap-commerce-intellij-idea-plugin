@@ -14,7 +14,7 @@
             <!--<option name="FONT_TYPE" value=""/>-->
         <!--</value>-->
     <!--</option>-->
-    <option name="MACRO_DECLARATION">
+    <option name="MACRO_NAME_DECLARATION">
         <value>
             <option name="FOREGROUND" value="009FDA"/>
             <!--<option name="BACKGROUND" value=""/>-->

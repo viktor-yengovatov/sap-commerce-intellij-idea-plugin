@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.5</version>
+    <version>1.6</version>
 
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -10,7 +10,7 @@
         <![CDATA[
           Features:
           <br/>
-          - Syntax highlighting for Hybris impex files.
+          - Syntax highlighting and errors indication for Hybris impex files.
 
           <br/>
           - Automatic alignment into columns via "Reformat code".
@@ -45,6 +45,10 @@
 
     <change-notes>
         <![CDATA[
+          1.6:
+          <br/> - Syntax validation and errors highlighting.
+          <br/>
+          <br/>
           1.5:
           <br/> - Square and round brackets folding support.
           <br/>
@@ -114,7 +118,7 @@
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
-
+        <!--<editorActionHandler action="EditorRight" implementationClass="com.intellij.idea.plugin.hybris.impex.assistance.ImpexEditorActionHandler" />-->
         <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
 
         <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>

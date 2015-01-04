@@ -19,7 +19,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comment marker (#)", COMMENT_MARKER),
             new AttributesDescriptor("Comment body", COMMENT_BODY),
-            new AttributesDescriptor("Macro declaration", MACRO_DECLARATION),
+            new AttributesDescriptor("Macro name declaration", MACRO_NAME_DECLARATION),
             new AttributesDescriptor("Macro value", MACRO_VALUE),
             new AttributesDescriptor("Macro usage", MACRO_USAGE),
             new AttributesDescriptor("Assign value", ASSIGN_VALUE),
@@ -44,7 +44,6 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Attribute separator", ATTRIBUTE_SEPARATOR),
             new AttributesDescriptor("Boolean", BOOLEAN),
             new AttributesDescriptor("Digit", DIGIT),
-            new AttributesDescriptor("Class with package", CLASS_WITH_PACKAGE),
             new AttributesDescriptor("Alternative map delimiter", ALTERNATIVE_MAP_DELIMITER),
             new AttributesDescriptor("Default key-value delimiter", DEFAULT_KEY_VALUE_DELIMITER),
             new AttributesDescriptor("Default path delimiter", DEFAULT_PATH_DELIMITER),
@@ -52,7 +51,6 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Special parameter name", HEADER_SPECIAL_PARAMETER_NAME),
             new AttributesDescriptor("Parameters separator", PARAMETERS_SEPARATOR),
             new AttributesDescriptor("Comma", COMMA),
-            new AttributesDescriptor("Semicolon", SEMICOLON),
             new AttributesDescriptor("Alternative pattern", ALTERNATIVE_PATTERN),
             new AttributesDescriptor("Document id", DOCUMENT_ID),
             new AttributesDescriptor("Bac character", HighlighterColors.BAD_CHARACTER)
