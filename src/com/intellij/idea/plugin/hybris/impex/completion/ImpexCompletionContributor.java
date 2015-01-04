@@ -214,12 +214,13 @@ public class ImpexCompletionContributor extends CompletionContributor {
             return null;
         }
 
-        while (!ImpexTypes.HEADER_TYPE.equals(psiElement.getNode().getElementType())) {
-            psiElement = psiElement.getPrevSibling();
+        PsiElement result = psiElement;
+        while (null != result && null != result.getNode() && !ImpexTypes.HEADER_TYPE.equals(result.getNode().getElementType())) {
+            result = result.getPrevSibling();
         }
 
-        if (ImpexTypes.HEADER_TYPE.equals(psiElement.getNode().getElementType())) {
-            return psiElement;
+        if (null != result && null != result.getNode() && ImpexTypes.HEADER_TYPE.equals(result.getNode().getElementType())) {
+            return result;
         } else {
             return null;
         }
