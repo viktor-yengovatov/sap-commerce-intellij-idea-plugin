@@ -41,7 +41,6 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey[] ATTRIBUTE_SEPARATOR_KEYS = pack(ATTRIBUTE_SEPARATOR);
     public static final TextAttributesKey[] BOOLEAN_KEYS = pack(BOOLEAN);
     public static final TextAttributesKey[] DIGIT_KEYS = pack(DIGIT);
-    public static final TextAttributesKey[] CLASS_WITH_PACKAGE_KEYS = pack(CLASS_WITH_PACKAGE);
     public static final TextAttributesKey[] ALTERNATIVE_MAP_DELIMITER_KEYS = pack(ALTERNATIVE_MAP_DELIMITER);
     public static final TextAttributesKey[] DEFAULT_KEY_VALUE_DELIMITER_KEYS = pack(DEFAULT_KEY_VALUE_DELIMITER);
     public static final TextAttributesKey[] DEFAULT_PATH_DELIMITER_KEYS = pack(DEFAULT_PATH_DELIMITER);
@@ -49,7 +48,6 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey[] HEADER_SPECIAL_PARAMETER_NAME_KEYS = pack(HEADER_SPECIAL_PARAMETER_NAME);
     public static final TextAttributesKey[] PARAMETERS_SEPARATOR_KEYS = pack(PARAMETERS_SEPARATOR);
     public static final TextAttributesKey[] COMMA_KEYS = pack(COMMA);
-    public static final TextAttributesKey[] SEMICOLON_KEYS = pack(SEMICOLON);
     public static final TextAttributesKey[] BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER);
     public static final TextAttributesKey[] ALTERNATIVE_PATTERN_KEYS = pack(ALTERNATIVE_PATTERN);
     public static final TextAttributesKey[] DOCUMENT_ID_KEYS = pack(DOCUMENT_ID);
@@ -83,12 +81,8 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
             return BEAN_SHELL_MARKER_KEYS;
         } else if (tokenType.equals(ImpexTypes.BOOLEAN)) {
             return BOOLEAN_KEYS;
-        } else if (tokenType.equals(ImpexTypes.CLASS_WITH_PACKAGE)) {
-            return CLASS_WITH_PACKAGE_KEYS;
         } else if (tokenType.equals(ImpexTypes.COMMA)) {
             return COMMA_KEYS;
-        } else if (tokenType.equals(ImpexTypes.SEMICOLON)) {
-            return SEMICOLON_KEYS;
         } else if (tokenType.equals(ImpexTypes.COMMENT_BODY)) {
             return COMMENT_BODY_KEYS;
         } else if (tokenType.equals(ImpexTypes.COMMENT_MARKER)) {

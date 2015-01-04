@@ -39,7 +39,6 @@ public class ImpexHighlighterColors {
     public static final TextAttributesKey ATTRIBUTE_SEPARATOR = key("ATTRIBUTE_SEPARATOR", KEYWORD);
     public static final TextAttributesKey BOOLEAN = key("BOOLEAN", KEYWORD);
     public static final TextAttributesKey DIGIT = key("DIGIT", NUMBER);
-    public static final TextAttributesKey CLASS_WITH_PACKAGE = key("CLASS_WITH_PACKAGE", HighlighterColors.TEXT);
     public static final TextAttributesKey ALTERNATIVE_MAP_DELIMITER = key("ALTERNATIVE_MAP_DELIMITER", KEYWORD);
     public static final TextAttributesKey DEFAULT_KEY_VALUE_DELIMITER = key("DEFAULT_KEY_VALUE_DELIMITER", KEYWORD);
     public static final TextAttributesKey DEFAULT_PATH_DELIMITER = key("DEFAULT_PATH_DELIMITER", KEYWORD);
@@ -47,7 +46,6 @@ public class ImpexHighlighterColors {
     public static final TextAttributesKey HEADER_SPECIAL_PARAMETER_NAME = key("HEADER_SPECIAL_PARAMETER_NAME", INSTANCE_FIELD);
     public static final TextAttributesKey PARAMETERS_SEPARATOR = key("PARAMETERS_SEPARATOR", KEYWORD);
     public static final TextAttributesKey COMMA = key("COMMA", KEYWORD);
-    public static final TextAttributesKey SEMICOLON = key("SEMICOLON", KEYWORD);
     public static final TextAttributesKey ALTERNATIVE_PATTERN = key("ALTERNATIVE_PATTERN", KEYWORD);
     public static final TextAttributesKey DOCUMENT_ID = key("DOCUMENT_ID", STATIC_FIELD);
 

@@ -114,7 +114,7 @@
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
-
+        <editorActionHandler action="EditorRight" implementationClass="com.intellij.idea.plugin.hybris.impex.assistance.ImpexEditorActionHandler" />
         <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
 
         <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
