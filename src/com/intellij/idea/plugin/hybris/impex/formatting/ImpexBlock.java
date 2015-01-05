@@ -36,6 +36,7 @@ public class ImpexBlock extends AbstractBlock {
         final List<Block> blocks = new ArrayList<Block>();
 
         final AlignmentStrategy alignmentStrategy = getAlignmentStrategy();
+        alignmentStrategy.processNode(myNode);
 
         ASTNode currentNode = myNode.getFirstChildNode();
 

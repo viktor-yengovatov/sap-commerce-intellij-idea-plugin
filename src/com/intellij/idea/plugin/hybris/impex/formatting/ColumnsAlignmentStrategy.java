@@ -1,8 +1,11 @@
 package com.intellij.idea.plugin.hybris.impex.formatting;
 
 import com.intellij.formatting.Alignment;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,11 +46,20 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
 
     @Override
     public void processNode(@NotNull final ASTNode currentNode) {
-        if (isNewLine(currentNode)) {
+        if (isStartOfTheFile(currentNode)) {
             columnNumber = 0;
-        } else if (isHeaderLine(currentNode)) {
             alignments.clear();
+        } else {
+            if (isNewLine(currentNode)) {
+                columnNumber = 0;
+            } else if (isHeaderLine(currentNode)) {
+                alignments.clear();
+            }
         }
+    }
+
+    private boolean isStartOfTheFile(final ASTNode currentNode) {
+        return currentNode.getPsi() instanceof ImpexFile;
     }
 
     private boolean isNewLine(final ASTNode currentNode) {
@@ -56,7 +68,7 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
     }
 
     private boolean isStartOfValueLine(final ASTNode currentNode) {
-        return currentNode.getTreeParent().getFirstChildNode() == currentNode;
+        return PsiTreeUtil.findChildOfType(currentNode.getTreeParent().getPsi(), ImpexValueGroup.class) == currentNode.getPsi();
     }
 
     private boolean isNewColumn(@NotNull final ASTNode currentNode) {
