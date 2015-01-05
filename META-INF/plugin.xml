@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.6</version>
+    <version>1.7</version>
 
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -13,7 +13,10 @@
           - Syntax highlighting and errors indication for Hybris impex files.
 
           <br/>
-          - Automatic alignment into columns via "Reformat code".
+          - Selected column name highlighting.
+
+          <br/>
+          - Code folding to improve readability.
 
           <br/>
           - Code folding to improve readability.
@@ -45,6 +48,10 @@
 
     <change-notes>
         <![CDATA[
+          1.7:
+          <br/> - Selected column name highlighting.
+          <br/>
+          <br/>
           1.6:
           <br/> - Syntax validation and errors highlighting.
           <br/>
@@ -118,7 +125,7 @@
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
-        <!--<editorActionHandler action="EditorRight" implementationClass="com.intellij.idea.plugin.hybris.impex.assistance.ImpexEditorActionHandler" />-->
+
         <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
 
         <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
@@ -132,6 +139,11 @@
 
     <application-components>
         <!-- Add your application components here -->
+        <component>
+            <implementation-class>
+                com.intellij.idea.plugin.hybris.impex.assistance.HeaderHighlightingCaretListener
+            </implementation-class>
+        </component>
     </application-components>
 
     <project-components>
