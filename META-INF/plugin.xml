@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.7</version>
+    <version>1.7.1</version>
 
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -16,7 +16,7 @@
           - Selected column name highlighting.
 
           <br/>
-          - Code folding to improve readability.
+          - Automatic alignment into columns via "Reformat code".
 
           <br/>
           - Code folding to improve readability.
@@ -48,6 +48,10 @@
 
     <change-notes>
         <![CDATA[
+          1.7.1:
+          <br/> - Backward computability with Idea 13 fixed.
+          <br/>
+          <br/>
           1.7:
           <br/> - Selected column name highlighting.
           <br/>

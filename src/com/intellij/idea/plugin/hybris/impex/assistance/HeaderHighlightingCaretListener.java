@@ -2,6 +2,7 @@ package com.intellij.idea.plugin.hybris.impex.assistance;
 
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -103,26 +104,36 @@ public class HeaderHighlightingCaretListener implements CaretListener, Applicati
         if (!highlightedBlocks.isEmpty()) {
             final ImpexFullHeaderParameter impexFullHeaderParameter = highlightedBlocks.get(editor);
             if (null != impexFullHeaderParameter) {
-                highlightRanges(
-                        HighlightManager.getInstance(editor.getProject()),
-                        editor,
-                        EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
-                        true,
-                        Arrays.asList(impexFullHeaderParameter.getTextRange())
-                );
+                ApplicationManager.getApplication().invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        highlightRanges(
+                                HighlightManager.getInstance(editor.getProject()),
+                                editor,
+                                EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
+                                true,
+                                Arrays.asList(impexFullHeaderParameter.getTextRange())
+                        );
+                    }
+                });
             }
         }
 
         final ImpexFullHeaderParameter impexFullHeaderParameter = childrenOfType.get(columnNumber);
         highlightedBlocks.put(editor, impexFullHeaderParameter);
 
-        highlightRanges(
-                HighlightManager.getInstance(editor.getProject()),
-                editor,
-                EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
-                false,
-                Arrays.asList(impexFullHeaderParameter.getTextRange())
-        );
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                highlightRanges(
+                        HighlightManager.getInstance(editor.getProject()),
+                        editor,
+                        EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
+                        false,
+                        Arrays.asList(impexFullHeaderParameter.getTextRange())
+                );
+            }
+        });
     }
 
     @Nullable
