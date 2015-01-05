@@ -4,6 +4,8 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.DataManager;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -24,6 +26,7 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -214,16 +217,27 @@ public class ImpexCompletionContributor extends CompletionContributor {
             return null;
         }
 
-        PsiElement result = psiElement;
-        while (null != result && null != result.getNode() && !ImpexTypes.HEADER_TYPE.equals(result.getNode().getElementType())) {
-            result = result.getPrevSibling();
-        }
-
-        if (null != result && null != result.getNode() && ImpexTypes.HEADER_TYPE.equals(result.getNode().getElementType())) {
-            return result;
-        } else {
+        // TODO: Mode these actions to PSI classes itself
+        final ImpexHeaderLine impexHeaderLine = PsiTreeUtil.getParentOfType(psiElement, ImpexHeaderLine.class);
+        if (null == impexHeaderLine) {
             return null;
         }
+
+        final ImpexFullHeaderType impexFullHeaderType = PsiTreeUtil.findChildOfType(impexHeaderLine, ImpexFullHeaderType.class);
+        if (null == impexFullHeaderType) {
+            return null;
+        }
+
+        PsiElement child = impexFullHeaderType.getFirstChild();
+        while (null != child && null != child.getNode() && !ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
+            child = child.getNextSibling();
+        }
+
+        if (null != child && null != child.getNode() && ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
+            return child;
+        }
+
+        return null;
     }
 
     private void prepareModifierNameToValueMappings() {

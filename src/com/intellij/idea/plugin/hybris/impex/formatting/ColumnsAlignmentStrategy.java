@@ -45,23 +45,25 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
     public void processNode(@NotNull final ASTNode currentNode) {
         if (isNewLine(currentNode)) {
             columnNumber = 0;
-        } else if (isStartOfNewBlock(currentNode)) {
+        } else if (isHeaderLine(currentNode)) {
             alignments.clear();
         }
     }
 
     private boolean isNewLine(final ASTNode currentNode) {
-        return ImpexTypes.CRLF == currentNode.getElementType();
+        return ImpexTypes.VALUE_GROUP == currentNode.getElementType()
+               && isStartOfValueLine(currentNode);
+    }
+
+    private boolean isStartOfValueLine(final ASTNode currentNode) {
+        return currentNode.getTreeParent().getFirstChildNode() == currentNode;
     }
 
     private boolean isNewColumn(@NotNull final ASTNode currentNode) {
-        return ImpexTypes.FIELD_VALUE_SEPARATOR == currentNode.getElementType();
+        return ImpexTypes.VALUE_GROUP == currentNode.getElementType();
     }
 
-    private boolean isStartOfNewBlock(@NotNull final ASTNode currentNode) {
-        return ImpexTypes.HEADER_MODE_INSERT == currentNode.getElementType()
-               || ImpexTypes.HEADER_MODE_REMOVE == currentNode.getElementType()
-               || ImpexTypes.HEADER_MODE_UPDATE == currentNode.getElementType()
-               || ImpexTypes.HEADER_MODE_INSERT_UPDATE == currentNode.getElementType();
+    private boolean isHeaderLine(@NotNull final ASTNode currentNode) {
+        return ImpexTypes.HEADER_LINE == currentNode.getElementType();
     }
 }

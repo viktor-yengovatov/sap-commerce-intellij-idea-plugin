@@ -18,7 +18,7 @@
 
 impexFile ::= root*
 
-private root ::= (line_break | ( !<<eof>> root_group (line_break | <<eof>> )))
+private root ::= (CRLF | ( !<<eof>> root_group (CRLF | <<eof>> )))
 {recoverWhile = recover_root}
 
 private root_group ::= (
@@ -68,8 +68,6 @@ private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE
 
 root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 
-line_break ::= CRLF
-
 
 header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
 {pin = 1}
@@ -79,8 +77,27 @@ comment ::= COMMENT_MARKER COMMENT_BODY?
 {pin = 1}
 
 
-macro_declaration ::=  MACRO_NAME_DECLARATION ASSIGN_VALUE (MACRO_VALUE | DOUBLE_STRING | MACRO_USAGE)+
-{pin = 1}
+macro_declaration ::=  MACRO_NAME_DECLARATION ASSIGN_VALUE (
+      MACRO_VALUE
+    | SINGLE_STRING
+    | DOUBLE_STRING
+    | HEADER_SPECIAL_PARAMETER_NAME
+    | MACRO_USAGE
+    | LEFT_ROUND_BRACKET
+    | RIGHT_ROUND_BRACKET
+    | LEFT_SQUARE_BRACKET
+    | RIGHT_SQUARE_BRACKET
+    | ASSIGN_VALUE
+    | BOOLEAN
+    | DIGIT
+    | FIELD_VALUE_IGNORE
+    | COMMA
+    | HEADER_MODE_INSERT
+    | HEADER_MODE_UPDATE
+    | HEADER_MODE_INSERT_UPDATE
+    | HEADER_MODE_REMOVE
+    )+
+{pin = 2}
 
 
 bean_shell ::= BEAN_SHELL_MARKER (BEAN_SHELL_BODY | MACRO_USAGE)?

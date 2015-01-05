@@ -115,7 +115,7 @@ public class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
             return HEADER_SPECIAL_PARAMETER_NAME_KEYS;
         } else if (tokenType.equals(ImpexTypes.HEADER_TYPE)) {
             return HEADER_TYPE_KEYS;
-        } else if (tokenType.equals(ImpexTypes.MACRO_DECLARATION)) {
+        } else if (tokenType.equals(ImpexTypes.MACRO_NAME_DECLARATION)) {
             return MACRO_NAME_DECLARATION_KEYS;
         } else if (tokenType.equals(ImpexTypes.MACRO_USAGE)) {
             return MACRO_USAGE_KEYS;
