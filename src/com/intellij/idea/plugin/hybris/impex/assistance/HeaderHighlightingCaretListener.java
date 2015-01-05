@@ -35,6 +35,10 @@ public class HeaderHighlightingCaretListener implements CaretListener, Applicati
 
     @Override
     public void caretPositionChanged(final CaretEvent e) {
+        if (null == e.getEditor().getProject()) {
+            return;
+        }
+
         final PsiFile psiFile = PsiUtilBase.getPsiFileInEditor(e.getEditor(), e.getEditor().getProject());
 
         if (psiFile instanceof ImpexFile) {
