@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.7.1</version>
+    <version>1.7.2</version>
 
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -48,8 +48,12 @@
 
     <change-notes>
         <![CDATA[
+          1.7.2:
+          <br/> - Header name highlighting has been fixed.
+          <br/>
+          <br/>
           1.7.1:
-          <br/> - Backward computability with Idea 13 fixed.
+          <br/> - Backward compatibility with Idea 13 fixed.
           <br/>
           <br/>
           1.7:
@@ -145,7 +149,7 @@
         <!-- Add your application components here -->
         <component>
             <implementation-class>
-                com.intellij.idea.plugin.hybris.impex.assistance.HeaderHighlightingCaretListener
+                com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderHighlighterComponent
             </implementation-class>
         </component>
     </application-components>

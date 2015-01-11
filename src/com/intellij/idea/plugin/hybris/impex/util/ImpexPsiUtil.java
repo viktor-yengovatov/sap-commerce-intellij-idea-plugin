@@ -1,7 +1,12 @@
 package com.intellij.idea.plugin.hybris.impex.util;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.tree.IElementType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -15,19 +20,48 @@ public class ImpexPsiUtil {
         throw new IllegalAccessException();
     }
 
-    public static boolean isLineBreak(@Nullable final PsiElement psiElement) {
-        return null != psiElement && null != psiElement.getNode() && ImpexTypes.CRLF == psiElement.getNode().getElementType();
+    @Contract("null -> false")
+    public static boolean isImpexValueGroup(@Nullable final PsiElement psiElement) {
+        return psiElement instanceof ImpexValueGroup;
     }
 
+    @Contract("null -> false")
+    public static boolean isWhiteSpace(@Nullable final PsiElement psiElement) {
+        return psiElement instanceof PsiWhiteSpace;
+    }
+
+    @Contract("null -> false")
+    public static boolean isLineBreak(@Nullable final PsiElement psiElement) {
+        return ImpexTypes.CRLF == getElementType(psiElement);
+    }
+
+    @Contract("null -> false")
+    public static boolean isFieldValueSeparator(@Nullable final PsiElement psiElement) {
+        return ImpexTypes.FIELD_VALUE_SEPARATOR == getElementType(psiElement);
+    }
+
+    @Contract("null -> false")
     public static boolean isString(@Nullable final PsiElement psiElement) {
         return isSingleString(psiElement) || isDoubleString(psiElement);
     }
 
+    @Contract("null -> false")
     public static boolean isSingleString(@Nullable final PsiElement psiElement) {
-        return null != psiElement && null != psiElement.getNode() && ImpexTypes.SINGLE_STRING == psiElement.getNode().getElementType();
+        return ImpexTypes.SINGLE_STRING == getElementType(psiElement);
     }
 
+    @Contract("null -> false")
     public static boolean isDoubleString(@Nullable final PsiElement psiElement) {
-        return null != psiElement && null != psiElement.getNode() && ImpexTypes.DOUBLE_STRING == psiElement.getNode().getElementType();
+        return ImpexTypes.DOUBLE_STRING == getElementType(psiElement);
+    }
+
+    @Contract("null -> null;!null -> !null")
+    public static IElementType getElementType(@Nullable final ASTNode node) {
+        return node == null ? null : node.getElementType();
+    }
+
+    @Contract("null -> null;!null -> !null")
+    public static IElementType getElementType(@Nullable final PsiElement element) {
+        return element == null ? null : getElementType((ASTNode) element.getNode());
     }
 }
