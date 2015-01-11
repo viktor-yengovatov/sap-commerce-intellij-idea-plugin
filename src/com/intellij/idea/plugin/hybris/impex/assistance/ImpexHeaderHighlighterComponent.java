@@ -3,7 +3,6 @@ package com.intellij.idea.plugin.hybris.impex.assistance;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.actionSystem.TypedAction;
 import com.intellij.openapi.editor.event.CaretEvent;
 import com.intellij.openapi.editor.event.CaretListener;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
@@ -17,6 +16,8 @@ import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.psi.util.PsiUtilBase;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.idea.plugin.hybris.impex.util.IdeaUtil.isTypingActionInProgress;
 
 /**
  * Created 19:56 11 January 2015
@@ -53,7 +54,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
 
         @Override
         public void caretPositionChanged(final CaretEvent e) {
-            if (TypedAction.isTypedActionInProgress()) {
+            if (isTypingActionInProgress()) {
                 return;
             }
 

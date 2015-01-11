@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.7.2</version>
+    <version>1.7.2.1</version>
 
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -48,6 +48,10 @@
 
     <change-notes>
         <![CDATA[
+          1.7.2.1:
+          <br/> - Compatibility with Idea 14 fixed.
+          <br/>
+          <br/>
           1.7.2:
           <br/> - Header name highlighting has been fixed.
           <br/>
