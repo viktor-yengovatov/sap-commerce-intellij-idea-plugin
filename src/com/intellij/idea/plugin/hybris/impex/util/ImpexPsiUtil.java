@@ -2,6 +2,7 @@ package com.intellij.idea.plugin.hybris.impex.util;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
@@ -23,6 +24,11 @@ public class ImpexPsiUtil {
     @Contract("null -> false")
     public static boolean isImpexValueGroup(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpexValueGroup;
+    }
+
+    @Contract("null -> false")
+    public static boolean isImpexValueLine(@Nullable final PsiElement psiElement) {
+        return psiElement instanceof ImpexValueLine;
     }
 
     @Contract("null -> false")

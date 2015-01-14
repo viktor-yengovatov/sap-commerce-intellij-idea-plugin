@@ -30,9 +30,6 @@ import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.*;
 public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlighter {
 
     final Map<Editor, PsiElement> highlightedBlocks = new ConcurrentHashMap<Editor, PsiElement>();
-    final Map<Editor, PsiElement> selectedElements = new ConcurrentHashMap<Editor, PsiElement>();
-//    final Map<Editor, ImpexValueGroup> selectedValueGroup = new ConcurrentHashMap<Editor, ImpexValueGroup>();
-    final Map<Editor, ImpexFullHeaderParameter> selectedFullHeaderParameters = new ConcurrentHashMap<Editor, ImpexFullHeaderParameter>();
 
     public DefaultImpexHeaderNameHighlighter() {
     }
@@ -42,6 +39,10 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
         final Project project = editor.getProject();
 
         if (null == project) {
+            return;
+        }
+
+        if (project.isDisposed()) {
             return;
         }
 
@@ -55,9 +56,6 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
     @Override
     public void releaseEditorData(@NotNull final Editor editor) {
         this.highlightedBlocks.remove(editor);
-        this.selectedElements.remove(editor);
-//        this.selectedValueGroup.remove(editor);
-        this.selectedFullHeaderParameters.remove(editor);
     }
 
     protected void highlightHeaderOfValueUnderCaret(@NotNull final Editor editor) {
@@ -67,22 +65,11 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
             return;
         }
 
-        if (selectedElements.put(editor, psiElementUnderCaret) == psiElementUnderCaret.getPrevSibling()) {
-            return;
-        }
-
         final ImpexValueGroup valueGroup = this.getSelectedValueGroup(psiElementUnderCaret);
         if (null != valueGroup) {
-//            if (selectedValueGroup.put(editor, valueGroup) == valueGroup) {
-//                return;
-//            }
 
             final ImpexFullHeaderParameter impexFullHeaderParameter = this.getHeaderForValueGroup(valueGroup);
             if (null != impexFullHeaderParameter) {
-
-                if (selectedFullHeaderParameters.put(editor, impexFullHeaderParameter) == valueGroup) {
-                    return;
-                }
 
                 this.highlightArea(editor, impexFullHeaderParameter);
                 return;
@@ -94,6 +81,7 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
 
     @Nullable
     @Contract("null -> null")
+    // TODO: Becomes to complex, refactor
     protected ImpexValueGroup getSelectedValueGroup(@Nullable final PsiElement psiElementUnderCaret) {
         if (null == psiElementUnderCaret) {
             return null;
@@ -113,28 +101,47 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
         } else if (isWhiteSpace(psiElementUnderCaret)) {
 
             ImpexValueGroup valueGroup = PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexValueGroup.class);
+
             if (null == valueGroup) {
                 valueGroup = PsiTreeUtil.getPrevSiblingOfType(psiElementUnderCaret, ImpexValueGroup.class);
+            }
+
+            if (null == valueGroup) {
+                valueGroup = this.skipAllExceptLineBreaksAndGetImpexValueGroup(psiElementUnderCaret);
             }
 
             return valueGroup;
 
         } else if (isLineBreak(psiElementUnderCaret)) {
 
-            if (isLineBreak(psiElementUnderCaret.getPrevSibling())) {
-                return null;
-            }
-
-            final ImpexValueLine impexValueLine = PsiTreeUtil.getPrevSiblingOfType(psiElementUnderCaret, ImpexValueLine.class);
-            if (impexValueLine != null) {
-                return PsiTreeUtil.getParentOfType(PsiTreeUtil.lastChild(impexValueLine), ImpexValueGroup.class);
-            }
+            return this.skipAllExceptLineBreaksAndGetImpexValueGroup(psiElementUnderCaret);
 
         } else {
             return PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexValueGroup.class);
         }
 
         return null;
+    }
+
+    private ImpexValueGroup skipAllExceptLineBreaksAndGetImpexValueGroup(final PsiElement psiElementUnderCaret) {
+        if (isLineBreak(psiElementUnderCaret.getPrevSibling())) {
+            return null;
+        }
+
+        PsiElement prevSibling = psiElementUnderCaret.getPrevSibling();
+        while (!isImpexValueLine(prevSibling)) {
+            if (null == prevSibling || isLineBreak(prevSibling)) {
+                return null;
+            }
+
+            prevSibling = prevSibling.getPrevSibling();
+        }
+
+        if (!isImpexValueLine(prevSibling)) {
+            return null;
+        }
+
+        return PsiTreeUtil.getParentOfType(PsiTreeUtil.lastChild(prevSibling), ImpexValueGroup.class);
     }
 
     @Nullable
@@ -210,6 +217,7 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
         return this.highlightedBlocks.get(editor) == impexFullHeaderParameter;
     }
 
+    // TODO: Maybe it is better to clear the whole header line
     protected void clearHighlightedArea(@NotNull final Editor editor) {
 
         if (!highlightedBlocks.isEmpty()) {
@@ -230,6 +238,10 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
                                          @NotNull final PsiElement impexFullHeaderParameter,
                                          final boolean clear) {
         if (null == editor.getProject()) {
+            return;
+        }
+
+        if (editor.getProject().isDisposed()) {
             return;
         }
 
