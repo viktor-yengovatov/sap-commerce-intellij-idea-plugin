@@ -1,5 +1,6 @@
-package com.intellij.idea.plugin.hybris.impex.folding;
+package com.intellij.idea.plugin.hybris.impex.folding.simple;
 
+import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 

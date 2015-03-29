@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -250,7 +250,7 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
                 editor,
                 EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
                 clear,
-                Arrays.asList(impexFullHeaderParameter.getTextRange())
+                Collections.singletonList(impexFullHeaderParameter.getTextRange())
         );
     }
 }

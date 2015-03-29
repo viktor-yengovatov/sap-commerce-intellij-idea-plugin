@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 public class ImpexFoldingDescriptor extends FoldingDescriptor {
 
     private final String placeholder;
-    private static final ImpexFoldingPlaceholderBuilder placeholderBuilder = new DefaultImpexFoldingPlaceholderBuilder();
 
     public ImpexFoldingDescriptor(@NotNull final PsiElement psiElement,
                                   @NotNull final FoldingGroup group) {
@@ -28,7 +27,7 @@ public class ImpexFoldingDescriptor extends FoldingDescriptor {
                 group
         );
 
-        placeholder = placeholderBuilder.getPlaceholder(psiElement);
+        placeholder = ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(psiElement);
     }
 
     @Nullable

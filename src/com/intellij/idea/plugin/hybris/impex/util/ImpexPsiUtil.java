@@ -1,8 +1,6 @@
 package com.intellij.idea.plugin.hybris.impex.util;
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
+import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
@@ -19,6 +17,21 @@ public class ImpexPsiUtil {
 
     private ImpexPsiUtil() throws IllegalAccessException {
         throw new IllegalAccessException();
+    }
+
+    @Contract("null -> false")
+    public static boolean isImpexParameters(@Nullable final PsiElement psiElement) {
+        return psiElement instanceof ImpexParameters;
+    }
+
+    @Contract("null -> false")
+    public static boolean isImpexAttribute(@Nullable final PsiElement psiElement) {
+        return psiElement instanceof ImpexAttribute;
+    }
+
+    @Contract("null -> false")
+    public static boolean isImpexModifiers(@Nullable final PsiElement psiElement) {
+        return psiElement instanceof ImpexModifiers;
     }
 
     @Contract("null -> false")

@@ -151,6 +151,8 @@
         <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
 
         <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
+
+        <applicationConfigurable instance="com.intellij.idea.plugin.hybris.impex.settings.ImpexConfigurable"/>
     </extensions>
 
     <application-components>
@@ -158,6 +160,14 @@
         <component>
             <implementation-class>
                 com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderHighlighterComponent
+            </implementation-class>
+        </component>
+        <component>
+            <interface-class>
+                com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsManager
+            </interface-class>
+            <implementation-class>
+                com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsManagerComponent
             </implementation-class>
         </component>
     </application-components>

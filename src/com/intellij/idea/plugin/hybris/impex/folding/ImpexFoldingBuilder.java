@@ -1,13 +1,14 @@
 package com.intellij.idea.plugin.hybris.impex.folding;
 
+import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsManager;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor.CollectFilteredElements;
-import com.intellij.psi.util.PsiElementFilter;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -27,15 +28,18 @@ import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.isLineBrea
 public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
     public static final String GROUP_NAME = "impex";
-    private static final ImpexFoldingPlaceholderBuilder placeholderBuilder = new DefaultImpexFoldingPlaceholderBuilder();
 
-    private final PsiElementFilter foldingBlocksFilter = new FoldingBlocksFilter();
+    private static final FoldingDescriptor[] EMPTY_ARRAY = new FoldingDescriptor[0];
 
     @NotNull
     @Override
     public FoldingDescriptor[] buildFoldRegions(@NotNull final PsiElement root,
                                                 @NotNull final Document document,
                                                 final boolean quick) {
+
+        if (this.isFoldingDisabled()) {
+            return EMPTY_ARRAY;
+        }
 
         final Collection<PsiElement> psiElements = this.findFoldingBlocksAndLineBreaks(root);
 
@@ -61,14 +65,24 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
+    protected boolean isFoldingDisabled() {
+        final ImpexSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
+                ImpexSettingsManager.class
+        );
+
+        return !settingsManager.getImpexSettingsData().isFoldingEnabled();
+    }
+
     @NotNull
-    private Collection<PsiElement> findFoldingBlocksAndLineBreaks(@Nullable final PsiElement root) {
+    protected Collection<PsiElement> findFoldingBlocksAndLineBreaks(@Nullable final PsiElement root) {
         if (root == null) {
             return ContainerUtil.emptyList();
         }
 
         final List<PsiElement> foldingBlocks = new ArrayList<PsiElement>();
-        PsiTreeUtil.processElements(root, new CollectFilteredElements<PsiElement>(this.foldingBlocksFilter, foldingBlocks));
+        PsiTreeUtil.processElements(root, new CollectFilteredElements<PsiElement>(
+                PsiElementFilterFactory.getPsiElementFilter(), foldingBlocks
+        ));
 
         return foldingBlocks;
     }
@@ -76,7 +90,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull final ASTNode node) {
-        return placeholderBuilder.getPlaceholder(node.getPsi());
+        return ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(node.getPsi());
     }
 
     @Override

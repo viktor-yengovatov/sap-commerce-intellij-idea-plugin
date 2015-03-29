@@ -1,9 +1,11 @@
-package com.intellij.idea.plugin.hybris.impex.folding;
+package com.intellij.idea.plugin.hybris.impex.folding.smart;
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
+import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilderFactory;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiElementFilter;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.isLineBreak;
@@ -13,7 +15,7 @@ import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.isLineBrea
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class FoldingBlocksFilter implements PsiElementFilter {
+public class SmartFoldingBlocksFilter implements PsiElementFilter {
 
     @Override
     public boolean isAccepted(@Nullable final PsiElement eachElement) {
@@ -21,11 +23,19 @@ public class FoldingBlocksFilter implements PsiElementFilter {
     }
 
     private boolean isFoldable(@Nullable final PsiElement element) {
-        if (null == element) {
-            return false;
-        }
+        return null != element
+               && this.isSupportedType(element)
+               && (isLineBreak(element) || this.isNotBlankPlaceholder(element));
+    }
 
-        return element instanceof ImpexModifiers
+    private boolean isNotBlankPlaceholder(final @Nullable PsiElement element) {
+        return (null != element) && !StringUtils.isBlank(
+                ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(element)
+        );
+    }
+
+    private boolean isSupportedType(final @Nullable PsiElement element) {
+        return element instanceof ImpexAttribute
                || element instanceof ImpexParameters
                || isLineBreak(element);
     }
