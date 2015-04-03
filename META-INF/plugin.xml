@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.7.4</version>
+    <version>1.7.4.1</version>
 
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
@@ -48,6 +48,10 @@
 
     <change-notes>
         <![CDATA[
+          1.7.4.1:
+          <br/> - Header name highlighting for JDK 1.7 has been fixed.
+          <br/>
+          <br/>
           1.7.4:
           <br/> - New smart code folding strategy has been implemented. Plugin settings with ability to disable code folding has been added to the IDEA setting dialog.
           <br/>
