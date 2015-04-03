@@ -3,16 +3,14 @@ package com.intellij.idea.plugin.hybris.impex.assistance;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
+import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
@@ -20,9 +18,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.*;
@@ -245,12 +241,16 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
             return;
         }
 
+        // This list must be modifiable
+        // https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issue/11/unsupportedoperationexception-null
+        final List<TextRange> ranges = new ArrayList<TextRange>();
+        ranges.add(impexFullHeaderParameter.getTextRange());
+
         HighlightUsagesHandler.highlightRanges(
                 HighlightManager.getInstance(editor.getProject()),
                 editor,
                 EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
                 clear,
-                Collections.singletonList(impexFullHeaderParameter.getTextRange())
-        );
+                ranges);
     }
 }
