@@ -4,6 +4,9 @@
     <name>Hybris impex plugin</name>
     <version>1.7.4.1</version>
 
+    <depends>com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
+
     <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
 
     <description>
@@ -155,8 +158,6 @@
         <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
         <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
-
-        <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
 
         <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
 
