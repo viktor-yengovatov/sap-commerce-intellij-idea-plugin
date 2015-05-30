@@ -13,7 +13,5 @@ syntax: regexp
 
 ^[.]idea/dictionaries$
 
-^.*[.]iml$
-
 ^[.]idea/codeStyleSettings[.]xml$
-^[.]idea/inspectionProfiles/profiles_settings[.]xml$
+^[.]idea/shelf$
