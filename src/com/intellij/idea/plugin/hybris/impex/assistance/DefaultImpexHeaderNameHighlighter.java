@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
+import com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
@@ -64,10 +65,10 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
         final ImpexValueGroup valueGroup = this.getSelectedValueGroup(psiElementUnderCaret);
         if (null != valueGroup) {
 
-            final ImpexFullHeaderParameter impexFullHeaderParameter = this.getHeaderForValueGroup(valueGroup);
-            if (null != impexFullHeaderParameter) {
+            final PsiElement header = this.getHeaderForValueGroup(valueGroup);
+            if (null != header) {
 
-                this.highlightArea(editor, impexFullHeaderParameter);
+                this.highlightArea(editor, header);
                 return;
             }
         }
@@ -142,33 +143,34 @@ public class DefaultImpexHeaderNameHighlighter implements ImpexHeaderNameHighlig
 
     @Nullable
     @Contract("null -> null")
-    protected ImpexFullHeaderParameter getHeaderForValueGroup(@Nullable final ImpexValueGroup valueGroup) {
+    protected PsiElement getHeaderForValueGroup(@Nullable final ImpexValueGroup valueGroup) {
         if (null == valueGroup) {
             return null;
         }
 
         final int columnNumber = this.calculateColumnNumberForValueGroup(valueGroup);
 
-        if (columnNumber >= 0) {
-
-            final ImpexValueLine impexValueLine = PsiTreeUtil.getParentOfType(valueGroup, ImpexValueLine.class);
-            if (null != impexValueLine) {
-
-                final ImpexHeaderLine impexHeaderLine = PsiTreeUtil.getPrevSiblingOfType(impexValueLine, ImpexHeaderLine.class);
-                if (null != impexHeaderLine) {
-
-                    final List<ImpexFullHeaderParameter> childrenOfType = PsiTreeUtil.getChildrenOfTypeAsList(
-                            impexHeaderLine, ImpexFullHeaderParameter.class
-                    );
-
-                    if (columnNumber < childrenOfType.size()) {
-                        return childrenOfType.get(columnNumber);
-                    }
-                }
-            }
+        if (columnNumber < 0) {
+            return null;
         }
 
-        return null;
+        final ImpexValueLine impexValueLine = PsiTreeUtil.getParentOfType(valueGroup, ImpexValueLine.class);
+        if (null == impexValueLine) {
+            return null;
+        }
+
+        final ImpexHeaderLine impexHeaderLine = PsiTreeUtil.getPrevSiblingOfType(impexValueLine, ImpexHeaderLine.class);
+        if (null == impexHeaderLine) {
+            return null;
+        }
+
+        final ImpexFullHeaderParameter header = ImpexPsiUtil.getImpexFullHeaderParameterByNumber(columnNumber, impexHeaderLine);
+
+        if (null == header) {
+            return ImpexPsiUtil.getHeaderParametersSeparatorByNumber(columnNumber, impexHeaderLine);
+        } else {
+            return header;
+        }
     }
 
     protected int calculateColumnNumberForValueGroup(@NotNull final ImpexValueGroup valueGroup) {
