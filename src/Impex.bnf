@@ -168,7 +168,7 @@ sub_parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) 
 /*#################################################################################*/
 
 
-modifiers ::= LEFT_SQUARE_BRACKET (attribute (ATTRIBUTE_SEPARATOR attribute)* ) RIGHT_SQUARE_BRACKET
+modifiers ::= LEFT_SQUARE_BRACKET ((attribute | MACRO_USAGE) (ATTRIBUTE_SEPARATOR (attribute | MACRO_USAGE))* ) RIGHT_SQUARE_BRACKET
 {pin = 1 recoverWhile = recover_modifiers}
 
 attribute ::= any_attribute_name ASSIGN_VALUE any_attribute_value

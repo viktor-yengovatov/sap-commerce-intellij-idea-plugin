@@ -186,6 +186,7 @@ field_value_ignore = "<ignore>"
     {comma}                                                 { return ImpexTypes.ATTRIBUTE_SEPARATOR; }
 
     {alternative_map_delimiter}                             { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
+    {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
 }
 
 <WAITING_ATTR_OR_PARAM_VALUE> {
