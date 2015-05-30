@@ -23,7 +23,7 @@ import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
-import com.intellij.psi.impl.source.PsiClassImpl;
+import com.intellij.psi.impl.source.PsiExtensibleClass;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -266,9 +266,11 @@ public class ImpexCompletionContributor extends CompletionContributor {
                                 String typeCode = null;
 
                                 // typecode -> the "hybris type"-uid within the typesystem of hybris
-                                for (PsiField field : ((PsiClassImpl) itemClass).getOwnFields()) {
+                                for (PsiField field : ((PsiExtensibleClass) itemClass).getOwnFields()) {
                                     if ("_TYPECODE".equals(field.getName())) {
-                                        typeCode = field.getInitializer().getText().replaceAll("\"", "");
+                                        if (null != field.getInitializer()) {
+                                            typeCode = field.getInitializer().getText().replaceAll("\"", "");
+                                        }
                                     }
                                 }
                                 if (typeCode != null) {
