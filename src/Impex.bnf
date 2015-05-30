@@ -1,6 +1,6 @@
 {
   parserClass="com.intellij.idea.plugin.hybris.impex.ImpexParser"
-  parserUtilClass="com.intellij.idea.plugin.hybris.impex.util.ImpexParserUtil"
+  //parserUtilClass="com.intellij.idea.plugin.hybris.impex.util.ImpexParserUtil"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -13,7 +13,7 @@
   elementTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexElementType"
   tokenTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexTokenType"
 
-  psiImplUtilClass="com.intellij.idea.plugin.hybris.impex.util.ImpexPsiImplUtil"
+  //psiImplUtilClass="com.intellij.idea.plugin.hybris.impex.util.ImpexPsiImplUtil"
 }
 
 impexFile ::= root*
