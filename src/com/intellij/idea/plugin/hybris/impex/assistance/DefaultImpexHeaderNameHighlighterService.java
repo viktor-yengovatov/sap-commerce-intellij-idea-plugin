@@ -30,6 +30,8 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     @Override
     @Contract(pure = false)
     public void highlightCurrentHeader(@NotNull final Editor editor) {
+        Validate.notNull(editor);
+
         final Project project = editor.getProject();
 
         if (null == project) {
@@ -63,6 +65,9 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     @Contract(pure = false)
     protected void highlightArea(@NotNull final Editor editor,
                                  @NotNull final PsiElement impexFullHeaderParameter) {
+        Validate.notNull(editor);
+        Validate.notNull(impexFullHeaderParameter);
+
         if (isAlreadyHighlighted(editor, impexFullHeaderParameter)) {
             return;
         }
@@ -83,6 +88,7 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
 
     @Contract(pure = false)
     protected void clearHighlightedArea(@NotNull final Editor editor) {
+        Validate.notNull(editor);
 
         if (!highlightedBlocks.isEmpty()) {
             final PsiElement impexFullHeaderParameter = highlightedBlocks.remove(editor);
@@ -101,6 +107,8 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     @Contract(pure = true)
     protected boolean isAlreadyHighlighted(@NotNull final Editor editor,
                                            @Nullable final PsiElement impexFullHeaderParameter) {
+        Validate.notNull(editor);
+
         return this.highlightedBlocks.get(editor) == impexFullHeaderParameter;
     }
 
@@ -108,6 +116,9 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     protected void modifyHighlightedArea(@NotNull final Editor editor,
                                          @NotNull final PsiElement impexFullHeaderParameter,
                                          final boolean clear) {
+        Validate.notNull(editor);
+        Validate.notNull(impexFullHeaderParameter);
+
         if (null == editor.getProject()) {
             return;
         }
@@ -132,6 +143,8 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     @Override
     @Contract(pure = false)
     public void releaseEditorData(@NotNull final Editor editor) {
+        Validate.notNull(editor);
+
         this.highlightedBlocks.remove(editor);
     }
 }

@@ -86,6 +86,7 @@ public class ImpexPsiUtil {
 
     @Contract(pure = false)
     public static PsiElement getHeaderOfValueGroupUnderCaret(@NotNull final Editor editor) {
+        Validate.notNull(editor);
 
         final PsiElement psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
         if (null == psiElementUnderCaret) {
@@ -105,7 +106,6 @@ public class ImpexPsiUtil {
         return null;
     }
 
-    // TODO: Becomes to complex, refactor
     @Nullable
     @Contract(pure = true)
     public static ImpexValueGroup getClosestSelectedValueGroupFromTheSameLine(@Nullable final PsiElement psiElementUnderCaret) {

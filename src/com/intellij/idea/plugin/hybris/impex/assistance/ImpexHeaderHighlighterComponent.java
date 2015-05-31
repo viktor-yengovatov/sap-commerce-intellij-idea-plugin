@@ -98,7 +98,6 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
         }
     }
 
-    // TODO: Listens modification off all files. It can affect performance. Try to find a better approach.
     protected class ImpexPsiTreeChangeListener implements PsiTreeChangeListener {
 
         private void highlightHeader(final PsiTreeChangeEvent psiTreeChangeEvent) {

@@ -217,7 +217,6 @@ public class ImpexCompletionContributor extends CompletionContributor {
             return null;
         }
 
-        // TODO: Mode these actions to PSI classes itself
         final ImpexHeaderLine impexHeaderLine = PsiTreeUtil.getParentOfType(psiElement, ImpexHeaderLine.class);
         if (null == impexHeaderLine) {
             return null;
