@@ -7,7 +7,7 @@
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
 
-    <vendor email="AlexanderBartash@gmail.com">Alexander Bartash</vendor>
+    <vendor email="AlexanderBartash@gmail.com" url="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">Alexander Bartash</vendor>
 
     <description>
         <![CDATA[
