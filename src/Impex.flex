@@ -53,7 +53,7 @@ default_key_value_delimiter = "->"
 alternative_map_delimiter   = [|]
 
 boolean = (("true")|("false"))
-digit   = [[:digit:]]+
+digit   = [-+]?[0-9]+([.][0-9]+)?
 //class_with_package = ({identifier}+[.]{identifier}+)+
 
 parameter_name = ({identifier}+[.]?{identifier}+)+
