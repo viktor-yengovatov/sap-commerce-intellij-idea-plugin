@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public interface ImpexHeaderNameHighlighter {
+public interface ImpexHeaderNameHighlighterService {
 
     void highlightCurrentHeader(@NotNull Editor editor);
 

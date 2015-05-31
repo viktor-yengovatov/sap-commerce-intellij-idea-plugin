@@ -13,11 +13,15 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class IdeaUtil {
+public class CommonIdeaUtils {
+
+    private CommonIdeaUtils() throws IllegalAccessException {
+        throw new IllegalAccessException();
+    }
 
     @Nullable
     public static Project getCurrentProject() {
-        return (Project) CommonDataKeys.PROJECT.getData(DataManager.getInstance().getDataContext());
+        return CommonDataKeys.PROJECT.getData(DataManager.getInstance().getDataContext());
     }
 
     public static boolean isTypingActionInProgress() {

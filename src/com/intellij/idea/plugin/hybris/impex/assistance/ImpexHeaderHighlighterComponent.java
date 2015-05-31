@@ -17,7 +17,7 @@ import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.psi.util.PsiUtilBase;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.impex.util.IdeaUtil.isTypingActionInProgress;
+import static com.intellij.idea.plugin.hybris.impex.util.CommonIdeaUtils.isTypingActionInProgress;
 
 /**
  * Created 19:56 11 January 2015
@@ -26,11 +26,15 @@ import static com.intellij.idea.plugin.hybris.impex.util.IdeaUtil.isTypingAction
  */
 public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
 
-    private final CaretListener caretListener = new ImpexHeaderHighlightingCaretListener();
-    private final ProjectManagerListener projectManagerListener = new ImpexProjectManagerListener();
-    private final PsiTreeChangeListener psiTreeChangeListener = new ImpexPsiTreeChangeListener();
-    private final EditorFactoryListener editorFactoryListener = new ImpexEditorFactoryListener();
-    private final ImpexHeaderNameHighlighter impexHeaderNameHighlighter = new DefaultImpexHeaderNameHighlighter();
+    protected final CaretListener caretListener = new ImpexHeaderHighlightingCaretListener();
+    protected final ProjectManagerListener projectManagerListener = new ImpexProjectManagerListener();
+    protected final PsiTreeChangeListener psiTreeChangeListener = new ImpexPsiTreeChangeListener();
+    protected final EditorFactoryListener editorFactoryListener = new ImpexEditorFactoryListener();
+    protected final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService;
+
+    public ImpexHeaderHighlighterComponent(final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService) {
+        this.impexHeaderNameHighlighterService = impexHeaderNameHighlighterService;
+    }
 
     @Override
     public void initComponent() {
@@ -58,7 +62,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
                 return;
             }
 
-            impexHeaderNameHighlighter.highlightCurrentHeader(e.getEditor());
+            impexHeaderNameHighlighterService.highlightCurrentHeader(e.getEditor());
         }
 
         @Override
@@ -110,7 +114,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
                 return;
             }
 
-            impexHeaderNameHighlighter.highlightCurrentHeader(editor);
+            impexHeaderNameHighlighterService.highlightCurrentHeader(editor);
         }
 
         @Override
@@ -183,7 +187,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
 
         @Override
         public void editorReleased(@NotNull final EditorFactoryEvent editorFactoryEvent) {
-            impexHeaderNameHighlighter.releaseEditorData(editorFactoryEvent.getEditor());
+            impexHeaderNameHighlighterService.releaseEditorData(editorFactoryEvent.getEditor());
         }
     }
 }

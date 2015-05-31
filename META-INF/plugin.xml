@@ -142,30 +142,44 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <!-- Core elements -->
         <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
 
-        <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
+        <lang.parserDefinition language="Impex"
+                               implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
 
-        <lang.syntaxHighlighterFactory key="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <lang.syntaxHighlighterFactory key="Impex"
+                                       implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
 
-        <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
+        <lang.commenter language="Impex"
+                        implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
 
-        <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
+        <lang.formatter language="Impex"
+                        implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
+
         <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
-        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
+        <lang.foldingBuilder language="Impex"
+                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
 
-        <applicationConfigurable instance="com.intellij.idea.plugin.hybris.impex.settings.ImpexConfigurable"/>
+        <applicationConfigurable id="ImpexPlugin.ImpexConfigurable"
+                                 instance="com.intellij.idea.plugin.hybris.impex.settings.ImpexConfigurable"/>
+
+
+        <!-- Header name highlighting components -->
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
+
     </extensions>
 
     <application-components>
-        <!-- Add your application components here -->
         <component>
             <implementation-class>
                 com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderHighlighterComponent
@@ -182,11 +196,10 @@
     </application-components>
 
     <project-components>
-        <!-- Add your project components here -->
     </project-components>
 
     <actions>
-        <action id="Impex.IndexHybrisItemTypes"
+        <action id="ImpexPlugin.IndexHybrisItemTypes"
                 class="com.intellij.idea.plugin.hybris.impex.indexer.IndexItemTypesAction"
                 text="Index [y]-types"
                 description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
