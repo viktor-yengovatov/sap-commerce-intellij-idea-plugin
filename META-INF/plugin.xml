@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris impex plugin</name>
-    <version>1.7.4.1</version>
+    <version>1.8</version>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
@@ -51,6 +51,10 @@
 
     <change-notes>
         <![CDATA[
+          1.8:
+          <br/> - Plugin has been ported to WebStorm and other IDEA based idea. Various bugfixes in the impex lexer and parser has been made to improve stability.
+          <br/>
+          <br/>
           1.7.4.1:
           <br/> - Header name highlighting for JDK 1.7 has been fixed.
           <br/>
