@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.intellij.util.containers.ContainerUtil.isEmpty;
-
 /**
  * Created 4:20 PM 31 May 2015
  *
@@ -47,7 +45,7 @@ public class CommonPsiUtils {
 
         while (child != null) {
             if (elementType == child.getElementType()) {
-                if (isEmpty(result)) {
+                if (null == result || result.isEmpty()) {
                     result = new ArrayList<PsiElement>();
                 }
                 result.add(child.getPsi());

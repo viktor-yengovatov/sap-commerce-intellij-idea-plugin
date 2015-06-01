@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.isLineBreak;
@@ -76,7 +77,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
     @NotNull
     protected Collection<PsiElement> findFoldingBlocksAndLineBreaks(@Nullable final PsiElement root) {
         if (root == null) {
-            return ContainerUtil.emptyList();
+            return Collections.emptyList();
         }
 
         final List<PsiElement> foldingBlocks = new ArrayList<PsiElement>();
