@@ -11,6 +11,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor.CollectFilteredElements;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +39,12 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
     public FoldingDescriptor[] buildFoldRegions(@NotNull final PsiElement root,
                                                 @NotNull final Document document,
                                                 final boolean quick) {
-
         if (this.isFoldingDisabled()) {
             return EMPTY_ARRAY;
         }
+
+        Validate.notNull(root);
+        Validate.notNull(document);
 
         final Collection<PsiElement> psiElements = this.findFoldingBlocksAndLineBreaks(root);
 
@@ -66,6 +70,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
+    @Contract(pure = true)
     protected boolean isFoldingDisabled() {
         final ImpexSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
                 ImpexSettingsManager.class
@@ -75,6 +80,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
     }
 
     @NotNull
+    @Contract(pure = true)
     protected Collection<PsiElement> findFoldingBlocksAndLineBreaks(@Nullable final PsiElement root) {
         if (root == null) {
             return Collections.emptyList();
@@ -91,6 +97,8 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull final ASTNode node) {
+        Validate.notNull(node);
+
         return ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(node.getPsi());
     }
 

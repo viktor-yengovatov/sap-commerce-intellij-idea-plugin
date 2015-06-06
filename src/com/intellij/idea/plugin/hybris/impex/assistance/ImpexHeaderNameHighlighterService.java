@@ -1,6 +1,7 @@
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
 import com.intellij.openapi.editor.Editor;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ImpexHeaderNameHighlighterService {
 
+    @Contract(pure = false)
     void highlightCurrentHeader(@NotNull Editor editor);
 
+    @Contract(pure = false)
     void releaseEditorData(@NotNull Editor editor);
 }

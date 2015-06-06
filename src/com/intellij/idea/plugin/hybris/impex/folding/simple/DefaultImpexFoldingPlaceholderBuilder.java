@@ -2,6 +2,8 @@ package com.intellij.idea.plugin.hybris.impex.folding.simple;
 
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilder;
 import com.intellij.psi.PsiElement;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,21 +16,22 @@ public class DefaultImpexFoldingPlaceholderBuilder implements ImpexFoldingPlaceh
     @NotNull
     @Override
     public String getPlaceholder(@NotNull final PsiElement psiElement) {
+        Validate.notNull(psiElement);
 
         return this.getFirstAndLastCharacters(psiElement);
     }
 
     @NotNull
+    @Contract(pure = true)
     private String getFirstAndLastCharacters(@NotNull final PsiElement psiElement) {
+        Validate.notNull(psiElement);
+
         final String text = psiElement.getText();
 
         if (text.length() < 2) {
             return psiElement.getText();
         }
 
-        return new StringBuilder()
-                .append(text.charAt(0))
-                .append(text.charAt(text.length() - 1))
-                .toString();
+        return String.valueOf(text.charAt(0)) + text.charAt(text.length() - 1);
     }
 }

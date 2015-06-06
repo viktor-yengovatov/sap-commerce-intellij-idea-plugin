@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderNameHighlighterService {
 
-    final Map<Editor, PsiElement> highlightedBlocks = new ConcurrentHashMap<Editor, PsiElement>();
+    protected final Map<Editor, PsiElement> highlightedBlocks = new ConcurrentHashMap<Editor, PsiElement>();
 
     @Override
     @Contract(pure = false)
@@ -137,7 +137,8 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
                 editor,
                 EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
                 clear,
-                ranges);
+                ranges
+        );
     }
 
     @Override

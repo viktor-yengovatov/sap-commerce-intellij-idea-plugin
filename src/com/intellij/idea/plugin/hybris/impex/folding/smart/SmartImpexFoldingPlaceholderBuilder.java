@@ -6,6 +6,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil;
 import com.intellij.psi.PsiElement;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +26,7 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
     @NotNull
     @Override
     public String getPlaceholder(@NotNull final PsiElement psiElement) {
+        Validate.notNull(psiElement);
 
         if (ImpexPsiUtil.isImpexAttribute(psiElement)) {
             final ImpexAttribute attribute = (ImpexAttribute) psiElement;
@@ -39,7 +42,10 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
     }
 
     @NotNull
+    @Contract(pure = true)
     private String getPlaceholder(@NotNull final ImpexAttribute impexAttribute) {
+        Validate.notNull(impexAttribute);
+
         if (this.isUniqueAttribute(impexAttribute)) {
 
             return impexAttribute.getAnyAttributeName().getText();
@@ -97,7 +103,10 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
     }
 
     @NotNull
+    @Contract(pure = true)
     private String getClassNameFromValue(final @NotNull ImpexAttribute impexAttribute) {
+        Validate.notNull(impexAttribute);
+
         if (null == impexAttribute.getAnyAttributeValue() || (StringUtils.isBlank(impexAttribute.getAnyAttributeValue().getText()))) {
             return impexAttribute.getText();
         }
@@ -110,7 +119,10 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
     }
 
     @NotNull
+    @Contract(pure = true)
     private String getValueText(final @NotNull ImpexAttribute impexAttribute) {
+        Validate.notNull(impexAttribute);
+
         if (null == impexAttribute.getAnyAttributeValue() || (StringUtils.isBlank(impexAttribute.getAnyAttributeValue().getText()))) {
             return impexAttribute.getText();
         }
@@ -118,62 +130,77 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
         return impexAttribute.getAnyAttributeValue().getText();
     }
 
-
+    @Contract(pure = true)
     private boolean isUniqueAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.UNIQUE);
     }
 
+    @Contract(pure = true)
     private boolean isVirtualAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.VIRTUAL);
     }
 
+    @Contract(pure = true)
     private boolean isAllowNullAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.ALLOW_NULL);
     }
 
+    @Contract(pure = true)
     private boolean isForceWriteAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.FORCE_WRITE);
     }
 
+    @Contract(pure = true)
     private boolean isIgnoreNullAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.IGNORE_NULL);
     }
 
+    @Contract(pure = true)
     private boolean isIgnoreKeyCaseAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.IGNORE_KEY_CASE);
     }
 
+    @Contract(pure = true)
     private boolean isDateFormatAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.quoteAwareStringEquals(ImpexConstants.Attributes.DATE_FORMAT, impexAttribute.getAnyAttributeName().getText());
     }
 
+    @Contract(pure = true)
     private boolean isDefaultAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.quoteAwareStringEquals(ImpexConstants.Attributes.DEFAULT, impexAttribute.getAnyAttributeName().getText());
     }
 
+    @Contract(pure = true)
     private boolean isLangAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.quoteAwareStringEquals(ImpexConstants.Attributes.LANG, impexAttribute.getAnyAttributeName().getText());
     }
 
+    @Contract(pure = true)
     private boolean isTranslatorAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.quoteAwareStringEquals(ImpexConstants.Attributes.TRANSLATOR, impexAttribute.getAnyAttributeName().getText());
     }
 
+    @Contract(pure = true)
     private boolean isNumberFormatAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.quoteAwareStringEquals(ImpexConstants.Attributes.NUMBER_FORMAT, impexAttribute.getAnyAttributeName().getText());
     }
 
+    @Contract(pure = true)
     private boolean isModeAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.quoteAwareStringEquals(ImpexConstants.Attributes.MODE, impexAttribute.getAnyAttributeName().getText());
     }
 
+    @Contract(pure = true)
     private boolean isCellDecoratorAttribute(@NotNull final ImpexAttribute impexAttribute) {
         return this.quoteAwareStringEquals(ImpexConstants.Attributes.CELL_DECORATOR, impexAttribute.getAnyAttributeName().getText());
     }
 
-
+    @Contract(pure = true)
     private boolean isNameEqualsAndAndValueIsTrue(@NotNull final ImpexAttribute impexAttribute,
                                                   @NotNull final String name) {
+        Validate.notNull(impexAttribute);
+        Validate.notNull(name);
+
         if (!this.quoteAwareStringEquals(name, impexAttribute.getAnyAttributeName().getText())) {
             return false;
         }
@@ -193,15 +220,13 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
         return this.quoteAwareStringEquals("true", trimmedValue);
     }
 
+    @Contract(pure = true)
     private boolean quoteAwareStringEquals(@Nullable final String quotedString, @Nullable final String value) {
-        if (null == quotedString ^ null == value) {
-            return false;
-        }
+        return !(null == quotedString ^ null == value)
+                && (null == quotedString
+                || quotedString.equals(value)
+                || ("'" + quotedString + "'").equals(value)
+                || ("\"" + quotedString + "\"").equals(value));
 
-        if (null == quotedString) {
-            return true;
-        }
-
-        return quotedString.equals(value) || ("'" + quotedString + "'").equals(value) || ("\"" + quotedString + "\"").equals(value);
     }
 }
