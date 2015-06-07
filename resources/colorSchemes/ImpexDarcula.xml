@@ -1,0 +1,42 @@
+<?xml version='1.0'?>
+<list>
+    <option name="BOOLEAN">
+        <value>
+            <option name="FOREGROUND" value="CC7832"/>
+        </value>
+    </option>
+    <option name="SQUARE_BRACKETS">
+        <value>
+            <option name="FOREGROUND" value="CC7832"/>
+        </value>
+    </option>
+    <option name="ROUND_BRACKETS">
+        <value>
+            <option name="FOREGROUND" value="CC7832"/>
+        </value>
+    </option>
+    <option name="DOCUMENT_ID">
+        <value>
+            <option name="FOREGROUND" value="477FAA"/>
+        </value>
+    </option>
+    <option name="SINGLE_STRING">
+        <value>
+            <option name="FOREGROUND" value="579A7C"/>
+        </value>
+    </option>
+    <option name="MACRO_NAME_DECLARATION">
+        <value>
+            <option name="FOREGROUND" value="9876AA"/>
+            <!--<option name="BACKGROUND" value=""/>-->
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="HEADER_SPECIAL_PARAMETER_NAME">
+        <value>
+            <option name="FOREGROUND" value="9876AA"/>
+            <!--<option name="BACKGROUND" value=""/>-->
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
+</list>

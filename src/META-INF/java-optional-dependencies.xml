@@ -1,0 +1,7 @@
+<idea-plugin version="2">
+    <extensions defaultExtensionNs="com.intellij">
+
+        <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+
+    </extensions>
+</idea-plugin>
