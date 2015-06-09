@@ -1,6 +1,7 @@
 package com.intellij.idea.plugin.hybris.impex.file;
 
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.util.HybrisIcons;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,6 @@ public class ImpexFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return ImpexIcons.FILE;
+        return HybrisIcons.IMPEX_FILE;
     }
 }

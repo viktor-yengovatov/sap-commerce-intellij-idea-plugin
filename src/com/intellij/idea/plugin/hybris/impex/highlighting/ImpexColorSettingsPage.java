@@ -1,6 +1,6 @@
 package com.intellij.idea.plugin.hybris.impex.highlighting;
 
-import com.intellij.idea.plugin.hybris.impex.file.ImpexIcons;
+import com.intellij.idea.plugin.hybris.util.HybrisIcons;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -59,7 +59,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     @Nullable
     @Override
     public Icon getIcon() {
-        return ImpexIcons.FILE;
+        return HybrisIcons.IMPEX_FILE;
     }
 
     @NotNull
