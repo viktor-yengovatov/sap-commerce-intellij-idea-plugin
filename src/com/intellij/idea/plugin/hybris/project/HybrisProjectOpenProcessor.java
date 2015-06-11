@@ -1,7 +1,10 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.util.HybrisConstants;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstantsUtils;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectOpenProcessorBase;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +18,8 @@ import java.util.List;
  */
 public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<HybrisProjectImportBuilder> {
 
+    private static final Logger LOG = Logger.getInstance("#" + HybrisProjectOpenProcessor.class.getName());
+
     public HybrisProjectOpenProcessor(final HybrisProjectImportBuilder builder) {
         super(builder);
     }
@@ -23,19 +28,25 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<HybrisP
     @Override
     public String[] getSupportedExtensions() {
         return new String[]{
-            HybrisConstants.EXTENSION_INFO_XML
+            HybrisConstantsUtils.EXTENSION_INFO_XML
         };
     }
 
-    public boolean doQuickImport(VirtualFile file, final WizardContext wizardContext) {
-//        getBuilder().setRootDirectory(file.getParent().getPath());
-//
-//        final List<String> projects = getBuilder().getList();
-//        if (projects == null || projects.size() != 1) {
-//            return false;
-//        }
-//        getBuilder().setList(projects);
-//        wizardContext.setProjectName(EclipseProjectFinder.findProjectName(projects.get(0)));
+    public boolean doQuickImport(final VirtualFile file, final WizardContext wizardContext) {
+        this.getBuilder().setRootDirectory(file.getParent().getPath());
+
+        final List<String> projects = getBuilder().getList();
+        if (projects == null || projects.size() != 1) {
+            return false;
+        }
+
+        try {
+            this.getBuilder().setList(projects);
+        } catch (ConfigurationException e) {
+            LOG.error(e);
+        }
+
+        wizardContext.setProjectName(HybrisProjectFinderUtils.findProjectName(projects.get(0)));
         return true;
     }
 

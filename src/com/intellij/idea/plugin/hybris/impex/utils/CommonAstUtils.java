@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.impex.util;
+package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.IElementType;

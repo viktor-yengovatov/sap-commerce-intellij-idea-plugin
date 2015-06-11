@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiElementFilter;
 import org.jetbrains.annotations.Nullable;
 
-import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.isLineBreak;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 
 /**
  * Created 22:40 01 January 2015

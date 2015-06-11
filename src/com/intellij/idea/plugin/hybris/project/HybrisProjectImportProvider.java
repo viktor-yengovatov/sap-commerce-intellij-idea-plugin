@@ -18,7 +18,8 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
 
     public HybrisProjectImportProvider(final HybrisProjectImportBuilder builder) {
         super(builder);
-        myProcessor = new HybrisProjectOpenProcessor(builder);
+
+        this.myProcessor = new HybrisProjectOpenProcessor(builder);
     }
 
 //    public ModuleWizardStep[] createSteps(final WizardContext context) {
@@ -29,7 +30,7 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
 
     @Override
     protected boolean canImportFromFile(final VirtualFile file) {
-        return myProcessor.canOpenProject(file);
+        return this.myProcessor.canOpenProject(file);
     }
 
     @Nullable

@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.util;
+package com.intellij.idea.plugin.hybris.utils;
 
 import com.intellij.openapi.util.IconLoader;
 
@@ -9,12 +9,12 @@ import javax.swing.*;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisIcons {
+public class HybrisIconsUtils {
 
     public static final Icon IMPEX_FILE = IconLoader.getIcon("/icons/jar-gray.png");
     public static final Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybris_icon.png");
 
-    private HybrisIcons() throws IllegalAccessException {
+    private HybrisIconsUtils() throws IllegalAccessException {
         throw new IllegalAccessException();
     }
 }

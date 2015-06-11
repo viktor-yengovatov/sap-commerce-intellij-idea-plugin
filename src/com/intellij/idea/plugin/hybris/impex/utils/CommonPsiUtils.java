@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.impex.util;
+package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -29,7 +29,7 @@ public class CommonPsiUtils {
     public static PsiElement getNextNonWhitespaceElement(@NotNull final PsiElement element) {
         PsiElement nextSibling = element.getNextSibling();
 
-        while (null != nextSibling && ImpexPsiUtil.isWhiteSpace(nextSibling)) {
+        while (null != nextSibling && ImpexPsiUtils.isWhiteSpace(nextSibling)) {
             nextSibling = nextSibling.getNextSibling();
         }
 

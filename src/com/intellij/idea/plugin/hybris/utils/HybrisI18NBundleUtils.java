@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.util;
+package com.intellij.idea.plugin.hybris.utils;
 
 import com.intellij.AbstractBundle;
 import org.jetbrains.annotations.NotNull;
@@ -9,12 +9,12 @@ import org.jetbrains.annotations.PropertyKey;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisI18NBundle extends AbstractBundle {
+public class HybrisI18NBundleUtils extends AbstractBundle {
 
-    private static final HybrisI18NBundle BUNDLE = new HybrisI18NBundle();
+    private static final HybrisI18NBundleUtils BUNDLE = new HybrisI18NBundleUtils();
     public static final String PATH_TO_BUNDLE = "i18n.HybrisBundle";
 
-    private HybrisI18NBundle() {
+    private HybrisI18NBundleUtils() {
         super(PATH_TO_BUNDLE);
     }
 

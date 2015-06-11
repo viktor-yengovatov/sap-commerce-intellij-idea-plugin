@@ -3,7 +3,7 @@ package com.intellij.idea.plugin.hybris.impex.folding.smart;
 import com.intellij.idea.plugin.hybris.impex.ImpexConstants;
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilder;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
-import com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil;
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.psi.PsiElement;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -28,13 +28,13 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
     public String getPlaceholder(@NotNull final PsiElement psiElement) {
         Validate.notNull(psiElement);
 
-        if (ImpexPsiUtil.isImpexAttribute(psiElement)) {
+        if (ImpexPsiUtils.isImpexAttribute(psiElement)) {
             final ImpexAttribute attribute = (ImpexAttribute) psiElement;
 
             return this.getPlaceholder(attribute);
         }
 
-        if (ImpexPsiUtil.isImpexParameters(psiElement)) {
+        if (ImpexPsiUtils.isImpexParameters(psiElement)) {
             return IMPEX_PARAMETERS_PLACEHOLDER;
         }
 

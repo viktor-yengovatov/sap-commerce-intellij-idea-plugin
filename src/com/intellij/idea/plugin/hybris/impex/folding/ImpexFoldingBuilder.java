@@ -10,7 +10,6 @@ import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor.CollectFilteredElements;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.isLineBreak;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 
 /**
  * Created 14:28 01 January 2015

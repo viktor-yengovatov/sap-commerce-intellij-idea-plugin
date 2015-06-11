@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.impex.util;
+package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.lang.parser.GeneratedParserUtilBase;
 
@@ -7,5 +7,5 @@ import com.intellij.lang.parser.GeneratedParserUtilBase;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexParserUtil extends GeneratedParserUtilBase {
+public class ImpexParserUtils extends GeneratedParserUtilBase {
 }

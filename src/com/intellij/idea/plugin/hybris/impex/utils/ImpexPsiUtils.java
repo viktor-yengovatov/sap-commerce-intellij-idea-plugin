@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.impex.util;
+package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.openapi.editor.Editor;
@@ -18,9 +18,9 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexPsiUtil {
+public class ImpexPsiUtils {
 
-    private ImpexPsiUtil() throws IllegalAccessException {
+    private ImpexPsiUtils() throws IllegalAccessException {
         throw new IllegalAccessException();
     }
 
@@ -93,10 +93,10 @@ public class ImpexPsiUtil {
             return null;
         }
 
-        final ImpexValueGroup valueGroup = ImpexPsiUtil.getClosestSelectedValueGroupFromTheSameLine(psiElementUnderCaret);
+        final ImpexValueGroup valueGroup = ImpexPsiUtils.getClosestSelectedValueGroupFromTheSameLine(psiElementUnderCaret);
         if (null != valueGroup) {
 
-            final PsiElement header = ImpexPsiUtil.getHeaderForValueGroup(valueGroup);
+            final PsiElement header = ImpexPsiUtils.getHeaderForValueGroup(valueGroup);
             if (null != header) {
 
                 return header;
@@ -156,7 +156,7 @@ public class ImpexPsiUtil {
             return null;
         }
 
-        final int columnNumber = ImpexPsiUtil.getColumnNumberForValueGroup(valueGroup);
+        final int columnNumber = ImpexPsiUtils.getColumnNumberForValueGroup(valueGroup);
 
         if (columnNumber < 0) {
             return null;
@@ -172,10 +172,10 @@ public class ImpexPsiUtil {
             return null;
         }
 
-        final ImpexFullHeaderParameter header = ImpexPsiUtil.getImpexFullHeaderParameterFromHeaderLineByNumber(columnNumber, impexHeaderLine);
+        final ImpexFullHeaderParameter header = ImpexPsiUtils.getImpexFullHeaderParameterFromHeaderLineByNumber(columnNumber, impexHeaderLine);
 
         if (null == header) {
-            return ImpexPsiUtil.getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
+            return ImpexPsiUtils.getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
         } else {
             return header;
         }
@@ -244,7 +244,7 @@ public class ImpexPsiUtil {
 
         final PsiElement nextSibling = CommonPsiUtils.getNextNonWhitespaceElement(columnSeparator);
 
-        if (ImpexPsiUtil.isImpexFullHeaderParameter(nextSibling)) {
+        if (ImpexPsiUtils.isImpexFullHeaderParameter(nextSibling)) {
             return (ImpexFullHeaderParameter) nextSibling;
         }
 

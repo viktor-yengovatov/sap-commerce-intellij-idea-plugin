@@ -17,7 +17,7 @@ import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.psi.util.PsiUtilBase;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.impex.util.CommonIdeaUtils.isTypingActionInProgress;
+import static com.intellij.idea.plugin.hybris.impex.utils.CommonIdeaUtils.isTypingActionInProgress;
 
 /**
  * Created 19:56 11 January 2015

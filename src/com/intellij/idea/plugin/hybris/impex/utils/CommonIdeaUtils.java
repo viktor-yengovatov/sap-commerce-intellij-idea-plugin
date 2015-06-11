@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.impex.util;
+package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.CommonDataKeys;

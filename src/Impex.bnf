@@ -1,6 +1,6 @@
 {
   parserClass="com.intellij.idea.plugin.hybris.impex.ImpexParser"
-  parserUtilClass="com.intellij.idea.plugin.hybris.impex.util.ImpexParserUtil"
+  parserUtilClass="com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

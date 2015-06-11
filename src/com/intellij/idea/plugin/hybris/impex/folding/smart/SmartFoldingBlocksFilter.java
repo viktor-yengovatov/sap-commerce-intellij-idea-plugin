@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import static com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil.isLineBreak;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 
 /**
  * Created 22:40 01 January 2015

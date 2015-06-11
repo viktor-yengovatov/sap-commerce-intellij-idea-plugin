@@ -3,7 +3,7 @@ package com.intellij.idea.plugin.hybris.impex.assistance;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.impex.util.ImpexPsiUtil;
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
@@ -53,7 +53,7 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     protected void highlightHeaderOfValueUnderCaret(@NotNull final Editor editor) {
         Validate.notNull(editor);
 
-        final PsiElement header = ImpexPsiUtil.getHeaderOfValueGroupUnderCaret(editor);
+        final PsiElement header = ImpexPsiUtils.getHeaderOfValueGroupUnderCaret(editor);
 
         if (null == header) {
             this.clearHighlightedArea(editor);
