@@ -4,11 +4,16 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportBuilder;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
+import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
+import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,11 +22,13 @@ import java.util.Set;
  */
 public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<String> {
 
-    Set<String> duplicateNames;
+    protected Set<String> duplicateNames;
 
-    public SelectHybrisImportedProjectsStep(WizardContext context) {
+    public SelectHybrisImportedProjectsStep(final WizardContext context) {
         super(context);
-        fileChooser.addElementsMarkListener(new ElementsChooser.ElementsMarkListener<String>() {
+
+        this.fileChooser.addElementsMarkListener(new ElementsChooser.ElementsMarkListener<String>() {
+
             public void elementMarkChanged(final String element, final boolean isMarked) {
                 duplicateNames = null;
                 fileChooser.repaint();
@@ -30,40 +37,47 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     }
 
     private boolean isInConflict(final String item) {
-        calcDuplicates();
-        return fileChooser.getMarkedElements().contains(item) && duplicateNames.contains("conflict_name");
-//        return fileChooser.getMarkedElements().contains(item) && duplicateNames.contains(EclipseProjectFinder.findProjectName(item));
+        this.calcDuplicates();
+
+        return this.fileChooser.getMarkedElements().contains(item)
+            && this.duplicateNames.contains(HybrisProjectFinderUtils.findProjectName(item));
     }
 
     private void calcDuplicates() {
-        if (duplicateNames == null) {
-            duplicateNames = new HashSet<String>();
-            Set<String> usedNames = new HashSet<String>();
-            for (String model : fileChooser.getMarkedElements()) {
-//                final String projectName = EclipseProjectFinder.findProjectName(model);
-                final String projectName = "conflict_name2";
+        if (this.duplicateNames == null) {
+            this.duplicateNames = new HashSet<String>();
+
+            final Collection<String> usedNames = new HashSet<String>();
+
+            for (String model : this.fileChooser.getMarkedElements()) {
+
+                final String projectName = HybrisProjectFinderUtils.findProjectName(model);
+
                 if (!usedNames.add(projectName)) {
-                    duplicateNames.add(projectName);
+                    this.duplicateNames.add(projectName);
                 }
             }
         }
     }
 
     public HybrisProjectImportBuilder getContext() {
-        return (HybrisProjectImportBuilder)getBuilder();
+        return (HybrisProjectImportBuilder) this.getBuilder();
     }
 
     protected String getElementText(final String item) {
-        StringBuilder stringBuilder = new StringBuilder();
-//        final String projectName = EclipseProjectFinder.findProjectName(item);
-        final String projectName = item;
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        final String projectName = HybrisProjectFinderUtils.findProjectName(item);
         stringBuilder.append(projectName);
-//        String relPath = PathUtil.getRelative(((HybrisProjectImportBuilder) getBuilder()).getParameters().root, item);
-        if(!getContext().getParameters().projectsToConvert.contains(item)){
-            getContext().getParameters().projectsToConvert.add(item);
+
+        final String relPath = VirtualFileSystemUtils.getRelative(
+            ((HybrisProjectImportBuilder) this.getBuilder()).getParameters().root, item
+        );
+
+        if (!this.getContext().getParameters().projectsToConvert.contains(item)) {
+            this.getContext().getParameters().projectsToConvert.add(item);
         }
 
-        String relPath=item+" <- REL_PATH";
         if (!relPath.equals(".") && !relPath.equals(projectName)) {
             stringBuilder.append(" (").append(relPath).append(")");
         }
@@ -78,15 +92,20 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     @Override
     public void updateStep() {
         super.updateStep();
-        duplicateNames = null;
+
+        this.duplicateNames = null;
     }
 
     public boolean validate() throws ConfigurationException {
-//        calcDuplicates();
-//        if (!duplicateNames.isEmpty()) {
-//            throw new ConfigurationException("Duplicate names found:" + StringUtil.join(ArrayUtil.toStringArray(duplicateNames), ","), "Unable to proceed");
-//        }
+        this.calcDuplicates();
+
+        if (!this.duplicateNames.isEmpty()) {
+            throw new ConfigurationException(
+                "Duplicate names found:" + StringUtil.join(ArrayUtil.toStringArray(this.duplicateNames), ","),
+                "Unable to proceed"
+            );
+        }
+
         return super.validate();
     }
-
 }

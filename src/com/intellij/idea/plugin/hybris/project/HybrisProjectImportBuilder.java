@@ -29,6 +29,7 @@ import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.projectImport.ProjectImportBuilder;
@@ -183,25 +184,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                 final ModifiableRootModel rootModel = ModuleRootManager.getInstance(module).getModifiableModel();
                 rootModels[idx++] = rootModel;
 
-                final File classpathFile = new File(path, HybrisConstantsUtils.EXTENSION_INFO_XML);
-                final HybrisClasspathReader classpathReader = new HybrisClasspathReader(
-                    path, project, getParameters().projectsToConvert, moduleNames
-                );
-                classpathReader.init(rootModel);
-
-                if (classpathFile.exists()) {
-                    final Element classpathElement = JDOMUtil.load(classpathFile);
-                    classpathReader.readClasspath(
-                        rootModel,
-                        unknownLibraries,
-                        unknownJdks,
-                        refsToModules,
-                        "testsrc",
-                        classpathElement
-                    );
-                } else {
-                    HybrisClasspathReader.setOutputUrl(rootModel, path + "/bin");
-                }
+                rootModel.addContentEntry(VfsUtilCore.pathToUrl(path));
 
                 ClasspathStorage.setStorageType(rootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
