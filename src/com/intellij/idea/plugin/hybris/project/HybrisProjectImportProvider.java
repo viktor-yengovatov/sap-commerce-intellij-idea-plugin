@@ -1,8 +1,10 @@
 package com.intellij.idea.plugin.hybris.project;
 
-//import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-//import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory;
-//import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.ide.util.projectWizard.ModuleWizardStep;
+import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory;
+import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.idea.plugin.hybris.project.wizard.HybrisWorkspaceRootStep;
+import com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjectsStep;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.Nullable;
@@ -18,15 +20,14 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
 
     public HybrisProjectImportProvider(final HybrisProjectImportBuilder builder) {
         super(builder);
-
         this.myProcessor = new HybrisProjectOpenProcessor(builder);
     }
 
-//    public ModuleWizardStep[] createSteps(final WizardContext context) {
-//        final ProjectWizardStepFactory stepFactory = ProjectWizardStepFactory.getInstance();
-//        return new ModuleWizardStep[]{new EclipseWorkspaceRootStep(context), new SelectEclipseImportedProjectsStep(context),
-//            stepFactory.createProjectJdkStep(context)/*, stepFactory.createNameAndLocationStep(context)*/};
-//    }
+    public ModuleWizardStep[] createSteps(WizardContext context) {
+        final ProjectWizardStepFactory stepFactory = ProjectWizardStepFactory.getInstance();
+        return new ModuleWizardStep[]{ new HybrisWorkspaceRootStep(context), new SelectHybrisImportedProjectsStep(context),
+                stepFactory.createProjectJdkStep(context)};
+    }
 
     @Override
     protected boolean canImportFromFile(final VirtualFile file) {
