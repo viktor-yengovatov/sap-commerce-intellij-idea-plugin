@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
@@ -47,7 +47,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Abstrac
             LOG.error(e);
         }
 
-        wizardContext.setProjectName(HybrisProjectFinderUtils.findProjectName(projects.get(0)));
+        wizardContext.setProjectName(HybrisProjectUtils.findProjectName(projects.get(0)));
         return true;
     }
 

@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.project.utils.ProjectRootsComparator;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -45,7 +45,7 @@ public class SearchProjectRootsTaskModalWindow extends Task.Modal {
     public void run(@NotNull final ProgressIndicator indicator) {
         Validate.notNull(indicator);
 
-        final List<String> roots = HybrisProjectFinderUtils.findModuleRoots(
+        final List<String> roots = HybrisProjectUtils.findModuleRoots(
             this.path, new ProgressIndicatorUpdaterProcessor(indicator)
         );
 

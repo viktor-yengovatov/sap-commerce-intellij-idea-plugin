@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchProjectRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
@@ -10,7 +10,10 @@ import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.ModifiableModuleModel;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -32,7 +35,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created 8:58 PM 07 June 2015
@@ -114,7 +120,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final Set<String> existingModuleNames = this.getProjectImportParameters().getExistingModuleNames();
 
         return null != existingModuleNames && !existingModuleNames.contains(
-            HybrisProjectFinderUtils.findProjectName(element)
+            HybrisProjectUtils.findProjectName(element)
         );
     }
 
@@ -150,7 +156,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
 
         try {
-            final Collection<File> alreadyExistingModuleFiles = this.findAlreadyExistingModuleFiles(projectsPathsToConvert);
+            final Collection<File> alreadyExistingModuleFiles = HybrisProjectUtils.findAlreadyExistingModuleFiles(
+                projectsPathsToConvert
+            );
 
             if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
                 VirtualFileSystemUtils.removeAllFiles(alreadyExistingModuleFiles);
@@ -170,7 +178,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 }
 
                 final Module javaModule = modifiableModuleModel.newModule(
-                    projectRootDirectory + '/' + HybrisProjectFinderUtils.findProjectName(projectPath) + HybrisConstants.NEW_MODULE_FILE_EXTENSION,
+                    projectRootDirectory + '/' + HybrisProjectUtils.findProjectName(projectPath) + HybrisConstants.NEW_MODULE_FILE_EXTENSION,
                     StdModuleTypes.JAVA.getId()
                 );
 
@@ -207,35 +215,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
 
         return result;
-    }
-
-    @NotNull
-    protected Collection<File> findAlreadyExistingModuleFiles(@NotNull final Iterable<String> projectsToConvert) {
-        Validate.notNull(projectsToConvert);
-
-        final Collection<File> files = new HashSet<File>();
-
-        for (String path : projectsToConvert) {
-
-            String modulesDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
-            if (null == modulesDirectory) {
-                modulesDirectory = path;
-            }
-
-            final String moduleName = HybrisProjectFinderUtils.findProjectName(path);
-
-            final File imlFile = new File(modulesDirectory + File.separator + moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
-            if (imlFile.isFile()) {
-                files.add(imlFile);
-            }
-
-            final File emlFile = new File(modulesDirectory + File.separator + moduleName + HybrisConstants.OLD_MODULE_FILE_EXTENSION);
-            if (emlFile.isFile()) {
-                files.add(emlFile);
-            }
-        }
-
-        return files;
     }
 
     protected boolean shouldRemoveAlreadyExistingModuleFiles(@NotNull final Collection<File> files) {

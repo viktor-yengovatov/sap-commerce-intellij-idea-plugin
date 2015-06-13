@@ -5,7 +5,7 @@ import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
@@ -43,7 +43,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         this.calcDuplicates();
 
         return this.fileChooser.getMarkedElements().contains(item)
-            && this.duplicateNames.contains(HybrisProjectFinderUtils.findProjectName(item));
+            && this.duplicateNames.contains(HybrisProjectUtils.findProjectName(item));
     }
 
     private void calcDuplicates() {
@@ -54,7 +54,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
             for (String model : this.fileChooser.getMarkedElements()) {
 
-                final String projectName = HybrisProjectFinderUtils.findProjectName(model);
+                final String projectName = HybrisProjectUtils.findProjectName(model);
 
                 if (!usedNames.add(projectName)) {
                     this.duplicateNames.add(projectName);
@@ -72,7 +72,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     protected String getElementText(final String item) {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        final String projectName = HybrisProjectFinderUtils.findProjectName(item);
+        final String projectName = HybrisProjectUtils.findProjectName(item);
         stringBuilder.append(projectName);
 
         final HybrisProjectImportParameters projectImportParameters = this.getContext().getProjectImportParameters();
