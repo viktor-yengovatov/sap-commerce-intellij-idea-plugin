@@ -3,7 +3,7 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.project.HybrisProjectImportBuilder;
+import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.options.ConfigurationException;
@@ -60,8 +60,8 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         }
     }
 
-    public HybrisProjectImportBuilder getContext() {
-        return (HybrisProjectImportBuilder) this.getBuilder();
+    public AbstractHybrisProjectImportBuilder getContext() {
+        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
     protected String getElementText(final String item) {
@@ -71,7 +71,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         stringBuilder.append(projectName);
 
         final String relPath = VirtualFileSystemUtils.getRelative(
-            ((HybrisProjectImportBuilder) this.getBuilder()).getProjectImportParameters().getRoot(), item
+            this.getContext().getProjectImportParameters().getRoot(), item
         );
 
         if (!this.getContext().getProjectImportParameters().getProjectsToConvert().contains(item)) {

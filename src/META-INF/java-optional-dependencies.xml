@@ -4,7 +4,7 @@
         <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
 
         <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
-        <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportBuilder"/>
+        <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
 
     </extensions>

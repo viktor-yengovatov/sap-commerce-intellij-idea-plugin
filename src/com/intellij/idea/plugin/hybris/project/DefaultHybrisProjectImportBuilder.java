@@ -30,7 +30,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
-import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.util.Function;
 import com.intellij.util.Processor;
 import gnu.trove.THashSet;
@@ -47,11 +46,90 @@ import java.util.*;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
+public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
-    private static final Logger LOG = Logger.getInstance(HybrisProjectImportBuilder.class.getName());
+    private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class.getName());
+    protected HybrisProjectImportParameters projectImportParameters;
 
-    private HybrisProjectImportParameters projectImportParameters;
+    @Override
+    public void setRootDirectory(@NotNull final String path) {
+        ProgressManager.getInstance().run(new Task.Modal(
+            getCurrentProject(),
+            HybrisI18NBundleUtils.message("hybris.project.import.scanning"), true) {
+
+            @Override
+            public void run(@NotNull final ProgressIndicator indicator) {
+                final List<String> roots = new ArrayList<String>();
+                HybrisProjectFinderUtils.findModuleRoots(roots, path, new Processor<String>() {
+
+                    @Override
+                    public boolean process(final String t) {
+                        final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+
+                        if (null != progressIndicator) {
+                            if (progressIndicator.isCanceled()) {
+                                return false;
+                            }
+
+                            progressIndicator.setText2(t);
+                        }
+
+                        return true;
+                    }
+                });
+
+                Collections.sort(roots, new Comparator<String>() {
+
+                    @Override
+                    public int compare(final String o1, final String o2) {
+                        final String projectName1 = HybrisProjectFinderUtils.findProjectName(o1);
+                        final String projectName2 = HybrisProjectFinderUtils.findProjectName(o2);
+
+                        return ((null != projectName1) && (null != projectName2))
+                               ? projectName1.compareToIgnoreCase(projectName2)
+                               : 0;
+                    }
+                });
+
+                getProjectImportParameters().setWorkspace(roots);
+                getProjectImportParameters().setRoot(path);
+            }
+
+            @Override
+            public void onCancel() {
+                getProjectImportParameters().setWorkspace(null);
+                getProjectImportParameters().setRoot(null);
+            }
+        });
+
+        this.setFileToImport(path);
+    }
+
+    @Override
+    public boolean isRootDirectorySet() {
+        return null != this.getProjectImportParameters().getWorkspace();
+    }
+
+    @NotNull
+    @Override
+    public HybrisProjectImportParameters getProjectImportParameters() {
+        if (null == this.projectImportParameters) {
+            this.projectImportParameters = new HybrisProjectImportParameters();
+            this.projectImportParameters.setExistingModuleNames(new THashSet<String>());
+
+            if (this.isUpdate()) {
+                final Project project = getCurrentProject();
+
+                if (null != project) {
+                    for (Module module : ModuleManager.getInstance(project).getModules()) {
+                        this.projectImportParameters.getExistingModuleNames().add(module.getName());
+                    }
+                }
+            }
+        }
+
+        return this.projectImportParameters;
+    }
 
     @NotNull
     @Override
@@ -74,47 +152,43 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
         this.getProjectImportParameters().setProjectsToConvert(list);
     }
 
-    @NotNull
-    public HybrisProjectImportParameters getProjectImportParameters() {
-        if (null == this.projectImportParameters) {
-            this.projectImportParameters = new HybrisProjectImportParameters();
-            this.projectImportParameters.setExistingModuleNames(new THashSet<String>());
-
-            if (this.isUpdate()) {
-                final Project project = getCurrentProject();
-
-                if (null != project) {
-                    for (Module module : ModuleManager.getInstance(project).getModules()) {
-                        this.projectImportParameters.getExistingModuleNames().add(module.getName());
-                    }
-                }
-            }
+    @Override
+    public boolean isMarked(final String element) {
+        if (null != this.getProjectImportParameters().getProjectsToConvert()) {
+            return this.getProjectImportParameters().getProjectsToConvert().contains(element);
         }
 
-        return this.projectImportParameters;
+        return !this.getProjectImportParameters().getExistingModuleNames().contains(HybrisProjectFinderUtils.findProjectName(element));
     }
 
     @Override
-    public boolean isMarked(final String t) {
-        if (null != this.getProjectImportParameters().getProjectsToConvert()) {
-            return this.getProjectImportParameters().getProjectsToConvert().contains(t);
-        }
+    public void cleanup() {
+        super.cleanup();
+        this.projectImportParameters = null;
+    }
 
-        return !this.getProjectImportParameters().getExistingModuleNames().contains(HybrisProjectFinderUtils.findProjectName(t));
+    @Override
+    public boolean isOpenProjectSettingsAfter() {
+        return this.getProjectImportParameters().isOpenModuleSettings();
+    }
+
+    @Override
+    public void setOpenProjectSettingsAfter(final boolean on) {
+        this.getProjectImportParameters().setOpenModuleSettings(on);
     }
 
     @Nullable
     @Override
     public List<Module> commit(final Project project,
-                               final ModifiableModuleModel modifiableModuleModel,
+                               final ModifiableModuleModel model,
                                final ModulesProvider modulesProvider,
-                               final ModifiableArtifactModel modifiableArtifactModel) {
+                               final ModifiableArtifactModel artifactModel) {
 
         final List<Module> result = new ArrayList<Module>();
 
         try {
-            final ModifiableModuleModel moduleModel = (null != modifiableModuleModel)
-                                                      ? modifiableModuleModel
+            final ModifiableModuleModel moduleModel = (null != model)
+                                                      ? model
                                                       : ModuleManager.getInstance(project).getModifiableModel();
 
             final ModifiableRootModel[] rootModels = new ModifiableRootModel[this.getProjectImportParameters().getProjectsToConvert().size()];
@@ -190,7 +264,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                 }
 
                 final Module module = moduleModel.newModule(
-                    modulesDirectory + "/" + HybrisProjectFinderUtils.findProjectName(path) + ".iml",
+                    modulesDirectory + '/' + HybrisProjectFinderUtils.findProjectName(path) + ".iml",
                     StdModuleTypes.JAVA.getId()
                 );
 
@@ -203,8 +277,9 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
                 ClasspathStorage.setStorageType(rootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
-                if (null != modifiableModuleModel) {
+                if (null != model) {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                        @Override
                         public void run() {
                             rootModel.commit();
                         }
@@ -212,8 +287,9 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                 }
             }
 
-            if (null == modifiableModuleModel) {
+            if (null == model) {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                    @Override
                     public void run() {
                         ModifiableModelCommitter.multiCommit(rootModels, moduleModel);
                     }
@@ -226,77 +302,12 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
         return result;
     }
 
-    public void cleanup() {
-        super.cleanup();
-        this.projectImportParameters = null;
-    }
+    protected static class GetFileNameFunction implements Function<File, String> {
 
-    public boolean isOpenProjectSettingsAfter() {
-        return this.getProjectImportParameters().isOpenModuleSettings();
-    }
-
-    @Override
-    public void setOpenProjectSettingsAfter(final boolean b) {
-        this.getProjectImportParameters().setOpenModuleSettings(b);
-    }
-
-    public boolean setRootDirectory(final String path) {
-        ProgressManager.getInstance().run(new Task.Modal(
-            getCurrentProject(),
-            HybrisI18NBundleUtils.message("hybris.project.import.scanning"), true) {
-
-            public void run(@NotNull final ProgressIndicator progressIndicator) {
-                final List<String> roots = new ArrayList<String>();
-                HybrisProjectFinderUtils.findModuleRoots(roots, path, new Processor<String>() {
-
-                    @Override
-                    public boolean process(final String t) {
-                        final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
-
-                        if (null != indicator) {
-                            if (indicator.isCanceled()) {
-                                return false;
-                            }
-
-                            indicator.setText2(t);
-                        }
-
-                        return true;
-                    }
-                });
-
-                Collections.sort(roots, new Comparator<String>() {
-
-                    @Override
-                    public int compare(final String path1, final String path2) {
-                        final String projectName1 = HybrisProjectFinderUtils.findProjectName(path1);
-                        final String projectName2 = HybrisProjectFinderUtils.findProjectName(path2);
-
-                        return ((null != projectName1) && (null != projectName2))
-                               ? projectName1.compareToIgnoreCase(projectName2)
-                               : 0;
-                    }
-                });
-
-                getProjectImportParameters().setWorkspace(roots);
-                getProjectImportParameters().setRoot(path);
-            }
-
-            public void onCancel() {
-                getProjectImportParameters().setWorkspace(null);
-                getProjectImportParameters().setRoot(null);
-            }
-        });
-
-        this.setFileToImport(path);
-
-        return null != this.getProjectImportParameters().getWorkspace();
-    }
-
-    private static class GetFileNameFunction implements Function<File, String> {
-
+        @Override
         public String fun(final File param) {
             return param.getPath();
         }
     }
+
 }

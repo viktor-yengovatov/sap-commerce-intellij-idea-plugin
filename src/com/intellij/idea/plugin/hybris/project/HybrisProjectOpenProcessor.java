@@ -16,11 +16,11 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<HybrisProjectImportBuilder> {
+public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<AbstractHybrisProjectImportBuilder> {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectOpenProcessor.class.getName());
 
-    public HybrisProjectOpenProcessor(final HybrisProjectImportBuilder builder) {
+    public HybrisProjectOpenProcessor(final AbstractHybrisProjectImportBuilder builder) {
         super(builder);
     }
 
@@ -32,6 +32,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<HybrisP
         };
     }
 
+    @Override
     public boolean doQuickImport(final VirtualFile file, final WizardContext wizardContext) {
         this.getBuilder().setRootDirectory(file.getParent().getPath());
 

@@ -1,11 +1,10 @@
 package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.project.HybrisProjectImportBuilder;
+import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.projectImport.ProjectImportWizardStep;
 
 import javax.swing.*;
@@ -37,17 +36,25 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
     }
 
+    @Override
     public void updateStep() {
         this.projectsRootChooser.setText(this.getBuilder().getFileToImport().replace('/', File.separatorChar));
         this.projectsRootChooser.getTextField().selectAll();
     }
 
+    @Override
     public boolean validate() throws ConfigurationException {
-        return super.validate() && this.getContext().setRootDirectory(this.projectsRootChooser.getText());
+        if (super.validate()) {
+            this.getContext().setRootDirectory(this.projectsRootChooser.getText());
+
+            return this.getContext().isRootDirectorySet();
+        }
+
+        return false;
     }
 
-    public HybrisProjectImportBuilder getContext() {
-        return (HybrisProjectImportBuilder) this.getBuilder();
+    public AbstractHybrisProjectImportBuilder getContext() {
+        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
 }
