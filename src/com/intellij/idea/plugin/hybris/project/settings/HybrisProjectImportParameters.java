@@ -72,16 +72,16 @@ public class HybrisProjectImportParameters {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (null == o || getClass() != o.getClass()) {
+        if (null == obj || getClass() != obj.getClass()) {
             return false;
         }
 
-        final HybrisProjectImportParameters other = (HybrisProjectImportParameters) o;
+        final HybrisProjectImportParameters other = (HybrisProjectImportParameters) obj;
 
         return new EqualsBuilder()
             .append(openModuleSettings, other.openModuleSettings)

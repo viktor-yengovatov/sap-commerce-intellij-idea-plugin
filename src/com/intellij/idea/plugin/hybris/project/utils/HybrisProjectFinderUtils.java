@@ -4,12 +4,17 @@ import com.intellij.idea.plugin.hybris.utils.HybrisConstantsUtils;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Processor;
+import org.apache.commons.lang.Validate;
 import org.jdom.JDOMException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -25,16 +30,26 @@ public final class HybrisProjectFinderUtils {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    public static void findModuleRoots(final List<String> paths,
-                                       final String rootPath,
-                                       @Nullable final Processor<String> progressUpdater
+    @NotNull
+    public static List<String> findModuleRoots(@NotNull final String rootPath,
+                                               @Nullable final Processor<String> stepProcessor
     ) {
-        if (null != progressUpdater) {
-            progressUpdater.process(rootPath);
+        return new ArrayList<String>(findModuleRootsSet(rootPath, stepProcessor));
+    }
+
+    @NotNull
+    private static Set<String> findModuleRootsSet(@NotNull final String rootPath,
+                                                  @Nullable final Processor<String> stepProcessor
+    ) {
+        Validate.notEmpty(rootPath);
+
+        final Set<String> paths = new HashSet<String>(1);
+
+        if (null != stepProcessor) {
+            stepProcessor.process(rootPath);
         }
 
-        final boolean projectFound = null != findProjectName(rootPath);
-        if (projectFound) {
+        if (null != findProjectName(rootPath)) {
             paths.add(rootPath);
         }
 
@@ -44,14 +59,18 @@ public final class HybrisProjectFinderUtils {
 
             if (null != files) {
                 for (File file : files) {
-                    findModuleRoots(paths, file.getPath(), progressUpdater);
+                    paths.addAll(findModuleRootsSet(file.getPath(), stepProcessor));
                 }
             }
         }
+
+        return paths;
     }
 
     @Nullable
-    public static String findProjectName(final String rootPath) {
+    public static String findProjectName(@NotNull final String rootPath) {
+        Validate.notEmpty(rootPath);
+
         String name = null;
         final File file = new File(rootPath, HybrisConstantsUtils.EXTENSION_INFO_XML);
 

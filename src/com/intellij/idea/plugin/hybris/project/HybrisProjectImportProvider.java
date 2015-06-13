@@ -18,7 +18,7 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
 
     private final HybrisProjectOpenProcessor myProcessor;
 
-    public HybrisProjectImportProvider(final AbstractHybrisProjectImportBuilder builder) {
+    public HybrisProjectImportProvider(final DefaultHybrisProjectImportBuilder builder) {
         super(builder);
         this.myProcessor = new HybrisProjectOpenProcessor(builder);
     }

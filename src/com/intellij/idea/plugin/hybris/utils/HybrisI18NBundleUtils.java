@@ -11,15 +11,19 @@ import org.jetbrains.annotations.PropertyKey;
  */
 public final class HybrisI18NBundleUtils extends AbstractBundle {
 
-    private static final HybrisI18NBundleUtils BUNDLE = new HybrisI18NBundleUtils();
     public static final String PATH_TO_BUNDLE = "i18n.HybrisBundle";
+
+    private static final HybrisI18NBundleUtils BUNDLE = new HybrisI18NBundleUtils();
 
     private HybrisI18NBundleUtils() {
         super(PATH_TO_BUNDLE);
     }
 
+    @NotNull
     public static String message(@NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) final String key,
                                  @NotNull final Object... params) {
-        return BUNDLE.getMessage(key, params);
+        final String message = BUNDLE.getMessage(key, params);
+
+        return (null == message) ? "" : message;
     }
 }

@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.project;
 
+import com.intellij.idea.plugin.hybris.project.modals.SearchProjectRootsProgressIndicatorModalWindow;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
@@ -12,9 +13,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -31,15 +30,18 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
-import com.intellij.util.Processor;
 import gnu.trove.THashSet;
+import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created 8:58 PM 07 June 2015
@@ -49,58 +51,16 @@ import java.util.*;
 public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class.getName());
+
     protected HybrisProjectImportParameters projectImportParameters;
 
     @Override
     public void setRootDirectory(@NotNull final String path) {
-        ProgressManager.getInstance().run(new Task.Modal(
-            getCurrentProject(),
-            HybrisI18NBundleUtils.message("hybris.project.import.scanning"), true) {
+        Validate.notEmpty(path);
 
-            @Override
-            public void run(@NotNull final ProgressIndicator indicator) {
-                final List<String> roots = new ArrayList<String>();
-                HybrisProjectFinderUtils.findModuleRoots(roots, path, new Processor<String>() {
-
-                    @Override
-                    public boolean process(final String t) {
-                        final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
-
-                        if (null != progressIndicator) {
-                            if (progressIndicator.isCanceled()) {
-                                return false;
-                            }
-
-                            progressIndicator.setText2(t);
-                        }
-
-                        return true;
-                    }
-                });
-
-                Collections.sort(roots, new Comparator<String>() {
-
-                    @Override
-                    public int compare(final String o1, final String o2) {
-                        final String projectName1 = HybrisProjectFinderUtils.findProjectName(o1);
-                        final String projectName2 = HybrisProjectFinderUtils.findProjectName(o2);
-
-                        return ((null != projectName1) && (null != projectName2))
-                               ? projectName1.compareToIgnoreCase(projectName2)
-                               : 0;
-                    }
-                });
-
-                getProjectImportParameters().setWorkspace(roots);
-                getProjectImportParameters().setRoot(path);
-            }
-
-            @Override
-            public void onCancel() {
-                getProjectImportParameters().setWorkspace(null);
-                getProjectImportParameters().setRoot(null);
-            }
-        });
+        ProgressManager.getInstance().run(new SearchProjectRootsProgressIndicatorModalWindow(
+            path, this.getProjectImportParameters()
+        ));
 
         this.setFileToImport(path);
     }
@@ -256,9 +216,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             int idx = 0;
 
-            for (String path : getProjectImportParameters().getProjectsToConvert()) {
+            for (String path : this.getProjectImportParameters().getProjectsToConvert()) {
 
-                String modulesDirectory = getProjectImportParameters().getCommonModulesDirectory();
+                String modulesDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
                 if (null == modulesDirectory) {
                     modulesDirectory = path;
                 }
@@ -309,5 +269,4 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             return param.getPath();
         }
     }
-
 }
