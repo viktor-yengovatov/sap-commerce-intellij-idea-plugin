@@ -13,5 +13,4 @@ syntax: regexp
 
 ^[.]idea/dictionaries$
 
-^[.]idea/misc[.]xml$
 ^[.]idea/shelf$
