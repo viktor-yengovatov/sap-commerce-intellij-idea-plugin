@@ -1,9 +1,8 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
-import com.intellij.idea.plugin.hybris.project.tasks.SearchProjectRootsTaskModalWindow;
+import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
@@ -53,21 +52,21 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected HybrisProjectImportParameters projectImportParameters;
 
     @Override
-    public void setRootDirectory(@NotNull final String path) {
-        Validate.notEmpty(path);
+    public void setRootProjectAbsolutePath(@NotNull final String rootProjectAbsolutePath) {
+        Validate.notEmpty(rootProjectAbsolutePath);
 
-        ProgressManager.getInstance().run(new SearchProjectRootsTaskModalWindow(
-            path, this.getProjectImportParameters()
+        ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
+            rootProjectAbsolutePath, this.getProjectImportParameters()
         ));
 
-        this.setFileToImport(path);
+        this.setFileToImport(rootProjectAbsolutePath);
     }
 
     @Override
     public boolean isRootDirectorySet() {
-        final List<String> workspace = this.getProjectImportParameters().getWorkspace();
+        final List<String> modulesRoots = this.getProjectImportParameters().getFoundModulesRootsAbsolutePaths();
 
-        return null != workspace && !workspace.isEmpty();
+        return null != modulesRoots && !modulesRoots.isEmpty();
     }
 
     @NotNull
@@ -88,7 +87,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             }
 
             this.projectImportParameters = new HybrisProjectImportParameters();
-            this.projectImportParameters.setExistingModuleNames(existingModuleNames);
+            this.projectImportParameters.setAlreadyOpenedModulesNames(existingModuleNames);
         }
 
         return this.projectImportParameters;
@@ -107,20 +106,20 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public List<String> getList() {
-        return this.getProjectImportParameters().getWorkspace();
+        return this.getProjectImportParameters().getFoundModulesRootsAbsolutePaths();
     }
 
     @Override
     public void setList(final List<String> list) throws ConfigurationException {
-        this.getProjectImportParameters().setProjectsPathsToConvert(list);
+        this.getProjectImportParameters().setChosenForImportModulesRootsAbsolutePaths(list);
     }
 
     @Override
     public boolean isMarked(final String element) {
-        final Set<String> existingModuleNames = this.getProjectImportParameters().getExistingModuleNames();
+        final Set<String> existingModuleNames = this.getProjectImportParameters().getAlreadyOpenedModulesNames();
 
         return null != existingModuleNames && !existingModuleNames.contains(
-            HybrisProjectUtils.findProjectName(element)
+            HybrisProjectUtils.getModuleName(element)
         );
     }
 
@@ -132,12 +131,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public boolean isOpenProjectSettingsAfter() {
-        return this.getProjectImportParameters().isOpenModuleSettings();
+        return this.getProjectImportParameters().isOpenProjectSettingsAfterImport();
     }
 
     @Override
     public void setOpenProjectSettingsAfter(final boolean on) {
-        this.getProjectImportParameters().setOpenModuleSettings(on);
+        this.getProjectImportParameters().setOpenProjectSettingsAfterImport(on);
     }
 
     @Nullable
@@ -149,7 +148,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final List<Module> result = new ArrayList<Module>();
 
-        final List<String> projectsPathsToConvert = this.getProjectImportParameters().getProjectsPathsToConvert();
+        final List<String> projectsPathsToConvert = this.getProjectImportParameters().getChosenForImportModulesRootsAbsolutePaths();
 
         if (null == projectsPathsToConvert || projectsPathsToConvert.isEmpty()) {
             return null;
@@ -172,33 +171,31 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             for (String projectPath : projectsPathsToConvert) {
 
-                String projectRootDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
-                if (null == projectRootDirectory) {
-                    projectRootDirectory = projectPath;
-                }
+                final String imlFilePath = HybrisProjectUtils.buildPathForIdeaModuleFile(projectPath, projectPath);
 
-                final Module javaModule = modifiableModuleModel.newModule(
-                    projectRootDirectory + '/' + HybrisProjectUtils.findProjectName(projectPath) + HybrisConstants.NEW_MODULE_FILE_EXTENSION,
-                    StdModuleTypes.JAVA.getId()
-                );
+                if (null == imlFilePath) {
 
-                result.add(javaModule);
+                } else {
+                    final Module javaModule = modifiableModuleModel.newModule(imlFilePath, StdModuleTypes.JAVA.getId());
 
-                final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
-                modifiableRootModels.add(modifiableRootModel);
+                    result.add(javaModule);
 
-                // TODO: Add here logic for configuring project structure and dependencies
-                modifiableRootModel.addContentEntry(VfsUtilCore.pathToUrl(projectPath));
+                    final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
+                    modifiableRootModels.add(modifiableRootModel);
 
-                ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
+                    // TODO: Add here logic for configuring project structure and dependencies
+                    modifiableRootModel.addContentEntry(VfsUtilCore.pathToUrl(projectPath));
 
-                if (null != model) {
-                    ApplicationManager.getApplication().runWriteAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            modifiableRootModel.commit();
-                        }
-                    });
+                    ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
+
+                    if (null != model) {
+                        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                modifiableRootModel.commit();
+                            }
+                        });
+                    }
                 }
             }
 

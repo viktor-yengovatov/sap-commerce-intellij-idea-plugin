@@ -34,7 +34,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Abstrac
 
     @Override
     public boolean doQuickImport(final VirtualFile file, final WizardContext wizardContext) {
-        this.getBuilder().setRootDirectory(file.getParent().getPath());
+        this.getBuilder().setRootProjectAbsolutePath(file.getParent().getPath());
 
         final List<String> projects = getBuilder().getList();
         if (null == projects || 1 != projects.size()) {
@@ -47,7 +47,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Abstrac
             LOG.error(e);
         }
 
-        wizardContext.setProjectName(HybrisProjectUtils.findProjectName(projects.get(0)));
+        wizardContext.setProjectName(HybrisProjectUtils.getModuleName(projects.get(0)));
         return true;
     }
 

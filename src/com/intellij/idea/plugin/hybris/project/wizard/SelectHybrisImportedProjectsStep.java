@@ -43,7 +43,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         this.calcDuplicates();
 
         return this.fileChooser.getMarkedElements().contains(item)
-            && this.duplicateNames.contains(HybrisProjectUtils.findProjectName(item));
+            && this.duplicateNames.contains(HybrisProjectUtils.getModuleName(item));
     }
 
     private void calcDuplicates() {
@@ -54,7 +54,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
             for (String model : this.fileChooser.getMarkedElements()) {
 
-                final String projectName = HybrisProjectUtils.findProjectName(model);
+                final String projectName = HybrisProjectUtils.getModuleName(model);
 
                 if (!usedNames.add(projectName)) {
                     this.duplicateNames.add(projectName);
@@ -72,19 +72,19 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     protected String getElementText(final String item) {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        final String projectName = HybrisProjectUtils.findProjectName(item);
+        final String projectName = HybrisProjectUtils.getModuleName(item);
         stringBuilder.append(projectName);
 
         final HybrisProjectImportParameters projectImportParameters = this.getContext().getProjectImportParameters();
 
-        final String relPath = VirtualFileSystemUtils.getRelative(projectImportParameters.getRoot(), item);
+        final String relPath = VirtualFileSystemUtils.getRelative(projectImportParameters.getRootProjectAbsolutePath(), item);
 
-        if (null == projectImportParameters.getProjectsPathsToConvert()) {
-            projectImportParameters.setProjectsPathsToConvert(new ArrayList<String>());
+        if (null == projectImportParameters.getChosenForImportModulesRootsAbsolutePaths()) {
+            projectImportParameters.setChosenForImportModulesRootsAbsolutePaths(new ArrayList<String>());
         }
 
-        if (!projectImportParameters.getProjectsPathsToConvert().contains(item)) {
-            projectImportParameters.getProjectsPathsToConvert().add(item);
+        if (!projectImportParameters.getChosenForImportModulesRootsAbsolutePaths().contains(item)) {
+            projectImportParameters.getChosenForImportModulesRootsAbsolutePaths().add(item);
         }
 
         if (!relPath.equals(".") && !relPath.equals(projectName)) {

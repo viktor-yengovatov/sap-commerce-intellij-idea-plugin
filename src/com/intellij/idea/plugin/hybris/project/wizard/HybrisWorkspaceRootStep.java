@@ -45,7 +45,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     @Override
     public boolean validate() throws ConfigurationException {
         if (super.validate()) {
-            this.getContext().setRootDirectory(this.projectsRootChooser.getText());
+            this.getContext().setRootProjectAbsolutePath(this.projectsRootChooser.getText());
 
             return this.getContext().isRootDirectorySet();
         }

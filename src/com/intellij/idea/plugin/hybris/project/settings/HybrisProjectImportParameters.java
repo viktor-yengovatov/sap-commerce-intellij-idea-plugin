@@ -2,7 +2,6 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -16,69 +15,68 @@ import java.util.Set;
 public class HybrisProjectImportParameters {
 
     @Nullable
-    protected String root;
+    protected String rootProjectAbsolutePath;
     @Nullable
-    protected List<String> workspace;
+    protected List<String> foundModulesRootsAbsolutePaths;
     @Nullable
-    protected List<String> projectsPathsToConvert;
-    protected boolean openModuleSettings;
-    @NonNls
+    protected List<String> chosenForImportModulesRootsAbsolutePaths;
     @Nullable
-    protected String commonModulesDirectory;
-    @Nullable
-    protected Set<String> existingModuleNames;
+    protected Set<String> alreadyOpenedModulesNames;
+    protected boolean openProjectSettingsAfterImport;
 
     @Nullable
-    public String getRoot() {
-        return root;
+    public String getRootProjectAbsolutePath() {
+        return rootProjectAbsolutePath;
     }
 
-    public void setRoot(@Nullable final String root) {
-        this.root = root;
+    public void setRootProjectAbsolutePath(@Nullable final String rootProjectAbsolutePath) {
+        this.rootProjectAbsolutePath = rootProjectAbsolutePath;
     }
 
     @Nullable
-    public List<String> getWorkspace() {
-        return workspace;
+    public List<String> getFoundModulesRootsAbsolutePaths() {
+        return foundModulesRootsAbsolutePaths;
     }
 
-    public void setWorkspace(@Nullable final List<String> workspace) {
-        this.workspace = workspace;
-    }
-
-    @Nullable
-    public List<String> getProjectsPathsToConvert() {
-        return projectsPathsToConvert;
-    }
-
-    public void setProjectsPathsToConvert(@Nullable final List<String> projectsPathsToConvert) {
-        this.projectsPathsToConvert = projectsPathsToConvert;
-    }
-
-    public boolean isOpenModuleSettings() {
-        return openModuleSettings;
-    }
-
-    public void setOpenModuleSettings(final boolean openModuleSettings) {
-        this.openModuleSettings = openModuleSettings;
+    public void setFoundModulesRootsAbsolutePaths(@Nullable final List<String> foundModulesRootsAbsolutePaths) {
+        this.foundModulesRootsAbsolutePaths = foundModulesRootsAbsolutePaths;
     }
 
     @Nullable
-    public String getCommonModulesDirectory() {
-        return commonModulesDirectory;
+    public List<String> getChosenForImportModulesRootsAbsolutePaths() {
+        return chosenForImportModulesRootsAbsolutePaths;
     }
 
-    public void setCommonModulesDirectory(@Nullable final String commonModulesDirectory) {
-        this.commonModulesDirectory = commonModulesDirectory;
+    public void setChosenForImportModulesRootsAbsolutePaths(@Nullable final List<String> chosenForImportModulesRootsAbsolutePaths) {
+        this.chosenForImportModulesRootsAbsolutePaths = chosenForImportModulesRootsAbsolutePaths;
     }
 
     @Nullable
-    public Set<String> getExistingModuleNames() {
-        return existingModuleNames;
+    public Set<String> getAlreadyOpenedModulesNames() {
+        return alreadyOpenedModulesNames;
     }
 
-    public void setExistingModuleNames(@Nullable final Set<String> existingModuleNames) {
-        this.existingModuleNames = existingModuleNames;
+    public void setAlreadyOpenedModulesNames(@Nullable final Set<String> alreadyOpenedModulesNames) {
+        this.alreadyOpenedModulesNames = alreadyOpenedModulesNames;
+    }
+
+    public boolean isOpenProjectSettingsAfterImport() {
+        return openProjectSettingsAfterImport;
+    }
+
+    public void setOpenProjectSettingsAfterImport(final boolean openProjectSettingsAfterImport) {
+        this.openProjectSettingsAfterImport = openProjectSettingsAfterImport;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(rootProjectAbsolutePath)
+            .append(foundModulesRootsAbsolutePaths)
+            .append(chosenForImportModulesRootsAbsolutePaths)
+            .append(alreadyOpenedModulesNames)
+            .append(openProjectSettingsAfterImport)
+            .toHashCode();
     }
 
     @Override
@@ -94,36 +92,22 @@ public class HybrisProjectImportParameters {
         final HybrisProjectImportParameters other = (HybrisProjectImportParameters) obj;
 
         return new EqualsBuilder()
-            .append(openModuleSettings, other.openModuleSettings)
-            .append(root, other.root)
-            .append(workspace, other.workspace)
-            .append(projectsPathsToConvert, other.projectsPathsToConvert)
-            .append(commonModulesDirectory, other.commonModulesDirectory)
-            .append(existingModuleNames, other.existingModuleNames)
+            .append(openProjectSettingsAfterImport, other.openProjectSettingsAfterImport)
+            .append(rootProjectAbsolutePath, other.rootProjectAbsolutePath)
+            .append(foundModulesRootsAbsolutePaths, other.foundModulesRootsAbsolutePaths)
+            .append(chosenForImportModulesRootsAbsolutePaths, other.chosenForImportModulesRootsAbsolutePaths)
+            .append(alreadyOpenedModulesNames, other.alreadyOpenedModulesNames)
             .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-            .append(root)
-            .append(workspace)
-            .append(projectsPathsToConvert)
-            .append(openModuleSettings)
-            .append(commonModulesDirectory)
-            .append(existingModuleNames)
-            .toHashCode();
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("HybrisProjectImportParameters{");
-        sb.append("root='").append(root).append('\'');
-        sb.append(", workspace=").append(workspace);
-        sb.append(", projectsPathsToConvert=").append(projectsPathsToConvert);
-        sb.append(", openModuleSettings=").append(openModuleSettings);
-        sb.append(", commonModulesDirectory='").append(commonModulesDirectory).append('\'');
-        sb.append(", existingModuleNames=").append(existingModuleNames);
+        sb.append("rootProjectAbsolutePath='").append(rootProjectAbsolutePath).append('\'');
+        sb.append(", foundModulesRootsAbsolutePaths=").append(foundModulesRootsAbsolutePaths);
+        sb.append(", chosenForImportModulesRootsAbsolutePaths=").append(chosenForImportModulesRootsAbsolutePaths);
+        sb.append(", alreadyOpenedModulesNames=").append(alreadyOpenedModulesNames);
+        sb.append(", openProjectSettingsAfterImport=").append(openProjectSettingsAfterImport);
         sb.append('}');
         return sb.toString();
     }

@@ -24,8 +24,8 @@ public class ProjectRootsComparator implements Comparator<String> {
             return EQUALS;
         }
 
-        final String projectName1 = HybrisProjectUtils.findProjectName(o1);
-        final String projectName2 = HybrisProjectUtils.findProjectName(o2);
+        final String projectName1 = HybrisProjectUtils.getModuleName(o1);
+        final String projectName2 = HybrisProjectUtils.getModuleName(o2);
 
         return ((null != projectName1) && (null != projectName2))
                ? projectName1.compareToIgnoreCase(projectName2)

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
-    public abstract void setRootDirectory(@NotNull final String path);
+    public abstract void setRootProjectAbsolutePath(@NotNull final String rootProjectAbsolutePath);
 
     public abstract boolean isRootDirectorySet();
 

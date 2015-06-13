@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
+import com.intellij.idea.plugin.hybris.project.exceptions.ConfigurationException;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -27,48 +28,28 @@ public final class HybrisProjectUtils {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    @NotNull
-    public static Collection<File> findAlreadyExistingModuleFiles(@NotNull final Iterable<String> modulesRootPaths) {
-        Validate.notNull(modulesRootPaths);
+    @Nullable
+    public static String buildPathForIdeaModuleFile(final String moduleRootAbsolutePath,
+                                                    final String rootProjectAbsolutePath
+    ) throws ConfigurationException {
+        final String moduleName = HybrisProjectUtils.getModuleName(moduleRootAbsolutePath);
 
-        final Collection<File> files = new HashSet<File>();
-
-        for (String path : modulesRootPaths) {
-            final File moduleFile = findAlreadyExistingModuleFile(path);
-
-            if (null != moduleFile) {
-                files.add(moduleFile);
-            }
+        if (null == moduleName) {
+            return null;
         }
 
-        return files;
+        return rootProjectAbsolutePath
+               + File.separatorChar
+               + moduleName
+               + HybrisConstants.NEW_MODULE_FILE_EXTENSION;
     }
 
     @Nullable
-    public static File findAlreadyExistingModuleFile(@NotNull final String moduleRootPath) {
-        Validate.notEmpty(moduleRootPath);
-
-        final String moduleName = HybrisProjectUtils.findProjectName(moduleRootPath);
-
-        final File imlFile = new File(moduleRootPath + File.separator + moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
-        if (imlFile.isFile()) {
-            return imlFile;
-        }
-
-        final File emlFile = new File(moduleRootPath + File.separator + moduleName + HybrisConstants.OLD_MODULE_FILE_EXTENSION);
-        if (emlFile.isFile()) {
-            return emlFile;
-        }
-
-        return null;
-    }
-
-    @Nullable
-    public static String findProjectName(@NotNull final String rootPath) {
-        Validate.notEmpty(rootPath);
+    public static String getModuleName(@NotNull final String moduleRootAbsolutePath) {
+        Validate.notEmpty(moduleRootAbsolutePath);
 
         String name = null;
-        final File file = new File(rootPath, HybrisConstants.EXTENSION_INFO_XML);
+        final File file = new File(moduleRootAbsolutePath, HybrisConstants.EXTENSION_INFO_XML);
 
         if (file.isFile()) {
             try {
@@ -90,29 +71,73 @@ public final class HybrisProjectUtils {
     }
 
     @NotNull
-    public static List<String> findModuleRoots(@NotNull final String rootPath,
-                                               @Nullable final Processor<String> stepProcessor
+    public static Collection<File> findAlreadyExistingModuleFiles(
+        @NotNull final Iterable<String> modulesRootAbsolutePaths
     ) {
-        return new ArrayList<String>(findModuleRootsSet(rootPath, stepProcessor));
+        Validate.notNull(modulesRootAbsolutePaths);
+
+        final Collection<File> files = new HashSet<File>();
+
+        for (String path : modulesRootAbsolutePaths) {
+            final File moduleFile = findAlreadyExistingModuleFile(path);
+
+            if (null != moduleFile) {
+                files.add(moduleFile);
+            }
+        }
+
+        return files;
+    }
+
+    @Nullable
+    public static File findAlreadyExistingModuleFile(@NotNull final String moduleRootAbsolutePath) {
+        Validate.notEmpty(moduleRootAbsolutePath);
+
+        final String moduleName = HybrisProjectUtils.getModuleName(moduleRootAbsolutePath);
+
+        final File imlFile = new File(
+            moduleRootAbsolutePath + File.separator + moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION
+        );
+
+        if (imlFile.isFile()) {
+            return imlFile;
+        }
+
+        final File emlFile = new File(
+            moduleRootAbsolutePath + File.separator + moduleName + HybrisConstants.OLD_MODULE_FILE_EXTENSION
+        );
+
+        if (emlFile.isFile()) {
+            return emlFile;
+        }
+
+        return null;
     }
 
     @NotNull
-    private static Set<String> findModuleRootsSet(@NotNull final String rootPath,
+    public static List<String> findModuleRoots(@NotNull final String rootProjectAbsolutePath,
+                                               @Nullable final Processor<String> stepProcessor
+    ) {
+        return new ArrayList<String>(findModuleRootsSet(rootProjectAbsolutePath, stepProcessor));
+    }
+
+    @NotNull
+    private static Set<String> findModuleRootsSet(@NotNull final String rootProjectAbsolutePath,
                                                   @Nullable final Processor<String> stepProcessor
     ) {
-        Validate.notEmpty(rootPath);
+        Validate.notEmpty(rootProjectAbsolutePath);
 
         final Set<String> paths = new HashSet<String>(1);
 
         if (null != stepProcessor) {
-            stepProcessor.process(rootPath);
+            stepProcessor.process(rootProjectAbsolutePath);
         }
 
-        if (null != findProjectName(rootPath)) {
-            paths.add(rootPath);
+        if (null != getModuleName(rootProjectAbsolutePath)) {
+            paths.add(rootProjectAbsolutePath);
         }
 
-        final File root = new File(rootPath);
+        final File root = new File(rootProjectAbsolutePath);
         if (root.isDirectory()) {
             final File[] files = root.listFiles();
 

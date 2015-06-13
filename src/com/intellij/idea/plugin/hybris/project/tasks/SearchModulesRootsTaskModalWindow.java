@@ -19,13 +19,13 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class SearchProjectRootsTaskModalWindow extends Task.Modal {
+public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
-    protected final String path;
+    protected final String rootProjectAbsolutePath;
     protected final HybrisProjectImportParameters projectImportParameters;
 
-    public SearchProjectRootsTaskModalWindow(
-        @NotNull final String path,
+    public SearchModulesRootsTaskModalWindow(
+        @NotNull final String rootProjectAbsolutePath,
         @NotNull final HybrisProjectImportParameters projectImportParameters
     ) {
         super(
@@ -34,10 +34,10 @@ public class SearchProjectRootsTaskModalWindow extends Task.Modal {
             true
         );
 
-        Validate.notEmpty(path);
+        Validate.notEmpty(rootProjectAbsolutePath);
         Validate.notNull(projectImportParameters);
 
-        this.path = path;
+        this.rootProjectAbsolutePath = rootProjectAbsolutePath;
         this.projectImportParameters = projectImportParameters;
     }
 
@@ -46,19 +46,19 @@ public class SearchProjectRootsTaskModalWindow extends Task.Modal {
         Validate.notNull(indicator);
 
         final List<String> roots = HybrisProjectUtils.findModuleRoots(
-            this.path, new ProgressIndicatorUpdaterProcessor(indicator)
+            this.rootProjectAbsolutePath, new ProgressIndicatorUpdaterProcessor(indicator)
         );
 
         Collections.sort(roots, new ProjectRootsComparator());
 
-        this.projectImportParameters.setWorkspace(roots);
-        this.projectImportParameters.setRoot(this.path);
+        this.projectImportParameters.setFoundModulesRootsAbsolutePaths(roots);
+        this.projectImportParameters.setRootProjectAbsolutePath(this.rootProjectAbsolutePath);
     }
 
     @Override
     public void onCancel() {
-        this.projectImportParameters.setWorkspace(null);
-        this.projectImportParameters.setRoot(null);
+        this.projectImportParameters.setFoundModulesRootsAbsolutePaths(null);
+        this.projectImportParameters.setRootProjectAbsolutePath(null);
     }
 
     protected class ProgressIndicatorUpdaterProcessor implements Processor<String> {

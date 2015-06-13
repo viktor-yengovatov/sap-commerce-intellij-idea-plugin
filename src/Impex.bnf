@@ -14,9 +14,9 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexTokenType"
 }
 
-impexFile ::= root*
+impexFile ::= rootProjectAbsolutePath*
 
-private root ::= (CRLF | ( !<<eof>> root_group (CRLF | <<eof>> )))
+private rootProjectAbsolutePath ::= (CRLF | ( !<<eof>> root_group (CRLF | <<eof>> )))
 {recoverWhile = recover_root}
 
 private root_group ::= (
