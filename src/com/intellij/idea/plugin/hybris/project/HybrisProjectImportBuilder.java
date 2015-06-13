@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.project;
 
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
-import com.intellij.idea.plugin.hybris.project.wizard.Options;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.openapi.application.ApplicationManager;
@@ -51,7 +51,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectImportBuilder.class.getName());
 
-    private Parameters parameters;
+    private HybrisProjectImportParameters projectImportParameters;
 
     @NotNull
     @Override
@@ -66,40 +66,63 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
     @Override
     public List<String> getList() {
-        return this.getParameters().workspace;
+        return this.getProjectImportParameters().getWorkspace();
     }
 
     @Override
     public void setList(final List<String> list) throws ConfigurationException {
-        this.getParameters().projectsToConvert = list;
+        this.getProjectImportParameters().setProjectsToConvert(list);
+    }
+
+    @NotNull
+    public HybrisProjectImportParameters getProjectImportParameters() {
+        if (null == this.projectImportParameters) {
+            this.projectImportParameters = new HybrisProjectImportParameters();
+            this.projectImportParameters.setExistingModuleNames(new THashSet<String>());
+
+            if (this.isUpdate()) {
+                final Project project = getCurrentProject();
+
+                if (null != project) {
+                    for (Module module : ModuleManager.getInstance(project).getModules()) {
+                        this.projectImportParameters.getExistingModuleNames().add(module.getName());
+                    }
+                }
+            }
+        }
+
+        return this.projectImportParameters;
     }
 
     @Override
-    public boolean isMarked(final String element) {
-        if (null != this.getParameters().projectsToConvert) {
-            return this.getParameters().projectsToConvert.contains(element);
+    public boolean isMarked(final String t) {
+        if (null != this.getProjectImportParameters().getProjectsToConvert()) {
+            return this.getProjectImportParameters().getProjectsToConvert().contains(t);
         }
 
-        return !this.getParameters().existingModuleNames.contains(HybrisProjectFinderUtils.findProjectName(element));
+        return !this.getProjectImportParameters().getExistingModuleNames().contains(HybrisProjectFinderUtils.findProjectName(t));
     }
 
     @Nullable
     @Override
     public List<Module> commit(final Project project,
-                               final ModifiableModuleModel model,
+                               final ModifiableModuleModel modifiableModuleModel,
                                final ModulesProvider modulesProvider,
-                               final ModifiableArtifactModel artifactModel) {
+                               final ModifiableArtifactModel modifiableArtifactModel) {
 
         final List<Module> result = new ArrayList<Module>();
 
         try {
-            final ModifiableModuleModel moduleModel = null != model ? model : ModuleManager.getInstance(project).getModifiableModel();
-            final ModifiableRootModel[] rootModels = new ModifiableRootModel[this.getParameters().projectsToConvert.size()];
+            final ModifiableModuleModel moduleModel = (null != modifiableModuleModel)
+                                                      ? modifiableModuleModel
+                                                      : ModuleManager.getInstance(project).getModifiableModel();
+
+            final ModifiableRootModel[] rootModels = new ModifiableRootModel[this.getProjectImportParameters().getProjectsToConvert().size()];
             final Collection<File> files = new HashSet<File>();
 
-            for (String path : this.getParameters().projectsToConvert) {
+            for (String path : this.getProjectImportParameters().getProjectsToConvert()) {
 
-                String modulesDirectory = this.getParameters().converterOptions.commonModulesDirectory;
+                String modulesDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
                 if (null == modulesDirectory) {
                     modulesDirectory = path;
                 }
@@ -159,9 +182,9 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
             int idx = 0;
 
-            for (String path : getParameters().projectsToConvert) {
+            for (String path : getProjectImportParameters().getProjectsToConvert()) {
 
-                String modulesDirectory = getParameters().converterOptions.commonModulesDirectory;
+                String modulesDirectory = getProjectImportParameters().getCommonModulesDirectory();
                 if (null == modulesDirectory) {
                     modulesDirectory = path;
                 }
@@ -180,7 +203,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
                 ClasspathStorage.setStorageType(rootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
-                if (null != model) {
+                if (null != modifiableModuleModel) {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         public void run() {
                             rootModel.commit();
@@ -189,7 +212,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                 }
             }
 
-            if (null == model) {
+            if (null == modifiableModuleModel) {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     public void run() {
                         ModifiableModelCommitter.multiCommit(rootModels, moduleModel);
@@ -205,36 +228,16 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
     public void cleanup() {
         super.cleanup();
-        this.parameters = null;
+        this.projectImportParameters = null;
     }
 
     public boolean isOpenProjectSettingsAfter() {
-        return this.getParameters().openModuleSettings;
+        return this.getProjectImportParameters().isOpenModuleSettings();
     }
 
     @Override
-    public void setOpenProjectSettingsAfter(final boolean on) {
-        this.getParameters().openModuleSettings = on;
-    }
-
-    @NotNull
-    public Parameters getParameters() {
-        if (null == this.parameters) {
-            this.parameters = new Parameters();
-            this.parameters.existingModuleNames = new THashSet<String>();
-
-            if (this.isUpdate()) {
-                final Project project = getCurrentProject();
-
-                if (null != project) {
-                    for (Module module : ModuleManager.getInstance(project).getModules()) {
-                        this.parameters.existingModuleNames.add(module.getName());
-                    }
-                }
-            }
-        }
-
-        return this.parameters;
+    public void setOpenProjectSettingsAfter(final boolean b) {
+        this.getProjectImportParameters().setOpenModuleSettings(b);
     }
 
     public boolean setRootDirectory(final String path) {
@@ -242,20 +245,20 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
             getCurrentProject(),
             HybrisI18NBundleUtils.message("hybris.project.import.scanning"), true) {
 
-            public void run(@NotNull final ProgressIndicator indicator) {
+            public void run(@NotNull final ProgressIndicator progressIndicator) {
                 final List<String> roots = new ArrayList<String>();
                 HybrisProjectFinderUtils.findModuleRoots(roots, path, new Processor<String>() {
 
                     @Override
-                    public boolean process(final String path) {
-                        final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+                    public boolean process(final String t) {
+                        final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
 
-                        if (null != progressIndicator) {
-                            if (progressIndicator.isCanceled()) {
+                        if (null != indicator) {
+                            if (indicator.isCanceled()) {
                                 return false;
                             }
 
-                            progressIndicator.setText2(path);
+                            indicator.setText2(t);
                         }
 
                         return true;
@@ -270,40 +273,30 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                         final String projectName2 = HybrisProjectFinderUtils.findProjectName(path2);
 
                         return ((null != projectName1) && (null != projectName2))
-                            ? projectName1.compareToIgnoreCase(projectName2)
-                            : 0;
+                               ? projectName1.compareToIgnoreCase(projectName2)
+                               : 0;
                     }
                 });
 
-                getParameters().workspace = roots;
-                getParameters().root = path;
+                getProjectImportParameters().setWorkspace(roots);
+                getProjectImportParameters().setRoot(path);
             }
 
             public void onCancel() {
-                getParameters().workspace = null;
-                getParameters().root = null;
+                getProjectImportParameters().setWorkspace(null);
+                getProjectImportParameters().setRoot(null);
             }
         });
 
         this.setFileToImport(path);
 
-        return this.getParameters().workspace != null;
-    }
-
-    public static class Parameters {
-
-        public String root;
-        public List<String> workspace;
-        public List<String> projectsToConvert = new ArrayList<String>();
-        public boolean openModuleSettings;
-        public Options converterOptions = new Options();
-        public Set<String> existingModuleNames;
+        return null != this.getProjectImportParameters().getWorkspace();
     }
 
     private static class GetFileNameFunction implements Function<File, String> {
 
-        public String fun(final File file) {
-            return file.getPath();
+        public String fun(final File param) {
+            return param.getPath();
         }
     }
 }

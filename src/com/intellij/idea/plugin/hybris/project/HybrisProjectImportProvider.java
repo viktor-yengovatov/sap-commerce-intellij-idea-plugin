@@ -25,8 +25,8 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
 
     public ModuleWizardStep[] createSteps(final WizardContext context) {
         final ProjectWizardStepFactory stepFactory = ProjectWizardStepFactory.getInstance();
-        return new ModuleWizardStep[]{ new HybrisWorkspaceRootStep(context), new SelectHybrisImportedProjectsStep(context),
-                stepFactory.createProjectJdkStep(context)};
+        return new ModuleWizardStep[]{new HybrisWorkspaceRootStep(context), new SelectHybrisImportedProjectsStep(context),
+            stepFactory.createProjectJdkStep(context)};
     }
 
     @Override
@@ -37,6 +37,6 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
     @Nullable
     @Override
     public String getFileSample() {
-        return "<b>Hybris</b> project with extensioninfo.xml file";
+        return "<b>Hybris</b> project with extensioninfo.xml file.";
     }
 }

@@ -71,11 +71,11 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         stringBuilder.append(projectName);
 
         final String relPath = VirtualFileSystemUtils.getRelative(
-            ((HybrisProjectImportBuilder) this.getBuilder()).getParameters().root, item
+            ((HybrisProjectImportBuilder) this.getBuilder()).getProjectImportParameters().getRoot(), item
         );
 
-        if (!this.getContext().getParameters().projectsToConvert.contains(item)) {
-            this.getContext().getParameters().projectsToConvert.add(item);
+        if (!this.getContext().getProjectImportParameters().getProjectsToConvert().contains(item)) {
+            this.getContext().getProjectImportParameters().getProjectsToConvert().add(item);
         }
 
         if (!relPath.equals(".") && !relPath.equals(projectName)) {
