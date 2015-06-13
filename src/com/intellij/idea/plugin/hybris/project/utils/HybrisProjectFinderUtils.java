@@ -10,28 +10,31 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created 10:39 PM 11 June 2015
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisProjectFinderUtils {
+public final class HybrisProjectFinderUtils {
+
+    private static final Pattern LINE_BREAK_PATTERN = Pattern.compile("\n");
 
     private HybrisProjectFinderUtils() throws IllegalAccessException {
-        throw new IllegalAccessException();
+        throw new IllegalAccessException("Should never be accessed.");
     }
 
     public static void findModuleRoots(final List<String> paths,
                                        final String rootPath,
                                        @Nullable final Processor<String> progressUpdater
     ) {
-        if (progressUpdater != null) {
+        if (null != progressUpdater) {
             progressUpdater.process(rootPath);
         }
 
-        final String project = findProjectName(rootPath);
-        if (project != null) {
+        final boolean projectFound = null != findProjectName(rootPath);
+        if (projectFound) {
             paths.add(rootPath);
         }
 
@@ -39,7 +42,7 @@ public class HybrisProjectFinderUtils {
         if (root.isDirectory()) {
             final File[] files = root.listFiles();
 
-            if (files != null) {
+            if (null != files) {
                 for (File file : files) {
                     findModuleRoots(paths, file.getPath(), progressUpdater);
                 }
@@ -60,7 +63,7 @@ public class HybrisProjectFinderUtils {
                     return null;
                 }
 
-                name = name.replace("\n", " ").trim();
+                name = LINE_BREAK_PATTERN.matcher(name).replaceAll(" ").trim();
             } catch (JDOMException e) {
                 return null;
             } catch (IOException e) {

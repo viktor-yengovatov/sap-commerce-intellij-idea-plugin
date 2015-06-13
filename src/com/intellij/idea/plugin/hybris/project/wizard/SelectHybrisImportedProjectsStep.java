@@ -44,7 +44,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     }
 
     private void calcDuplicates() {
-        if (this.duplicateNames == null) {
+        if (null == this.duplicateNames) {
             this.duplicateNames = new HashSet<String>();
 
             final Collection<String> usedNames = new HashSet<String>();

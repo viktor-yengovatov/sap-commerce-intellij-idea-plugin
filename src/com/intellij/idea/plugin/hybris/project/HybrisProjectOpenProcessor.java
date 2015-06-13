@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<HybrisProjectImportBuilder> {
 
-    private static final Logger LOG = Logger.getInstance("#" + HybrisProjectOpenProcessor.class.getName());
+    private static final Logger LOG = Logger.getInstance(HybrisProjectOpenProcessor.class.getName());
 
     public HybrisProjectOpenProcessor(final HybrisProjectImportBuilder builder) {
         super(builder);
@@ -36,7 +36,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<HybrisP
         this.getBuilder().setRootDirectory(file.getParent().getPath());
 
         final List<String> projects = getBuilder().getList();
-        if (projects == null || projects.size() != 1) {
+        if (null == projects || 1 != projects.size()) {
             return false;
         }
 

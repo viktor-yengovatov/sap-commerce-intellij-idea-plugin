@@ -9,12 +9,12 @@ import javax.swing.*;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisIconsUtils {
+public final class HybrisIconsUtils {
 
     public static final Icon IMPEX_FILE = IconLoader.getIcon("/icons/jar-gray.png");
     public static final Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybris_icon.png");
 
     private HybrisIconsUtils() throws IllegalAccessException {
-        throw new IllegalAccessException();
+        throw new IllegalAccessException("Should never be accessed.");
     }
 }

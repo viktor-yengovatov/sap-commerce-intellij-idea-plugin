@@ -7,7 +7,11 @@ import com.intellij.openapi.util.io.FileUtil;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class VirtualFileSystemUtils {
+public final class VirtualFileSystemUtils {
+
+    private VirtualFileSystemUtils() throws IllegalAccessException {
+        throw new IllegalAccessException("Should never be accessed.");
+    }
 
     public static String normalize(String path) {
         path = FileUtil.toSystemIndependentName(path);
@@ -26,9 +30,13 @@ public class VirtualFileSystemUtils {
 
         while (true) {
             final int index = path.indexOf("/..");
-            if (index < 0) break;
+            if (0 > index) {
+                break;
+            }
             final int slashIndex = path.substring(0, index).lastIndexOf("/");
-            if (slashIndex < 0) break;
+            if (0 > slashIndex) {
+                break;
+            }
             path = path.substring(0, slashIndex) + path.substring(index + 3);
         }
 
@@ -41,7 +49,7 @@ public class VirtualFileSystemUtils {
 
         final int prefix = findCommonPathPrefixLength(baseRoot, path);
 
-        if (prefix != 0) {
+        if (0 != prefix) {
             baseRoot = baseRoot.substring(prefix);
             path = path.substring(prefix);
             if (!baseRoot.isEmpty()) {
@@ -69,12 +77,12 @@ public class VirtualFileSystemUtils {
             end = new_end;
         }
         while (end != path1.length());
-        return end < 0 ? 0 : end;
+        return 0 > end ? 0 : end;
     }
 
     private static int endOfToken(final String s, int index) {
         index = s.indexOf("/", index);
-        return (index == -1) ? s.length() : index;
+        return (-1 == index) ? s.length() : index;
     }
 
     private static String revertRelativePath(final String path) {
@@ -84,7 +92,7 @@ public class VirtualFileSystemUtils {
             final StringBuilder sb = new StringBuilder();
             sb.append("..");
             int count = normalize(path).split("/").length;
-            while (--count > 0) {
+            while (0 < --count) {
                 sb.append("/..");
             }
             return sb.toString();

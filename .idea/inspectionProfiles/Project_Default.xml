@@ -3,8 +3,15 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="AbstractMethodCallInConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ArrayEquality" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToCatchBlockParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToDateFieldFromParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignorePrivateMethods" value="true" />
+    </inspection_tool>
     <inspection_tool class="AssignmentToForLoopParameter" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_checkForeachParameters" value="false" />
+    </inspection_tool>
+    <inspection_tool class="AssignmentToMethodParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreTransformationOfOriginalParameter" value="false" />
     </inspection_tool>
     <inspection_tool class="AssignmentUsedAsCondition" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="BadOddness" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -46,6 +53,7 @@
       <option name="m_minLength" value="2" />
       <option name="m_maxLength" value="100" />
     </inspection_tool>
+    <inspection_tool class="ConstantOnRHSOfComparison" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CyclomaticComplexity" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_limit" value="10" />
     </inspection_tool>
@@ -87,6 +95,8 @@
     <inspection_tool class="LocalCanBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="REPORT_VARIABLES" value="true" />
       <option name="REPORT_PARAMETERS" value="true" />
+      <option name="REPORT_CATCH_PARAMETERS" value="false" />
+      <option name="REPORT_FOREACH_PARAMETERS" value="false" />
     </inspection_tool>
     <inspection_tool class="LoggerInitializedWithForeignClass" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="loggerClassName" value="org.apache.log4j.Logger,org.slf4j.LoggerFactory,org.apache.commons.logging.LogFactory,java.util.logging.Logger" />

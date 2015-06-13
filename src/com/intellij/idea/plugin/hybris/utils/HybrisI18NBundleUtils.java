@@ -9,7 +9,7 @@ import org.jetbrains.annotations.PropertyKey;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisI18NBundleUtils extends AbstractBundle {
+public final class HybrisI18NBundleUtils extends AbstractBundle {
 
     private static final HybrisI18NBundleUtils BUNDLE = new HybrisI18NBundleUtils();
     public static final String PATH_TO_BUNDLE = "i18n.HybrisBundle";

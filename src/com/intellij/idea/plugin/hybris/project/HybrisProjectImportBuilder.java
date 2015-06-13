@@ -49,7 +49,7 @@ import java.util.*;
  */
 public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
-    private static final Logger LOG = Logger.getInstance("#" + HybrisProjectImportBuilder.class.getName());
+    private static final Logger LOG = Logger.getInstance(HybrisProjectImportBuilder.class.getName());
 
     private Parameters parameters;
 
@@ -76,7 +76,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
     @Override
     public boolean isMarked(final String element) {
-        if (this.getParameters().projectsToConvert != null) {
+        if (null != this.getParameters().projectsToConvert) {
             return this.getParameters().projectsToConvert.contains(element);
         }
 
@@ -93,14 +93,14 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
         final List<Module> result = new ArrayList<Module>();
 
         try {
-            final ModifiableModuleModel moduleModel = model != null ? model : ModuleManager.getInstance(project).getModifiableModel();
+            final ModifiableModuleModel moduleModel = null != model ? model : ModuleManager.getInstance(project).getModifiableModel();
             final ModifiableRootModel[] rootModels = new ModifiableRootModel[this.getParameters().projectsToConvert.size()];
             final Collection<File> files = new HashSet<File>();
 
             for (String path : this.getParameters().projectsToConvert) {
 
                 String modulesDirectory = this.getParameters().converterOptions.commonModulesDirectory;
-                if (modulesDirectory == null) {
+                if (null == modulesDirectory) {
                     modulesDirectory = path;
                 }
 
@@ -128,15 +128,15 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                     Messages.getQuestionIcon()
                 );
 
-                if (resultCode != Messages.YES) {
-                    if (resultCode == Messages.NO) {
+                if (Messages.YES != resultCode) {
+                    if (Messages.NO == resultCode) {
                         final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
 
                         for (File file : files) {
 
                             final VirtualFile virtualFile = localFileSystem.findFileByIoFile(file);
 
-                            if (virtualFile != null) {
+                            if (null != virtualFile) {
                                 ApplicationManager.getApplication().runWriteAction(new ThrowableComputable<Void, IOException>() {
 
                                     @Override
@@ -162,7 +162,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
             for (String path : getParameters().projectsToConvert) {
 
                 String modulesDirectory = getParameters().converterOptions.commonModulesDirectory;
-                if (modulesDirectory == null) {
+                if (null == modulesDirectory) {
                     modulesDirectory = path;
                 }
 
@@ -180,7 +180,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
                 ClasspathStorage.setStorageType(rootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
-                if (model != null) {
+                if (null != model) {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         public void run() {
                             rootModel.commit();
@@ -189,7 +189,7 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                 }
             }
 
-            if (model == null) {
+            if (null == model) {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     public void run() {
                         ModifiableModelCommitter.multiCommit(rootModels, moduleModel);
@@ -219,14 +219,14 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
 
     @NotNull
     public Parameters getParameters() {
-        if (this.parameters == null) {
+        if (null == this.parameters) {
             this.parameters = new Parameters();
             this.parameters.existingModuleNames = new THashSet<String>();
 
             if (this.isUpdate()) {
                 final Project project = getCurrentProject();
 
-                if (project != null) {
+                if (null != project) {
                     for (Module module : ModuleManager.getInstance(project).getModules()) {
                         this.parameters.existingModuleNames.add(module.getName());
                     }

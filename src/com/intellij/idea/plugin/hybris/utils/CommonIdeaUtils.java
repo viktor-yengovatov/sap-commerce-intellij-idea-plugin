@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class CommonIdeaUtils {
+public final class CommonIdeaUtils {
 
     private CommonIdeaUtils() throws IllegalAccessException {
-        throw new IllegalAccessException();
+        throw new IllegalAccessException("Should never be accessed.");
     }
 
     @Nullable

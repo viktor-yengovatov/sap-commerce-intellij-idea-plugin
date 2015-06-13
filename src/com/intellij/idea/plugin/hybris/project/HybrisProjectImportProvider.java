@@ -23,7 +23,7 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
         this.myProcessor = new HybrisProjectOpenProcessor(builder);
     }
 
-    public ModuleWizardStep[] createSteps(WizardContext context) {
+    public ModuleWizardStep[] createSteps(final WizardContext context) {
         final ProjectWizardStepFactory stepFactory = ProjectWizardStepFactory.getInstance();
         return new ModuleWizardStep[]{ new HybrisWorkspaceRootStep(context), new SelectHybrisImportedProjectsStep(context),
                 stepFactory.createProjectJdkStep(context)};
