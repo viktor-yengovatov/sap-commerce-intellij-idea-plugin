@@ -1,6 +1,16 @@
 package com.intellij.idea.plugin.hybris.utils;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Created 1:51 AM 13 June 2015
@@ -11,6 +21,49 @@ public final class VirtualFileSystemUtils {
 
     private VirtualFileSystemUtils() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
+    }
+
+    public static void removeAllFiles(@NotNull final Collection<File> files) throws IOException {
+        Validate.notNull(files);
+
+        if (files.isEmpty()) {
+            return;
+        }
+
+        final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+
+        for (File file : files) {
+            final VirtualFile virtualFile = localFileSystem.findFileByIoFile(file);
+
+            if (null != virtualFile) {
+                ApplicationManager.getApplication().runWriteAction(new RemoveFileComputable(virtualFile));
+            } else {
+                FileUtil.delete(file);
+            }
+        }
+    }
+
+    public static String getRelative(String baseRoot, String path) {
+        baseRoot = normalize(baseRoot);
+        path = normalize(path);
+
+        final int prefix = findCommonPathPrefixLength(baseRoot, path);
+
+        if (0 != prefix) {
+            baseRoot = baseRoot.substring(prefix);
+            path = path.substring(prefix);
+            if (!baseRoot.isEmpty()) {
+                return normalize(revertRelativePath(baseRoot.substring(1)) + path);
+            } else if (!path.isEmpty()) {
+                return path.substring(1);
+            } else {
+                return ".";
+            }
+        } else if (FileUtil.isAbsolute(path)) {
+            return path;
+        } else {
+            return normalize(revertRelativePath(baseRoot) + "/" + path);
+        }
     }
 
     public static String normalize(String path) {
@@ -43,29 +96,6 @@ public final class VirtualFileSystemUtils {
         return path;
     }
 
-    public static String getRelative(String baseRoot, String path) {
-        baseRoot = normalize(baseRoot);
-        path = normalize(path);
-
-        final int prefix = findCommonPathPrefixLength(baseRoot, path);
-
-        if (0 != prefix) {
-            baseRoot = baseRoot.substring(prefix);
-            path = path.substring(prefix);
-            if (!baseRoot.isEmpty()) {
-                return normalize(revertRelativePath(baseRoot.substring(1)) + path);
-            } else if (!path.isEmpty()) {
-                return path.substring(1);
-            } else {
-                return ".";
-            }
-        } else if (FileUtil.isAbsolute(path)) {
-            return path;
-        } else {
-            return normalize(revertRelativePath(baseRoot) + "/" + path);
-        }
-    }
-
     public static int findCommonPathPrefixLength(final String path1, final String path2) {
         int end = -1;
         do {
@@ -80,11 +110,6 @@ public final class VirtualFileSystemUtils {
         return 0 > end ? 0 : end;
     }
 
-    private static int endOfToken(final String s, int index) {
-        index = s.indexOf("/", index);
-        return (-1 == index) ? s.length() : index;
-    }
-
     private static String revertRelativePath(final String path) {
         if (path.equals(".")) {
             return path;
@@ -96,6 +121,29 @@ public final class VirtualFileSystemUtils {
                 sb.append("/..");
             }
             return sb.toString();
+        }
+    }
+
+    private static int endOfToken(final String s, int index) {
+        index = s.indexOf("/", index);
+        return (-1 == index) ? s.length() : index;
+    }
+
+    private static class RemoveFileComputable implements ThrowableComputable<Void, IOException> {
+
+        private final VirtualFile virtualFile;
+
+        public RemoveFileComputable(@NotNull final VirtualFile virtualFile) {
+            Validate.notNull(virtualFile);
+
+            this.virtualFile = virtualFile;
+        }
+
+        @Override
+        public Void compute() throws IOException {
+            this.virtualFile.delete(this);
+
+            return null;
         }
     }
 }

@@ -20,7 +20,7 @@ public class HybrisProjectImportParameters {
     @Nullable
     protected List<String> workspace;
     @Nullable
-    protected List<String> projectsToConvert;
+    protected List<String> projectsPathsToConvert;
     protected boolean openModuleSettings;
     @NonNls
     @Nullable
@@ -47,12 +47,12 @@ public class HybrisProjectImportParameters {
     }
 
     @Nullable
-    public List<String> getProjectsToConvert() {
-        return projectsToConvert;
+    public List<String> getProjectsPathsToConvert() {
+        return projectsPathsToConvert;
     }
 
-    public void setProjectsToConvert(@Nullable final List<String> projectsToConvert) {
-        this.projectsToConvert = projectsToConvert;
+    public void setProjectsPathsToConvert(@Nullable final List<String> projectsPathsToConvert) {
+        this.projectsPathsToConvert = projectsPathsToConvert;
     }
 
     public boolean isOpenModuleSettings() {
@@ -97,7 +97,7 @@ public class HybrisProjectImportParameters {
             .append(openModuleSettings, other.openModuleSettings)
             .append(root, other.root)
             .append(workspace, other.workspace)
-            .append(projectsToConvert, other.projectsToConvert)
+            .append(projectsPathsToConvert, other.projectsPathsToConvert)
             .append(commonModulesDirectory, other.commonModulesDirectory)
             .append(existingModuleNames, other.existingModuleNames)
             .isEquals();
@@ -108,7 +108,7 @@ public class HybrisProjectImportParameters {
         return new HashCodeBuilder(17, 37)
             .append(root)
             .append(workspace)
-            .append(projectsToConvert)
+            .append(projectsPathsToConvert)
             .append(openModuleSettings)
             .append(commonModulesDirectory)
             .append(existingModuleNames)
@@ -120,7 +120,7 @@ public class HybrisProjectImportParameters {
         final StringBuilder sb = new StringBuilder("HybrisProjectImportParameters{");
         sb.append("root='").append(root).append('\'');
         sb.append(", workspace=").append(workspace);
-        sb.append(", projectsToConvert=").append(projectsToConvert);
+        sb.append(", projectsPathsToConvert=").append(projectsPathsToConvert);
         sb.append(", openModuleSettings=").append(openModuleSettings);
         sb.append(", commonModulesDirectory='").append(commonModulesDirectory).append('\'');
         sb.append(", existingModuleNames=").append(existingModuleNames);

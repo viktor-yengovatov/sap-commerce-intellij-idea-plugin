@@ -1,6 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
-import com.intellij.idea.plugin.hybris.utils.HybrisConstantsUtils;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Processor;
@@ -72,7 +72,7 @@ public final class HybrisProjectFinderUtils {
         Validate.notEmpty(rootPath);
 
         String name = null;
-        final File file = new File(rootPath, HybrisConstantsUtils.EXTENSION_INFO_XML);
+        final File file = new File(rootPath, HybrisConstants.EXTENSION_INFO_XML);
 
         if (file.isFile()) {
             try {

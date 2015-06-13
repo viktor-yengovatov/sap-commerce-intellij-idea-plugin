@@ -3,15 +3,14 @@ package com.intellij.idea.plugin.hybris.project;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchProjectRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
+import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.ModifiableModuleModel;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.module.StdModuleTypes;
+import com.intellij.openapi.module.*;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -22,12 +21,8 @@ import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.ThrowableComputable;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
 import gnu.trove.THashSet;
@@ -37,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -112,7 +106,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public void setList(final List<String> list) throws ConfigurationException {
-        this.getProjectImportParameters().setProjectsToConvert(list);
+        this.getProjectImportParameters().setProjectsPathsToConvert(list);
     }
 
     @Override
@@ -149,108 +143,52 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final List<Module> result = new ArrayList<Module>();
 
-        final List<String> projectsToConvert = this.getProjectImportParameters().getProjectsToConvert();
+        final List<String> projectsPathsToConvert = this.getProjectImportParameters().getProjectsPathsToConvert();
 
-        if (null == projectsToConvert || projectsToConvert.isEmpty()) {
+        if (null == projectsPathsToConvert || projectsPathsToConvert.isEmpty()) {
             return null;
         }
 
         try {
-            final ModifiableModuleModel moduleModel = (null != model)
-                                                      ? model
-                                                      : ModuleManager.getInstance(project).getModifiableModel();
+            final Collection<File> alreadyExistingModuleFiles = this.findAlreadyExistingModuleFiles(projectsPathsToConvert);
 
-            final ModifiableRootModel[] rootModels = new ModifiableRootModel[projectsToConvert.size()];
-            final Collection<File> files = new HashSet<File>();
-
-            for (String path : projectsToConvert) {
-
-                String modulesDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
-                if (null == modulesDirectory) {
-                    modulesDirectory = path;
-                }
-
-                final String moduleName = HybrisProjectFinderUtils.findProjectName(path);
-
-                final File imlFile = new File(modulesDirectory + File.separator + moduleName + ".iml");
-                if (imlFile.isFile()) {
-                    files.add(imlFile);
-                }
-
-                final File emlFile = new File(modulesDirectory + File.separator + moduleName + ".eml");
-                if (emlFile.isFile()) {
-                    files.add(emlFile);
-                }
+            if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
+                VirtualFileSystemUtils.removeAllFiles(alreadyExistingModuleFiles);
             }
 
-            if (!files.isEmpty()) {
-                final int resultCode = Messages.showYesNoCancelDialog(
-                    String.format(
-                        "%s module files found:\n%s.\n Would you like to reuse them?",
-                        ApplicationInfoEx.getInstanceEx().getFullApplicationName(),
-                        StringUtil.join(files, new GetFileNameFunction(), "\n")
-                    ),
-                    "Module Files Found",
-                    Messages.getQuestionIcon()
-                );
+            final ModifiableModuleModel modifiableModuleModel = (null != model)
+                ? model
+                : ModuleManager.getInstance(project).getModifiableModel();
 
-                if (Messages.YES != resultCode) {
-                    if (Messages.NO == resultCode) {
-                        final LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+            final Collection<ModifiableRootModel> modifiableRootModels = new ArrayList<ModifiableRootModel>();
 
-                        for (File file : files) {
+            for (String projectPath : projectsPathsToConvert) {
 
-                            final VirtualFile virtualFile = localFileSystem.findFileByIoFile(file);
-
-                            if (null != virtualFile) {
-                                ApplicationManager.getApplication().runWriteAction(new ThrowableComputable<Void, IOException>() {
-
-                                    @Override
-                                    public Void compute() throws IOException {
-                                        virtualFile.delete(this);
-                                        return null;
-                                    }
-                                });
-
-                            } else {
-                                FileUtil.delete(file);
-                            }
-                        }
-
-                    } else {
-                        return result;
-                    }
-                }
-            }
-
-            int idx = 0;
-
-            for (String path : projectsToConvert) {
-
-                String modulesDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
-                if (null == modulesDirectory) {
-                    modulesDirectory = path;
+                String projectRootDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
+                if (null == projectRootDirectory) {
+                    projectRootDirectory = projectPath;
                 }
 
-                final Module module = moduleModel.newModule(
-                    modulesDirectory + '/' + HybrisProjectFinderUtils.findProjectName(path) + ".iml",
+                final Module javaModule = modifiableModuleModel.newModule(
+                    projectRootDirectory + '/' + HybrisProjectFinderUtils.findProjectName(projectPath) + HybrisConstants.NEW_MODULE_FILE_EXTENSION,
                     StdModuleTypes.JAVA.getId()
                 );
 
-                result.add(module);
+                result.add(javaModule);
 
-                final ModifiableRootModel rootModel = ModuleRootManager.getInstance(module).getModifiableModel();
-                rootModels[idx++] = rootModel;
+                final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
+                modifiableRootModels.add(modifiableRootModel);
 
-                rootModel.addContentEntry(VfsUtilCore.pathToUrl(path));
+                // TODO: Add here logic for configuring project structure and dependencies
+                modifiableRootModel.addContentEntry(VfsUtilCore.pathToUrl(projectPath));
 
-                ClasspathStorage.setStorageType(rootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
+                ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
                 if (null != model) {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         @Override
                         public void run() {
-                            rootModel.commit();
+                            modifiableRootModel.commit();
                         }
                     });
                 }
@@ -260,15 +198,64 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        ModifiableModelCommitter.multiCommit(rootModels, moduleModel);
+                        ModifiableModelCommitter.multiCommit(modifiableRootModels, modifiableModuleModel);
                     }
                 });
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Can not import Hybris project(s).", e);
         }
 
         return result;
+    }
+
+    @NotNull
+    protected Collection<File> findAlreadyExistingModuleFiles(@NotNull final Iterable<String> projectsToConvert) {
+        Validate.notNull(projectsToConvert);
+
+        final Collection<File> files = new HashSet<File>();
+
+        for (String path : projectsToConvert) {
+
+            String modulesDirectory = this.getProjectImportParameters().getCommonModulesDirectory();
+            if (null == modulesDirectory) {
+                modulesDirectory = path;
+            }
+
+            final String moduleName = HybrisProjectFinderUtils.findProjectName(path);
+
+            final File imlFile = new File(modulesDirectory + File.separator + moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
+            if (imlFile.isFile()) {
+                files.add(imlFile);
+            }
+
+            final File emlFile = new File(modulesDirectory + File.separator + moduleName + HybrisConstants.OLD_MODULE_FILE_EXTENSION);
+            if (emlFile.isFile()) {
+                files.add(emlFile);
+            }
+        }
+
+        return files;
+    }
+
+    protected boolean shouldRemoveAlreadyExistingModuleFiles(@NotNull final Collection<File> files) {
+        Validate.notNull(files);
+
+        if (files.isEmpty()) {
+            return false;
+        }
+
+        final int resultCode = Messages.showYesNoCancelDialog(
+            String.format(
+                "%s module files found:\n%s.\n Would you like to reuse them?",
+                ApplicationInfoEx.getInstanceEx().getFullApplicationName(),
+                StringUtil.join(files, new GetFileNameFunction(), "\n")
+            ),
+            "Module Files Found",
+            Messages.getQuestionIcon()
+        );
+
+        return (Messages.YES != resultCode) && (Messages.NO == resultCode);
     }
 
     protected static class GetFileNameFunction implements Function<File, String> {

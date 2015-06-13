@@ -79,12 +79,12 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         final String relPath = VirtualFileSystemUtils.getRelative(projectImportParameters.getRoot(), item);
 
-        if (null == projectImportParameters.getProjectsToConvert()) {
-            projectImportParameters.setProjectsToConvert(new ArrayList<String>());
+        if (null == projectImportParameters.getProjectsPathsToConvert()) {
+            projectImportParameters.setProjectsPathsToConvert(new ArrayList<String>());
         }
 
-        if (!projectImportParameters.getProjectsToConvert().contains(item)) {
-            projectImportParameters.getProjectsToConvert().add(item);
+        if (!projectImportParameters.getProjectsPathsToConvert().contains(item)) {
+            projectImportParameters.getProjectsPathsToConvert().add(item);
         }
 
         if (!relPath.equals(".") && !relPath.equals(projectName)) {
