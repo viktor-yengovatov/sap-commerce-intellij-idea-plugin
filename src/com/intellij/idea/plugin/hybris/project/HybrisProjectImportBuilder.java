@@ -2,7 +2,6 @@ package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
 import com.intellij.idea.plugin.hybris.project.wizard.Options;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstantsUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.openapi.application.ApplicationManager;
@@ -24,7 +23,6 @@ import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -36,7 +34,6 @@ import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.util.Function;
 import com.intellij.util.Processor;
 import gnu.trove.THashSet;
-import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,16 +90,12 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                                final ModulesProvider modulesProvider,
                                final ModifiableArtifactModel artifactModel) {
 
-        final Collection<String> unknownLibraries = new TreeSet<String>();
-        final Collection<String> unknownJdks = new TreeSet<String>();
-        final Set<String> refsToModules = new HashSet<String>();
         final List<Module> result = new ArrayList<Module>();
 
         try {
             final ModifiableModuleModel moduleModel = model != null ? model : ModuleManager.getInstance(project).getModifiableModel();
             final ModifiableRootModel[] rootModels = new ModifiableRootModel[this.getParameters().projectsToConvert.size()];
             final Collection<File> files = new HashSet<File>();
-            final Set<String> moduleNames = new THashSet<String>(this.getParameters().projectsToConvert.size());
 
             for (String path : this.getParameters().projectsToConvert) {
 
@@ -112,7 +105,6 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
                 }
 
                 final String moduleName = HybrisProjectFinderUtils.findProjectName(path);
-                moduleNames.add(moduleName);
 
                 final File imlFile = new File(modulesDirectory + File.separator + moduleName + ".iml");
                 if (imlFile.isFile()) {
@@ -206,45 +198,6 @@ public class HybrisProjectImportBuilder extends ProjectImportBuilder<String> {
             }
         } catch (Exception e) {
             LOG.error(e);
-        }
-
-        final StringBuilder message = new StringBuilder();
-        refsToModules.removeAll(getParameters().existingModuleNames);
-
-        for (String path : getParameters().projectsToConvert) {
-            final String projectName = HybrisProjectFinderUtils.findProjectName(path);
-
-            if (projectName != null) {
-                refsToModules.remove(projectName);
-                getParameters().existingModuleNames.add(projectName);
-            }
-        }
-
-        if (!refsToModules.isEmpty()) {
-
-            message.append("Unknown modules detected");
-            for (String module : refsToModules) {
-                message.append("\n").append(module);
-            }
-        }
-
-        if (!unknownJdks.isEmpty()) {
-            if (message.length() > 0) {
-                message.append("\nand jdks");
-            } else {
-                message.append("Imported project refers to unknown jdks");
-            }
-            for (String unknownJdk : unknownJdks) {
-                message.append("\n").append(unknownJdk);
-            }
-        }
-
-        if (!unknownLibraries.isEmpty()) {
-            LOG.warn("Unknown libraries: " + unknownLibraries);
-        }
-
-        if (message.length() > 0) {
-            Messages.showErrorDialog(project, message.toString(), getTitle());
         }
 
         return result;

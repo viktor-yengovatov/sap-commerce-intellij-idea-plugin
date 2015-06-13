@@ -86,7 +86,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     @Nullable
     protected Icon getElementIcon(final String item) {
-        return isInConflict(item) ? AllIcons.Actions.Cancel : null;
+        return this.isInConflict(item) ? AllIcons.Actions.Cancel : null;
     }
 
     @Override
