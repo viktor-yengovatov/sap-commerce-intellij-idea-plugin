@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.project.modals;
+package com.intellij.idea.plugin.hybris.project.tasks;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
@@ -19,12 +19,12 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class SearchProjectRootsProgressIndicatorModalWindow extends Task.Modal {
+public class SearchProjectRootsTaskModalWindow extends Task.Modal {
 
     protected final String path;
     protected final HybrisProjectImportParameters projectImportParameters;
 
-    public SearchProjectRootsProgressIndicatorModalWindow(
+    public SearchProjectRootsTaskModalWindow(
         @NotNull final String path,
         @NotNull final HybrisProjectImportParameters projectImportParameters
     ) {

@@ -3,8 +3,8 @@ package com.intellij.idea.plugin.hybris.project.settings;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,35 +15,43 @@ import java.util.Set;
  */
 public class HybrisProjectImportParameters {
 
+    @Nullable
     protected String root;
+    @Nullable
     protected List<String> workspace;
-    protected List<String> projectsToConvert = new ArrayList<String>();
+    @Nullable
+    protected List<String> projectsToConvert;
     protected boolean openModuleSettings;
     @NonNls
+    @Nullable
     protected String commonModulesDirectory;
+    @Nullable
     protected Set<String> existingModuleNames;
 
+    @Nullable
     public String getRoot() {
         return root;
     }
 
-    public void setRoot(final String root) {
+    public void setRoot(@Nullable final String root) {
         this.root = root;
     }
 
+    @Nullable
     public List<String> getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(final List<String> workspace) {
+    public void setWorkspace(@Nullable final List<String> workspace) {
         this.workspace = workspace;
     }
 
+    @Nullable
     public List<String> getProjectsToConvert() {
         return projectsToConvert;
     }
 
-    public void setProjectsToConvert(final List<String> projectsToConvert) {
+    public void setProjectsToConvert(@Nullable final List<String> projectsToConvert) {
         this.projectsToConvert = projectsToConvert;
     }
 
@@ -55,19 +63,21 @@ public class HybrisProjectImportParameters {
         this.openModuleSettings = openModuleSettings;
     }
 
+    @Nullable
     public String getCommonModulesDirectory() {
         return commonModulesDirectory;
     }
 
-    public void setCommonModulesDirectory(final String commonModulesDirectory) {
+    public void setCommonModulesDirectory(@Nullable final String commonModulesDirectory) {
         this.commonModulesDirectory = commonModulesDirectory;
     }
 
+    @Nullable
     public Set<String> getExistingModuleNames() {
         return existingModuleNames;
     }
 
-    public void setExistingModuleNames(final Set<String> existingModuleNames) {
+    public void setExistingModuleNames(@Nullable final Set<String> existingModuleNames) {
         this.existingModuleNames = existingModuleNames;
     }
 

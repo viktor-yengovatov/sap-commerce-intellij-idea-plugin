@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectFinderUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.options.ConfigurationException;
@@ -13,6 +14,7 @@ import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +31,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         this.fileChooser.addElementsMarkListener(new ElementsChooser.ElementsMarkListener<String>() {
 
+            @Override
             public void elementMarkChanged(final String element, final boolean isMarked) {
                 duplicateNames = null;
                 fileChooser.repaint();
@@ -60,30 +63,38 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         }
     }
 
+    @Override
     public AbstractHybrisProjectImportBuilder getContext() {
         return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
+    @Override
     protected String getElementText(final String item) {
         final StringBuilder stringBuilder = new StringBuilder();
 
         final String projectName = HybrisProjectFinderUtils.findProjectName(item);
         stringBuilder.append(projectName);
 
-        final String relPath = VirtualFileSystemUtils.getRelative(
-            this.getContext().getProjectImportParameters().getRoot(), item
-        );
+        final HybrisProjectImportParameters projectImportParameters = this.getContext().getProjectImportParameters();
 
-        if (!this.getContext().getProjectImportParameters().getProjectsToConvert().contains(item)) {
-            this.getContext().getProjectImportParameters().getProjectsToConvert().add(item);
+        final String relPath = VirtualFileSystemUtils.getRelative(projectImportParameters.getRoot(), item);
+
+        if (null == projectImportParameters.getProjectsToConvert()) {
+            projectImportParameters.setProjectsToConvert(new ArrayList<String>());
+        }
+
+        if (!projectImportParameters.getProjectsToConvert().contains(item)) {
+            projectImportParameters.getProjectsToConvert().add(item);
         }
 
         if (!relPath.equals(".") && !relPath.equals(projectName)) {
-            stringBuilder.append(" (").append(relPath).append(")");
+            stringBuilder.append(" (").append(relPath).append(')');
         }
+
         return stringBuilder.toString();
     }
 
+    @Override
     @Nullable
     protected Icon getElementIcon(final String item) {
         return this.isInConflict(item) ? AllIcons.Actions.Cancel : null;
@@ -96,6 +107,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         this.duplicateNames = null;
     }
 
+    @Override
     public boolean validate() throws ConfigurationException {
         this.calcDuplicates();
 
