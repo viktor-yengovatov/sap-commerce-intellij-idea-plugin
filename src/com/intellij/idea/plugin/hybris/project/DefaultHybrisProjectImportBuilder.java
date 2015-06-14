@@ -1,10 +1,11 @@
 package com.intellij.idea.plugin.hybris.project;
 
+import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisImportParameters;
+import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
@@ -26,8 +27,10 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
+import gnu.trove.THashSet;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,13 +77,40 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
                 if (null != project) {
                     this.projectImportParameters.getAlreadyOpenedModules().addAll(
-                        HybrisProjectUtils.getAlreadyOpenedModules(project)
+                        this.getAlreadyOpenedModules(project)
                     );
                 }
             }
         }
 
         return this.projectImportParameters;
+    }
+
+    @NotNull
+    protected Collection<HybrisModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
+        Validate.notNull(project);
+
+        final Collection<HybrisModuleDescriptor> existingModules = new THashSet<HybrisModuleDescriptor>();
+
+        for (Module module : ModuleManager.getInstance(project).getModules()) {
+            try {
+                final VirtualFile moduleFile = module.getModuleFile();
+                if (null == moduleFile) {
+                    LOG.error("Can not find module file for module: " + module.getName());
+                    continue;
+                }
+
+                final HybrisModuleDescriptor moduleDescriptor = new DefaultHybrisModuleDescriptor(
+                    moduleFile.getParent().getPath()
+                );
+
+                existingModules.add(moduleDescriptor);
+            } catch (HybrisConfigurationException e) {
+                LOG.error(e);
+            }
+        }
+
+        return existingModules;
     }
 
     @NotNull

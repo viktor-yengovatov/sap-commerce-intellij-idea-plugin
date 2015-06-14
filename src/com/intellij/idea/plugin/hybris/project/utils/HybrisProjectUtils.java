@@ -1,18 +1,9 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Processor;
-import gnu.trove.THashSet;
 import org.apache.commons.lang.Validate;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +13,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -33,39 +23,10 @@ import java.util.regex.Pattern;
  */
 public final class HybrisProjectUtils {
 
-    private static final Logger LOG = Logger.getInstance(HybrisProjectUtils.class.getName());
-
     private static final Pattern LINE_BREAK_PATTERN = Pattern.compile("\n");
 
     private HybrisProjectUtils() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
-    }
-
-    @NotNull
-    public static Collection<HybrisModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
-        Validate.notNull(project);
-
-        final Collection<HybrisModuleDescriptor> existingModules = new THashSet<HybrisModuleDescriptor>();
-
-        for (Module module : ModuleManager.getInstance(project).getModules()) {
-            try {
-                final VirtualFile moduleFile = module.getModuleFile();
-                if (null == moduleFile) {
-                    LOG.error("Can not find module file for module: " + module.getName());
-                    continue;
-                }
-
-                final HybrisModuleDescriptor moduleDescriptor = new DefaultHybrisModuleDescriptor(
-                    moduleFile.getParent().getPath()
-                );
-
-                existingModules.add(moduleDescriptor);
-            } catch (HybrisConfigurationException e) {
-                LOG.error(e);
-            }
-        }
-
-        return existingModules;
     }
 
     @Nullable
