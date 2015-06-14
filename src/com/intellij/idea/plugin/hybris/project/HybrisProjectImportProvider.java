@@ -8,6 +8,8 @@ import com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjec
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportProvider;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -19,8 +21,11 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
 
     private final HybrisProjectOpenProcessor myProcessor;
 
-    public HybrisProjectImportProvider(final DefaultHybrisProjectImportBuilder builder) {
+    public HybrisProjectImportProvider(@NotNull final DefaultHybrisProjectImportBuilder builder) {
         super(builder);
+
+        Validate.notNull(builder);
+
         this.myProcessor = new HybrisProjectOpenProcessor(builder);
     }
 

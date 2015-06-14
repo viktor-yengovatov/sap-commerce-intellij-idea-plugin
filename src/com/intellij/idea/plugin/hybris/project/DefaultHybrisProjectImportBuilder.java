@@ -132,32 +132,17 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                                final ModifiableModuleModel model,
                                final ModulesProvider modulesProvider,
                                final ModifiableArtifactModel artifactModel) {
-
+        final boolean isProjectAlreadyOpen = null != model;
         final List<Module> result = new ArrayList<Module>();
 
         final List<HybrisModuleDescriptor> modulesChosenForImport = this.getProjectImportParameters()
                                                                         .getModulesChosenForImport();
 
         if (modulesChosenForImport.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
-        final Collection<File> alreadyExistingModuleFiles = new ArrayList<File>();
-        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
-            if (moduleDescriptor.getModuleFile().exists()) {
-                alreadyExistingModuleFiles.add(moduleDescriptor.getModuleFile());
-            }
-        }
-
-        if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
-            try {
-                VirtualFileSystemUtils.removeAllFiles(alreadyExistingModuleFiles);
-            } catch (IOException e) {
-                LOG.error("Can not remove old module files.", e);
-
-                return Collections.emptyList();
-            }
-        }
+        this.performProjectsCleanup(modulesChosenForImport);
 
         final ModifiableModuleModel rootProjectModifiableModuleModel = (null != model)
             ? model
@@ -173,8 +158,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             result.add(javaModule);
 
-            final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule)
-                                                                             .getModifiableModel();
+            final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
             modifiableRootModels.add(modifiableRootModel);
 
             // TODO: Add here logic for configuring project structure and dependencies
@@ -184,17 +168,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
-            if (null != model) {
-                ApplicationManager.getApplication().runWriteAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        modifiableRootModel.commit();
-                    }
-                });
+            if (isProjectAlreadyOpen) {
+                this.commitModule(modifiableRootModel);
             }
         }
 
-        if (null == model) {
+        if (!isProjectAlreadyOpen) {
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
                 public void run() {
@@ -206,6 +185,36 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.projectImportParameters = null;
 
         return result;
+    }
+
+    protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
+        Validate.notNull(modulesChosenForImport);
+
+        final Collection<File> alreadyExistingModuleFiles = new ArrayList<File>();
+        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+            if (moduleDescriptor.getModuleFile().exists()) {
+                alreadyExistingModuleFiles.add(moduleDescriptor.getModuleFile());
+            }
+        }
+
+        if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
+            try {
+                VirtualFileSystemUtils.removeAllFiles(alreadyExistingModuleFiles);
+            } catch (IOException e) {
+                LOG.error("Can not remove old module files.", e);
+            }
+        }
+    }
+
+    protected void commitModule(@NotNull final ModifiableRootModel modifiableRootModel) {
+        Validate.notNull(modifiableRootModel);
+
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                modifiableRootModel.commit();
+            }
+        });
     }
 
     protected boolean shouldRemoveAlreadyExistingModuleFiles(@NotNull final Collection<File> files) {

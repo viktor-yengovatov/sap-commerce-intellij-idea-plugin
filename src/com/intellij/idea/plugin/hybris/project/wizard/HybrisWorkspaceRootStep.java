@@ -2,6 +2,7 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
+import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -22,7 +23,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         super(context);
 
         this.projectsRootChooser.addBrowseFolderListener(
-            "title text", "", null, FileChooserDescriptorFactory.createSingleFolderDescriptor()
+            HybrisI18NBundleUtils.message("hybris.project.import.select.project.root.directory"),
+            "",
+            null,
+            FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
     }
 

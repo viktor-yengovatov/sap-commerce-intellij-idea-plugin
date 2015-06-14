@@ -10,6 +10,8 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
+import org.apache.commons.lang.Validate;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -40,11 +42,14 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         return this.isInConflict(item) ? AllIcons.Actions.Cancel : null;
     }
 
-    protected boolean isInConflict(final HybrisModuleDescriptor item) {
+    protected boolean isInConflict(@NotNull final HybrisModuleDescriptor item) {
+        Validate.notNull(item);
+
         return this.fileChooser.getMarkedElements().contains(item)
                && this.calculateSelectedModuleDuplicates().contains(item.getModuleName());
     }
 
+    @NotNull
     protected Set<String> calculateSelectedModuleDuplicates() {
         final Set<String> duplicateModules = new HashSet<String>();
         final Collection<String> uniqueModules = new HashSet<String>();
