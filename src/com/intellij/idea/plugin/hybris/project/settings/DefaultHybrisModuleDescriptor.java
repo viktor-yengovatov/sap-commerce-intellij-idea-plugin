@@ -44,7 +44,7 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
 
     @Override
     public int compareTo(@NotNull final HybrisModuleDescriptor o) {
-        return o.getModuleName().compareToIgnoreCase(this.getModuleName());
+        return this.getModuleName().compareToIgnoreCase(o.getModuleName());
     }
 
     @Override

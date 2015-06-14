@@ -196,6 +196,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 moduleDescriptor.getRootDirectory().getAbsolutePath()
             ));
 
+            modifiableRootModel.inheritSdk();
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
             if (isProjectAlreadyOpen) {
