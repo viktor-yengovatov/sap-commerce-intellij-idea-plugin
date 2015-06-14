@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
@@ -24,19 +24,11 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Abstrac
         super(builder);
     }
 
-    @Nullable
-    @Override
-    public String[] getSupportedExtensions() {
-        return new String[]{
-            HybrisConstants.EXTENSION_INFO_XML
-        };
-    }
-
     @Override
     public boolean doQuickImport(final VirtualFile file, final WizardContext wizardContext) {
         this.getBuilder().setRootProjectAbsolutePath(file.getParent().getPath());
 
-        final List<String> projects = getBuilder().getList();
+        final List<HybrisModuleDescriptor> projects = this.getBuilder().getList();
         if (null == projects || 1 != projects.size()) {
             return false;
         }
@@ -47,8 +39,17 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Abstrac
             LOG.error(e);
         }
 
-        wizardContext.setProjectName(HybrisProjectUtils.getModuleName(projects.get(0)));
+        wizardContext.setProjectName(projects.get(0).getModuleName());
+
         return true;
+    }
+
+    @Nullable
+    @Override
+    public String[] getSupportedExtensions() {
+        return new String[]{
+            HybrisConstants.EXTENSION_INFO_XML
+        };
     }
 
 }

@@ -47,7 +47,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         if (super.validate()) {
             this.getContext().setRootProjectAbsolutePath(this.projectsRootChooser.getText());
 
-            return this.getContext().isRootDirectorySet();
+            return !this.getContext()
+                        .getProjectImportParameters()
+                        .getFoundModules()
+                        .isEmpty();
         }
 
         return false;

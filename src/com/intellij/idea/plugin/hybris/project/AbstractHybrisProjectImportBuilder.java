@@ -1,6 +1,7 @@
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,13 +10,11 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<String> {
+public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<HybrisModuleDescriptor> {
 
-    public abstract void setRootProjectAbsolutePath(@NotNull final String rootProjectAbsolutePath);
-
-    public abstract boolean isRootDirectorySet();
+    public abstract void setRootProjectAbsolutePath(@NotNull final String path);
 
     @NotNull
-    public abstract HybrisProjectImportParameters getProjectImportParameters();
+    public abstract HybrisImportParameters getProjectImportParameters();
 
 }

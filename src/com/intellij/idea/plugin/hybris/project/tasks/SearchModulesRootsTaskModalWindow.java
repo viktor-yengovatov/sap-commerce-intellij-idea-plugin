@@ -1,16 +1,24 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectImportParameters;
+import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
-import com.intellij.idea.plugin.hybris.project.utils.ProjectRootsComparator;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.util.Processor;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,12 +29,14 @@ import java.util.List;
  */
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
+    private static final Logger LOG = Logger.getInstance(SearchModulesRootsTaskModalWindow.class.getName());
+
     protected final String rootProjectAbsolutePath;
-    protected final HybrisProjectImportParameters projectImportParameters;
+    protected final HybrisImportParameters projectImportParameters;
 
     public SearchModulesRootsTaskModalWindow(
         @NotNull final String rootProjectAbsolutePath,
-        @NotNull final HybrisProjectImportParameters projectImportParameters
+        @NotNull final HybrisImportParameters projectImportParameters
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),
@@ -45,20 +55,54 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
     public void run(@NotNull final ProgressIndicator indicator) {
         Validate.notNull(indicator);
 
-        final List<String> roots = HybrisProjectUtils.findModuleRoots(
+        this.projectImportParameters.getFoundModules().clear();
+        this.projectImportParameters.setRootDirectory(null);
+
+        final List<String> moduleRootAbsolutePaths = HybrisProjectUtils.findModuleRoots(
             this.rootProjectAbsolutePath, new ProgressIndicatorUpdaterProcessor(indicator)
         );
 
-        Collections.sort(roots, new ProjectRootsComparator());
+        final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<HybrisModuleDescriptor>();
+        final Collection<String> pathsFailedToImport = new ArrayList<String>();
 
-        this.projectImportParameters.setFoundModulesRootsAbsolutePaths(roots);
-        this.projectImportParameters.setRootProjectAbsolutePath(this.rootProjectAbsolutePath);
+        for (String moduleRootAbsolutePath : moduleRootAbsolutePaths) {
+            try {
+                moduleDescriptors.add(new DefaultHybrisModuleDescriptor(moduleRootAbsolutePath));
+            } catch (HybrisConfigurationException e) {
+                LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
+
+                pathsFailedToImport.add(moduleRootAbsolutePath);
+            }
+        }
+
+        if (!pathsFailedToImport.isEmpty()) {
+            this.showErrorMessage(pathsFailedToImport);
+        }
+
+        Collections.sort(moduleDescriptors);
+
+        this.projectImportParameters.getFoundModules().addAll(moduleDescriptors);
+        this.projectImportParameters.setRootDirectory(new File(this.rootProjectAbsolutePath));
+    }
+
+    protected void showErrorMessage(@NotNull final Collection<String> pathsFailedToImport) {
+        Validate.notNull(pathsFailedToImport);
+
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Messages.showErrorDialog(
+                    HybrisI18NBundleUtils.message("hybris.project.import.failed", pathsFailedToImport),
+                    HybrisI18NBundleUtils.message("hybris.project.error")
+                );
+            }
+        });
     }
 
     @Override
     public void onCancel() {
-        this.projectImportParameters.setFoundModulesRootsAbsolutePaths(null);
-        this.projectImportParameters.setRootProjectAbsolutePath(null);
+        this.projectImportParameters.getFoundModules().clear();
+        this.projectImportParameters.setRootDirectory(null);
     }
 
     protected class ProgressIndicatorUpdaterProcessor implements Processor<String> {

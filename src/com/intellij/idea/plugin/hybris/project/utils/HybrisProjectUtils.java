@@ -1,18 +1,29 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.ConfigurationException;
+import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Processor;
+import gnu.trove.THashSet;
 import org.apache.commons.lang.Validate;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -22,26 +33,39 @@ import java.util.regex.Pattern;
  */
 public final class HybrisProjectUtils {
 
+    private static final Logger LOG = Logger.getInstance(HybrisProjectUtils.class.getName());
+
     private static final Pattern LINE_BREAK_PATTERN = Pattern.compile("\n");
 
     private HybrisProjectUtils() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    @Nullable
-    public static String buildPathForIdeaModuleFile(final String moduleRootAbsolutePath,
-                                                    final String rootProjectAbsolutePath
-    ) throws ConfigurationException {
-        final String moduleName = HybrisProjectUtils.getModuleName(moduleRootAbsolutePath);
+    @NotNull
+    public static Collection<HybrisModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
+        Validate.notNull(project);
 
-        if (null == moduleName) {
-            return null;
+        final Collection<HybrisModuleDescriptor> existingModules = new THashSet<HybrisModuleDescriptor>();
+
+        for (Module module : ModuleManager.getInstance(project).getModules()) {
+            try {
+                final VirtualFile moduleFile = module.getModuleFile();
+                if (null == moduleFile) {
+                    LOG.error("Can not find module file for module: " + module.getName());
+                    continue;
+                }
+
+                final HybrisModuleDescriptor moduleDescriptor = new DefaultHybrisModuleDescriptor(
+                    moduleFile.getParent().getPath()
+                );
+
+                existingModules.add(moduleDescriptor);
+            } catch (HybrisConfigurationException e) {
+                LOG.error(e);
+            }
         }
 
-        return rootProjectAbsolutePath
-               + File.separatorChar
-               + moduleName
-               + HybrisConstants.NEW_MODULE_FILE_EXTENSION;
+        return existingModules;
     }
 
     @Nullable
@@ -71,63 +95,12 @@ public final class HybrisProjectUtils {
     }
 
     @NotNull
-    public static Collection<File> findAlreadyExistingModuleFiles(
-        @NotNull final Iterable<String> modulesRootAbsolutePaths
-    ) {
-        Validate.notNull(modulesRootAbsolutePaths);
-
-        final Collection<File> files = new HashSet<File>();
-
-        for (String path : modulesRootAbsolutePaths) {
-            final File moduleFile = findAlreadyExistingModuleFile(path);
-
-            if (null != moduleFile) {
-                files.add(moduleFile);
-            }
-        }
-
-        return files;
-    }
-
-    @Nullable
-    public static File findAlreadyExistingModuleFile(@NotNull final String moduleRootAbsolutePath) {
-        Validate.notEmpty(moduleRootAbsolutePath);
-
-        final String moduleName = HybrisProjectUtils.getModuleName(moduleRootAbsolutePath);
-
-        final File imlFile = new File(
-            moduleRootAbsolutePath + File.separator + moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION
-        );
-
-        if (imlFile.isFile()) {
-            return imlFile;
-        }
-
-        final File emlFile = new File(
-            moduleRootAbsolutePath + File.separator + moduleName + HybrisConstants.OLD_MODULE_FILE_EXTENSION
-        );
-
-        if (emlFile.isFile()) {
-            return emlFile;
-        }
-
-        return null;
-    }
-
-    @NotNull
     public static List<String> findModuleRoots(@NotNull final String rootProjectAbsolutePath,
                                                @Nullable final Processor<String> stepProcessor
     ) {
-        return new ArrayList<String>(findModuleRootsSet(rootProjectAbsolutePath, stepProcessor));
-    }
-
-    @NotNull
-    private static Set<String> findModuleRootsSet(@NotNull final String rootProjectAbsolutePath,
-                                                  @Nullable final Processor<String> stepProcessor
-    ) {
         Validate.notEmpty(rootProjectAbsolutePath);
 
-        final Set<String> paths = new HashSet<String>(1);
+        final List<String> paths = new ArrayList<String>(1);
 
         if (null != stepProcessor) {
             stepProcessor.process(rootProjectAbsolutePath);
@@ -139,15 +112,23 @@ public final class HybrisProjectUtils {
 
         final File root = new File(rootProjectAbsolutePath);
         if (root.isDirectory()) {
-            final File[] files = root.listFiles();
+            final File[] files = root.listFiles(new DirectoriesFilter());
 
             if (null != files) {
                 for (File file : files) {
-                    paths.addAll(findModuleRootsSet(file.getPath(), stepProcessor));
+                    paths.addAll(findModuleRoots(file.getPath(), stepProcessor));
                 }
             }
         }
 
         return paths;
+    }
+
+    private static class DirectoriesFilter implements FileFilter {
+
+        @Override
+        public boolean accept(final File pathname) {
+            return pathname.isDirectory();
+        }
     }
 }
