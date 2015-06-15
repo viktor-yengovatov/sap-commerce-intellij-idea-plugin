@@ -23,6 +23,8 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
     protected final File rootDirectory;
     @NotNull
     protected final File moduleFile;
+    @NotNull
+    protected final File hybrisProjectFile;
 
     public DefaultHybrisModuleDescriptor(@NotNull final String moduleRootAbsolutePath) throws HybrisConfigurationException {
         Validate.notEmpty(moduleRootAbsolutePath);
@@ -40,6 +42,7 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
 
         this.moduleName = moduleName;
         this.moduleFile = new File(moduleRootAbsolutePath, moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
+        this.hybrisProjectFile = new File(moduleRootAbsolutePath, HybrisConstants.EXTENSION_INFO_XML);
     }
 
     @Override
@@ -63,6 +66,12 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
     @NotNull
     public File getModuleFile() {
         return moduleFile;
+    }
+
+    @Override
+    @NotNull
+    public File getHybrisProjectFile() {
+        return hybrisProjectFile;
     }
 
     @Override
@@ -97,6 +106,7 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
         sb.append("moduleName='").append(moduleName).append('\'');
         sb.append(", rootDirectory=").append(rootDirectory);
         sb.append(", moduleFile=").append(moduleFile);
+        sb.append(", hybrisProjectFile=").append(hybrisProjectFile);
         sb.append('}');
         return sb.toString();
     }

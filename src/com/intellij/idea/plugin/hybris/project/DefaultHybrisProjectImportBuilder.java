@@ -26,7 +26,6 @@ import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
@@ -54,6 +53,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Nullable
     protected HybrisImportParameters projectImportParameters;
+    protected ContentRootConfigurator contentRootConfigurator = new HybrisModuleContentRootConfigurator();
 
     @Override
     public void setRootProjectAbsolutePath(@NotNull final String path) {
@@ -186,22 +186,19 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 moduleDescriptor.getModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
             );
 
-            result.add(javaModule);
-
             final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
-            modifiableRootModels.add(modifiableRootModel);
-
-            // TODO: Add here logic for configuring project structure and dependencies
-            modifiableRootModel.addContentEntry(VfsUtilCore.pathToUrl(
-                moduleDescriptor.getRootDirectory().getAbsolutePath()
-            ));
 
             modifiableRootModel.inheritSdk();
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
+            this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
+
             if (isProjectAlreadyOpen) {
                 this.commitModule(modifiableRootModel);
             }
+
+            result.add(javaModule);
+            modifiableRootModels.add(modifiableRootModel);
         }
 
         if (!isProjectAlreadyOpen) {
@@ -221,12 +218,14 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 
-        final Collection<File> alreadyExistingModuleFiles = new ArrayList<File>();
+        final List<File> alreadyExistingModuleFiles = new ArrayList<File>();
         for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
             if (moduleDescriptor.getModuleFile().exists()) {
                 alreadyExistingModuleFiles.add(moduleDescriptor.getModuleFile());
             }
         }
+
+        Collections.sort(alreadyExistingModuleFiles);
 
         if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
             try {

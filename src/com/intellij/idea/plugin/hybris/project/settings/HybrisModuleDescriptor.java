@@ -19,4 +19,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     @NotNull
     File getModuleFile();
+
+    @NotNull
+    File getHybrisProjectFile();
 }
