@@ -67,17 +67,20 @@ public final class HybrisProjectUtils {
             stepProcessor.process(rootProjectAbsolutePath);
         }
 
-        if (null != getModuleName(rootProjectAbsolutePath)) {
+        if (new File(rootProjectAbsolutePath, HybrisConstants.EXTENSION_INFO_XML).isFile()) {
+
             paths.add(rootProjectAbsolutePath);
-        }
 
-        final File root = new File(rootProjectAbsolutePath);
-        if (root.isDirectory()) {
-            final File[] files = root.listFiles(new DirectoriesFilter());
+        } else {
 
-            if (null != files) {
-                for (File file : files) {
-                    paths.addAll(findModuleRoots(file.getPath(), stepProcessor));
+            final File root = new File(rootProjectAbsolutePath);
+            if (root.isDirectory()) {
+                final File[] files = root.listFiles(new DirectoriesFilter());
+
+                if (null != files) {
+                    for (File file : files) {
+                        paths.addAll(findModuleRoots(file.getPath(), stepProcessor));
+                    }
                 }
             }
         }
