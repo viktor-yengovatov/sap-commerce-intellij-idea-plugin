@@ -5,6 +5,7 @@ import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,4 +61,10 @@ public final class VirtualFileSystemUtils {
             return null;
         }
     }
+
+    public static VirtualFile getByUrl(@NotNull final String url){
+        Validate.notNull(url);
+        return VirtualFileManager.getInstance().findFileByUrl(url);
+    }
+
 }

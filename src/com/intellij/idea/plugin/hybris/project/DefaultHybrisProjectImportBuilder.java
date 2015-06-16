@@ -8,6 +8,7 @@ import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
+import com.intellij.idea.plugin.hybris.utils.LibUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -18,8 +19,7 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
+public class    DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class.getName());
 
@@ -189,8 +189,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
 
             modifiableRootModel.inheritSdk();
-            ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
+            final String libPath = project.getBasePath() + File.separator + javaModule.getName() + File.separator
+                                   + HybrisModuleContentRootConfigurator.LIB_DIRECTORY;
+            LibUtils.loadModuleLibFolder(modifiableRootModel, libPath);
+
+            ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
 
             if (isProjectAlreadyOpen) {
@@ -226,7 +230,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
 
         Collections.sort(alreadyExistingModuleFiles);
-
         if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
             try {
                 VirtualFileSystemUtils.removeAllFiles(alreadyExistingModuleFiles);
