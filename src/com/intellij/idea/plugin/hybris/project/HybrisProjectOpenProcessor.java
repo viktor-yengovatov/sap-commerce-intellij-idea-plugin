@@ -16,11 +16,11 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<AbstractHybrisProjectImportBuilder> {
+public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<DefaultHybrisProjectImportBuilder> {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectOpenProcessor.class.getName());
 
-    public HybrisProjectOpenProcessor(final AbstractHybrisProjectImportBuilder builder) {
+    public HybrisProjectOpenProcessor(final DefaultHybrisProjectImportBuilder builder) {
         super(builder);
     }
 
