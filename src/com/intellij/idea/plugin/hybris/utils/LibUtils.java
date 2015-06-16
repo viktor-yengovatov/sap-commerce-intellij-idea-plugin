@@ -20,6 +20,25 @@ import java.io.File;
  */
 public class LibUtils {
 
+    private static final String COMMON_LIBS_GROUP = "Common libs";
+
+    public static void addProjectLibsToModule(@NotNull final Project project, @NotNull final ModifiableRootModel module){
+        Validate.notNull(module);
+        Validate.notNull(project);
+
+        final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(project);
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                Library libsGroup = projectLibraryTable.getLibraryByName(COMMON_LIBS_GROUP);
+                if(null == libsGroup){
+                    libsGroup = projectLibraryTable.createLibrary(COMMON_LIBS_GROUP);
+                }
+                module.addLibraryEntry(libsGroup);
+            }
+        });
+    }
+
     public static void addLib(@NotNull final Project project, @NotNull final String libPath, @NotNull final String groupName){
         Validate.notNull(project);
         Validate.notNull(libPath);
@@ -30,6 +49,7 @@ public class LibUtils {
         final VirtualFile jarVirtualFile2 = VirtualFileManager.getInstance().findFileByUrl(jarPath);
 
         final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(project);
+        projectLibraryTable.getLibraries();
 
         //TODO: check is already exists
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
@@ -44,6 +64,7 @@ public class LibUtils {
                 libModel.commit();
             }
         });
+
     }
 
     public static void addLib(@NotNull final ModifiableRootModel module, @NotNull final File jarFile){
@@ -63,13 +84,13 @@ public class LibUtils {
         add(module, path);
     }
 
-    public static void loadModuleLibFolder(@NotNull final ModifiableRootModel module, @NotNull final String folderPath){
-        Validate.notNull(module);
+    public static void loadLibFolder(@NotNull final Project project, @NotNull final String folderPath){
+        Validate.notNull(project);
         Validate.notNull(folderPath);
 
         File jarFilesFolder = new File(folderPath);
         if(jarFilesFolder.exists() && jarFilesFolder.isDirectory()){
-            runByAllFilesInFolder(module, jarFilesFolder);
+            runByAllFilesInFolder(project, jarFilesFolder);
         }
     }
 
@@ -97,15 +118,12 @@ public class LibUtils {
         return false;
     }
 
-    private static void runByAllFilesInFolder(@NotNull final ModifiableRootModel module, @NotNull final File folder) {
-        Validate.notNull(module);
-        Validate.notNull(folder);
-
+    private static void runByAllFilesInFolder(@NotNull final Project project, @NotNull final File folder) {
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
-                runByAllFilesInFolder(module, fileEntry);
+                runByAllFilesInFolder(project, fileEntry);
             } else if(fileEntry.isFile() && fileEntry.getName().endsWith(".jar")){
-                addLib(module, fileEntry);
+                addLib(project, fileEntry.getAbsolutePath(), COMMON_LIBS_GROUP);
             }
         }
     }

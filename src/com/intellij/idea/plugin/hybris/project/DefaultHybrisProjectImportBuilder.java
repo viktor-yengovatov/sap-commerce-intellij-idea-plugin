@@ -21,8 +21,11 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
+import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
@@ -190,9 +193,12 @@ public class    DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectI
 
             modifiableRootModel.inheritSdk();
 
-            final String libPath = project.getBasePath() + File.separator + javaModule.getName() + File.separator
+            final String libFolderPath = project.getBasePath() + File.separator + javaModule.getName() + File.separator
                                    + HybrisModuleContentRootConfigurator.LIB_DIRECTORY;
-            LibUtils.loadModuleLibFolder(modifiableRootModel, libPath);
+            LibUtils.loadLibFolder(project, libFolderPath);
+            LibUtils.addProjectLibsToModule(project, modifiableRootModel);
+
+
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
