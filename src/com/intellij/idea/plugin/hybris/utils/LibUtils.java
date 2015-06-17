@@ -46,12 +46,11 @@ public class LibUtils {
 
         String jarPath= libPath + JarFileSystem.JAR_SEPARATOR;
         jarPath = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL, jarPath);
-        final VirtualFile jarVirtualFile2 = VirtualFileManager.getInstance().findFileByUrl(jarPath);
+        final VirtualFile jarVirtualFile = VirtualFileManager.getInstance().findFileByUrl(jarPath);
 
         final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(project);
         projectLibraryTable.getLibraries();
 
-        //TODO: check is already exists
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
@@ -59,21 +58,22 @@ public class LibUtils {
                 if(null == libsGroup){
                     libsGroup = projectLibraryTable.createLibrary(groupName);
                 }
-                final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
-                libModel.addRoot(jarVirtualFile2, OrderRootType.CLASSES);
-                libModel.commit();
+                if(!isAlreadyPresent(libsGroup, jarVirtualFile)){
+                    final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
+                    libModel.addRoot(jarVirtualFile, OrderRootType.CLASSES);
+                    libModel.commit();
+                }
             }
         });
-
     }
 
-    public static void addLib(@NotNull final ModifiableRootModel module, @NotNull final File jarFile){
-        Validate.notNull(module);
-        Validate.notNull(jarFile);
-
-        String jarPath = jarFile.getAbsolutePath() + JarFileSystem.JAR_SEPARATOR;
-        add(module, jarPath);
-
+    private static boolean isAlreadyPresent(Library destinationGroup, VirtualFile jarToAdd){
+        VirtualFile[] jars = destinationGroup.getRootProvider().getFiles(OrderRootType.CLASSES);
+        for(int i=0; i< jars.length;i++){
+            if(jars[i].getName().equals(jarToAdd.getName()))
+                return true;
+        }
+        return false;
     }
 
     public void addLib(@NotNull final ModifiableRootModel module, @NotNull final String path){

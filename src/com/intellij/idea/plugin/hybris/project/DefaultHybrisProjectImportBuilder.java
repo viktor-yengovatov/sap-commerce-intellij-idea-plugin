@@ -193,7 +193,7 @@ public class    DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectI
 
             modifiableRootModel.inheritSdk();
 
-            final String libFolderPath = project.getBasePath() + File.separator + javaModule.getName() + File.separator
+            final String libFolderPath = moduleDescriptor.getRootDirectory().getAbsolutePath() + File.separator
                                    + HybrisModuleContentRootConfigurator.LIB_DIRECTORY;
             LibUtils.loadLibFolder(project, libFolderPath);
             LibUtils.addProjectLibsToModule(project, modifiableRootModel);
