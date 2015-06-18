@@ -31,6 +31,7 @@ import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created 8:58 PM 07 June 2015
@@ -48,8 +51,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class.getName());
     protected final ContentRootConfigurator contentRootConfigurator = new HybrisModuleContentRootConfigurator();
+    protected final Lock lock = new ReentrantLock();
     @Nullable
-    protected HybrisImportParameters projectImportParameters;
+    @GuardedBy("lock")
+    protected volatile HybrisImportParameters projectImportParameters;
 
     @Override
     public void setRootProjectAbsolutePath(@NotNull final String path) {
@@ -67,17 +72,30 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Override
     public void cleanup() {
         super.cleanup();
-        this.projectImportParameters = null;
+
+        this.lock.lock();
+
+        try {
+            this.projectImportParameters = null;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     @NotNull
     @Override
     public HybrisImportParameters getProjectImportParameters() {
-        if (null == this.projectImportParameters) {
-            this.projectImportParameters = new DefaultHybrisImportParameters(getCurrentProject());
-        }
+        this.lock.lock();
 
-        return this.projectImportParameters;
+        try {
+            if (null == this.projectImportParameters) {
+                this.projectImportParameters = new DefaultHybrisImportParameters(getCurrentProject());
+            }
+
+            return this.projectImportParameters;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     @Override
@@ -150,7 +168,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             });
         }
 
-        this.projectImportParameters = null;
+        this.cleanup();
 
         return result;
     }

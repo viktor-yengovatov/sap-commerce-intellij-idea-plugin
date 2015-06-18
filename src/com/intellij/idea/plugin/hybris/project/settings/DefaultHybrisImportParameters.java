@@ -5,8 +5,11 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.GuardedBy;
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created 3:55 PM 13 June 2015.
@@ -22,7 +25,9 @@ public class DefaultHybrisImportParameters implements HybrisImportParameters {
     @NotNull
     protected final List<HybrisModuleDescriptor> modulesChosenForImport = new ArrayList<HybrisModuleDescriptor>();
     @NotNull
+    @GuardedBy("lock")
     protected final Set<HybrisModuleDescriptor> alreadyOpenedModules = new HashSet<HybrisModuleDescriptor>();
+    protected final Lock lock = new ReentrantLock();
     @Nullable
     protected File rootDirectory;
     protected boolean openProjectSettingsAfterImport;
@@ -60,11 +65,17 @@ public class DefaultHybrisImportParameters implements HybrisImportParameters {
             return Collections.emptySet();
         }
 
-        if (this.alreadyOpenedModules.isEmpty()) {
-            this.alreadyOpenedModules.addAll(HybrisProjectUtils.getAlreadyOpenedModules(this.project));
+        this.lock.lock();
+
+        try {
+            if (this.alreadyOpenedModules.isEmpty()) {
+                this.alreadyOpenedModules.addAll(HybrisProjectUtils.getAlreadyOpenedModules(this.project));
+            }
+        } finally {
+            this.lock.unlock();
         }
 
-        return this.alreadyOpenedModules;
+        return Collections.unmodifiableSet(this.alreadyOpenedModules);
     }
 
     @Override
