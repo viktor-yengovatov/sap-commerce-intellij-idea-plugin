@@ -8,8 +8,7 @@ import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -32,7 +31,7 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
     @NotNull
     protected final ExtensionInfo extensionInfo;
     @NotNull
-    protected final List<HybrisModuleDescriptor> dependenciesTree = new ArrayList<HybrisModuleDescriptor>(0);
+    protected final Set<HybrisModuleDescriptor> dependenciesTree = new HashSet<HybrisModuleDescriptor>(0);
 
     public DefaultHybrisModuleDescriptor(@NotNull final String moduleRootAbsolutePath) throws HybrisConfigurationException {
         Validate.notEmpty(moduleRootAbsolutePath);
@@ -91,7 +90,7 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
 
     @Override
     @NotNull
-    public List<HybrisModuleDescriptor> getDependenciesTree() {
+    public Set<HybrisModuleDescriptor> getDependenciesTree() {
         return dependenciesTree;
     }
 

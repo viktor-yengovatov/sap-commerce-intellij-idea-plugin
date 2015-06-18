@@ -4,7 +4,6 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,7 +26,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     ExtensionInfo getExtensionInfo();
 
     @NotNull
-    List<HybrisModuleDescriptor> getDependenciesTree();
+    Set<HybrisModuleDescriptor> getDependenciesTree();
 
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesPlainList();
