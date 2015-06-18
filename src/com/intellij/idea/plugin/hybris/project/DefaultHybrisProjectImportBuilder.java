@@ -1,12 +1,12 @@
 package com.intellij.idea.plugin.hybris.project;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.LibUtils;
@@ -40,10 +40,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -164,14 +161,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             modifiableRootModels.add(modifiableRootModel);
         }
 
-        this.configureModulesDependencies(modulesChosenForImport, modifiableRootModels);
+        if (!isProjectAlreadyOpen) {
+            this.multiCommit(rootProjectModifiableModuleModel, modifiableRootModels);
+        }
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                ModifiableModelCommitter.multiCommit(modifiableRootModels, rootProjectModifiableModuleModel);
-            }
-        });
+        this.configureModulesDependencies(modulesChosenForImport, rootProjectModifiableModuleModel);
 
         this.cleanup();
 
@@ -209,31 +203,53 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         });
     }
 
-    protected void configureModulesDependencies(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport,
-                                                @NotNull final Iterable<ModifiableRootModel> modifiableRootModels) {
-        Validate.notNull(modulesChosenForImport);
+    protected void multiCommit(@NotNull final ModifiableModuleModel rootProjectModifiableModuleModel,
+                               @NotNull final Collection<ModifiableRootModel> modifiableRootModels) {
+        Validate.notNull(rootProjectModifiableModuleModel);
         Validate.notNull(modifiableRootModels);
 
-        for (ModifiableRootModel modifiableRootModel : modifiableRootModels) {
-            final HybrisModuleDescriptor moduleDescriptor = Iterables.find(
-                modulesChosenForImport,
-                new HybrisProjectUtils.FindHybrisModuleDescriptorByName(modifiableRootModel.getModule().getName())
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                ModifiableModelCommitter.multiCommit(modifiableRootModels, rootProjectModifiableModuleModel);
+            }
+        });
+    }
+
+    protected void configureModulesDependencies(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport,
+                                                @NotNull final ModifiableModuleModel rootProjectModifiableModuleModel) {
+        Validate.notNull(modulesChosenForImport);
+        Validate.notNull(rootProjectModifiableModuleModel);
+
+        final List<Module> modules = Arrays.asList(rootProjectModifiableModuleModel.getModules());
+        final Collection<ModifiableRootModel> modifiableRootModels = new ArrayList<ModifiableRootModel>();
+
+        for (Module module : modules) {
+            modifiableRootModels.add(ModuleRootManager.getInstance(module).getModifiableModel());
+        }
+
+        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+            final ModifiableRootModel modifiableRootModel = Iterables.find(
+                modifiableRootModels,
+                new FindModifiableRootModelByName(moduleDescriptor.getModuleName())
             );
 
             for (HybrisModuleDescriptor dependsOnDescriptor : moduleDescriptor.getDependenciesTree()) {
-                final ModifiableRootModel dependsOnModule = Iterables.find(
+                final Optional<ModifiableRootModel> dependsOnModifiableRootModelOptional = Iterables.tryFind(
                     modifiableRootModels,
                     new FindModifiableRootModelByName(dependsOnDescriptor.getModuleName())
                 );
 
-                final ModuleOrderEntry moduleOrderEntry = modifiableRootModel.addModuleOrderEntry(
-                    dependsOnModule.getModule()
-                );
+                final ModuleOrderEntry moduleOrderEntry = (dependsOnModifiableRootModelOptional.isPresent())
+                    ? modifiableRootModel.addModuleOrderEntry(dependsOnModifiableRootModelOptional.get().getModule())
+                    : modifiableRootModel.addInvalidModuleEntry(dependsOnDescriptor.getModuleName());
 
                 moduleOrderEntry.setExported(true);
                 moduleOrderEntry.setScope(DependencyScope.COMPILE);
             }
         }
+
+        this.multiCommit(rootProjectModifiableModuleModel, modifiableRootModels);
     }
 
     protected boolean shouldRemoveAlreadyExistingModuleFiles(@NotNull final Collection<File> files) {
