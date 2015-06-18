@@ -1,13 +1,12 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created 3:55 PM 13 June 2015.
@@ -16,6 +15,8 @@ import java.util.Set;
  */
 public class DefaultHybrisImportParameters implements HybrisImportParameters {
 
+    @Nullable
+    protected final Project project;
     @NotNull
     protected final List<HybrisModuleDescriptor> foundModules = new ArrayList<HybrisModuleDescriptor>();
     @NotNull
@@ -25,6 +26,20 @@ public class DefaultHybrisImportParameters implements HybrisImportParameters {
     @Nullable
     protected File rootDirectory;
     protected boolean openProjectSettingsAfterImport;
+
+    public DefaultHybrisImportParameters() {
+        this.project = null;
+    }
+
+    public DefaultHybrisImportParameters(@Nullable final Project project) {
+        this.project = project;
+    }
+
+    @Override
+    @Nullable
+    public Project getProject() {
+        return project;
+    }
 
     @Override
     @NotNull
@@ -41,7 +56,15 @@ public class DefaultHybrisImportParameters implements HybrisImportParameters {
     @Override
     @NotNull
     public Set<HybrisModuleDescriptor> getAlreadyOpenedModules() {
-        return alreadyOpenedModules;
+        if (null == this.project) {
+            return Collections.emptySet();
+        }
+
+        if (this.alreadyOpenedModules.isEmpty()) {
+            this.alreadyOpenedModules.addAll(HybrisProjectUtils.getAlreadyOpenedModules(this.project));
+        }
+
+        return this.alreadyOpenedModules;
     }
 
     @Override

@@ -1,14 +1,18 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Created 3:55 PM 13 June 2015.
@@ -25,6 +29,10 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
     protected final File moduleFile;
     @NotNull
     protected final File hybrisProjectFile;
+    @NotNull
+    protected final ExtensionInfo extensionInfo;
+    @NotNull
+    protected final List<HybrisModuleDescriptor> dependenciesTree = new ArrayList<HybrisModuleDescriptor>(0);
 
     public DefaultHybrisModuleDescriptor(@NotNull final String moduleRootAbsolutePath) throws HybrisConfigurationException {
         Validate.notEmpty(moduleRootAbsolutePath);
@@ -35,14 +43,21 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
             throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootAbsolutePath);
         }
 
-        final String moduleName = HybrisProjectUtils.getModuleName(moduleRootAbsolutePath);
-        if (null == moduleName) {
+        this.hybrisProjectFile = new File(moduleRootAbsolutePath, HybrisConstants.EXTENSION_INFO_XML);
+
+        final ExtensionInfo extensionInfo = HybrisProjectUtils.unmarshalExtensionInfo(this.hybrisProjectFile);
+        if (null == extensionInfo) {
+            throw new HybrisConfigurationException("Can not unmarshal " + this.hybrisProjectFile);
+        }
+
+        this.extensionInfo = extensionInfo;
+
+        if (null == extensionInfo.getExtension() || isBlank(extensionInfo.getExtension().getName())) {
             throw new HybrisConfigurationException("Can not find module name using path: " + moduleRootAbsolutePath);
         }
 
-        this.moduleName = moduleName;
-        this.moduleFile = new File(moduleRootAbsolutePath, moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
-        this.hybrisProjectFile = new File(moduleRootAbsolutePath, HybrisConstants.EXTENSION_INFO_XML);
+        this.moduleName = extensionInfo.getExtension().getName();
+        this.moduleFile = new File(moduleRootAbsolutePath, this.moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
     }
 
     @Override
@@ -70,13 +85,25 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
 
     @Override
     @NotNull
-    public File getHybrisProjectFile() {
-        return hybrisProjectFile;
+    public ExtensionInfo getExtensionInfo() {
+        return extensionInfo;
+    }
+
+    @Override
+    @NotNull
+    public List<HybrisModuleDescriptor> getDependenciesTree() {
+        return dependenciesTree;
+    }
+
+    @Override
+    @NotNull
+    public Set<HybrisModuleDescriptor> getDependenciesPlainList() {
+        return HybrisProjectUtils.getDependenciesPlainSet(this);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new org.apache.commons.lang3.builder.HashCodeBuilder(17, 37)
             .append(moduleName)
             .append(rootDirectory)
             .toHashCode();
@@ -94,7 +121,7 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
 
         final DefaultHybrisModuleDescriptor other = (DefaultHybrisModuleDescriptor) obj;
 
-        return new EqualsBuilder()
+        return new org.apache.commons.lang3.builder.EqualsBuilder()
             .append(moduleName, other.moduleName)
             .append(rootDirectory, other.rootDirectory)
             .isEquals();

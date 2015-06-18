@@ -31,15 +31,36 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
             @Override
             public void elementMarkChanged(final HybrisModuleDescriptor element, final boolean isMarked) {
+                if (isMarked) {
+                    for (HybrisModuleDescriptor moduleDescriptor : element.getDependenciesPlainList()) {
+                        if (fileChooser.isElementMarked(moduleDescriptor)) {
+                            continue;
+                        }
+
+                        fileChooser.setElementMarked(moduleDescriptor, true);
+                    }
+                }
+
                 fileChooser.repaint();
             }
         });
     }
 
     @Override
+    public AbstractHybrisProjectImportBuilder getContext() {
+        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
+    }
+
+    @Override
     @Nullable
     protected Icon getElementIcon(final HybrisModuleDescriptor item) {
-        return this.isInConflict(item) ? AllIcons.Actions.Cancel : null;
+        if (this.isInConflict(item)) {
+            return AllIcons.Actions.Cancel;
+        } else if (this.getContext().getProjectImportParameters().getAlreadyOpenedModules().contains(item)) {
+            return AllIcons.General.InspectionsOK;
+        }
+
+        return null;
     }
 
     protected boolean isInConflict(@NotNull final HybrisModuleDescriptor item) {
@@ -84,10 +105,5 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         }
 
         return super.validate();
-    }
-
-    @Override
-    public AbstractHybrisProjectImportBuilder getContext() {
-        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 }

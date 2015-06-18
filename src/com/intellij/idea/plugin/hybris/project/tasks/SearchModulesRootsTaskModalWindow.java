@@ -81,6 +81,8 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
         Collections.sort(moduleDescriptors);
 
+        HybrisProjectUtils.buildDependencies(moduleDescriptors);
+
         this.projectImportParameters.getFoundModules().addAll(moduleDescriptors);
         this.projectImportParameters.setRootDirectory(new File(this.rootProjectAbsolutePath));
     }

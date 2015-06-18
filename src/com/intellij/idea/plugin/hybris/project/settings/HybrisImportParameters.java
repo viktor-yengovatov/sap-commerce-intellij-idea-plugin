@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,9 @@ import java.util.Set;
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public interface HybrisImportParameters {
+
+    @Nullable
+    Project getProject();
 
     @NotNull
     List<HybrisModuleDescriptor> getFoundModules();

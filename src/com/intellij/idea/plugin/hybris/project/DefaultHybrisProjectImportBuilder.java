@@ -1,8 +1,6 @@
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisImportParameters;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
@@ -19,20 +17,16 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
-import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
-import gnu.trove.THashSet;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,17 +44,18 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class    DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
+public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class.getName());
-
+    protected final ContentRootConfigurator contentRootConfigurator = new HybrisModuleContentRootConfigurator();
     @Nullable
     protected HybrisImportParameters projectImportParameters;
-    protected ContentRootConfigurator contentRootConfigurator = new HybrisModuleContentRootConfigurator();
 
     @Override
     public void setRootProjectAbsolutePath(@NotNull final String path) {
         Validate.notEmpty(path);
+
+        this.cleanup();
 
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
             path, this.getProjectImportParameters()
@@ -69,84 +64,20 @@ public class    DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectI
         this.setFileToImport(path);
     }
 
-    @NotNull
-    @Override
-    public HybrisImportParameters getProjectImportParameters() {
-        if (null == this.projectImportParameters) {
-            this.projectImportParameters = new DefaultHybrisImportParameters();
-
-            if (this.isUpdate()) {
-                final Project project = getCurrentProject();
-
-                if (null != project) {
-                    this.projectImportParameters.getAlreadyOpenedModules().addAll(
-                        this.getAlreadyOpenedModules(project)
-                    );
-                }
-            }
-        }
-
-        return this.projectImportParameters;
-    }
-
-    @NotNull
-    protected Collection<HybrisModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
-        Validate.notNull(project);
-
-        final Collection<HybrisModuleDescriptor> existingModules = new THashSet<HybrisModuleDescriptor>();
-
-        for (Module module : ModuleManager.getInstance(project).getModules()) {
-            try {
-                final VirtualFile moduleFile = module.getModuleFile();
-                if (null == moduleFile) {
-                    LOG.error("Can not find module file for module: " + module.getName());
-                    continue;
-                }
-
-                final HybrisModuleDescriptor moduleDescriptor = new DefaultHybrisModuleDescriptor(
-                    moduleFile.getParent().getPath()
-                );
-
-                existingModules.add(moduleDescriptor);
-            } catch (HybrisConfigurationException e) {
-                LOG.error(e);
-            }
-        }
-
-        return existingModules;
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        return HybrisI18NBundleUtils.message("hybris.project.name");
-    }
-
-    @Override
-    public Icon getIcon() {
-        return HybrisIconsUtils.HYBRIS_ICON;
-    }
-
-    @Override
-    public List<HybrisModuleDescriptor> getList() {
-        return this.getProjectImportParameters().getFoundModules();
-    }
-
-    @Override
-    public void setList(final List<HybrisModuleDescriptor> list) throws ConfigurationException {
-        this.getProjectImportParameters().getModulesChosenForImport().clear();
-        this.getProjectImportParameters().getModulesChosenForImport().addAll(list);
-    }
-
-    @Override
-    public boolean isMarked(final HybrisModuleDescriptor element) {
-        return !this.getProjectImportParameters().getAlreadyOpenedModules().contains(element);
-    }
-
     @Override
     public void cleanup() {
         super.cleanup();
         this.projectImportParameters = null;
+    }
+
+    @NotNull
+    @Override
+    public HybrisImportParameters getProjectImportParameters() {
+        if (null == this.projectImportParameters) {
+            this.projectImportParameters = new DefaultHybrisImportParameters(getCurrentProject());
+        }
+
+        return this.projectImportParameters;
     }
 
     @Override
@@ -194,10 +125,9 @@ public class    DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectI
             modifiableRootModel.inheritSdk();
 
             final String libFolderPath = moduleDescriptor.getRootDirectory().getAbsolutePath() + File.separator
-                                   + HybrisModuleContentRootConfigurator.LIB_DIRECTORY;
+                                         + HybrisModuleContentRootConfigurator.LIB_DIRECTORY;
             LibUtils.loadLibFolder(project, libFolderPath);
             LibUtils.addProjectLibsToModule(project, modifiableRootModel);
-
 
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
@@ -273,6 +203,38 @@ public class    DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectI
         );
 
         return (Messages.YES != resultCode) && (Messages.NO == resultCode);
+    }
+
+    @NotNull
+    @Override
+    public String getName() {
+        return HybrisI18NBundleUtils.message("hybris.project.name");
+    }
+
+    @Override
+    public Icon getIcon() {
+        return HybrisIconsUtils.HYBRIS_ICON;
+    }
+
+    @Override
+    public List<HybrisModuleDescriptor> getList() {
+        return this.getProjectImportParameters().getFoundModules();
+    }
+
+    @Override
+    public void setList(final List<HybrisModuleDescriptor> list) throws ConfigurationException {
+
+        final Collection<HybrisModuleDescriptor> chosenForImport = new ArrayList<HybrisModuleDescriptor>(list);
+
+        chosenForImport.removeAll(this.getProjectImportParameters().getAlreadyOpenedModules());
+
+        this.getProjectImportParameters().getModulesChosenForImport().clear();
+        this.getProjectImportParameters().getModulesChosenForImport().addAll(chosenForImport);
+    }
+
+    @Override
+    public boolean isMarked(final HybrisModuleDescriptor element) {
+        return false;
     }
 
     protected static class GetFileNameFunction implements Function<File, String> {

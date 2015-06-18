@@ -1,8 +1,11 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created 1:20 PM 14 June 2015.
@@ -21,5 +24,11 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     File getModuleFile();
 
     @NotNull
-    File getHybrisProjectFile();
+    ExtensionInfo getExtensionInfo();
+
+    @NotNull
+    List<HybrisModuleDescriptor> getDependenciesTree();
+
+    @NotNull
+    Set<HybrisModuleDescriptor> getDependenciesPlainList();
 }
