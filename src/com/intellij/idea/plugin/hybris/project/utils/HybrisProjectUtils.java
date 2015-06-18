@@ -203,7 +203,7 @@ public final class HybrisProjectUtils {
         return paths;
     }
 
-    private static class DirectoriesFilter implements FileFilter {
+    public static class DirectoriesFilter implements FileFilter {
 
         @Override
         public boolean accept(final File pathname) {
@@ -211,7 +211,7 @@ public final class HybrisProjectUtils {
         }
     }
 
-    private static class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleDescriptor> {
+    public static class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleDescriptor> {
 
         private final String name;
 
@@ -222,8 +222,8 @@ public final class HybrisProjectUtils {
         }
 
         @Override
-        public boolean apply(@Nullable final HybrisModuleDescriptor hybrisModuleDescriptor) {
-            return null != hybrisModuleDescriptor && name.equalsIgnoreCase(hybrisModuleDescriptor.getModuleName());
+        public boolean apply(@Nullable final HybrisModuleDescriptor t) {
+            return null != t && name.equalsIgnoreCase(t.getModuleName());
         }
     }
 }

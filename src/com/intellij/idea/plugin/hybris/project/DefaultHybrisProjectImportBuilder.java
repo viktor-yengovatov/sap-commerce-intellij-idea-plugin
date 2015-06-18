@@ -1,9 +1,12 @@
 package com.intellij.idea.plugin.hybris.project;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.LibUtils;
@@ -17,7 +20,9 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.DependencyScope;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
@@ -159,14 +164,14 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             modifiableRootModels.add(modifiableRootModel);
         }
 
-        if (!isProjectAlreadyOpen) {
-            ApplicationManager.getApplication().runWriteAction(new Runnable() {
-                @Override
-                public void run() {
-                    ModifiableModelCommitter.multiCommit(modifiableRootModels, rootProjectModifiableModuleModel);
-                }
-            });
-        }
+        this.configureModulesDependencies(modulesChosenForImport, modifiableRootModels);
+
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                ModifiableModelCommitter.multiCommit(modifiableRootModels, rootProjectModifiableModuleModel);
+            }
+        });
 
         this.cleanup();
 
@@ -202,6 +207,33 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 modifiableRootModel.commit();
             }
         });
+    }
+
+    protected void configureModulesDependencies(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport,
+                                                @NotNull final Iterable<ModifiableRootModel> modifiableRootModels) {
+        Validate.notNull(modulesChosenForImport);
+        Validate.notNull(modifiableRootModels);
+
+        for (ModifiableRootModel modifiableRootModel : modifiableRootModels) {
+            final HybrisModuleDescriptor moduleDescriptor = Iterables.find(
+                modulesChosenForImport,
+                new HybrisProjectUtils.FindHybrisModuleDescriptorByName(modifiableRootModel.getModule().getName())
+            );
+
+            for (HybrisModuleDescriptor dependsOnDescriptor : moduleDescriptor.getDependenciesTree()) {
+                final ModifiableRootModel dependsOnModule = Iterables.find(
+                    modifiableRootModels,
+                    new FindModifiableRootModelByName(dependsOnDescriptor.getModuleName())
+                );
+
+                final ModuleOrderEntry moduleOrderEntry = modifiableRootModel.addModuleOrderEntry(
+                    dependsOnModule.getModule()
+                );
+
+                moduleOrderEntry.setExported(true);
+                moduleOrderEntry.setScope(DependencyScope.COMPILE);
+            }
+        }
     }
 
     protected boolean shouldRemoveAlreadyExistingModuleFiles(@NotNull final Collection<File> files) {
@@ -260,6 +292,22 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         @Override
         public String fun(final File param) {
             return param.getPath();
+        }
+    }
+
+    private static class FindModifiableRootModelByName implements Predicate<ModifiableRootModel> {
+
+        private final String name;
+
+        public FindModifiableRootModelByName(@NotNull final String name) {
+            Validate.notEmpty(name);
+
+            this.name = name;
+        }
+
+        @Override
+        public boolean apply(@Nullable final ModifiableRootModel t) {
+            return null != t && this.name.equalsIgnoreCase(t.getModule().getName());
         }
     }
 }
