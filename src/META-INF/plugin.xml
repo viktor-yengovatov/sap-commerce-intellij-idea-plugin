@@ -1,7 +1,7 @@
 <idea-plugin version="2">
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
-    <name>Hybris impex plugin</name>
+    <name>Hybris Integration</name>
     <version>2.0</version>
 
     <depends>com.intellij.modules.lang</depends>
@@ -12,6 +12,9 @@
     <description>
         <![CDATA[
           Features:
+          <br/>
+          - Import of Hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
+
           <br/>
           - Syntax highlighting and errors indication for Hybris impex files.
 
@@ -54,7 +57,7 @@
     <change-notes>
         <![CDATA[
           2.0:
-          <br/> - Support of Hybris projects has been added to the project import dialogs.
+          <br/> - Import of Hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
           <br/>
           <br/>
           1.8:
