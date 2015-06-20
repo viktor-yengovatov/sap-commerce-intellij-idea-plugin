@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<DefaultHybrisProjectImportBuilder> {
 
-    private static final Logger LOG = Logger.getInstance(HybrisProjectOpenProcessor.class.getName());
+    private static final Logger LOG = Logger.getInstance(HybrisProjectOpenProcessor.class);
 
     public HybrisProjectOpenProcessor(final DefaultHybrisProjectImportBuilder builder) {
         super(builder);

@@ -2,15 +2,23 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -18,35 +26,28 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
+public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
+
+    private static final Logger LOG = Logger.getInstance(DefaultHybrisModuleDescriptor.class);
+
+    @Nullable
+    public static final JAXBContext EXTENSION_INFO_JAXB_CONTEXT = getExtensionInfoJaxbContext();
 
     @NotNull
     protected final String moduleName;
     @NotNull
-    protected final File rootDirectory;
-    @NotNull
-    protected final File moduleFile;
-    @NotNull
-    protected final File hybrisProjectFile;
-    @NotNull
     protected final ExtensionInfo extensionInfo;
-    @NotNull
-    protected final Set<HybrisModuleDescriptor> dependenciesTree = new HashSet<HybrisModuleDescriptor>(0);
 
     public DefaultHybrisModuleDescriptor(@NotNull final File moduleRootDirectory) throws HybrisConfigurationException {
+        super(moduleRootDirectory);
+
         Validate.notNull(moduleRootDirectory);
 
-        this.rootDirectory = moduleRootDirectory;
+        final File hybrisProjectFile = new File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML);
 
-        if (!this.rootDirectory.isDirectory()) {
-            throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootDirectory);
-        }
-
-        this.hybrisProjectFile = new File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML);
-
-        final ExtensionInfo extensionInfo = HybrisProjectUtils.unmarshalExtensionInfo(this.hybrisProjectFile);
+        final ExtensionInfo extensionInfo = this.unmarshalExtensionInfo(hybrisProjectFile);
         if (null == extensionInfo) {
-            throw new HybrisConfigurationException("Can not unmarshal " + this.hybrisProjectFile);
+            throw new HybrisConfigurationException("Can not unmarshal " + hybrisProjectFile);
         }
 
         this.extensionInfo = extensionInfo;
@@ -56,12 +57,40 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
         }
 
         this.moduleName = extensionInfo.getExtension().getName();
-        this.moduleFile = new File(moduleRootDirectory, this.moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
     }
 
-    @Override
-    public int compareTo(@NotNull final HybrisModuleDescriptor o) {
-        return this.getModuleName().compareToIgnoreCase(o.getModuleName());
+    @Nullable
+    private ExtensionInfo unmarshalExtensionInfo(@NotNull final File file) {
+        Validate.notNull(file);
+
+        try {
+            if (null == EXTENSION_INFO_JAXB_CONTEXT) {
+                LOG.error(String.format(
+                    "Can not unmarshal '%s' because JAXBContext has not been created.", file.getAbsolutePath()
+                ));
+
+                return null;
+            }
+
+            final Unmarshaller jaxbUnmarshaller = EXTENSION_INFO_JAXB_CONTEXT.createUnmarshaller();
+
+            return (ExtensionInfo) jaxbUnmarshaller.unmarshal(file);
+        } catch (JAXBException e) {
+            LOG.error("Can not unmarshal " + file.getAbsolutePath(), e);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private static JAXBContext getExtensionInfoJaxbContext() {
+        try {
+            return JAXBContext.newInstance(ExtensionInfo.class);
+        } catch (JAXBException e) {
+            LOG.error("Can not create JAXBContext for ExtensionInfo.", e);
+        }
+
+        return null;
     }
 
     @Override
@@ -70,70 +99,25 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
         return moduleName;
     }
 
-    @Override
     @NotNull
-    public File getRootDirectory() {
-        return rootDirectory;
-    }
-
     @Override
-    @NotNull
-    public File getModuleFile() {
-        return moduleFile;
-    }
-
-    @Override
-    @NotNull
-    public ExtensionInfo getExtensionInfo() {
-        return extensionInfo;
-    }
-
-    @Override
-    @NotNull
-    public Set<HybrisModuleDescriptor> getDependenciesTree() {
-        return dependenciesTree;
-    }
-
-    @Override
-    @NotNull
-    public Set<HybrisModuleDescriptor> getDependenciesPlainList() {
-        return HybrisProjectUtils.getDependenciesPlainSet(this);
-    }
-
-    @Override
-    public int hashCode() {
-        return new org.apache.commons.lang3.builder.HashCodeBuilder(17, 37)
-            .append(moduleName)
-            .append(rootDirectory)
-            .toHashCode();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+    public Set<String> getRequiredExtensionNames() {
+        if (null == this.extensionInfo.getExtension()) {
+            return Collections.emptySet();
         }
 
-        if (null == obj || getClass() != obj.getClass()) {
-            return false;
+        final List<RequiresExtensionType> requiresExtensions = this.extensionInfo.getExtension().getRequiresExtension();
+
+        if (isEmpty(requiresExtensions)) {
+            return Collections.emptySet();
         }
 
-        final DefaultHybrisModuleDescriptor other = (DefaultHybrisModuleDescriptor) obj;
+        final Set<String> requiredExtensionNames = new HashSet<String>(requiresExtensions.size());
 
-        return new org.apache.commons.lang3.builder.EqualsBuilder()
-            .append(moduleName, other.moduleName)
-            .append(rootDirectory, other.rootDirectory)
-            .isEquals();
-    }
+        for (RequiresExtensionType requiresExtension : requiresExtensions) {
+            requiredExtensionNames.add(requiresExtension.getName());
+        }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("DefaultHybrisModuleDescriptor{");
-        sb.append("moduleName='").append(moduleName).append('\'');
-        sb.append(", rootDirectory=").append(rootDirectory);
-        sb.append(", moduleFile=").append(moduleFile);
-        sb.append(", hybrisProjectFile=").append(hybrisProjectFile);
-        sb.append('}');
-        return sb.toString();
+        return Collections.unmodifiableSet(requiredExtensionNames);
     }
 }

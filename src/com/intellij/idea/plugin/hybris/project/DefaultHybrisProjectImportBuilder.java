@@ -51,7 +51,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
-    private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class.getName());
+    private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
     protected final ContentRootConfigurator contentRootConfigurator = new HybrisModuleContentRootConfigurator();
     protected final Lock lock = new ReentrantLock();
     @Nullable
