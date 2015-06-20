@@ -162,6 +162,22 @@ public class LibUtils {
         });
     }
 
+    public static void addClassesToModuleLibs(@NotNull final ModifiableRootModel module, @NotNull final File classesFile){
+        Validate.notNull(module);
+        Validate.notNull(classesFile);
+        if(!classesFile.exists())
+            return;
+
+        final String path = VirtualFileManager.constructUrl(LocalFileSystem.PROTOCOL, classesFile.getAbsolutePath());
+        final VirtualFile jarVirtualFile = VirtualFileManager.getInstance().findFileByUrl(path);
+        if(null == jarVirtualFile)
+            return;
+        final Library jarToAdd = module.getModuleLibraryTable().createLibrary();
+        final Library.ModifiableModel libraryModel = jarToAdd.getModifiableModel();
+        libraryModel.addRoot(jarVirtualFile, OrderRootType.CLASSES);
+        libraryModel.commit();
+    }
+
     public static void addJarFolderToModuleLibs(@NotNull final ModifiableRootModel module, @NotNull final File libFolder, final boolean exported) {
         Validate.notNull(libFolder);
         Validate.notNull(module);

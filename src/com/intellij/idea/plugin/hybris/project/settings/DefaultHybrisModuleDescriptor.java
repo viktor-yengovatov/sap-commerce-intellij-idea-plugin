@@ -150,5 +150,10 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, backOfficeLib, false);
+
+        final File webClasses = new File(
+            getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY
+        );
+        LibUtils.addClassesToModuleLibs(modifiableRootModel, webClasses);
     }
 }

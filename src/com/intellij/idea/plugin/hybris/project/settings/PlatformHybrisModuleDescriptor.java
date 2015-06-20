@@ -60,7 +60,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         final File binBootstrap = new File(
             getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY
         );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binBootstrap, false);
+        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binBootstrap, true);
         final File tomcatBin = new File(
             getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY
         );

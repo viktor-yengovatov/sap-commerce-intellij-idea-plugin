@@ -20,6 +20,7 @@ public final class HybrisConstants {
     public static final String RESOURCES_DIRECTORY = "resources";
 
     public static final String WEB_INF_LIB_DIRECTORY = "web/webroot/WEB-INF/lib";
+    public static final String WEB_INF_CLASSES_DIRECTORY = "web/webroot/WEB-INF/classes";
     public static final String HMC_LIB_DIRECTORY = "hmc/bin";
     public static final String BACKOFFICE_LIB_DIRECTORY = "backoffice/bin";
 
