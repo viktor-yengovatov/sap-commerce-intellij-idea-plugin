@@ -1,6 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.application.ApplicationManager;
@@ -23,11 +23,11 @@ import java.util.List;
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
     protected final File rootProjectDirectory;
-    protected final HybrisImportParameters projectImportParameters;
+    protected final HybrisProjectDescriptor projectImportParameters;
 
     public SearchModulesRootsTaskModalWindow(
         @NotNull final File rootProjectDirectory,
-        @NotNull final HybrisImportParameters projectImportParameters
+        @NotNull final HybrisProjectDescriptor projectImportParameters
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),

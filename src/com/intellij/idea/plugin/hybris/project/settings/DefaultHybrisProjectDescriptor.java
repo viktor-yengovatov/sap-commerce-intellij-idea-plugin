@@ -32,9 +32,9 @@ import static org.apache.commons.collections.CollectionUtils.isEmpty;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class DefaultHybrisImportParameters implements HybrisImportParameters {
+public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
-    private static final Logger LOG = Logger.getInstance(DefaultHybrisImportParameters.class);
+    private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectDescriptor.class);
 
     @Nullable
     protected final Project project;
@@ -50,7 +50,7 @@ public class DefaultHybrisImportParameters implements HybrisImportParameters {
     protected File rootDirectory;
     protected boolean openProjectSettingsAfterImport;
 
-    public DefaultHybrisImportParameters(@Nullable final Project project) {
+    public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
         this.project = project;
     }
 

@@ -3,8 +3,8 @@ package com.intellij.idea.plugin.hybris.project;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisImportParameters;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
+import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.utils.*;
@@ -53,7 +53,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected final Lock lock = new ReentrantLock();
     @Nullable
     @GuardedBy("lock")
-    protected volatile HybrisImportParameters projectImportParameters;
+    protected volatile HybrisProjectDescriptor projectImportParameters;
 
     @Override
     public void setRootProjectDirectory(@NotNull final File directory) {
@@ -62,7 +62,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.cleanup();
 
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
-            directory, this.getProjectImportParameters()
+            directory, this.getHybrisProjectDescriptor()
         ));
 
         this.setFileToImport(directory.getAbsolutePath());
@@ -83,12 +83,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @NotNull
     @Override
-    public HybrisImportParameters getProjectImportParameters() {
+    public HybrisProjectDescriptor getHybrisProjectDescriptor() {
         this.lock.lock();
 
         try {
             if (null == this.projectImportParameters) {
-                this.projectImportParameters = new DefaultHybrisImportParameters(getCurrentProject());
+                this.projectImportParameters = new DefaultHybrisProjectDescriptor(getCurrentProject());
             }
 
             return this.projectImportParameters;
@@ -99,12 +99,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public boolean isOpenProjectSettingsAfter() {
-        return this.getProjectImportParameters().isOpenProjectSettingsAfterImport();
+        return this.getHybrisProjectDescriptor().isOpenProjectSettingsAfterImport();
     }
 
     @Override
     public void setOpenProjectSettingsAfter(final boolean on) {
-        this.getProjectImportParameters().setOpenProjectSettingsAfterImport(on);
+        this.getHybrisProjectDescriptor().setOpenProjectSettingsAfterImport(on);
     }
 
     @Nullable
@@ -116,7 +116,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final boolean isProjectAlreadyOpen = null != model;
         final List<Module> result = new ArrayList<Module>();
 
-        final List<HybrisModuleDescriptor> modulesChosenForImport = this.getProjectImportParameters()
+        final List<HybrisModuleDescriptor> modulesChosenForImport = this.getHybrisProjectDescriptor()
                                                                         .getModulesChosenForImport();
 
         if (modulesChosenForImport.isEmpty()) {
@@ -282,7 +282,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public List<HybrisModuleDescriptor> getList() {
-        return this.getProjectImportParameters().getFoundModules();
+        return this.getHybrisProjectDescriptor().getFoundModules();
     }
 
     @Override
@@ -290,9 +290,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final List<HybrisModuleDescriptor> chosenForImport = new ArrayList<HybrisModuleDescriptor>(list);
 
-        chosenForImport.removeAll(this.getProjectImportParameters().getAlreadyOpenedModules());
+        chosenForImport.removeAll(this.getHybrisProjectDescriptor().getAlreadyOpenedModules());
 
-        this.getProjectImportParameters().setModulesChosenForImport(chosenForImport);
+        this.getHybrisProjectDescriptor().setModulesChosenForImport(chosenForImport);
     }
 
     @Override

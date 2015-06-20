@@ -51,7 +51,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     protected Icon getElementIcon(final HybrisModuleDescriptor item) {
         if (this.isInConflict(item)) {
             return AllIcons.Actions.Cancel;
-        } else if (this.getContext().getProjectImportParameters().getAlreadyOpenedModules().contains(item)) {
+        } else if (this.getContext().getHybrisProjectDescriptor().getAlreadyOpenedModules().contains(item)) {
             return AllIcons.General.InspectionsOK;
         }
 

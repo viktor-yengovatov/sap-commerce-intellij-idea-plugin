@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public interface HybrisImportParameters {
+public interface HybrisProjectDescriptor {
 
     @Nullable
     Project getProject();

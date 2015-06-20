@@ -1,6 +1,6 @@
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +17,6 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
     public abstract void setRootProjectDirectory(@NotNull final File directory);
 
     @NotNull
-    public abstract HybrisImportParameters getProjectImportParameters();
+    public abstract HybrisProjectDescriptor getHybrisProjectDescriptor();
 
 }

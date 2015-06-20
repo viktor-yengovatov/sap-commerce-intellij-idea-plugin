@@ -52,7 +52,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             this.getContext().setRootProjectDirectory(new File(this.projectsRootChooser.getText()));
 
             return !this.getContext()
-                        .getProjectImportParameters()
+                        .getHybrisProjectDescriptor()
                         .getFoundModules()
                         .isEmpty();
         }
