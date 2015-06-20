@@ -57,10 +57,20 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         return dependenciesTree;
     }
 
+    @Override
+    public void setDependenciesTree(@NotNull final Set<HybrisModuleDescriptor> moduleDescriptors) {
+        Validate.notNull(moduleDescriptors);
+
+        this.dependenciesTree.clear();
+        this.dependenciesTree.addAll(moduleDescriptors);
+    }
+
     @NotNull
     @Override
     public Set<HybrisModuleDescriptor> getDependenciesPlainList() {
-        return this.recursivelyCollectDependenciesPlainSet(this, new HashSet<HybrisModuleDescriptor>());
+        return Collections.unmodifiableSet(this.recursivelyCollectDependenciesPlainSet(
+            this, new HashSet<HybrisModuleDescriptor>()
+        ));
     }
 
     @NotNull

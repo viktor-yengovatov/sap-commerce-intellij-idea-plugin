@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -48,7 +48,11 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
     @Nullable
     @Override
     public String[] getSupportedExtensions() {
-        return HybrisProjectUtils.getSupportedHybrisModuleFileNames();
+        return new String[]{
+            HybrisConstants.EXTENSION_INFO_XML,
+            HybrisConstants.LOCAL_EXTENSIONS_XML,
+            HybrisConstants.EXTENSIONS_XML
+        };
     }
 
 }

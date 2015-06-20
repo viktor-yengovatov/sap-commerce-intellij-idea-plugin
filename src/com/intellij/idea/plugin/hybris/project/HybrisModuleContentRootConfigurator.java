@@ -250,9 +250,9 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
             JavaSourceRootType.TEST_SOURCE
         );
 
-        final File webAddonsrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
+        final File webAddonSrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(webAddonsrcDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath())
         );
 
         final File webTestClassesDirectory = new File(webModuleDirectory, TEST_CLASSES_DIRECTORY);

@@ -288,12 +288,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Override
     public void setList(final List<HybrisModuleDescriptor> list) throws ConfigurationException {
 
-        final Collection<HybrisModuleDescriptor> chosenForImport = new ArrayList<HybrisModuleDescriptor>(list);
+        final List<HybrisModuleDescriptor> chosenForImport = new ArrayList<HybrisModuleDescriptor>(list);
 
         chosenForImport.removeAll(this.getProjectImportParameters().getAlreadyOpenedModules());
 
-        this.getProjectImportParameters().getModulesChosenForImport().clear();
-        this.getProjectImportParameters().getModulesChosenForImport().addAll(chosenForImport);
+        this.getProjectImportParameters().setModulesChosenForImport(chosenForImport);
     }
 
     @Override

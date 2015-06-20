@@ -1,24 +1,18 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
+import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportBuilder;
-import com.intellij.util.Processor;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,8 +21,6 @@ import java.util.List;
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
-
-    private static final Logger LOG = Logger.getInstance(SearchModulesRootsTaskModalWindow.class);
 
     protected final File rootProjectDirectory;
     protected final HybrisImportParameters projectImportParameters;
@@ -54,36 +46,16 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
     public void run(@NotNull final ProgressIndicator indicator) {
         Validate.notNull(indicator);
 
-        this.projectImportParameters.getFoundModules().clear();
-        this.projectImportParameters.setRootDirectory(null);
-
-        final List<File> moduleRootDirectories = HybrisProjectUtils.findModuleRoots(
-            this.rootProjectDirectory, new ProgressIndicatorUpdaterProcessor(indicator)
+        this.projectImportParameters.setRootDirectoryAndScanForModules(
+            this.rootProjectDirectory,
+            new ProgressIndicatorUpdaterProcessor(indicator),
+            new ModuleScanErrorsProcessor()
         );
+    }
 
-        final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<HybrisModuleDescriptor>();
-        final Collection<File> pathsFailedToImport = new ArrayList<File>();
-
-        for (File moduleRootDirectory : moduleRootDirectories) {
-            try {
-                moduleDescriptors.add(HybrisProjectUtils.MODULE_DESCRIPTOR_FACTORY.createDescriptor(moduleRootDirectory));
-            } catch (HybrisConfigurationException e) {
-                LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
-
-                pathsFailedToImport.add(moduleRootDirectory);
-            }
-        }
-
-        if (!pathsFailedToImport.isEmpty()) {
-            this.showErrorMessage(pathsFailedToImport);
-        }
-
-        Collections.sort(moduleDescriptors);
-
-        HybrisProjectUtils.buildDependencies(moduleDescriptors);
-
-        this.projectImportParameters.getFoundModules().addAll(moduleDescriptors);
-        this.projectImportParameters.setRootDirectory(this.rootProjectDirectory);
+    @Override
+    public void onCancel() {
+        this.projectImportParameters.setRootDirectoryAndScanForModules(null, null, null);
     }
 
     protected void showErrorMessage(@NotNull final Collection<File> directoriesFailedToImport) {
@@ -98,12 +70,6 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
                 );
             }
         });
-    }
-
-    @Override
-    public void onCancel() {
-        this.projectImportParameters.getFoundModules().clear();
-        this.projectImportParameters.setRootDirectory(null);
     }
 
     protected class ProgressIndicatorUpdaterProcessor implements Processor<File> {
@@ -125,6 +91,18 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
             this.progressIndicator.setText2(t.getAbsolutePath());
 
             return true;
+        }
+    }
+
+    protected class ModuleScanErrorsProcessor implements Processor<List<File>> {
+
+        @Override
+        public boolean process(final List<File> t) {
+            if (!t.isEmpty()) {
+                showErrorMessage(t);
+            }
+
+            return false;
         }
     }
 }

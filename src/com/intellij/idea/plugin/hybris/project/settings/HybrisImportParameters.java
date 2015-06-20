@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
+import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,13 +25,17 @@ public interface HybrisImportParameters {
     @NotNull
     List<HybrisModuleDescriptor> getModulesChosenForImport();
 
+    void setModulesChosenForImport(@NotNull List<HybrisModuleDescriptor> moduleDescriptors);
+
     @NotNull
     Set<HybrisModuleDescriptor> getAlreadyOpenedModules();
 
     @Nullable
     File getRootDirectory();
 
-    void setRootDirectory(@Nullable File rootDirectory);
+    void setRootDirectoryAndScanForModules(@Nullable File rootDirectory,
+                                           @Nullable Processor<File> progressListenerProcessor,
+                                           @Nullable Processor<List<File>> errorsProcessor);
 
     boolean isOpenProjectSettingsAfterImport();
 

@@ -27,6 +27,8 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesTree();
 
+    void setDependenciesTree(@NotNull Set<HybrisModuleDescriptor> moduleDescriptors);
+
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesPlainList();
 }
