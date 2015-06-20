@@ -4,10 +4,12 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.utils.*;
+import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
+import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -17,20 +19,16 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.DependencyScope;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleOrderEntry;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
-import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.JarFileSystem;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
 import org.apache.commons.lang3.Validate;
@@ -57,7 +55,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected final Lock lock = new ReentrantLock();
     @Nullable
     @GuardedBy("lock")
-    protected volatile HybrisProjectDescriptor projectImportParameters;
+    protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
 
     @Override
     public void setRootProjectDirectory(@NotNull final File directory) {
@@ -79,7 +77,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.lock.lock();
 
         try {
-            this.projectImportParameters = null;
+            this.hybrisProjectDescriptor = null;
         } finally {
             this.lock.unlock();
         }
@@ -91,11 +89,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.lock.lock();
 
         try {
-            if (null == this.projectImportParameters) {
-                this.projectImportParameters = new DefaultHybrisProjectDescriptor(getCurrentProject());
+            if (null == this.hybrisProjectDescriptor) {
+                this.hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor(getCurrentProject());
             }
 
-            return this.projectImportParameters;
+            return this.hybrisProjectDescriptor;
         } finally {
             this.lock.unlock();
         }
@@ -143,11 +141,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
 
+            ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             modifiableRootModel.inheritSdk();
             moduleDescriptor.loadLibs(modifiableRootModel);
-
-
-            ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
 
             if (isProjectAlreadyOpen) {
@@ -278,7 +274,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public Icon getIcon() {
-        int t =0;
+        int t = 0;
         return HybrisIconsUtils.HYBRIS_ICON;
     }
 

@@ -33,7 +33,6 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesPlainList();
 
-    @NotNull
     void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel);
 
 }

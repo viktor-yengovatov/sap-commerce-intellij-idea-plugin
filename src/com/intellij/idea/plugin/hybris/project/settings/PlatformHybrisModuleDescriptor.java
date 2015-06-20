@@ -49,7 +49,6 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         return Collections.unmodifiableSet(platformDependencies);
     }
 
-    @NotNull
     @Override
     public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
         final File libFolder = new File(

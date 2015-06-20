@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
+import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.RequiresExtensionType;
@@ -105,13 +106,13 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     @Override
     public Set<String> getRequiredExtensionNames() {
         if (null == this.extensionInfo.getExtension()) {
-            return Collections.emptySet();
+            return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
         }
 
         final List<RequiresExtensionType> requiresExtensions = this.extensionInfo.getExtension().getRequiresExtension();
 
         if (isEmpty(requiresExtensions)) {
-            return Collections.emptySet();
+            return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
         }
 
         final Set<String> requiredExtensionNames = new HashSet<String>(requiresExtensions.size());
@@ -125,7 +126,6 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
         return Collections.unmodifiableSet(requiredExtensionNames);
     }
 
-    @NotNull
     @Override
     public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
         final File libFolder = new File(

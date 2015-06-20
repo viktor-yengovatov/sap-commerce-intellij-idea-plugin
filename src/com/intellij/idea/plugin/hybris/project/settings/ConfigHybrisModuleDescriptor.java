@@ -32,9 +32,8 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
         return Collections.emptySet();
     }
 
-    @NotNull
     @Override
-    public void loadLibs(ModifiableRootModel modifiableRootModel) {
+    public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
 
     }
 }

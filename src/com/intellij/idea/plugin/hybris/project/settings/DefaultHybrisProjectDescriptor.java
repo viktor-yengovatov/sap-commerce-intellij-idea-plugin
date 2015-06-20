@@ -1,9 +1,9 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.openapi.diagnostic.Logger;
@@ -54,20 +54,20 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.project = project;
     }
 
-    @Override
     @Nullable
+    @Override
     public Project getProject() {
         return this.project;
     }
 
-    @Override
     @NotNull
+    @Override
     public List<HybrisModuleDescriptor> getFoundModules() {
         return Collections.unmodifiableList(this.foundModules);
     }
 
-    @Override
     @NotNull
+    @Override
     public List<HybrisModuleDescriptor> getModulesChosenForImport() {
         return this.modulesChosenForImport;
     }
@@ -80,8 +80,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.modulesChosenForImport.addAll(moduleDescriptors);
     }
 
-    @Override
     @NotNull
+    @Override
     public Set<HybrisModuleDescriptor> getAlreadyOpenedModules() {
         if (null == this.project) {
             return Collections.emptySet();
@@ -271,22 +271,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
 
             moduleDescriptor.setDependenciesTree(dependencies);
-        }
-    }
-
-    public static class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleDescriptor> {
-
-        private final String name;
-
-        public FindHybrisModuleDescriptorByName(@NotNull final String name) {
-            Validate.notEmpty(name);
-
-            this.name = name;
-        }
-
-        @Override
-        public boolean apply(@Nullable final HybrisModuleDescriptor t) {
-            return null != t && name.equalsIgnoreCase(t.getModuleName());
         }
     }
 }
