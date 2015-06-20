@@ -8,6 +8,8 @@ package com.intellij.idea.plugin.hybris.utils;
 public final class HybrisConstants {
 
     public static final String EXTENSION_INFO_XML = "extensioninfo.xml";
+    public static final String LOCAL_EXTENSIONS_XML = "localextensions.xml";
+    public static final String EXTENSIONS_XML = "extensions.xml";
     public static final String NEW_MODULE_FILE_EXTENSION = ".iml";
     public static final String OLD_MODULE_FILE_EXTENSION = ".eml";
 

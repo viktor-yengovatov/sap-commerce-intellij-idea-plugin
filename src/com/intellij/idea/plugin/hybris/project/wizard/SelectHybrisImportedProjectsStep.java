@@ -47,11 +47,6 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     }
 
     @Override
-    public AbstractHybrisProjectImportBuilder getContext() {
-        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
-    }
-
-    @Override
     @Nullable
     protected Icon getElementIcon(final HybrisModuleDescriptor item) {
         if (this.isInConflict(item)) {
@@ -68,6 +63,11 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         return this.fileChooser.getMarkedElements().contains(item)
                && this.calculateSelectedModuleDuplicates().contains(item.getModuleName());
+    }
+
+    @Override
+    public AbstractHybrisProjectImportBuilder getContext() {
+        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
     @NotNull

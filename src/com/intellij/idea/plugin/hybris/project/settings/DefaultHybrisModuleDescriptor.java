@@ -33,16 +33,16 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
     @NotNull
     protected final Set<HybrisModuleDescriptor> dependenciesTree = new HashSet<HybrisModuleDescriptor>(0);
 
-    public DefaultHybrisModuleDescriptor(@NotNull final String moduleRootAbsolutePath) throws HybrisConfigurationException {
-        Validate.notEmpty(moduleRootAbsolutePath);
+    public DefaultHybrisModuleDescriptor(@NotNull final File moduleRootDirectory) throws HybrisConfigurationException {
+        Validate.notNull(moduleRootDirectory);
 
-        this.rootDirectory = new File(moduleRootAbsolutePath);
+        this.rootDirectory = moduleRootDirectory;
 
         if (!this.rootDirectory.isDirectory()) {
-            throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootAbsolutePath);
+            throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootDirectory);
         }
 
-        this.hybrisProjectFile = new File(moduleRootAbsolutePath, HybrisConstants.EXTENSION_INFO_XML);
+        this.hybrisProjectFile = new File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML);
 
         final ExtensionInfo extensionInfo = HybrisProjectUtils.unmarshalExtensionInfo(this.hybrisProjectFile);
         if (null == extensionInfo) {
@@ -52,11 +52,11 @@ public class DefaultHybrisModuleDescriptor implements HybrisModuleDescriptor {
         this.extensionInfo = extensionInfo;
 
         if (null == extensionInfo.getExtension() || isBlank(extensionInfo.getExtension().getName())) {
-            throw new HybrisConfigurationException("Can not find module name using path: " + moduleRootAbsolutePath);
+            throw new HybrisConfigurationException("Can not find module name using path: " + moduleRootDirectory);
         }
 
         this.moduleName = extensionInfo.getExtension().getName();
-        this.moduleFile = new File(moduleRootAbsolutePath, this.moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
+        this.moduleFile = new File(moduleRootDirectory, this.moduleName + HybrisConstants.NEW_MODULE_FILE_EXTENSION);
     }
 
     @Override

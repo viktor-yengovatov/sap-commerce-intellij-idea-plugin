@@ -3,7 +3,7 @@ package com.intellij.idea.plugin.hybris.project;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VfsUtil;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
@@ -44,7 +44,7 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);
 
-        final ContentEntry contentEntry = modifiableRootModel.addContentEntry(VfsUtilCore.pathToUrl(
+        final ContentEntry contentEntry = modifiableRootModel.addContentEntry(VfsUtil.pathToUrl(
             moduleDescriptor.getRootDirectory().getAbsolutePath()
         ));
 
@@ -63,26 +63,26 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
 
         final File srcDirectory = new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtilCore.pathToUrl(srcDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(srcDirectory.getAbsolutePath()),
             JavaSourceRootType.SOURCE
         );
 
         final File genSrcDirectory = new File(moduleDescriptor.getRootDirectory(), GEN_SRC_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtilCore.pathToUrl(genSrcDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(genSrcDirectory.getAbsolutePath()),
             JavaSourceRootType.SOURCE,
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
         final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtilCore.pathToUrl(resourcesDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(resourcesDirectory.getAbsolutePath()),
             JavaResourceRootType.RESOURCE
         );
 
         final File testSrcDirectory = new File(moduleDescriptor.getRootDirectory(), TEST_SRC_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtilCore.pathToUrl(testSrcDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(testSrcDirectory.getAbsolutePath()),
             JavaSourceRootType.TEST_SOURCE
         );
 
@@ -91,22 +91,22 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         );
 
         contentEntry.addExcludeFolder(
-            VfsUtilCore.pathToUrl(externalToolBuildersDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(externalToolBuildersDirectory.getAbsolutePath())
         );
 
         final File settingsDirectory = new File(moduleDescriptor.getRootDirectory(), SETTINGS_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtilCore.pathToUrl(settingsDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(settingsDirectory.getAbsolutePath())
         );
 
         final File classesDirectory = new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtilCore.pathToUrl(classesDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(classesDirectory.getAbsolutePath())
         );
 
         final File eclipseBinDirectory = new File(moduleDescriptor.getRootDirectory(), ECLIPSE_BIN_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtilCore.pathToUrl(eclipseBinDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(eclipseBinDirectory.getAbsolutePath())
         );
     }
 
@@ -121,19 +121,19 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         if (hmcModuleDirectory.isDirectory()) {
             final File hmcSrcDirectory = new File(hmcModuleDirectory, SRC_DIRECTORY);
             contentEntry.addSourceFolder(
-                VfsUtilCore.pathToUrl(hmcSrcDirectory.getAbsolutePath()),
+                VfsUtil.pathToUrl(hmcSrcDirectory.getAbsolutePath()),
                 JavaSourceRootType.SOURCE
             );
 
             final File hmcResourcesDirectory = new File(hmcModuleDirectory, RESOURCES_DIRECTORY);
             contentEntry.addSourceFolder(
-                VfsUtilCore.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
+                VfsUtil.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
                 JavaResourceRootType.RESOURCE
             );
 
             final File hmcClassesDirectory = new File(hmcModuleDirectory, CLASSES_DIRECTORY);
             contentEntry.addExcludeFolder(
-                VfsUtilCore.pathToUrl(hmcClassesDirectory.getAbsolutePath())
+                VfsUtil.pathToUrl(hmcClassesDirectory.getAbsolutePath())
             );
         }
     }
@@ -183,19 +183,19 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         if (hmcModuleDirectory.isDirectory()) {
             final File hmcSrcDirectory = new File(hmcModuleDirectory, SRC_DIRECTORY);
             contentEntry.addSourceFolder(
-                VfsUtilCore.pathToUrl(hmcSrcDirectory.getAbsolutePath()),
+                VfsUtil.pathToUrl(hmcSrcDirectory.getAbsolutePath()),
                 JavaSourceRootType.SOURCE
             );
 
             final File hmcResourcesDirectory = new File(hmcModuleDirectory, RESOURCES_DIRECTORY);
             contentEntry.addSourceFolder(
-                VfsUtilCore.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
+                VfsUtil.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
                 JavaResourceRootType.RESOURCE
             );
 
             final File hmcClassesDirectory = new File(hmcModuleDirectory, CLASSES_DIRECTORY);
             contentEntry.addExcludeFolder(
-                VfsUtilCore.pathToUrl(hmcClassesDirectory.getAbsolutePath())
+                VfsUtil.pathToUrl(hmcClassesDirectory.getAbsolutePath())
             );
         }
     }
@@ -203,38 +203,38 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
     private void configureWebModuleRoots(final @NotNull ContentEntry contentEntry, final File webModuleDirectory) {
         final File webSrcDirectory = new File(webModuleDirectory, SRC_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtilCore.pathToUrl(webSrcDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(webSrcDirectory.getAbsolutePath()),
             JavaSourceRootType.SOURCE
         );
 
         final File webGenSrcDirectory = new File(webModuleDirectory, GEN_SRC_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtilCore.pathToUrl(webGenSrcDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(webGenSrcDirectory.getAbsolutePath()),
             JavaSourceRootType.SOURCE,
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
         final File webTestSrcDirectory = new File(webModuleDirectory, TEST_SRC_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtilCore.pathToUrl(webTestSrcDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(webTestSrcDirectory.getAbsolutePath()),
             JavaSourceRootType.TEST_SOURCE
         );
 
         final File webAddonsrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtilCore.pathToUrl(webAddonsrcDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(webAddonsrcDirectory.getAbsolutePath())
         );
 
         final File webTestClassesDirectory = new File(webModuleDirectory, TEST_CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtilCore.pathToUrl(webTestClassesDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath())
         );
 
         final File webWebRootDirectory = new File(webModuleDirectory, WEB_ROOT_DIRECTORY);
         final File webInfDirectory = new File(webWebRootDirectory, WEB_INF_DIRECTORY);
         final File webInfClassesDirectory = new File(webInfDirectory, CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtilCore.pathToUrl(webInfClassesDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(webInfClassesDirectory.getAbsolutePath())
         );
     }
 }

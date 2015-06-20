@@ -12,6 +12,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Processor;
 import gnu.trove.THashSet;
@@ -158,7 +159,7 @@ public final class HybrisProjectUtils {
                 }
 
                 final HybrisModuleDescriptor moduleDescriptor = new DefaultHybrisModuleDescriptor(
-                    moduleFile.getParent().getPath()
+                    VfsUtil.virtualToIoFile(moduleFile.getParent())
                 );
 
                 existingModules.add(moduleDescriptor);
@@ -171,36 +172,43 @@ public final class HybrisProjectUtils {
     }
 
     @NotNull
-    public static List<String> findModuleRoots(@NotNull final String rootProjectAbsolutePath,
-                                               @Nullable final Processor<String> stepProcessor
+    public static List<File> findModuleRoots(@NotNull final File rootProjectDirectory,
+                                             @Nullable final Processor<File> stepProcessor
     ) {
-        Validate.notEmpty(rootProjectAbsolutePath);
+        Validate.notNull(rootProjectDirectory);
 
-        final List<String> paths = new ArrayList<String>(1);
+        final List<File> paths = new ArrayList<File>(1);
 
         if (null != stepProcessor) {
-            stepProcessor.process(rootProjectAbsolutePath);
+            stepProcessor.process(rootProjectDirectory);
         }
 
-        if (new File(rootProjectAbsolutePath, HybrisConstants.EXTENSION_INFO_XML).isFile()) {
+        if (isDirectoryContainsHybrisModuleFile(rootProjectDirectory)) {
 
-            paths.add(rootProjectAbsolutePath);
+            paths.add(rootProjectDirectory);
 
         } else {
 
-            final File root = new File(rootProjectAbsolutePath);
-            if (root.isDirectory()) {
-                final File[] files = root.listFiles(new DirectoriesFilter());
+            if (rootProjectDirectory.isDirectory()) {
+                final File[] files = rootProjectDirectory.listFiles(new DirectoriesFilter());
 
                 if (null != files) {
                     for (File file : files) {
-                        paths.addAll(findModuleRoots(file.getPath(), stepProcessor));
+                        paths.addAll(findModuleRoots(file, stepProcessor));
                     }
                 }
             }
         }
 
         return paths;
+    }
+
+    public static boolean isDirectoryContainsHybrisModuleFile(final @NotNull File rootProjectOrModuleDirectory) {
+        Validate.notNull(rootProjectOrModuleDirectory);
+
+        return new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile()
+               || new File(rootProjectOrModuleDirectory, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
+               || new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSIONS_XML).isFile();
     }
 
     public static class DirectoriesFilter implements FileFilter {

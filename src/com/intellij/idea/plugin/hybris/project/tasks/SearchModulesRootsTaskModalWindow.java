@@ -29,13 +29,13 @@ import java.util.List;
  */
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
-    private static final Logger LOG = Logger.getInstance(SearchModulesRootsTaskModalWindow.class.getName());
+    private static final Logger LOG = Logger.getInstance(SearchModulesRootsTaskModalWindow.class);
 
-    protected final String rootProjectAbsolutePath;
+    protected final File rootProjectDirectory;
     protected final HybrisImportParameters projectImportParameters;
 
     public SearchModulesRootsTaskModalWindow(
-        @NotNull final String rootProjectAbsolutePath,
+        @NotNull final File rootProjectDirectory,
         @NotNull final HybrisImportParameters projectImportParameters
     ) {
         super(
@@ -44,10 +44,10 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
             true
         );
 
-        Validate.notEmpty(rootProjectAbsolutePath);
+        Validate.notNull(rootProjectDirectory);
         Validate.notNull(projectImportParameters);
 
-        this.rootProjectAbsolutePath = rootProjectAbsolutePath;
+        this.rootProjectDirectory = rootProjectDirectory;
         this.projectImportParameters = projectImportParameters;
     }
 
@@ -58,20 +58,20 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
         this.projectImportParameters.getFoundModules().clear();
         this.projectImportParameters.setRootDirectory(null);
 
-        final List<String> moduleRootAbsolutePaths = HybrisProjectUtils.findModuleRoots(
-            this.rootProjectAbsolutePath, new ProgressIndicatorUpdaterProcessor(indicator)
+        final List<File> moduleRootDirectories = HybrisProjectUtils.findModuleRoots(
+            this.rootProjectDirectory, new ProgressIndicatorUpdaterProcessor(indicator)
         );
 
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<HybrisModuleDescriptor>();
-        final Collection<String> pathsFailedToImport = new ArrayList<String>();
+        final Collection<File> pathsFailedToImport = new ArrayList<File>();
 
-        for (String moduleRootAbsolutePath : moduleRootAbsolutePaths) {
+        for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                moduleDescriptors.add(new DefaultHybrisModuleDescriptor(moduleRootAbsolutePath));
+                moduleDescriptors.add(new DefaultHybrisModuleDescriptor(moduleRootDirectory));
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 
-                pathsFailedToImport.add(moduleRootAbsolutePath);
+                pathsFailedToImport.add(moduleRootDirectory);
             }
         }
 
@@ -84,17 +84,17 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
         HybrisProjectUtils.buildDependencies(moduleDescriptors);
 
         this.projectImportParameters.getFoundModules().addAll(moduleDescriptors);
-        this.projectImportParameters.setRootDirectory(new File(this.rootProjectAbsolutePath));
+        this.projectImportParameters.setRootDirectory(this.rootProjectDirectory);
     }
 
-    protected void showErrorMessage(@NotNull final Collection<String> pathsFailedToImport) {
-        Validate.notNull(pathsFailedToImport);
+    protected void showErrorMessage(@NotNull final Collection<File> directoriesFailedToImport) {
+        Validate.notNull(directoriesFailedToImport);
 
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
                 Messages.showErrorDialog(
-                    HybrisI18NBundleUtils.message("hybris.project.import.failed", pathsFailedToImport),
+                    HybrisI18NBundleUtils.message("hybris.project.import.failed", directoriesFailedToImport),
                     HybrisI18NBundleUtils.message("hybris.project.error")
                 );
             }
@@ -107,7 +107,7 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
         this.projectImportParameters.setRootDirectory(null);
     }
 
-    protected class ProgressIndicatorUpdaterProcessor implements Processor<String> {
+    protected class ProgressIndicatorUpdaterProcessor implements Processor<File> {
 
         protected final ProgressIndicator progressIndicator;
 
@@ -118,12 +118,12 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
         }
 
         @Override
-        public boolean process(final String t) {
+        public boolean process(final File t) {
             if (this.progressIndicator.isCanceled()) {
                 return false;
             }
 
-            this.progressIndicator.setText2(t);
+            this.progressIndicator.setText2(t.getAbsolutePath());
 
             return true;
         }

@@ -59,16 +59,16 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected volatile HybrisImportParameters projectImportParameters;
 
     @Override
-    public void setRootProjectAbsolutePath(@NotNull final String path) {
-        Validate.notEmpty(path);
+    public void setRootProjectAbsolutePath(@NotNull final File directory) {
+        Validate.notNull(directory);
 
         this.cleanup();
 
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
-            path, this.getProjectImportParameters()
+            directory, this.getProjectImportParameters()
         ));
 
-        this.setFileToImport(path);
+        this.setFileToImport(directory.getAbsolutePath());
     }
 
     @Override
@@ -144,11 +144,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             modifiableRootModel.inheritSdk();
 
-            final String libFolderPath = moduleDescriptor.getRootDirectory().getAbsolutePath() + File.separator
-                                         + HybrisModuleContentRootConfigurator.LIB_DIRECTORY;
-            LibUtils.loadLibFolder(project, libFolderPath);
-            LibUtils.addProjectLibsToModule(project, modifiableRootModel);
+            final File libFolder = new File(
+                moduleDescriptor.getRootDirectory(), HybrisModuleContentRootConfigurator.LIB_DIRECTORY
+            );
 
+            LibUtils.loadLibFolder(project, libFolder.getAbsolutePath());
+            LibUtils.addProjectLibsToModule(project, modifiableRootModel);
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);

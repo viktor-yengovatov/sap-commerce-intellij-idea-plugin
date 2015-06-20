@@ -5,6 +5,8 @@ import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 /**
  * Created 5:20 PM 13 June 2015.
  *
@@ -12,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<HybrisModuleDescriptor> {
 
-    public abstract void setRootProjectAbsolutePath(@NotNull final String path);
+    public abstract void setRootProjectAbsolutePath(@NotNull final File directory);
 
     @NotNull
     public abstract HybrisImportParameters getProjectImportParameters();

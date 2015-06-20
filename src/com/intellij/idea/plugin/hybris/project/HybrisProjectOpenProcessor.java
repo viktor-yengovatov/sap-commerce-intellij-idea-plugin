@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectOpenProcessorBase;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +27,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
 
     @Override
     public boolean doQuickImport(final VirtualFile file, final WizardContext wizardContext) {
-        this.getBuilder().setRootProjectAbsolutePath(file.getParent().getPath());
+        this.getBuilder().setRootProjectAbsolutePath(VfsUtil.virtualToIoFile(file.getParent()));
 
         final List<HybrisModuleDescriptor> projects = this.getBuilder().getList();
         if (null == projects || 1 != projects.size()) {
@@ -50,6 +51,11 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
         return new String[]{
             HybrisConstants.EXTENSION_INFO_XML
         };
+//        return new String[]{
+//            HybrisConstants.EXTENSION_INFO_XML,
+//            HybrisConstants.LOCAL_EXTENSIONS_XML,
+//            HybrisConstants.EXTENSIONS_XML
+//        };
     }
 
 }
