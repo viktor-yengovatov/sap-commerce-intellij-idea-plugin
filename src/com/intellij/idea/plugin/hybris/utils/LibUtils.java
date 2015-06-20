@@ -2,12 +2,16 @@ package com.intellij.idea.plugin.hybris.utils;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.JarFileSystem;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import org.apache.commons.lang3.Validate;
@@ -22,7 +26,7 @@ public class LibUtils {
 
     private static final String COMMON_LIBS_GROUP = "Common libs";
 
-    public static void addProjectLibsToModule(@NotNull final Project project, @NotNull final ModifiableRootModel module){
+    public static void addProjectLibsToModule(@NotNull final Project project, @NotNull final ModifiableRootModel module) {
         Validate.notNull(module);
         Validate.notNull(project);
 
@@ -31,7 +35,7 @@ public class LibUtils {
             @Override
             public void run() {
                 Library libsGroup = projectLibraryTable.getLibraryByName(COMMON_LIBS_GROUP);
-                if(null == libsGroup){
+                if (null == libsGroup) {
                     libsGroup = projectLibraryTable.createLibrary(COMMON_LIBS_GROUP);
                 }
                 module.addLibraryEntry(libsGroup);
@@ -39,12 +43,12 @@ public class LibUtils {
         });
     }
 
-    public static void addLib(@NotNull final Project project, @NotNull final String libPath, @NotNull final String groupName){
+    public static void addLib(@NotNull final Project project, @NotNull final String libPath, @NotNull final String groupName) {
         Validate.notNull(project);
         Validate.notNull(libPath);
         Validate.notNull(groupName);
 
-        String jarPath= libPath + JarFileSystem.JAR_SEPARATOR;
+        String jarPath = libPath + JarFileSystem.JAR_SEPARATOR;
         jarPath = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL, jarPath);
         final VirtualFile jarVirtualFile = VirtualFileManager.getInstance().findFileByUrl(jarPath);
 
@@ -55,10 +59,10 @@ public class LibUtils {
             @Override
             public void run() {
                 Library libsGroup = projectLibraryTable.getLibraryByName(groupName);
-                if(null == libsGroup){
+                if (null == libsGroup) {
                     libsGroup = projectLibraryTable.createLibrary(groupName);
                 }
-                if(!isAlreadyPresent(libsGroup, jarVirtualFile)){
+                if (!isAlreadyPresent(libsGroup, jarVirtualFile)) {
                     final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
                     libModel.addRoot(jarVirtualFile, OrderRootType.CLASSES);
                     libModel.commit();
@@ -67,16 +71,17 @@ public class LibUtils {
         });
     }
 
-    private static boolean isAlreadyPresent(Library destinationGroup, VirtualFile jarToAdd){
+    private static boolean isAlreadyPresent(@NotNull final Library destinationGroup, @NotNull final VirtualFile jarToAdd) {
         VirtualFile[] jars = destinationGroup.getRootProvider().getFiles(OrderRootType.CLASSES);
-        for(int i=0; i< jars.length;i++){
-            if(jars[i].getName().equals(jarToAdd.getName()))
+        for (int i = 0; i < jars.length; i++) {
+            if (jars[i].getName().equals(jarToAdd.getName())) {
                 return true;
+            }
         }
         return false;
     }
 
-    public void addLib(@NotNull final ModifiableRootModel module, @NotNull final String path){
+    public static void addLib(@NotNull final ModifiableRootModel module, @NotNull final String path) {
         Validate.notNull(module);
         Validate.notNull(path);
 
@@ -84,23 +89,25 @@ public class LibUtils {
         add(module, path);
     }
 
-    public static void loadLibFolder(@NotNull final Project project, @NotNull final String folderPath){
+
+    public static void loadLibFolder(@NotNull final Project project, @NotNull final String folderPath) {
         Validate.notNull(project);
         Validate.notNull(folderPath);
 
         File jarFilesFolder = new File(folderPath);
-        if(jarFilesFolder.exists() && jarFilesFolder.isDirectory()){
+        if (jarFilesFolder.exists() && jarFilesFolder.isDirectory()) {
             runByAllFilesInFolder(project, jarFilesFolder);
         }
     }
 
 
-    private static void add(@NotNull final ModifiableRootModel module, @NotNull final String jarPath){
+    private static void add(@NotNull final ModifiableRootModel module, @NotNull final String jarPath) {
         String path = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL, jarPath);
         final VirtualFile jarVirtualFile = VirtualFileManager.getInstance().findFileByUrl(path);
 
-        if(isAlreadyExist(module, jarVirtualFile.getName()))
+        if (isAlreadyExist(module, jarVirtualFile.getName())) {
             return;
+        }
 
         final Library jarToAdd = module.getModuleLibraryTable().createLibrary();
         final Library.ModifiableModel libraryModel = jarToAdd.getModifiableModel();
@@ -108,11 +115,14 @@ public class LibUtils {
         libraryModel.commit();
     }
 
-    private static boolean isAlreadyExist(@NotNull final ModifiableRootModel module, @NotNull final String libName){
+    private static boolean isAlreadyExist(@NotNull final ModifiableRootModel module, @NotNull final String libName) {
         final Library[] moduleLibs = module.getModuleLibraryTable().getLibraries();
-        for(int i=0;i<moduleLibs.length;i++){
-            if(null!=moduleLibs[i].getName() && moduleLibs[i].getName().equals(libName)){
-                return true;
+        if (moduleLibs.length > 0) {
+            VirtualFile[] moduleVirtFileLibs = moduleLibs[0].getRootProvider().getFiles(OrderRootType.CLASSES);
+            for (int i = 0; i < moduleVirtFileLibs.length; i++) {
+                if (moduleVirtFileLibs[i].getName().equals(libName)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -122,8 +132,67 @@ public class LibUtils {
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
                 runByAllFilesInFolder(project, fileEntry);
-            } else if(fileEntry.isFile() && fileEntry.getName().endsWith(".jar")){
+            } else if (fileEntry.isFile() && fileEntry.getName().endsWith(".jar")) {
                 addLib(project, fileEntry.getAbsolutePath(), COMMON_LIBS_GROUP);
+            }
+        }
+    }
+
+    public static void addJarFolderToProjectLibs(@NotNull final Project project, @NotNull final File libFolder) {
+        Validate.notNull(libFolder);
+        Validate.notNull(project);
+        if (!libFolder.exists()) {
+            return;
+        }
+
+        final String jarUrl = VirtualFileManager.constructUrl(LocalFileSystem.PROTOCOL, libFolder.getAbsolutePath());
+        final VirtualFile jarVirtualFile = VirtualFileSystemUtils.getByUrl(jarUrl);
+        final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(project);
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                Library libsGroup = projectLibraryTable.getLibraryByName(COMMON_LIBS_GROUP);
+                if (null == libsGroup) {
+                    libsGroup = projectLibraryTable.createLibrary(COMMON_LIBS_GROUP);
+                }
+                final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
+                libModel.addJarDirectory(jarVirtualFile, true);
+                libModel.commit();
+            }
+        });
+    }
+
+    public static void addJarFolderToModuleLibs(@NotNull final ModifiableRootModel module, @NotNull final File libFolder, final boolean exported) {
+        Validate.notNull(libFolder);
+        Validate.notNull(module);
+        if (!libFolder.exists()) {
+            return;
+        }
+
+        final String jarUrl = VirtualFileManager.constructUrl(LocalFileSystem.PROTOCOL, libFolder.getAbsolutePath());
+        final VirtualFile jarVirtualFile = VirtualFileSystemUtils.getByUrl(jarUrl);
+        final LibraryTable projectLibraryTable = module.getModuleLibraryTable();
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                Library libsGroup = projectLibraryTable.createLibrary();
+                final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
+                libModel.addJarDirectory(jarVirtualFile, true);
+                if(exported){
+                    setLibraryEntryExported(module, true, libsGroup);
+                }
+                libModel.commit();
+            }
+        });
+    }
+
+    private static void setLibraryEntryExported(ModifiableRootModel rootModel, boolean exported, Library library) {
+        for (OrderEntry orderEntry : rootModel.getOrderEntries()) {
+            if (orderEntry instanceof LibraryOrderEntry &&
+                ((LibraryOrderEntry)orderEntry).isModuleLevel() &&
+                Comparing.equal(((LibraryOrderEntry) orderEntry).getLibrary(), library)) {
+                ((LibraryOrderEntry)orderEntry).setExported(exported);
+                break;
             }
         }
     }

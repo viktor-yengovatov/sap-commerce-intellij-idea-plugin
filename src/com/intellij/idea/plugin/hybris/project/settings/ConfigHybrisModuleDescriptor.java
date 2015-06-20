@@ -2,6 +2,7 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -29,5 +30,11 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
     @Override
     public Set<String> getRequiredExtensionNames() {
         return Collections.emptySet();
+    }
+
+    @NotNull
+    @Override
+    public void loadLibs(ModifiableRootModel modifiableRootModel) {
+
     }
 }

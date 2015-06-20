@@ -4,7 +4,9 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.utils.LibUtils;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -121,5 +123,32 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
         requiredExtensionNames.add(HybrisConstants.PLATFORM_EXTENSION_NAME);
 
         return Collections.unmodifiableSet(requiredExtensionNames);
+    }
+
+    @NotNull
+    @Override
+    public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
+        final File libFolder = new File(
+            getRootDirectory(), HybrisConstants.LIB_DIRECTORY
+        );
+        LibUtils.addJarFolderToProjectLibs(modifiableRootModel.getProject(), libFolder);
+        LibUtils.addProjectLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
+
+        final File binFolder = new File(
+            getRootDirectory(), HybrisConstants.BIN_DIRECTORY
+        );
+        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binFolder, true);
+        final File webInf = new File(
+            getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY
+        );
+        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, webInf, false);
+        final File hmcLib = new File(
+            getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY
+        );
+        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, hmcLib, false);
+        final File backOfficeLib = new File(
+            getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY
+        );
+        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, backOfficeLib, false);
     }
 }

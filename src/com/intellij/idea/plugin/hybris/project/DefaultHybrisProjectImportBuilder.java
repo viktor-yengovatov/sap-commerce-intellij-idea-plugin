@@ -17,16 +17,20 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.DependencyScope;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
+import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.JarFileSystem;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
 import org.apache.commons.lang3.Validate;
@@ -140,13 +144,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
 
             modifiableRootModel.inheritSdk();
+            moduleDescriptor.loadLibs(modifiableRootModel);
 
-            final File libFolder = new File(
-                moduleDescriptor.getRootDirectory(), HybrisConstants.LIB_DIRECTORY
-            );
-
-            LibUtils.loadLibFolder(project, libFolder.getAbsolutePath());
-            LibUtils.addProjectLibsToModule(project, modifiableRootModel);
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
@@ -272,11 +271,14 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @NotNull
     @Override
     public String getName() {
+
+        int t = 0;
         return HybrisI18NBundleUtils.message("hybris.project.name");
     }
 
     @Override
     public Icon getIcon() {
+        int t =0;
         return HybrisIconsUtils.HYBRIS_ICON;
     }
 

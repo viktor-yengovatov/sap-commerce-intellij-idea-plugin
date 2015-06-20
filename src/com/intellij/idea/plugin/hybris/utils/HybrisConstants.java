@@ -16,6 +16,16 @@ public final class HybrisConstants {
     public static final String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     public static final String CONFIG_EXTENSION_NAME = "config";
     public static final String LIB_DIRECTORY = "lib";
+    public static final String BIN_DIRECTORY = "bin";
+    public static final String RESOURCES_DIRECTORY = "resources";
+
+    public static final String WEB_INF_LIB_DIRECTORY = "web/webroot/WEB-INF/lib";
+    public static final String HMC_LIB_DIRECTORY = "hmc/bin";
+    public static final String BACKOFFICE_LIB_DIRECTORY = "backoffice/bin";
+
+    public static final String PL_BOOTSTRAP_LIB_DIRECTORY = "bootstrap/bin";
+    public static final String PL_TOMCAT_LIB_DIRECTORY = "tomcat/lib";
+    public static final String PL_TOMCAT_BIN_DIRECTORY = "tomcat/bin";
 
     private HybrisConstants() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");

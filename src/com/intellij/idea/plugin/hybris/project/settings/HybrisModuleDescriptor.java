@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
+import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -31,4 +32,8 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesPlainList();
+
+    @NotNull
+    void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel);
+
 }
