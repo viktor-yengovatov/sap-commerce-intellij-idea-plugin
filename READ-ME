@@ -1,7 +1,1 @@
-Install the next plugins:
- - DevKit (optional)
- - Grammar-Kit
- - PsiViewer
-
-To attach Idea sources:
-git clone git://git.jetbrains.org/idea/community.git idea
+https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment
