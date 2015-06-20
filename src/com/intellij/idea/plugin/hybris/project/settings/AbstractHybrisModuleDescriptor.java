@@ -39,26 +39,26 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         return this.getModuleName().compareToIgnoreCase(o.getModuleName());
     }
 
-    @Override
     @NotNull
+    @Override
     public File getRootDirectory() {
         return rootDirectory;
     }
 
-    @Override
     @NotNull
-    public File getModuleFile() {
+    @Override
+    public File getIdeaModuleFile() {
         return new File(this.rootDirectory, this.getModuleName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
     }
 
-    @Override
     @NotNull
+    @Override
     public Set<HybrisModuleDescriptor> getDependenciesTree() {
         return dependenciesTree;
     }
 
-    @Override
     @NotNull
+    @Override
     public Set<HybrisModuleDescriptor> getDependenciesPlainList() {
         return this.recursivelyCollectDependenciesPlainSet(this, new HashSet<HybrisModuleDescriptor>());
     }
@@ -118,7 +118,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         final StringBuilder sb = new StringBuilder("ConfigHybrisModuleDescriptor{");
         sb.append("moduleName='").append(this.getModuleName()).append('\'');
         sb.append(", rootDirectory=").append(rootDirectory);
-        sb.append(", moduleFile=").append(this.getModuleFile());
+        sb.append(", moduleFile=").append(this.getIdeaModuleFile());
         sb.append('}');
         return sb.toString();
     }

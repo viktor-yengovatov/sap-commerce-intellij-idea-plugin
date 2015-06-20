@@ -1,10 +1,12 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactory;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactoryImpl;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -34,6 +36,8 @@ import static org.apache.commons.collections.CollectionUtils.isEmpty;
  */
 public final class HybrisProjectUtils {
 
+    public static final HybrisModuleDescriptorFactory MODULE_DESCRIPTOR_FACTORY = HybrisModuleDescriptorFactoryImpl.INSTANCE;
+
     private static final Logger LOG = Logger.getInstance(HybrisProjectUtils.class);
 
     private HybrisProjectUtils() throws IllegalAccessException {
@@ -55,12 +59,17 @@ public final class HybrisProjectUtils {
 
             for (String requiresExtensionName : requiredExtensionNames) {
 
-                final HybrisModuleDescriptor dependsOn = Iterables.find(
+                final Optional<HybrisModuleDescriptor> dependsOn = Iterables.tryFind(
                     moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
                 );
 
-                if (null != dependsOn) {
-                    moduleDescriptor.getDependenciesTree().add(dependsOn);
+                if (dependsOn.isPresent()) {
+                    moduleDescriptor.getDependenciesTree().add(dependsOn.get());
+                } else {
+                    LOG.warn(String.format(
+                        "Module '%s' contains unsatisfied dependency '%s'.",
+                        moduleDescriptor.getModuleName(), requiresExtensionName
+                    ));
                 }
             }
         }
@@ -80,7 +89,7 @@ public final class HybrisProjectUtils {
                     continue;
                 }
 
-                final HybrisModuleDescriptor moduleDescriptor = new DefaultHybrisModuleDescriptor(
+                final HybrisModuleDescriptor moduleDescriptor = MODULE_DESCRIPTOR_FACTORY.createDescriptor(
                     VfsUtil.virtualToIoFile(moduleFile.getParent())
                 );
 
@@ -108,16 +117,14 @@ public final class HybrisProjectUtils {
         if (isDirectoryContainsHybrisModuleFile(rootProjectDirectory)) {
 
             paths.add(rootProjectDirectory);
+        }
 
-        } else {
+        if (rootProjectDirectory.isDirectory()) {
+            final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
-            if (rootProjectDirectory.isDirectory()) {
-                final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-
-                if (null != files) {
-                    for (File file : files) {
-                        paths.addAll(findModuleRoots(file, stepProcessor));
-                    }
+            if (null != files) {
+                for (File file : files) {
+                    paths.addAll(findModuleRoots(file, stepProcessor));
                 }
             }
         }
@@ -128,8 +135,8 @@ public final class HybrisProjectUtils {
     public static boolean isDirectoryContainsHybrisModuleFile(final @NotNull File directory) {
         Validate.notNull(directory);
 
-        for (String file : getSupportedModuleFileNames()) {
-            if (new File(directory, file).isFile()) {
+        for (String hybrisModuleFileName : getSupportedHybrisModuleFileNames()) {
+            if (new File(directory, hybrisModuleFileName).isFile()) {
                 return true;
             }
         }
@@ -137,11 +144,12 @@ public final class HybrisProjectUtils {
         return false;
     }
 
-    public static String[] getSupportedModuleFileNames() {
+    @NotNull
+    public static String[] getSupportedHybrisModuleFileNames() {
         return new String[]{
-            HybrisConstants.EXTENSION_INFO_XML
-//            HybrisConstants.LOCAL_EXTENSIONS_XML,
-//            HybrisConstants.EXTENSIONS_XML
+            HybrisConstants.EXTENSION_INFO_XML,
+            HybrisConstants.LOCAL_EXTENSIONS_XML,
+            HybrisConstants.EXTENSIONS_XML
         };
     }
 

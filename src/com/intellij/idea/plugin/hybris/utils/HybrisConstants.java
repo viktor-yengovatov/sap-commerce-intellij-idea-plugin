@@ -14,6 +14,7 @@ public final class HybrisConstants {
     public static final String OLD_IDEA_MODULE_FILE_EXTENSION = ".eml";
     public static final String PLATFORM_EXTENSION_NAME = "platform";
     public static final String CONFIG_EXTENSION_NAME = "config";
+    public static final String LIB_DIRECTORY = "lib";
 
     private HybrisConstants() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");

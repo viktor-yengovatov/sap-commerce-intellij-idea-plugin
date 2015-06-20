@@ -7,10 +7,7 @@ import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisImportParam
 import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
-import com.intellij.idea.plugin.hybris.utils.LibUtils;
-import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
+import com.intellij.idea.plugin.hybris.utils.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -137,7 +134,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
 
             final Module javaModule = rootProjectModifiableModuleModel.newModule(
-                moduleDescriptor.getModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
+                moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
             );
 
             final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
@@ -145,7 +142,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             modifiableRootModel.inheritSdk();
 
             final File libFolder = new File(
-                moduleDescriptor.getRootDirectory(), HybrisModuleContentRootConfigurator.LIB_DIRECTORY
+                moduleDescriptor.getRootDirectory(), HybrisConstants.LIB_DIRECTORY
             );
 
             LibUtils.loadLibFolder(project, libFolder.getAbsolutePath());
@@ -178,8 +175,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final List<File> alreadyExistingModuleFiles = new ArrayList<File>();
         for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
-            if (moduleDescriptor.getModuleFile().exists()) {
-                alreadyExistingModuleFiles.add(moduleDescriptor.getModuleFile());
+            if (moduleDescriptor.getIdeaModuleFile().exists()) {
+                alreadyExistingModuleFiles.add(moduleDescriptor.getIdeaModuleFile());
             }
         }
 
@@ -235,15 +232,15 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 new FindModifiableRootModelByName(moduleDescriptor.getModuleName())
             );
 
-            for (HybrisModuleDescriptor dependsOnDescriptor : moduleDescriptor.getDependenciesTree()) {
+            for (String dependsOnModuleName : moduleDescriptor.getRequiredExtensionNames()) {
                 final Optional<ModifiableRootModel> dependsOnModifiableRootModelOptional = Iterables.tryFind(
                     modifiableRootModels,
-                    new FindModifiableRootModelByName(dependsOnDescriptor.getModuleName())
+                    new FindModifiableRootModelByName(dependsOnModuleName)
                 );
 
                 final ModuleOrderEntry moduleOrderEntry = (dependsOnModifiableRootModelOptional.isPresent())
                     ? modifiableRootModel.addModuleOrderEntry(dependsOnModifiableRootModelOptional.get().getModule())
-                    : modifiableRootModel.addInvalidModuleEntry(dependsOnDescriptor.getModuleName());
+                    : modifiableRootModel.addInvalidModuleEntry(dependsOnModuleName);
 
                 moduleOrderEntry.setExported(true);
                 moduleOrderEntry.setScope(DependencyScope.COMPILE);

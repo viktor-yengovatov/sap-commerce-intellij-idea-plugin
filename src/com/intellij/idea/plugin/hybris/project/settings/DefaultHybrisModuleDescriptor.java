@@ -118,6 +118,8 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             requiredExtensionNames.add(requiresExtension.getName());
         }
 
+        requiredExtensionNames.add(HybrisConstants.PLATFORM_EXTENSION_NAME);
+
         return Collections.unmodifiableSet(requiredExtensionNames);
     }
 }

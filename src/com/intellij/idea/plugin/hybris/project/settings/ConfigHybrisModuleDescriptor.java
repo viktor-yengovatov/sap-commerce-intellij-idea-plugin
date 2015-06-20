@@ -2,7 +2,6 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -18,12 +17,6 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
 
     public ConfigHybrisModuleDescriptor(@NotNull final File moduleRootDirectory) throws HybrisConfigurationException {
         super(moduleRootDirectory);
-
-        Validate.notNull(moduleRootDirectory);
-
-        if (!this.rootDirectory.isDirectory()) {
-            throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootDirectory);
-        }
     }
 
     @NotNull

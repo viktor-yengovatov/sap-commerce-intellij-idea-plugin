@@ -20,7 +20,6 @@ import java.io.File;
 public class HybrisModuleContentRootConfigurator implements ContentRootConfigurator {
 
     public static final String SRC_DIRECTORY = "src";
-    public static final String LIB_DIRECTORY = "lib";
     public static final String GEN_SRC_DIRECTORY = "gensrc";
     public static final String TEST_SRC_DIRECTORY = "testsrc";
     public static final String RESOURCES_DIRECTORY = "resources";

@@ -1,7 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisImportParameters;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
@@ -67,7 +66,7 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                moduleDescriptors.add(new DefaultHybrisModuleDescriptor(moduleRootDirectory));
+                moduleDescriptors.add(HybrisProjectUtils.MODULE_DESCRIPTOR_FACTORY.createDescriptor(moduleRootDirectory));
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 

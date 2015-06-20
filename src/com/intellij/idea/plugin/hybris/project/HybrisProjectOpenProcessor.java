@@ -48,7 +48,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
     @Nullable
     @Override
     public String[] getSupportedExtensions() {
-        return HybrisProjectUtils.getSupportedModuleFileNames();
+        return HybrisProjectUtils.getSupportedHybrisModuleFileNames();
     }
 
 }
