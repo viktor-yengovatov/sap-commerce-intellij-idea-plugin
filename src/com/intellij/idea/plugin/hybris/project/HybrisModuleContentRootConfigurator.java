@@ -39,6 +39,8 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
     public static final String ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon";
     public static final String PLATFORM_BOOTSTRAP_DIRECTORY = "bootstrap";
     public static final String PLATFORM_MODEL_CLASSES_DIRECTORY = "modelclasses";
+    public static final String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
+    public static final String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
 
     @Override
     public void configure(@NotNull final ModifiableRootModel modifiableRootModel,
@@ -219,6 +221,12 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         final File platformBootstrapModelClassesDirectory = new File(platformBootstrapDirectory, PLATFORM_MODEL_CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(platformBootstrapModelClassesDirectory.getAbsolutePath())
+        );
+
+        final File platformTomcatDirectory = new File(moduleDescriptor.getRootDirectory(), PLATFORM_TOMCAT_DIRECTORY);
+        final File platformTomcatWorkDirectory = new File(platformTomcatDirectory, PLATFORM_TOMCAT_WORK_DIRECTORY);
+        contentEntry.addExcludeFolder(
+            VfsUtil.pathToUrl(platformTomcatWorkDirectory.getAbsolutePath())
         );
     }
 
