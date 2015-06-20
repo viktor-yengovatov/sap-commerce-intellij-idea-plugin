@@ -114,17 +114,22 @@ public final class HybrisProjectUtils {
             stepProcessor.process(rootProjectDirectory);
         }
 
-        if (isDirectoryContainsHybrisModuleFile(rootProjectDirectory)) {
+        if (isRegularModule(rootProjectDirectory) || isConfigModule(rootProjectDirectory)) {
 
             paths.add(rootProjectDirectory);
-        }
 
-        if (rootProjectDirectory.isDirectory()) {
-            final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+        } else {
+            if (isPlatformModule(rootProjectDirectory)) {
+                paths.add(rootProjectDirectory);
+            }
 
-            if (null != files) {
-                for (File file : files) {
-                    paths.addAll(findModuleRoots(file, stepProcessor));
+            if (rootProjectDirectory.isDirectory()) {
+                final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+
+                if (null != files) {
+                    for (File file : files) {
+                        paths.addAll(findModuleRoots(file, stepProcessor));
+                    }
                 }
             }
         }
@@ -132,16 +137,24 @@ public final class HybrisProjectUtils {
         return paths;
     }
 
-    public static boolean isDirectoryContainsHybrisModuleFile(final @NotNull File directory) {
-        Validate.notNull(directory);
+    public static boolean isConfigModule(@NotNull final File file) {
+        Validate.notNull(file);
 
-        for (String hybrisModuleFileName : getSupportedHybrisModuleFileNames()) {
-            if (new File(directory, hybrisModuleFileName).isFile()) {
-                return true;
-            }
-        }
+        return file.getName().equals(HybrisConstants.CONFIG_EXTENSION_NAME)
+               && new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile();
+    }
 
-        return false;
+    public static boolean isPlatformModule(@NotNull final File file) {
+        Validate.notNull(file);
+
+        return file.getName().equals(HybrisConstants.PLATFORM_EXTENSION_NAME)
+               && new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
+    }
+
+    public static boolean isRegularModule(@NotNull final File file) {
+        Validate.notNull(file);
+
+        return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 
     @NotNull
