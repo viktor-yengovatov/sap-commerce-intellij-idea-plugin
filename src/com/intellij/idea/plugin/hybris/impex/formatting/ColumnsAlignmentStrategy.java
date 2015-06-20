@@ -7,7 +7,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.sun.istack.internal.Nullable;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

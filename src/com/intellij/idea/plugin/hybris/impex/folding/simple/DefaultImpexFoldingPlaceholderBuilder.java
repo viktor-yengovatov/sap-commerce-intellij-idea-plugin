@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.impex.folding.simple;
 
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilder;
 import com.intellij.psi.PsiElement;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

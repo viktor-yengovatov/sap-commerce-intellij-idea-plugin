@@ -5,8 +5,8 @@ import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuil
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.psi.PsiElement;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

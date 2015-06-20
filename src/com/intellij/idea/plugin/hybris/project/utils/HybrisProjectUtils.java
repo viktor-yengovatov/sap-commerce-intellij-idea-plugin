@@ -17,7 +17,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Processor;
 import gnu.trove.THashSet;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -190,7 +191,7 @@ public final class HybrisProjectUtils {
         } else {
 
             if (rootProjectDirectory.isDirectory()) {
-                final File[] files = rootProjectDirectory.listFiles(new DirectoriesFilter());
+                final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
                 if (null != files) {
                     for (File file : files) {
@@ -203,20 +204,24 @@ public final class HybrisProjectUtils {
         return paths;
     }
 
-    public static boolean isDirectoryContainsHybrisModuleFile(final @NotNull File rootProjectOrModuleDirectory) {
-        Validate.notNull(rootProjectOrModuleDirectory);
+    public static boolean isDirectoryContainsHybrisModuleFile(final @NotNull File directory) {
+        Validate.notNull(directory);
 
-        return new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile();
-//               || new File(rootProjectOrModuleDirectory, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
-//               || new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSIONS_XML).isFile();
+        for (String file : getSupportedModuleFileNames()) {
+            if (new File(directory, file).isFile()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public static class DirectoriesFilter implements FileFilter {
-
-        @Override
-        public boolean accept(final File pathname) {
-            return pathname.isDirectory();
-        }
+    public static String[] getSupportedModuleFileNames() {
+        return new String[]{
+            HybrisConstants.EXTENSION_INFO_XML
+//            HybrisConstants.LOCAL_EXTENSIONS_XML,
+//            HybrisConstants.EXTENSIONS_XML
+        };
     }
 
     public static class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleDescriptor> {
