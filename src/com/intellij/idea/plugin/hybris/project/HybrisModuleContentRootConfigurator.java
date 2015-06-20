@@ -26,6 +26,7 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
     public static final String RESOURCES_DIRECTORY = "resources";
     public static final String HMC_MODULE_DIRECTORY = "hmc";
     public static final String WEB_MODULE_DIRECTORY = "web";
+    public static final String BACK_OFFICE_MODULE_DIRECTORY = "backoffice";
     public static final String ADDON_SRC_DIRECTORY = "addonsrc";
     public static final String TEST_CLASSES_DIRECTORY = "testclasses";
     public static final String CLASSES_DIRECTORY = "classes";
@@ -52,6 +53,7 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         this.configureWebRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory());
         this.configureCommonWebRoots(moduleDescriptor, contentEntry);
         this.configureAcceleratorAddonRoots(moduleDescriptor, contentEntry);
+        this.configureBackOfficeRoots(moduleDescriptor, contentEntry);
     }
 
     protected void configureCommonRoots(@NotNull final HybrisModuleDescriptor moduleDescriptor,
@@ -172,11 +174,44 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         }
     }
 
+    protected void configureBackOfficeRoots(@NotNull final HybrisModuleDescriptor moduleDescriptor,
+                                            @NotNull final ContentEntry contentEntry) {
+        Validate.notNull(moduleDescriptor);
+        Validate.notNull(contentEntry);
+
+        final File hmcModuleDirectory = new File(moduleDescriptor.getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY);
+        if (hmcModuleDirectory.isDirectory()) {
+            final File hmcSrcDirectory = new File(hmcModuleDirectory, SRC_DIRECTORY);
+            contentEntry.addSourceFolder(
+                VfsUtilCore.pathToUrl(hmcSrcDirectory.getAbsolutePath()),
+                JavaSourceRootType.SOURCE
+            );
+
+            final File hmcResourcesDirectory = new File(hmcModuleDirectory, RESOURCES_DIRECTORY);
+            contentEntry.addSourceFolder(
+                VfsUtilCore.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
+                JavaResourceRootType.RESOURCE
+            );
+
+            final File hmcClassesDirectory = new File(hmcModuleDirectory, CLASSES_DIRECTORY);
+            contentEntry.addExcludeFolder(
+                VfsUtilCore.pathToUrl(hmcClassesDirectory.getAbsolutePath())
+            );
+        }
+    }
+
     private void configureWebModuleRoots(final @NotNull ContentEntry contentEntry, final File webModuleDirectory) {
         final File webSrcDirectory = new File(webModuleDirectory, SRC_DIRECTORY);
         contentEntry.addSourceFolder(
             VfsUtilCore.pathToUrl(webSrcDirectory.getAbsolutePath()),
             JavaSourceRootType.SOURCE
+        );
+
+        final File webGenSrcDirectory = new File(webModuleDirectory, GEN_SRC_DIRECTORY);
+        contentEntry.addSourceFolder(
+            VfsUtilCore.pathToUrl(webGenSrcDirectory.getAbsolutePath()),
+            JavaSourceRootType.SOURCE,
+            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
         final File webTestSrcDirectory = new File(webModuleDirectory, TEST_SRC_DIRECTORY);
