@@ -12,7 +12,6 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,20 +57,6 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
         this.projectImportParameters.setRootDirectoryAndScanForModules(null, null, null);
     }
 
-    protected void showErrorMessage(@NotNull final Collection<File> directoriesFailedToImport) {
-        Validate.notNull(directoriesFailedToImport);
-
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Messages.showErrorDialog(
-                    HybrisI18NBundleUtils.message("hybris.project.import.failed", directoriesFailedToImport),
-                    HybrisI18NBundleUtils.message("hybris.project.error")
-                );
-            }
-        });
-    }
-
     protected class ProgressIndicatorUpdaterProcessor implements Processor<File> {
 
         protected final ProgressIndicator progressIndicator;
@@ -83,7 +68,7 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
         }
 
         @Override
-        public boolean process(final File t) {
+        public boolean shouldContinue(final File t) {
             if (this.progressIndicator.isCanceled()) {
                 return false;
             }
@@ -97,9 +82,17 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
     protected class ModuleScanErrorsProcessor implements Processor<List<File>> {
 
         @Override
-        public boolean process(final List<File> t) {
+        public boolean shouldContinue(final List<File> t) {
             if (!t.isEmpty()) {
-                showErrorMessage(t);
+                ApplicationManager.getApplication().invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Messages.showErrorDialog(
+                            HybrisI18NBundleUtils.message("hybris.project.import.failed", t),
+                            HybrisI18NBundleUtils.message("hybris.project.error")
+                        );
+                    }
+                });
             }
 
             return false;

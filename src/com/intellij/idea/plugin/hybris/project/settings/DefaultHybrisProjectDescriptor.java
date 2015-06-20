@@ -115,7 +115,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (null == rootDirectory) {
             this.foundModules.clear();
         } else {
-            this.scanDirectoryForHybrisModules(rootDirectory, progressListenerProcessor, errorsProcessor);
+            try {
+                this.scanDirectoryForHybrisModules(rootDirectory, progressListenerProcessor, errorsProcessor);
+            } catch (InterruptedException e) {
+                LOG.warn(e);
+
+                this.rootDirectory = null;
+                this.foundModules.clear();
+            }
         }
     }
 
@@ -158,7 +165,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     protected void scanDirectoryForHybrisModules(@NotNull final File rootDirectory,
                                                  @Nullable final Processor<File> progressListenerProcessor,
-                                                 @Nullable final Processor<List<File>> errorsProcessor) {
+                                                 @Nullable final Processor<List<File>> errorsProcessor
+    ) throws InterruptedException {
         Validate.notNull(rootDirectory);
 
         this.foundModules.clear();
@@ -181,7 +189,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (null != errorsProcessor) {
-            errorsProcessor.process(pathsFailedToImport);
+            if (errorsProcessor.shouldContinue(pathsFailedToImport)) {
+                throw new InterruptedException("Modules scanning has been interrupted.");
+            }
         }
 
         Collections.sort(moduleDescriptors);
@@ -194,13 +204,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @NotNull
     protected List<File> findModuleRoots(@NotNull final File rootProjectDirectory,
                                          @Nullable final Processor<File> progressListenerProcessor
-    ) {
+    ) throws InterruptedException {
         Validate.notNull(rootProjectDirectory);
 
         final List<File> paths = new ArrayList<File>(1);
 
         if (null != progressListenerProcessor) {
-            progressListenerProcessor.process(rootProjectDirectory);
+            if (!progressListenerProcessor.shouldContinue(rootProjectDirectory)) {
+                throw new InterruptedException("Modules scanning has been interrupted.");
+            }
         }
 
         if (HybrisProjectUtils.isRegularModule(rootProjectDirectory)
@@ -218,7 +230,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
                 if (null != files) {
                     for (File file : files) {
-                        paths.addAll(findModuleRoots(file, progressListenerProcessor));
+                        paths.addAll(this.findModuleRoots(file, progressListenerProcessor));
                     }
                 }
             }

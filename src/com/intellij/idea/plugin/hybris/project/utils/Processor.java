@@ -7,6 +7,6 @@ package com.intellij.idea.plugin.hybris.project.utils;
  */
 public interface Processor<T> {
 
-    boolean process(T t);
+    boolean shouldContinue(T t);
 
 }
