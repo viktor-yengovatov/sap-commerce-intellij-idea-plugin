@@ -162,7 +162,7 @@ public class LibUtils {
         });
     }
 
-    public static void addClassesToModuleLibs(@NotNull final ModifiableRootModel module, @NotNull final File classesFile){
+    public static void addClassesToModuleLibs(@NotNull final ModifiableRootModel module, @NotNull final File classesFile, boolean exported){
         Validate.notNull(module);
         Validate.notNull(classesFile);
         if(!classesFile.exists())
@@ -175,6 +175,9 @@ public class LibUtils {
         final Library jarToAdd = module.getModuleLibraryTable().createLibrary();
         final Library.ModifiableModel libraryModel = jarToAdd.getModifiableModel();
         libraryModel.addRoot(jarVirtualFile, OrderRootType.CLASSES);
+        if(exported){
+            setLibraryEntryExported(module, true, jarToAdd);
+        }
         libraryModel.commit();
     }
 

@@ -154,6 +154,6 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
         final File webClasses = new File(
             getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY
         );
-        LibUtils.addClassesToModuleLibs(modifiableRootModel, webClasses);
+        LibUtils.addClassesToModuleLibs(modifiableRootModel, webClasses, true);
     }
 }
