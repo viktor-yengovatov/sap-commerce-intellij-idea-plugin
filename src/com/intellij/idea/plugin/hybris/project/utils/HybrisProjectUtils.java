@@ -206,9 +206,9 @@ public final class HybrisProjectUtils {
     public static boolean isDirectoryContainsHybrisModuleFile(final @NotNull File rootProjectOrModuleDirectory) {
         Validate.notNull(rootProjectOrModuleDirectory);
 
-        return new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile()
-               || new File(rootProjectOrModuleDirectory, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
-               || new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSIONS_XML).isFile();
+        return new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSION_INFO_XML).isFile();
+//               || new File(rootProjectOrModuleDirectory, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
+//               || new File(rootProjectOrModuleDirectory, HybrisConstants.EXTENSIONS_XML).isFile();
     }
 
     public static class DirectoriesFilter implements FileFilter {
