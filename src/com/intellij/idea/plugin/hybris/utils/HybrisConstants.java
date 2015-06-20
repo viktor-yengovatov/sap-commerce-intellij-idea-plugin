@@ -13,6 +13,7 @@ public final class HybrisConstants {
     public static final String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     public static final String OLD_IDEA_MODULE_FILE_EXTENSION = ".eml";
     public static final String PLATFORM_EXTENSION_NAME = "platform";
+    public static final String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     public static final String CONFIG_EXTENSION_NAME = "config";
     public static final String LIB_DIRECTORY = "lib";
 
