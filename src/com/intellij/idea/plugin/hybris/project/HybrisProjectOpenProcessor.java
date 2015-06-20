@@ -27,7 +27,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
 
     @Override
     public boolean doQuickImport(final VirtualFile file, final WizardContext wizardContext) {
-        this.getBuilder().setRootProjectAbsolutePath(VfsUtil.virtualToIoFile(file.getParent()));
+        this.getBuilder().setRootProjectDirectory(VfsUtil.virtualToIoFile(file.getParent()));
 
         final List<HybrisModuleDescriptor> projects = this.getBuilder().getList();
         if (null == projects || 1 != projects.size()) {

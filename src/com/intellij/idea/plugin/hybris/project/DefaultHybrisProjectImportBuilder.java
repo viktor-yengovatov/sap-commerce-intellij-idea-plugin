@@ -59,7 +59,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected volatile HybrisImportParameters projectImportParameters;
 
     @Override
-    public void setRootProjectAbsolutePath(@NotNull final File directory) {
+    public void setRootProjectDirectory(@NotNull final File directory) {
         Validate.notNull(directory);
 
         this.cleanup();

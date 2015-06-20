@@ -14,7 +14,7 @@ import java.io.File;
  */
 public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<HybrisModuleDescriptor> {
 
-    public abstract void setRootProjectAbsolutePath(@NotNull final File directory);
+    public abstract void setRootProjectDirectory(@NotNull final File directory);
 
     @NotNull
     public abstract HybrisImportParameters getProjectImportParameters();
