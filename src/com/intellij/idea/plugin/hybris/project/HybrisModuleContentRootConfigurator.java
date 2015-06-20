@@ -259,12 +259,5 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath())
         );
-
-        final File webWebRootDirectory = new File(webModuleDirectory, WEB_ROOT_DIRECTORY);
-        final File webInfDirectory = new File(webWebRootDirectory, WEB_INF_DIRECTORY);
-        final File webInfClassesDirectory = new File(webInfDirectory, CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(webInfClassesDirectory.getAbsolutePath())
-        );
     }
 }
