@@ -160,7 +160,7 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         final File commonWebModuleDirectory = new File(
             moduleDescriptor.getModuleRootDirectory(), COMMON_WEB_MODULE_DIRECTORY
         );
-        
+
         this.configureWebModuleRoots(contentEntry, commonWebModuleDirectory);
     }
 
