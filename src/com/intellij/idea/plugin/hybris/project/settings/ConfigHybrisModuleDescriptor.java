@@ -17,8 +17,10 @@ import java.util.Set;
  */
 public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
-    public ConfigHybrisModuleDescriptor(@NotNull final File moduleRootDirectory) throws HybrisConfigurationException {
-        super(moduleRootDirectory);
+    public ConfigHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
+        super(moduleRootDirectory, rootProjectDescriptor);
     }
 
     @NotNull
@@ -36,7 +38,7 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
     @Override
     public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
         final File configLicenceDirectory = new File(
-            getRootDirectory(), HybrisConstants.CONFIG_LICENCE_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.CONFIG_LICENCE_DIRECTORY
         );
 
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, configLicenceDirectory, true);

@@ -21,18 +21,21 @@ public class HybrisModuleDescriptorFactoryImpl implements HybrisModuleDescriptor
 
     @NotNull
     @Override
-    public HybrisModuleDescriptor createDescriptor(@NotNull final File file) throws HybrisConfigurationException {
+    public HybrisModuleDescriptor createDescriptor(@NotNull final File file,
+                                                   @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
         Validate.notNull(file);
+        Validate.notNull(rootProjectDescriptor);
 
         if (HybrisProjectUtils.isConfigModule(file)) {
-            return new ConfigHybrisModuleDescriptor(file);
+            return new ConfigHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
         if (HybrisProjectUtils.isPlatformModule(file)) {
-            return new PlatformHybrisModuleDescriptor(file);
+            return new PlatformHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
-        return new DefaultHybrisModuleDescriptor(file);
+        return new DefaultHybrisModuleDescriptor(file, rootProjectDescriptor);
     }
 
 }

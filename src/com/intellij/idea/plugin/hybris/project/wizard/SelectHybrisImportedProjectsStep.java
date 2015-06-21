@@ -93,19 +93,10 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         builder.append(item.getModuleName());
         builder.append("         (");
-        builder.append(this.getRelativePath(item));
+        builder.append(item.getModuleRelativePath());
         builder.append(')');
 
         return builder.toString();
-    }
-
-    private String getRelativePath(final HybrisModuleDescriptor item) {
-        final File rootDirectory = this.getContext().getHybrisProjectDescriptor().getRootDirectory();
-        if (null == rootDirectory) {
-            return item.getRootDirectory().getPath();
-        } else {
-            return rootDirectory.toURI().relativize(item.getRootDirectory().toURI()).toString();
-        }
     }
 
     @Override

@@ -17,7 +17,13 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     String getModuleName();
 
     @NotNull
-    File getRootDirectory();
+    File getModuleRootDirectory();
+
+    @NotNull
+    String getModuleRelativePath();
+
+    @NotNull
+    HybrisProjectDescriptor getRootProjectDescriptor();
 
     @NotNull
     File getIdeaModuleFile();

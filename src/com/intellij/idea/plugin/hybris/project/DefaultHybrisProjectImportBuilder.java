@@ -177,7 +177,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             CompilerModuleExtension.class
         );
 
-        final File outputDirectory = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
+        final File outputDirectory = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
 
         compilerModuleExtension.setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
         compilerModuleExtension.setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
@@ -316,11 +316,15 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return false;
     }
 
-    protected static class GetFileNameFunction implements Function<File, String> {
+    protected class GetFileNameFunction implements Function<File, String> {
 
         @Override
         public String fun(final File param) {
-            return param.getPath();
+            if (null == getHybrisProjectDescriptor().getRootDirectory()) {
+                return param.getPath();
+            } else {
+                return param.getPath().replaceFirst(getHybrisProjectDescriptor().getRootDirectory().getPath(), "");
+            }
         }
     }
 

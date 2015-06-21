@@ -13,6 +13,8 @@ import java.io.File;
 public interface HybrisModuleDescriptorFactory {
 
     @NotNull
-    HybrisModuleDescriptor createDescriptor(@NotNull File file) throws HybrisConfigurationException;
+    HybrisModuleDescriptor createDescriptor(@NotNull File file,
+                                            @NotNull HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException;
 
 }

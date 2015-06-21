@@ -20,8 +20,10 @@ import java.util.Set;
  */
 public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
-    public PlatformHybrisModuleDescriptor(@NotNull final File moduleRootDirectory) throws HybrisConfigurationException {
-        super(moduleRootDirectory);
+    public PlatformHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                          @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
+        super(moduleRootDirectory, rootProjectDescriptor);
     }
 
     @NotNull
@@ -33,7 +35,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     @NotNull
     @Override
     public Set<String> getRequiredExtensionNames() {
-        final File extDirectory = new File(this.getRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
+        final File extDirectory = new File(this.getModuleRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
 
         final Set<String> platformDependencies = Sets.newHashSet(
             HybrisConstants.CONFIG_EXTENSION_NAME
@@ -55,24 +57,24 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     @Override
     public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
         final File libFolder = new File(
-            getRootDirectory(), HybrisConstants.LIB_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY
         );
         LibUtils.addJarFolderToProjectLibs(modifiableRootModel.getProject(), libFolder);
         LibUtils.addProjectLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
 
         final File binBootstrap = new File(
-            getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binBootstrap, true);
         final File tomcatBin = new File(
-            getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatBin, false);
         final File tomcatLib = new File(
-            getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatLib, true);
-        final File resFolder = new File(getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+        final File resFolder = new File(getModuleRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
         File filderToLoadRes;
 
         final File[] files = resFolder.listFiles();

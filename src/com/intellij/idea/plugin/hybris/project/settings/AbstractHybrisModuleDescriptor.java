@@ -20,16 +20,22 @@ import java.util.Set;
 public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDescriptor {
 
     @NotNull
-    protected final File rootDirectory;
+    protected final File moduleRootDirectory;
+    @NotNull
+    protected final HybrisProjectDescriptor rootProjectDescriptor;
     @NotNull
     protected final Set<HybrisModuleDescriptor> dependenciesTree = new HashSet<HybrisModuleDescriptor>(0);
 
-    public AbstractHybrisModuleDescriptor(@NotNull final File moduleRootDirectory) throws HybrisConfigurationException {
+    public AbstractHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                          @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
         Validate.notNull(moduleRootDirectory);
+        Validate.notNull(rootProjectDescriptor);
 
-        this.rootDirectory = moduleRootDirectory;
+        this.moduleRootDirectory = moduleRootDirectory;
+        this.rootProjectDescriptor = rootProjectDescriptor;
 
-        if (!this.rootDirectory.isDirectory()) {
+        if (!this.moduleRootDirectory.isDirectory()) {
             throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootDirectory);
         }
     }
@@ -41,14 +47,31 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @NotNull
     @Override
-    public File getRootDirectory() {
-        return rootDirectory;
+    public File getModuleRootDirectory() {
+        return moduleRootDirectory;
+    }
+
+    @NotNull
+    @Override
+    public String getModuleRelativePath() {
+        final File rootDirectory = this.getRootProjectDescriptor().getRootDirectory();
+        if (null == rootDirectory) {
+            return this.getModuleRootDirectory().getPath();
+        } else {
+            return rootDirectory.toURI().relativize(this.getModuleRootDirectory().toURI()).toString();
+        }
+    }
+
+    @NotNull
+    @Override
+    public HybrisProjectDescriptor getRootProjectDescriptor() {
+        return rootProjectDescriptor;
     }
 
     @NotNull
     @Override
     public File getIdeaModuleFile() {
-        return new File(this.rootDirectory, this.getModuleName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
+        return new File(this.moduleRootDirectory, this.getModuleName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
     }
 
     @NotNull
@@ -101,7 +124,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .append(this.getModuleName())
-            .append(rootDirectory)
+            .append(moduleRootDirectory)
             .toHashCode();
     }
 
@@ -119,7 +142,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
         return new org.apache.commons.lang3.builder.EqualsBuilder()
             .append(this.getModuleName(), other.getModuleName())
-            .append(rootDirectory, other.rootDirectory)
+            .append(moduleRootDirectory, other.moduleRootDirectory)
             .isEquals();
     }
 
@@ -127,7 +150,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     public String toString() {
         final StringBuilder sb = new StringBuilder("ConfigHybrisModuleDescriptor{");
         sb.append("moduleName='").append(this.getModuleName()).append('\'');
-        sb.append(", rootDirectory=").append(rootDirectory);
+        sb.append(", moduleRootDirectory=").append(moduleRootDirectory);
         sb.append(", moduleFile=").append(this.getIdeaModuleFile());
         sb.append('}');
         return sb.toString();

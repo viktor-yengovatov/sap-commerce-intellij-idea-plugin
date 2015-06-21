@@ -41,8 +41,10 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     @NotNull
     protected final ExtensionInfo extensionInfo;
 
-    public DefaultHybrisModuleDescriptor(@NotNull final File moduleRootDirectory) throws HybrisConfigurationException {
-        super(moduleRootDirectory);
+    public DefaultHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                         @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
+        super(moduleRootDirectory, rootProjectDescriptor);
 
         Validate.notNull(moduleRootDirectory);
 
@@ -129,30 +131,30 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     @Override
     public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
         final File libFolder = new File(
-            getRootDirectory(), HybrisConstants.LIB_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY
         );
         LibUtils.addJarFolderToProjectLibs(modifiableRootModel.getProject(), libFolder);
         LibUtils.addProjectLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
 
         final File binFolder = new File(
-            getRootDirectory(), HybrisConstants.BIN_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.BIN_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binFolder, true);
         final File webInf = new File(
-            getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, webInf, false);
         final File hmcLib = new File(
-            getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, hmcLib, false);
         final File backOfficeLib = new File(
-            getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, backOfficeLib, false);
 
         final File webClasses = new File(
-            getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY
+            getModuleRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY
         );
         LibUtils.addClassesToModuleLibs(modifiableRootModel, webClasses, true);
     }
