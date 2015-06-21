@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -87,7 +88,24 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     @Override
     protected String getElementText(final HybrisModuleDescriptor item) {
-        return item.getModuleName();
+
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append(item.getModuleName());
+        builder.append("         (");
+        builder.append(this.getRelativePath(item));
+        builder.append(')');
+
+        return builder.toString();
+    }
+
+    private String getRelativePath(final HybrisModuleDescriptor item) {
+        final File rootDirectory = this.getContext().getHybrisProjectDescriptor().getRootDirectory();
+        if (null == rootDirectory) {
+            return item.getRootDirectory().getPath();
+        } else {
+            return rootDirectory.toURI().relativize(item.getRootDirectory().toURI()).toString();
+        }
     }
 
     @Override
