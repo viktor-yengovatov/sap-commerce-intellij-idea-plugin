@@ -58,7 +58,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         if (null == rootDirectory) {
             return this.getModuleRootDirectory().getPath();
         } else {
-            return rootDirectory.toURI().relativize(this.getModuleRootDirectory().toURI()).toString();
+            return this.getModuleRootDirectory().getPath().replaceFirst(rootDirectory.getPath(), "");
         }
     }
 
