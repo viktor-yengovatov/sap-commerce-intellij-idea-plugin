@@ -1,6 +1,5 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
@@ -258,17 +257,19 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
             for (String requiresExtensionName : requiredExtensionNames) {
 
-                final Optional<HybrisModuleDescriptor> dependsOn = Iterables.tryFind(
+                final Iterable<HybrisModuleDescriptor> dependsOn = Iterables.filter(
                     moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
                 );
 
-                if (dependsOn.isPresent()) {
-                    dependencies.add(dependsOn.get());
-                } else {
+                if (Iterables.isEmpty(dependsOn)) {
                     LOG.warn(String.format(
                         "Module '%s' contains unsatisfied dependency '%s'.",
                         moduleDescriptor.getModuleName(), requiresExtensionName
                     ));
+                } else {
+                    for (HybrisModuleDescriptor hybrisModuleDescriptor : dependsOn) {
+                        dependencies.add(hybrisModuleDescriptor);
+                    }
                 }
             }
 

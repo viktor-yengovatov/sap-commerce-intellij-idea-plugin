@@ -15,9 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
@@ -62,7 +60,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         Validate.notNull(item);
 
         return this.fileChooser.getMarkedElements().contains(item)
-               && this.calculateSelectedModuleDuplicates().contains(item.getModuleName());
+               && this.calculateSelectedModuleDuplicates().contains(item);
     }
 
     @Override
@@ -71,14 +69,19 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     }
 
     @NotNull
-    protected Set<String> calculateSelectedModuleDuplicates() {
-        final Set<String> duplicateModules = new HashSet<String>();
-        final Collection<String> uniqueModules = new HashSet<String>();
+    protected Set<HybrisModuleDescriptor> calculateSelectedModuleDuplicates() {
+        final Set<HybrisModuleDescriptor> duplicateModules = new HashSet<HybrisModuleDescriptor>();
+        final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<String, HybrisModuleDescriptor>();
 
         for (HybrisModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 
-            if (!uniqueModules.add(moduleDescriptor.getModuleName())) {
-                duplicateModules.add(moduleDescriptor.getModuleName());
+            final HybrisModuleDescriptor alreadySelected = uniqueModules.get(moduleDescriptor.getModuleName());
+
+            if (null == alreadySelected) {
+                uniqueModules.put(moduleDescriptor.getModuleName(), moduleDescriptor);
+            } else {
+                duplicateModules.add(alreadySelected);
+                duplicateModules.add(moduleDescriptor);
             }
         }
 
@@ -100,18 +103,38 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     @Override
     public boolean validate() throws ConfigurationException {
-        final Set<String> moduleDuplicates = this.calculateSelectedModuleDuplicates();
+        final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
+        final Collection<String> moduleDuplicateNames = new ArrayList<String>(moduleDuplicates.size());
+
+        for (HybrisModuleDescriptor moduleDuplicate : moduleDuplicates) {
+            moduleDuplicateNames.add(this.getModuleNameAndPath(moduleDuplicate));
+        }
 
         if (!moduleDuplicates.isEmpty()) {
             throw new ConfigurationException(
                 HybrisI18NBundleUtils.message(
                     "hybris.project.import.duplicate.projects.found",
-                    StringUtil.join(ArrayUtil.toStringArray(moduleDuplicates), "\n")
+                    StringUtil.join(ArrayUtil.toStringArray(moduleDuplicateNames), "\n")
                 ),
                 HybrisI18NBundleUtils.message("hybris.project.error")
             );
         }
 
         return super.validate();
+    }
+
+    @NotNull
+    private String getModuleNameAndPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        Validate.notNull(moduleDescriptor);
+
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append(moduleDescriptor.getModuleName());
+        builder.append(' ');
+        builder.append('(');
+        builder.append(moduleDescriptor.getModuleRelativePath());
+        builder.append(')');
+
+        return builder.toString();
     }
 }
