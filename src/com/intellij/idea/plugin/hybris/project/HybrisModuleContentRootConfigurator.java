@@ -214,12 +214,6 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
         final File platformBootstrapDirectory = new File(
             moduleDescriptor.getModuleRootDirectory(), PLATFORM_BOOTSTRAP_DIRECTORY
         );
-        final File platformBootstrapGenSrcDirectory = new File(platformBootstrapDirectory, GEN_SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(platformBootstrapGenSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE,
-            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
-        );
 
         final File platformBootstrapResourcesDirectory = new File(platformBootstrapDirectory, RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -233,6 +227,11 @@ public class HybrisModuleContentRootConfigurator implements ContentRootConfigura
 
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(platformBootstrapModelClassesDirectory.getAbsolutePath())
+        );
+
+        final File platformBootstrapGenSrcDirectory = new File(platformBootstrapDirectory, GEN_SRC_DIRECTORY);
+        contentEntry.addExcludeFolder(
+            VfsUtil.pathToUrl(platformBootstrapGenSrcDirectory.getAbsolutePath())
         );
 
         final File platformTomcatDirectory = new File(

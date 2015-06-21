@@ -60,20 +60,24 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
             getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY
         );
         LibUtils.addJarFolderToProjectLibs(modifiableRootModel.getProject(), libFolder);
+
         LibUtils.addProjectLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
 
         final File binBootstrap = new File(
             getModuleRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binBootstrap, true);
+
         final File tomcatBin = new File(
             getModuleRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatBin, false);
+
         final File tomcatLib = new File(
             getModuleRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatLib, true);
+
         final File resFolder = new File(getModuleRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
         File filderToLoadRes;
 

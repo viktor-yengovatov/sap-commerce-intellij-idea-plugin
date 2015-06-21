@@ -130,24 +130,29 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
 
     @Override
     public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
+
         final File libFolder = new File(
             getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY
         );
         LibUtils.addJarFolderToProjectLibs(modifiableRootModel.getProject(), libFolder);
+
         LibUtils.addProjectLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
 
         final File binFolder = new File(
             getModuleRootDirectory(), HybrisConstants.BIN_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binFolder, true);
+
         final File webInf = new File(
             getModuleRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, webInf, false);
+
         final File hmcLib = new File(
             getModuleRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY
         );
         LibUtils.addJarFolderToModuleLibs(modifiableRootModel, hmcLib, false);
+
         final File backOfficeLib = new File(
             getModuleRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY
         );
