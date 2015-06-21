@@ -10,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Created 3:55 PM 13 June 2015.
@@ -34,7 +35,9 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     public Set<String> getRequiredExtensionNames() {
         final File extDirectory = new File(this.getRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
 
-        final Set<String> platformDependencies = Sets.newHashSet(HybrisConstants.CONFIG_EXTENSION_NAME);
+        final Set<String> platformDependencies = Sets.newHashSet(
+            HybrisConstants.CONFIG_EXTENSION_NAME
+        );
 
         if (extDirectory.isDirectory()) {
             final File[] files = extDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
@@ -68,10 +71,17 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         final File tomcatLib = new File(
             getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY
         );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatLib, false);
+        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatLib, true);
         final File resFolder = new File(getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
         File filderToLoadRes;
-        for(File file : resFolder.listFiles())
+
+        final File[] files = resFolder.listFiles();
+
+        if (null == files) {
+            return;
+        }
+
+        for(File file : files)
         {
             if(file.isDirectory()){
                 filderToLoadRes = new File(file.getAbsolutePath(), HybrisConstants.LIB_DIRECTORY);

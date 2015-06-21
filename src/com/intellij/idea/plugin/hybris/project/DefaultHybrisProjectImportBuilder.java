@@ -7,6 +7,7 @@ import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisProjectDesc
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
@@ -19,16 +20,14 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.DependencyScope;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
 import org.apache.commons.lang3.Validate;
@@ -93,6 +92,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 this.hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor(getCurrentProject());
             }
 
+            //noinspection ConstantConditions
             return this.hybrisProjectDescriptor;
         } finally {
             this.lock.unlock();
@@ -143,6 +143,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             modifiableRootModel.inheritSdk();
+
+            this.configureCompilerOutputPaths(moduleDescriptor, modifiableRootModel);
+
             moduleDescriptor.loadLibs(modifiableRootModel);
             this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
 
@@ -163,6 +166,24 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.cleanup();
 
         return result;
+    }
+
+    protected void configureCompilerOutputPaths(@NotNull final HybrisModuleDescriptor moduleDescriptor,
+                                                @NotNull final ModifiableRootModel modifiableRootModel) {
+        Validate.notNull(moduleDescriptor);
+        Validate.notNull(modifiableRootModel);
+
+        final CompilerModuleExtension compilerModuleExtension = modifiableRootModel.getModuleExtension(
+            CompilerModuleExtension.class
+        );
+
+        final File outputDirectory = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
+
+        compilerModuleExtension.setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
+        compilerModuleExtension.setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
+
+        compilerModuleExtension.setExcludeOutput(true);
+        compilerModuleExtension.inheritCompilerOutputPath(false);
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
@@ -267,14 +288,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @NotNull
     @Override
     public String getName() {
-
-        int t = 0;
         return HybrisI18NBundleUtils.message("hybris.project.name");
     }
 
     @Override
     public Icon getIcon() {
-        int t = 0;
         return HybrisIconsUtils.HYBRIS_ICON;
     }
 

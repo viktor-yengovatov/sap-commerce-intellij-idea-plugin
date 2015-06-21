@@ -2,6 +2,7 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.utils.LibUtils;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,10 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
 
     @Override
     public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
+        final File configLicenceDirectory = new File(
+            getRootDirectory(), HybrisConstants.CONFIG_LICENCE_DIRECTORY
+        );
 
+        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, configLicenceDirectory, true);
     }
 }

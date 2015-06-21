@@ -28,6 +28,10 @@ public final class HybrisConstants {
     public static final String PL_TOMCAT_LIB_DIRECTORY = "tomcat/lib";
     public static final String PL_TOMCAT_BIN_DIRECTORY = "tomcat/bin";
 
+    public static final String CONFIG_LICENCE_DIRECTORY = "licence";
+
+    public static final String COMPILER_OUTPUT_PATH = "/eclipsebin/notused";
+
     private HybrisConstants() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
     }
