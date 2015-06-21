@@ -81,9 +81,8 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
             return;
         }
 
-        for(File file : files)
-        {
-            if(file.isDirectory()){
+        for (File file : files) {
+            if (file.isDirectory()) {
                 filderToLoadRes = new File(file.getAbsolutePath(), HybrisConstants.LIB_DIRECTORY);
                 LibUtils.addJarFolderToModuleLibs(modifiableRootModel, filderToLoadRes, false);
                 filderToLoadRes = new File(file.getAbsolutePath(), HybrisConstants.BIN_DIRECTORY);

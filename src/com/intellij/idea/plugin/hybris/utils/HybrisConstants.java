@@ -30,7 +30,7 @@ public final class HybrisConstants {
 
     public static final String CONFIG_LICENCE_DIRECTORY = "licence";
 
-    public static final String COMPILER_OUTPUT_PATH = "/eclipsebin/notused";
+    public static final String COMPILER_OUTPUT_PATH = "/eclipsebin";
 
     private HybrisConstants() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
