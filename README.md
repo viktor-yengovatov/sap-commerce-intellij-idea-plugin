@@ -41,3 +41,7 @@ You can install this plugin to your IDE directly from the [repository](https://p
 ## Who do I talk to? ##
 
 * Repo owner: <AlexanderBartash@gmail.com>
+
+## Credits ##
+* Vlad Bozhenok
+* Markus Priegl
