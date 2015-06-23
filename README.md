@@ -3,9 +3,17 @@
 This plugin provides [Hybris](https://hybris.com/ru/) integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 You can install this plugin to your IDE directly from the [repository](https://plugins.jetbrains.com/plugin/7525) by clicking on the ["Browse Repositories"](https://www.jetbrains.com/idea/help/installing-updating-and-uninstalling-repository-plugins.html) button in Settings/Plugins dialog. Also you can manually download required version of the jar or zip file ([here](https://plugins.jetbrains.com/plugin/7525) or [here](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/downloads)) and install it.
 
-### Contribution guidelines ###
+# Features #
 
-If you want to help with development:
+* Import of Hybris extensions into IDEA with automatic modules configuration and dependencies management.
+* Syntax highlighting, autocompletion, code formatting and general code assistance for Hybris Impex files.
+
+# Guides #
+
+* [How to import Hybris project using Intellij IDEA "Hybris Integration" plugin](https://www.youtube.com/watch?v=_wVbowe39GM)
+* [How to use HotSwap in Hybris with Oracle JDK and DCEVM OpenJDK](https://www.youtube.com/watch?v=I-YYKD0OSyY)
+
+### Contribution guidelines ###
 
 * [How To Configure Project Environment](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment)
 * Available tasks [here](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issues?status=new&status=open) also you can suggest new features.
