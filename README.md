@@ -5,7 +5,8 @@ You can install this plugin to your IDE directly from the [repository](https://p
 
 ### Contribution guidelines ###
 
-If you want to help in development:
+If you want to help with development:
+
 * [How To Configure Project Environment](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment)
 * Available tasks [here](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issues?status=new&status=open) also you can suggest new features.
 * Also you can find useful information in our [wiki](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home).
