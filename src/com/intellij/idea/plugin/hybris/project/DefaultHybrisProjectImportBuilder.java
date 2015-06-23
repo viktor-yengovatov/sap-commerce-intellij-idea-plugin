@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Alexander Bartash <AlexanderBartash@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.intellij.idea.plugin.hybris.project;
 
 import com.google.common.base.Optional;
@@ -168,24 +184,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return result;
     }
 
-    protected void configureCompilerOutputPaths(@NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                                @NotNull final ModifiableRootModel modifiableRootModel) {
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(modifiableRootModel);
-
-        final CompilerModuleExtension compilerModuleExtension = modifiableRootModel.getModuleExtension(
-            CompilerModuleExtension.class
-        );
-
-        final File outputDirectory = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
-
-        compilerModuleExtension.setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
-        compilerModuleExtension.setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
-
-        compilerModuleExtension.setExcludeOutput(true);
-        compilerModuleExtension.inheritCompilerOutputPath(false);
-    }
-
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 
@@ -204,6 +202,24 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 LOG.error("Can not remove old module files.", e);
             }
         }
+    }
+
+    protected void configureCompilerOutputPaths(@NotNull final HybrisModuleDescriptor moduleDescriptor,
+                                                @NotNull final ModifiableRootModel modifiableRootModel) {
+        Validate.notNull(moduleDescriptor);
+        Validate.notNull(modifiableRootModel);
+
+        final CompilerModuleExtension compilerModuleExtension = modifiableRootModel.getModuleExtension(
+            CompilerModuleExtension.class
+        );
+
+        final File outputDirectory = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
+
+        compilerModuleExtension.setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
+        compilerModuleExtension.setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
+
+        compilerModuleExtension.setExcludeOutput(true);
+        compilerModuleExtension.inheritCompilerOutputPath(false);
     }
 
     protected void commitModule(@NotNull final ModifiableRootModel modifiableRootModel) {
@@ -316,18 +332,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return false;
     }
 
-    protected class GetFileNameFunction implements Function<File, String> {
-
-        @Override
-        public String fun(final File param) {
-            if (null == getHybrisProjectDescriptor().getRootDirectory()) {
-                return param.getPath();
-            } else {
-                return param.getPath().replaceFirst(getHybrisProjectDescriptor().getRootDirectory().getPath(), "");
-            }
-        }
-    }
-
     private static class FindModifiableRootModelByName implements Predicate<ModifiableRootModel> {
 
         private final String name;
@@ -341,6 +345,18 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         @Override
         public boolean apply(@Nullable final ModifiableRootModel t) {
             return null != t && this.name.equalsIgnoreCase(t.getModule().getName());
+        }
+    }
+
+    protected class GetFileNameFunction implements Function<File, String> {
+
+        @Override
+        public String fun(final File param) {
+            if (null == getHybrisProjectDescriptor().getRootDirectory()) {
+                return param.getPath();
+            } else {
+                return param.getPath().replaceFirst(getHybrisProjectDescriptor().getRootDirectory().getPath(), "");
+            }
         }
     }
 }
