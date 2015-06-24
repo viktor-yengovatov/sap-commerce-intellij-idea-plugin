@@ -68,8 +68,8 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
     }
 
     protected void configureModuleDependencies(@NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                             @NotNull final ModifiableRootModel modifiableRootModel,
-                                             @NotNull final Collection<ModifiableRootModel> modifiableRootModels) {
+                                               @NotNull final ModifiableRootModel modifiableRootModel,
+                                               @NotNull final Collection<ModifiableRootModel> modifiableRootModels) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(modifiableRootModel);
         Validate.notNull(modifiableRootModels);

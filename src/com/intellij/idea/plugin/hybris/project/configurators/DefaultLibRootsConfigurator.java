@@ -48,6 +48,19 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(modifiableRootModel);
 
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                configureInner(modifiableRootModel, moduleDescriptor);
+            }
+        });
+    }
+
+    protected void configureInner(@NotNull final ModifiableRootModel modifiableRootModel,
+                                  @NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        Validate.notNull(modifiableRootModel);
+        Validate.notNull(modifiableRootModel);
+
         this.addJarFolderToProjectLibs(
             modifiableRootModel.getProject(),
             new File(moduleDescriptor.getRootDirectory(), HybrisConstants.LIB_DIRECTORY)
@@ -89,21 +102,15 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final VirtualFile jarVirtualFile = VirtualFileSystemUtils.getByUrl(jarUrl);
         final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(project);
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
+        Library libsGroup = projectLibraryTable.getLibraryByName(HybrisConstants.COMMON_LIBS_GROUP);
+        if (null == libsGroup) {
+            libsGroup = projectLibraryTable.createLibrary(HybrisConstants.COMMON_LIBS_GROUP);
+        }
 
-                Library libsGroup = projectLibraryTable.getLibraryByName(HybrisConstants.COMMON_LIBS_GROUP);
-                if (null == libsGroup) {
-                    libsGroup = projectLibraryTable.createLibrary(HybrisConstants.COMMON_LIBS_GROUP);
-                }
+        final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
+        libModel.addJarDirectory(jarVirtualFile, true);
 
-                final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
-                libModel.addJarDirectory(jarVirtualFile, true);
-
-                libModel.commit();
-            }
-        });
+        libModel.commit();
     }
 
     protected void addProjectLibsToModule(@NotNull final Project project,
@@ -113,18 +120,13 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         Validate.notNull(project);
 
         final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(project);
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                Library libsGroup = projectLibraryTable.getLibraryByName(HybrisConstants.COMMON_LIBS_GROUP);
+        Library libsGroup = projectLibraryTable.getLibraryByName(HybrisConstants.COMMON_LIBS_GROUP);
 
-                if (null == libsGroup) {
-                    libsGroup = projectLibraryTable.createLibrary(HybrisConstants.COMMON_LIBS_GROUP);
-                }
+        if (null == libsGroup) {
+            libsGroup = projectLibraryTable.createLibrary(HybrisConstants.COMMON_LIBS_GROUP);
+        }
 
-                module.addLibraryEntry(libsGroup);
-            }
-        });
+        module.addLibraryEntry(libsGroup);
     }
 
     protected void addClassesToModuleLibs(@NotNull final ModifiableRootModel module,
@@ -171,27 +173,21 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final VirtualFile jarVirtualFile = VirtualFileSystemUtils.getByUrl(jarUrl);
         final LibraryTable projectLibraryTable = module.getModuleLibraryTable();
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
+        final Library libsGroup = projectLibraryTable.createLibrary();
+        final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
 
-                final Library libsGroup = projectLibraryTable.createLibrary();
-                final Library.ModifiableModel libModel = libsGroup.getModifiableModel();
+        libModel.addJarDirectory(jarVirtualFile, true);
 
-                libModel.addJarDirectory(jarVirtualFile, true);
+        if (exported) {
+            setLibraryEntryExported(module, libsGroup, true);
+        }
 
-                if (exported) {
-                    setLibraryEntryExported(module, libsGroup, true);
-                }
-
-                libModel.commit();
-            }
-        });
+        libModel.commit();
     }
 
-    private static void setLibraryEntryExported(@NotNull final ModuleRootModel rootModel,
-                                                @NotNull final Library library,
-                                                final boolean exported
+    protected void setLibraryEntryExported(@NotNull final ModuleRootModel rootModel,
+                                           @NotNull final Library library,
+                                           final boolean exported
     ) {
         Validate.notNull(rootModel);
         Validate.notNull(library);
