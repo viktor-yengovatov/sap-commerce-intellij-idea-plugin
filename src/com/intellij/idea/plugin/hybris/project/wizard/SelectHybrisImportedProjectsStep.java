@@ -63,13 +63,18 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     @Override
     @Nullable
     protected Icon getElementIcon(final HybrisModuleDescriptor item) {
-        if (this.isInConflict(item)) {
-            return AllIcons.Actions.Cancel;
-        } else if (this.getContext().getHybrisProjectDescriptor().getAlreadyOpenedModules().contains(item)) {
+        if (this.getContext().getHybrisProjectDescriptor().getAlreadyOpenedModules().contains(item)) {
             return AllIcons.General.InspectionsOK;
+        } else if (this.isInConflict(item)) {
+            return AllIcons.Actions.Cancel;
         }
 
         return null;
+    }
+
+    @Override
+    public AbstractHybrisProjectImportBuilder getContext() {
+        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
     protected boolean isInConflict(@NotNull final HybrisModuleDescriptor item) {
@@ -77,11 +82,6 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         return this.fileChooser.getMarkedElements().contains(item)
                && this.calculateSelectedModuleDuplicates().contains(item);
-    }
-
-    @Override
-    public AbstractHybrisProjectImportBuilder getContext() {
-        return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
     @NotNull
@@ -136,7 +136,16 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
             );
         }
 
-        return super.validate();
+        if (this.fileChooser.getMarkedElements().isEmpty()) {
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.project.import.error.nothing.found.to.import"),
+                HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
+            );
+        }
+
+        this.getContext().setList(this.fileChooser.getMarkedElements());
+
+        return true;
     }
 
     @NotNull
