@@ -34,6 +34,7 @@ public final class HybrisConstants {
     public static final String LIB_DIRECTORY = "lib";
     public static final String BIN_DIRECTORY = "bin";
     public static final String RESOURCES_DIRECTORY = "resources";
+    public static final String COMMON_LIBS_GROUP = "Common libs";
 
     public static final String WEB_INF_LIB_DIRECTORY = "web/webroot/WEB-INF/lib";
     public static final String WEB_INF_CLASSES_DIRECTORY = "web/webroot/WEB-INF/classes";

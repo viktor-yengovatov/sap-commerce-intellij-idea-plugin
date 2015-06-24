@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package com.intellij.idea.plugin.hybris.project;
+package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created 2:05 AM 15 June 2015.
+ * Created 12:19 AM 25 June 2015.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public interface ContentRootConfigurator {
+public interface CompilerOutputPathsConfigurator {
 
     void configure(@NotNull ModifiableRootModel modifiableRootModel,
                    @NotNull HybrisModuleDescriptor moduleDescriptor);
-
 }

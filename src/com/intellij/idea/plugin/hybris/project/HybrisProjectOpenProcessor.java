@@ -56,7 +56,7 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
             LOG.error(e);
         }
 
-        wizardContext.setProjectName(projects.get(0).getModuleName());
+        wizardContext.setProjectName(projects.get(0).getName());
 
         return true;
     }

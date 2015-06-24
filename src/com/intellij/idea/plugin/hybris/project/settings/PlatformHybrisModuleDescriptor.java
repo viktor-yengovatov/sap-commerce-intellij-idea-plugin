@@ -19,14 +19,14 @@ package com.intellij.idea.plugin.hybris.project.settings;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
-import com.intellij.idea.plugin.hybris.utils.LibUtils;
-import com.intellij.openapi.roots.ModifiableRootModel;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,14 +44,14 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
 
     @NotNull
     @Override
-    public String getModuleName() {
+    public String getName() {
         return HybrisConstants.PLATFORM_EXTENSION_NAME;
     }
 
     @NotNull
     @Override
     public Set<String> getRequiredExtensionNames() {
-        final File extDirectory = new File(this.getModuleRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
+        final File extDirectory = new File(this.getRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
 
         final Set<String> platformDependencies = Sets.newHashSet(
             HybrisConstants.CONFIG_EXTENSION_NAME
@@ -70,46 +70,37 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         return Collections.unmodifiableSet(platformDependencies);
     }
 
+    @NotNull
     @Override
-    public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
-        final File libFolder = new File(
-            getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY
-        );
-        LibUtils.addJarFolderToProjectLibs(modifiableRootModel.getProject(), libFolder);
+    public List<JavaLibraryDescriptor> getLibraryDescriptors() {
+        final List<JavaLibraryDescriptor> moduleDescriptors = new ArrayList<JavaLibraryDescriptor>();
 
-        LibUtils.addProjectLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
+        final File resourcesDirectory = new File(getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+        final File[] resourcesInnerDirectories = resourcesDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
-        final File binBootstrap = new File(
-            getModuleRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY
-        );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binBootstrap, true);
+        for (File resourcesInnerDirectory : resourcesInnerDirectories) {
 
-        final File tomcatBin = new File(
-            getModuleRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY
-        );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatBin, false);
+            moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
+                new File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY), true
+            ));
 
-        final File tomcatLib = new File(
-            getModuleRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY
-        );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, tomcatLib, true);
-
-        final File resFolder = new File(getModuleRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
-        File filderToLoadRes;
-
-        final File[] files = resFolder.listFiles();
-
-        if (null == files) {
-            return;
+            moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
+                new File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY), true
+            ));
         }
 
-        for (File file : files) {
-            if (file.isDirectory()) {
-                filderToLoadRes = new File(file.getAbsolutePath(), HybrisConstants.LIB_DIRECTORY);
-                LibUtils.addJarFolderToModuleLibs(modifiableRootModel, filderToLoadRes, false);
-                filderToLoadRes = new File(file.getAbsolutePath(), HybrisConstants.BIN_DIRECTORY);
-                LibUtils.addJarFolderToModuleLibs(modifiableRootModel, filderToLoadRes, true);
-            }
-        }
+        moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
+            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY), true
+        ));
+
+        moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
+            new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY)
+        ));
+
+        moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
+            new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY), true
+        ));
+
+        return Collections.unmodifiableList(moduleDescriptors);
     }
 }

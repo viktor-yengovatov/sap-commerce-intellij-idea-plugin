@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-package com.intellij.idea.plugin.hybris.project.utils;
+package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.google.common.base.Predicate;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import org.apache.commons.lang3.Validate;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * Created 8:31 PM 20 June 2015.
+ * Created 2:05 AM 15 June 2015.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleDescriptor> {
+public interface ContentRootConfigurator {
 
-    private final String name;
+    void configure(@NotNull ModifiableRootModel modifiableRootModel,
+                   @NotNull HybrisModuleDescriptor moduleDescriptor);
 
-    public FindHybrisModuleDescriptorByName(@NotNull final String name) {
-        Validate.notEmpty(name);
-
-        this.name = name;
-    }
-
-    @Override
-    public boolean apply(@Nullable final HybrisModuleDescriptor t) {
-        return null != t && name.equalsIgnoreCase(t.getName());
-    }
 }

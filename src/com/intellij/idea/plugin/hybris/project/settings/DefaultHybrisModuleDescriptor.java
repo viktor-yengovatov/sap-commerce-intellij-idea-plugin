@@ -21,9 +21,7 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
-import com.intellij.idea.plugin.hybris.utils.LibUtils;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.roots.ModifiableRootModel;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,10 +30,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -116,7 +111,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
 
     @Override
     @NotNull
-    public String getModuleName() {
+    public String getName() {
         return moduleName;
     }
 
@@ -144,39 +139,25 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
         return Collections.unmodifiableSet(requiredExtensionNames);
     }
 
+    @NotNull
     @Override
-    public void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel) {
-
-        final File libFolder = new File(
-            getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY
+    public List<JavaLibraryDescriptor> getLibraryDescriptors() {
+        return Arrays.<JavaLibraryDescriptor>asList(
+            new DefaultJavaLibraryDescriptor(
+                new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY), true
+            ),
+            new DefaultJavaLibraryDescriptor(
+                new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY)
+            ),
+            new DefaultJavaLibraryDescriptor(
+                new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY)
+            ),
+            new DefaultJavaLibraryDescriptor(
+                new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY)
+            ),
+            new DefaultJavaLibraryDescriptor(
+                new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY), true, true
+            )
         );
-        LibUtils.addJarFolderToProjectLibs(modifiableRootModel.getProject(), libFolder);
-
-        LibUtils.addProjectLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
-
-        final File binFolder = new File(
-            getModuleRootDirectory(), HybrisConstants.BIN_DIRECTORY
-        );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, binFolder, true);
-
-        final File webInf = new File(
-            getModuleRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY
-        );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, webInf, false);
-
-        final File hmcLib = new File(
-            getModuleRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY
-        );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, hmcLib, false);
-
-        final File backOfficeLib = new File(
-            getModuleRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY
-        );
-        LibUtils.addJarFolderToModuleLibs(modifiableRootModel, backOfficeLib, false);
-
-        final File webClasses = new File(
-            getModuleRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY
-        );
-        LibUtils.addClassesToModuleLibs(modifiableRootModel, webClasses, true);
     }
 }

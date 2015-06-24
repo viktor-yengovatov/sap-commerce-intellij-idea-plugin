@@ -58,23 +58,23 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @Override
     public int compareTo(@NotNull final HybrisModuleDescriptor o) {
-        return this.getModuleName().compareToIgnoreCase(o.getModuleName());
+        return this.getName().compareToIgnoreCase(o.getName());
     }
 
     @NotNull
     @Override
-    public File getModuleRootDirectory() {
+    public File getRootDirectory() {
         return moduleRootDirectory;
     }
 
     @NotNull
     @Override
-    public String getModuleRelativePath() {
+    public String getRelativePath() {
         final File rootDirectory = this.getRootProjectDescriptor().getRootDirectory();
         if (null == rootDirectory) {
-            return this.getModuleRootDirectory().getPath();
+            return this.getRootDirectory().getPath();
         } else {
-            return this.getModuleRootDirectory().getPath().replaceFirst(rootDirectory.getPath(), "");
+            return this.getRootDirectory().getPath().replaceFirst(rootDirectory.getPath(), "");
         }
     }
 
@@ -87,7 +87,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     @Override
     public File getIdeaModuleFile() {
-        return new File(this.moduleRootDirectory, this.getModuleName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
+        return new File(this.moduleRootDirectory, this.getName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
     }
 
     @NotNull
@@ -139,7 +139,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(this.getModuleName())
+            .append(this.getName())
             .append(moduleRootDirectory)
             .toHashCode();
     }
@@ -157,7 +157,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         final AbstractHybrisModuleDescriptor other = (AbstractHybrisModuleDescriptor) obj;
 
         return new org.apache.commons.lang3.builder.EqualsBuilder()
-            .append(this.getModuleName(), other.getModuleName())
+            .append(this.getName(), other.getName())
             .append(moduleRootDirectory, other.moduleRootDirectory)
             .isEquals();
     }
@@ -165,7 +165,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("ConfigHybrisModuleDescriptor{");
-        sb.append("moduleName='").append(this.getModuleName()).append('\'');
+        sb.append("name='").append(this.getName()).append('\'');
         sb.append(", moduleRootDirectory=").append(moduleRootDirectory);
         sb.append(", moduleFile=").append(this.getIdeaModuleFile());
         sb.append('}');

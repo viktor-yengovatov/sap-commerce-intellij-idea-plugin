@@ -280,7 +280,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 if (Iterables.isEmpty(dependsOn)) {
                     LOG.warn(String.format(
                         "Module '%s' contains unsatisfied dependency '%s'.",
-                        moduleDescriptor.getModuleName(), requiresExtensionName
+                        moduleDescriptor.getName(), requiresExtensionName
                     ));
                 } else {
                     for (HybrisModuleDescriptor hybrisModuleDescriptor : dependsOn) {

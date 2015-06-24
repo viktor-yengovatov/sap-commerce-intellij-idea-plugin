@@ -91,10 +91,10 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         for (HybrisModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 
-            final HybrisModuleDescriptor alreadySelected = uniqueModules.get(moduleDescriptor.getModuleName());
+            final HybrisModuleDescriptor alreadySelected = uniqueModules.get(moduleDescriptor.getName());
 
             if (null == alreadySelected) {
-                uniqueModules.put(moduleDescriptor.getModuleName(), moduleDescriptor);
+                uniqueModules.put(moduleDescriptor.getName(), moduleDescriptor);
             } else {
                 duplicateModules.add(alreadySelected);
                 duplicateModules.add(moduleDescriptor);
@@ -109,9 +109,9 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         final StringBuilder builder = new StringBuilder();
 
-        builder.append(item.getModuleName());
+        builder.append(item.getName());
         builder.append("         (");
-        builder.append(item.getModuleRelativePath());
+        builder.append(item.getRelativePath());
         builder.append(')');
 
         return builder.toString();
@@ -154,10 +154,10 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
         final StringBuilder builder = new StringBuilder();
 
-        builder.append(moduleDescriptor.getModuleName());
+        builder.append(moduleDescriptor.getName());
         builder.append(' ');
         builder.append('(');
-        builder.append(moduleDescriptor.getModuleRelativePath());
+        builder.append(moduleDescriptor.getRelativePath());
         builder.append(')');
 
         return builder.toString();

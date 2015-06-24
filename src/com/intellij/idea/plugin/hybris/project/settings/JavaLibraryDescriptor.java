@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package com.intellij.idea.plugin.hybris.project.utils;
+package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.google.common.base.Predicate;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
 
 /**
- * Created 8:31 PM 20 June 2015.
+ * Created 10:59 PM 24 June 2015.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleDescriptor> {
+public interface JavaLibraryDescriptor extends Comparable<JavaLibraryDescriptor> {
 
-    private final String name;
+    @NotNull
+    File getLibraryFile();
 
-    public FindHybrisModuleDescriptorByName(@NotNull final String name) {
-        Validate.notEmpty(name);
+    boolean isExported();
 
-        this.name = name;
-    }
-
-    @Override
-    public boolean apply(@Nullable final HybrisModuleDescriptor t) {
-        return null != t && name.equalsIgnoreCase(t.getName());
-    }
+    boolean isDirectoryWithClasses();
 }

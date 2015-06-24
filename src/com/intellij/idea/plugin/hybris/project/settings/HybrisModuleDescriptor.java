@@ -16,10 +16,10 @@
 
 package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,13 +30,13 @@ import java.util.Set;
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
 
     @NotNull
-    String getModuleName();
+    String getName();
 
     @NotNull
-    File getModuleRootDirectory();
+    File getRootDirectory();
 
     @NotNull
-    String getModuleRelativePath();
+    String getRelativePath();
 
     @NotNull
     HybrisProjectDescriptor getRootProjectDescriptor();
@@ -55,6 +55,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesPlainList();
 
-    void loadLibs(@NotNull final ModifiableRootModel modifiableRootModel);
+    @NotNull
+    List<JavaLibraryDescriptor> getLibraryDescriptors();
 
 }
