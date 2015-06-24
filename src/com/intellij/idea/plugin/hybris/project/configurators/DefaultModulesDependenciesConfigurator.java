@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
@@ -44,9 +45,9 @@ import java.util.List;
 public class DefaultModulesDependenciesConfigurator implements ModulesDependenciesConfigurator {
 
     @Override
-    public void configure(final @NotNull Iterable<HybrisModuleDescriptor> modulesChosenForImport,
+    public void configure(final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
                           final @NotNull ModifiableModuleModel rootProjectModifiableModuleModel) {
-        Validate.notNull(modulesChosenForImport);
+        Validate.notNull(hybrisProjectDescriptor);
         Validate.notNull(rootProjectModifiableModuleModel);
 
         final List<Module> modules = Arrays.asList(rootProjectModifiableModuleModel.getModules());
@@ -56,7 +57,7 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
             modifiableRootModels.add(ModuleRootManager.getInstance(module).getModifiableModel());
         }
 
-        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+        for (HybrisModuleDescriptor moduleDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
             final ModifiableRootModel modifiableRootModel = Iterables.find(
                 modifiableRootModels,
                 new FindModifiableRootModelByName(moduleDescriptor.getName())

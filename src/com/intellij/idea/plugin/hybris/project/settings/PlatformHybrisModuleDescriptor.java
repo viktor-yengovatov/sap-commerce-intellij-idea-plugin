@@ -75,7 +75,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
         final List<JavaLibraryDescriptor> moduleDescriptors = new ArrayList<JavaLibraryDescriptor>();
 
-        final File resourcesDirectory = new File(getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+        final File resourcesDirectory = new File(this.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
         final File[] resourcesInnerDirectories = resourcesDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
         for (File resourcesInnerDirectory : resourcesInnerDirectories) {

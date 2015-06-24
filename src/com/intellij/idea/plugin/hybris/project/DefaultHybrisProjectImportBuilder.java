@@ -143,13 +143,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         this.performProjectsCleanup(this.getHybrisProjectDescriptor().getModulesChosenForImport());
 
-        final ModifiableModuleModel rootProjectModifiableModuleModel = (null == model)
+        final ModifiableModuleModel rootProjectModifiableModel = (null == model)
             ? ModuleManager.getInstance(project).getModifiableModel()
             : model;
 
         for (HybrisModuleDescriptor moduleDescriptor : this.getHybrisProjectDescriptor().getModulesChosenForImport()) {
 
-            final Module javaModule = rootProjectModifiableModuleModel.newModule(
+            final Module javaModule = rootProjectModifiableModel.newModule(
                 moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
             );
 
@@ -168,13 +168,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
 
         if (!this.isUpdate()) {
-            this.commitRootModule(rootProjectModifiableModuleModel);
+            this.commitRootModule(rootProjectModifiableModel);
         }
 
-        this.modulesDependenciesConfigurator.configure(
-            this.getHybrisProjectDescriptor().getModulesChosenForImport(),
-            rootProjectModifiableModuleModel
-        );
+        this.modulesDependenciesConfigurator.configure(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
 
         this.cleanup();
 
