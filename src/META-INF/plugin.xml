@@ -17,8 +17,8 @@
 <idea-plugin version="2">
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
-    <name>Hybris Integration (Beta)</name>
-    <version>2.0-beta</version>
+    <name>Hybris Integration</name>
+    <version>2.0</version>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
