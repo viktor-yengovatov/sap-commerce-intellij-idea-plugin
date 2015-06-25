@@ -24,10 +24,7 @@ import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.DependencyScope;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.*;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +41,8 @@ import java.util.List;
  */
 public class DefaultModulesDependenciesConfigurator implements ModulesDependenciesConfigurator {
 
+    protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
+
     @Override
     public void configure(final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
                           final @NotNull ModifiableModuleModel rootProjectModifiableModuleModel) {
@@ -54,7 +53,7 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final Collection<ModifiableRootModel> modifiableRootModels = new ArrayList<ModifiableRootModel>();
 
         for (Module module : modules) {
-            modifiableRootModels.add(ModuleRootManager.getInstance(module).getModifiableModel());
+            modifiableRootModels.add(this.modifiableModelsProvider.getModuleModifiableModel(module));
         }
 
         for (HybrisModuleDescriptor moduleDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
@@ -97,7 +96,7 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
-                modifiableRootModel.commit();
+                modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
             }
         });
     }

@@ -71,11 +71,11 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public String getRelativePath() {
         final File rootDirectory = this.getRootProjectDescriptor().getRootDirectory();
-        if (null == rootDirectory) {
-            return this.getRootDirectory().getPath();
-        } else {
-            return this.getRootDirectory().getPath().replaceFirst(rootDirectory.getPath(), "");
+        if (null != rootDirectory && this.getRootDirectory().getPath().startsWith(rootDirectory.getPath())) {
+            return this.getRootDirectory().getPath().substring(rootDirectory.getPath().length());
         }
+
+        return this.getRootDirectory().getPath();
     }
 
     @NotNull

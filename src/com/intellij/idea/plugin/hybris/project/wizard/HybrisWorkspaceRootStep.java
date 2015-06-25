@@ -28,7 +28,7 @@ import javax.swing.*;
 import java.io.File;
 
 /**
- * @author Vlad Bozhenok <vladbozhenok@gmail.com>
+ * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
 public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 

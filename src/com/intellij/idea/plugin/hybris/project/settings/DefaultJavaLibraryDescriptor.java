@@ -107,4 +107,14 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
             .append(libraryFile, other.libraryFile)
             .isEquals();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("DefaultJavaLibraryDescriptor{");
+        sb.append("libraryFile=").append(libraryFile);
+        sb.append(", isExported=").append(isExported);
+        sb.append(", isDirectoryWithClasses=").append(isDirectoryWithClasses);
+        sb.append('}');
+        return sb.toString();
+    }
 }

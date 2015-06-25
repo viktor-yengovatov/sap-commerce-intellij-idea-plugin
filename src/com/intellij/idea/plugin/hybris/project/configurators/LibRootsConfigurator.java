@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created 2:05 AM 15 June 2015.
  *
+ * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public interface LibRootsConfigurator {

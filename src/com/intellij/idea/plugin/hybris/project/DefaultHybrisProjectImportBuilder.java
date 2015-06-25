@@ -33,11 +33,14 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
+import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
+import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.StructureConfigurableContext;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
@@ -66,10 +69,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
 
+    protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
+
     protected final LibRootsConfigurator libRootsConfigurator = new DefaultLibRootsConfigurator();
     protected final ContentRootConfigurator contentRootConfigurator = new HybrisContentRootConfigurator();
     protected final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = new DefaultCompilerOutputPathsConfigurator();
     protected final ModulesDependenciesConfigurator modulesDependenciesConfigurator = new DefaultModulesDependenciesConfigurator();
+
     protected final Lock lock = new ReentrantLock();
 
     @Nullable
@@ -147,13 +153,26 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             ? ModuleManager.getInstance(project).getModifiableModel()
             : model;
 
+        final ProjectStructureConfigurable projectStructureConfigurable = ProjectStructureConfigurable.getInstance(
+            project
+        );
+
         for (HybrisModuleDescriptor moduleDescriptor : this.getHybrisProjectDescriptor().getModulesChosenForImport()) {
 
             final Module javaModule = rootProjectModifiableModel.newModule(
                 moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
             );
 
-            final ModifiableRootModel modifiableRootModel = ModuleRootManager.getInstance(javaModule).getModifiableModel();
+            if (projectStructureConfigurable.isUiInitialized()) {
+                final StructureConfigurableContext context = projectStructureConfigurable.getContext();
+                if (null != context) {
+                    context.getModulesConfigurator().getOrCreateModuleEditor(javaModule);
+                }
+            }
+
+            final ModifiableRootModel modifiableRootModel = this.modifiableModelsProvider.getModuleModifiableModel(
+                javaModule
+            );
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             modifiableRootModel.inheritSdk();
@@ -204,7 +223,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
-                modifiableRootModel.commit();
+                modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
             }
         });
     }
@@ -274,11 +293,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         @Override
         public String fun(final File param) {
-            if (null == getHybrisProjectDescriptor().getRootDirectory()) {
-                return param.getPath();
-            } else {
-                return param.getPath().replaceFirst(getHybrisProjectDescriptor().getRootDirectory().getPath(), "");
+            final File projectRootDirectory = getHybrisProjectDescriptor().getRootDirectory();
+
+            if (null != projectRootDirectory && param.getPath().startsWith(projectRootDirectory.getPath())) {
+                return param.getPath().substring(projectRootDirectory.getPath().length());
             }
+
+            return param.getPath();
         }
     }
 }

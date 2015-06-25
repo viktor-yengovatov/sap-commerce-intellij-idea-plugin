@@ -34,7 +34,7 @@ import javax.swing.*;
 import java.util.*;
 
 /**
- * @author Vlad Bozhenok <vladbozhenok@gmail.com>
+ * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
 public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
 
@@ -64,7 +64,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     @Nullable
     protected Icon getElementIcon(final HybrisModuleDescriptor item) {
         if (this.getContext().getHybrisProjectDescriptor().getAlreadyOpenedModules().contains(item)) {
-            return AllIcons.General.InspectionsOK;
+            return AllIcons.Actions.Module;
         } else if (this.isInConflict(item)) {
             return AllIcons.Actions.Cancel;
         }
