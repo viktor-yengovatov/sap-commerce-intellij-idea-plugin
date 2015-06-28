@@ -22,6 +22,8 @@ import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.SimpleTextAttributes;
@@ -55,7 +57,9 @@ public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode>>
             if (abstractTreeNode instanceof ProjectViewNode) {
                 final ProjectViewNode projectViewNode = (ProjectViewNode) abstractTreeNode;
 
-                return null != projectViewNode.getVirtualFile() && projectViewNode.getVirtualFile().equals(file);
+                if (null != projectViewNode.getVirtualFile() && projectViewNode.getVirtualFile().equals(file)) {
+                    return true;
+                }
             }
         }
 
