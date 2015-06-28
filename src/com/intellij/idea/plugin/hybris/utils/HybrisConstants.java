@@ -49,6 +49,8 @@ public final class HybrisConstants {
 
     public static final String COMPILER_OUTPUT_PATH = "/eclipsebin";
 
+    public static final String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
+
     private HybrisConstants() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
     }

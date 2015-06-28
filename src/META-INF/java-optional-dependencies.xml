@@ -23,5 +23,7 @@
         <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
 
+        <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
+
     </extensions>
 </idea-plugin>

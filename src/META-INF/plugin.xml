@@ -18,7 +18,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris Integration</name>
-    <version>2.0</version>
+    <version>2.1</version>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
@@ -27,9 +27,21 @@
 
     <description>
         <![CDATA[
-          Features:
+          <b>Import of Hybris extensions to Intellij IDEA:</b>
           <br/>
-          - Import of Hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
+          - Automatic module dependency management.
+          <br/>
+          - Automatic classpath configuration.
+
+          <br/>
+          <br/>
+          <b>Enhanced project view tree:</b>
+          <br/>
+          - Rarely used elements are grouped into "junk" virtual folder.
+
+          <br/>
+          <br/>
+          <b>Editor for impex files:</b>
 
           <br/>
           - Syntax highlighting and errors indication for Hybris impex files.
@@ -44,19 +56,42 @@
           - Code folding to improve readability.
 
           <br/>
-          - Autocompletion within the header for modifier name and value.
+          - Autocompletion within the header for modifier name and value. *
 
           <br/>
-          - Autocompletion for hybris types based on the current IntelliJ-Project (hybris coretypes + your custom types).
+          - Autocompletion for hybris types based on the current IntelliJ-Project (hybris coretypes + your custom types). *
 
           <br/>
-          - Autocompletion for hybris attributes based on the current IntelliJ-Project (hybris coretypes + your custom types).
+          - Autocompletion for hybris attributes based on the current IntelliJ-Project (hybris coretypes + your custom types). *
 
           <br/>
           <br/>
-          Due autocompletion based on the IntelliJ-Class-Index this feature is only available after the IntelliJ-indexing
-          process is finished. The indexing is automatically ran on the first completion-action. After an *-item.xml change or
-          adding a new hybris-extension - and ant install - you can rerun the "indexing" mechanism with Tools -> Index [y]-types.
+          * Due autocompletion based on the IntelliJ-Class-Index this feature is only available after the IntelliJ-indexing
+          process is finished. The indexing is automatically run on the first completion-action. After an *-item.xml change or
+          adding a new hybris-extension - and ant install - you can rerun the "indexing" mechanism with "Tools/Index [y]-types".
+
+
+          <br/>
+          <br/>
+          <b>Guides:</b>
+          <br/>
+          - <a href="https://www.youtube.com/watch?v=_wVbowe39GM">How to import Hybris project using Intellij IDEA "Hybris Integration" plugin</a>
+          <br/>
+          - <a href="https://www.youtube.com/watch?v=I-YYKD0OSyY">How to use HotSwap in Hybris with Oracle JDK and DCEVM OpenJDK</a>
+          <br/>
+          Visit <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin">our page</a> in BitBucket for more details.
+
+          <br/>
+          <br/>
+          <b>Contribution guidelines</b>
+          <br/>
+          - <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment">How To Configure Project Environment</a>
+          <br/>
+          - Available tasks <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issues?status=new&status=open">here</a> also you can suggest new features.
+          <br/>
+          - Also you can find useful information in our <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">wiki</a>.
+          <br/>
+          - For additional questions feel free to send me an email.
 
           <br/>
           <br/>
@@ -72,6 +107,10 @@
 
     <change-notes>
         <![CDATA[
+          2.1:
+          <br/> - Enhanced project view tree. Rarely used elements have been grouped into "junk" virtual folder.
+          <br/>
+          <br/>
           2.0:
           <br/> - Import of Hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
           <br/>
@@ -206,6 +245,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
 
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
     </extensions>
 
     <application-components>

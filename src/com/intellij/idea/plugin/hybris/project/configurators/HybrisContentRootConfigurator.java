@@ -50,6 +50,7 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
     public static final String EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders";
     public static final String WEB_ROOT_DIRECTORY = "webroot";
     public static final String WEB_INF_DIRECTORY = "WEB-INF";
+    public static final String COMMON_WEB_SRC_DIRECTORY = "commonwebsrc";
     public static final String ECLIPSE_BIN_DIRECTORY = "eclipsebin";
     public static final String COMMON_WEB_MODULE_DIRECTORY = "commonweb";
     public static final String ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon";
@@ -287,6 +288,11 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         final File webTestClassesDirectory = new File(webModuleDirectory, TEST_CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath())
+        );
+
+        final File commonWebSrcDirectory = new File(webModuleDirectory, COMMON_WEB_SRC_DIRECTORY);
+        contentEntry.addExcludeFolder(
+            VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath())
         );
     }
 }

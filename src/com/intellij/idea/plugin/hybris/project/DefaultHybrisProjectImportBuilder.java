@@ -17,10 +17,10 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.*;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
@@ -147,6 +147,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             return Collections.emptyList();
         }
 
+        this.initializeHybrisProjectSettings(project);
+
         this.performProjectsCleanup(this.getHybrisProjectDescriptor().getModulesChosenForImport());
 
         final ModifiableModuleModel rootProjectModifiableModel = (null == model)
@@ -195,6 +197,15 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.cleanup();
 
         return result;
+    }
+
+    protected void initializeHybrisProjectSettings(@NotNull final Project project) {
+        Validate.notNull(project);
+
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        if (null != hybrisProjectSettings) {
+            hybrisProjectSettings.setHybisProject(true);
+        }
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
