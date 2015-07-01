@@ -63,7 +63,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         "ruleset.xml",
         "beans.xsd",
         "items.xsd",
-        "platformhome.properties"
+        "platformhome.properties",
+        ".idea"
     );
 
     public HybrisProjectView(final Project project) {
