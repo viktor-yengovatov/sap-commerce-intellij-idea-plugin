@@ -257,7 +257,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             return false;
         }
 
-        final int resultCode = Messages.showYesNoCancelDialog(
+        final int resultCode = Messages.showYesNoDialog(
             HybrisI18NBundleUtils.message(
                 "hybris.project.import.duplicate.modules.found",
                 StringUtil.join(files, new GetFileNameFunction(), "\n")

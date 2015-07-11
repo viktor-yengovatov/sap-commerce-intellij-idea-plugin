@@ -18,13 +18,17 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
@@ -33,17 +37,26 @@ import java.io.File;
 public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
     private JPanel rootPanel;
-    private TextFieldWithBrowseButton projectsRootChooser;
+    private TextFieldWithBrowseButton storeModuleFilesInChooser;
+    private JCheckBox storeModuleFilesInCheckBox;
+    private JLabel storeModuleFilesInLabel;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
 
-        this.projectsRootChooser.addBrowseFolderListener(
-            HybrisI18NBundleUtils.message("hybris.project.import.select.project.root.directory"),
-            "",
+        this.storeModuleFilesInChooser.addBrowseFolderListener(
+            HybrisI18NBundleUtils.message("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"),
+            HybrisI18NBundleUtils.message("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"),
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
+
+        this.storeModuleFilesInCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(@NotNull final ActionEvent e) {
+                storeModuleFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected());
+            }
+        });
     }
 
     @Override
@@ -53,27 +66,38 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
     @Override
     public void updateDataModel() {
+        this.getContext().setRootProjectDirectory(new File(this.getContext().getFileToImport()));
 
+        if (this.storeModuleFilesInCheckBox.isSelected()) {
+            this.getContext().getHybrisProjectDescriptor().setModulesFilesDirectory(
+                new File(this.storeModuleFilesInChooser.getText())
+            );
+        }
     }
 
     @Override
     public void updateStep() {
-        this.projectsRootChooser.setText(this.getBuilder().getFileToImport().replace('/', File.separatorChar));
-        this.projectsRootChooser.getTextField().selectAll();
+        this.storeModuleFilesInChooser.setText(
+            new File(
+                this.getBuilder().getFileToImport(), HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
+            ).getAbsolutePath()
+        );
     }
 
     @Override
     public boolean validate() throws ConfigurationException {
-        if (super.validate()) {
-            this.getContext().setRootProjectDirectory(new File(this.projectsRootChooser.getText()));
-
-            return !this.getContext()
-                        .getHybrisProjectDescriptor()
-                        .getFoundModules()
-                        .isEmpty();
+        if (!super.validate()) {
+            return false;
         }
 
-        return false;
+        if (this.storeModuleFilesInCheckBox.isSelected()) {
+            final File moduleFilesDirectory = new File(this.storeModuleFilesInChooser.getText());
+            if (!moduleFilesDirectory.exists()) {
+                return moduleFilesDirectory.mkdirs();
+            }
+        }
+
+        return true;
     }
 
     public AbstractHybrisProjectImportBuilder getContext() {

@@ -51,6 +51,8 @@ public final class HybrisConstants {
 
     public static final String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
 
+    public static final String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
+
     private HybrisConstants() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
     }

@@ -49,7 +49,14 @@ public interface HybrisProjectDescriptor {
     @Nullable
     File getRootDirectory();
 
-    void setRootDirectoryAndScanForModules(@Nullable File rootDirectory,
+    void clear();
+
+    @Nullable
+    File getModulesFilesDirectory();
+
+    void setModulesFilesDirectory(@Nullable File modulesFilesDirectory);
+
+    void setRootDirectoryAndScanForModules(@NotNull File rootDirectory,
                                            @Nullable Processor<File> progressListenerProcessor,
                                            @Nullable Processor<List<File>> errorsProcessor);
 

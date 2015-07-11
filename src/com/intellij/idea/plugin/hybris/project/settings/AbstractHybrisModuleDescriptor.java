@@ -87,6 +87,13 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     @Override
     public File getIdeaModuleFile() {
+        if (null != this.rootProjectDescriptor.getModulesFilesDirectory()) {
+            return new File(
+                this.rootProjectDescriptor.getModulesFilesDirectory(),
+                this.getName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION
+            );
+        }
+
         return new File(this.moduleRootDirectory, this.getName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
     }
 

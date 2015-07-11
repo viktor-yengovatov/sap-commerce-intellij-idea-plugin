@@ -18,7 +18,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris Integration</name>
-    <version>2.1</version>
+    <version>2.2</version>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
@@ -83,7 +83,7 @@
 
           <br/>
           <br/>
-          <b>Contribution guidelines</b>
+          <b>Contribution guidelines:</b>
           <br/>
           - <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment">How To Configure Project Environment</a>
           <br/>
@@ -95,7 +95,7 @@
 
           <br/>
           <br/>
-          Developers:
+          <b>Developers:</b>
           <br/>
           - Alexander Bartash
           <br/>
@@ -107,6 +107,10 @@
 
     <change-notes>
         <![CDATA[
+          2.2:
+          <br/> - Ability to specify a directory where all "*.iml" module files will be stored has been implemented.
+          <br/>
+          <br/>
           2.1:
           <br/> - Enhanced project view tree. Rarely used elements have been grouped into "junk" virtual folder.
           <br/>

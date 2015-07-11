@@ -70,7 +70,7 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
     @Override
     public void onCancel() {
-        this.projectImportParameters.setRootDirectoryAndScanForModules(null, null, null);
+        this.projectImportParameters.clear();
     }
 
     protected class ProgressIndicatorUpdaterProcessor implements Processor<File> {

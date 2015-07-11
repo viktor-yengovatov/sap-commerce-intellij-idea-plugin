@@ -25,10 +25,12 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,6 +65,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected final Lock lock = new ReentrantLock();
     @Nullable
     protected File rootDirectory;
+    @Nullable
+    protected File modulesFilesDirectory;
     protected boolean openProjectSettingsAfterImport;
 
     public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
@@ -122,22 +126,38 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public void setRootDirectoryAndScanForModules(@Nullable final File rootDirectory,
+    public void clear() {
+        this.rootDirectory = null;
+        this.foundModules.clear();
+        this.modulesChosenForImport.clear();
+    }
+
+    @Nullable
+    @Override
+    public File getModulesFilesDirectory() {
+        return this.modulesFilesDirectory;
+    }
+
+    @Override
+    public void setModulesFilesDirectory(@Nullable final File modulesFilesDirectory) {
+        this.modulesFilesDirectory = modulesFilesDirectory;
+    }
+
+    @Override
+    public void setRootDirectoryAndScanForModules(@NotNull final File rootDirectory,
                                                   @Nullable final Processor<File> progressListenerProcessor,
                                                   @Nullable final Processor<List<File>> errorsProcessor) {
+        Validate.notNull(rootDirectory);
+
         this.rootDirectory = rootDirectory;
 
-        if (null == rootDirectory) {
-            this.foundModules.clear();
-        } else {
-            try {
-                this.scanDirectoryForHybrisModules(rootDirectory, progressListenerProcessor, errorsProcessor);
-            } catch (InterruptedException e) {
-                LOG.warn(e);
+        try {
+            this.scanDirectoryForHybrisModules(rootDirectory, progressListenerProcessor, errorsProcessor);
+        } catch (InterruptedException e) {
+            LOG.warn(e);
 
-                this.rootDirectory = null;
-                this.foundModules.clear();
-            }
+            this.rootDirectory = null;
+            this.foundModules.clear();
         }
     }
 
@@ -159,14 +179,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         for (Module module : ModuleManager.getInstance(project).getModules()) {
             try {
-                final VirtualFile moduleFile = module.getModuleFile();
-                if (null == moduleFile) {
-                    LOG.error("Can not find module file for module: " + module.getName());
+                final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
+                if (ArrayUtils.isEmpty(contentRoots)) {
+                    LOG.error("Can not find module root directory for module: " + module.getName());
                     continue;
                 }
 
                 final HybrisModuleDescriptor moduleDescriptor = HybrisProjectUtils.MODULE_DESCRIPTOR_FACTORY.createDescriptor(
-                    VfsUtil.virtualToIoFile(moduleFile.getParent()), this
+                    VfsUtil.virtualToIoFile(contentRoots[0]), this
                 );
 
                 existingModules.add(moduleDescriptor);
