@@ -67,6 +67,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File rootDirectory;
     @Nullable
     protected File modulesFilesDirectory;
+    @Nullable
+    protected File sourceCodeZip;
     protected boolean openProjectSettingsAfterImport;
 
     public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
@@ -141,6 +143,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setModulesFilesDirectory(@Nullable final File modulesFilesDirectory) {
         this.modulesFilesDirectory = modulesFilesDirectory;
+    }
+
+    @Nullable
+    @Override
+    public File getSourceCodeZip() {
+        return sourceCodeZip;
+    }
+
+    @Override
+    public void setSourceCodeZip(@Nullable final File sourceCodeZip) {
+        this.sourceCodeZip = sourceCodeZip;
     }
 
     @Override

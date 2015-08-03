@@ -40,6 +40,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private TextFieldWithBrowseButton storeModuleFilesInChooser;
     private JCheckBox storeModuleFilesInCheckBox;
     private JLabel storeModuleFilesInLabel;
+    private TextFieldWithBrowseButton sourceCodeZipFilesInChooser;
+    private JLabel sourceCodeZip;
+    private JTextField projectNameTextField;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -57,6 +60,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 storeModuleFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected());
             }
         });
+
+        this.sourceCodeZipFilesInChooser.addBrowseFolderListener(
+            HybrisI18NBundleUtils.message("hybris.import.label.select.hybris.src.file"),
+            "",
+            null,
+            FileChooserDescriptorFactory.createSingleFileDescriptor()
+        );
+
     }
 
     @Override
@@ -73,6 +84,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 new File(this.storeModuleFilesInChooser.getText())
             );
         }
+
+        this.getContext().getHybrisProjectDescriptor().setSourceCodeZip(
+            new File(this.sourceCodeZipFilesInChooser.getText())
+        );
+
+        getWizardContext().setProjectName(projectNameTextField.getText());
     }
 
     @Override
@@ -82,6 +99,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 this.getBuilder().getFileToImport(), HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
             ).getAbsolutePath()
         );
+        projectNameTextField.setText(getWizardContext().getProjectName());
     }
 
     @Override
