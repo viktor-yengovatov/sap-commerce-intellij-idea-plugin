@@ -160,4 +160,10 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             )
         );
     }
+
+    @Override
+    public boolean isPreselected() {
+        //TODO check if this extension name is stated in hybris/config/localextensions.xml
+        return getRelativePath().contains("bin"+File.separator+"custom");
+    }
 }

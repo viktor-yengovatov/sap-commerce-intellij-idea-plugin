@@ -57,4 +57,9 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
             new File(this.getRootDirectory(), HybrisConstants.CONFIG_LICENCE_DIRECTORY), true
         ));
     }
+
+    @Override
+    public boolean isPreselected() {
+        return getRelativePath().endsWith(File.separator+"config") && !getRelativePath().contains("bin"+File.separator);
+    }
 }

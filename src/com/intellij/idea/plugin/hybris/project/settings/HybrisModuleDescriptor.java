@@ -58,4 +58,6 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     List<JavaLibraryDescriptor> getLibraryDescriptors();
 
+    boolean isPreselected();
+
 }

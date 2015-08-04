@@ -26,18 +26,21 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.ui.UIUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
 public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
-
+    final static int COLUMN_WIDTH = 300;
     public SelectHybrisImportedProjectsStep(final WizardContext context) {
         super(context);
 
@@ -58,6 +61,17 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
                 fileChooser.repaint();
             }
         });
+    }
+
+    @Override
+    public void updateStep() {
+        super.updateStep();
+        for (int index=0; index<fileChooser.getElementCount(); index++){
+            HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
+            if (hybrisModuleDescriptor.isPreselected()) {
+                fileChooser.setElementMarked(hybrisModuleDescriptor, true);
+            }
+        }
     }
 
     @Override
@@ -106,15 +120,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     @Override
     protected String getElementText(final HybrisModuleDescriptor item) {
-
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(item.getName());
-        builder.append("         (");
-        builder.append(item.getRelativePath());
-        builder.append(')');
-
-        return builder.toString();
+        return getModuleNameAndPath(item);
     }
 
     @Override
@@ -148,15 +154,29 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         return true;
     }
 
+    /*
+     * Aligned text to COLUMN_WIDTH. It is not precise by space pixel width (4pixels)
+     */
     @NotNull
     private String getModuleNameAndPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         Validate.notNull(moduleDescriptor);
 
         final StringBuilder builder = new StringBuilder();
-
         builder.append(moduleDescriptor.getName());
-        builder.append(' ');
-        builder.append('(');
+
+        final Font font = getComponent().getFont();
+        final BufferedImage img = UIUtil.createImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        final FontMetrics fm = img.getGraphics().getFontMetrics(font);
+
+        final int currentWidth = fm.stringWidth(builder.toString());
+        final int spaceWidth = fm.charWidth(' ');
+        final int spaceCount = (COLUMN_WIDTH - currentWidth) / spaceWidth;
+
+        for (int index=0; index<spaceCount; index++) {
+            builder.append(' ');
+        }
+
+        builder.append(" (");
         builder.append(moduleDescriptor.getRelativePath());
         builder.append(')');
 

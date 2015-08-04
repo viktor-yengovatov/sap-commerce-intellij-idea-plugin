@@ -103,4 +103,9 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
 
         return Collections.unmodifiableList(moduleDescriptors);
     }
+
+    @Override
+    public boolean isPreselected() {
+        return true;
+    }
 }
