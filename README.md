@@ -1,20 +1,21 @@
 ## Licence ##
 
-[Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+[GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
 
-Copyright 2015 Alexander Bartash <AlexanderBartash@gmail.com>
+Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
-    http://www.apache.org/licenses/LICENSE-2.0
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Lesser General Public License for more details.
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+You should have received a copy of the GNU Lesser General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## Hybris Integration Intellij IDEA Plugin ##
 
@@ -33,6 +34,8 @@ You can install this plugin to your IDE directly from the [repository](https://p
 
 ## Contribution guidelines ##
 
+* Please read [Contributor License Agreement](http://developercertificate.org/)
+* Be sure to include into your patch, pull request or commit message the following line: "Signed-off-by: Your Real Name <joe.smith@email.com>" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
 * [How To Configure Project Environment](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment)
 * Available tasks [here](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issues?status=new&status=open) also you can suggest new features.
 * Also you can find useful information in our [wiki](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home).
