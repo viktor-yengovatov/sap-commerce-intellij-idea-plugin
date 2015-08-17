@@ -1,0 +1,286 @@
+<!--
+  ~ Copyright 2015 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<idea-plugin version="2">
+
+    <id>ccom.intellij.idea.plugin.hybris.impex</id>
+    <name>Hybris Integration</name>
+    <version>2.2</version>
+
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.javaee</depends>
+    <depends>com.intellij.spring</depends>
+    <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
+
+    <vendor email="AlexanderBartash@gmail.com" url="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">Alexander Bartash</vendor>
+
+    <description>
+        <![CDATA[
+          <b>Import of Hybris extensions to Intellij IDEA:</b>
+          <br/>
+          - Automatic module dependency management.
+          <br/>
+          - Automatic classpath configuration.
+
+          <br/>
+          <br/>
+          <b>Enhanced project view tree:</b>
+          <br/>
+          - Rarely used elements are grouped into "junk" virtual folder.
+
+          <br/>
+          <br/>
+          <b>Editor for impex files:</b>
+
+          <br/>
+          - Syntax highlighting and errors indication for Hybris impex files.
+
+          <br/>
+          - Selected column name highlighting.
+
+          <br/>
+          - Automatic alignment into columns via "Reformat code".
+
+          <br/>
+          - Code folding to improve readability.
+
+          <br/>
+          - Autocompletion within the header for modifier name and value. *
+
+          <br/>
+          - Autocompletion for hybris types based on the current IntelliJ-Project (hybris coretypes + your custom types). *
+
+          <br/>
+          - Autocompletion for hybris attributes based on the current IntelliJ-Project (hybris coretypes + your custom types). *
+
+          <br/>
+          <br/>
+          * Due autocompletion based on the IntelliJ-Class-Index this feature is only available after the IntelliJ-indexing
+          process is finished. The indexing is automatically run on the first completion-action. After an *-item.xml change or
+          adding a new hybris-extension - and ant install - you can rerun the "indexing" mechanism with "Tools/Index [y]-types".
+
+
+          <br/>
+          <br/>
+          <b>Guides:</b>
+          <br/>
+          - <a href="https://www.youtube.com/watch?v=_wVbowe39GM">How to import Hybris project using Intellij IDEA "Hybris Integration" plugin</a>
+          <br/>
+          - <a href="https://www.youtube.com/watch?v=I-YYKD0OSyY">How to use HotSwap in Hybris with Oracle JDK and DCEVM OpenJDK</a>
+          <br/>
+          Visit <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin">our page</a> in BitBucket for more details.
+
+          <br/>
+          <br/>
+          <b>Contribution guidelines:</b>
+          <br/>
+          - <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment">How To Configure Project Environment</a>
+          <br/>
+          - Available tasks <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issues?status=new&status=open">here</a> also you can suggest new features.
+          <br/>
+          - Also you can find useful information in our <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">wiki</a>.
+          <br/>
+          - For additional questions feel free to send me an email.
+
+          <br/>
+          <br/>
+          <b>Developers:</b>
+          <br/>
+          - Alexander Bartash
+          <br/>
+          - Vlad Bozhenok
+          <br/>
+          - Markus Priegl
+      ]]>
+    </description>
+
+    <change-notes>
+        <![CDATA[
+          2.2:
+          <br/> - Ability to specify a directory where all "*.iml" module files will be stored has been implemented.
+          <br/>
+          <br/>
+          2.1:
+          <br/> - Enhanced project view tree. Rarely used elements have been grouped into "junk" virtual folder.
+          <br/>
+          <br/>
+          2.0:
+          <br/> - Import of Hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
+          <br/>
+          <br/>
+          1.8:
+          <br/> - Plugin has been ported to WebStorm and other IDEA based IDEs. Various bugfixes in the impex lexer and parser has been made to improve stability.
+          <br/>
+          <br/>
+          1.7.4.1:
+          <br/> - Header name highlighting for JDK 1.7 has been fixed.
+          <br/>
+          <br/>
+          1.7.4:
+          <br/> - New smart code folding strategy has been implemented. Plugin settings with ability to disable code folding has been added to the IDEA setting dialog.
+          <br/>
+          <br/>
+          1.7.3:
+          <br/> - Stability of header name highlighting has been improved.
+          <br/>
+          <br/>
+          1.7.2.1:
+          <br/> - Compatibility with Idea 14 fixed.
+          <br/>
+          <br/>
+          1.7.2:
+          <br/> - Header name highlighting has been fixed.
+          <br/>
+          <br/>
+          1.7.1:
+          <br/> - Backward compatibility with Idea 13 fixed.
+          <br/>
+          <br/>
+          1.7:
+          <br/> - Selected column name highlighting.
+          <br/>
+          <br/>
+          1.6:
+          <br/> - Syntax validation and errors highlighting.
+          <br/>
+          <br/>
+          1.5:
+          <br/> - Square and round brackets folding support.
+          <br/>
+          <br/>
+          1.4:
+          <br/> - Implemented automatic alignment into columns via "Reformat code" feature.
+          <br/>
+          <br/>
+          1.3.3:
+          <br/> - Fixes for reported syntax highlighting bugs.
+          <br/>
+          <br/>
+          1.3.2:
+          <br/> - Various lexer improvements. Macros syntax highlighting fixed.
+          <br/>
+          <br/>
+          1.3.1:
+          <br/> - Added autocompletion for Hybris type system based on ItemModel-inheritance. (Thanks to Markus Priegl)
+          <br/>
+          <br/>
+          1.3:
+          <br/> - Added simple code completion within the header for modifier name and value. (Thanks to Markus Priegl)
+          <br/>
+          <br/>
+          1.2.2:
+          <br/> - Header related modifier value detection rules have been fixed.
+          <br/>
+          <br/>
+          1.2.1:
+          <br/> - Character '-' added to allowed chars for an attribute name.
+          <br/> - Ignore case option has been enabled at jFlex.
+          <br/> - Colours has been fixed a bit.
+          <br/>
+          <br/>
+          1.2:
+          <br/> - Lexical analyzer has been improved a lot.
+          <br/> - Correct colours configuration implemented for the Default and Darcula color schemes.
+          <br/> - The plugin was rebuilt for JDK 1.6 as idea requires 1.6+.
+          <br/>
+          <br/>
+          1.1.1:
+          <br/>- The plugin was rebuilt for JDK 1.5.
+          <br/>
+          <br/>
+          1.1:
+          <br/>- The plugin was rebuilt for JDK 1.6_45.
+      ]]>
+    </change-notes>
+
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="135"/>
+
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.idea.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Core elements -->
+        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
+
+        <lang.parserDefinition language="Impex"
+                               implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
+
+        <lang.syntaxHighlighterFactory key="Impex"
+                                       implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+
+        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
+
+        <lang.commenter language="Impex"
+                        implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
+
+        <lang.formatter language="Impex"
+                        implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
+
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+
+        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
+
+        <lang.foldingBuilder language="Impex"
+                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
+
+        <applicationConfigurable id="ImpexPlugin.ImpexConfigurable"
+                                 instance="com.intellij.idea.plugin.hybris.impex.settings.ImpexConfigurable"/>
+
+
+        <!-- Header name highlighting components -->
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
+
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
+    </extensions>
+
+    <application-components>
+        <component>
+            <implementation-class>
+                com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderHighlighterComponent
+            </implementation-class>
+        </component>
+        <component>
+            <interface-class>
+                com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsManager
+            </interface-class>
+            <implementation-class>
+                com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsManagerComponent
+            </implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+    </project-components>
+
+    <actions>
+        <action id="ImpexPlugin.IndexHybrisItemTypes"
+                class="com.intellij.idea.plugin.hybris.impex.indexer.IndexItemTypesAction"
+                text="Index [y]-types"
+                description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+
+</idea-plugin>
