@@ -26,12 +26,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
+ * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
-public interface SpringConfigurator {
+public class SpringConfiguratorAdapter implements SpringConfigurator {
 
-    void findSpringConfiguration(@NotNull List<HybrisModuleDescriptor> modulesChosenForImport);
+    @Override
+    public void findSpringConfiguration(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
+        // Do nothing
+    }
 
-    void configureDependencies(@NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-                               @NotNull ModifiableModuleModel rootProjectModifiableModuleModel);
+    @Override
+    public void configureDependencies(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+                                      @NotNull final ModifiableModuleModel rootProjectModifiableModuleModel) {
+        // Do nothing
+    }
 }

@@ -18,20 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
-import com.intellij.openapi.module.ModifiableModuleModel;
+import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
+ * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
-public interface SpringConfigurator {
+public class FacetConfiguratorAdapter implements FacetConfigurator {
 
-    void findSpringConfiguration(@NotNull List<HybrisModuleDescriptor> modulesChosenForImport);
-
-    void configureDependencies(@NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-                               @NotNull ModifiableModuleModel rootProjectModifiableModuleModel);
+    @Override
+    public void configure(@NotNull final ModifiableFacetModel modifiableFacetModel,
+                          @NotNull final HybrisModuleDescriptor moduleDescriptor,
+                          @NotNull final Module javaModule) {
+        // do nothing
+    }
 }

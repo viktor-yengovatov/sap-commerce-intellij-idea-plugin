@@ -18,20 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
-import com.intellij.openapi.module.ModifiableModuleModel;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
 /**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
+ * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
-public interface SpringConfigurator {
+public class UltimateEditionConfiguratorFactory extends CommunityEditionConfiguratorFactory implements ConfiguratorFactory {
 
-    void findSpringConfiguration(@NotNull List<HybrisModuleDescriptor> modulesChosenForImport);
+    @Override
+    public FacetConfigurator getFacetConfigurator() {
+        return new DefaultFacetConfigurator();
+    }
 
-    void configureDependencies(@NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-                               @NotNull ModifiableModuleModel rootProjectModifiableModuleModel);
+    @Override
+    public SpringConfigurator getSpringConfigurator() {
+        return new NoInheritanceSpringConfigurator();
+    }
 }

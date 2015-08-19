@@ -18,13 +18,17 @@
 
 <idea-plugin version="2">
 
-    <id>ccom.intellij.idea.plugin.hybris.impex</id>
+    <id>com.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris Integration</name>
     <version>2.2</version>
 
+    <extensionPoints>
+        <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"></extensionPoint>
+    </extensionPoints>
+
     <depends>com.intellij.modules.lang</depends>
-    <depends>com.intellij.javaee</depends>
-    <depends>com.intellij.spring</depends>
+
+    <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
 
     <vendor email="AlexanderBartash@gmail.com" url="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">Alexander Bartash</vendor>

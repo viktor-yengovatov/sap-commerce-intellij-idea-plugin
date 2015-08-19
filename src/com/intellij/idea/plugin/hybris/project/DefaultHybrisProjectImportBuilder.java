@@ -19,16 +19,28 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.facet.ModifiableFacetModel;
-import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.settings.*;
+import com.intellij.idea.plugin.hybris.project.configurators.CommunityEditionConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
+import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.extensions.ExtensionPoint;
+import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -36,7 +48,6 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
@@ -71,21 +82,21 @@ import java.util.concurrent.locks.ReentrantLock;
 public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
-
-    protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
-
-    protected final LibRootsConfigurator libRootsConfigurator = new DefaultLibRootsConfigurator();
-    protected final FacetConfigurator facetConfigurator = new DefaultFacetConfigurator();
-    protected final ContentRootConfigurator contentRootConfigurator = new HybrisContentRootConfigurator();
-    protected final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = new DefaultCompilerOutputPathsConfigurator();
-    protected final ModulesDependenciesConfigurator modulesDependenciesConfigurator = new DefaultModulesDependenciesConfigurator();
-    protected final SpringConfigurator springConfigurator = new NoDependencySpringConfigurator();
-
     protected final Lock lock = new ReentrantLock();
 
     @Nullable
     @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
+
+
+    public ConfiguratorFactory getConfiguratorFactory() {
+        ExtensionPoint ep = Extensions.getRootArea().getExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID);
+        ConfiguratorFactory ultimateConfiguratorFactory = (ConfiguratorFactory) ep.getExtension();
+        if (ultimateConfiguratorFactory != null) {
+            return ultimateConfiguratorFactory;
+        }
+        return new CommunityEditionConfiguratorFactory();
+    }
 
     @Override
     public void setRootProjectDirectory(@NotNull final File directory) {
@@ -146,6 +157,16 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                                final ModifiableModuleModel model,
                                final ModulesProvider modulesProvider,
                                final ModifiableArtifactModel artifactModel) {
+
+        final ConfiguratorFactory configuratorFactory = getConfiguratorFactory();
+        final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
+        final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
+        final FacetConfigurator facetConfigurator = configuratorFactory.getFacetConfigurator();
+        final ContentRootConfigurator contentRootConfigurator = configuratorFactory.getContentRootConfigurator();
+        final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = configuratorFactory.getCompilerOutputPathsConfigurator();
+        final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
+        final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
+
         final List<Module> result = new ArrayList<Module>();
 
         if (this.getHybrisProjectDescriptor().getModulesChosenForImport().isEmpty()) {
@@ -179,23 +200,28 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 }
             }
 
-            final ModifiableRootModel modifiableRootModel = this.modifiableModelsProvider.getModuleModifiableModel(
+            final ModifiableRootModel modifiableRootModel = modifiableModelsProvider.getModuleModifiableModel(
                 javaModule
             );
-            final ModifiableFacetModel modifiableFacetModel = this. modifiableModelsProvider.getFacetModifiableModel(
+            final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getFacetModifiableModel(
                 javaModule
             );
 
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
             modifiableRootModel.inheritSdk();
 
-            this.libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            this.contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            this.compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            this.facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule);
+            libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule);
 
-            this.commitFacet(javaModule, modifiableFacetModel);
-            this.commitModule(modifiableRootModel);
+            ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                @Override
+                public void run() {
+                    modifiableModelsProvider.commitFacetModifiableModel(javaModule, modifiableFacetModel);
+                    modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
+                }
+            });
 
             result.add(javaModule);
         }
@@ -204,8 +230,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             this.commitRootModule(rootProjectModifiableModel);
         }
 
-        this.modulesDependenciesConfigurator.configure(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
-        this.springConfigurator.configureDependencies(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
+        modulesDependenciesConfigurator.configure(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
+        springConfigurator.configureDependencies(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
 
         this.cleanup();
 
@@ -239,29 +265,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 LOG.error("Can not remove old module files.", e);
             }
         }
-    }
-
-    protected void commitModule(@NotNull final ModifiableRootModel modifiableRootModel) {
-        Validate.notNull(modifiableRootModel);
-
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
-            }
-        });
-    }
-
-    protected void commitFacet(final Module module, @NotNull final ModifiableFacetModel modifiableFacetModel) {
-        Validate.notNull(module);
-        Validate.notNull(modifiableFacetModel);
-
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                modifiableModelsProvider.commitFacetModifiableModel(module, modifiableFacetModel);
-            }
-        });
     }
 
     protected void commitRootModule(@NotNull final ModifiableModuleModel rootProjectModifiableModuleModel) {

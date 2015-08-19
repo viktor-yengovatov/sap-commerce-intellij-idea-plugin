@@ -18,20 +18,24 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
-import com.intellij.openapi.module.ModifiableModuleModel;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import com.intellij.openapi.roots.ModifiableModelsProvider;
 
 /**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
+ * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
-public interface SpringConfigurator {
+public interface ConfiguratorFactory {
 
-    void findSpringConfiguration(@NotNull List<HybrisModuleDescriptor> modulesChosenForImport);
+    FacetConfigurator getFacetConfigurator();
 
-    void configureDependencies(@NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-                               @NotNull ModifiableModuleModel rootProjectModifiableModuleModel);
+    SpringConfigurator getSpringConfigurator();
+
+    ModulesDependenciesConfigurator getModulesDependenciesConfigurator();
+
+    CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator();
+
+    ContentRootConfigurator getContentRootConfigurator();
+
+    LibRootsConfigurator getLibRootsConfigurator();
+
+    ModifiableModelsProvider getModifiableModelsProvider();
 }
