@@ -252,7 +252,7 @@
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
 
         <applicationConfigurable id="ImpexPlugin.ImpexConfigurable"
-                                 instance="com.intellij.idea.plugin.hybris.impex.settings.ImpexConfigurable"/>
+                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisIntegrationConfigurable"/>
 
 
         <!-- Header name highlighting components -->
@@ -271,10 +271,10 @@
         </component>
         <component>
             <interface-class>
-                com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsManager
+                com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager
             </interface-class>
             <implementation-class>
-                com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsManagerComponent
+                com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManagerComponent
             </implementation-class>
         </component>
     </application-components>

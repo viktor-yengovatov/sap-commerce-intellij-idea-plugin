@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.settings;
+package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.Configurable;
@@ -31,61 +31,61 @@ import javax.swing.*;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexConfigurable implements Configurable {
+public class HybrisIntegrationConfigurable implements Configurable {
 
-    protected final ImpexSettingsForm settingsForm = new ImpexSettingsForm();
+    protected final HybrisIntegrationSettingsForm settingsForm = new HybrisIntegrationSettingsForm();
 
     @Nls
     @Override
     public String getDisplayName() {
-        return "Impex";
+        return "Hybris Integration";
     }
 
     @Nullable
     @Override
     public String getHelpTopic() {
-        return "Impex plugin configuration.";
+        return "Hybris Integration plugin configuration.";
     }
 
     @Nullable
     @Override
     public JComponent createComponent() {
-        final ImpexSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-                ImpexSettingsManager.class
+        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
+            HybrisIntegrationSettingsManager.class
         );
 
-        this.settingsForm.setData(settingsManager.getImpexSettingsData());
+        this.settingsForm.setData(settingsManager.getHybrisIntegrationSettingsData());
 
         return this.settingsForm.getMainPanel();
     }
 
     @Override
     public boolean isModified() {
-        final ImpexSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-                ImpexSettingsManager.class
+        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
+            HybrisIntegrationSettingsManager.class
         );
 
-        return this.settingsForm.isModified(settingsManager.getImpexSettingsData());
+        return this.settingsForm.isModified(settingsManager.getHybrisIntegrationSettingsData());
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        final ImpexSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-                ImpexSettingsManager.class
+        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
+            HybrisIntegrationSettingsManager.class
         );
 
-        this.settingsForm.getData(settingsManager.getImpexSettingsData());
+        this.settingsForm.getData(settingsManager.getHybrisIntegrationSettingsData());
 
-        settingsManager.saveImpexSettingsData();
+        settingsManager.saveHybrisIntegrationSettingsData();
     }
 
     @Override
     public void reset() {
-        final ImpexSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-                ImpexSettingsManager.class
+        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
+            HybrisIntegrationSettingsManager.class
         );
 
-        this.settingsForm.setData(settingsManager.getImpexSettingsData());
+        this.settingsForm.setData(settingsManager.getHybrisIntegrationSettingsData());
     }
 
     @Override

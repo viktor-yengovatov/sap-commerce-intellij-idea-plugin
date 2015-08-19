@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import com.intellij.spring.facet.SpringFileSet;
@@ -48,16 +50,26 @@ public class NoInheritanceSpringConfigurator extends DefaultSpringConfigurator {
             return;
         }
 
-        for (HybrisModuleDescriptor parentModuleDescriptor : moduleDescriptor.getDependenciesPlainList()) {
-            final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, parentModuleDescriptor.getName());
-            if (parentFileSet == null) {
-                continue;
-            }
+        if (moduleDescriptor.isPreselected() || !isLimitedSpringConfig()) {
+            for (HybrisModuleDescriptor parentModuleDescriptor : moduleDescriptor.getDependenciesPlainList()) {
+                final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, parentModuleDescriptor.getName());
+                if (parentFileSet == null) {
+                    continue;
+                }
 
-            for (VirtualFilePointer filePointer: parentFileSet.getXmlFiles()) {
-                springFileSet.addFile(filePointer.getFile());
+                for (VirtualFilePointer filePointer : parentFileSet.getXmlFiles()) {
+                    springFileSet.addFile(filePointer.getFile());
+                }
             }
         }
         commitFacetModel(moduleDescriptor, moduleMap, modifiableFacetModelMap);
+    }
+
+    private boolean isLimitedSpringConfig() {
+        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
+            HybrisIntegrationSettingsManager.class
+        );
+
+        return settingsManager.getHybrisIntegrationSettingsData().isLimitedSpringConfig();
     }
 }

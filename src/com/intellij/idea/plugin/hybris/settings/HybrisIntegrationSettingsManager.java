@@ -16,34 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.settings;
+package com.intellij.idea.plugin.hybris.settings;
 
-import com.intellij.ide.util.PropertyName;
+import org.jetbrains.annotations.NotNull;
 
-public class ImpexSettingsData {
+/**
+ * Created 19:58 29 March 2015
+ *
+ * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ */
+public interface HybrisIntegrationSettingsManager {
 
-    @PropertyName("foldingEnabled")
-    private boolean foldingEnabled = true;
+    @NotNull
+    HybrisIntegrationSettingsData getHybrisIntegrationSettingsData();
 
-    @PropertyName("useSmartFolding")
-    private boolean useSmartFolding = true;
-
-    public ImpexSettingsData() {
-    }
-
-    public boolean isFoldingEnabled() {
-        return foldingEnabled;
-    }
-
-    public void setFoldingEnabled(final boolean foldingEnabled) {
-        this.foldingEnabled = foldingEnabled;
-    }
-
-    public boolean isUseSmartFolding() {
-        return useSmartFolding;
-    }
-
-    public void setUseSmartFolding(final boolean foldingEnabled) {
-        this.useSmartFolding = foldingEnabled;
-    }
+    void saveHybrisIntegrationSettingsData();
 }

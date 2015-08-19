@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.settings;
+package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.components.ApplicationComponent;
@@ -27,9 +27,9 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexSettingsManagerComponent implements ApplicationComponent, ImpexSettingsManager {
+public class HybrisIntegrationSettingsManagerComponent implements ApplicationComponent, HybrisIntegrationSettingsManager {
 
-    protected final ImpexSettingsData settingsData = new ImpexSettingsData();
+    protected final HybrisIntegrationSettingsData settingsData = new HybrisIntegrationSettingsData();
 
     @Override
     public void initComponent() {
@@ -49,12 +49,12 @@ public class ImpexSettingsManagerComponent implements ApplicationComponent, Impe
 
     @NotNull
     @Override
-    public ImpexSettingsData getImpexSettingsData() {
+    public HybrisIntegrationSettingsData getHybrisIntegrationSettingsData() {
         return this.settingsData;
     }
 
     @Override
-    public void saveImpexSettingsData() {
+    public void saveHybrisIntegrationSettingsData() {
         PropertiesComponent.getInstance().saveFields(this.settingsData);
     }
 }

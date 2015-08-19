@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.settings;
+package com.intellij.idea.plugin.hybris.settings;
 
 import javax.swing.*;
 
@@ -25,27 +25,33 @@ import javax.swing.*;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexSettingsForm {
+public class HybrisIntegrationSettingsForm {
 
     private JCheckBox enableFoldingCheckBox;
     private JCheckBox useSmartFoldingCheckBox;
+    private JCheckBox limitedSpringConfigComboBox;
     private JPanel mainPanel;
 
-    public void setData(final ImpexSettingsData data) {
+    public void setData(final HybrisIntegrationSettingsData data) {
         enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
         useSmartFoldingCheckBox.setSelected(data.isUseSmartFolding());
+        limitedSpringConfigComboBox.setSelected(data.isLimitedSpringConfig());
     }
 
-    public void getData(final ImpexSettingsData data) {
+    public void getData(final HybrisIntegrationSettingsData data) {
         data.setFoldingEnabled(enableFoldingCheckBox.isSelected());
         data.setUseSmartFolding(useSmartFoldingCheckBox.isSelected());
+        data.setLimitedSpringConfig(limitedSpringConfigComboBox.isSelected());
     }
 
-    public boolean isModified(final ImpexSettingsData data) {
+    public boolean isModified(final HybrisIntegrationSettingsData data) {
         if (enableFoldingCheckBox.isSelected() != data.isFoldingEnabled()) {
             return true;
         }
         if (useSmartFoldingCheckBox.isSelected() != data.isUseSmartFolding()) {
+            return true;
+        }
+        if (limitedSpringConfigComboBox.isSelected() != data.isLimitedSpringConfig()) {
             return true;
         }
         return false;

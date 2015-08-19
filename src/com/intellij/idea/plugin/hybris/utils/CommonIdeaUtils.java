@@ -37,11 +37,6 @@ public final class CommonIdeaUtils {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    @Nullable
-    public static Project getCurrentProject() {
-        return CommonDataKeys.PROJECT.getData(DataManager.getInstance().getDataContext());
-    }
-
     public static boolean isTypingActionInProgress() {
         return StringUtils.equals(
                 CommandProcessor.getInstance().getCurrentCommandName(),
