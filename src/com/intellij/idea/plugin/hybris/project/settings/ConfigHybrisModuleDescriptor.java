@@ -34,6 +34,8 @@ import java.util.Set;
  */
 public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
+    private boolean preselected;
+
     public ConfigHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
                                         @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
@@ -62,6 +64,10 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
 
     @Override
     public boolean isPreselected() {
-        return getRelativePath().endsWith(File.separator+"config") && !getRelativePath().contains("bin"+File.separator);
+        return preselected;
+    }
+
+    public void setPreselected(final boolean preselected) {
+        this.preselected = preselected;
     }
 }

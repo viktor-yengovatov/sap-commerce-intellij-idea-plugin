@@ -33,6 +33,7 @@ public final class HybrisConstants {
     public static final String PLATFORM_EXTENSION_NAME = "platform";
     public static final String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     public static final String CONFIG_EXTENSION_NAME = "config";
+    public static final String CONFIG_RELATIVE_PATH = "/../../"+CONFIG_EXTENSION_NAME;
     public static final String LIB_DIRECTORY = "lib";
     public static final String BIN_DIRECTORY = "bin";
     public static final String RESOURCES_DIRECTORY = "resources";

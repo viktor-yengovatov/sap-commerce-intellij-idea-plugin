@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings.jaxb;
+package com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,70 +25,70 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Configures metadata.
+ * Configures the set of extensions required by the extension at compile time.
  * <p/>
- * <p>Java class for metaType complex type.
+ * <p>Java class for requires-extensionType complex type.
  * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p/>
  * <pre>
- * &lt;complexType name="metaType">
+ * &lt;complexType name="requires-extensionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="key" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="value" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="version" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "metaType")
-public class MetaType {
+@XmlType(name = "requires-extensionType")
+public class RequiresExtensionType {
 
     @XmlAttribute(required = true)
-    protected String key;
-    @XmlAttribute(required = true)
-    protected String value;
+    protected String name;
+    @XmlAttribute
+    protected String version;
 
     /**
-     * Gets the value of the key property.
+     * Gets the value of the name property.
      *
      * @return possible object is
      * {@link String }
      */
-    public String getKey() {
-        return key;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the key property.
+     * Sets the value of the name property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setKey(String value) {
-        this.key = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the version property.
      *
      * @return possible object is
      * {@link String }
      */
-    public String getValue() {
-        return value;
+    public String getVersion() {
+        return version;
     }
 
     /**
-     * Sets the value of the value property.
+     * Sets the value of the version property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setVersion(String value) {
+        this.version = value;
     }
 
 }

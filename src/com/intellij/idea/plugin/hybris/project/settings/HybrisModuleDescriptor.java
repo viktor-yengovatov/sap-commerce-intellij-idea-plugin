@@ -62,6 +62,10 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     boolean isPreselected();
 
+    boolean isInLocalExtensions();
+
+    void setInLocalExtensions(boolean inLocalExtensions);
+
     @NotNull
     Set<String> getSpringFileSet();
 

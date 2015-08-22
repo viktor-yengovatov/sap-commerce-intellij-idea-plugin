@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.ExtensionInfo;
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.RequiresExtensionType;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
@@ -163,9 +163,12 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
         );
     }
 
+    public boolean isInCustomDir() {
+        return getRelativePath().contains("bin"+File.separator+"custom");
+    }
+
     @Override
     public boolean isPreselected() {
-        //TODO check if this extension name is stated in hybris/config/localextensions.xml
-        return getRelativePath().contains("bin"+File.separator+"custom");
+        return isInLocalExtensions() && isInCustomDir();
     }
 }

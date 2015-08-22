@@ -48,6 +48,8 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     protected Set<String> springFileSet = new HashSet<String>();
 
+    private boolean inLocalExtensions;
+
     public AbstractHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
                                           @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
@@ -158,6 +160,16 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public void addSpringFile(@NotNull final String springFile) {
         this.springFileSet.add(springFile);
+    }
+
+    @Override
+    public boolean isInLocalExtensions() {
+        return inLocalExtensions;
+    }
+
+    @Override
+    public void setInLocalExtensions(boolean inLocalExtensions) {
+        this.inLocalExtensions = inLocalExtensions;
     }
 
     @Override

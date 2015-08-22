@@ -20,14 +20,18 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ExtensionType;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
+import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
@@ -38,6 +42,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.GuardedBy;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
@@ -72,6 +79,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File sourceCodeZip;
     protected boolean openProjectSettingsAfterImport;
+    @NotNull
+    protected final List<String> explicitlyDefinedModules = new ArrayList<String>();
 
     public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
         this.project = project;
@@ -134,6 +143,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.rootDirectory = null;
         this.foundModules.clear();
         this.modulesChosenForImport.clear();
+        this.explicitlyDefinedModules.clear();
     }
 
     @Nullable
@@ -168,12 +178,116 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         try {
             this.scanDirectoryForHybrisModules(rootDirectory, progressListenerProcessor, errorsProcessor);
+            this.processLocalExtensions();
         } catch (InterruptedException e) {
             LOG.warn(e);
 
             this.rootDirectory = null;
             this.foundModules.clear();
+            this.explicitlyDefinedModules.clear();
         }
+    }
+
+    private void processLocalExtensions() {
+        final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor = findConfigDir();
+        if (configHybrisModuleDescriptor == null) {
+            return;
+        }
+        Hybrisconfig hybrisconfig = unmarshalLocalExtensions(configHybrisModuleDescriptor);
+        if (hybrisconfig == null) {
+            return;
+        }
+        processHybrisConfig(hybrisconfig);
+        preselectModules(configHybrisModuleDescriptor);
+    }
+
+    private void preselectModules(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
+        Validate.notNull(configHybrisModuleDescriptor);
+        for (HybrisModuleDescriptor hybrisModuleDescriptor: foundModules) {
+            if (explicitlyDefinedModules.contains(hybrisModuleDescriptor.getName())) {
+                hybrisModuleDescriptor.setInLocalExtensions(true);
+            }
+        }
+        configHybrisModuleDescriptor.setPreselected(true);
+    }
+
+    @Nullable
+    private ConfigHybrisModuleDescriptor findConfigDir() {
+        List<ConfigHybrisModuleDescriptor> foundConfigModules = new ArrayList<ConfigHybrisModuleDescriptor>();
+        PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor = null;
+        for (HybrisModuleDescriptor moduleDescriptor: foundModules) {
+            if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
+                foundConfigModules.add((ConfigHybrisModuleDescriptor) moduleDescriptor);
+            }
+            if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
+                platformHybrisModuleDescriptor = (PlatformHybrisModuleDescriptor) moduleDescriptor;
+            }
+        }
+        if (foundConfigModules.isEmpty()) {
+            return null;
+        }
+        final File platformDir = platformHybrisModuleDescriptor.getRootDirectory();
+        final File expectedConfigDir = new File(platformDir+ HybrisConstants.CONFIG_RELATIVE_PATH);
+        if (!expectedConfigDir.isDirectory()) {
+            if (foundConfigModules.size() == 1) {
+                return foundConfigModules.get(0);
+            }
+            return null;
+        }
+        for (ConfigHybrisModuleDescriptor configHybrisModuleDescriptor: foundConfigModules) {
+            if (FileUtil.filesEqual(configHybrisModuleDescriptor.getRootDirectory(), expectedConfigDir)) {
+                return configHybrisModuleDescriptor;
+            }
+        }
+        return null;
+    }
+
+    private void processHybrisConfig(@NotNull final Hybrisconfig hybrisconfig) {
+        final List<ExtensionType> extensionTypeList = hybrisconfig.getExtensions().getExtension();
+        for (ExtensionType extensionType: extensionTypeList) {
+            final String name = extensionType.getName();
+            if (name != null) {
+                explicitlyDefinedModules.add(name);
+                continue;
+            }
+            final String dir = extensionType.getDir();
+            int indexSlash = dir.lastIndexOf("/");
+            int indexBack = dir.lastIndexOf("\\");
+            int index = Math.max(indexSlash, indexBack);
+            if (index == -1) {
+                explicitlyDefinedModules.add(dir);
+            } else {
+                explicitlyDefinedModules.add(dir.substring(index+1));
+            }
+        }
+    }
+
+    @Nullable
+    private Hybrisconfig unmarshalLocalExtensions(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
+        Validate.notNull(configHybrisModuleDescriptor);
+
+        File localextensions = new File (configHybrisModuleDescriptor.getRootDirectory(), HybrisConstants.LOCAL_EXTENSIONS_XML);
+        if (!localextensions.exists()) {
+            return null;
+        }
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Hybrisconfig.class);
+            if (null == jaxbContext) {
+                LOG.error(String.format(
+                    "Can not unmarshal '%s' because JAXBContext has not been created.", localextensions.getAbsolutePath()
+                ));
+
+                return null;
+            }
+
+            final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            return (Hybrisconfig) jaxbUnmarshaller.unmarshal(localextensions);
+        } catch (JAXBException e) {
+            LOG.error("Can not unmarshal " + localextensions.getAbsolutePath(), e);
+        }
+
+        return null;
     }
 
     @Override
