@@ -122,7 +122,13 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     protected boolean isJunk(@NotNull final VirtualFile virtualFile) {
         Validate.notNull(virtualFile);
-
+        if (virtualFile.getName().equals("bin")) {
+            for (VirtualFile child: virtualFile.getChildren()) {
+                if (child.getName().contains("server.jar")) {
+                    return false;
+                }
+            }
+        }
         return this.junkFileNames.contains(virtualFile.getName()) || this.isIdeaModuleFile(virtualFile);
     }
 
