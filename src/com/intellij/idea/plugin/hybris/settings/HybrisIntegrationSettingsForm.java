@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -47,6 +49,10 @@ public class HybrisIntegrationSettingsForm {
     private JLabel impexLabel;
     private JLabel projectImportLabel;
     private JCheckBox groupModulesCheckBox;
+    private JTextField groupCustomTextField;
+    private JTextField groupCustomUnusedTextField;
+    private JTextField groupHybrisTextField;
+    private JTextField groupHybrisUnusedTextField;
 
     private JunkListPanel junkListPanel;
 
@@ -56,6 +62,10 @@ public class HybrisIntegrationSettingsForm {
         limitedSpringConfigComboBox.setSelected(data.isLimitedSpringConfig());
         junkListPanel.setJunkDirectoryList(data.getJunkDirectoryList());
         groupModulesCheckBox.setSelected(data.isGroupModules());
+        groupCustomTextField.setText(data.getGroupCustom());
+        groupCustomUnusedTextField.setText(data.getGroupOtherCustom());
+        groupHybrisTextField.setText(data.getGroupHybris());
+        groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
     }
 
     public void getData(final HybrisIntegrationSettingsData data) {
@@ -64,6 +74,10 @@ public class HybrisIntegrationSettingsForm {
         data.setLimitedSpringConfig(limitedSpringConfigComboBox.isSelected());
         data.setJunkDirectoryList(junkListPanel.getJunkDirectoryList());
         data.setGroupModules(groupModulesCheckBox.isSelected());
+        data.setGroupCustom(groupCustomTextField.getText());
+        data.setGroupOtherCustom(groupCustomUnusedTextField.getText());
+        data.setGroupHybris(groupHybrisTextField.getText());
+        data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
     }
 
     public boolean isModified(final HybrisIntegrationSettingsData data) {
@@ -77,6 +91,21 @@ public class HybrisIntegrationSettingsForm {
             return true;
         }
         if (!junkListPanel.getJunkDirectoryList().equals(data.getJunkDirectoryList())) {
+            return true;
+        }
+        if (groupModulesCheckBox.isSelected() != data.isGroupModules()) {
+            return true;
+        }
+        if (!StringUtil.equals(groupCustomTextField.getText(),data.getGroupCustom())) {
+            return true;
+        }
+        if (!StringUtil.equals(groupCustomUnusedTextField.getText(),data.getGroupOtherCustom())) {
+            return true;
+        }
+        if (!StringUtil.equals(groupHybrisTextField.getText(),data.getGroupHybris())) {
+            return true;
+        }
+        if (!StringUtil.equals(groupHybrisUnusedTextField.getText(),data.getGroupOtherHybris())) {
             return true;
         }
         return false;
@@ -93,6 +122,19 @@ public class HybrisIntegrationSettingsForm {
         projectImportLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.project.title")));
         junkListPanel = new JunkListPanel("hybris.import.settings.junk.directory.name", new ArrayList<String>());
         junkDirectoriesPanel = junkListPanel;
+
+    }
+
+    public void createComponent() {
+        groupModulesCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(final ChangeEvent changeEvent) {
+                groupCustomTextField.setEnabled(groupModulesCheckBox.isSelected());
+                groupCustomUnusedTextField.setEnabled(groupModulesCheckBox.isSelected());
+                groupHybrisTextField.setEnabled(groupModulesCheckBox.isSelected());
+                groupHybrisUnusedTextField.setEnabled(groupModulesCheckBox.isSelected());
+            }
+        });
     }
 
     private static class JunkListPanel extends AddEditDeleteListPanel<String> {

@@ -63,6 +63,18 @@ public class HybrisIntegrationSettingsData {
     @PropertyName("junkDirectoryList")
     private List<String> junkDirectoryList = defaultJunkFileNames;
 
+    @PropertyName("groupHybris")
+    private String groupHybris = "Hybris";
+
+    @PropertyName("groupOtherHybris")
+    private String groupOtherHybris = "Hybris/Unused";
+
+    @PropertyName("groupCustom")
+    private String groupCustom = "Custom";
+
+    @PropertyName("groupOtherCustom")
+    private String groupOtherCustom = "Custom/Unused";
+
 
     public HybrisIntegrationSettingsData() {
     }
@@ -105,5 +117,37 @@ public class HybrisIntegrationSettingsData {
 
     public boolean isGroupModules() {
         return groupModules;
+    }
+
+    public String getGroupHybris() {
+        return groupHybris;
+    }
+
+    public void setGroupHybris(final String groupHybris) {
+        this.groupHybris = groupHybris;
+    }
+
+    public String getGroupOtherHybris() {
+        return groupOtherHybris;
+    }
+
+    public void setGroupOtherHybris(final String groupOtherHybris) {
+        this.groupOtherHybris = groupOtherHybris;
+    }
+
+    public String getGroupCustom() {
+        return groupCustom;
+    }
+
+    public void setGroupCustom(final String groupCustom) {
+        this.groupCustom = groupCustom;
+    }
+
+    public String getGroupOtherCustom() {
+        return groupOtherCustom;
+    }
+
+    public void setGroupOtherCustom(final String groupOtherCustom) {
+        this.groupOtherCustom = groupOtherCustom;
     }
 }

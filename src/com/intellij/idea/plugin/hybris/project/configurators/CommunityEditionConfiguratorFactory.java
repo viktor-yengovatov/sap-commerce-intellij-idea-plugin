@@ -60,4 +60,9 @@ public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory 
     public ModifiableModelsProvider getModifiableModelsProvider() {
         return new IdeaModifiableModelsProvider();
     }
+
+    @Override
+    public GroupModuleConfigurator getGroupModuleConfigurator() {
+        return new DefaultGroupModuleConfigurator();
+    }
 }

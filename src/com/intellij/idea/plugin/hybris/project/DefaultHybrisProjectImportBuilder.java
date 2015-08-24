@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPaths
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
@@ -169,6 +170,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = configuratorFactory.getCompilerOutputPathsConfigurator();
         final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
         final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
+        final GroupModuleConfigurator groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
 
         final List<Module> result = new ArrayList<Module>();
 
@@ -189,6 +191,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         );
 
         springConfigurator.findSpringConfiguration(this.getHybrisProjectDescriptor().getModulesChosenForImport());
+        groupModuleConfigurator.findDependencyModules(this.getHybrisProjectDescriptor().getModulesChosenForImport());
 
         for (HybrisModuleDescriptor moduleDescriptor : this.getHybrisProjectDescriptor().getModulesChosenForImport()) {
 
@@ -217,6 +220,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
             facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule);
+            groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
