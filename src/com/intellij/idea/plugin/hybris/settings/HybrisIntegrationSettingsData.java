@@ -18,9 +18,35 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
+import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
 
+import java.util.List;
+
 public class HybrisIntegrationSettingsData {
+
+    public static final List<String> defaultJunkFileNames = Lists.newArrayList(
+        ".classpath",
+        ".directory",
+        ".externalToolBuilders",
+        ".idea",
+        ".pmd",
+        ".project",
+        ".ruleset",
+        ".settings",
+        ".springBeans",
+        "addonsrc",
+        "beans.xsd",
+        "bin",
+        "classes",
+        "commonwebsrc",
+        "eclipsebin",
+        "extensioninfo.xsd",
+        "items.xsd",
+        "platformhome.properties",
+        "ruleset.xml",
+        "testclasses"
+    );
 
     @PropertyName("foldingEnabled")
     private boolean foldingEnabled = true;
@@ -30,6 +56,25 @@ public class HybrisIntegrationSettingsData {
 
     @PropertyName("limitedSpringConfig")
     private boolean limitedSpringConfig = true;
+
+    @PropertyName("groupModules")
+    private boolean groupModules = true;
+
+    @PropertyName("junkDirectoryList")
+    private List<String> junkDirectoryList = defaultJunkFileNames;
+
+    @PropertyName("groupHybris")
+    private String groupHybris = "Hybris";
+
+    @PropertyName("groupOtherHybris")
+    private String groupOtherHybris = "Hybris/Unused";
+
+    @PropertyName("groupCustom")
+    private String groupCustom = "Custom";
+
+    @PropertyName("groupOtherCustom")
+    private String groupOtherCustom = "Custom/Unused";
+
 
     public HybrisIntegrationSettingsData() {
     }
@@ -56,5 +101,53 @@ public class HybrisIntegrationSettingsData {
 
     public void setLimitedSpringConfig(final boolean limitedSpringConfig) {
         this.limitedSpringConfig = limitedSpringConfig;
+    }
+
+    public List<String> getJunkDirectoryList() {
+        return junkDirectoryList;
+    }
+
+    public void setJunkDirectoryList(List<String> junkDirectoryList) {
+        this.junkDirectoryList = junkDirectoryList;
+    }
+
+    public void setGroupModules(final boolean groupModules) {
+        this.groupModules = groupModules;
+    }
+
+    public boolean isGroupModules() {
+        return groupModules;
+    }
+
+    public String getGroupHybris() {
+        return groupHybris;
+    }
+
+    public void setGroupHybris(final String groupHybris) {
+        this.groupHybris = groupHybris;
+    }
+
+    public String getGroupOtherHybris() {
+        return groupOtherHybris;
+    }
+
+    public void setGroupOtherHybris(final String groupOtherHybris) {
+        this.groupOtherHybris = groupOtherHybris;
+    }
+
+    public String getGroupCustom() {
+        return groupCustom;
+    }
+
+    public void setGroupCustom(final String groupCustom) {
+        this.groupCustom = groupCustom;
+    }
+
+    public String getGroupOtherCustom() {
+        return groupOtherCustom;
+    }
+
+    public void setGroupOtherCustom(final String groupOtherCustom) {
+        this.groupOtherCustom = groupOtherCustom;
     }
 }

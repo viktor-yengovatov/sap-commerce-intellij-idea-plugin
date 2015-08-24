@@ -23,9 +23,11 @@ import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -46,28 +48,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     protected final Project project;
     protected final HybrisProjectSettings hybrisProjectSettings;
-    protected final Set<String> junkFileNames = Sets.newHashSet(
-        "bin",
-        ".classpath",
-        ".externalToolBuilders",
-        ".settings",
-        "eclipsebin",
-        "testclasses",
-        "addonsrc",
-        "commonwebsrc",
-        ".project",
-        ".ruleset",
-        ".springBeans",
-        ".pmd",
-        ".directory",
-        "classes",
-        "extensioninfo.xsd",
-        "ruleset.xml",
-        "beans.xsd",
-        "items.xsd",
-        "platformhome.properties",
-        ".idea"
-    );
+    private List<String> junkFileNames;
 
     public HybrisProjectView(final Project project) {
         this.project = project;
@@ -86,6 +67,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         if (parent instanceof JunkProjectViewNode) {
             return children;
         }
+
+        junkFileNames = getJunkFileNames();
 
         final List<AbstractTreeNode> junkTreeNodes = new ArrayList<AbstractTreeNode>();
         final Collection<AbstractTreeNode> treeNodes = new ArrayList<AbstractTreeNode>();
@@ -136,6 +119,14 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         Validate.notNull(virtualFile);
 
         return virtualFile.getName().endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
+    }
+
+    protected List<String> getJunkFileNames() {
+        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
+            HybrisIntegrationSettingsManager.class
+        );
+
+        return settingsManager.getHybrisIntegrationSettingsData().getJunkDirectoryList();
     }
 
     @Override

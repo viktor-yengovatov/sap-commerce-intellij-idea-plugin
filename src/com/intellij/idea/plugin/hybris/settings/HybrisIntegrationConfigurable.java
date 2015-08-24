@@ -53,7 +53,7 @@ public class HybrisIntegrationConfigurable implements Configurable {
         final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
             HybrisIntegrationSettingsManager.class
         );
-
+        this.settingsForm.createComponent();
         this.settingsForm.setData(settingsManager.getHybrisIntegrationSettingsData());
 
         return this.settingsForm.getMainPanel();
