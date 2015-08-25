@@ -20,11 +20,13 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsData;
 import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -71,9 +73,13 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
     @NotNull
     protected String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
+            return groupHybris;
+        }
         if (moduleDescriptor.isPreselected()) {
             return groupCustom;
-        } else if (moduleDescriptor instanceof DefaultHybrisModuleDescriptor) {
+        }
+        if (moduleDescriptor instanceof DefaultHybrisModuleDescriptor) {
             DefaultHybrisModuleDescriptor defaultHybrisModuleDescriptor = (DefaultHybrisModuleDescriptor) moduleDescriptor;
             if (defaultHybrisModuleDescriptor.isInCustomDir()) {
                 return groupOtherCustom;
@@ -91,9 +97,16 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         );
         final HybrisIntegrationSettingsData hiData = settingsManager.getHybrisIntegrationSettingsData();
         groupModules = hiData.isGroupModules();
-        groupCustom = hiData.getGroupCustom().split("/");
-        groupOtherCustom = hiData.getGroupOtherCustom().split("/");
-        groupHybris = hiData.getGroupHybris().split("/");
-        groupOtherHybris = hiData.getGroupOtherHybris().split("/");
+        groupCustom = toIdeaGroup(hiData.getGroupCustom());
+        groupOtherCustom = toIdeaGroup(hiData.getGroupOtherCustom());
+        groupHybris = toIdeaGroup(hiData.getGroupHybris());
+        groupOtherHybris = toIdeaGroup(hiData.getGroupOtherHybris());
+    }
+
+    private String[] toIdeaGroup(final String group) {
+        if (group == null || group.trim().isEmpty()) {
+            return null;
+        }
+        return StringUtils.split(group, " ,.;>/\\");
     }
 }
