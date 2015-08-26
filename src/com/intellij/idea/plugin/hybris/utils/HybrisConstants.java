@@ -60,7 +60,7 @@ public final class HybrisConstants {
     public static final String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
 
     public static final String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
-    public static final String CONFIGURATOR_FACTORY_ID = "com.intellij.idea.plugin.hybris.impex.hybrisConfiguratorFactory";
+    public static final String CONFIGURATOR_FACTORY_ID = "ccom.intellij.idea.plugin.hybris.impex.hybrisConfiguratorFactory";
 
     private HybrisConstants() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
