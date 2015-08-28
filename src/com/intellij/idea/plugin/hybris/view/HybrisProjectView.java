@@ -70,6 +70,10 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
         junkFileNames = getJunkFileNames();
 
+        if (junkFileNames == null || junkFileNames.isEmpty()) {
+            return children;
+        }
+
         final List<AbstractTreeNode> junkTreeNodes = new ArrayList<AbstractTreeNode>();
         final Collection<AbstractTreeNode> treeNodes = new ArrayList<AbstractTreeNode>();
 

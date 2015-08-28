@@ -29,6 +29,7 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +73,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         modifiableModuleModel.setModuleGroupPath(module, groupNamePath);
     }
 
-    @NotNull
+    @Nullable
     protected String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return groupHybris;
