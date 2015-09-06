@@ -54,7 +54,6 @@
       <option name="m_minLength" value="2" />
       <option name="m_maxLength" value="100" />
     </inspection_tool>
-    <inspection_tool class="ConstantOnRHSOfComparison" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CyclomaticComplexity" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_limit" value="10" />
     </inspection_tool>
