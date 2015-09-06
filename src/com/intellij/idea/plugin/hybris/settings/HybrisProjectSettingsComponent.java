@@ -29,7 +29,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created 6:43 PM 28 June 2015.
@@ -47,7 +46,6 @@ public class HybrisProjectSettingsComponent implements PersistentStateComponent<
 
     protected final HybrisProjectSettings hybrisProjectSettings = new HybrisProjectSettings();
 
-    @Nullable
     public static HybrisProjectSettingsComponent getInstance(@NotNull final Project project) {
         Validate.notNull(project);
 
