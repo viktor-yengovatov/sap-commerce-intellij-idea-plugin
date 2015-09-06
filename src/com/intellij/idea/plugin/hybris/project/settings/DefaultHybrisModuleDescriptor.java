@@ -144,23 +144,21 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     @NotNull
     @Override
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        return Arrays.<JavaLibraryDescriptor>asList(
-            new DefaultJavaLibraryDescriptor(
-                new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY), true
-            ),
-            new DefaultJavaLibraryDescriptor(
-                new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY)
-            ),
-            new DefaultJavaLibraryDescriptor(
-                new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY)
-            ),
-            new DefaultJavaLibraryDescriptor(
-                new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY)
-            ),
-            new DefaultJavaLibraryDescriptor(
+        final List<JavaLibraryDescriptor> libs = new ArrayList<JavaLibraryDescriptor>(5);
+
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY), true));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY)));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY)));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY)));
+
+        final File webSrcDir = new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY);
+        if (!webSrcDir.exists()) {
+            libs.add(new DefaultJavaLibraryDescriptor(
                 new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY), true, true
-            )
-        );
+            ));
+        }
+
+        return Collections.unmodifiableList(libs);
     }
 
     public boolean isInCustomDir() {
