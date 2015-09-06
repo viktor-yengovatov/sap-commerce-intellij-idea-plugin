@@ -252,7 +252,7 @@
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
 
         <applicationConfigurable id="ImpexPlugin.ImpexConfigurable"
-                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisIntegrationConfigurable"/>
+                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisSettingsConfigurable"/>
 
 
         <!-- Header name highlighting components -->
@@ -261,20 +261,13 @@
 
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
     </extensions>
 
     <application-components>
         <component>
             <implementation-class>
                 com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderHighlighterComponent
-            </implementation-class>
-        </component>
-        <component>
-            <interface-class>
-                com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager
-            </interface-class>
-            <implementation-class>
-                com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManagerComponent
             </implementation-class>
         </component>
     </application-components>

@@ -18,11 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.impex.folding;
 
-import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.psi.PsiElement;
@@ -89,11 +88,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
     @Contract(pure = true)
     protected boolean isFoldingDisabled() {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
-
-        return !settingsManager.getHybrisIntegrationSettingsData().isFoldingEnabled();
+        return !HybrisApplicationSettingsComponent.getInstance().getState().isFoldingEnabled();
     }
 
     @NotNull

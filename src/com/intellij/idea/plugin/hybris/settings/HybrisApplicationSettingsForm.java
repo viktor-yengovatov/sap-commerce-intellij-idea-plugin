@@ -39,7 +39,7 @@ import java.util.Collections;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisIntegrationSettingsForm {
+public class HybrisApplicationSettingsForm {
 
     private JCheckBox enableFoldingCheckBox;
     private JCheckBox useSmartFoldingCheckBox;
@@ -56,7 +56,7 @@ public class HybrisIntegrationSettingsForm {
 
     private JunkListPanel junkListPanel;
 
-    public void setData(final HybrisIntegrationSettingsData data) {
+    public void setData(final HybrisApplicationSettings data) {
         enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
         useSmartFoldingCheckBox.setSelected(data.isUseSmartFolding());
         limitedSpringConfigComboBox.setSelected(data.isLimitedSpringConfig());
@@ -68,7 +68,7 @@ public class HybrisIntegrationSettingsForm {
         groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
     }
 
-    public void getData(final HybrisIntegrationSettingsData data) {
+    public void getData(final HybrisApplicationSettings data) {
         data.setFoldingEnabled(enableFoldingCheckBox.isSelected());
         data.setUseSmartFolding(useSmartFoldingCheckBox.isSelected());
         data.setLimitedSpringConfig(limitedSpringConfigComboBox.isSelected());
@@ -80,7 +80,7 @@ public class HybrisIntegrationSettingsForm {
         data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
     }
 
-    public boolean isModified(final HybrisIntegrationSettingsData data) {
+    public boolean isModified(final HybrisApplicationSettings data) {
         if (enableFoldingCheckBox.isSelected() != data.isFoldingEnabled()) {
             return true;
         }
@@ -138,6 +138,8 @@ public class HybrisIntegrationSettingsForm {
     }
 
     private static class JunkListPanel extends AddEditDeleteListPanel<String> {
+
+        private static final long serialVersionUID = -6339262026248471671L;
 
         public JunkListPanel(final String title, final java.util.List<String> initialList) {
             super(HybrisI18NBundleUtils.message(title), initialList);

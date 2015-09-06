@@ -24,44 +24,39 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.components.StorageScheme;
-import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
 
 /**
- * Created 6:43 PM 28 June 2015.
+ * Created 19:39 29 March 2015
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 @State(
-    name = "HybrisProjectSettings",
+    name = "HybrisApplicationSettings",
     storages = {
-        @Storage(file = StoragePathMacros.PROJECT_FILE, scheme = StorageScheme.DEFAULT),
-        @Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + '/' + HybrisConstants.HYBRIS_PROJECT_SETTINGS_FILE_NAME, scheme = StorageScheme.DIRECTORY_BASED)
+        @Storage(file = StoragePathMacros.APP_CONFIG + '/' + HybrisConstants.HYBRIS_INTEGRATION_SETTINGS_FILE_NAME)
     }
 )
-public class HybrisProjectSettingsComponent implements PersistentStateComponent<HybrisProjectSettings> {
+public class HybrisApplicationSettingsComponent implements PersistentStateComponent<HybrisApplicationSettings> {
 
-    protected final HybrisProjectSettings hybrisProjectSettings = new HybrisProjectSettings();
+    protected final HybrisApplicationSettings hybrisApplicationSettings = new HybrisApplicationSettings();
 
-    @Nullable
-    public static HybrisProjectSettingsComponent getInstance(@NotNull final Project project) {
-        Validate.notNull(project);
-
-        return ServiceManager.getService(project, HybrisProjectSettingsComponent.class);
+    @Nonnull
+    public static HybrisApplicationSettingsComponent getInstance() {
+        return ServiceManager.getService(HybrisApplicationSettingsComponent.class);
     }
 
     @NotNull
     @Override
-    public HybrisProjectSettings getState() {
-        return this.hybrisProjectSettings;
+    public HybrisApplicationSettings getState() {
+        return this.hybrisApplicationSettings;
     }
 
     @Override
-    public void loadState(final HybrisProjectSettings state) {
-        XmlSerializerUtil.copyBean(state, this.hybrisProjectSettings);
+    public void loadState(final HybrisApplicationSettings state) {
+        XmlSerializerUtil.copyBean(state, this.hybrisApplicationSettings);
     }
 }

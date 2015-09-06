@@ -20,8 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import com.intellij.spring.facet.SpringFileSet;
@@ -38,6 +37,7 @@ import java.util.Map;
  */
 public class NoInheritanceSpringConfigurator extends DefaultSpringConfigurator {
 
+    @Override
     protected void configureFacetDependencies(@NotNull final HybrisModuleDescriptor moduleDescriptor,
                                               @NotNull final Map<String, Module> moduleMap,
                                               @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap) {
@@ -66,10 +66,6 @@ public class NoInheritanceSpringConfigurator extends DefaultSpringConfigurator {
     }
 
     private boolean isLimitedSpringConfig() {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
-
-        return settingsManager.getHybrisIntegrationSettingsData().isLimitedSpringConfig();
+        return HybrisApplicationSettingsComponent.getInstance().getState().isLimitedSpringConfig();
     }
 }

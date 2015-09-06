@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import org.jetbrains.annotations.Nls;
@@ -31,9 +30,9 @@ import javax.swing.*;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisIntegrationConfigurable implements Configurable {
+public class HybrisSettingsConfigurable implements Configurable {
 
-    protected final HybrisIntegrationSettingsForm settingsForm = new HybrisIntegrationSettingsForm();
+    protected final HybrisApplicationSettingsForm settingsForm = new HybrisApplicationSettingsForm();
 
     @Nls
     @Override
@@ -50,42 +49,29 @@ public class HybrisIntegrationConfigurable implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
+        final HybrisApplicationSettingsComponent applicationSettingsComponent = HybrisApplicationSettingsComponent.getInstance();
+
         this.settingsForm.createComponent();
-        this.settingsForm.setData(settingsManager.getHybrisIntegrationSettingsData());
+        this.settingsForm.setData(applicationSettingsComponent.getState());
 
         return this.settingsForm.getMainPanel();
     }
 
     @Override
     public boolean isModified() {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
-
-        return this.settingsForm.isModified(settingsManager.getHybrisIntegrationSettingsData());
+        return this.settingsForm.isModified(HybrisApplicationSettingsComponent.getInstance().getState());
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
+        final HybrisApplicationSettingsComponent applicationSettingsComponent = HybrisApplicationSettingsComponent.getInstance();
 
-        this.settingsForm.getData(settingsManager.getHybrisIntegrationSettingsData());
-
-        settingsManager.saveHybrisIntegrationSettingsData();
+        this.settingsForm.getData(applicationSettingsComponent.getState());
     }
 
     @Override
     public void reset() {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
-
-        this.settingsForm.setData(settingsManager.getHybrisIntegrationSettingsData());
+        this.settingsForm.setData(HybrisApplicationSettingsComponent.getInstance().getState());
     }
 
     @Override

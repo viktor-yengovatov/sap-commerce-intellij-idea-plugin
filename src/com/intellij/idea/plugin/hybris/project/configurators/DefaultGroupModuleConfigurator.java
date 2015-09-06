@@ -22,9 +22,8 @@ import com.intellij.idea.plugin.hybris.project.settings.ConfigHybrisModuleDescri
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.PlatformHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsData;
-import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import org.apache.commons.lang3.StringUtils;
@@ -95,15 +94,12 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     private void readSettings() {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
-        final HybrisIntegrationSettingsData hiData = settingsManager.getHybrisIntegrationSettingsData();
-        groupModules = hiData.isGroupModules();
-        groupCustom = toIdeaGroup(hiData.getGroupCustom());
-        groupOtherCustom = toIdeaGroup(hiData.getGroupOtherCustom());
-        groupHybris = toIdeaGroup(hiData.getGroupHybris());
-        groupOtherHybris = toIdeaGroup(hiData.getGroupOtherHybris());
+        final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        groupModules = hybrisApplicationSettings.isGroupModules();
+        groupCustom = toIdeaGroup(hybrisApplicationSettings.getGroupCustom());
+        groupOtherCustom = toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
+        groupHybris = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
+        groupOtherHybris = toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
     }
 
     private String[] toIdeaGroup(final String group) {

@@ -18,16 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.view;
 
-import com.google.common.collect.Sets;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.idea.plugin.hybris.settings.HybrisIntegrationSettingsManager;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -37,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created 10:14 PM 27 June 2015.
@@ -119,11 +116,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     protected List<String> getJunkFileNames() {
-        final HybrisIntegrationSettingsManager settingsManager = ApplicationManager.getApplication().getComponent(
-            HybrisIntegrationSettingsManager.class
-        );
-
-        return settingsManager.getHybrisIntegrationSettingsData().getJunkDirectoryList();
+        return HybrisApplicationSettingsComponent.getInstance().getState().getJunkDirectoryList();
     }
 
     @Override

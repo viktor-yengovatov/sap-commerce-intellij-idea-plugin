@@ -20,12 +20,14 @@ package com.intellij.idea.plugin.hybris.settings;
 
 import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
-public class HybrisIntegrationSettingsData {
+public class HybrisApplicationSettings {
 
-    public static final List<String> defaultJunkFileNames = Lists.newArrayList(
+    public static final List<String> DEFAULT_JUNK_FILE_NAMES = Lists.newArrayList(
         ".classpath",
         ".directory",
         ".externalToolBuilders",
@@ -60,7 +62,7 @@ public class HybrisIntegrationSettingsData {
     private boolean groupModules = true;
 
     @PropertyName("junkDirectoryList")
-    private List<String> junkDirectoryList = defaultJunkFileNames;
+    private List<String> junkDirectoryList = DEFAULT_JUNK_FILE_NAMES;
 
     @PropertyName("groupHybris")
     private String groupHybris = "Hybris";
@@ -75,7 +77,7 @@ public class HybrisIntegrationSettingsData {
     private String groupOtherCustom = "Custom/Unused";
 
 
-    public HybrisIntegrationSettingsData() {
+    public HybrisApplicationSettings() {
     }
 
     public boolean isFoldingEnabled() {
@@ -106,7 +108,7 @@ public class HybrisIntegrationSettingsData {
         return junkDirectoryList;
     }
 
-    public void setJunkDirectoryList(List<String> junkDirectoryList) {
+    public void setJunkDirectoryList(final List<String> junkDirectoryList) {
         this.junkDirectoryList = junkDirectoryList;
     }
 
@@ -148,5 +150,61 @@ public class HybrisIntegrationSettingsData {
 
     public void setGroupOtherCustom(final String groupOtherCustom) {
         this.groupOtherCustom = groupOtherCustom;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (null == obj || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final HybrisApplicationSettings other = (HybrisApplicationSettings) obj;
+
+        return new EqualsBuilder()
+            .append(foldingEnabled, other.foldingEnabled)
+            .append(useSmartFolding, other.useSmartFolding)
+            .append(limitedSpringConfig, other.limitedSpringConfig)
+            .append(groupModules, other.groupModules)
+            .append(junkDirectoryList, other.junkDirectoryList)
+            .append(groupHybris, other.groupHybris)
+            .append(groupOtherHybris, other.groupOtherHybris)
+            .append(groupCustom, other.groupCustom)
+            .append(groupOtherCustom, other.groupOtherCustom)
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(foldingEnabled)
+            .append(useSmartFolding)
+            .append(limitedSpringConfig)
+            .append(groupModules)
+            .append(junkDirectoryList)
+            .append(groupHybris)
+            .append(groupOtherHybris)
+            .append(groupCustom)
+            .append(groupOtherCustom)
+            .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("HybrisApplicationSettings{");
+        sb.append("foldingEnabled=").append(foldingEnabled);
+        sb.append(", useSmartFolding=").append(useSmartFolding);
+        sb.append(", limitedSpringConfig=").append(limitedSpringConfig);
+        sb.append(", groupModules=").append(groupModules);
+        sb.append(", junkDirectoryList=").append(junkDirectoryList);
+        sb.append(", groupHybris='").append(groupHybris).append('\'');
+        sb.append(", groupOtherHybris='").append(groupOtherHybris).append('\'');
+        sb.append(", groupCustom='").append(groupCustom).append('\'');
+        sb.append(", groupOtherCustom='").append(groupOtherCustom).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
