@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -31,6 +32,9 @@ public interface JavaLibraryDescriptor extends Comparable<JavaLibraryDescriptor>
 
     @NotNull
     File getLibraryFile();
+
+    @Nullable
+    File getSourcesFile();
 
     boolean isExported();
 

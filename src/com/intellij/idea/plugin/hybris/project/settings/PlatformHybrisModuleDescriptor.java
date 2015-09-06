@@ -92,7 +92,9 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         }
 
         moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
-            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY), true
+            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY),
+            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY),
+            true
         ));
 
         moduleDescriptors.add(new DefaultJavaLibraryDescriptor(

@@ -130,7 +130,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
                 VfsUtil.getUrlForLibraryRoot(libFolder), true, OrderRootType.CLASSES
             );
             if (null != sourceCodeRoot) {
-                existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES );
+                existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES);
             }
         } else {
             final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
@@ -200,7 +200,15 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         libraryModifiableModel.addJarDirectory(
             VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.getLibraryFile()), true
         );
-        if (sourceCodeRoot != null) {
+
+        if (null != javaLibraryDescriptor.getSourcesFile()) {
+            final VirtualFile srcDirVF = VfsUtil.findFileByIoFile(javaLibraryDescriptor.getSourcesFile(), true);
+            if (null != srcDirVF) {
+                libraryModifiableModel.addRoot(srcDirVF, OrderRootType.SOURCES);
+            }
+        }
+
+        if (null != sourceCodeRoot) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }
 

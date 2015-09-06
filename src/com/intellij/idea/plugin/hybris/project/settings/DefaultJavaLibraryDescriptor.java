@@ -23,6 +23,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -35,6 +36,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
 
     @NotNull
     private final File libraryFile;
+    private final File sourcesFile;
     private final boolean isExported;
     private final boolean isDirectoryWithClasses;
 
@@ -42,6 +44,17 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         Validate.notNull(libraryFile);
 
         this.libraryFile = libraryFile;
+        this.sourcesFile = null;
+        this.isExported = false;
+        this.isDirectoryWithClasses = false;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile, @NotNull final File sourcesFile) {
+        Validate.notNull(libraryFile);
+        Validate.notNull(sourcesFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = sourcesFile;
         this.isExported = false;
         this.isDirectoryWithClasses = false;
     }
@@ -51,6 +64,19 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         Validate.notNull(libraryFile);
 
         this.libraryFile = libraryFile;
+        this.sourcesFile = null;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = false;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
+                                        @NotNull final File sourcesFile,
+                                        final boolean isExported) {
+        Validate.notNull(libraryFile);
+        Validate.notNull(sourcesFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = sourcesFile;
         this.isExported = isExported;
         this.isDirectoryWithClasses = false;
     }
@@ -61,6 +87,20 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         Validate.notNull(libraryFile);
 
         this.libraryFile = libraryFile;
+        this.sourcesFile = null;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = isDirectoryWithClasses;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
+                                        @NotNull final File sourcesFile,
+                                        final boolean isExported,
+                                        final boolean isDirectoryWithClasses) {
+        Validate.notNull(libraryFile);
+        Validate.notNull(sourcesFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = sourcesFile;
         this.isExported = isExported;
         this.isDirectoryWithClasses = isDirectoryWithClasses;
     }
@@ -69,6 +109,12 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     @Override
     public File getLibraryFile() {
         return libraryFile;
+    }
+
+    @Nullable
+    @Override
+    public File getSourcesFile() {
+        return sourcesFile;
     }
 
     @Override
@@ -114,6 +160,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     public String toString() {
         final StringBuilder sb = new StringBuilder("DefaultJavaLibraryDescriptor{");
         sb.append("libraryFile=").append(libraryFile);
+        sb.append("sourcesFile=").append(sourcesFile);
         sb.append(", isExported=").append(isExported);
         sb.append(", isDirectoryWithClasses=").append(isDirectoryWithClasses);
         sb.append('}');

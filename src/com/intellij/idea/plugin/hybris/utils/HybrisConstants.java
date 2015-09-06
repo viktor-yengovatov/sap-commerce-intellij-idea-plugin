@@ -51,6 +51,7 @@ public final class HybrisConstants {
     public static final String BACKOFFICE_LIB_DIRECTORY = "backoffice/bin";
 
     public static final String PL_BOOTSTRAP_LIB_DIRECTORY = "bootstrap/bin";
+    public static final String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = "bootstrap/gensrc";
     public static final String PL_TOMCAT_LIB_DIRECTORY = "tomcat/lib";
     public static final String PL_TOMCAT_BIN_DIRECTORY = "tomcat/bin";
 
