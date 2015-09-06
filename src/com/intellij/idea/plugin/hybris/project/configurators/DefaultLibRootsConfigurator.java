@@ -67,14 +67,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);
 
-        final VirtualFile sourceCodeRoot;
-        final File sourceCodeZip = moduleDescriptor.getRootProjectDescriptor().getSourceCodeZip();
-        if (sourceCodeZip != null) {
-            final VirtualFile sourceZip = VfsUtil.findFileByIoFile(sourceCodeZip, true);
-            sourceCodeRoot = JarFileSystem.getInstance().getJarRootForLocalFile(sourceZip);
-        } else {
-            sourceCodeRoot = null;
-        }
+        final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
         this.addJarFolderToProjectLibs(
             modifiableRootModel.getProject(),
@@ -92,6 +85,25 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
                 this.addJarFolderToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
             }
         }
+    }
+
+    @Nullable
+    private VirtualFile getSourceCodeRoot(final @NotNull HybrisModuleDescriptor moduleDescriptor) {
+        final VirtualFile sourceCodeRoot;
+        final File sourceCodeZip = moduleDescriptor.getRootProjectDescriptor().getSourceCodeZip();
+
+        if (null != sourceCodeZip) {
+            final VirtualFile sourceZip = VfsUtil.findFileByIoFile(sourceCodeZip, true);
+            if (null == sourceZip) {
+                sourceCodeRoot = null;
+            } else {
+                sourceCodeRoot = JarFileSystem.getInstance().getJarRootForLocalFile(sourceZip);
+            }
+        } else {
+            sourceCodeRoot = null;
+        }
+
+        return sourceCodeRoot;
     }
 
     protected void addJarFolderToProjectLibs(@NotNull final Project project,
@@ -113,11 +125,11 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {
-            ExistingLibraryEditor existingLibraryEditor = ((LibrariesModifiableModel) libraryTableModifiableModel).getLibraryEditor(library);
+            final ExistingLibraryEditor existingLibraryEditor = ((LibrariesModifiableModel) libraryTableModifiableModel).getLibraryEditor(library);
             existingLibraryEditor.addJarDirectory(
                 VfsUtil.getUrlForLibraryRoot(libFolder), true, OrderRootType.CLASSES
             );
-            if (sourceCodeRoot != null) {
+            if (null != sourceCodeRoot) {
                 existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES );
             }
         } else {
