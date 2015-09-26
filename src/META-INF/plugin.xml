@@ -20,10 +20,10 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>Hybris Integration</name>
-    <version>2.2</version>
+    <version>3.0</version>
 
     <extensionPoints>
-        <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"></extensionPoint>
+        <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
     </extensionPoints>
 
     <depends>com.intellij.modules.lang</depends>
@@ -35,17 +35,32 @@
 
     <description>
         <![CDATA[
+          This plugin is an open source (LGPL) and official plugin for hybris platform supported by community and hybris.
+
+          <br/>
+          If you have any questions you can send an email to me:
+          <br/>
+          Alexander Bartash: AlexanderBartash@gmail.com
+          <br/>
+          or
+          <br/>
+          Martin Zdarsky: martin.zdarsky@hybris.com
+
+          <br/>
+          <br/>
           <b>Import of Hybris extensions to Intellij IDEA:</b>
           <br/>
           - Automatic module dependency management.
           <br/>
           - Automatic classpath configuration.
+          <br/>
+          - Automatic Spring facet configuration (only Ultimate IDEA).
 
           <br/>
           <br/>
           <b>Enhanced project view tree:</b>
           <br/>
-          - Rarely used elements are grouped into "junk" virtual folder.
+          - Rarely used elements are grouped into "junk" virtual folder also you can include to or exclude specific folder from the "Junk" list.
 
           <br/>
           <br/>
@@ -53,22 +68,16 @@
 
           <br/>
           - Syntax highlighting and errors indication for Hybris impex files.
-
           <br/>
           - Selected column name highlighting.
-
           <br/>
           - Automatic alignment into columns via "Reformat code".
-
           <br/>
           - Code folding to improve readability.
-
           <br/>
           - Autocompletion within the header for modifier name and value. *
-
           <br/>
           - Autocompletion for hybris types based on the current IntelliJ-Project (hybris coretypes + your custom types). *
-
           <br/>
           - Autocompletion for hybris attributes based on the current IntelliJ-Project (hybris coretypes + your custom types). *
 
@@ -117,6 +126,10 @@
 
     <change-notes>
         <![CDATA[
+          3.0:
+          <br/> - Automatic Spring facet configuration has been implemented. Classpath configuration has been improved. Plugin setting dialog has been redesigned and ability to configure "Junk" folders has been added to it.
+          <br/>
+          <br/>
           2.2:
           <br/> - Ability to specify a directory where all "*.iml" module files will be stored has been implemented.
           <br/>

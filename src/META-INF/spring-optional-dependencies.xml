@@ -22,6 +22,6 @@
 <idea-plugin version="2">
 
     <extensions defaultExtensionNs="ccom.intellij.idea.plugin.hybris.impex">
-        <hybrisConfiguratorFactory implementation="com.intellij.idea.plugin.hybris.project.configurators.UltimateEditionConfiguratorFactory"></hybrisConfiguratorFactory>
+        <hybrisConfiguratorFactory implementation="com.intellij.idea.plugin.hybris.project.configurators.UltimateEditionConfiguratorFactory"/>
     </extensions>
 </idea-plugin>
