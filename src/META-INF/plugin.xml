@@ -1,5 +1,5 @@
 <!--
-  ~ This file is part of "Hybris Integration" plugin for Intellij IDEA.
+  ~ This file is part of "hybris integration" plugin for Intellij IDEA.
   ~ Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 <idea-plugin version="2">
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
-    <name>Hybris Integration</name>
+    <name>hybris integration</name>
     <version>3.0</version>
 
     <extensionPoints>
@@ -48,7 +48,7 @@
 
           <br/>
           <br/>
-          <b>Import of Hybris extensions to Intellij IDEA:</b>
+          <b>Import of hybris extensions to Intellij IDEA:</b>
           <br/>
           - Automatic module dependency management.
           <br/>
@@ -67,7 +67,7 @@
           <b>Editor for impex files:</b>
 
           <br/>
-          - Syntax highlighting and errors indication for Hybris impex files.
+          - Syntax highlighting and errors indication for hybris impex files.
           <br/>
           - Selected column name highlighting.
           <br/>
@@ -92,9 +92,9 @@
           <br/>
           <b>Guides:</b>
           <br/>
-          - <a href="https://www.youtube.com/watch?v=_wVbowe39GM">How to import Hybris project using Intellij IDEA "Hybris Integration" plugin</a>
+          - <a href="https://www.youtube.com/watch?v=_wVbowe39GM">How to import hybris project using Intellij IDEA "hybris integration" plugin</a>
           <br/>
-          - <a href="https://www.youtube.com/watch?v=I-YYKD0OSyY">How to use HotSwap in Hybris with Oracle JDK and DCEVM OpenJDK</a>
+          - <a href="https://www.youtube.com/watch?v=I-YYKD0OSyY">How to use HotSwap in hybris with Oracle JDK and DCEVM OpenJDK</a>
           <br/>
           Visit <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin">our page</a> in BitBucket for more details.
 
@@ -139,7 +139,7 @@
           <br/>
           <br/>
           2.0:
-          <br/> - Import of Hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
+          <br/> - Import of hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
           <br/>
           <br/>
           1.8:
@@ -195,7 +195,7 @@
           <br/>
           <br/>
           1.3.1:
-          <br/> - Added autocompletion for Hybris type system based on ItemModel-inheritance. (Thanks to Markus Priegl)
+          <br/> - Added autocompletion for hybris type system based on ItemModel-inheritance. (Thanks to Markus Priegl)
           <br/>
           <br/>
           1.3:
