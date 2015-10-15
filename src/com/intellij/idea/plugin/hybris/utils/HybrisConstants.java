@@ -57,7 +57,9 @@ public final class HybrisConstants {
 
     public static final String CONFIG_LICENCE_DIRECTORY = "licence";
 
-    public static final String COMPILER_OUTPUT_PATH = "/eclipsebin";
+    public static final String WEB_COMPILER_OUTPUT_PATH = WEB_INF_CLASSES_DIRECTORY;
+    public static final String BACKOFFICE_COMPILER_OUTPUT_PATH = "/backoffice/classes";
+    public static final String COMPILER_OUTPUT_PATH = "/classes";
 
     public static final String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
     public static final String HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml";

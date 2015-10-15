@@ -45,7 +45,19 @@ public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPat
             CompilerModuleExtension.class
         );
 
-        final File outputDirectory = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
+        final File webOutputDir = new File(moduleDescriptor.getRootDirectory(),
+                                           HybrisConstants.WEB_COMPILER_OUTPUT_PATH);
+        final File backofficeOutputDir = new File(moduleDescriptor.getRootDirectory(),
+                                                  HybrisConstants.BACKOFFICE_COMPILER_OUTPUT_PATH);
+
+        final File outputDirectory;
+        if (webOutputDir.exists()) {
+            outputDirectory = webOutputDir;
+        } else if (backofficeOutputDir.exists()) {
+            outputDirectory = backofficeOutputDir;
+        } else {
+            outputDirectory = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
+        }
 
         compilerModuleExtension.setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
         compilerModuleExtension.setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
