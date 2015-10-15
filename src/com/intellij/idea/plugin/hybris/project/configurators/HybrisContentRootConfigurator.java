@@ -219,6 +219,12 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(hmcClassesDirectory.getAbsolutePath())
         );
+
+        final File backOfficeTestSrcDirectory = new File(backOfficeModuleDirectory, TEST_SRC_DIRECTORY);
+        contentEntry.addSourceFolder(
+            VfsUtil.pathToUrl(backOfficeTestSrcDirectory.getAbsolutePath()),
+            JavaSourceRootType.TEST_SOURCE
+        );
     }
 
     protected void configurePlatformRoots(@NotNull final HybrisModuleDescriptor moduleDescriptor,
@@ -246,11 +252,6 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
 
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(platformBootstrapModelClassesDirectory.getAbsolutePath())
-        );
-
-        final File platformBootstrapGenSrcDirectory = new File(platformBootstrapDirectory, GEN_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(platformBootstrapGenSrcDirectory.getAbsolutePath())
         );
 
         final File platformTomcatDirectory = new File(
@@ -283,8 +284,9 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         );
 
         final File webAddonSrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath())
+        contentEntry.addSourceFolder(
+            VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath()),
+            JavaSourceRootType.SOURCE
         );
 
         final File webTestClassesDirectory = new File(webModuleDirectory, TEST_CLASSES_DIRECTORY);
@@ -293,8 +295,9 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         );
 
         final File commonWebSrcDirectory = new File(webModuleDirectory, COMMON_WEB_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath())
+        contentEntry.addSourceFolder(
+            VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath()),
+            JavaSourceRootType.SOURCE
         );
     }
 }
