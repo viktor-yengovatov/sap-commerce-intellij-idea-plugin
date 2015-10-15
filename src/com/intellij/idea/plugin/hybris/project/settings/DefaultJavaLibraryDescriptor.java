@@ -1,0 +1,169 @@
+/*
+ * This file is part of "Hybris Integration" plugin for Intellij IDEA.
+ * Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.intellij.idea.plugin.hybris.project.settings;
+
+import com.intellij.openapi.util.io.FileUtil;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+
+/**
+ * Created 11:05 PM 24 June 2015.
+ *
+ * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ */
+public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
+
+    @NotNull
+    private final File libraryFile;
+    private final File sourcesFile;
+    private final boolean isExported;
+    private final boolean isDirectoryWithClasses;
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile) {
+        Validate.notNull(libraryFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = null;
+        this.isExported = false;
+        this.isDirectoryWithClasses = false;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile, @NotNull final File sourcesFile) {
+        Validate.notNull(libraryFile);
+        Validate.notNull(sourcesFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = sourcesFile;
+        this.isExported = false;
+        this.isDirectoryWithClasses = false;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
+                                        final boolean isExported) {
+        Validate.notNull(libraryFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = null;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = false;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
+                                        @NotNull final File sourcesFile,
+                                        final boolean isExported) {
+        Validate.notNull(libraryFile);
+        Validate.notNull(sourcesFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = sourcesFile;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = false;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
+                                        final boolean isExported,
+                                        final boolean isDirectoryWithClasses) {
+        Validate.notNull(libraryFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = null;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = isDirectoryWithClasses;
+    }
+
+    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
+                                        @NotNull final File sourcesFile,
+                                        final boolean isExported,
+                                        final boolean isDirectoryWithClasses) {
+        Validate.notNull(libraryFile);
+        Validate.notNull(sourcesFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = sourcesFile;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = isDirectoryWithClasses;
+    }
+
+    @NotNull
+    @Override
+    public File getLibraryFile() {
+        return libraryFile;
+    }
+
+    @Nullable
+    @Override
+    public File getSourcesFile() {
+        return sourcesFile;
+    }
+
+    @Override
+    public boolean isExported() {
+        return isExported;
+    }
+
+    @Override
+    public boolean isDirectoryWithClasses() {
+        return isDirectoryWithClasses;
+    }
+
+    @Override
+    public int compareTo(@NotNull final JavaLibraryDescriptor o) {
+        return FileUtil.compareFiles(this.libraryFile, o.getLibraryFile());
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(libraryFile)
+            .toHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (null == obj || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final DefaultJavaLibraryDescriptor other = (DefaultJavaLibraryDescriptor) obj;
+
+        return new EqualsBuilder()
+            .append(libraryFile, other.libraryFile)
+            .isEquals();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("DefaultJavaLibraryDescriptor{");
+        sb.append("libraryFile=").append(libraryFile);
+        sb.append("sourcesFile=").append(sourcesFile);
+        sb.append(", isExported=").append(isExported);
+        sb.append(", isDirectoryWithClasses=").append(isDirectoryWithClasses);
+        sb.append('}');
+        return sb.toString();
+    }
+}
