@@ -35,7 +35,7 @@ You can install this plugin to your IDE directly from the [repository](https://p
 ## Contribution guidelines ##
 
 * Please read [Contributor License Agreement](http://developercertificate.org/)
-* Be sure to include into your patch, pull request or commit message the following line: "Signed-off-by: Your Real Name <joe.smith@email.com>" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
+* Be sure to include into your patch, pull request or commit message the following line: "Signed-off-by: Your Real Name <your.email@email.com>" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
 * [How To Configure Project Environment](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment)
 * Available tasks [here](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issues?status=new&status=open) also you can suggest new features.
 * Also you can find useful information in our [wiki](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home).
