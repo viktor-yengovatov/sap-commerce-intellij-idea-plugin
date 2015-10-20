@@ -35,7 +35,7 @@
 
     <description>
         <![CDATA[
-          This plugin is an open source (LGPL) and official plugin for hybris platform supported by community and hybris.
+          This plugin is an open source (LGPL) and <b>official</b> plugin for hybris platform supported by community and hybris.
 
           <br/>
           If you have any questions you can send an email to me:
@@ -50,7 +50,7 @@
           <br/>
           <b>Import of hybris extensions to Intellij IDEA:</b>
           <br/>
-          - Automatic module dependency management.
+          - Automatic modules dependency management.
           <br/>
           - Automatic classpath configuration.
           <br/>
