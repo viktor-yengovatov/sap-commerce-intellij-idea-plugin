@@ -1,5 +1,5 @@
 /*
- * This file is part of "Hybris Integration" plugin for Intellij IDEA.
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
  * Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,13 +37,13 @@ public class HybrisSettingsConfigurable implements Configurable {
     @Nls
     @Override
     public String getDisplayName() {
-        return "Hybris Integration";
+        return "hybris integration";
     }
 
     @Nullable
     @Override
     public String getHelpTopic() {
-        return "Hybris Integration plugin configuration.";
+        return "hybris integration plugin configuration.";
     }
 
     @Nullable
