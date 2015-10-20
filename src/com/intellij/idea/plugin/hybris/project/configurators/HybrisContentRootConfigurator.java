@@ -284,9 +284,8 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         );
 
         final File webAddonSrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE
+        contentEntry.addExcludeFolder(
+            VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath())
         );
 
         final File webTestClassesDirectory = new File(webModuleDirectory, TEST_CLASSES_DIRECTORY);
@@ -295,9 +294,8 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         );
 
         final File commonWebSrcDirectory = new File(webModuleDirectory, COMMON_WEB_SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE
+        contentEntry.addExcludeFolder(
+            VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath())
         );
     }
 }
