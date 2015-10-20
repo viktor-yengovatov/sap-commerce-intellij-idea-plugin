@@ -17,20 +17,20 @@ See the GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-## Hybris Integration Intellij IDEA Plugin ##
+## hybris integration Intellij IDEA Plugin ##
 
-This plugin provides [Hybris](https://hybris.com/ru/) integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
+This plugin provides [hybris](https://hybris.com/ru/) integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 You can install this plugin to your IDE directly from the [repository](https://plugins.jetbrains.com/plugin/7525) by clicking on the ["Browse Repositories"](https://www.jetbrains.com/idea/help/installing-updating-and-uninstalling-repository-plugins.html) button in Settings/Plugins dialog. Also you can manually download required version of the jar or zip file ([here](https://plugins.jetbrains.com/plugin/7525) or [here](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/downloads)) and install it.
 
 ## Features ##
 
-* Import of Hybris extensions into IDEA with automatic modules configuration and dependencies management.
-* Syntax highlighting, autocompletion, code formatting and general code assistance for Hybris Impex files.
+* Import of hybris extensions into IDEA with automatic modules configuration and dependencies management.
+* Syntax highlighting, autocompletion, code formatting and general code assistance for hybris Impex files.
 
 ## Guides ##
 
-* [How to import Hybris project using Intellij IDEA "Hybris Integration" plugin](https://www.youtube.com/watch?v=_wVbowe39GM)
-* [How to use HotSwap in Hybris with Oracle JDK and DCEVM OpenJDK](https://www.youtube.com/watch?v=I-YYKD0OSyY)
+* [How to import hybris project using Intellij IDEA "hybris integration" plugin](https://www.youtube.com/watch?v=_wVbowe39GM)
+* [How to use HotSwap in hybris with Oracle JDK and DCEVM OpenJDK](https://www.youtube.com/watch?v=I-YYKD0OSyY)
 
 ## Contribution guidelines ##
 

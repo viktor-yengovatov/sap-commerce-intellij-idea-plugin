@@ -1,5 +1,5 @@
 /*
- * This file is part of "Hybris Integration" plugin for Intellij IDEA.
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
  * Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
