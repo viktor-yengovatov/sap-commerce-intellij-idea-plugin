@@ -26,6 +26,7 @@ You can install this plugin to your IDE directly from the [repository](https://p
 
 * Import of hybris extensions into IDEA with automatic modules configuration and dependencies management.
 * Syntax highlighting, autocompletion, code formatting and general code assistance for hybris Impex files.
+* Automatic Spring facet configuration (only Ultimate IDEA). 
 
 ## Guides ##
 
