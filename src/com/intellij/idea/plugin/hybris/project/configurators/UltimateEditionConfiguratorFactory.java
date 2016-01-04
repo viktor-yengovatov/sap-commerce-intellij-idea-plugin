@@ -18,11 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.openapi.application.ApplicationInfo;
+import com.intellij.openapi.util.BuildNumber;
+
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
 public class UltimateEditionConfiguratorFactory extends CommunityEditionConfiguratorFactory implements ConfiguratorFactory {
 
+    // bug IDEA-143901 was fixed in 144.1948
+    public static final int IDEA_143901_FIX_BASELINE_VERSION = 144;
     @Override
     public FacetConfigurator getFacetConfigurator() {
         return new DefaultFacetConfigurator();
@@ -30,6 +35,10 @@ public class UltimateEditionConfiguratorFactory extends CommunityEditionConfigur
 
     @Override
     public SpringConfigurator getSpringConfigurator() {
-        return new NoInheritanceSpringConfigurator();
+        final BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();
+        if (buildNumber.getBaselineVersion() < IDEA_143901_FIX_BASELINE_VERSION) {
+            return new NoInheritanceSpringConfigurator();
+        }
+        return new DefaultSpringConfigurator();
     }
 }
