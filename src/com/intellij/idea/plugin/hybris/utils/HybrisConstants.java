@@ -42,6 +42,28 @@ public final class HybrisConstants {
     public static final String ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs";
     public static final String GLOBAL_CONTEXT_SPRING_FILES = "global-context";
 
+    public static final String SRC_DIRECTORY = "src";
+    public static final String GEN_SRC_DIRECTORY = "gensrc";
+    public static final String TEST_SRC_DIRECTORY = "testsrc";
+    public static final String HMC_MODULE_DIRECTORY = "hmc";
+    public static final String WEB_MODULE_DIRECTORY = "web";
+    public static final String BACK_OFFICE_MODULE_DIRECTORY = "backoffice";
+    public static final String ADDON_SRC_DIRECTORY = "addonsrc";
+    public static final String TEST_CLASSES_DIRECTORY = "testclasses";
+    public static final String CLASSES_DIRECTORY = "classes";
+    public static final String SETTINGS_DIRECTORY = ".settings";
+    public static final String EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders";
+    public static final String WEB_ROOT_DIRECTORY = "webroot";
+    public static final String WEB_INF_DIRECTORY = "WEB-INF";
+    public static final String COMMON_WEB_SRC_DIRECTORY = "commonwebsrc";
+    public static final String ECLIPSE_BIN_DIRECTORY = "eclipsebin";
+    public static final String COMMON_WEB_MODULE_DIRECTORY = "commonweb";
+    public static final String ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon";
+    public static final String PLATFORM_BOOTSTRAP_DIRECTORY = "bootstrap";
+    public static final String PLATFORM_MODEL_CLASSES_DIRECTORY = "modelclasses";
+    public static final String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
+    public static final String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
+
     public static final String COMMON_LIBS_GROUP = "Common libs";
 
     public static final String WEB_INF_LIB_DIRECTORY = "web/webroot/WEB-INF/lib";

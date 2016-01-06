@@ -173,6 +173,11 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
+    public boolean isInCustomDir() {
+        return getRelativePath().contains("bin"+File.separator+"custom");
+    }
+
+    @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .append(this.getName())
