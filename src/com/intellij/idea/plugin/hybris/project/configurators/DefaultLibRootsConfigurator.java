@@ -171,6 +171,13 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.getLibraryFile()), OrderRootType.CLASSES
         );
 
+        if (null != javaLibraryDescriptor.getSourcesFile()) {
+            final VirtualFile srcDirVF = VfsUtil.findFileByIoFile(javaLibraryDescriptor.getSourcesFile(), true);
+            if (null != srcDirVF) {
+                libraryModifiableModel.addRoot(srcDirVF, OrderRootType.SOURCES);
+            }
+        }
+
         if (sourceCodeRoot != null && javaLibraryDescriptor.getLibraryFile().getName().endsWith("server.jar")) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }

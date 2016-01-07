@@ -151,7 +151,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         return dependenciesSet;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Set<String> getSpringFileSet() {
         return springFileSet;
@@ -168,8 +168,13 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
-    public void setInLocalExtensions(boolean inLocalExtensions) {
+    public void setInLocalExtensions(final boolean inLocalExtensions) {
         this.inLocalExtensions = inLocalExtensions;
+    }
+
+    @Override
+    public boolean isInCustomDir() {
+        return getRelativePath().contains("bin"+File.separator+"custom");
     }
 
     @Override

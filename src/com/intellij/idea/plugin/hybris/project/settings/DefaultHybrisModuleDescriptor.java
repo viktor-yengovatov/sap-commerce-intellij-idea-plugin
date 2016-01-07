@@ -24,9 +24,11 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.Exten
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.vfs.VfsUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaResourceRootType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -34,6 +36,8 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.*;
 
+import static com.intellij.idea.plugin.hybris.utils.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.utils.HybrisConstants.RESOURCES_DIRECTORY;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -144,25 +148,56 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     @NotNull
     @Override
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        final List<JavaLibraryDescriptor> libs = new ArrayList<JavaLibraryDescriptor>(5);
+        final List<JavaLibraryDescriptor> libs = new ArrayList<JavaLibraryDescriptor>(6);
 
-        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY), true));
+        if (this.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+
+            if (!this.isInCustomDir()) {
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                    new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY),
+                    true, true
+                ));
+
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(this.getRootDirectory(), HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                    new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY),
+                    true, true
+                ));
+
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(this.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY),
+                    true, true
+                ));
+
+                final File hmcModuleDirectory = new File(this.getRootDirectory(), HMC_MODULE_DIRECTORY);
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(hmcModuleDirectory, HybrisConstants.RESOURCES_DIRECTORY),
+                    true, true
+                ));
+            }
+
+        } else {
+
+            final File webSrcDir = new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY);
+            if (!webSrcDir.exists()) {
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY), true, true
+                ));
+            }
+        }
+
+        libs.add(new DefaultJavaLibraryDescriptor(
+            new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY),
+            new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY),
+            true
+        ));
+
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY)));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY)));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY)));
 
-        final File webSrcDir = new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY);
-        if (!webSrcDir.exists()) {
-            libs.add(new DefaultJavaLibraryDescriptor(
-                new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY), true, true
-            ));
-        }
-
         return Collections.unmodifiableList(libs);
-    }
-
-    public boolean isInCustomDir() {
-        return getRelativePath().contains("bin"+File.separator+"custom");
     }
 
     @Override
