@@ -36,14 +36,14 @@ import java.io.File;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class SearchHybrisDistributonDirectoryTaskModalWindow extends Task.Modal {
+public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal {
 
-    private static final Logger LOG = Logger.getInstance(SearchHybrisDistributonDirectoryTaskModalWindow.class);
+    private static final Logger LOG = Logger.getInstance(SearchHybrisDistributionDirectoryTaskModalWindow.class);
 
     protected final File rootProjectDirectory;
     protected final HybrisProjectDescriptor projectImportParameters;
 
-    public SearchHybrisDistributonDirectoryTaskModalWindow(
+    public SearchHybrisDistributionDirectoryTaskModalWindow(
         @NotNull final File rootProjectDirectory,
         @NotNull final HybrisProjectDescriptor projectImportParameters
     ) {

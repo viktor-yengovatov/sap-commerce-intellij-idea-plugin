@@ -20,7 +20,8 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
-import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributonDirectoryTaskModalWindow;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -29,6 +30,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -45,7 +47,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private JCheckBox storeModuleFilesInCheckBox;
     private TextFieldWithBrowseButton sourceCodeZipFilesInChooser;
     private JTextField projectNameTextField;
-    private JCheckBox importOOTBModulesInReadOnlyModeCheckBox;
+    private JCheckBox importOotbModulesInReadOnlyModeCheckBox;
     private TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
     private TextFieldWithBrowseButton customExtensionsDirectoryFilesInChooser;
 
@@ -104,7 +106,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         }
 
         this.getContext().getHybrisProjectDescriptor().setImportOotbModulesInReadOnlyMode(
-            this.importOOTBModulesInReadOnlyModeCheckBox.isSelected()
+            this.importOotbModulesInReadOnlyModeCheckBox.isSelected()
         );
 
         this.getContext().getHybrisProjectDescriptor().setSourceCodeZip(
@@ -132,29 +134,68 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         this.projectNameTextField.setText(getWizardContext().getProjectName());
 
-        this.importOOTBModulesInReadOnlyModeCheckBox.setSelected(
-            this.getContext().getHybrisProjectDescriptor().isImportOotbModulesInReadOnlyMode()
+        final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
+
+        this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
+            hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
 
-        ProgressManager.getInstance().run(new SearchHybrisDistributonDirectoryTaskModalWindow(
-            new File(this.getBuilder().getFileToImport()), this.getContext().getHybrisProjectDescriptor()
-        ));
+        this.reinitializeHybrisDistAndCustomDirs();
 
-        if (null != this.getContext().getHybrisProjectDescriptor().getHybrisDistributionDirectory()) {
+        if (null != hybrisProjectDescriptor.getHybrisDistributionDirectory()) {
             this.hybrisDistributionDirectoryFilesInChooser.setText(
-                this.getContext().getHybrisProjectDescriptor().getHybrisDistributionDirectory().getAbsolutePath()
-            );
-
-            this.getContext().getHybrisProjectDescriptor().setCustomExtensionsDirectory(
-                new File(this.getContext().getHybrisProjectDescriptor().getHybrisDistributionDirectory(),
-                         HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH
-                )
-            );
-
-            this.customExtensionsDirectoryFilesInChooser.setText(
-                this.getContext().getHybrisProjectDescriptor().getCustomExtensionsDirectory().getAbsolutePath()
+                hybrisProjectDescriptor.getHybrisDistributionDirectory().getAbsolutePath()
             );
         }
+
+        if (null != hybrisProjectDescriptor.getCustomExtensionsDirectory()) {
+            this.customExtensionsDirectoryFilesInChooser.setText(
+                hybrisProjectDescriptor.getCustomExtensionsDirectory().getAbsolutePath()
+            );
+        }
+    }
+
+    protected void reinitializeHybrisDistAndCustomDirs() {
+        final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
+
+        if (null == hybrisProjectDescriptor.getHybrisDistributionDirectory()
+            || this.isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir()) {
+
+            ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
+                new File(this.getBuilder().getFileToImport()), hybrisProjectDescriptor
+            ));
+        }
+
+        if (null != hybrisProjectDescriptor.getHybrisDistributionDirectory()) {
+
+            if (null == hybrisProjectDescriptor.getCustomExtensionsDirectory()
+                || this.isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir()) {
+
+                hybrisProjectDescriptor.setCustomExtensionsDirectory(
+                    new File(hybrisProjectDescriptor.getHybrisDistributionDirectory(),
+                             HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH
+                    )
+                );
+            }
+        }
+    }
+
+    protected boolean isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir() {
+        Validate.notNull(this.getContext().getHybrisProjectDescriptor().getHybrisDistributionDirectory());
+
+        return !StringUtils.startsWith(
+            this.getContext().getHybrisProjectDescriptor().getHybrisDistributionDirectory().getAbsolutePath(),
+            this.getBuilder().getFileToImport()
+        );
+    }
+
+    protected boolean isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir() {
+        Validate.notNull(this.getContext().getHybrisProjectDescriptor().getCustomExtensionsDirectory());
+
+        return !StringUtils.startsWith(
+            this.getContext().getHybrisProjectDescriptor().getCustomExtensionsDirectory().getAbsolutePath(),
+            this.getBuilder().getFileToImport()
+        );
     }
 
     @Override
