@@ -18,14 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.utils;
 
+import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,9 +83,45 @@ public final class VirtualFileSystemUtils {
         }
     }
 
-    public static VirtualFile getByUrl(@NotNull final String url){
+    public static VirtualFile getByUrl(@NotNull final String url) {
         Validate.notNull(url);
         return VirtualFileManager.getInstance().findFileByUrl(url);
     }
 
+    @Nullable
+    public static File findFileByNameInDirectory(@NotNull final File directory,
+                                                 @NotNull final String fileName,
+                                                 @Nullable final Processor<File> progressListenerProcessor
+    ) throws InterruptedException {
+        Validate.notNull(directory);
+        Validate.isTrue(directory.isDirectory());
+        Validate.notNull(fileName);
+
+        if (null != progressListenerProcessor) {
+            if (!progressListenerProcessor.shouldContinue(directory)) {
+                throw new InterruptedException("Modules scanning has been interrupted.");
+            }
+        }
+
+        final File[] files = directory.listFiles();
+
+        if (null != files) {
+            for (File file : files) {
+
+                if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), fileName)) {
+                    return file;
+                }
+
+                if (file.isDirectory()) {
+                    final File result = findFileByNameInDirectory(file, fileName, progressListenerProcessor);
+
+                    if (null != result) {
+                        return result;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 }

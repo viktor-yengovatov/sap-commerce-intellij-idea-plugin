@@ -74,4 +74,14 @@ public interface HybrisProjectDescriptor {
     boolean isImportOotbModulesInReadOnlyMode();
 
     void setImportOotbModulesInReadOnlyMode(boolean importOotbModulesInReadOnlyMode);
+
+    @Nullable
+    File getHybrisDistributionDirectory();
+
+    void setHybrisDistributionDirectory(@Nullable File hybrisDistributionDirectory);
+
+    @Nullable
+    File getCustomExtensionsDirectory();
+
+    void setCustomExtensionsDirectory(@Nullable File customExtensionsDirectory);
 }

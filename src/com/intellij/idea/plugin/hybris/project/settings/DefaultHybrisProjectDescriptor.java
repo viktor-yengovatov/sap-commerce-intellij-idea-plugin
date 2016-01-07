@@ -82,6 +82,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected boolean importOotbModulesInReadOnlyMode = true;
     @NotNull
     protected final List<String> explicitlyDefinedModules = new ArrayList<String>();
+    @Nullable
+    protected File hybrisDistributionDirectory;
+    @Nullable
+    protected File customExtensionsDirectory;
 
     public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
         this.project = project;
@@ -142,6 +146,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void clear() {
         this.rootDirectory = null;
+        this.hybrisDistributionDirectory = null;
+        this.customExtensionsDirectory = null;
         this.foundModules.clear();
         this.modulesChosenForImport.clear();
         this.explicitlyDefinedModules.clear();
@@ -309,6 +315,28 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setImportOotbModulesInReadOnlyMode(final boolean importOotbModulesInReadOnlyMode) {
         this.importOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyMode;
+    }
+
+    @Override
+    @Nullable
+    public File getHybrisDistributionDirectory() {
+        return hybrisDistributionDirectory;
+    }
+
+    @Override
+    public void setHybrisDistributionDirectory(@Nullable final File hybrisDistributionDirectory) {
+        this.hybrisDistributionDirectory = hybrisDistributionDirectory;
+    }
+
+    @Override
+    @Nullable
+    public File getCustomExtensionsDirectory() {
+        return customExtensionsDirectory;
+    }
+
+    @Override
+    public void setCustomExtensionsDirectory(@Nullable final File customExtensionsDirectory) {
+        this.customExtensionsDirectory = customExtensionsDirectory;
     }
 
     @NotNull

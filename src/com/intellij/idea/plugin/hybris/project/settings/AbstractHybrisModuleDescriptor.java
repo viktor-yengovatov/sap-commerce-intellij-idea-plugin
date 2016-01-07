@@ -174,7 +174,13 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @Override
     public boolean isInCustomDir() {
-        return getRelativePath().contains("bin"+File.separator+"custom");
+        if (null == this.getRootProjectDescriptor().getCustomExtensionsDirectory()) {
+            throw new IllegalStateException("CustomExtensionsDirectory is not set.");
+        } else {
+            return this.moduleRootDirectory.getAbsolutePath().startsWith(
+                this.getRootProjectDescriptor().getCustomExtensionsDirectory().getAbsolutePath()
+            );
+        }
     }
 
     @Override

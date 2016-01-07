@@ -27,6 +27,8 @@ public final class HybrisConstants {
 
     public static final String EXTENSION_INFO_XML = "extensioninfo.xml";
     public static final String LOCAL_EXTENSIONS_XML = "localextensions.xml";
+    public static final String HYBRIS_SERVER_SHELL_SCRIPT_NAME = "bin/platform/hybrisserver.sh";
+    public static final String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = "bin/custom";
     public static final String EXTENSIONS_XML = "extensions.xml";
     public static final String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     public static final String OLD_IDEA_MODULE_FILE_EXTENSION = ".eml";
@@ -89,6 +91,7 @@ public final class HybrisConstants {
 
     public static final String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
     public static final String CONFIGURATOR_FACTORY_ID = "ccom.intellij.idea.plugin.hybris.impex.hybrisConfiguratorFactory";
+
     public static final int MAX_EXISTING_MODULE_NAMES = 20;
 
     private HybrisConstants() throws IllegalAccessException {
