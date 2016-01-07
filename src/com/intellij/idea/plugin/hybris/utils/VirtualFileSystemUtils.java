@@ -108,7 +108,7 @@ public final class VirtualFileSystemUtils {
         if (null != files) {
             for (File file : files) {
 
-                if (StringUtils.endsWithIgnoreCase(file.getAbsolutePath(), fileName)) {
+                if (StringUtils.endsWith(file.getAbsolutePath(), fileName)) {
                     return file;
                 }
 

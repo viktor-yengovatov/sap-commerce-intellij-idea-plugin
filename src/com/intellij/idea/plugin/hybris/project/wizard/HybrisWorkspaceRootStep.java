@@ -170,20 +170,37 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             }
         }
 
+
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
-            return false;
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.hybris.distribution.directory.empty")
+            );
         }
 
         if (!new File(this.hybrisDistributionDirectoryFilesInChooser.getText()).isDirectory()) {
-            return false;
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"));
         }
 
+        if (!StringUtils.startsWith(this.hybrisDistributionDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.hybris.distribution.directory.is.outside.of.project.root.directory"));
+        }
+
+
         if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())) {
-            return false;
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.empty"));
         }
 
         if (!new File(this.customExtensionsDirectoryFilesInChooser.getText()).isDirectory()) {
-            return false;
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
+        }
+
+        if (!StringUtils.startsWith(this.customExtensionsDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.is.outside.of.project.root.directory"));
         }
 
         return true;
