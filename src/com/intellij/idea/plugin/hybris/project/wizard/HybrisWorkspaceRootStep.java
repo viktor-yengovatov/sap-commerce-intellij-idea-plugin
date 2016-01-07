@@ -45,6 +45,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private TextFieldWithBrowseButton sourceCodeZipFilesInChooser;
     private JLabel sourceCodeZip;
     private JTextField projectNameTextField;
+    private JCheckBox importOOTBModulesInReadOnlyModeCheckBox;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -65,7 +66,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         this.sourceCodeZipFilesInChooser.addBrowseFolderListener(
             HybrisI18NBundleUtils.message("hybris.import.label.select.hybris.src.file"),
-            "",
+            HybrisI18NBundleUtils.message("hybris.import.label.select.hybris.src.file"),
             null,
             FileChooserDescriptorFactory.createSingleFileDescriptor()
         );
@@ -87,6 +88,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             );
         }
 
+        this.getContext().getHybrisProjectDescriptor().setImportOotbModulesInReadOnlyMode(
+            this.importOOTBModulesInReadOnlyModeCheckBox.isSelected()
+        );
+
         this.getContext().getHybrisProjectDescriptor().setSourceCodeZip(
             new File(this.sourceCodeZipFilesInChooser.getText())
         );
@@ -101,7 +106,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 this.getBuilder().getFileToImport(), HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
             ).getAbsolutePath()
         );
-        projectNameTextField.setText(getWizardContext().getProjectName());
+
+        this.projectNameTextField.setText(getWizardContext().getProjectName());
+
+        this.importOOTBModulesInReadOnlyModeCheckBox.setSelected(
+            this.getContext().getHybrisProjectDescriptor().isImportOotbModulesInReadOnlyMode()
+        );
     }
 
     @Override

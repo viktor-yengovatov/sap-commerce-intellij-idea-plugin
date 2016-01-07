@@ -70,4 +70,8 @@ public interface HybrisProjectDescriptor {
     boolean isOpenProjectSettingsAfterImport();
 
     void setOpenProjectSettingsAfterImport(boolean openProjectSettingsAfterImport);
+
+    boolean isImportOotbModulesInReadOnlyMode();
+
+    void setImportOotbModulesInReadOnlyMode(boolean importOotbModulesInReadOnlyMode);
 }

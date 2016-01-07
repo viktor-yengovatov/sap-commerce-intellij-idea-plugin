@@ -79,6 +79,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File sourceCodeZip;
     protected boolean openProjectSettingsAfterImport;
+    protected boolean importOotbModulesInReadOnlyMode = true;
     @NotNull
     protected final List<String> explicitlyDefinedModules = new ArrayList<String>();
 
@@ -298,6 +299,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setOpenProjectSettingsAfterImport(final boolean openProjectSettingsAfterImport) {
         this.openProjectSettingsAfterImport = openProjectSettingsAfterImport;
+    }
+
+    @Override
+    public boolean isImportOotbModulesInReadOnlyMode() {
+        return importOotbModulesInReadOnlyMode;
+    }
+
+    @Override
+    public void setImportOotbModulesInReadOnlyMode(final boolean importOotbModulesInReadOnlyMode) {
+        this.importOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyMode;
     }
 
     @NotNull
