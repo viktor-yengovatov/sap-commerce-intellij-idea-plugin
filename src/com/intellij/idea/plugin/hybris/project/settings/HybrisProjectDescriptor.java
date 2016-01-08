@@ -67,6 +67,8 @@ public interface HybrisProjectDescriptor {
                                            @Nullable Processor<File> progressListenerProcessor,
                                            @Nullable Processor<List<File>> errorsProcessor);
 
+    void reinitializeHybrisDistAndCustomDirs();
+
     boolean isOpenProjectSettingsAfterImport();
 
     void setOpenProjectSettingsAfterImport(boolean openProjectSettingsAfterImport);

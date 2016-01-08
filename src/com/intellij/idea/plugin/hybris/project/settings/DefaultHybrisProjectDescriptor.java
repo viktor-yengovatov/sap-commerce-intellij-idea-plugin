@@ -22,6 +22,7 @@ import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ExtensionType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
+import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
@@ -29,6 +30,7 @@ import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
@@ -36,6 +38,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -295,6 +298,50 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         return null;
+    }
+
+    @Override
+    public void reinitializeHybrisDistAndCustomDirs() {
+        Validate.notNull(this.getRootDirectory());
+
+        if (null == this.getHybrisDistributionDirectory()
+            || this.isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir()) {
+
+            ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
+                this.getRootDirectory(), this
+            ));
+        }
+
+        if (null != this.getHybrisDistributionDirectory()) {
+
+            if (null == this.getCustomExtensionsDirectory()
+                || this.isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir()) {
+
+                this.setCustomExtensionsDirectory(
+                    new File(this.getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH)
+                );
+            }
+        }
+    }
+
+    protected boolean isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir() {
+        Validate.notNull(this.getHybrisDistributionDirectory());
+        Validate.notNull(this.getRootDirectory());
+
+        return !StringUtils.startsWith(
+            this.getHybrisDistributionDirectory().getAbsolutePath(),
+            this.getRootDirectory().getAbsolutePath()
+        );
+    }
+
+    protected boolean isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir() {
+        Validate.notNull(this.getCustomExtensionsDirectory());
+        Validate.notNull(this.getRootDirectory());
+
+        return !StringUtils.startsWith(
+            this.getCustomExtensionsDirectory().getAbsolutePath(),
+            this.getRootDirectory().getAbsolutePath()
+        );
     }
 
     @Override

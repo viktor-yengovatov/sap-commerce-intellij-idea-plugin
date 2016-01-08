@@ -21,16 +21,13 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.Validate;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -140,7 +137,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
 
-        this.reinitializeHybrisDistAndCustomDirs();
+        hybrisProjectDescriptor.reinitializeHybrisDistAndCustomDirs();
 
         if (null != hybrisProjectDescriptor.getHybrisDistributionDirectory()) {
             this.hybrisDistributionDirectoryFilesInChooser.setText(
@@ -153,49 +150,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 hybrisProjectDescriptor.getCustomExtensionsDirectory().getAbsolutePath()
             );
         }
-    }
-
-    protected void reinitializeHybrisDistAndCustomDirs() {
-        final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
-
-        if (null == hybrisProjectDescriptor.getHybrisDistributionDirectory()
-            || this.isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir()) {
-
-            ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
-                new File(this.getBuilder().getFileToImport()), hybrisProjectDescriptor
-            ));
-        }
-
-        if (null != hybrisProjectDescriptor.getHybrisDistributionDirectory()) {
-
-            if (null == hybrisProjectDescriptor.getCustomExtensionsDirectory()
-                || this.isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir()) {
-
-                hybrisProjectDescriptor.setCustomExtensionsDirectory(
-                    new File(hybrisProjectDescriptor.getHybrisDistributionDirectory(),
-                             HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH
-                    )
-                );
-            }
-        }
-    }
-
-    protected boolean isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir() {
-        Validate.notNull(this.getContext().getHybrisProjectDescriptor().getHybrisDistributionDirectory());
-
-        return !StringUtils.startsWith(
-            this.getContext().getHybrisProjectDescriptor().getHybrisDistributionDirectory().getAbsolutePath(),
-            this.getBuilder().getFileToImport()
-        );
-    }
-
-    protected boolean isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir() {
-        Validate.notNull(this.getContext().getHybrisProjectDescriptor().getCustomExtensionsDirectory());
-
-        return !StringUtils.startsWith(
-            this.getContext().getHybrisProjectDescriptor().getCustomExtensionsDirectory().getAbsolutePath(),
-            this.getBuilder().getFileToImport()
-        );
     }
 
     @Override
