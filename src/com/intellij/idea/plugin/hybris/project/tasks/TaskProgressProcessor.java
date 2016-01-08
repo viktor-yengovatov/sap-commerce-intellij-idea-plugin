@@ -18,34 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.ui.Messages;
-
-import java.io.File;
-import java.util.List;
-
 /**
- * Created 9:00 PM 07 January 2016.
+ * Created 7:09 PM 20 June 2015.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class DirectoriesScannerErrorsProcessor implements TaskProgressProcessor<List<File>> {
+public interface TaskProgressProcessor<T> {
 
-    @Override
-    public boolean shouldContinue(final List<File> t) {
-        if (!t.isEmpty()) {
-            ApplicationManager.getApplication().invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    Messages.showErrorDialog(
-                        HybrisI18NBundleUtils.message("hybris.project.import.scan.failed", t),
-                        HybrisI18NBundleUtils.message("hybris.project.error")
-                    );
-                }
-            });
-        }
+    boolean shouldContinue(T t);
 
-        return false;
-    }
 }

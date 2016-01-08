@@ -22,15 +22,13 @@ import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ExtensionType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
-import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
-import com.intellij.idea.plugin.hybris.project.utils.Processor;
+import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
@@ -38,7 +36,6 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -180,8 +177,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Override
     public void setRootDirectoryAndScanForModules(@NotNull final File rootDirectory,
-                                                  @Nullable final Processor<File> progressListenerProcessor,
-                                                  @Nullable final Processor<List<File>> errorsProcessor) {
+                                                  @Nullable final TaskProgressProcessor<File> progressListenerProcessor,
+                                                  @Nullable final TaskProgressProcessor<List<File>> errorsProcessor) {
         Validate.notNull(rootDirectory);
 
         this.rootDirectory = rootDirectory;
@@ -203,7 +200,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (configHybrisModuleDescriptor == null) {
             return;
         }
-        Hybrisconfig hybrisconfig = unmarshalLocalExtensions(configHybrisModuleDescriptor);
+        final Hybrisconfig hybrisconfig = unmarshalLocalExtensions(configHybrisModuleDescriptor);
         if (hybrisconfig == null) {
             return;
         }
@@ -223,7 +220,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Nullable
     private ConfigHybrisModuleDescriptor findConfigDir() {
-        List<ConfigHybrisModuleDescriptor> foundConfigModules = new ArrayList<ConfigHybrisModuleDescriptor>();
+        final List<ConfigHybrisModuleDescriptor> foundConfigModules = new ArrayList<ConfigHybrisModuleDescriptor>();
         PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor = null;
         for (HybrisModuleDescriptor moduleDescriptor: foundModules) {
             if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
@@ -261,9 +258,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 continue;
             }
             final String dir = extensionType.getDir();
-            int indexSlash = dir.lastIndexOf("/");
-            int indexBack = dir.lastIndexOf("\\");
-            int index = Math.max(indexSlash, indexBack);
+            final int indexSlash = dir.lastIndexOf('/');
+            final int indexBack = dir.lastIndexOf('\\');
+            final int index = Math.max(indexSlash, indexBack);
             if (index == -1) {
                 explicitlyDefinedModules.add(dir);
             } else {
@@ -276,12 +273,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private Hybrisconfig unmarshalLocalExtensions(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
         Validate.notNull(configHybrisModuleDescriptor);
 
-        File localextensions = new File (configHybrisModuleDescriptor.getRootDirectory(), HybrisConstants.LOCAL_EXTENSIONS_XML);
+        final File localextensions = new File (configHybrisModuleDescriptor.getRootDirectory(), HybrisConstants.LOCAL_EXTENSIONS_XML);
         if (!localextensions.exists()) {
             return null;
         }
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Hybrisconfig.class);
+            final JAXBContext jaxbContext = JAXBContext.newInstance(Hybrisconfig.class);
             if (null == jaxbContext) {
                 LOG.error(String.format(
                     "Can not unmarshal '%s' because JAXBContext has not been created.", localextensions.getAbsolutePath()
@@ -298,50 +295,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         return null;
-    }
-
-    @Override
-    public void reinitializeHybrisDistAndCustomDirs() {
-        Validate.notNull(this.getRootDirectory());
-
-        if (null == this.getHybrisDistributionDirectory()
-            || this.isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir()) {
-
-            ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
-                this.getRootDirectory(), this
-            ));
-        }
-
-        if (null != this.getHybrisDistributionDirectory()) {
-
-            if (null == this.getCustomExtensionsDirectory()
-                || this.isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir()) {
-
-                this.setCustomExtensionsDirectory(
-                    new File(this.getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH)
-                );
-            }
-        }
-    }
-
-    protected boolean isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir() {
-        Validate.notNull(this.getHybrisDistributionDirectory());
-        Validate.notNull(this.getRootDirectory());
-
-        return !StringUtils.startsWith(
-            this.getHybrisDistributionDirectory().getAbsolutePath(),
-            this.getRootDirectory().getAbsolutePath()
-        );
-    }
-
-    protected boolean isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir() {
-        Validate.notNull(this.getCustomExtensionsDirectory());
-        Validate.notNull(this.getRootDirectory());
-
-        return !StringUtils.startsWith(
-            this.getCustomExtensionsDirectory().getAbsolutePath(),
-            this.getRootDirectory().getAbsolutePath()
-        );
     }
 
     @Override
@@ -414,8 +367,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     protected void scanDirectoryForHybrisModules(@NotNull final File rootDirectory,
-                                                 @Nullable final Processor<File> progressListenerProcessor,
-                                                 @Nullable final Processor<List<File>> errorsProcessor
+                                                 @Nullable final TaskProgressProcessor<File> progressListenerProcessor,
+                                                 @Nullable final TaskProgressProcessor<List<File>> errorsProcessor
     ) throws InterruptedException {
         Validate.notNull(rootDirectory);
 
@@ -455,7 +408,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @NotNull
     protected List<File> findModuleRoots(@NotNull final File rootProjectDirectory,
-                                         @Nullable final Processor<File> progressListenerProcessor
+                                         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException {
         Validate.notNull(rootProjectDirectory);
 

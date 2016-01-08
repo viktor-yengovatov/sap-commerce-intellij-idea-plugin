@@ -1,5 +1,5 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "Hybris Integration" plugin for Intellij IDEA.
  * Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
 /**
- * Created 7:09 PM 20 June 2015.
+ * Created 3:54 PM 08 January 2016.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public interface Processor<T> {
 
-    boolean shouldContinue(T t);
+    void process(T parameter);
 
 }

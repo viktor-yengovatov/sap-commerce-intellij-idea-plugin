@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.utils;
 
-import com.intellij.idea.plugin.hybris.project.utils.Processor;
+import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.util.io.FileUtil;
@@ -91,7 +91,7 @@ public final class VirtualFileSystemUtils {
     @Nullable
     public static File findFileByNameInDirectory(@NotNull final File directory,
                                                  @NotNull final String fileName,
-                                                 @Nullable final Processor<File> progressListenerProcessor
+                                                 @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException {
         Validate.notNull(directory);
         Validate.isTrue(directory.isDirectory());

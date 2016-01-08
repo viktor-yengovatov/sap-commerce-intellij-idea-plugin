@@ -21,13 +21,17 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
+import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -45,8 +49,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private TextFieldWithBrowseButton sourceCodeZipFilesInChooser;
     private JTextField projectNameTextField;
     private JCheckBox importOotbModulesInReadOnlyModeCheckBox;
-    private TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
-    private TextFieldWithBrowseButton customExtensionsDirectoryFilesInChooser;
+    private volatile TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
+    private volatile TextFieldWithBrowseButton customExtensionsDirectoryFilesInChooser;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -137,19 +141,50 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
 
-        hybrisProjectDescriptor.reinitializeHybrisDistAndCustomDirs();
+        if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())
+            || this.isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir()) {
 
-        if (null != hybrisProjectDescriptor.getHybrisDistributionDirectory()) {
-            this.hybrisDistributionDirectoryFilesInChooser.setText(
-                hybrisProjectDescriptor.getHybrisDistributionDirectory().getAbsolutePath()
-            );
+            ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
+                new File(this.getBuilder().getFileToImport()), new Processor<String>() {
+
+                @Override
+                public void process(final String parameter) {
+                    hybrisDistributionDirectoryFilesInChooser.setText(parameter);
+                }
+            }));
         }
 
-        if (null != hybrisProjectDescriptor.getCustomExtensionsDirectory()) {
-            this.customExtensionsDirectoryFilesInChooser.setText(
-                hybrisProjectDescriptor.getCustomExtensionsDirectory().getAbsolutePath()
-            );
+        if (StringUtils.isNotBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
+
+            if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())
+                || this.isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir()) {
+
+                this.customExtensionsDirectoryFilesInChooser.setText(
+                    new File(
+                        this.hybrisDistributionDirectoryFilesInChooser.getText(),
+                        HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH
+                    ).getAbsolutePath()
+                );
+            }
         }
+    }
+
+    protected boolean isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir() {
+        Validate.notBlank(this.hybrisDistributionDirectoryFilesInChooser.getText());
+
+        return !StringUtils.startsWith(
+            this.hybrisDistributionDirectoryFilesInChooser.getText(),
+            this.getBuilder().getFileToImport()
+        );
+    }
+
+    protected boolean isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir() {
+        Validate.notBlank(this.hybrisDistributionDirectoryFilesInChooser.getText());
+
+        return !StringUtils.startsWith(
+            this.customExtensionsDirectoryFilesInChooser.getText(),
+            this.getBuilder().getFileToImport()
+        );
     }
 
     @Override

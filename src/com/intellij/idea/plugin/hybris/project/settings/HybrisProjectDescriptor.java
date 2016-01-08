@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.intellij.idea.plugin.hybris.project.utils.Processor;
+import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,10 +64,8 @@ public interface HybrisProjectDescriptor {
     void setSourceCodeZip(@Nullable File sourceCodeZip);
 
     void setRootDirectoryAndScanForModules(@NotNull File rootDirectory,
-                                           @Nullable Processor<File> progressListenerProcessor,
-                                           @Nullable Processor<List<File>> errorsProcessor);
-
-    void reinitializeHybrisDistAndCustomDirs();
+                                           @Nullable TaskProgressProcessor<File> progressListenerProcessor,
+                                           @Nullable TaskProgressProcessor<List<File>> errorsProcessor);
 
     boolean isOpenProjectSettingsAfterImport();
 

@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.openapi.progress.ProgressIndicator;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +29,7 @@ import java.io.File;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class DirectoriesScannerProgressIndicatorUpdaterProcessor implements Processor<File> {
+public class DirectoriesScannerProgressIndicatorUpdaterProcessor implements TaskProgressProcessor<File> {
 
     protected final ProgressIndicator progressIndicator;
 

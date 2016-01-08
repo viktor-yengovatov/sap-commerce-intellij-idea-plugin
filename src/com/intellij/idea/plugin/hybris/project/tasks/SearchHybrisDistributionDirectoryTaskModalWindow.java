@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
@@ -41,11 +42,11 @@ public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal
     private static final Logger LOG = Logger.getInstance(SearchHybrisDistributionDirectoryTaskModalWindow.class);
 
     protected final File rootProjectDirectory;
-    protected final HybrisProjectDescriptor projectImportParameters;
+    protected final Processor<String> resultProcessor;
 
     public SearchHybrisDistributionDirectoryTaskModalWindow(
         @NotNull final File rootProjectDirectory,
-        @NotNull final HybrisProjectDescriptor projectImportParameters
+        @NotNull final Processor<String> resultProcessor
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),
@@ -54,10 +55,10 @@ public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal
         );
 
         Validate.notNull(rootProjectDirectory);
-        Validate.notNull(projectImportParameters);
+        Validate.notNull(resultProcessor);
 
         this.rootProjectDirectory = rootProjectDirectory;
-        this.projectImportParameters = projectImportParameters;
+        this.resultProcessor = resultProcessor;
     }
 
     @Override
@@ -80,14 +81,14 @@ public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal
             && null != hybrisServerShellScriptFile.getParentFile()
             && null != hybrisServerShellScriptFile.getParentFile().getParentFile()) {
 
-            this.projectImportParameters.setHybrisDistributionDirectory(
-                hybrisServerShellScriptFile.getParentFile().getParentFile().getParentFile()
+            this.resultProcessor.process(
+                hybrisServerShellScriptFile.getParentFile().getParentFile().getParentFile().getAbsolutePath()
             );
         }
     }
 
     @Override
     public void onCancel() {
-        this.projectImportParameters.clear();
+        this.resultProcessor.process("");
     }
 }
