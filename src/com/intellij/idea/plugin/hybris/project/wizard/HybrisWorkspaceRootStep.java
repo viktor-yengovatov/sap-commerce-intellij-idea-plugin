@@ -141,8 +141,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
 
-        if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())
-            || this.isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir()) {
+        if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
 
             ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
                 new File(this.getBuilder().getFileToImport()), new Processor<String>() {
@@ -156,8 +155,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         if (StringUtils.isNotBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
 
-            if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())
-                || this.isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir()) {
+            if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())) {
 
                 this.customExtensionsDirectoryFilesInChooser.setText(
                     new File(
@@ -167,24 +165,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 );
             }
         }
-    }
-
-    protected boolean isCurrentHybrisDistributionDirectoryNotInSelectedProjectDir() {
-        Validate.notBlank(this.hybrisDistributionDirectoryFilesInChooser.getText());
-
-        return !StringUtils.startsWith(
-            this.hybrisDistributionDirectoryFilesInChooser.getText(),
-            this.getBuilder().getFileToImport()
-        );
-    }
-
-    protected boolean isCurrentCustomExtensionsDirectoryNotInSelectedProjectDir() {
-        Validate.notBlank(this.hybrisDistributionDirectoryFilesInChooser.getText());
-
-        return !StringUtils.startsWith(
-            this.customExtensionsDirectoryFilesInChooser.getText(),
-            this.getBuilder().getFileToImport()
-        );
     }
 
     @Override
