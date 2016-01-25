@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>3.1</version>
+    <version>3.1.1</version>
 
     <extensionPoints>
         <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
@@ -126,6 +126,10 @@
 
     <change-notes>
         <![CDATA[
+          3.1.1:
+          <br/> - Bug fixes for Windows.
+          <br/>
+          <br/>
           3.1:
           <br/> - Automatic Spring facet configuration has been improved. Project import dialog has been redesigned to provide new configuration, validation. New import mode has been implemented to import OOTB hybris extensions in read-only mode like a library.
           <br/>

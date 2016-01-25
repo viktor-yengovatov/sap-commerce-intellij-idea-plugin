@@ -31,7 +31,6 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.Validate;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -194,7 +193,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         if (!StringUtils.startsWith(this.hybrisDistributionDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
             throw new ConfigurationException(
-                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.hybris.distribution.directory.is.outside.of.project.root.directory"));
+                HybrisI18NBundleUtils.message(
+                    "hybris.import.wizard.validation.hybris.distribution.directory.is.outside.of.project.root.directory",
+                    this.getBuilder().getFileToImport()
+                ));
         }
 
 
@@ -210,7 +212,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         if (!StringUtils.startsWith(this.customExtensionsDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
             throw new ConfigurationException(
-                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.is.outside.of.project.root.directory"));
+                HybrisI18NBundleUtils.message(
+                    "hybris.import.wizard.validation.custom.extensions.directory.is.outside.of.project.root.directory",
+                    this.getBuilder().getFileToImport()
+                ));
         }
 
         return true;

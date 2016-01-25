@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.utils;
 
+import java.io.File;
+
 /**
  * Created 10:30 PM 07 June 2015
  *
@@ -27,8 +29,8 @@ public final class HybrisConstants {
 
     public static final String EXTENSION_INFO_XML = "extensioninfo.xml";
     public static final String LOCAL_EXTENSIONS_XML = "localextensions.xml";
-    public static final String HYBRIS_SERVER_SHELL_SCRIPT_NAME = "bin/platform/hybrisserver.sh";
-    public static final String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = "bin/custom";
+    public static final String HYBRIS_SERVER_SHELL_SCRIPT_NAME = "bin" + File.separatorChar + "platform" + File.separatorChar + "hybrisserver.sh";
+    public static final String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = "bin" + File.separatorChar + "custom";
     public static final String EXTENSIONS_XML = "extensions.xml";
     public static final String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     public static final String OLD_IDEA_MODULE_FILE_EXTENSION = ".eml";
