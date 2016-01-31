@@ -1,5 +1,5 @@
 /*
- * This file is part of "Hybris Integration" plugin for Intellij IDEA.
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
  * Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.business.process.diagram;
 
 import com.intellij.diagram.DiagramDataModel;
-import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.diagram.DiagramRelationshipInfoAdapter;
@@ -45,15 +44,15 @@ import java.util.Map;
  */
 public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFile> {
 
-    private List<FileNode> myNodes = new ArrayList<FileNode>();
-    private List<FileEdge> myEdges = new ArrayList<FileEdge>();
-    private Map<String, FileNode> path2Node = new HashMap<String, FileNode>(myNodes.size());
+    private List<BusinessProcessDiagramFileNode> myNodes = new ArrayList<BusinessProcessDiagramFileNode>();
+    private List<BusinessProcessDiagramFileEdge> myEdges = new ArrayList<BusinessProcessDiagramFileEdge>();
+    private Map<String, BusinessProcessDiagramFileNode> path2Node = new HashMap<String, BusinessProcessDiagramFileNode>(myNodes.size());
 
     public BusinessProcessDiagramDataModel(Project project, VirtualFile file) {
         super(project, BusinessProcessDiagramProvider.getInstance());
         VirtualFile f = file;
         while (f != null) {
-            final FileNode n = new FileNode(f);
+            final BusinessProcessDiagramFileNode n = new BusinessProcessDiagramFileNode(f);
             myNodes.add(n);
             path2Node.put(f.getPath(), n);
             f = f.getParent();
@@ -63,13 +62,13 @@ public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFil
 
     @NotNull
     @Override
-    public Collection<FileNode> getNodes() {
+    public Collection<BusinessProcessDiagramFileNode> getNodes() {
         return myNodes;
     }
 
     @NotNull
     @Override
-    public Collection<FileEdge> getEdges() {
+    public Collection<BusinessProcessDiagramFileEdge> getEdges() {
         return myEdges;
     }
 
@@ -81,10 +80,10 @@ public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFil
 
     @Nullable
     @Override
-    public FileNode addElement(VirtualFile file) {
-        FileNode node = path2Node.get(file.getPath());
+    public BusinessProcessDiagramFileNode addElement(VirtualFile file) {
+        BusinessProcessDiagramFileNode node = path2Node.get(file.getPath());
         if (node == null) {
-            node = new FileNode(file);
+            node = new BusinessProcessDiagramFileNode(file);
             path2Node.put(file.getPath(), node);
             myNodes.add(node);
         }
@@ -95,11 +94,11 @@ public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFil
     public void refreshDataModel() {
         myEdges.clear();
 
-        for (FileNode node : myNodes) {
+        for (BusinessProcessDiagramFileNode node : myNodes) {
             VirtualFile f = node.getIdentifyingElement().getParent();
             int i = 1;
             while (f != null) {
-                final FileNode n = path2Node.get(f.getPath());
+                final BusinessProcessDiagramFileNode n = path2Node.get(f.getPath());
                 if (n != null) {
                     final int level = i;
                     DiagramRelationshipInfo r = level == 1 ?
@@ -114,7 +113,7 @@ public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFil
                             return "   " + String.valueOf(level);
                         }
                     };
-                    myEdges.add(new FileEdge(node, n, r));
+                    myEdges.add(new BusinessProcessDiagramFileEdge(node, n, r));
                     f = null;
                 } else {
                     f = f.getParent();

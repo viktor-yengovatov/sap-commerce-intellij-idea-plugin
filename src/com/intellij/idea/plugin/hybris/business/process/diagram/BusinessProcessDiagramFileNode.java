@@ -1,5 +1,5 @@
 /*
- * This file is part of "Hybris Integration" plugin for Intellij IDEA.
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
  * Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,18 +18,42 @@
 
 package com.intellij.idea.plugin.hybris.business.process.diagram;
 
-import com.intellij.diagram.DiagramEdgeBase;
-import com.intellij.diagram.DiagramRelationshipInfo;
+import com.intellij.diagram.DiagramNodeBase;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.vfs.VirtualFile;
+
+import javax.swing.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created 11:34 PM 31 January 2016.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class FileEdge extends DiagramEdgeBase<VirtualFile> {
+public class BusinessProcessDiagramFileNode extends DiagramNodeBase<VirtualFile> {
 
-    public FileEdge(FileNode source, FileNode target, DiagramRelationshipInfo relationship) {
-        super(source, target, relationship);
+    private final VirtualFile myFile;
+
+    public BusinessProcessDiagramFileNode(final VirtualFile file) {
+        super(BusinessProcessDiagramProvider.getInstance());
+        myFile = file;
+    }
+
+    @Nonnull
+    @Override
+    public String getTooltip() {
+        return this.getIdentifyingElement().getCanonicalPath();
+    }
+
+    @Override
+    public Icon getIcon() {
+        return myFile.isDirectory() ? AllIcons.Nodes.Folder : myFile.getFileType().getIcon();
+    }
+
+    @Nonnull
+    @Override
+    public VirtualFile getIdentifyingElement() {
+        return myFile;
     }
 }
