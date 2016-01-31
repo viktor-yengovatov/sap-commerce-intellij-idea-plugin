@@ -5,7 +5,7 @@ syntax: regexp
 ^.*[.]directory$
 
 ^out$
-^gen$
+#^gen$
 
 ^.*[.].*~$
 

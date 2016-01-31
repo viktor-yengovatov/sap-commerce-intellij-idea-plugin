@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
 
     <extensionPoints>
         <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
@@ -126,6 +126,10 @@
 
     <change-notes>
         <![CDATA[
+          3.1.2:
+          <br/> - Impex lexer has been fixed to avoid showing syntax errors for one-character attribute names.
+          <br/>
+          <br/>
           3.1.1:
           <br/> - Bug fixes for Windows.
           <br/>

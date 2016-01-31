@@ -74,7 +74,7 @@ boolean = (("true")|("false"))
 digit   = [-+]?[0-9]+([.][0-9]+)?
 //class_with_package = ({identifier}+[.]{identifier}+)+
 
-parameter_name = ({identifier}+[.]?{identifier}+)+
+parameter_name = ({identifier}+([.]?{identifier}+)*)+
 alternative_pattern = [|]
 special_parameter_name = [@]{identifier}+
 
