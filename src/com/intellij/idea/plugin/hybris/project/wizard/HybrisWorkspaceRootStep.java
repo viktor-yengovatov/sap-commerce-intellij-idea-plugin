@@ -72,7 +72,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             HybrisI18NBundleUtils.message("hybris.import.label.select.hybris.src.file"),
             "",
             null,
-            FileChooserDescriptorFactory.createSingleFileDescriptor()
+            FileChooserDescriptorFactory.createSingleLocalFileDescriptor()
         );
 
         this.hybrisDistributionDirectoryFilesInChooser.addBrowseFolderListener(
