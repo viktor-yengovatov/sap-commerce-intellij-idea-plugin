@@ -36,6 +36,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -211,7 +212,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private void preselectModules(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
         Validate.notNull(configHybrisModuleDescriptor);
         for (HybrisModuleDescriptor hybrisModuleDescriptor: foundModules) {
-            if (explicitlyDefinedModules.contains(hybrisModuleDescriptor.getName())) {
+            if (explicitlyDefinedModules.contains(StringUtils.lowerCase(hybrisModuleDescriptor.getName()))) {
                 hybrisModuleDescriptor.setInLocalExtensions(true);
             }
         }
@@ -252,7 +253,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private void processHybrisConfig(@NotNull final Hybrisconfig hybrisconfig) {
         final List<ExtensionType> extensionTypeList = hybrisconfig.getExtensions().getExtension();
         for (ExtensionType extensionType: extensionTypeList) {
-            final String name = extensionType.getName();
+            final String name = StringUtils.lowerCase(extensionType.getName());
             if (name != null) {
                 explicitlyDefinedModules.add(name);
                 continue;
@@ -262,9 +263,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             final int indexBack = dir.lastIndexOf('\\');
             final int index = Math.max(indexSlash, indexBack);
             if (index == -1) {
-                explicitlyDefinedModules.add(dir);
+                explicitlyDefinedModules.add(StringUtils.lowerCase(dir));
             } else {
-                explicitlyDefinedModules.add(dir.substring(index+1));
+                explicitlyDefinedModules.add(StringUtils.lowerCase(dir.substring(index+1)));
             }
         }
     }

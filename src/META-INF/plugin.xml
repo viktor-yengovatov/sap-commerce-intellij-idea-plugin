@@ -130,6 +130,7 @@
           <br/> - Impex lexer has been fixed to avoid showing syntax errors for one-character attribute names.
           <br/> - IntelliJ IDEA 13.1 has been removed from supported versions due to major changes in API. Now IntelliJ IDEA 14.1 is the oldest supported versions.
           <br/> - Backward compatibility has been improved for early versions of IntelliJ IDEA 14.1.
+          <br/> - Minor improvements have been made in project import.
           <br/>
           <br/>
           3.1.1:

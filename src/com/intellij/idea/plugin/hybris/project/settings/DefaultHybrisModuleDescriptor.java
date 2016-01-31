@@ -24,11 +24,10 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.Exten
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.vfs.VfsUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.jps.model.java.JavaResourceRootType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -37,7 +36,6 @@ import java.io.File;
 import java.util.*;
 
 import static com.intellij.idea.plugin.hybris.utils.HybrisConstants.HMC_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.utils.HybrisConstants.RESOURCES_DIRECTORY;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -78,7 +76,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             throw new HybrisConfigurationException("Can not find module name using path: " + moduleRootDirectory);
         }
 
-        this.moduleName = extensionInfo.getExtension().getName();
+        this.moduleName = StringUtils.lowerCase(extensionInfo.getExtension().getName());
     }
 
     @Nullable
