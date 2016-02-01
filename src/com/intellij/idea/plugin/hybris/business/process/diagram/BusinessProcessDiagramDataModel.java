@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.business.process.diagram;
 import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
-import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
@@ -43,9 +42,9 @@ import java.util.Map;
  */
 public final class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFile> {
 
-    private Collection<BusinessProcessDiagramFileNode> myNodes = new ArrayList<BusinessProcessDiagramFileNode>();
-    private Collection<BusinessProcessDiagramFileEdge> myEdges = new ArrayList<BusinessProcessDiagramFileEdge>();
-    private Map<String, BusinessProcessDiagramFileNode> path2Node = new HashMap<String, BusinessProcessDiagramFileNode>(myNodes.size());
+    private Collection<BusinessProcessDiagramFileNode> nodes = new ArrayList<BusinessProcessDiagramFileNode>();
+    private Collection<BusinessProcessDiagramFileEdge> edges = new ArrayList<BusinessProcessDiagramFileEdge>();
+    private Map<String, BusinessProcessDiagramFileNode> path2Node = new HashMap<String, BusinessProcessDiagramFileNode>(nodes.size());
 
     public BusinessProcessDiagramDataModel(final Project project, final VirtualFile file) {
         super(project, BusinessProcessDiagramProvider.getInstance());
@@ -55,7 +54,7 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
         while (currentFile != null) {
             final BusinessProcessDiagramFileNode fileNode = new BusinessProcessDiagramFileNode(currentFile);
 
-            this.myNodes.add(fileNode);
+            this.nodes.add(fileNode);
             this.path2Node.put(currentFile.getPath(), fileNode);
 
             currentFile = currentFile.getParent();
@@ -67,13 +66,13 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
     @NotNull
     @Override
     public Collection<BusinessProcessDiagramFileNode> getNodes() {
-        return myNodes;
+        return nodes;
     }
 
     @NotNull
     @Override
     public Collection<BusinessProcessDiagramFileEdge> getEdges() {
-        return myEdges;
+        return edges;
     }
 
     @NotNull
@@ -90,7 +89,7 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
         if (node == null) {
             node = new BusinessProcessDiagramFileNode(t);
             this.path2Node.put(t.getPath(), node);
-            this.myNodes.add(node);
+            this.nodes.add(node);
         }
 
         return node;
@@ -98,9 +97,9 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
 
     @Override
     public void refreshDataModel() {
-        myEdges.clear();
+        edges.clear();
 
-        for (BusinessProcessDiagramFileNode node : this.myNodes) {
+        for (BusinessProcessDiagramFileNode node : this.nodes) {
             VirtualFile virtualFile = node.getIdentifyingElement().getParent();
             int level = 1;
 
@@ -113,10 +112,10 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
                     if (level == 1) {
                         relationshipInfo = BusinessProcessDiagramRelationships.STRONG;
                     } else {
-                        relationshipInfo = new MyDiagramRelationshipInfoAdapter(level);
+                        relationshipInfo = new DiagramRelationshipInfoAdapter(level);
                     }
 
-                    this.myEdges.add(new BusinessProcessDiagramFileEdge(node, diagramFileNode, relationshipInfo));
+                    this.edges.add(new BusinessProcessDiagramFileEdge(node, diagramFileNode, relationshipInfo));
                     virtualFile = null;
 
                 } else {
@@ -129,7 +128,7 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
 
     @Override
     public void removeNode(final DiagramNode<VirtualFile> node) {
-        this.myNodes.remove(node);
+        this.nodes.remove(node);
         this.path2Node.remove(node.getIdentifyingElement().getPath());
 
         this.refreshDataModel();
@@ -146,11 +145,11 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
 
     }
 
-    private static class MyDiagramRelationshipInfoAdapter extends DiagramRelationshipInfoAdapter {
+    protected static class DiagramRelationshipInfoAdapter extends com.intellij.diagram.DiagramRelationshipInfoAdapter {
 
         private final int level;
 
-        public MyDiagramRelationshipInfoAdapter(final int level) {
+        public DiagramRelationshipInfoAdapter(final int level) {
             super("SOFT", DiagramLineType.DASHED);
             this.level = level;
         }

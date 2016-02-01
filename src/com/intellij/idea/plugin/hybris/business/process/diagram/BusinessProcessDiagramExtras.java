@@ -44,34 +44,7 @@ import java.util.List;
  */
 public class BusinessProcessDiagramExtras extends DiagramExtras<VirtualFile> {
 
-    private DiagramDnDProvider<VirtualFile> dndProvider = new DiagramDnDProvider<VirtualFile>() {
-        @Override
-        public boolean isAcceptedForDnD(final Object o, final Project project) {
-            return o instanceof VirtualFile || o instanceof PsiElement;
-        }
-
-        @Nullable
-        @Override
-        public VirtualFile[] wrapToModelObject(final Object o, final Project project) {
-
-            if (o instanceof PsiElement) {
-
-                final PsiFile file = ((PsiElement) o).getContainingFile();
-
-                if (file != null) {
-                    return new VirtualFile[]{file.getVirtualFile()};
-
-                } else if (o instanceof PsiDirectory) {
-                    return new VirtualFile[]{((PsiDirectory) o).getVirtualFile()};
-                }
-
-            } else if (o instanceof VirtualFile) {
-                return new VirtualFile[]{(VirtualFile) o};
-            }
-
-            return VirtualFile.EMPTY_ARRAY;
-        }
-    };
+    private DiagramDnDProvider<VirtualFile> dndProvider = new VirtualFileDiagramDnDProvider();
 
     @Nonnull
     @Override
@@ -118,5 +91,35 @@ public class BusinessProcessDiagramExtras extends DiagramExtras<VirtualFile> {
         }
 
         return super.getData(dataId, nodes, builder);
+    }
+
+    protected static class VirtualFileDiagramDnDProvider implements DiagramDnDProvider<VirtualFile> {
+
+        @Override
+        public boolean isAcceptedForDnD(final Object o, final Project project) {
+            return o instanceof VirtualFile || o instanceof PsiElement;
+        }
+
+        @Nullable
+        @Override
+        public VirtualFile[] wrapToModelObject(final Object o, final Project project) {
+
+            if (o instanceof PsiElement) {
+
+                final PsiFile file = ((PsiElement) o).getContainingFile();
+
+                if (file != null) {
+                    return new VirtualFile[]{file.getVirtualFile()};
+
+                } else if (o instanceof PsiDirectory) {
+                    return new VirtualFile[]{((PsiDirectory) o).getVirtualFile()};
+                }
+
+            } else if (o instanceof VirtualFile) {
+                return new VirtualFile[]{(VirtualFile) o};
+            }
+
+            return VirtualFile.EMPTY_ARRAY;
+        }
     }
 }
