@@ -34,12 +34,15 @@ public class BusinessProcessDiagramColorManager extends DiagramColorManagerBase 
     @Override
     public Color getEdgeColor(final DiagramEdge edge) {
         final String edgeType = edge.getRelationship().toString();
+
         if ("SOFT".equals(edgeType)) {
             return new JBColor(new Color(9, 128, 0), new Color(83, 128, 103));
         }
+
         if ("STRONG".equals(edgeType)) {
             return new JBColor(new Color(0, 26, 128), new Color(140, 177, 197));
         }
+
         return super.getEdgeColor(edge);
     }
 }

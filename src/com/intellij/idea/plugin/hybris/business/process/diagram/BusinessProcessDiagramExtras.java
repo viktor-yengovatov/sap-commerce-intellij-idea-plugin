@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class BusinessProcessDiagramExtras extends DiagramExtras<VirtualFile> {
 
-    private DiagramDnDProvider<VirtualFile> myDnDProvider = new DiagramDnDProvider<VirtualFile>() {
+    private DiagramDnDProvider<VirtualFile> dndProvider = new DiagramDnDProvider<VirtualFile>() {
         @Override
         public boolean isAcceptedForDnD(final Object o, final Project project) {
             return o instanceof VirtualFile || o instanceof PsiElement;
@@ -53,23 +53,33 @@ public class BusinessProcessDiagramExtras extends DiagramExtras<VirtualFile> {
         @Nullable
         @Override
         public VirtualFile[] wrapToModelObject(final Object o, final Project project) {
+
             if (o instanceof PsiElement) {
+
                 final PsiFile file = ((PsiElement) o).getContainingFile();
+
                 if (file != null) {
                     return new VirtualFile[]{file.getVirtualFile()};
+
                 } else if (o instanceof PsiDirectory) {
                     return new VirtualFile[]{((PsiDirectory) o).getVirtualFile()};
                 }
+
             } else if (o instanceof VirtualFile) {
                 return new VirtualFile[]{(VirtualFile) o};
             }
+
             return VirtualFile.EMPTY_ARRAY;
         }
     };
 
     @Nonnull
     @Override
-    public JComponent createNodeComponent(final DiagramNode<VirtualFile> node, final DiagramBuilder builder, final Point basePoint, final JPanel wrapper) {
+    public JComponent createNodeComponent(final DiagramNode<VirtualFile> node,
+                                          final DiagramBuilder builder,
+                                          final Point basePoint,
+                                          final JPanel wrapper) {
+
         if (node.getIdentifyingElement().getParent() == null) {
             return new JLabel(AllIcons.Icon_128);
         }
@@ -80,25 +90,33 @@ public class BusinessProcessDiagramExtras extends DiagramExtras<VirtualFile> {
     @Nullable
     @Override
     public DiagramDnDProvider<VirtualFile> getDnDProvider() {
-        return myDnDProvider;
+        return dndProvider;
     }
 
     @Nullable
     @Override
-    public Object getData(final String dataId, final List<DiagramNode<VirtualFile>> nodes, final DiagramBuilder builder) {
+    public Object getData(final String dataId,
+                          final List<DiagramNode<VirtualFile>> nodes,
+                          final DiagramBuilder builder) {
         if (nodes.size() == 1) {
+
             final VirtualFile file = nodes.get(0).getIdentifyingElement();
+
             if (CommonDataKeys.VIRTUAL_FILE.is(dataId)) {
                 return file;
             }
+
             if (CommonDataKeys.PSI_FILE.is(dataId) || CommonDataKeys.PSI_ELEMENT.is(dataId)) {
+
                 if (file.isDirectory() && CommonDataKeys.PSI_ELEMENT.is(dataId)) {
+
                     return PsiManager.getInstance(builder.getProject()).findDirectory(file);
                 } else {
                     return PsiManager.getInstance(builder.getProject()).findFile(file);
                 }
             }
         }
+
         return super.getData(dataId, nodes, builder);
     }
 }

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.business.process.diagram;
 
 import com.intellij.diagram.DiagramEdgeBase;
+import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramRelationshipInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 
@@ -29,7 +30,9 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public class BusinessProcessDiagramFileEdge extends DiagramEdgeBase<VirtualFile> {
 
-    public BusinessProcessDiagramFileEdge(BusinessProcessDiagramFileNode source, BusinessProcessDiagramFileNode target, DiagramRelationshipInfo relationship) {
+    public BusinessProcessDiagramFileEdge(final DiagramNode<VirtualFile> source,
+                                          final DiagramNode<VirtualFile> target,
+                                          final DiagramRelationshipInfo relationship) {
         super(source, target, relationship);
     }
 }

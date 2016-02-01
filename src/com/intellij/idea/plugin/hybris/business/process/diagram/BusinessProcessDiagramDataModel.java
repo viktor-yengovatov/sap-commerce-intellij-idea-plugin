@@ -34,7 +34,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,22 +41,27 @@ import java.util.Map;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFile> {
+public final class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFile> {
 
-    private List<BusinessProcessDiagramFileNode> myNodes = new ArrayList<BusinessProcessDiagramFileNode>();
-    private List<BusinessProcessDiagramFileEdge> myEdges = new ArrayList<BusinessProcessDiagramFileEdge>();
+    private Collection<BusinessProcessDiagramFileNode> myNodes = new ArrayList<BusinessProcessDiagramFileNode>();
+    private Collection<BusinessProcessDiagramFileEdge> myEdges = new ArrayList<BusinessProcessDiagramFileEdge>();
     private Map<String, BusinessProcessDiagramFileNode> path2Node = new HashMap<String, BusinessProcessDiagramFileNode>(myNodes.size());
 
-    public BusinessProcessDiagramDataModel(Project project, VirtualFile file) {
+    public BusinessProcessDiagramDataModel(final Project project, final VirtualFile file) {
         super(project, BusinessProcessDiagramProvider.getInstance());
-        VirtualFile f = file;
-        while (f != null) {
-            final BusinessProcessDiagramFileNode n = new BusinessProcessDiagramFileNode(f);
-            myNodes.add(n);
-            path2Node.put(f.getPath(), n);
-            f = f.getParent();
+
+        VirtualFile currentFile = file;
+
+        while (currentFile != null) {
+            final BusinessProcessDiagramFileNode fileNode = new BusinessProcessDiagramFileNode(currentFile);
+
+            this.myNodes.add(fileNode);
+            this.path2Node.put(currentFile.getPath(), fileNode);
+
+            currentFile = currentFile.getParent();
         }
-        refreshDataModel();
+
+        this.refreshDataModel();
     }
 
     @NotNull
@@ -74,19 +78,21 @@ public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFil
 
     @NotNull
     @Override
-    public String getNodeName(DiagramNode<VirtualFile> node) {
-        return node.getIdentifyingElement().getName();
+    public String getNodeName(final DiagramNode<VirtualFile> diagramNode) {
+        return diagramNode.getIdentifyingElement().getName();
     }
 
     @Nullable
     @Override
-    public BusinessProcessDiagramFileNode addElement(VirtualFile file) {
-        BusinessProcessDiagramFileNode node = path2Node.get(file.getPath());
+    public BusinessProcessDiagramFileNode addElement(final VirtualFile t) {
+        BusinessProcessDiagramFileNode node = this.path2Node.get(t.getPath());
+
         if (node == null) {
-            node = new BusinessProcessDiagramFileNode(file);
-            path2Node.put(file.getPath(), node);
-            myNodes.add(node);
+            node = new BusinessProcessDiagramFileNode(t);
+            this.path2Node.put(t.getPath(), node);
+            this.myNodes.add(node);
         }
+
         return node;
     }
 
@@ -94,40 +100,39 @@ public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFil
     public void refreshDataModel() {
         myEdges.clear();
 
-        for (BusinessProcessDiagramFileNode node : myNodes) {
-            VirtualFile f = node.getIdentifyingElement().getParent();
-            int i = 1;
-            while (f != null) {
-                final BusinessProcessDiagramFileNode n = path2Node.get(f.getPath());
-                if (n != null) {
-                    final int level = i;
-                    DiagramRelationshipInfo r = level == 1 ?
-                        BusinessProcessDiagramRelationships.STRONG : new DiagramRelationshipInfoAdapter("SOFT", DiagramLineType.DASHED) {
-                        @Override
-                        public Shape getStartArrow() {
-                            return STANDARD;
-                        }
+        for (BusinessProcessDiagramFileNode node : this.myNodes) {
+            VirtualFile virtualFile = node.getIdentifyingElement().getParent();
+            int level = 1;
 
-                        @Override
-                        public String getLabel() {
-                            return "   " + String.valueOf(level);
-                        }
-                    };
-                    myEdges.add(new BusinessProcessDiagramFileEdge(node, n, r));
-                    f = null;
+            while (virtualFile != null) {
+                final BusinessProcessDiagramFileNode diagramFileNode = path2Node.get(virtualFile.getPath());
+
+                if (diagramFileNode != null) {
+
+                    final DiagramRelationshipInfo relationshipInfo;
+                    if (level == 1) {
+                        relationshipInfo = BusinessProcessDiagramRelationships.STRONG;
+                    } else {
+                        relationshipInfo = new MyDiagramRelationshipInfoAdapter(level);
+                    }
+
+                    this.myEdges.add(new BusinessProcessDiagramFileEdge(node, diagramFileNode, relationshipInfo));
+                    virtualFile = null;
+
                 } else {
-                    f = f.getParent();
-                    i++;
+                    virtualFile = virtualFile.getParent();
+                    level++;
                 }
             }
         }
     }
 
     @Override
-    public void removeNode(DiagramNode<VirtualFile> node) {
-        myNodes.remove(node);
-        path2Node.remove(node.getIdentifyingElement().getPath());
-        refreshDataModel();
+    public void removeNode(final DiagramNode<VirtualFile> node) {
+        this.myNodes.remove(node);
+        this.path2Node.remove(node.getIdentifyingElement().getPath());
+
+        this.refreshDataModel();
     }
 
     @NotNull
@@ -139,5 +144,25 @@ public class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFil
     @Override
     public void dispose() {
 
+    }
+
+    private static class MyDiagramRelationshipInfoAdapter extends DiagramRelationshipInfoAdapter {
+
+        private final int level;
+
+        public MyDiagramRelationshipInfoAdapter(final int level) {
+            super("SOFT", DiagramLineType.DASHED);
+            this.level = level;
+        }
+
+        @Override
+        public Shape getStartArrow() {
+            return STANDARD;
+        }
+
+        @Override
+        public String getLabel() {
+            return "   " + String.valueOf(level);
+        }
     }
 }
