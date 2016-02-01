@@ -42,9 +42,8 @@ import java.util.Map;
  */
 public final class BusinessProcessDiagramDataModel extends DiagramDataModel<VirtualFile> {
 
-    private Collection<BusinessProcessDiagramFileNode> nodes = new ArrayList<BusinessProcessDiagramFileNode>();
     private Collection<BusinessProcessDiagramFileEdge> edges = new ArrayList<BusinessProcessDiagramFileEdge>();
-    private Map<String, BusinessProcessDiagramFileNode> path2Node = new HashMap<String, BusinessProcessDiagramFileNode>(nodes.size());
+    private Map<String, BusinessProcessDiagramFileNode> path2Nodes = new HashMap<String, BusinessProcessDiagramFileNode>();
 
     public BusinessProcessDiagramDataModel(final Project project, final VirtualFile file) {
         super(project, BusinessProcessDiagramProvider.getInstance());
@@ -54,8 +53,7 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
         while (currentFile != null) {
             final BusinessProcessDiagramFileNode fileNode = new BusinessProcessDiagramFileNode(currentFile);
 
-            this.nodes.add(fileNode);
-            this.path2Node.put(currentFile.getPath(), fileNode);
+            this.path2Nodes.put(currentFile.getPath(), fileNode);
 
             currentFile = currentFile.getParent();
         }
@@ -66,7 +64,7 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
     @NotNull
     @Override
     public Collection<BusinessProcessDiagramFileNode> getNodes() {
-        return this.nodes;
+        return this.path2Nodes.values();
     }
 
     @NotNull
@@ -84,12 +82,11 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
     @Nullable
     @Override
     public BusinessProcessDiagramFileNode addElement(final VirtualFile t) {
-        BusinessProcessDiagramFileNode node = this.path2Node.get(t.getPath());
+        BusinessProcessDiagramFileNode node = this.path2Nodes.get(t.getPath());
 
         if (node == null) {
             node = new BusinessProcessDiagramFileNode(t);
-            this.path2Node.put(t.getPath(), node);
-            this.nodes.add(node);
+            this.path2Nodes.put(t.getPath(), node);
         }
 
         return node;
@@ -99,12 +96,12 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
     public void refreshDataModel() {
         this.edges.clear();
 
-        for (BusinessProcessDiagramFileNode node : this.nodes) {
+        for (BusinessProcessDiagramFileNode node : this.path2Nodes.values()) {
             VirtualFile virtualFile = node.getIdentifyingElement().getParent();
             int level = 1;
 
             while (virtualFile != null) {
-                final BusinessProcessDiagramFileNode diagramFileNode = this.path2Node.get(virtualFile.getPath());
+                final BusinessProcessDiagramFileNode diagramFileNode = this.path2Nodes.get(virtualFile.getPath());
 
                 if (diagramFileNode != null) {
 
@@ -128,8 +125,7 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
 
     @Override
     public void removeNode(final DiagramNode<VirtualFile> node) {
-        this.nodes.remove(node);
-        this.path2Node.remove(node.getIdentifyingElement().getPath());
+        this.path2Nodes.remove(node.getIdentifyingElement().getPath());
 
         this.refreshDataModel();
     }
