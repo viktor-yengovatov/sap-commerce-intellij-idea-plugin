@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.diagram.jaxb;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,22 +29,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Define userGroup for notification.
- * 			
- * 
- * <p>Java class for userGroupType complex type.
+ * <p>Java class for split complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="userGroupType">
+ * &lt;complexType name="split">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="locmessage" type="{http://www.hybris.de/xsd/processdefinition}localizedmessage" maxOccurs="unbounded"/>
+ *         &lt;element name="targetNode" type="{http://www.hybris.de/xsd/processdefinition}targetNode" maxOccurs="unbounded" minOccurs="2"/>
  *       &lt;/sequence>
- *       &lt;attribute name="name" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
- *       &lt;attribute name="message" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -53,93 +49,67 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "userGroupType", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "locmessage"
+@XmlType(name = "split", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
+    "targetNode"
 })
-public class UserGroupType {
+public class Split {
 
     @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition", required = true)
-    protected List<Localizedmessage> locmessage;
+    protected List<TargetNode> targetNode;
     @XmlAttribute(required = true)
-    protected String name;
-    @XmlAttribute
-    protected String message;
+    protected String id;
 
     /**
-     * Gets the value of the locmessage property.
+     * Gets the value of the targetNode property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the locmessage property.
+     * This is why there is not a <CODE>set</CODE> method for the targetNode property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getLocmessage().add(newItem);
+     *    getTargetNode().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Localizedmessage }
+     * {@link TargetNode }
      * 
      * 
      */
-    public List<Localizedmessage> getLocmessage() {
-        if (locmessage == null) {
-            locmessage = new ArrayList<Localizedmessage>();
+    public List<TargetNode> getTargetNode() {
+        if (targetNode == null) {
+            targetNode = new ArrayList<TargetNode>();
         }
-        return this.locmessage;
+        return this.targetNode;
     }
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the id property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    /**
-     * Gets the value of the message property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * Sets the value of the message property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMessage(String value) {
-        this.message = value;
+    public void setId(String value) {
+        this.id = value;
     }
 
 }

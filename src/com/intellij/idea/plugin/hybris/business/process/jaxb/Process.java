@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.diagram.jaxb;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;

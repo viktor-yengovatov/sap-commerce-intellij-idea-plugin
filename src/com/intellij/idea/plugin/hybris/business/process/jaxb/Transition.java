@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.diagram.jaxb;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,16 +26,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for localizedmessage complex type.
+ * <p>Java class for transition complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="localizedmessage">
+ * &lt;complexType name="transition">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="name" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
- *       &lt;attribute name="language" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="to" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,13 +44,13 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "localizedmessage", namespace = "http://www.hybris.de/xsd/processdefinition")
-public class Localizedmessage {
+@XmlType(name = "transition", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class Transition {
 
     @XmlAttribute(required = true)
     protected String name;
     @XmlAttribute(required = true)
-    protected String language;
+    protected String to;
 
     /**
      * Gets the value of the name property.
@@ -77,27 +77,27 @@ public class Localizedmessage {
     }
 
     /**
-     * Gets the value of the language property.
+     * Gets the value of the to property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getLanguage() {
-        return language;
+    public String getTo() {
+        return to;
     }
 
     /**
-     * Sets the value of the language property.
+     * Sets the value of the to property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setLanguage(String value) {
-        this.language = value;
+    public void setTo(String value) {
+        this.to = value;
     }
 
 }

@@ -17,30 +17,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.diagram.jaxb;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for split complex type.
+ * <p>Java class for join complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="split">
+ * &lt;complexType name="join">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="targetNode" type="{http://www.hybris.de/xsd/processdefinition}targetNode" maxOccurs="unbounded" minOccurs="2"/>
- *       &lt;/sequence>
  *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
+ *       &lt;attribute name="then" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -49,43 +44,36 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "split", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "targetNode"
-})
-public class Split {
+@XmlType(name = "join", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class Join {
 
-    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition", required = true)
-    protected List<TargetNode> targetNode;
+    @XmlAttribute
+    protected String then;
     @XmlAttribute(required = true)
     protected String id;
 
     /**
-     * Gets the value of the targetNode property.
+     * Gets the value of the then property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the targetNode property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getTargetNode().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TargetNode }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public List<TargetNode> getTargetNode() {
-        if (targetNode == null) {
-            targetNode = new ArrayList<TargetNode>();
-        }
-        return this.targetNode;
+    public String getThen() {
+        return then;
+    }
+
+    /**
+     * Sets the value of the then property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setThen(String value) {
+        this.then = value;
     }
 
     /**

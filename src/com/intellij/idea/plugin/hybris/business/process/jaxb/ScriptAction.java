@@ -17,8 +17,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.diagram.jaxb;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,20 +29,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for wait complex type.
+ * <p>Java class for scriptAction complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="wait">
+ * &lt;complexType name="scriptAction">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;choice>
- *         &lt;element name="event" type="{http://www.hybris.de/xsd/processdefinition}name"/>
- *       &lt;/choice>
+ *       &lt;sequence>
+ *         &lt;element name="script" type="{http://www.hybris.de/xsd/processdefinition}script"/>
+ *         &lt;element name="transition" type="{http://www.hybris.de/xsd/processdefinition}transition" maxOccurs="unbounded"/>
+ *       &lt;/sequence>
  *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
- *       &lt;attribute name="then" type="{http://www.hybris.de/xsd/processdefinition}name" />
- *       &lt;attribute name="prependProcessCode" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
+ *       &lt;attribute name="node" type="{http://www.w3.org/2001/XMLSchema}int" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -49,94 +51,96 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "wait", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "event"
+@XmlType(name = "scriptAction", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
+    "script",
+    "transition"
 })
-public class Wait {
+public class ScriptAction {
 
-    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition")
-    protected String event;
+    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition", required = true)
+    protected Script script;
+    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition", required = true)
+    protected List<Transition> transition;
     @XmlAttribute
-    protected String then;
-    @XmlAttribute
-    protected Boolean prependProcessCode;
+    protected Integer node;
     @XmlAttribute(required = true)
     protected String id;
 
     /**
-     * Gets the value of the event property.
+     * Gets the value of the script property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Script }
      *     
      */
-    public String getEvent() {
-        return event;
+    public Script getScript() {
+        return script;
     }
 
     /**
-     * Sets the value of the event property.
+     * Sets the value of the script property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Script }
      *     
      */
-    public void setEvent(String value) {
-        this.event = value;
+    public void setScript(Script value) {
+        this.script = value;
     }
 
     /**
-     * Gets the value of the then property.
+     * Gets the value of the transition property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getThen() {
-        return then;
-    }
-
-    /**
-     * Sets the value of the then property.
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the transition property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setThen(String value) {
-        this.then = value;
-    }
-
-    /**
-     * Gets the value of the prependProcessCode property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getTransition().add(newItem);
+     * </pre>
      * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Transition }
+     * 
+     * 
      */
-    public boolean isPrependProcessCode() {
-        if (prependProcessCode == null) {
-            return true;
-        } else {
-            return prependProcessCode;
+    public List<Transition> getTransition() {
+        if (transition == null) {
+            transition = new ArrayList<Transition>();
         }
+        return this.transition;
     }
 
     /**
-     * Sets the value of the prependProcessCode property.
+     * Gets the value of the node property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getNode() {
+        return node;
+    }
+
+    /**
+     * Sets the value of the node property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link Integer }
      *     
      */
-    public void setPrependProcessCode(Boolean value) {
-        this.prependProcessCode = value;
+    public void setNode(Integer value) {
+        this.node = value;
     }
 
     /**
