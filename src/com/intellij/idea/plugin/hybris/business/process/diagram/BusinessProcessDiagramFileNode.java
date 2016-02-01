@@ -37,7 +37,7 @@ public class BusinessProcessDiagramFileNode extends DiagramNodeBase<VirtualFile>
 
     public BusinessProcessDiagramFileNode(final VirtualFile file) {
         super(BusinessProcessDiagramProvider.getInstance());
-        myFile = file;
+        this.myFile = file;
     }
 
     @Nonnull
@@ -48,12 +48,12 @@ public class BusinessProcessDiagramFileNode extends DiagramNodeBase<VirtualFile>
 
     @Override
     public Icon getIcon() {
-        return myFile.isDirectory() ? AllIcons.Nodes.Folder : myFile.getFileType().getIcon();
+        return this.myFile.isDirectory() ? AllIcons.Nodes.Folder : this.myFile.getFileType().getIcon();
     }
 
     @Nonnull
     @Override
     public VirtualFile getIdentifyingElement() {
-        return myFile;
+        return this.myFile;
     }
 }

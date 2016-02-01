@@ -63,7 +63,7 @@ public class BusinessProcessDiagramExtras extends DiagramExtras<VirtualFile> {
     @Nullable
     @Override
     public DiagramDnDProvider<VirtualFile> getDnDProvider() {
-        return dndProvider;
+        return this.dndProvider;
     }
 
     @Nullable

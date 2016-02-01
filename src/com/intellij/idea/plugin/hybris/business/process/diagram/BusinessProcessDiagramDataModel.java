@@ -66,13 +66,13 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
     @NotNull
     @Override
     public Collection<BusinessProcessDiagramFileNode> getNodes() {
-        return nodes;
+        return this.nodes;
     }
 
     @NotNull
     @Override
     public Collection<BusinessProcessDiagramFileEdge> getEdges() {
-        return edges;
+        return this.edges;
     }
 
     @NotNull
@@ -97,14 +97,14 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
 
     @Override
     public void refreshDataModel() {
-        edges.clear();
+        this.edges.clear();
 
         for (BusinessProcessDiagramFileNode node : this.nodes) {
             VirtualFile virtualFile = node.getIdentifyingElement().getParent();
             int level = 1;
 
             while (virtualFile != null) {
-                final BusinessProcessDiagramFileNode diagramFileNode = path2Node.get(virtualFile.getPath());
+                final BusinessProcessDiagramFileNode diagramFileNode = this.path2Node.get(virtualFile.getPath());
 
                 if (diagramFileNode != null) {
 
@@ -161,7 +161,7 @@ public final class BusinessProcessDiagramDataModel extends DiagramDataModel<Virt
 
         @Override
         public String getLabel() {
-            return "   " + String.valueOf(level);
+            return "   " + String.valueOf(this.level);
         }
     }
 }
