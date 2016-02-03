@@ -27,7 +27,6 @@ import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 
 /**
  * Created 19:39 29 March 2015
@@ -44,7 +43,7 @@ public class HybrisApplicationSettingsComponent implements PersistentStateCompon
 
     protected final HybrisApplicationSettings hybrisApplicationSettings = new HybrisApplicationSettings();
 
-    @Nonnull
+    @NotNull
     public static HybrisApplicationSettingsComponent getInstance() {
         return ServiceManager.getService(HybrisApplicationSettingsComponent.class);
     }
