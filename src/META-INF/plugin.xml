@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>4</version>
+    <version>4.0</version>
 
     <extensionPoints>
         <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
@@ -131,7 +131,7 @@
 
     <change-notes>
         <![CDATA[
-          4:
+          4.0:
           <br/> - Visualization of business processes has been implemented.
           <br/>
           <br/>
