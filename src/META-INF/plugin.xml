@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>3.1.2</version>
+    <version>4</version>
 
     <extensionPoints>
         <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
@@ -56,6 +56,10 @@
           - Automatic classpath configuration.
           <br/>
           - Automatic Spring facet configuration (only Ultimate IDEA).
+
+          <br/>
+          <br/>
+          <b>Visualization of business process graph.</b>
 
           <br/>
           <br/>
@@ -127,6 +131,10 @@
 
     <change-notes>
         <![CDATA[
+          4:
+          <br/> - Visualization of business processes has been implemented.
+          <br/>
+          <br/>
           3.1.2:
           <br/> - Impex lexer has been fixed to avoid showing syntax errors for one-character attribute names.
           <br/> - IntelliJ IDEA 13.1 has been removed from supported versions due to major changes in API. Now IntelliJ IDEA 14.1 is the oldest supported versions.
