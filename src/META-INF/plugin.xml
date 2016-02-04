@@ -30,6 +30,7 @@
 
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="uml-optional-dependencies.xml">com.intellij.diagram</depends>
 
     <vendor email="AlexanderBartash@gmail.com" url="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">Alexander Bartash</vendor>
 
@@ -290,22 +291,6 @@
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
-
-        <!-- TODO: Move to optional dependencies -->
-        <!-- Business process components -->
-        <diagram.Provider id="BusinessProcessDiagramProvider" implementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramProviderImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.jaxb.services.impl.BpJaxbServiceImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.common.BpGraphService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.common.impl.BpGraphServiceImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramProviderImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElementManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramElementManagerIml"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramVfsResolverIml"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramColorManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramColorManagerIml"/>
     </extensions>
 
     <application-components>
