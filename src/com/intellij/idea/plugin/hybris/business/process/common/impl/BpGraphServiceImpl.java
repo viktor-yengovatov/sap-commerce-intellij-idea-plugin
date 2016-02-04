@@ -56,19 +56,12 @@ public class BpGraphServiceImpl implements BpGraphService {
 
     @Nullable
     @Override
-    public BpGraphNode buildGraphFromXmlFile(@NotNull final VirtualFile virtualFile) {
+    public BpGraphNode buildGraphFromXmlFile(@NotNull final VirtualFile virtualFile) throws UnmarshalException {
         Validate.notNull(virtualFile);
 
         final BpJaxbService bpJaxbService = ServiceManager.getService(BpJaxbService.class);
 
-        final Process process;
-        try {
-            process = bpJaxbService.unmarshallBusinessProcessXml(VfsUtil.virtualToIoFile(virtualFile));
-        } catch (UnmarshalException e) {
-            LOG.error("Can not build Business Process graph from the file: " + virtualFile.getName(), e);
-
-            return null;
-        }
+        final Process process = bpJaxbService.unmarshallBusinessProcessXml(VfsUtil.virtualToIoFile(virtualFile));
 
         if (CollectionUtils.isEmpty(process.getNodes())) {
             return null;

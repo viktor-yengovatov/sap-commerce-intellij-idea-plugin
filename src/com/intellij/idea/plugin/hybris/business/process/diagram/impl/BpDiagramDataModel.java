@@ -45,22 +45,22 @@ import java.util.Map;
 public final class BpDiagramDataModel extends DiagramDataModel<BpGraphNode> {
 
     private final Collection<BpDiagramFileEdge> edges = new ArrayList<BpDiagramFileEdge>();
-    private final Map<String, BpDiagramFileNode> ids2Nodes = new HashMap<String, BpDiagramFileNode>();
+    private final Map<String, BpDiagramFileNode> nodesMap = new HashMap<String, BpDiagramFileNode>();
 
-    public BpDiagramDataModel(final Project project, final BpGraphNode bpGraphNode) {
+    public BpDiagramDataModel(final Project project, final BpGraphNode rootBpGraphNode) {
         super(project, ServiceManager.getService(BpDiagramProvider.class));
 
-        for (BpGraphNode graphNode : bpGraphNode.getNodesMap().values()) {
-            final BpDiagramFileNode fileNode = new BpDiagramFileNode(graphNode);
+        for (BpGraphNode bpGraphNode : rootBpGraphNode.getNodesMap().values()) {
+            final BpDiagramFileNode bpDiagramFileNode = new BpDiagramFileNode(bpGraphNode);
 
-            this.ids2Nodes.put(graphNode.getGenericAction().getId(), fileNode);
+            this.nodesMap.put(bpGraphNode.getGenericAction().getId(), bpDiagramFileNode);
         }
     }
 
     @NotNull
     @Override
     public Collection<BpDiagramFileNode> getNodes() {
-        return this.ids2Nodes.values();
+        return this.nodesMap.values();
     }
 
     @NotNull
@@ -86,15 +86,17 @@ public final class BpDiagramDataModel extends DiagramDataModel<BpGraphNode> {
     public void refreshDataModel() {
         this.edges.clear();
 
-        for (BpDiagramFileNode node : this.ids2Nodes.values()) {
-            final BpGraphNode bpGraphNode = node.getIdentifyingElement();
+        for (BpDiagramFileNode sourceBpDiagramFileNode : this.nodesMap.values()) {
+            final BpGraphNode sourceBpGraphNode = sourceBpDiagramFileNode.getIdentifyingElement();
 
-            for (Map.Entry<String, BpGraphNode> transition : bpGraphNode.getTransitions().entrySet()) {
-                final String name = transition.getKey();
-                final BpGraphNode graphNode = transition.getValue();
+            for (Map.Entry<String, BpGraphNode> transition : sourceBpGraphNode.getTransitions().entrySet()) {
+                final String transitionName = transition.getKey();
+
+                final BpGraphNode targetBpGraphNode = transition.getValue();
+                final BpDiagramFileNode targetBpDiagramFileNode = this.nodesMap.get(targetBpGraphNode.getGenericAction().getId());
 
                 final BpDiagramFileEdge edge = new BpDiagramFileEdge(
-                    node, this.ids2Nodes.get(graphNode.getGenericAction().getId()), new BpDiagramRelationship(name)
+                    sourceBpDiagramFileNode, targetBpDiagramFileNode, new BpDiagramRelationship(transitionName)
                 );
 
                 this.edges.add(edge);
@@ -116,21 +118,13 @@ public final class BpDiagramDataModel extends DiagramDataModel<BpGraphNode> {
 
     protected static class BpDiagramRelationship extends DiagramRelationshipInfoAdapter {
 
-        private final String label;
-
         public BpDiagramRelationship(final String label) {
-            super("SOFT", DiagramLineType.SOLID);
-            this.label = label;
+            super(label, DiagramLineType.SOLID, label, "", "", 1);
         }
 
         @Override
         public Shape getStartArrow() {
             return STANDARD;
-        }
-
-        @Override
-        public String getLabel() {
-            return label;
         }
     }
 }

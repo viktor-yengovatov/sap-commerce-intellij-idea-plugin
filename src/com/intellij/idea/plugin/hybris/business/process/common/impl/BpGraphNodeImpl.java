@@ -39,7 +39,7 @@ public class BpGraphNodeImpl implements BpGraphNode {
 
     protected final BpGenericAction genericAction;
     protected final VirtualFile virtualFile;
-    protected Map<String, BpGraphNode> transitions = new HashMap<String, BpGraphNode>();
+    protected final Map<String, BpGraphNode> transitions = new HashMap<String, BpGraphNode>();
     protected final Map<String, BpGraphNode> nodeMap;
     protected final Process process;
 
@@ -66,26 +66,26 @@ public class BpGraphNodeImpl implements BpGraphNode {
 
     @NotNull
     @Override
-    public VirtualFile getXmlVirtualFile() {
-        return this.virtualFile;
-    }
-
-    @NotNull
-    @Override
     public Map<String, BpGraphNode> getTransitions() {
         return this.transitions;
     }
 
     @NotNull
     @Override
-    public Map<String, BpGraphNode> getNodesMap() {
-        return this.nodeMap;
+    public VirtualFile getXmlVirtualFile() {
+        return this.virtualFile;
     }
 
     @NotNull
     @Override
     public Process getProcess() {
         return this.process;
+    }
+
+    @NotNull
+    @Override
+    public Map<String, BpGraphNode> getNodesMap() {
+        return this.nodeMap;
     }
 
     @Override

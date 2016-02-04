@@ -304,8 +304,6 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramElementManagerIml"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramVfsResolverIml"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramExtras"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramExtrasIml"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramColorManager"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramColorManagerIml"/>
     </extensions>

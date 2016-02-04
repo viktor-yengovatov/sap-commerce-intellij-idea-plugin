@@ -19,9 +19,11 @@
 package com.intellij.idea.plugin.hybris.business.process.diagram.impl;
 
 import com.intellij.diagram.DiagramNodeBase;
-import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Action;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.model.*;
+import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.openapi.components.ServiceManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +52,29 @@ public class BpDiagramFileNode extends DiagramNodeBase<BpGraphNode> {
 
     @Override
     public Icon getIcon() {
+        final BpGenericAction genericAction = this.diagramNode.getGenericAction();
+        if (genericAction instanceof Action) {
+            return HybrisIconsUtils.ACTION;
+
+        } else if (genericAction instanceof Split) {
+            return HybrisIconsUtils.SPLIT;
+
+        } else if (genericAction instanceof Wait) {
+            return HybrisIconsUtils.WAIT;
+
+        } else if (genericAction instanceof Join) {
+            return HybrisIconsUtils.JOIN;
+
+        } else if (genericAction instanceof End) {
+            return HybrisIconsUtils.END;
+
+        } else if (genericAction instanceof ScriptAction) {
+            return HybrisIconsUtils.SCRIPT;
+
+        } else if (genericAction instanceof Notify) {
+            return HybrisIconsUtils.NOTIFY;
+        }
+
         return null;
     }
 

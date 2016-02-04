@@ -22,6 +22,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.xml.bind.UnmarshalException;
+
 /**
  * Created 9:33 PM 02 February 2016.
  *
@@ -30,6 +32,6 @@ import org.jetbrains.annotations.Nullable;
 public interface BpGraphService {
 
     @Nullable
-    BpGraphNode buildGraphFromXmlFile(@NotNull VirtualFile virtualFile);
+    BpGraphNode buildGraphFromXmlFile(@NotNull VirtualFile virtualFile) throws UnmarshalException;
 
 }

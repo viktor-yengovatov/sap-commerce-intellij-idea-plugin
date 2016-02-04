@@ -31,6 +31,13 @@ public final class HybrisIconsUtils {
 
     public static final Icon IMPEX_FILE = IconLoader.getIcon("/icons/jar-gray.png");
     public static final Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybris_icon.png");
+    public static final Icon WAIT = IconLoader.getIcon("/icons/Wait-16.png");
+    public static final Icon END = IconLoader.getIcon("/icons/End-16.png");
+    public static final Icon NOTIFY = IconLoader.getIcon("/icons/Notify-16.png");
+    public static final Icon ACTION = IconLoader.getIcon("/icons/Action-16.png");
+    public static final Icon SPLIT = IconLoader.getIcon("/icons/Split-16.png");
+    public static final Icon JOIN = IconLoader.getIcon("/icons/Join-16.png");
+    public static final Icon SCRIPT = IconLoader.getIcon("/icons/Script-16.png");
 
     private HybrisIconsUtils() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");

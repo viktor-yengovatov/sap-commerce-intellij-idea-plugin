@@ -22,11 +22,14 @@ import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsReso
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.jgoodies.common.base.Objects;
 
 import javax.annotation.Nullable;
+import javax.xml.bind.UnmarshalException;
 
 /**
  * Created 11:12 PM 31 January 2016.
@@ -35,10 +38,12 @@ import javax.annotation.Nullable;
  */
 public class BpDiagramVfsResolverIml implements BpDiagramVfsResolver {
 
+    private static final Logger LOG = Logger.getInstance(BpDiagramVfsResolverIml.class);
+
     @Override
     public String getQualifiedName(final BpGraphNode t) {
 
-        if (t.getProcess().getStart().equals(t.getGenericAction().getId())) {
+        if (Objects.equals(t.getProcess().getStart(), (t.getGenericAction().getId()))) {
             return t.getXmlVirtualFile().getUrl();
         }
 
@@ -52,6 +57,11 @@ public class BpDiagramVfsResolverIml implements BpDiagramVfsResolver {
 
         final BpGraphService bpGraphService = ServiceManager.getService(BpGraphService.class);
 
-        return null == virtualFile ? null : bpGraphService.buildGraphFromXmlFile(virtualFile);
+        try {
+            return null == virtualFile ? null : bpGraphService.buildGraphFromXmlFile(virtualFile);
+        } catch (UnmarshalException e) {
+            LOG.error("Can not build Business Process graph from the file: " + virtualFile.getName(), e);
+            return null;
+        }
     }
 }

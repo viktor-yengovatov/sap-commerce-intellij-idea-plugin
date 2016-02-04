@@ -35,14 +35,23 @@ public class BpDiagramColorManagerIml extends BpDiagramColorManager {
     public Color getEdgeColor(final DiagramEdge edge) {
         final String edgeType = edge.getRelationship().toString();
 
-        if ("SOFT".equals(edgeType)) {
-            return new JBColor(new Color(9, 128, 0), new Color(83, 128, 103));
+        if ("OK".equalsIgnoreCase(edgeType)) {
+            return new JBColor(
+                new Color(9, 128, 0),
+                new Color(9, 128, 0)
+            );
         }
 
-        if ("STRONG".equals(edgeType)) {
-            return new JBColor(new Color(0, 26, 128), new Color(140, 177, 197));
+        if ("NOK".equalsIgnoreCase(edgeType)) {
+            return new JBColor(
+                new Color(161, 49, 42),
+                new Color(161, 49, 42)
+            );
         }
 
-        return super.getEdgeColor(edge);
+        return new JBColor(
+            new Color(71, 71, 71),
+            new Color(155, 158, 161)
+        );
     }
 }

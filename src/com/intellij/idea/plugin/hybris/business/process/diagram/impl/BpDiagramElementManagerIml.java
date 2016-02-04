@@ -28,8 +28,13 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.xml.XmlFile;
 import com.intellij.ui.SimpleColoredText;
 import org.jetbrains.annotations.Nullable;
+
+import javax.xml.bind.UnmarshalException;
+
 
 /**
  * Created 11:12 PM 31 January 2016.
@@ -49,9 +54,19 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
             return null;
         }
 
+        final PsiFile psiFile = CommonDataKeys.PSI_FILE.getData(dataContext);
+
+        if (!(psiFile instanceof XmlFile)) {
+            return null;
+        }
+
         final BpGraphService bpGraphService = ServiceManager.getService(BpGraphService.class);
 
-        return bpGraphService.buildGraphFromXmlFile(virtualFile);
+        try {
+            return bpGraphService.buildGraphFromXmlFile(virtualFile);
+        } catch (UnmarshalException e) {
+            return null;
+        }
     }
 
     @Override
@@ -73,6 +88,6 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
 
     @Override
     public String getNodeTooltip(final BpGraphNode t) {
-        return null;
+        return t.getGenericAction().getId();
     }
 }

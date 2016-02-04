@@ -23,10 +23,8 @@ import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramElementManager;
 import com.intellij.diagram.DiagramPresentationModel;
 import com.intellij.diagram.DiagramVfsResolver;
-import com.intellij.diagram.extras.DiagramExtras;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramColorManager;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElementManager;
-import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramExtras;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
@@ -69,12 +67,6 @@ public class BpDiagramProviderImpl extends BpDiagramProvider {
     @Override
     public String getPresentableName() {
         return HybrisI18NBundleUtils.message("hybris.business.process.provider.name");
-    }
-
-    @NotNull
-    @Override
-    public DiagramExtras<BpGraphNode> getExtras() {
-        return ServiceManager.getService(BpDiagramExtras.class);
     }
 
     @Override

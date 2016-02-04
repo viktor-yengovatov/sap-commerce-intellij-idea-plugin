@@ -37,15 +37,15 @@ public interface BpGraphNode {
     BpGenericAction getGenericAction();
 
     @NotNull
-    VirtualFile getXmlVirtualFile();
-
-    @NotNull
     Map<String, BpGraphNode> getTransitions();
 
     @NotNull
-    Map<String, BpGraphNode> getNodesMap();
+    VirtualFile getXmlVirtualFile();
 
     @NotNull
     Process getProcess();
+
+    @NotNull
+    Map<String, BpGraphNode> getNodesMap();
 
 }
