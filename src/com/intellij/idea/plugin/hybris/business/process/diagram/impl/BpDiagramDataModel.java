@@ -93,13 +93,15 @@ public final class BpDiagramDataModel extends DiagramDataModel<BpGraphNode> {
                 final String transitionName = transition.getKey();
 
                 final BpGraphNode targetBpGraphNode = transition.getValue();
-                final BpDiagramFileNode targetBpDiagramFileNode = this.nodesMap.get(targetBpGraphNode.getGenericAction().getId());
+                if (null != targetBpGraphNode) {
+                    final BpDiagramFileNode targetBpDiagramFileNode = this.nodesMap.get(targetBpGraphNode.getGenericAction().getId());
 
-                final BpDiagramFileEdge edge = new BpDiagramFileEdge(
-                    sourceBpDiagramFileNode, targetBpDiagramFileNode, new BpDiagramRelationship(transitionName)
-                );
+                    final BpDiagramFileEdge edge = new BpDiagramFileEdge(
+                        sourceBpDiagramFileNode, targetBpDiagramFileNode, new BpDiagramRelationship(transitionName)
+                    );
 
-                this.edges.add(edge);
+                    this.edges.add(edge);
+                }
             }
         }
     }
