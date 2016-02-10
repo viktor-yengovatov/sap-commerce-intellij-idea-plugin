@@ -35,8 +35,8 @@ import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModal
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -341,7 +341,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public Icon getIcon() {
-        return HybrisIconsUtils.HYBRIS_ICON;
+        return HybrisIcons.HYBRIS_ICON;
     }
 
     @Override

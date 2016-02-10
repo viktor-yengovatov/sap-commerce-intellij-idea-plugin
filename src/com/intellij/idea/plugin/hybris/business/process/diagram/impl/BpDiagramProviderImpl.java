@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElement
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
-import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;

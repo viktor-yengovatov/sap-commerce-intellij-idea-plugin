@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
-import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.ui.InputValidatorEx;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;

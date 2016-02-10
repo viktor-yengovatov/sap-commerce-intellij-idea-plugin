@@ -39,7 +39,7 @@ import java.util.Collection;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public final class VirtualFileSystemUtils {
+public class VirtualFileSystemUtils {
 
     private VirtualFileSystemUtils() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
