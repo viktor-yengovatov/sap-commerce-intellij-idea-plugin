@@ -28,6 +28,7 @@
 
     <depends>com.intellij.modules.lang</depends>
 
+    <depends optional="true" config-file="impex-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="uml-optional-dependencies.xml">com.intellij.diagram</depends>
@@ -255,74 +256,11 @@
       ]]>
     </change-notes>
 
-    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
     <idea-version since-build="141"/>
 
-    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.idea.modules.lang</depends>
-    -->
-
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Core elements -->
-        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
-
-        <lang.parserDefinition language="Impex"
-                               implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
-
-        <lang.syntaxHighlighterFactory key="Impex"
-                                       implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
-
-        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
-
-        <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
-
-        <lang.commenter language="Impex"
-                        implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
-
-        <lang.formatter language="Impex"
-                        implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
-
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
-
-        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
-
-        <lang.foldingBuilder language="Impex"
-                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
-
-        <applicationConfigurable id="ImpexPlugin.ImpexConfigurable"
-                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisSettingsConfigurable"/>
-
-
-        <!-- Header name highlighting components -->
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
-
-
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
     </extensions>
-
-    <application-components>
-        <component>
-            <implementation-class>
-                com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderHighlighterComponent
-            </implementation-class>
-        </component>
-    </application-components>
-
-    <project-components>
-    </project-components>
-
-    <actions>
-        <action id="ImpexPlugin.IndexHybrisItemTypes"
-                class="com.intellij.idea.plugin.hybris.impex.indexer.IndexItemTypesAction"
-                text="Index [y]-types"
-                description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-    </actions>
 
 </idea-plugin>
