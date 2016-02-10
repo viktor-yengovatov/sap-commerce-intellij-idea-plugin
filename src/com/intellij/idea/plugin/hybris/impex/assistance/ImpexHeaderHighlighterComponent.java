@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -33,9 +34,9 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.psi.util.PsiUtilBase;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.utils.CommonIdeaUtils.isTypingActionInProgress;
 
 /**
  * Created 19:56 11 January 2015
@@ -44,13 +45,19 @@ import static com.intellij.idea.plugin.hybris.utils.CommonIdeaUtils.isTypingActi
  */
 public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
 
+    protected final CommonIdeaService commonIdeaService;
     protected final CaretListener caretListener = new ImpexHeaderHighlightingCaretListener();
     protected final ProjectManagerListener projectManagerListener = new ImpexProjectManagerListener();
     protected final PsiTreeChangeListener psiTreeChangeListener = new ImpexPsiTreeChangeListener();
     protected final EditorFactoryListener editorFactoryListener = new ImpexEditorFactoryListener();
     protected final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService;
 
-    public ImpexHeaderHighlighterComponent(final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService) {
+    public ImpexHeaderHighlighterComponent(final CommonIdeaService commonIdeaService,
+                                           final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService) {
+        Validate.notNull(commonIdeaService);
+        Validate.notNull(impexHeaderNameHighlighterService);
+
+        this.commonIdeaService = commonIdeaService;
         this.impexHeaderNameHighlighterService = impexHeaderNameHighlighterService;
     }
 
@@ -76,7 +83,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
 
         @Override
         public void caretPositionChanged(final CaretEvent e) {
-            if (isTypingActionInProgress()) {
+            if (commonIdeaService.isTypingActionInProgress()) {
                 return;
             }
 

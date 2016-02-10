@@ -16,31 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.utils;
+package com.intellij.idea.plugin.hybris.common.services.impl;
 
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.EditorBundle;
-import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Created 19:34 11 January 2015
+ * Created 10:24 PM 10 February 2016.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public final class CommonIdeaUtils {
+public class CommonIdeaServiceImpl implements CommonIdeaService {
 
-    private CommonIdeaUtils() throws IllegalAccessException {
-        throw new IllegalAccessException("Should never be accessed.");
+    protected final CommandProcessor commandProcessor;
+
+    public CommonIdeaServiceImpl(@NotNull final CommandProcessor commandProcessor) {
+        Validate.notNull(commandProcessor);
+
+        this.commandProcessor = commandProcessor;
     }
 
-    public static boolean isTypingActionInProgress() {
+    @Override
+    public boolean isTypingActionInProgress() {
         return StringUtils.equals(
-                CommandProcessor.getInstance().getCurrentCommandName(),
-                EditorBundle.message("typing.in.editor.command.name")
+            this.commandProcessor.getCurrentCommandName(), EditorBundle.message("typing.in.editor.command.name")
         );
     }
 }
