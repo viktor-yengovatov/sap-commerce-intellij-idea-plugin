@@ -19,7 +19,8 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
+import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
+import com.intellij.openapi.components.ServiceManager;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,11 +41,13 @@ public class HybrisModuleDescriptorFactoryImpl implements HybrisModuleDescriptor
         Validate.notNull(file);
         Validate.notNull(rootProjectDescriptor);
 
-        if (HybrisProjectUtils.isConfigModule(file)) {
+        final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
+
+        if (hybrisProjectService.isConfigModule(file)) {
             return new ConfigHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
-        if (HybrisProjectUtils.isPlatformModule(file)) {
+        if (hybrisProjectService.isPlatformModule(file)) {
             return new PlatformHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 

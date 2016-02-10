@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.google.common.collect.Iterables;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ExtensionType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
-import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
-import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -49,7 +49,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -428,13 +432,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        if (HybrisProjectUtils.isRegularModule(rootProjectDirectory)
-            || HybrisProjectUtils.isConfigModule(rootProjectDirectory)) {
+        final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
+
+        if (hybrisProjectService.isRegularModule(rootProjectDirectory)
+            || hybrisProjectService.isConfigModule(rootProjectDirectory)) {
 
             paths.add(rootProjectDirectory);
 
         } else {
-            if (HybrisProjectUtils.isPlatformModule(rootProjectDirectory)) {
+            if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
                 paths.add(rootProjectDirectory);
             }
 

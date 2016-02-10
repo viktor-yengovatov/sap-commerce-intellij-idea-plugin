@@ -33,5 +33,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactory"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactoryImpl"/>
 
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.services.HybrisProjectService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.services.impl.DefaultHybrisProjectService"/>
+
     </extensions>
 </idea-plugin>

@@ -16,9 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.utils;
+package com.intellij.idea.plugin.hybris.project.services.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -30,29 +31,32 @@ import java.io.File;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public final class HybrisProjectUtils {
+public class DefaultHybrisProjectService implements HybrisProjectService {
 
-    private static final Logger LOG = Logger.getInstance(HybrisProjectUtils.class);
+    private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectService.class);
 
-    private HybrisProjectUtils() throws IllegalAccessException {
+    private DefaultHybrisProjectService() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    public static boolean isConfigModule(@NotNull final File file) {
+    @Override
+    public boolean isConfigModule(@NotNull final File file) {
         Validate.notNull(file);
 
         return file.getName().equals(HybrisConstants.CONFIG_EXTENSION_NAME)
                && new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile();
     }
 
-    public static boolean isPlatformModule(@NotNull final File file) {
+    @Override
+    public boolean isPlatformModule(@NotNull final File file) {
         Validate.notNull(file);
 
         return file.getName().equals(HybrisConstants.PLATFORM_EXTENSION_NAME)
                && new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
     }
 
-    public static boolean isRegularModule(@NotNull final File file) {
+    @Override
+    public boolean isRegularModule(@NotNull final File file) {
         Validate.notNull(file);
 
         return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
