@@ -54,6 +54,18 @@
 
         <completion.contributor language="Impex"
                                 implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultImpexFoldingPlaceholderBuilder"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartImpexFoldingPlaceholderBuilder"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"/>
     </extensions>
 
     <application-components>
