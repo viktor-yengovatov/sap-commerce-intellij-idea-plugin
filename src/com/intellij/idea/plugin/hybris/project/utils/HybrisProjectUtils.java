@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.utils;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactory;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactoryImpl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
@@ -33,8 +31,6 @@ import java.io.File;
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public final class HybrisProjectUtils {
-
-    public static final HybrisModuleDescriptorFactory MODULE_DESCRIPTOR_FACTORY = HybrisModuleDescriptorFactoryImpl.INSTANCE;
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectUtils.class);
 

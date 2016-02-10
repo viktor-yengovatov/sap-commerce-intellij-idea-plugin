@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorB
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -344,6 +345,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected Set<HybrisModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
         Validate.notNull(project);
 
+        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ServiceManager.getService(
+            HybrisModuleDescriptorFactory.class
+        );
+
         final Set<HybrisModuleDescriptor> existingModules = new THashSet<HybrisModuleDescriptor>();
 
         for (Module module : ModuleManager.getInstance(project).getModules()) {
@@ -354,7 +359,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                     continue;
                 }
 
-                final HybrisModuleDescriptor moduleDescriptor = HybrisProjectUtils.MODULE_DESCRIPTOR_FACTORY.createDescriptor(
+                final HybrisModuleDescriptor moduleDescriptor = hybrisModuleDescriptorFactory.createDescriptor(
                     VfsUtil.virtualToIoFile(contentRoots[0]), this
                 );
 
@@ -382,11 +387,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<HybrisModuleDescriptor>();
         final List<File> pathsFailedToImport = new ArrayList<File>();
 
+        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ServiceManager.getService(
+            HybrisModuleDescriptorFactory.class
+        );
+
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                moduleDescriptors.add(HybrisProjectUtils.MODULE_DESCRIPTOR_FACTORY.createDescriptor(
-                    moduleRootDirectory, this
-                ));
+                moduleDescriptors.add(hybrisModuleDescriptorFactory.createDescriptor(moduleRootDirectory, this));
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 

@@ -32,11 +32,6 @@ import java.io.File;
  */
 public class HybrisModuleDescriptorFactoryImpl implements HybrisModuleDescriptorFactory {
 
-    public static final HybrisModuleDescriptorFactory INSTANCE = new HybrisModuleDescriptorFactoryImpl();
-
-    protected HybrisModuleDescriptorFactoryImpl() {
-    }
-
     @NotNull
     @Override
     public HybrisModuleDescriptor createDescriptor(@NotNull final File file,
