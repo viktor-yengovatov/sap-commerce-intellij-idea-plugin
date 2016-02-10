@@ -22,10 +22,6 @@
     <name>hybris integration</name>
     <version>4.0.1</version>
 
-    <extensionPoints>
-        <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
-    </extensionPoints>
-
     <depends>com.intellij.modules.lang</depends>
 
     <depends optional="true" config-file="impex-dependencies.xml">com.intellij.modules.lang</depends>

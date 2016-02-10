@@ -17,6 +17,11 @@
   -->
 
 <idea-plugin version="2">
+
+    <extensionPoints>
+        <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
+    </extensionPoints>
+
     <extensions defaultExtensionNs="com.intellij">
 
         <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
