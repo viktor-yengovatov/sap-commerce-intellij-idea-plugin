@@ -29,6 +29,7 @@
     <depends>com.intellij.modules.lang</depends>
 
     <depends optional="true" config-file="impex-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="project-view-optional-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="project-import-optional-dependencies.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="business-process-optional-dependencies.xml">com.intellij.diagram</depends>
@@ -259,8 +260,10 @@
     <idea-version since-build="141"/>
 
     <extensions defaultExtensionNs="com.intellij">
+
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
+
     </extensions>
 
 </idea-plugin>

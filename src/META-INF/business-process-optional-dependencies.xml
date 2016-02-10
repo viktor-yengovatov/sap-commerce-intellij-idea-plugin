@@ -19,20 +19,28 @@
 <idea-plugin version="2">
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Business process components -->
-        <diagram.Provider id="BusinessProcessDiagramProvider" implementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramProviderImpl"/>
+
+        <diagram.Provider id="BusinessProcessDiagramProvider"
+                          implementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramProviderImpl"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.jaxb.services.impl.BpJaxbServiceImpl"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.common.BpGraphService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.common.impl.BpGraphServiceImpl"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramProviderImpl"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElementManager"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramElementManagerIml"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramVfsResolverIml"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramColorManager"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramColorManagerIml"/>
+
     </extensions>
 
 </idea-plugin>

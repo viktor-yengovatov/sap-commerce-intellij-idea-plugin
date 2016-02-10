@@ -16,14 +16,10 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<!--
-   Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 17/08/15.
--->
 <idea-plugin version="2">
+    <extensions defaultExtensionNs="com.intellij">
 
-    <extensions defaultExtensionNs="ccom.intellij.idea.plugin.hybris.impex">
-
-        <hybrisConfiguratorFactory implementation="com.intellij.idea.plugin.hybris.project.configurators.UltimateEditionConfiguratorFactory"/>
+        <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
     </extensions>
 </idea-plugin>
