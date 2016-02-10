@@ -265,8 +265,11 @@
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
 
-        <applicationService  serviceInterface="com.intellij.idea.plugin.hybris.common.services.CommonIdeaService"
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.CommonIdeaService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.CommonIdeaServiceImpl"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.VirtualFileSystemServiceImpl"/>
 
     </extensions>
 

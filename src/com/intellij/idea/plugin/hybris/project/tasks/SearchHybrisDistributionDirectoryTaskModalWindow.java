@@ -18,10 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
+import com.intellij.idea.plugin.hybris.project.utils.Processor;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
@@ -64,9 +65,11 @@ public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal
     public void run(@NotNull final ProgressIndicator indicator) {
         Validate.notNull(indicator);
 
+        final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(VirtualFileSystemService.class);
+
         final File hybrisServerShellScriptFile;
         try {
-            hybrisServerShellScriptFile = VirtualFileSystemUtils.findFileByNameInDirectory(
+            hybrisServerShellScriptFile = virtualFileSystemService.findFileByNameInDirectory(
                 rootProjectDirectory,
                 HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME,
                 new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator)

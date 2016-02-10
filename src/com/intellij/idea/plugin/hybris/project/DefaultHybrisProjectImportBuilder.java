@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.facet.ModifiableFacetModel;
+import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.configurators.CommunityEditionConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
@@ -37,7 +38,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
@@ -94,7 +94,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Nullable
     @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
+    protected final VirtualFileSystemService virtualFileSystemService;
 
+    public DefaultHybrisProjectImportBuilder(@NotNull final VirtualFileSystemService virtualFileSystemService) {
+        Validate.notNull(virtualFileSystemService);
+
+        this.virtualFileSystemService = virtualFileSystemService;
+    }
 
     public ConfiguratorFactory getConfiguratorFactory() {
         if (!Extensions.getRootArea().hasExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID)) {
@@ -290,7 +296,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         Collections.sort(alreadyExistingModuleFiles);
         if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
             try {
-                VirtualFileSystemUtils.removeAllFiles(alreadyExistingModuleFiles);
+                this.virtualFileSystemService.removeAllFiles(alreadyExistingModuleFiles);
             } catch (IOException e) {
                 LOG.error("Can not remove old module files.", e);
             }

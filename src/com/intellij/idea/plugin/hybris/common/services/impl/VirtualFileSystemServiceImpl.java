@@ -16,8 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.utils;
+package com.intellij.idea.plugin.hybris.common.services.impl;
 
+import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.ThrowableComputable;
@@ -39,13 +40,10 @@ import java.util.Collection;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class VirtualFileSystemUtils {
+public class VirtualFileSystemServiceImpl implements VirtualFileSystemService {
 
-    private VirtualFileSystemUtils() throws IllegalAccessException {
-        throw new IllegalAccessException("Should never be accessed.");
-    }
-
-    public static void removeAllFiles(@NotNull final Collection<File> files) throws IOException {
+    @Override
+    public void removeAllFiles(@NotNull final Collection<File> files) throws IOException {
         Validate.notNull(files);
 
         if (files.isEmpty()) {
@@ -83,15 +81,17 @@ public class VirtualFileSystemUtils {
         }
     }
 
-    public static VirtualFile getByUrl(@NotNull final String url) {
+    @Override
+    public VirtualFile getByUrl(@NotNull final String url) {
         Validate.notNull(url);
         return VirtualFileManager.getInstance().findFileByUrl(url);
     }
 
+    @Override
     @Nullable
-    public static File findFileByNameInDirectory(@NotNull final File directory,
-                                                 @NotNull final String fileName,
-                                                 @Nullable final TaskProgressProcessor<File> progressListenerProcessor
+    public File findFileByNameInDirectory(@NotNull final File directory,
+                                          @NotNull final String fileName,
+                                          @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException {
         Validate.notNull(directory);
         Validate.isTrue(directory.isDirectory());
