@@ -18,10 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.formatting.*;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
+import com.intellij.formatting.Alignment;
+import com.intellij.formatting.Block;
+import com.intellij.formatting.Indent;
+import com.intellij.formatting.Spacing;
+import com.intellij.formatting.SpacingBuilder;
+import com.intellij.formatting.Wrap;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import org.jetbrains.annotations.NotNull;
@@ -94,7 +99,7 @@ public class ImpexBlock extends AbstractBlock {
     }
 
     private AlignmentStrategy getAlignmentStrategy() {
-        return ((ImpexFile) myNode.getPsi().getContainingFile()).getAlignmentStrategy();
+        return ServiceManager.getService(AlignmentStrategy.class);
     }
 
     private boolean isNotWhitespaceOrNewLine(final ASTNode currentNode) {
