@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtilCore;

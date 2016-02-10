@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.utils;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactory;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactoryImpl;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;

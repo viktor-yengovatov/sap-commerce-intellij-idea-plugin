@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -31,7 +31,7 @@ import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 
 import java.io.File;
 
-import static com.intellij.idea.plugin.hybris.utils.HybrisConstants.*;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
 /**
  * Created 2:07 AM 15 June 2015.

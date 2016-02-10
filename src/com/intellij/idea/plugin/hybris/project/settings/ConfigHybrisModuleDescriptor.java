@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

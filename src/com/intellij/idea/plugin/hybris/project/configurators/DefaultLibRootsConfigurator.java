@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.JavaLibraryDescriptor;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;
 import com.intellij.openapi.diagnostic.Logger;

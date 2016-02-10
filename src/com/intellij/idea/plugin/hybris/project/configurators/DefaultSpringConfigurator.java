@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;

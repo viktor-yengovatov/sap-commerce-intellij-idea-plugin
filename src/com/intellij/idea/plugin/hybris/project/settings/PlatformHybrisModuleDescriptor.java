@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.jetbrains.annotations.NotNull;
 

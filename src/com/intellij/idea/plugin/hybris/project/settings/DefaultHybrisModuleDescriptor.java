@@ -22,7 +22,7 @@ import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -35,7 +35,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.*;
 
-import static com.intellij.idea.plugin.hybris.utils.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

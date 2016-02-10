@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hyb
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisProjectUtils;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;

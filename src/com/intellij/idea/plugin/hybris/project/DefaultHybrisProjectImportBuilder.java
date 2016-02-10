@@ -34,7 +34,7 @@ import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.utils.HybrisIconsUtils;
 import com.intellij.idea.plugin.hybris.utils.VirtualFileSystemUtils;

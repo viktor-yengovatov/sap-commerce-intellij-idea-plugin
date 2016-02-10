@@ -25,7 +25,7 @@ import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.utils.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
