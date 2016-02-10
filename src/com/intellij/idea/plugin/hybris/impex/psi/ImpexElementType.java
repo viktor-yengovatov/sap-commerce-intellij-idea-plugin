@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class ImpexElementType extends IElementType {
-    public ImpexElementType(@NotNull @NonNls String debugName) {
+    public ImpexElementType(@NotNull @NonNls final String debugName) {
         super(debugName, ImpexLanguage.INSTANCE);
     }
 }

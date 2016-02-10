@@ -44,6 +44,6 @@ public class ImpexTokenType extends IElementType {
 
         final String fixedName = PATTERN.matcher(lowerCase(name)).replaceAll(" ");
 
-        return new StringBuilder("<").append(fixedName).append(">").toString();
+        return new StringBuilder("<").append(fixedName).append('>').toString();
     }
 }

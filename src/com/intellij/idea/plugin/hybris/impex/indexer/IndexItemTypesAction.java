@@ -23,8 +23,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 public class IndexItemTypesAction extends AnAction {
+
     @Override
-    public void actionPerformed(AnActionEvent anActionEvent) {
-        ImpexCompletionContributor.indexItemTypes(anActionEvent.getProject());
+    public void actionPerformed(final AnActionEvent e) {
+        ImpexCompletionContributor.indexItemTypes(e.getProject());
     }
 }
