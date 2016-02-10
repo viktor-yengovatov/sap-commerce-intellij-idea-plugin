@@ -30,7 +30,7 @@
 
     <depends optional="true" config-file="impex-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="project-import-optional-dependencies.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="uml-optional-dependencies.xml">com.intellij.diagram</depends>
 
     <vendor email="AlexanderBartash@gmail.com" url="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">Alexander Bartash</vendor>
