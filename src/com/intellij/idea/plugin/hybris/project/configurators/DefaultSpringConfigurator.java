@@ -49,7 +49,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     public void findSpringConfiguration(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 
-        Map<String, HybrisModuleDescriptor> moduleDescriptorMap = new HashMap<String, HybrisModuleDescriptor>();
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap = new HashMap<String, HybrisModuleDescriptor>();
         for (HybrisModuleDescriptor moduleDescriptor: modulesChosenForImport) {
             moduleDescriptorMap.put(moduleDescriptor.getName(), moduleDescriptor);
         }

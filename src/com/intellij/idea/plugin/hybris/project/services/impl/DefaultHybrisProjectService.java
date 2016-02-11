@@ -35,10 +35,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectService.class);
 
-    private DefaultHybrisProjectService() throws IllegalAccessException {
-        throw new IllegalAccessException("Should never be accessed.");
-    }
-
     @Override
     public boolean isConfigModule(@NotNull final File file) {
         Validate.notNull(file);

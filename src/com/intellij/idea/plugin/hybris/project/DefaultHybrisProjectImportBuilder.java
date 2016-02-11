@@ -39,6 +39,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
 import com.intellij.openapi.extensions.Extensions;
@@ -104,14 +105,17 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     public ConfiguratorFactory getConfiguratorFactory() {
         if (!Extensions.getRootArea().hasExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID)) {
-            return new CommunityEditionConfiguratorFactory();
+            return ServiceManager.getService(CommunityEditionConfiguratorFactory.class);
         }
-        ExtensionPoint ep = Extensions.getRootArea().getExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID);
-        ConfiguratorFactory ultimateConfiguratorFactory = (ConfiguratorFactory) ep.getExtension();
+
+        final ExtensionPoint ep = Extensions.getRootArea().getExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID);
+        final ConfiguratorFactory ultimateConfiguratorFactory = (ConfiguratorFactory) ep.getExtension();
+
         if (ultimateConfiguratorFactory != null) {
             return ultimateConfiguratorFactory;
         }
-        return new CommunityEditionConfiguratorFactory();
+
+        return ServiceManager.getService(CommunityEditionConfiguratorFactory.class);
     }
 
     @Override

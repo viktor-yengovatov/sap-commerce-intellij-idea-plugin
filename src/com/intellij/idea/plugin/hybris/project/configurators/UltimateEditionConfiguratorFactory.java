@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.openapi.application.ApplicationInfo;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.util.BuildNumber;
 
 /**
@@ -28,17 +29,20 @@ public class UltimateEditionConfiguratorFactory extends CommunityEditionConfigur
 
     // bug IDEA-143901 was fixed in 144.1948
     public static final int IDEA_143901_FIX_BASELINE_VERSION = 144;
+
     @Override
     public FacetConfigurator getFacetConfigurator() {
-        return new DefaultFacetConfigurator();
+        return ServiceManager.getService(DefaultFacetConfigurator.class);
     }
 
     @Override
     public SpringConfigurator getSpringConfigurator() {
         final BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();
+
         if (buildNumber.getBaselineVersion() < IDEA_143901_FIX_BASELINE_VERSION) {
-            return new NoInheritanceSpringConfigurator();
+            return ServiceManager.getService(NoInheritanceSpringConfigurator.class);
         }
-        return new DefaultSpringConfigurator();
+
+        return ServiceManager.getService(DefaultSpringConfigurator.class);
     }
 }

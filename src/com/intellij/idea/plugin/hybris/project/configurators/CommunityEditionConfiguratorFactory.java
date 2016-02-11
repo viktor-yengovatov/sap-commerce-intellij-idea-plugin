@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 
@@ -28,32 +29,32 @@ public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory 
 
     @Override
     public FacetConfigurator getFacetConfigurator() {
-        return new FacetConfiguratorAdapter();
+        return ServiceManager.getService(FacetConfiguratorAdapter.class);
     }
 
     @Override
     public SpringConfigurator getSpringConfigurator() {
-        return new SpringConfiguratorAdapter();
+        return ServiceManager.getService(SpringConfiguratorAdapter.class);
     }
 
     @Override
     public ModulesDependenciesConfigurator getModulesDependenciesConfigurator() {
-        return new DefaultModulesDependenciesConfigurator();
+        return ServiceManager.getService(ModulesDependenciesConfigurator.class);
     }
 
     @Override
     public CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator() {
-        return new DefaultCompilerOutputPathsConfigurator();
+        return ServiceManager.getService(CompilerOutputPathsConfigurator.class);
     }
 
     @Override
     public ContentRootConfigurator getContentRootConfigurator() {
-        return new HybrisContentRootConfigurator();
+        return ServiceManager.getService(ContentRootConfigurator.class);
     }
 
     @Override
     public LibRootsConfigurator getLibRootsConfigurator() {
-        return new DefaultLibRootsConfigurator();
+        return ServiceManager.getService(LibRootsConfigurator.class);
     }
 
     @Override
@@ -63,6 +64,6 @@ public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory 
 
     @Override
     public GroupModuleConfigurator getGroupModuleConfigurator() {
-        return new DefaultGroupModuleConfigurator();
+        return ServiceManager.getService(GroupModuleConfigurator.class);
     }
 }
