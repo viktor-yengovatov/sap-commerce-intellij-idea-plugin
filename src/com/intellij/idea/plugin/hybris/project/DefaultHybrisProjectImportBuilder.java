@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
-import com.intellij.idea.plugin.hybris.project.configurators.CommunityEditionConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.impl.CommunityEditionConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
