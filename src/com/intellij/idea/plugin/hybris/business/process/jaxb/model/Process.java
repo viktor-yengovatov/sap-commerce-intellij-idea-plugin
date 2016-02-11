@@ -19,8 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -28,6 +26,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;attribute name="start" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *       &lt;attribute name="onError" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *       &lt;attribute name="processClass" type="{http://www.hybris.de/xsd/processdefinition}name" default="de.hybris.platform.processengine.model.BusinessProcessModel" />
+ *       &lt;attribute name="defaultNodeGroup" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -65,13 +66,13 @@ public class Process {
     @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition")
     protected List<ContextParameter> contextParameter;
     @XmlElements({
-        @XmlElement(name = "split", namespace = "http://www.hybris.de/xsd/processdefinition", type = Split.class),
-        @XmlElement(name = "action", namespace = "http://www.hybris.de/xsd/processdefinition", type = Action.class),
-        @XmlElement(name = "wait", namespace = "http://www.hybris.de/xsd/processdefinition", type = Wait.class),
-        @XmlElement(name = "join", namespace = "http://www.hybris.de/xsd/processdefinition", type = Join.class),
-        @XmlElement(name = "end", namespace = "http://www.hybris.de/xsd/processdefinition", type = End.class),
         @XmlElement(name = "scriptAction", namespace = "http://www.hybris.de/xsd/processdefinition", type = ScriptAction.class),
-        @XmlElement(name = "notify", namespace = "http://www.hybris.de/xsd/processdefinition", type = Notify.class)
+        @XmlElement(name = "notify", namespace = "http://www.hybris.de/xsd/processdefinition", type = Notify.class),
+        @XmlElement(name = "join", namespace = "http://www.hybris.de/xsd/processdefinition", type = Join.class),
+        @XmlElement(name = "wait", namespace = "http://www.hybris.de/xsd/processdefinition", type = Wait.class),
+        @XmlElement(name = "split", namespace = "http://www.hybris.de/xsd/processdefinition", type = Split.class),
+        @XmlElement(name = "end", namespace = "http://www.hybris.de/xsd/processdefinition", type = End.class),
+        @XmlElement(name = "action", namespace = "http://www.hybris.de/xsd/processdefinition", type = Action.class)
     })
     protected List<BpGenericAction> nodes;
     @XmlAttribute(required = true)
@@ -82,6 +83,8 @@ public class Process {
     protected String onError;
     @XmlAttribute
     protected String processClass;
+    @XmlAttribute
+    protected String defaultNodeGroup;
 
     /**
      * Gets the value of the contextParameter property.
@@ -130,13 +133,13 @@ public class Process {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Split }
-     * {@link Action }
-     * {@link Wait }
-     * {@link Join }
-     * {@link End }
      * {@link ScriptAction }
      * {@link Notify }
+     * {@link Join }
+     * {@link Wait }
+     * {@link Split }
+     * {@link End }
+     * {@link Action }
      * 
      * 
      */
@@ -245,6 +248,30 @@ public class Process {
      */
     public void setProcessClass(String value) {
         this.processClass = value;
+    }
+
+    /**
+     * Gets the value of the defaultNodeGroup property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDefaultNodeGroup() {
+        return defaultNodeGroup;
+    }
+
+    /**
+     * Sets the value of the defaultNodeGroup property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDefaultNodeGroup(String value) {
+        this.defaultNodeGroup = value;
     }
 
 }

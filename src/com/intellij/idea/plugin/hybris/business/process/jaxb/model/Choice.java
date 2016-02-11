@@ -22,25 +22,20 @@ package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
- * <p>Java class for split complex type.
+ * <p>Java class for choice complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="split">
+ * &lt;complexType name="choice">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="targetNode" type="{http://www.hybris.de/xsd/processdefinition}targetNode" maxOccurs="unbounded" minOccurs="2"/>
- *       &lt;/sequence>
- *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
+ *       &lt;attribute name="id" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="then" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -49,44 +44,13 @@ import java.util.List;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "split", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "targetNode"
-})
-public class Split implements BpGenericAction {
+@XmlType(name = "choice", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class Choice {
 
-    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition", required = true)
-    protected List<TargetNode> targetNode;
     @XmlAttribute(required = true)
     protected String id;
-
-    /**
-     * Gets the value of the targetNode property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the targetNode property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getTargetNode().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TargetNode }
-     * 
-     * 
-     */
-    public List<TargetNode> getTargetNode() {
-        if (targetNode == null) {
-            targetNode = new ArrayList<TargetNode>();
-        }
-        return this.targetNode;
-    }
+    @XmlAttribute(required = true)
+    protected String then;
 
     /**
      * Gets the value of the id property.
@@ -110,6 +74,30 @@ public class Split implements BpGenericAction {
      */
     public void setId(String value) {
         this.id = value;
+    }
+
+    /**
+     * Gets the value of the then property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getThen() {
+        return then;
+    }
+
+    /**
+     * Sets the value of the then property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setThen(String value) {
+        this.then = value;
     }
 
 }

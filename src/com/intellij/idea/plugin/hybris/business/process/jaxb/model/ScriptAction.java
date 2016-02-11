@@ -19,13 +19,13 @@
 
 package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -43,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;/sequence>
  *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
  *       &lt;attribute name="node" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="nodeGroup" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -63,6 +64,8 @@ public class ScriptAction implements BpGenericAction {
     protected List<Transition> transition;
     @XmlAttribute
     protected Integer node;
+    @XmlAttribute
+    protected String nodeGroup;
     @XmlAttribute(required = true)
     protected String id;
 
@@ -141,6 +144,30 @@ public class ScriptAction implements BpGenericAction {
      */
     public void setNode(Integer value) {
         this.node = value;
+    }
+
+    /**
+     * Gets the value of the nodeGroup property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getNodeGroup() {
+        return nodeGroup;
+    }
+
+    /**
+     * Sets the value of the nodeGroup property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setNodeGroup(String value) {
+        this.nodeGroup = value;
     }
 
     /**

@@ -19,8 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
 
-import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -37,9 +35,13 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType name="wait">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;choice>
- *         &lt;element name="event" type="{http://www.hybris.de/xsd/processdefinition}name"/>
- *       &lt;/choice>
+ *       &lt;sequence>
+ *         &lt;choice>
+ *           &lt;element name="event" type="{http://www.hybris.de/xsd/processdefinition}name"/>
+ *           &lt;element name="case" type="{http://www.hybris.de/xsd/processdefinition}case"/>
+ *         &lt;/choice>
+ *         &lt;element name="timeout" type="{http://www.hybris.de/xsd/processdefinition}timeout" minOccurs="0"/>
+ *       &lt;/sequence>
  *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
  *       &lt;attribute name="then" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *       &lt;attribute name="prependProcessCode" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
@@ -52,12 +54,18 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "wait", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "event"
+    "event",
+    "_case",
+    "timeout"
 })
 public class Wait implements BpGenericAction {
 
     @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition")
     protected String event;
+    @XmlElement(name = "case", namespace = "http://www.hybris.de/xsd/processdefinition")
+    protected Case _case;
+    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition")
+    protected Timeout timeout;
     @XmlAttribute
     protected String then;
     @XmlAttribute
@@ -87,6 +95,54 @@ public class Wait implements BpGenericAction {
      */
     public void setEvent(String value) {
         this.event = value;
+    }
+
+    /**
+     * Gets the value of the case property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Case }
+     *     
+     */
+    public Case getCase() {
+        return _case;
+    }
+
+    /**
+     * Sets the value of the case property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Case }
+     *     
+     */
+    public void setCase(Case value) {
+        this._case = value;
+    }
+
+    /**
+     * Gets the value of the timeout property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Timeout }
+     *     
+     */
+    public Timeout getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Sets the value of the timeout property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Timeout }
+     *     
+     */
+    public void setTimeout(Timeout value) {
+        this.timeout = value;
     }
 
     /**

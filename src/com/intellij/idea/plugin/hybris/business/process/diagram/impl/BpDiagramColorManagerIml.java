@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.business.process.diagram.impl;
 
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramColorManager;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.ui.JBColor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 
@@ -35,14 +37,23 @@ public class BpDiagramColorManagerIml extends BpDiagramColorManager {
     public Color getEdgeColor(final DiagramEdge edge) {
         final String edgeType = edge.getRelationship().toString();
 
-        if ("OK".equalsIgnoreCase(edgeType)) {
+        if (StringUtils.isBlank(edgeType) || "OK".equalsIgnoreCase(edgeType)) {
             return new JBColor(
                 new Color(9, 128, 0),
                 new Color(9, 128, 0)
             );
         }
 
-        if ("NOK".equalsIgnoreCase(edgeType)) {
+        if ("NOK".equalsIgnoreCase(edgeType) || "ERROR".equalsIgnoreCase(edgeType) || "FAIL".equalsIgnoreCase(edgeType)) {
+            return new JBColor(
+                new Color(161, 49, 42),
+                new Color(161, 49, 42)
+            );
+        }
+
+        final String timeoutLabel = HybrisI18NBundleUtils.message("hybris.business.process.timeout.after");
+
+        if (StringUtils.startsWith(edgeType, timeoutLabel)) {
             return new JBColor(
                 new Color(161, 49, 42),
                 new Color(161, 49, 42)

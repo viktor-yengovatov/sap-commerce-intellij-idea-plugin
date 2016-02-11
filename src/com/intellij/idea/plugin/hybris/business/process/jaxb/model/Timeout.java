@@ -23,19 +23,22 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.Duration;
 
 
 /**
- * <p>Java class for join complex type.
+ * Allow to configure timeout for the wait node
+ * 
+ * <p>Java class for timeout complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="join">
+ * &lt;complexType name="timeout">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
- *       &lt;attribute name="then" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="delay" use="required" type="{http://www.w3.org/2001/XMLSchema}duration" />
+ *       &lt;attribute name="then" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,13 +47,37 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "join", namespace = "http://www.hybris.de/xsd/processdefinition")
-public class Join implements BpGenericAction {
+@XmlType(name = "timeout", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class Timeout {
 
-    @XmlAttribute
-    protected String then;
     @XmlAttribute(required = true)
-    protected String id;
+    protected Duration delay;
+    @XmlAttribute(required = true)
+    protected String then;
+
+    /**
+     * Gets the value of the delay property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Duration }
+     *     
+     */
+    public Duration getDelay() {
+        return delay;
+    }
+
+    /**
+     * Sets the value of the delay property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Duration }
+     *     
+     */
+    public void setDelay(Duration value) {
+        this.delay = value;
+    }
 
     /**
      * Gets the value of the then property.
@@ -74,30 +101,6 @@ public class Join implements BpGenericAction {
      */
     public void setThen(String value) {
         this.then = value;
-    }
-
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
     }
 
 }

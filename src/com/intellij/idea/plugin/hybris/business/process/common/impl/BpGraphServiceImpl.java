@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.business.process.common.impl;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Action;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Choice;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.End;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Join;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Notify;
@@ -32,6 +33,7 @@ import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Wait;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Process;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -114,6 +116,21 @@ public class BpGraphServiceImpl implements BpGraphService {
             final Wait wait = (Wait) genericAction;
 
             transitionsIds.put("", wait.getThen());
+
+            if (null != wait.getCase() && CollectionUtils.isNotEmpty(wait.getCase().getChoice())) {
+
+                for (Choice choice : wait.getCase().getChoice()) {
+                    transitionsIds.put(choice.getId(), choice.getThen());
+                }
+            }
+
+            if (null != wait.getTimeout()) {
+
+                transitionsIds.put(
+                    HybrisI18NBundleUtils.message("hybris.business.process.timeout") + '\n' + wait.getTimeout().getDelay(),
+                    wait.getTimeout().getThen()
+                );
+            }
 
         } else if (genericAction instanceof Join) {
             final Join join = (Join) genericAction;

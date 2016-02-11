@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the com.intellij.idea.plugin.hybris.business.process.jaxb package.
+ * generated in the com.intellij.idea.plugin.hybris.business.process package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -41,58 +41,10 @@ public class ObjectFactory {
 
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.intellij.idea.plugin.hybris.business.process.jaxb
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.intellij.idea.plugin.hybris.business.process
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link Split }
-     * 
-     */
-    public Split createSplit() {
-        return new Split();
-    }
-
-    /**
-     * Create an instance of {@link Wait }
-     * 
-     */
-    public Wait createWait() {
-        return new Wait();
-    }
-
-    /**
-     * Create an instance of {@link TargetNode }
-     * 
-     */
-    public TargetNode createTargetNode() {
-        return new TargetNode();
-    }
-
-    /**
-     * Create an instance of {@link ContextParameter }
-     * 
-     */
-    public ContextParameter createContextParameter() {
-        return new ContextParameter();
-    }
-
-    /**
-     * Create an instance of {@link ScriptAction }
-     * 
-     */
-    public ScriptAction createScriptAction() {
-        return new ScriptAction();
-    }
-
-    /**
-     * Create an instance of {@link End }
-     * 
-     */
-    public End createEnd() {
-        return new End();
     }
 
     /**
@@ -104,43 +56,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Transition }
+     * Create an instance of {@link Choice }
      * 
      */
-    public Transition createTransition() {
-        return new Transition();
+    public Choice createChoice() {
+        return new Choice();
     }
 
     /**
-     * Create an instance of {@link Process }
+     * Create an instance of {@link ContextParameter }
      * 
      */
-    public Process createProcess() {
-        return new Process();
+    public ContextParameter createContextParameter() {
+        return new ContextParameter();
     }
 
     /**
-     * Create an instance of {@link Localizedmessage }
+     * Create an instance of {@link Timeout }
      * 
      */
-    public Localizedmessage createLocalizedmessage() {
-        return new Localizedmessage();
-    }
-
-    /**
-     * Create an instance of {@link Join }
-     * 
-     */
-    public Join createJoin() {
-        return new Join();
-    }
-
-    /**
-     * Create an instance of {@link UserGroupType }
-     * 
-     */
-    public UserGroupType createUserGroupType() {
-        return new UserGroupType();
+    public Timeout createTimeout() {
+        return new Timeout();
     }
 
     /**
@@ -152,11 +88,99 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Split }
+     * 
+     */
+    public Split createSplit() {
+        return new Split();
+    }
+
+    /**
+     * Create an instance of {@link Transition }
+     * 
+     */
+    public Transition createTransition() {
+        return new Transition();
+    }
+
+    /**
+     * Create an instance of {@link Localizedmessage }
+     * 
+     */
+    public Localizedmessage createLocalizedmessage() {
+        return new Localizedmessage();
+    }
+
+    /**
+     * Create an instance of {@link Wait }
+     * 
+     */
+    public Wait createWait() {
+        return new Wait();
+    }
+
+    /**
+     * Create an instance of {@link ScriptAction }
+     * 
+     */
+    public ScriptAction createScriptAction() {
+        return new ScriptAction();
+    }
+
+    /**
+     * Create an instance of {@link Case }
+     * 
+     */
+    public Case createCase() {
+        return new Case();
+    }
+
+    /**
      * Create an instance of {@link Script }
      * 
      */
     public Script createScript() {
         return new Script();
+    }
+
+    /**
+     * Create an instance of {@link UserGroupType }
+     * 
+     */
+    public UserGroupType createUserGroupType() {
+        return new UserGroupType();
+    }
+
+    /**
+     * Create an instance of {@link End }
+     * 
+     */
+    public End createEnd() {
+        return new End();
+    }
+
+    /**
+     * Create an instance of {@link Join }
+     * 
+     */
+    public Join createJoin() {
+        return new Join();
+    }
+
+    /**
+     * Create an instance of {@link Process }
+     * 
+     */
+    public Process createProcess() {
+        return new Process();
+    }
+
+    /**
+     * Create an instance of {@link TargetNode }
+     * 
+     */
+    public TargetNode createTargetNode() {
+        return new TargetNode();
     }
 
 }
