@@ -47,9 +47,10 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     protected final Project project;
     protected final HybrisProjectSettings hybrisProjectSettings;
-    private List<String> junkFileNames;
 
-    public HybrisProjectView(final Project project) {
+    public HybrisProjectView(@NotNull final Project project) {
+        Validate.notNull(project);
+
         this.project = project;
         this.hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
     }
@@ -59,6 +60,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     public Collection<AbstractTreeNode> modify(@NotNull final AbstractTreeNode parent,
                                                @NotNull final Collection<AbstractTreeNode> children,
                                                final ViewSettings settings) {
+        Validate.notNull(parent);
+        Validate.notNull(children);
+
         if (this.isNotHybrisProject()) {
             return children;
         }
@@ -109,9 +113,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         Validate.notNull(children);
         Validate.notNull(settings);
 
-        this.junkFileNames = getJunkFileNames();
+        final List<String> junkFileNames = this.getJunkFileNames();
 
-        if (this.junkFileNames == null || this.junkFileNames.isEmpty()) {
+        if (junkFileNames == null || junkFileNames.isEmpty()) {
             return children;
         }
 
@@ -126,7 +130,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                     continue;
                 }
 
-                if (this.isJunk(virtualFile)) {
+                if (this.isJunk(virtualFile, junkFileNames)) {
                     junkTreeNodes.add(child);
                 } else {
                     treeNodes.add(child);
@@ -148,9 +152,11 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return null != this.hybrisProjectSettings && !this.hybrisProjectSettings.isHybisProject();
     }
 
-    protected boolean isJunk(@NotNull final VirtualFile virtualFile) {
+    protected boolean isJunk(@NotNull final VirtualFile virtualFile, @NotNull final List<String> junkFileNames) {
         Validate.notNull(virtualFile);
-        return this.junkFileNames.contains(virtualFile.getName()) || this.isIdeaModuleFile(virtualFile);
+        Validate.notNull(junkFileNames);
+
+        return junkFileNames.contains(virtualFile.getName()) || this.isIdeaModuleFile(virtualFile);
     }
 
     protected boolean isIdeaModuleFile(@NotNull final VirtualFile virtualFile) {
