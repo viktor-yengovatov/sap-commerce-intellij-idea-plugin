@@ -21,11 +21,13 @@ package com.intellij.idea.plugin.hybris.view;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
+import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
+import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -65,9 +67,51 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             return children;
         }
 
-        junkFileNames = getJunkFileNames();
+        if (parent instanceof ExternalLibrariesNode) {
+            return this.modifyExternalLibrariesNodes(children, settings);
+        }
 
-        if (junkFileNames == null || junkFileNames.isEmpty()) {
+        return this.modifyProjectNodes(children, settings);
+    }
+
+    @NotNull
+    protected Collection<AbstractTreeNode> modifyExternalLibrariesNodes(
+        @NotNull final Collection<AbstractTreeNode> children,
+        @NotNull final ViewSettings settings
+    ) {
+        Validate.notNull(children);
+        Validate.notNull(settings);
+
+        final Collection<AbstractTreeNode> treeNodes = new ArrayList<AbstractTreeNode>();
+
+        for (AbstractTreeNode child : children) {
+            if (child instanceof PsiDirectoryNode) {
+                final VirtualFile virtualFile = ((PsiDirectoryNode) child).getVirtualFile();
+
+                if (null == virtualFile) {
+                    continue;
+                }
+
+                if (!HybrisConstants.CLASSES_DIRECTORY.equalsIgnoreCase(virtualFile.getName())) {
+                    treeNodes.add(child);
+                }
+            } else {
+                treeNodes.add(child);
+            }
+        }
+
+        return treeNodes;
+    }
+
+    @NotNull
+    protected Collection<AbstractTreeNode> modifyProjectNodes(@NotNull final Collection<AbstractTreeNode> children,
+                                                              @NotNull final ViewSettings settings) {
+        Validate.notNull(children);
+        Validate.notNull(settings);
+
+        this.junkFileNames = getJunkFileNames();
+
+        if (this.junkFileNames == null || this.junkFileNames.isEmpty()) {
             return children;
         }
 

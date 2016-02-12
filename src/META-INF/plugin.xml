@@ -130,6 +130,10 @@
 
     <change-notes>
         <![CDATA[
+          ##:
+          <br/> - Project view has been modified to hide unnecessary elements in "External Libraries" node.
+          <br/>
+          <br/>
           4.1:
           <br/> - Business process visualisation has been improved to support new features from the latest hybris versions.
           <br/>
