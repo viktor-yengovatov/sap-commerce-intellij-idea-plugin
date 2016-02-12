@@ -132,6 +132,7 @@
         <![CDATA[
           ##:
           <br/> - Project view has been modified to hide unnecessary elements in "External Libraries" node.
+          <br/> - Project content roots configuration has been improved to exclude compiled classes in WEB-INF folder of a web application when they are not required by the classpath.
           <br/>
           <br/>
           4.1:

@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -32,7 +32,27 @@ import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 
 import java.io.File;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ECLIPSE_BIN_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GEN_SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_WORK_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
 
 /**
  * Created 2:07 AM 15 June 2015.
@@ -296,5 +316,25 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath())
         );
+
+        if (moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+
+            if (moduleDescriptor.isInCustomDir()) {
+                final File webInfClassesDirectory = new File(moduleDescriptor.getRootDirectory(), WEB_INF_CLASSES_DIRECTORY);
+                contentEntry.addExcludeFolder(
+                    VfsUtil.pathToUrl(webInfClassesDirectory.getAbsolutePath())
+                );
+            }
+
+        } else {
+
+            final File webSrcDirectory = new File(webModuleDirectory, SRC_DIRECTORY);
+            if (webSrcDirectory.exists()) {
+                final File webInfClassesDirectory = new File(moduleDescriptor.getRootDirectory(), WEB_INF_CLASSES_DIRECTORY);
+                contentEntry.addExcludeFolder(
+                    VfsUtil.pathToUrl(webInfClassesDirectory.getAbsolutePath())
+                );
+            }
+        }
     }
 }
