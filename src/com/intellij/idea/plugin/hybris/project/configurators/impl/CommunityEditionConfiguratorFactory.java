@@ -30,14 +30,19 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
 public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory {
 
     @Override
-    public FacetConfigurator getFacetConfigurator() {
-        return ServiceManager.getService(SpringFacetConfiguratorAdapter.class);
+    public List<FacetConfigurator> getFacetConfigurators() {
+        return Collections.<FacetConfigurator>singletonList(
+            ServiceManager.getService(SpringFacetConfiguratorAdapter.class)
+        );
     }
 
     @Override

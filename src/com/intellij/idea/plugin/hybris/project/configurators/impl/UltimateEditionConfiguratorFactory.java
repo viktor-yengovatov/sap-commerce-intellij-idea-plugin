@@ -25,6 +25,9 @@ import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.util.BuildNumber;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
@@ -34,8 +37,10 @@ public class UltimateEditionConfiguratorFactory extends CommunityEditionConfigur
     public static final int IDEA_143901_FIX_BASELINE_VERSION = 144;
 
     @Override
-    public FacetConfigurator getFacetConfigurator() {
-        return ServiceManager.getService(DefaultSpringFacetConfigurator.class);
+    public List<FacetConfigurator> getFacetConfigurators() {
+        return Collections.<FacetConfigurator>singletonList(
+            ServiceManager.getService(DefaultSpringFacetConfigurator.class)
+        );
     }
 
     @Override

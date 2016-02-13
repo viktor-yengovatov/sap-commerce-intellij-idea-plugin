@@ -68,6 +68,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -181,7 +182,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
-        final FacetConfigurator facetConfigurator = configuratorFactory.getFacetConfigurator();
+        final List<FacetConfigurator> facetConfigurators = configuratorFactory.getFacetConfigurators();
         final ContentRootConfigurator contentRootConfigurator = configuratorFactory.getContentRootConfigurator();
         final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = configuratorFactory.getCompilerOutputPathsConfigurator();
         final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
@@ -237,7 +238,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
             contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule);
+
+            for (FacetConfigurator facetConfigurator : facetConfigurators) {
+                facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule);
+            }
+
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
@@ -263,14 +268,25 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return result;
     }
 
-    private void selectSdk(final Project project) {
+    private void selectSdk(@NotNull final Project project) {
+        Validate.notNull(project);
+
         final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
         final Sdk recentSdk = ProjectJdkTable.getInstance().findMostRecentSdkOfType(JavaSdk.getInstance());
-        JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(recentSdk.getVersionString());
-        LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
-        if (sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
-            languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
+
+        if (null == recentSdk) {
+            return;
         }
+
+        if (StringUtils.isNotBlank(recentSdk.getVersionString())) {
+            final JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(recentSdk.getVersionString());
+            final LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
+
+            if (sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
+                languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
+            }
+        }
+
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             public void run() {
                 projectRootManager.setProjectSdk(recentSdk);
