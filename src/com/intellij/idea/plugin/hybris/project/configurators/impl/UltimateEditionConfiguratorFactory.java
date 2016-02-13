@@ -35,7 +35,7 @@ public class UltimateEditionConfiguratorFactory extends CommunityEditionConfigur
 
     @Override
     public FacetConfigurator getFacetConfigurator() {
-        return ServiceManager.getService(DefaultFacetConfigurator.class);
+        return ServiceManager.getService(DefaultSpringFacetConfigurator.class);
     }
 
     @Override

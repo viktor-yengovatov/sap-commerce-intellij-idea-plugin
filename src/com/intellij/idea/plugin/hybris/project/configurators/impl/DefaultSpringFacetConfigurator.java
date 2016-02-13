@@ -36,7 +36,7 @@ import java.io.File;
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 7/08/15.
  */
-public class DefaultFacetConfigurator implements FacetConfigurator {
+public class DefaultSpringFacetConfigurator implements FacetConfigurator {
 
     @Override
     public void configure(@NotNull final ModifiableFacetModel modifiableFacetModel,

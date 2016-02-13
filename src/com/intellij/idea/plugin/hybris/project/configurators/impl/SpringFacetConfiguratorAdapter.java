@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
-public class FacetConfiguratorAdapter implements FacetConfigurator {
+public class SpringFacetConfiguratorAdapter implements FacetConfigurator {
 
     @Override
     public void configure(@NotNull final ModifiableFacetModel modifiableFacetModel,

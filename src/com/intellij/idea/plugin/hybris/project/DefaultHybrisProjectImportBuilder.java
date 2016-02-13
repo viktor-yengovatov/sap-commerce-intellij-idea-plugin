@@ -178,7 +178,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                                final ModulesProvider modulesProvider,
                                final ModifiableArtifactModel artifactModel) {
 
-        final ConfiguratorFactory configuratorFactory = getConfiguratorFactory();
+        final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
         final FacetConfigurator facetConfigurator = configuratorFactory.getFacetConfigurator();

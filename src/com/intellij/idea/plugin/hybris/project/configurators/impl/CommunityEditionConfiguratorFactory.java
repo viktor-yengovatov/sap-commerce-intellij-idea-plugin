@@ -37,7 +37,7 @@ public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory 
 
     @Override
     public FacetConfigurator getFacetConfigurator() {
-        return ServiceManager.getService(FacetConfiguratorAdapter.class);
+        return ServiceManager.getService(SpringFacetConfiguratorAdapter.class);
     }
 
     @Override
