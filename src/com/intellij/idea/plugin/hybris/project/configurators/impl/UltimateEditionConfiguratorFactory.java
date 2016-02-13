@@ -41,7 +41,7 @@ public class UltimateEditionConfiguratorFactory extends CommunityEditionConfigur
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
         return Collections.<FacetConfigurator>singletonList(
-            ServiceManager.getService(DefaultSpringFacetConfigurator.class)
+            ServiceManager.getService(SpringFacetConfigurator.class)
         );
     }
 

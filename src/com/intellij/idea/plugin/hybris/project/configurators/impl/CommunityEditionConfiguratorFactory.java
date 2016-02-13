@@ -42,9 +42,7 @@ public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory 
     @NotNull
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
-        return Collections.<FacetConfigurator>singletonList(
-            ServiceManager.getService(SpringFacetConfiguratorAdapter.class)
-        );
+        return Collections.emptyList();
     }
 
     @NotNull

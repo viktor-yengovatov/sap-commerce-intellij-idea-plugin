@@ -40,11 +40,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.HybrisContentRootConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSpringFacetConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSpringFacetConfigurator"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfiguratorAdapter"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfiguratorAdapter"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultGroupModuleConfigurator"/>
