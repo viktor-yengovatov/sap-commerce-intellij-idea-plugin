@@ -25,6 +25,7 @@ import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.ide.util.treeView.NodeOptions;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
@@ -56,12 +57,14 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     protected final Project project;
     protected final HybrisProjectSettings hybrisProjectSettings;
+    protected final HybrisApplicationSettings hybrisApplicationSettings;
 
     public HybrisProjectView(@NotNull final Project project) {
         Validate.notNull(project);
 
         this.project = project;
         this.hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        this.hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
     }
 
     @Override
@@ -77,29 +80,33 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         }
 
         if (parent instanceof JunkProjectViewNode) {
-            return this.isHideEmptyMiddleFoldersEnabled()
-                ? this.compactEmptyMiddlePackages(parent, children, settings)
+            return this.isCompactEmptyMiddleFoldersEnabled(settings)
+                ? this.compactEmptyMiddlePackages(parent, children)
                 : children;
         }
 
         if (parent instanceof ExternalLibrariesNode) {
-            return this.modifyExternalLibrariesNodes(children, settings);
+            return this.modifyExternalLibrariesNodes(children);
         }
 
         final Collection<AbstractTreeNode> childrenWithProcessedJunkFiles = this.processJunkFiles(children, settings);
 
-        return this.isHideEmptyMiddleFoldersEnabled() ?
-            this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles, settings)
+        return this.isCompactEmptyMiddleFoldersEnabled(settings)
+            ? this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
             : childrenWithProcessedJunkFiles;
+    }
+
+    protected boolean isCompactEmptyMiddleFoldersEnabled(@Nullable final NodeOptions settings) {
+        return this.hybrisApplicationSettings.isHideEmptyMiddleFolders()
+               && (null != settings)
+               && settings.isHideEmptyMiddlePackages();
     }
 
     @NotNull
     protected Collection<AbstractTreeNode> modifyExternalLibrariesNodes(
-        @NotNull final Collection<AbstractTreeNode> children,
-        @NotNull final ViewSettings settings
+        @NotNull final Collection<AbstractTreeNode> children
     ) {
         Validate.notNull(children);
-        Validate.notNull(settings);
 
         final Collection<AbstractTreeNode> treeNodes = new ArrayList<AbstractTreeNode>();
 
@@ -124,9 +131,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     @NotNull
     protected Collection<AbstractTreeNode> processJunkFiles(@NotNull final Collection<AbstractTreeNode> children,
-                                                            @NotNull final ViewSettings settings) {
+                                                            @Nullable final ViewSettings settings) {
         Validate.notNull(children);
-        Validate.notNull(settings);
 
         final List<String> junkFileNames = this.getJunkFileNames();
 
@@ -163,21 +169,16 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return treeNodes;
     }
 
-    @Nullable
+    @NotNull
     protected Collection<AbstractTreeNode> compactEmptyMiddlePackages(
         @NotNull final AbstractTreeNode parent,
-        @Nullable final Collection<AbstractTreeNode> children,
-        @NotNull final ViewSettings settings
+        @NotNull final Collection<AbstractTreeNode> children
     ) {
         Validate.notNull(parent);
-        Validate.notNull(settings);
-
-        if (!settings.isHideEmptyMiddlePackages()) {
-            return children;
-        }
+        Validate.notNull(children);
 
         if (CollectionUtils.isEmpty(children)) {
-            return new ArrayList<AbstractTreeNode>();
+            return children;
         }
 
         if (parent instanceof PsiDirectoryNode) {
@@ -293,11 +294,6 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return HybrisConstants.ADDON_SRC_DIRECTORY.equals(file.getName())
                || HybrisConstants.CLASSES_DIRECTORY.equals(file.getName())
                || HybrisConstants.TEST_CLASSES_DIRECTORY.equals(file.getName());
-    }
-
-    protected boolean isHideEmptyMiddleFoldersEnabled() {
-        final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
-        return settings.isHideEmptyMiddleFolders();
     }
 
     protected boolean isNotHybrisProject() {
