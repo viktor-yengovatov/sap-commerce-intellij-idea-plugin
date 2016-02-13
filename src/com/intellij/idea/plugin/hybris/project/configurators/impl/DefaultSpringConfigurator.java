@@ -19,11 +19,12 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.facet.ModifiableFacetModel;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
@@ -37,12 +38,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
  */
 public class DefaultSpringConfigurator implements SpringConfigurator {
+
+    private static final Logger LOG = Logger.getInstance(DefaultSpringConfigurator.class);
 
     protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
 
@@ -141,16 +148,16 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         Validate.notNull(moduleDescriptorMap);
         Validate.notNull(moduleDescriptor);
 
-        Properties projectProperties = new Properties();
+        final Properties projectProperties = new Properties();
 
-        File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
+        final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
         try {
-            FileInputStream fis = new FileInputStream(propFile);
+            final FileInputStream fis = new FileInputStream(propFile);
             projectProperties.load(fis);
         } catch (FileNotFoundException e) {
             return;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("", e);
             return;
         }
 
@@ -160,16 +167,16 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             if (   key.endsWith(HybrisConstants.APPLICATION_CONTEXT_SPRING_FILES)
                 || key.endsWith(HybrisConstants.ADDITIONAL_WEB_SPRING_CONFIG_FILES)
                 || key.endsWith(HybrisConstants.GLOBAL_CONTEXT_SPRING_FILES)) {
-                String moduleName = key.substring(0, key.indexOf("."));
+                final String moduleName = key.substring(0, key.indexOf('.'));
                 // relevantModule can be different to a moduleDescriptor. e.g. addon concept
                 final HybrisModuleDescriptor relevantModule = moduleDescriptorMap.get(moduleName);
                 if (relevantModule != null) {
-                    String rawFile = projectProperties.getProperty(key);
+                    final String rawFile = projectProperties.getProperty(key);
                     if (rawFile == null) {
                         continue;
                     }
                     for (String file: rawFile.split(",")) {
-                        File springFile;
+                        final File springFile;
                         if (file.startsWith("classpath:")) {
                             springFile = new File(resourcesDir, file.substring("classpath:".length(), file.length()));
                         } else {

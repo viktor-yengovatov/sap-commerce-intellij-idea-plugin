@@ -74,7 +74,7 @@ public class DefaultFacetConfigurator implements FacetConfigurator {
         SpringFacet springFacet = modifiableFacetModel.getFacetByType(SpringFacet.FACET_TYPE_ID);
 
         if (springFacet == null) {
-            FacetType springFacetType = FacetTypeRegistry.getInstance().findFacetType(SpringFacet.FACET_TYPE_ID);
+            final FacetType springFacetType = FacetTypeRegistry.getInstance().findFacetType(SpringFacet.FACET_TYPE_ID);
             springFacet = (SpringFacet) springFacetType.createFacet(javaModule, SpringFacet.FACET_TYPE_ID.toString(),
                                                                     springFacetType.createDefaultConfiguration(), null);
             modifiableFacetModel.addFacet(springFacet);
