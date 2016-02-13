@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.util.BuildNumber;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,7 @@ public class UltimateEditionConfiguratorFactory extends CommunityEditionConfigur
     // bug IDEA-143901 was fixed in 144.1948
     public static final int IDEA_143901_FIX_BASELINE_VERSION = 144;
 
+    @NotNull
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
         return Collections.<FacetConfigurator>singletonList(
@@ -43,6 +45,7 @@ public class UltimateEditionConfiguratorFactory extends CommunityEditionConfigur
         );
     }
 
+    @NotNull
     @Override
     public SpringConfigurator getSpringConfigurator() {
         final BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();

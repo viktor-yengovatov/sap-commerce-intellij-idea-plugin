@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.openapi.roots.ModifiableModelsProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -27,19 +28,27 @@ import java.util.List;
  */
 public interface ConfiguratorFactory {
 
+    @NotNull
     List<FacetConfigurator> getFacetConfigurators();
 
+    @NotNull
     SpringConfigurator getSpringConfigurator();
 
+    @NotNull
     ModulesDependenciesConfigurator getModulesDependenciesConfigurator();
 
+    @NotNull
     CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator();
 
+    @NotNull
     ContentRootConfigurator getContentRootConfigurator();
 
+    @NotNull
     LibRootsConfigurator getLibRootsConfigurator();
 
+    @NotNull
     ModifiableModelsProvider getModifiableModelsProvider();
 
+    @NotNull
     GroupModuleConfigurator getGroupModuleConfigurator();
 }

@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.List;
  */
 public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory {
 
+    @NotNull
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
         return Collections.<FacetConfigurator>singletonList(
@@ -45,36 +47,43 @@ public class CommunityEditionConfiguratorFactory implements ConfiguratorFactory 
         );
     }
 
+    @NotNull
     @Override
     public SpringConfigurator getSpringConfigurator() {
         return ServiceManager.getService(SpringConfiguratorAdapter.class);
     }
 
+    @NotNull
     @Override
     public ModulesDependenciesConfigurator getModulesDependenciesConfigurator() {
         return ServiceManager.getService(ModulesDependenciesConfigurator.class);
     }
 
+    @NotNull
     @Override
     public CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator() {
         return ServiceManager.getService(CompilerOutputPathsConfigurator.class);
     }
 
+    @NotNull
     @Override
     public ContentRootConfigurator getContentRootConfigurator() {
         return ServiceManager.getService(ContentRootConfigurator.class);
     }
 
+    @NotNull
     @Override
     public LibRootsConfigurator getLibRootsConfigurator() {
         return ServiceManager.getService(LibRootsConfigurator.class);
     }
 
+    @NotNull
     @Override
     public ModifiableModelsProvider getModifiableModelsProvider() {
         return new IdeaModifiableModelsProvider();
     }
 
+    @NotNull
     @Override
     public GroupModuleConfigurator getGroupModuleConfigurator() {
         return ServiceManager.getService(GroupModuleConfigurator.class);
