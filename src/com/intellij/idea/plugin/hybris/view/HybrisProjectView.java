@@ -313,6 +313,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return virtualFile.getName().endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
     }
 
+    @Nullable
     protected List<String> getJunkFileNames() {
         return HybrisApplicationSettingsComponent.getInstance().getState().getJunkDirectoryList();
     }
