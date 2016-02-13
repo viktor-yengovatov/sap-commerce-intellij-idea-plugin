@@ -2,7 +2,7 @@
 
 [GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
 
-Copyright (C) 2014-2015 Alexander Bartash <AlexanderBartash@gmail.com>
+Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
