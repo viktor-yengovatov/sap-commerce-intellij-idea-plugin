@@ -1,0 +1,18 @@
+syntax: regexp
+
+^src/com/intellij/idea/plugin/hybris/impex/ImpexLexer[.]java$
+
+^.*[.]directory$
+
+^out$
+#^gen$
+
+^.*[.].*~$
+
+^[.]idea/workspace[.]xml$
+
+^[.]idea/dictionaries$
+
+^[.]idea/shelf$
+
+^Hybris-Integration[.]zip$
