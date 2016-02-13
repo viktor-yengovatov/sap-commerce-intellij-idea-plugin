@@ -54,6 +54,8 @@ public class HybrisApplicationSettingsForm {
     private JTextField groupHybrisTextField;
     private JTextField groupHybrisUnusedTextField;
     private JCheckBox jRebelCheckBox;
+    private JCheckBox hideEmptyMiddleFoldersCheckBox;
+    private JLabel projectTreeViewSettingsLabel;
 
     private JunkListPanel junkListPanel;
 
@@ -68,6 +70,7 @@ public class HybrisApplicationSettingsForm {
         groupHybrisTextField.setText(data.getGroupHybris());
         groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
         jRebelCheckBox.setSelected(data.isJRebelOutputPath());
+        hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
     }
 
     public void getData(final HybrisApplicationSettings data) {
@@ -81,6 +84,7 @@ public class HybrisApplicationSettingsForm {
         data.setGroupHybris(groupHybrisTextField.getText());
         data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
         data.setJRebelOutputPath(jRebelCheckBox.isSelected());
+        data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -114,6 +118,9 @@ public class HybrisApplicationSettingsForm {
         if (jRebelCheckBox.isSelected() != data.isJRebelOutputPath()) {
             return true;
         }
+        if (hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()) {
+            return true;
+        }
         return false;
     }
 
@@ -129,6 +136,8 @@ public class HybrisApplicationSettingsForm {
         junkListPanel = new JunkListPanel("hybris.import.settings.junk.directory.name", new ArrayList<String>());
         junkDirectoriesPanel = junkListPanel;
 
+        projectTreeViewSettingsLabel = new JBLabel();
+        projectTreeViewSettingsLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.project.view.tree.settings")));
     }
 
     public void createComponent() {

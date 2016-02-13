@@ -131,7 +131,8 @@
     <change-notes>
         <![CDATA[
           ##:
-          <br/> - Project view has been modified to hide unnecessary elements in "External Libraries" node.
+          <br/> - Project view tree has been modified to hide unnecessary elements in "External Libraries" node.
+          <br/> - Functionality of the project view tree has been extended to allow hiding of empty middle folders like it is done for java packages.
           <br/> - Project content roots configuration has been improved to exclude compiled classes in WEB-INF folder of a web application when they are not required by the classpath.
           <br/>
           <br/>
@@ -266,6 +267,8 @@
     <idea-version since-build="141"/>
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>

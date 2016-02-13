@@ -18,22 +18,31 @@
 
 package com.intellij.idea.plugin.hybris.view;
 
+import com.google.common.collect.Iterables;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.SimpleTextAttributes;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,14 +77,20 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         }
 
         if (parent instanceof JunkProjectViewNode) {
-            return children;
+            return this.isHideEmptyMiddleFoldersEnabled()
+                ? this.compactEmptyMiddlePackages(parent, children, settings)
+                : children;
         }
 
         if (parent instanceof ExternalLibrariesNode) {
             return this.modifyExternalLibrariesNodes(children, settings);
         }
 
-        return this.modifyProjectNodes(children, settings);
+        final Collection<AbstractTreeNode> childrenWithProcessedJunkFiles = this.processJunkFiles(children, settings);
+
+        return this.isHideEmptyMiddleFoldersEnabled() ?
+            this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles, settings)
+            : childrenWithProcessedJunkFiles;
     }
 
     @NotNull
@@ -108,8 +123,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     @NotNull
-    protected Collection<AbstractTreeNode> modifyProjectNodes(@NotNull final Collection<AbstractTreeNode> children,
-                                                              @NotNull final ViewSettings settings) {
+    protected Collection<AbstractTreeNode> processJunkFiles(@NotNull final Collection<AbstractTreeNode> children,
+                                                            @NotNull final ViewSettings settings) {
         Validate.notNull(children);
         Validate.notNull(settings);
 
@@ -146,6 +161,143 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         }
 
         return treeNodes;
+    }
+
+    @Nullable
+    protected Collection<AbstractTreeNode> compactEmptyMiddlePackages(
+        @NotNull final AbstractTreeNode parent,
+        @Nullable final Collection<AbstractTreeNode> children,
+        @NotNull final ViewSettings settings
+    ) {
+        Validate.notNull(parent);
+        Validate.notNull(settings);
+
+        if (!settings.isHideEmptyMiddlePackages()) {
+            return children;
+        }
+
+        if (CollectionUtils.isEmpty(children)) {
+            return new ArrayList<AbstractTreeNode>();
+        }
+
+        if (parent instanceof PsiDirectoryNode) {
+            final PsiDirectoryNode parentPsiDirectoryNode = (PsiDirectoryNode) parent;
+            final VirtualFile parentVirtualFile = parentPsiDirectoryNode.getVirtualFile();
+
+            if (null != parentVirtualFile && this.isFileInRoots(parentVirtualFile)) {
+                return children;
+            }
+        }
+
+        final Collection<AbstractTreeNode> compactedChildren = new ArrayList<AbstractTreeNode>();
+
+        for (AbstractTreeNode child : children) {
+
+            final AbstractTreeNode compactedChild = this.recursivelyCompactEmptyMiddlePackages(
+                child, child.getChildren()
+            );
+
+            compactedChildren.add(compactedChild);
+        }
+
+        return compactedChildren;
+    }
+
+    @Nullable
+    protected AbstractTreeNode recursivelyCompactEmptyMiddlePackages(
+        @NotNull final AbstractTreeNode parent,
+        @Nullable final Collection<AbstractTreeNode> children
+    ) {
+        Validate.notNull(parent);
+
+        if (CollectionUtils.isEmpty(children)) {
+            return parent;
+        }
+
+        if (parent instanceof JunkProjectViewNode) {
+            return parent;
+        }
+
+        if ((parent instanceof PsiDirectoryNode) && (children.size() == 1)) {
+            final AbstractTreeNode onlyChild = Iterables.getOnlyElement(children);
+
+            if (onlyChild instanceof PsiDirectoryNode) {
+                final PsiDirectoryNode parentPsiDirectoryNode = (PsiDirectoryNode) parent;
+                final VirtualFile parentVirtualFile = parentPsiDirectoryNode.getVirtualFile();
+
+                if (null == parentVirtualFile) {
+                    return parent;
+                }
+
+                if (this.isFileInRoots(parentVirtualFile) || this.isSrcOrClassesDirectory(parentVirtualFile)) {
+                    return parent;
+                }
+
+                final PsiDirectoryNode onlyChildPsiDirectoryNode = (PsiDirectoryNode) onlyChild;
+                final VirtualFile onlyChildVirtualFile = onlyChildPsiDirectoryNode.getVirtualFile();
+
+                if (null == onlyChildVirtualFile) {
+                    return parent;
+                }
+
+                this.appendParentNameToOnlyChildName(
+                    parentPsiDirectoryNode, parentVirtualFile, onlyChildPsiDirectoryNode, onlyChildVirtualFile
+                );
+
+                return this.recursivelyCompactEmptyMiddlePackages(onlyChild, onlyChild.getChildren());
+            }
+        }
+
+        return parent;
+    }
+
+    private void appendParentNameToOnlyChildName(@NotNull final PsiDirectoryNode parentPsiDirectoryNode,
+                                                 @NotNull final VirtualFile parentVirtualFile,
+                                                 @NotNull final PsiDirectoryNode onlyChildPsiDirectoryNode,
+                                                 @NotNull final VirtualFile onlyChildVirtualFile) {
+        Validate.notNull(parentPsiDirectoryNode);
+        Validate.notNull(parentVirtualFile);
+        Validate.notNull(onlyChildPsiDirectoryNode);
+        Validate.notNull(onlyChildVirtualFile);
+
+        if (CollectionUtils.isEmpty(parentPsiDirectoryNode.getPresentation().getColoredText())) {
+            onlyChildPsiDirectoryNode.getPresentation().addText(new ColoredFragment(
+                parentVirtualFile.getName(), SimpleTextAttributes.REGULAR_ATTRIBUTES
+            ));
+        } else {
+            for (ColoredFragment coloredFragment : parentPsiDirectoryNode.getPresentation().getColoredText()) {
+                onlyChildPsiDirectoryNode.getPresentation().addText(coloredFragment);
+            }
+        }
+
+        onlyChildPsiDirectoryNode.getPresentation().addText(new ColoredFragment(
+            File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES
+        ));
+
+        onlyChildPsiDirectoryNode.getPresentation().addText(new ColoredFragment(
+            onlyChildVirtualFile.getName(), SimpleTextAttributes.REGULAR_ATTRIBUTES
+        ));
+    }
+
+    private boolean isFileInRoots(@NotNull final VirtualFile file) {
+        Validate.notNull(file);
+
+        final ProjectFileIndex index = ProjectRootManager.getInstance(this.project).getFileIndex();
+
+        return index.isInSource(file) || index.isInLibraryClasses(file);
+    }
+
+    private boolean isSrcOrClassesDirectory(@NotNull final VirtualFile file) {
+        Validate.notNull(file);
+
+        return HybrisConstants.ADDON_SRC_DIRECTORY.equals(file.getName())
+               || HybrisConstants.CLASSES_DIRECTORY.equals(file.getName())
+               || HybrisConstants.TEST_CLASSES_DIRECTORY.equals(file.getName());
+    }
+
+    protected boolean isHideEmptyMiddleFoldersEnabled() {
+        final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
+        return settings.isHideEmptyMiddleFolders();
     }
 
     protected boolean isNotHybrisProject() {

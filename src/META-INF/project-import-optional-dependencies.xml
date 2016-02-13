@@ -28,8 +28,6 @@
         <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
 
-        <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
-
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactory"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactoryImpl"/>
 

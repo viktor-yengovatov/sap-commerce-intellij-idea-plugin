@@ -77,6 +77,9 @@ public class HybrisApplicationSettings {
     @PropertyName("jRebelOutputPath")
     private boolean jRebelOutputPath;
 
+    @PropertyName("hideEmptyMiddleFolders")
+    private boolean hideEmptyMiddleFolders = true;
+
 
     public HybrisApplicationSettings() {
     }
@@ -161,6 +164,14 @@ public class HybrisApplicationSettings {
         this.jRebelOutputPath = jRebelOutputPath;
     }
 
+    public boolean isHideEmptyMiddleFolders() {
+        return hideEmptyMiddleFolders;
+    }
+
+    public void setHideEmptyMiddleFolders(final boolean hideEmptyMiddleFolders) {
+        this.hideEmptyMiddleFolders = hideEmptyMiddleFolders;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -184,6 +195,7 @@ public class HybrisApplicationSettings {
             .append(groupCustom, other.groupCustom)
             .append(groupOtherCustom, other.groupOtherCustom)
             .append(jRebelOutputPath, other.jRebelOutputPath)
+            .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
             .isEquals();
     }
 
@@ -200,6 +212,7 @@ public class HybrisApplicationSettings {
             .append(groupCustom)
             .append(groupOtherCustom)
             .append(jRebelOutputPath)
+            .append(hideEmptyMiddleFolders)
             .toHashCode();
     }
 
@@ -216,6 +229,7 @@ public class HybrisApplicationSettings {
         sb.append(", groupCustom='").append(groupCustom).append('\'');
         sb.append(", groupOtherCustom='").append(groupOtherCustom).append('\'');
         sb.append(", jRebelOutputPath='").append(jRebelOutputPath).append('\'');
+        sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append('}');
         return sb.toString();
     }
