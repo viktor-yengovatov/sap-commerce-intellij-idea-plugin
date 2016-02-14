@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,15 +37,17 @@ public abstract class AbstractFacetConfigurator implements FacetConfigurator {
     @Override
     public void configure(@NotNull final ModifiableFacetModel modifiableFacetModel,
                           @NotNull final HybrisModuleDescriptor moduleDescriptor,
-                          @NotNull final Module javaModule) {
+                          @NotNull final Module javaModule,
+                          @NotNull final ModifiableRootModel modifiableRootModel) {
         Validate.notNull(modifiableFacetModel);
         Validate.notNull(moduleDescriptor);
         Validate.notNull(javaModule);
+        Validate.notNull(modifiableRootModel);
 
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
-                configureInner(modifiableFacetModel, moduleDescriptor, javaModule);
+                configureInner(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
                 modifiableFacetModel.commit();
             }
         });
@@ -52,5 +55,6 @@ public abstract class AbstractFacetConfigurator implements FacetConfigurator {
 
     protected abstract void configureInner(@NotNull ModifiableFacetModel modifiableFacetModel,
                                            @NotNull HybrisModuleDescriptor moduleDescriptor,
-                                           @NotNull Module javaModule);
+                                           @NotNull Module javaModule,
+                                           @NotNull ModifiableRootModel modifiableRootModel);
 }

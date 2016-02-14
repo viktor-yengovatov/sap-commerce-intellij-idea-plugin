@@ -24,6 +24,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.facet.SpringFacet;
@@ -41,10 +42,12 @@ public class SpringFacetConfigurator extends AbstractFacetConfigurator {
 
     protected void configureInner(@NotNull final ModifiableFacetModel modifiableFacetModel,
                                   @NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                  @NotNull final Module javaModule) {
+                                  @NotNull final Module javaModule,
+                                  @NotNull final ModifiableRootModel modifiableRootModel) {
         Validate.notNull(javaModule);
         Validate.notNull(modifiableFacetModel);
         Validate.notNull(moduleDescriptor);
+        Validate.notNull(modifiableFacetModel);
 
         SpringFacet springFacet = modifiableFacetModel.getFacetByType(SpringFacet.FACET_TYPE_ID);
 

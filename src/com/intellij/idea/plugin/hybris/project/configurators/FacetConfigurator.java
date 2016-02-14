@@ -21,9 +21,8 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 7/08/15.
@@ -32,6 +31,7 @@ public interface FacetConfigurator {
 
     void configure(@NotNull ModifiableFacetModel modifiableFacetModel,
                    @NotNull HybrisModuleDescriptor moduleDescriptor,
-                   @NotNull Module javaModule);
+                   @NotNull Module javaModule,
+                   @NotNull ModifiableRootModel modifiableRootModel);
 
 }

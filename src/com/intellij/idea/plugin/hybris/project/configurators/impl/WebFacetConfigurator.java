@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.facet.FacetConfiguration;
+import com.intellij.facet.FacetManager;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.facet.ModifiableFacetModel;
@@ -26,14 +27,18 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.javaee.DeploymentDescriptorsConstants;
 import com.intellij.javaee.web.facet.WebFacet;
+import com.intellij.javaee.web.facet.WebFacetConfigurationImpl;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleRootModel;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Created 8:33 PM 13 February 2016.
@@ -45,10 +50,12 @@ public class WebFacetConfigurator extends AbstractFacetConfigurator {
     @Override
     protected void configureInner(@NotNull final ModifiableFacetModel modifiableFacetModel,
                                   @NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                  @NotNull final Module javaModule) {
+                                  @NotNull final Module javaModule,
+                                  @NotNull final ModifiableRootModel modifiableRootModel) {
         Validate.notNull(javaModule);
         Validate.notNull(modifiableFacetModel);
         Validate.notNull(moduleDescriptor);
+        Validate.notNull(modifiableFacetModel);
 
         final File webRoot = moduleDescriptor.getWebRoot();
         if (null == webRoot) {
@@ -66,23 +73,50 @@ public class WebFacetConfigurator extends AbstractFacetConfigurator {
                 return;
             }
 
-            webFacet = webFacetType.createFacet(
-                javaModule, webFacetType.getDefaultFacetName(), webFacetType.createDefaultConfiguration(), null
+            webFacet = FacetManager.getInstance(javaModule).createFacet(
+                webFacetType, webFacetType.getDefaultFacetName(), null
             );
 
             modifiableFacetModel.addFacet(webFacet);
+
         } else {
             webFacet.removeAllWebRoots();
+            webFacet.getDescriptorsContainer().getConfiguration().removeConfigFiles(
+                DeploymentDescriptorsConstants.WEB_XML_META_DATA
+            );
         }
 
-        final VirtualFile moduleRootVf = VfsUtil.findFileByIoFile(webRoot, true);
-        if (null != moduleRootVf) {
-            webFacet.addWebRoot(moduleRootVf, "/");
-        }
+        this.setupFacetSourceRoots(webFacet, modifiableRootModel);
+        this.setupFacetWebRoot(webFacet, webRoot);
+        this.setupFacetDeploymentDescriptor(webFacet, moduleDescriptor);
+    }
+
+    protected void setupFacetDeploymentDescriptor(@NotNull final WebFacet webFacet,
+                                                  @NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        Validate.notNull(webFacet);
+        Validate.notNull(moduleDescriptor);
 
         webFacet.getDescriptorsContainer().getConfiguration().addConfigFile(
             DeploymentDescriptorsConstants.WEB_XML_META_DATA,
             new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH).getAbsolutePath()
         );
+    }
+
+    protected void setupFacetWebRoot(@NotNull final WebFacet webFacet, @NotNull final File webRoot) {
+        Validate.notNull(webFacet);
+        Validate.notNull(webRoot);
+
+        final VirtualFile moduleRootVf = VfsUtil.findFileByIoFile(webRoot, true);
+        if (null != moduleRootVf) {
+            webFacet.addWebRoot(moduleRootVf, "/");
+        }
+    }
+
+    public void setupFacetSourceRoots(@NotNull final WebFacet facet, @NotNull final ModuleRootModel model) {
+        Validate.notNull(facet);
+        Validate.notNull(model);
+
+        final String[] sourceRootUrls = model.getSourceRootUrls(false);
+        ((WebFacetConfigurationImpl)facet.getConfiguration()).setSourceRoots(Arrays.asList(sourceRootUrls));
     }
 }
