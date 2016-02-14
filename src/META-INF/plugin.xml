@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>4.1</version>
+    <version>4.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -56,16 +56,20 @@
           - Automatic classpath configuration.
           <br/>
           - Automatic Spring facet configuration (only Ultimate IDEA).
+          <br/>
+          - Automatic Web facet configuration (only Ultimate IDEA).
 
           <br/>
           <br/>
-          <b>Visualization of business process graph.</b>
+          <b>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram"). (only Ultimate IDEA)</b>
 
           <br/>
           <br/>
           <b>Enhanced project view tree:</b>
           <br/>
           - Rarely used elements are grouped into "junk" virtual folder also you can include to or exclude specific folder from the "Junk" list.
+          <br/>
+          - Compacting of empty middle folders in the project tree like it is done for java packages.
 
           <br/>
           <br/>
@@ -131,7 +135,7 @@
 
     <change-notes>
         <![CDATA[
-          ##:
+          4.2:
           <br/> - Project view tree has been modified to hide unnecessary elements in "External Libraries" node.
           <br/> - Functionality of the project view tree has been extended to allow hiding of empty middle folders like it is done for java packages.
           <br/> - Project content roots configuration has been improved to exclude compiled classes in WEB-INF folder of a web application when they are not required by the classpath.
