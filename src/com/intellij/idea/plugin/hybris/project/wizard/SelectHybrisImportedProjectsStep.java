@@ -69,7 +69,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     public void updateStep() {
         super.updateStep();
         for (int index=0; index<fileChooser.getElementCount(); index++){
-            HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
+            final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
             if (hybrisModuleDescriptor.isPreselected()) {
                 fileChooser.setElementMarked(hybrisModuleDescriptor, true);
             }
