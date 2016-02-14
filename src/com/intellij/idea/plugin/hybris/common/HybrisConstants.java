@@ -58,7 +58,11 @@ public interface HybrisConstants {
     String SETTINGS_DIRECTORY = ".settings";
     String EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders";
     String WEB_ROOT_DIRECTORY = "webroot";
+    String WEB_ROOT_DIRECTORY_RELATIVE_PATH = WEB_MODULE_DIRECTORY + '/' + WEB_ROOT_DIRECTORY;
     String WEB_INF_DIRECTORY = "WEB-INF";
+    String WEB_INF_DIRECTORY_RELATIVE_PATH = WEB_ROOT_DIRECTORY_RELATIVE_PATH + '/' + WEB_INF_DIRECTORY;
+    String WEB_XML_FILE_NAME = "web.xml";
+    String WEB_XML_DIRECTORY_RELATIVE_PATH = WEB_INF_DIRECTORY_RELATIVE_PATH + '/' + WEB_XML_FILE_NAME;
     String COMMON_WEB_SRC_DIRECTORY = "commonwebsrc";
     String ECLIPSE_BIN_DIRECTORY = "eclipsebin";
     String COMMON_WEB_MODULE_DIRECTORY = "commonweb";

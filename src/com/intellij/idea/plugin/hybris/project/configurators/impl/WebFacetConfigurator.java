@@ -22,11 +22,18 @@ import com.intellij.facet.FacetConfiguration;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.facet.ModifiableFacetModel;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.javaee.DeploymentDescriptorsConstants;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 /**
  * Created 8:33 PM 13 February 2016.
@@ -43,6 +50,11 @@ public class WebFacetConfigurator extends AbstractFacetConfigurator {
         Validate.notNull(modifiableFacetModel);
         Validate.notNull(moduleDescriptor);
 
+        final File webRoot = moduleDescriptor.getWebRoot();
+        if (null == webRoot) {
+            return;
+        }
+
         WebFacet webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID);
 
         if (webFacet == null) {
@@ -50,13 +62,27 @@ public class WebFacetConfigurator extends AbstractFacetConfigurator {
                 WebFacet.ID
             );
 
+            if (!webFacetType.isSuitableModuleType(ModuleType.get(javaModule))) {
+                return;
+            }
+
             webFacet = webFacetType.createFacet(
-                javaModule, WebFacet.ID.toString(), webFacetType.createDefaultConfiguration(), null
+                javaModule, webFacetType.getDefaultFacetName(), webFacetType.createDefaultConfiguration(), null
             );
 
             modifiableFacetModel.addFacet(webFacet);
         } else {
             webFacet.removeAllWebRoots();
         }
+
+        final VirtualFile moduleRootVf = VfsUtil.findFileByIoFile(webRoot, true);
+        if (null != moduleRootVf) {
+            webFacet.addWebRoot(moduleRootVf, "/");
+        }
+
+        webFacet.getDescriptorsContainer().getConfiguration().addConfigFile(
+            DeploymentDescriptorsConstants.WEB_XML_META_DATA,
+            new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH).getAbsolutePath()
+        );
     }
 }

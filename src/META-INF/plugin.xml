@@ -135,6 +135,7 @@
           <br/> - Project view tree has been modified to hide unnecessary elements in "External Libraries" node.
           <br/> - Functionality of the project view tree has been extended to allow hiding of empty middle folders like it is done for java packages.
           <br/> - Project content roots configuration has been improved to exclude compiled classes in WEB-INF folder of a web application when they are not required by the classpath.
+          <br/> - Automatic Web facet configuration has been implemented.
           <br/>
           <br/>
           4.1:
@@ -271,8 +272,11 @@
 
         <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.CommonIdeaService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.CommonIdeaServiceImpl"/>

@@ -23,6 +23,7 @@ import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.facet.SpringFacet;
@@ -51,8 +52,12 @@ public class SpringFacetConfigurator extends AbstractFacetConfigurator {
             final FacetType<SpringFacet, SpringFacetConfiguration> springFacetType = FacetTypeRegistry
                 .getInstance().findFacetType(SpringFacet.FACET_TYPE_ID);
 
+            if (!springFacetType.isSuitableModuleType(ModuleType.get(javaModule))) {
+                return;
+            }
+
             springFacet = springFacetType.createFacet(
-                javaModule, SpringFacet.FACET_TYPE_ID.toString(), springFacetType.createDefaultConfiguration(), null
+                javaModule, springFacetType.getDefaultFacetName(), springFacetType.createDefaultConfiguration(), null
             );
 
             modifiableFacetModel.addFacet(springFacet);

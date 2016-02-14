@@ -18,12 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collections;
@@ -180,6 +181,12 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
                 this.getRootProjectDescriptor().getCustomExtensionsDirectory().getAbsolutePath()
             );
         }
+    }
+
+    @Nullable
+    @Override
+    public File getWebRoot() {
+        return null;
     }
 
     @Override

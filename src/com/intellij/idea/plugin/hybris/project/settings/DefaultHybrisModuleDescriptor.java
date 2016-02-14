@@ -202,4 +202,17 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     public boolean isPreselected() {
         return isInLocalExtensions() && isInCustomDir();
     }
+
+    @Nullable
+    @Override
+    public File getWebRoot() {
+
+        final File webRoot = new File(this.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
+
+        if (webRoot.exists()) {
+            return webRoot;
+        }
+
+        return null;
+    }
 }

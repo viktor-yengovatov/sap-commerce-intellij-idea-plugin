@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
@@ -72,4 +73,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     Set<String> getSpringFileSet();
 
     void addSpringFile(@NotNull String springFile);
+
+    @Nullable
+    File getWebRoot();
 }
