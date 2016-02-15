@@ -240,7 +240,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
 
             for (FacetConfigurator facetConfigurator : facetConfigurators) {
-                facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
+                facetConfigurator.configure(
+                    modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel, modifiableModelsProvider
+                );
             }
 
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
