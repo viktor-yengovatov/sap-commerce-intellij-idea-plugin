@@ -27,18 +27,17 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.javaee.DeploymentDescriptorsConstants;
 import com.intellij.javaee.web.facet.WebFacet;
-import com.intellij.javaee.web.facet.WebFacetConfigurationImpl;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootModel;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Arrays;
 
 /**
  * Created 8:33 PM 13 February 2016.
@@ -96,10 +95,15 @@ public class WebFacetConfigurator extends AbstractFacetConfigurator {
         Validate.notNull(webFacet);
         Validate.notNull(moduleDescriptor);
 
-        webFacet.getDescriptorsContainer().getConfiguration().addConfigFile(
-            DeploymentDescriptorsConstants.WEB_XML_META_DATA,
-            new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH).getAbsolutePath()
+        final VirtualFile fileByIoFile = VfsUtil.findFileByIoFile(
+            new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH), true
         );
+
+        if (null != fileByIoFile) {
+            webFacet.getDescriptorsContainer().getConfiguration().addConfigFile(
+                DeploymentDescriptorsConstants.WEB_XML_META_DATA, fileByIoFile.getUrl()
+            );
+        }
     }
 
     protected void setupFacetWebRoot(@NotNull final WebFacet webFacet, @NotNull final File webRoot) {
@@ -117,6 +121,11 @@ public class WebFacetConfigurator extends AbstractFacetConfigurator {
         Validate.notNull(model);
 
         final String[] sourceRootUrls = model.getSourceRootUrls(false);
-        ((WebFacetConfigurationImpl)facet.getConfiguration()).setSourceRoots(Arrays.asList(sourceRootUrls));
+
+        if (ArrayUtils.isNotEmpty(sourceRootUrls)) {
+            for (String sourceRootUrl : sourceRootUrls) {
+                facet.addWebSourceRoot(sourceRootUrl);
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>4.2</version>
+    <version>4.2.1</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -135,6 +135,10 @@
 
     <change-notes>
         <![CDATA[
+          4.2.1:
+          <br/> - An error in setting deployment descriptor path in automatic Web facet configuration has been fixed.
+          <br/>
+          <br/>
           4.2:
           <br/> - Project view tree has been modified to hide unnecessary elements in "External Libraries" node.
           <br/> - Functionality of the project view tree has been extended to allow hiding of empty middle folders like it is done for java packages.

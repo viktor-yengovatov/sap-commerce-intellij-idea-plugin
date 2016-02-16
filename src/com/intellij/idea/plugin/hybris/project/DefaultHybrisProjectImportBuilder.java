@@ -239,21 +239,20 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
 
-            for (FacetConfigurator facetConfigurator : facetConfigurators) {
-                facetConfigurator.configure(
-                    modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel, modifiableModelsProvider
-                );
-            }
-
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
                 public void run() {
-                    modifiableModelsProvider.commitFacetModifiableModel(javaModule, modifiableFacetModel);
                     modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
                 }
             });
+
+            for (FacetConfigurator facetConfigurator : facetConfigurators) {
+                facetConfigurator.configure(
+                    modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel, modifiableModelsProvider
+                );
+            }
 
             result.add(javaModule);
         }
