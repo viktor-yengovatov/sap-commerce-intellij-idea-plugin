@@ -92,6 +92,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File hybrisDistributionDirectory;
     @Nullable
     protected File customExtensionsDirectory;
+    protected boolean customExtensionsPresent;
 
     public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
         this.project = project;
@@ -343,6 +344,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setCustomExtensionsDirectory(@Nullable final File customExtensionsDirectory) {
         this.customExtensionsDirectory = customExtensionsDirectory;
+    }
+
+    @Override
+    public void setCustomExtensionsPresent(final boolean present) {
+        this.customExtensionsPresent = present;
+    }
+
+    public boolean isCustomExtensionsPresent() {
+        return customExtensionsPresent;
     }
 
     @NotNull

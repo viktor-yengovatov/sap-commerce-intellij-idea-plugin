@@ -84,4 +84,8 @@ public interface HybrisProjectDescriptor {
     File getCustomExtensionsDirectory();
 
     void setCustomExtensionsDirectory(@Nullable File customExtensionsDirectory);
+
+    boolean isCustomExtensionsPresent();
+
+    void setCustomExtensionsPresent(boolean present);
 }

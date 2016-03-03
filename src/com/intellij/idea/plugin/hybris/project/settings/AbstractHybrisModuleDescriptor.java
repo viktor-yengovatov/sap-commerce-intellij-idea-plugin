@@ -174,6 +174,9 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @Override
     public boolean isInCustomDir() {
+        if (!isCustomExtensionsPresent()) {
+            return false;
+        }
         if (null == this.getRootProjectDescriptor().getCustomExtensionsDirectory()) {
             throw new IllegalStateException("CustomExtensionsDirectory is not set.");
         } else {
@@ -181,6 +184,11 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
                 this.getRootProjectDescriptor().getCustomExtensionsDirectory().getAbsolutePath()
             );
         }
+    }
+
+    @Override
+    public boolean isCustomExtensionsPresent() {
+        return this.getRootProjectDescriptor().isCustomExtensionsPresent();
     }
 
     @Override

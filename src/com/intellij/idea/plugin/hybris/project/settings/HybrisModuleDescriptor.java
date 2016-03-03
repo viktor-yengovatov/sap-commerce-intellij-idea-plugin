@@ -63,6 +63,8 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     boolean isInCustomDir();
 
+    boolean isCustomExtensionsPresent();
+
     boolean isPlatformExtModule();
 
     boolean isPreselected();

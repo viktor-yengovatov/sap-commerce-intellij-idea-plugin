@@ -50,6 +50,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private JCheckBox importOotbModulesInReadOnlyModeCheckBox;
     private volatile TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
     private volatile TextFieldWithBrowseButton customExtensionsDirectoryFilesInChooser;
+    private JCheckBox customExtensionsPresent;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -88,6 +89,13 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
+
+        this.customExtensionsPresent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent) {
+                customExtensionsDirectoryFilesInChooser.setEnabled(customExtensionsPresent.isSelected());
+            }
+        });
     }
 
     @Override
@@ -121,6 +129,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         this.getContext().getHybrisProjectDescriptor().setCustomExtensionsDirectory(
             new File(this.customExtensionsDirectoryFilesInChooser.getText())
+        );
+
+        this.getContext().getHybrisProjectDescriptor().setCustomExtensionsPresent(
+            this.customExtensionsPresent.isSelected()
         );
     }
 
@@ -176,6 +188,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 }
             }));
         }
+
+        File customDir = new File(this.customExtensionsDirectoryFilesInChooser.getText());
+        if (!customDir.exists()) {
+            customExtensionsPresent.setSelected(false);
+            customExtensionsDirectoryFilesInChooser.setEnabled(false);
+        }
     }
 
     @Override
@@ -211,23 +229,24 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 ));
         }
 
+        if (this.customExtensionsPresent.isSelected()) {
+            if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())) {
+                throw new ConfigurationException(
+                    HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.empty"));
+            }
 
-        if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())) {
-            throw new ConfigurationException(
-                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.empty"));
-        }
+            if (!new File(this.customExtensionsDirectoryFilesInChooser.getText()).isDirectory()) {
+                throw new ConfigurationException(
+                    HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
+            }
 
-        if (!new File(this.customExtensionsDirectoryFilesInChooser.getText()).isDirectory()) {
-            throw new ConfigurationException(
-                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
-        }
-
-        if (!StringUtils.startsWith(this.customExtensionsDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
-            throw new ConfigurationException(
-                HybrisI18NBundleUtils.message(
-                    "hybris.import.wizard.validation.custom.extensions.directory.is.outside.of.project.root.directory",
-                    this.getBuilder().getFileToImport()
-                ));
+            if (!StringUtils.startsWith(this.customExtensionsDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
+                throw new ConfigurationException(
+                    HybrisI18NBundleUtils.message(
+                        "hybris.import.wizard.validation.custom.extensions.directory.is.outside.of.project.root.directory",
+                        this.getBuilder().getFileToImport()
+                    ));
+            }
         }
 
         return true;

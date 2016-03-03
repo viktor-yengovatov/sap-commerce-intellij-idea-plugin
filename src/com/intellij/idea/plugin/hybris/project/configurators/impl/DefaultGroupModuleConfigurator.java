@@ -82,10 +82,11 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groupCustom;
         }
         DefaultHybrisModuleDescriptor defaultHybrisModuleDescriptor = (DefaultHybrisModuleDescriptor) moduleDescriptor;
-        if (defaultHybrisModuleDescriptor.isPreselected()) {
-            return groupCustom;
-        }
+
         if (defaultHybrisModuleDescriptor.isInCustomDir()) {
+            if (defaultHybrisModuleDescriptor.isInLocalExtensions()) {
+                return groupCustom;
+            }
             return groupOtherCustom;
         }
         if (!requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
