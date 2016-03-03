@@ -264,8 +264,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         modulesDependenciesConfigurator.configure(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
         springConfigurator.configureDependencies(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
 
-        this.cleanup();
-
         return result;
     }
 
