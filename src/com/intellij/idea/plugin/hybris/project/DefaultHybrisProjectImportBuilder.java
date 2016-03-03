@@ -273,26 +273,21 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         Validate.notNull(project);
 
         final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
-        final Sdk recentSdk = ProjectJdkTable.getInstance().findMostRecentSdkOfType(JavaSdk.getInstance());
 
-        if (null == recentSdk) {
+        final Sdk projectSdk = projectRootManager.getProjectSdk();
+
+        if (null == projectSdk) {
             return;
         }
 
-        if (StringUtils.isNotBlank(recentSdk.getVersionString())) {
-            final JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(recentSdk.getVersionString());
+        if (StringUtils.isNotBlank(projectSdk.getVersionString())) {
+            final JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(projectSdk.getVersionString());
             final LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
 
             if (sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
                 languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
             }
         }
-
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            public void run() {
-                projectRootManager.setProjectSdk(recentSdk);
-            }
-        });
     }
 
     protected void initializeHybrisProjectSettings(@NotNull final Project project) {
