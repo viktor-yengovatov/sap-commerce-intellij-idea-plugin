@@ -449,7 +449,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
                 if (null != files) {
                     for (File file : files) {
-                        paths.addAll(this.findModuleRoots(file, progressListenerProcessor));
+                        if (!file.getPath().endsWith(HybrisConstants.MEDIA_DIRECTORY)) {
+                            paths.addAll(this.findModuleRoots(file, progressListenerProcessor));
+                        }
                     }
                 }
             }

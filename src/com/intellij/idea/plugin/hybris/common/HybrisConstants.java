@@ -31,6 +31,7 @@ public interface HybrisConstants {
     String LOCAL_EXTENSIONS_XML = "localextensions.xml";
     String HYBRIS_SERVER_SHELL_SCRIPT_NAME = "bin" + File.separatorChar + "platform" + File.separatorChar + "hybrisserver.sh";
     String PLATFORM_EXT_MODULE_PREFIX = "bin" + File.separatorChar + "platform" + File.separatorChar + "ext" + File.separatorChar;
+    String MEDIA_DIRECTORY = File.separatorChar + "data" + File.separatorChar + "media";
     String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = "bin" + File.separatorChar + "custom";
     String EXTENSIONS_XML = "extensions.xml";
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
