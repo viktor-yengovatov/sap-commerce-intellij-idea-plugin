@@ -200,13 +200,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
 
     @Override
     public boolean isPreselected() {
-        if (!isInLocalExtensions()) {
-            return false;
-        }
-        if (!isCustomExtensionsPresent()) {
-            return true;
-        }
-        return isInCustomDir();
+        return isInLocalExtensions();
     }
 
     @Nullable
