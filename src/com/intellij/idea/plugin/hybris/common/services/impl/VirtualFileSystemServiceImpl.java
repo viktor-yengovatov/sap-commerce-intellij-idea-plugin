@@ -31,9 +31,12 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+
+import static com.intellij.openapi.util.io.FileUtil.normalize;
 
 /**
  * Created 1:51 AM 13 June 2015
@@ -123,5 +126,55 @@ public class VirtualFileSystemServiceImpl implements VirtualFileSystemService {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean fileContainsAnother(@NotNull final File parent, @NotNull final File child) {
+        Validate.notNull(parent);
+        Validate.notNull(child);
+
+        return this.pathContainsAnother(parent.getAbsolutePath(), child.getAbsolutePath());
+    }
+
+    @Override
+    public boolean fileDoesNotContainAnother(@NotNull final File parent, @NotNull final File child) {
+        Validate.notNull(parent);
+        Validate.notNull(child);
+
+        return !(this.fileContainsAnother(parent, child));
+    }
+
+    @Override
+    public boolean pathContainsAnother(@NotNull final String parent, @NotNull final String child) {
+        Validate.notBlank(parent);
+        Validate.notBlank(child);
+
+        return StringUtils.startsWith(normalize(child), normalize(parent));
+    }
+
+    @Override
+    public boolean pathDoesNotContainAnother(@NotNull final String parent, @NotNull final String child) {
+        Validate.notBlank(parent);
+        Validate.notBlank(child);
+
+        return !(this.pathContainsAnother(parent, child));
+    }
+
+    @Nonnull
+    @Override
+    public String getRelativePath(@NotNull final File parent, @NotNull final File child) {
+        Validate.notNull(parent);
+        Validate.notNull(child);
+
+        return this.getRelativePath(parent.getPath(), child.getPath());
+    }
+
+    @Nonnull
+    @Override
+    public String getRelativePath(@NotNull final String parent, @NotNull final String child) {
+        Validate.notBlank(parent);
+        Validate.notBlank(child);
+
+        return normalize(child).substring(normalize(parent).length());
     }
 }

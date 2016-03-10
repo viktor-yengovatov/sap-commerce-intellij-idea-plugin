@@ -19,12 +19,14 @@
 package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
@@ -191,7 +193,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 HybrisI18NBundleUtils.message("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"));
         }
 
-        if (!StringUtils.startsWith(this.hybrisDistributionDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
+        final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(VirtualFileSystemService.class);
+
+        if (virtualFileSystemService.pathDoesNotContainAnother(this.getBuilder().getFileToImport(), this.hybrisDistributionDirectoryFilesInChooser.getText())) {
             throw new ConfigurationException(
                 HybrisI18NBundleUtils.message(
                     "hybris.import.wizard.validation.hybris.distribution.directory.is.outside.of.project.root.directory",
@@ -210,7 +214,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
         }
 
-        if (!StringUtils.startsWith(this.customExtensionsDirectoryFilesInChooser.getText(), this.getBuilder().getFileToImport())) {
+        if (virtualFileSystemService.pathDoesNotContainAnother(this.getBuilder().getFileToImport(), this.customExtensionsDirectoryFilesInChooser.getText())) {
             throw new ConfigurationException(
                 HybrisI18NBundleUtils.message(
                     "hybris.import.wizard.validation.custom.extensions.directory.is.outside.of.project.root.directory",
