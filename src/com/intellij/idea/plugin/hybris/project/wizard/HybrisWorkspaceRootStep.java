@@ -33,6 +33,8 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
@@ -171,6 +173,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 @Override
                 public void process(final String parameter) {
                     hybrisDistributionDirectoryFilesInChooser.setText(parameter);
+
+                    if (StringUtils.isBlank(sourceCodeZipFilesInChooser.getText())) {
+                        sourceCodeZipFilesInChooser.setText(hybrisDistributionDirectoryFilesInChooser.getText());
+                    }
                 }
             }));
         }
@@ -189,18 +195,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         }
 
         if (StringUtils.isBlank(this.sourceCodeZipFilesInChooser.getText())) {
-
-            ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
-                new File(this.getBuilder().getFileToImport()), new Processor<String>() {
-
-                @Override
-                public void process(final String parameter) {
-                    sourceCodeZipFilesInChooser.setText(parameter);
-                }
-            }));
+            sourceCodeZipFilesInChooser.setText(this.hybrisDistributionDirectoryFilesInChooser.getText());
         }
 
-        File customDir = new File(this.customExtensionsDirectoryFilesInChooser.getText());
+        final File customDir = new File(this.customExtensionsDirectoryFilesInChooser.getText());
         if (!customDir.exists()) {
             customExtensionsPresent.setSelected(false);
             customExtensionsDirectoryFilesInChooser.setEnabled(false);
@@ -273,12 +271,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         return true;
     }
 
-    public AbstractHybrisProjectImportBuilder getContext() {
+    private AbstractHybrisProjectImportBuilder getContext() {
         return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
     @Nullable
-    private String getDefaultJavadocUrl(String hybrisRootDir) {
+    private String getDefaultJavadocUrl(@NotNull final String hybrisRootDir) {
+        Validate.notNull(hybrisRootDir);
+
         final File buildInfoFile = new File(hybrisRootDir + HybrisConstants.BUILD_NUMBER_FILE_PATH);
         final Properties buildProperties = new Properties();
 
