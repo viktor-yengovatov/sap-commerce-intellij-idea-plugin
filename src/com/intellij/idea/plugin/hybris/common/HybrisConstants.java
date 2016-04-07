@@ -47,6 +47,9 @@ public interface HybrisConstants {
     String APPLICATION_CONTEXT_SPRING_FILES = "application-context";
     String ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs";
     String GLOBAL_CONTEXT_SPRING_FILES = "global-context";
+    String BUILD_NUMBER_FILE_PATH = File.separatorChar + "bin" + File.separatorChar + "platform" + File.separatorChar + "build.number";
+    String HYBRIS_API_VERSION_KEY = "version.api";
+    String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/";
 
     String SRC_DIRECTORY = "src";
     String GEN_SRC_DIRECTORY = "gensrc";

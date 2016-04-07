@@ -88,4 +88,9 @@ public interface HybrisProjectDescriptor {
     boolean isCustomExtensionsPresent();
 
     void setCustomExtensionsPresent(boolean present);
+
+    @Nullable
+    String getJavadocUrl();
+
+    void setJavadocUrl(@Nullable String javadocUrl);
 }

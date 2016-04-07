@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
+import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
@@ -50,10 +51,8 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdk;
 import com.intellij.openapi.projectRoots.JavaSdkVersion;
 import com.intellij.openapi.projectRoots.JdkVersionUtil;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.LanguageLevelProjectExtension;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
@@ -188,6 +187,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
         final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
         final GroupModuleConfigurator groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
+        final JavadocModuleConfigurator javadocModuleConfigurator = configuratorFactory.getJavadocModuleConfigurator();
 
         final List<Module> result = new ArrayList<Module>();
 
@@ -238,6 +238,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
             contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            javadocModuleConfigurator.configure(modifiableRootModel, moduleDescriptor);
 
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 

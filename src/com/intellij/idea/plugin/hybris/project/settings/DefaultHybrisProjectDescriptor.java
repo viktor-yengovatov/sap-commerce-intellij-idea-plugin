@@ -93,6 +93,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File customExtensionsDirectory;
     protected boolean customExtensionsPresent;
+    @Nullable
+    protected String javadocUrl;
 
     public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
         this.project = project;
@@ -349,6 +351,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setCustomExtensionsPresent(final boolean present) {
         this.customExtensionsPresent = present;
+    }
+
+    @Nullable
+    @Override
+    public String getJavadocUrl() {
+        return javadocUrl;
+    }
+
+    @Override
+    public void setJavadocUrl(@Nullable final String javadocUrl) {
+        this.javadocUrl = javadocUrl;
     }
 
     public boolean isCustomExtensionsPresent() {

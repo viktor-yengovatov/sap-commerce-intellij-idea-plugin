@@ -18,40 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.openapi.roots.ModifiableModelsProvider;
+import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
+ * Created by Sergey Aksenenko <serg.aksenenko@gmail.com> on 4/6/2016.
  */
-public interface ConfiguratorFactory {
+public interface JavadocModuleConfigurator {
 
-    @NotNull
-    List<FacetConfigurator> getFacetConfigurators();
-
-    @NotNull
-    SpringConfigurator getSpringConfigurator();
-
-    @NotNull
-    ModulesDependenciesConfigurator getModulesDependenciesConfigurator();
-
-    @NotNull
-    CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator();
-
-    @NotNull
-    ContentRootConfigurator getContentRootConfigurator();
-
-    @NotNull
-    LibRootsConfigurator getLibRootsConfigurator();
-
-    @NotNull
-    ModifiableModelsProvider getModifiableModelsProvider();
-
-    @NotNull
-    GroupModuleConfigurator getGroupModuleConfigurator();
-
-    @NotNull
-    JavadocModuleConfigurator getJavadocModuleConfigurator();
+    void configure(@NotNull ModifiableRootModel modifiableRootModel,
+                   @NotNull HybrisModuleDescriptor moduleDescriptor);
 }

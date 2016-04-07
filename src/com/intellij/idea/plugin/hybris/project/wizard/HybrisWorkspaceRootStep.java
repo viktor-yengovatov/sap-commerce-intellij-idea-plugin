@@ -32,10 +32,14 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
@@ -51,6 +55,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private volatile TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
     private volatile TextFieldWithBrowseButton customExtensionsDirectoryFilesInChooser;
     private JCheckBox customExtensionsPresent;
+    private JTextField javadocUrlTextField;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -134,6 +139,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         this.getContext().getHybrisProjectDescriptor().setCustomExtensionsPresent(
             this.customExtensionsPresent.isSelected()
         );
+
+        this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
+            this.javadocUrlTextField.getText()
+        );
     }
 
     @Override
@@ -194,6 +203,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             customExtensionsPresent.setSelected(false);
             customExtensionsDirectoryFilesInChooser.setEnabled(false);
         }
+
+        if (StringUtils.isNotBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
+            final String defaultJavadocUrl = getDefaultJavadocUrl(this.hybrisDistributionDirectoryFilesInChooser.getText());
+            if (StringUtils.isNotBlank(defaultJavadocUrl)) {
+                this.javadocUrlTextField.setText(defaultJavadocUrl);
+            }
+        }
+
     }
 
     @Override
@@ -254,6 +271,26 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
     public AbstractHybrisProjectImportBuilder getContext() {
         return (AbstractHybrisProjectImportBuilder) this.getBuilder();
+    }
+
+    @Nullable
+    private String getDefaultJavadocUrl(String hybrisRootDir) {
+        final File buildInfoFile = new File(hybrisRootDir + HybrisConstants.BUILD_NUMBER_FILE_PATH);
+        final Properties buildProperties = new Properties();
+
+        try {
+            final FileInputStream fis = new FileInputStream(buildInfoFile);
+            buildProperties.load(fis);
+        } catch (IOException e) {
+            return null;
+        }
+
+        final String hybrisApiVersion = buildProperties.getProperty(HybrisConstants.HYBRIS_API_VERSION_KEY);
+        if (StringUtils.isNotEmpty(hybrisApiVersion)) {
+            return HybrisConstants.DEFAULT_JAVADOC_ROOT_URL + hybrisApiVersion;
+        } else {
+            return null;
+        }
     }
 
 }

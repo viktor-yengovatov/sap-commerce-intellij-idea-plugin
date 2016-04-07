@@ -49,6 +49,9 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModulesDependenciesConfigurator"/>
 
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavadocModuleConfigurator"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
 
