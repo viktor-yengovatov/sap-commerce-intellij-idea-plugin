@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>4.2.2</version>
+    <version>4.3</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -130,11 +130,18 @@
           - Markus Priegl
           <br/>
           - Martin Zdarsky
+          <br/>
+          - Sergei Aksenenko
       ]]>
     </description>
 
     <change-notes>
         <![CDATA[
+          4.3:
+          <br/> - An ability to import hybris distribution without config folder.
+          <br/> - Automatic hybris API JavaDoc configuration.
+          <br/>
+          <br/>
           4.2.2:
           <br/> - Bug fixes for Windows.
           <br/>

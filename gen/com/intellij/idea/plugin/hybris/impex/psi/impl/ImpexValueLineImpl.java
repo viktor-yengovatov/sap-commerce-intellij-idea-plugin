@@ -17,8 +17,12 @@ public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexVal
     super(node);
   }
 
+  public void accept(@NotNull ImpexVisitor visitor) {
+    visitor.visitValueLine(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitValueLine(this);
+    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
   }
 
