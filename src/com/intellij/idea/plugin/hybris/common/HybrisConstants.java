@@ -49,7 +49,7 @@ public interface HybrisConstants {
     String GLOBAL_CONTEXT_SPRING_FILES = "global-context";
     String BUILD_NUMBER_FILE_PATH = File.separatorChar + "bin" + File.separatorChar + "platform" + File.separatorChar + "build.number";
     String HYBRIS_API_VERSION_KEY = "version.api";
-    String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/";
+    String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/%s/commercesuite";
 
     String SRC_DIRECTORY = "src";
     String GEN_SRC_DIRECTORY = "gensrc";
