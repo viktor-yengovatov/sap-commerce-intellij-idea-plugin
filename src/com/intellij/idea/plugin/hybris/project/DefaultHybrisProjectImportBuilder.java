@@ -389,10 +389,14 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         @Override
         public String fun(final File param) {
-            final File projectRootDirectory = getHybrisProjectDescriptor().getRootDirectory();
+            final File projectRootDir = getHybrisProjectDescriptor().getRootDirectory();
 
-            if (null != projectRootDirectory && param.getPath().startsWith(projectRootDirectory.getPath())) {
-                return param.getPath().substring(projectRootDirectory.getPath().length());
+            final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
+                VirtualFileSystemService.class
+            );
+
+            if (null != projectRootDir && virtualFileSystemService.fileContainsAnother(projectRootDir, param)) {
+                return virtualFileSystemService.getRelativePath(projectRootDir, param);
             }
 
             return param.getPath();

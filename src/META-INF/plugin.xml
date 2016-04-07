@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>4.2.1</version>
+    <version>4.2.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -135,6 +135,10 @@
 
     <change-notes>
         <![CDATA[
+          4.2.2:
+          <br/> - Bug fixes for Windows.
+          <br/>
+          <br/>
           4.2.1:
           <br/> - An error in setting deployment descriptor path in automatic Web facet configuration has been fixed.
           <br/>

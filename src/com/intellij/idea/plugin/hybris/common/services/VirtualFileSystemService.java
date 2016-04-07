@@ -23,6 +23,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -43,4 +44,18 @@ public interface VirtualFileSystemService {
                                    @NotNull String fileName,
                                    @Nullable TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException;
+
+    boolean fileContainsAnother(@NotNull File parent, @NotNull File child);
+
+    boolean fileDoesNotContainAnother(@NotNull File parent, @NotNull File child);
+
+    boolean pathContainsAnother(@NotNull String parent, @NotNull String child);
+
+    boolean pathDoesNotContainAnother(@NotNull String parent, @NotNull String child);
+
+    @Nonnull
+    String getRelativePath(@NotNull File parent, @NotNull File child);
+
+    @Nonnull
+    String getRelativePath(@NotNull String parent, @NotNull String child);
 }

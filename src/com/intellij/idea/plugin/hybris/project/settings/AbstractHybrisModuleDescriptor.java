@@ -19,7 +19,9 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.openapi.components.ServiceManager;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -78,12 +80,18 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     @Override
     public String getRelativePath() {
-        final File rootDirectory = this.getRootProjectDescriptor().getRootDirectory();
-        if (null != rootDirectory && this.getRootDirectory().getPath().startsWith(rootDirectory.getPath())) {
-            return this.getRootDirectory().getPath().substring(rootDirectory.getPath().length());
+        final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
+            VirtualFileSystemService.class
+        );
+
+        final File projectRootDir = this.getRootProjectDescriptor().getRootDirectory();
+        final File moduleRootDir = this.getRootDirectory();
+
+        if (null != projectRootDir && virtualFileSystemService.fileContainsAnother(projectRootDir, moduleRootDir)) {
+            return virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDir);
         }
 
-        return this.getRootDirectory().getPath();
+        return moduleRootDir.getPath();
     }
 
     @NotNull
@@ -180,8 +188,14 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         if (null == this.getRootProjectDescriptor().getCustomExtensionsDirectory()) {
             throw new IllegalStateException("CustomExtensionsDirectory is not set.");
         } else {
-            return this.moduleRootDirectory.getAbsolutePath().startsWith(
-                this.getRootProjectDescriptor().getCustomExtensionsDirectory().getAbsolutePath()
+
+            final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
+                VirtualFileSystemService.class
+            );
+
+            return virtualFileSystemService.fileContainsAnother(
+                this.getRootProjectDescriptor().getCustomExtensionsDirectory(),
+                this.moduleRootDirectory
             );
         }
     }
