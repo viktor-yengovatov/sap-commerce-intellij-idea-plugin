@@ -31,7 +31,7 @@ import java.io.File;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisModuleDescriptorFactoryImpl implements HybrisModuleDescriptorFactory {
+public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescriptorFactory {
 
     @NotNull
     @Override

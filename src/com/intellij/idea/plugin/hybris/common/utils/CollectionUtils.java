@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created 11:23 PM 03 February 2016.
@@ -42,6 +43,12 @@ public class CollectionUtils {
     public static <T> Collection<T> emptyCollectionIfNull(@Nullable final Collection<T> collection)
     {
         return null == collection ? Collections.<T>emptyList() : collection;
+    }
+
+    @NotNull
+    public static <T> Set<T> emptySetIfNull(@Nullable final Set<T> collection)
+    {
+        return null == collection ? Collections.<T>emptySet() : collection;
     }
 
     @NotNull

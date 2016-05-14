@@ -43,7 +43,7 @@ import static com.intellij.openapi.util.io.FileUtil.normalize;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class VirtualFileSystemServiceImpl implements VirtualFileSystemService {
+public class DefaultVirtualFileSystemService implements VirtualFileSystemService {
 
     @Override
     public void removeAllFiles(@NotNull final Collection<File> files) throws IOException {

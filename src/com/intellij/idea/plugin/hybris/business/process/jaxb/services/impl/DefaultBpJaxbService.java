@@ -39,9 +39,9 @@ import java.io.File;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class BpJaxbServiceImpl implements BpJaxbService {
+public class DefaultBpJaxbService implements BpJaxbService {
 
-    private static final Logger LOG = Logger.getInstance(BpJaxbServiceImpl.class);
+    private static final Logger LOG = Logger.getInstance(DefaultBpJaxbService.class);
 
     @Nullable
     protected LazyInitializer<JAXBContext> jaxbContext = new JAXBContextLazyInitializer();

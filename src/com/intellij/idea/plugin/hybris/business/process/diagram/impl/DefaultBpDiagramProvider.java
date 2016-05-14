@@ -23,11 +23,11 @@ import com.intellij.diagram.DiagramDataModel;
 import com.intellij.diagram.DiagramElementManager;
 import com.intellij.diagram.DiagramPresentationModel;
 import com.intellij.diagram.DiagramVfsResolver;
+import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramColorManager;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElementManager;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver;
-import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -42,9 +42,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class BpDiagramProviderImpl extends BpDiagramProvider {
+public class DefaultBpDiagramProvider extends BpDiagramProvider {
 
-    private static final Logger LOG = Logger.getInstance(BpDiagramProviderImpl.class);
+    private static final Logger LOG = Logger.getInstance(DefaultBpDiagramProvider.class);
 
     public static final String ID = "HybrisBusinessProcessDiagramProvider";
 

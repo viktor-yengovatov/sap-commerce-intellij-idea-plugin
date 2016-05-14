@@ -22,10 +22,12 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
-
-import static com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor.TYPE_CODES;
 
 /**
  * Created 22:08 14 May 2016
@@ -49,9 +51,19 @@ public class ImpexHeaderItemTypeCodeCompletionProvider extends CompletionProvide
         final ProcessingContext context,
         @NotNull final CompletionResultSet result
     ) {
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final Project project = commonIdeaService.getProject();
 
-        for (String typecode : TYPE_CODES.keySet()) {
-            result.addElement(LookupElementBuilder.create(typecode));
+        if (null == project) {
+            return;
+        }
+
+        final ItemTypesIndexService itemTypesIndexService = ServiceManager.getService(
+            project, ItemTypesIndexService.class
+        );
+
+        for (String typeCode : itemTypesIndexService.getAllTypeCodes()) {
+            result.addElement(LookupElementBuilder.create(typeCode));
         }
     }
 }

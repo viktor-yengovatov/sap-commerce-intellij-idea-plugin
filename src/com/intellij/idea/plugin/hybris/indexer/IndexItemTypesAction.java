@@ -16,16 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.indexer;
+package com.intellij.idea.plugin.hybris.indexer;
 
-import com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 
 public class IndexItemTypesAction extends AnAction {
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
-        ImpexCompletionContributor.indexItemTypes(e.getProject());
+
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final Project project = commonIdeaService.getProject();
+
+        if (null == project) {
+            return;
+        }
+
+        final ItemTypesIndexService itemTypesIndexService = ServiceManager.getService(
+            project, ItemTypesIndexService.class
+        );
+
+        itemTypesIndexService.indexItemTypes();
     }
 }

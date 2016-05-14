@@ -18,21 +18,21 @@
 
 package com.intellij.idea.plugin.hybris.business.process.common.impl;
 
-import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
+import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Action;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Choice;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.End;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Join;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Notify;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Process;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.ScriptAction;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Split;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.TargetNode;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Transition;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Wait;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService;
-import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
-import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Process;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -52,9 +52,9 @@ import java.util.Map;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class BpGraphServiceImpl implements BpGraphService {
+public class DefaultBpGraphService implements BpGraphService {
 
-    private static final Logger LOG = Logger.getInstance(BpGraphServiceImpl.class);
+    private static final Logger LOG = Logger.getInstance(DefaultBpGraphService.class);
 
     @Nullable
     @Override
@@ -165,7 +165,7 @@ public class BpGraphServiceImpl implements BpGraphService {
         final Map<String, BpGraphNode> nodesMap = new HashMap<String, BpGraphNode>();
 
         for (BpGenericAction action : process.getNodes()) {
-            nodesMap.put(action.getId(), new BpGraphNodeImpl(action, nodesMap, virtualFile, process));
+            nodesMap.put(action.getId(), new DefaultBpGraphNode(action, nodesMap, virtualFile, process));
         }
 
         return nodesMap;

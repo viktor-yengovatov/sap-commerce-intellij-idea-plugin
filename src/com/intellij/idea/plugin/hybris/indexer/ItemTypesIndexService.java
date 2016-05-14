@@ -16,34 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common.services.impl;
+package com.intellij.idea.plugin.hybris.indexer;
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.editor.EditorBundle;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
+import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 /**
- * Created 10:24 PM 10 February 2016.
+ * Created 22:55 14 May 2016
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class CommonIdeaServiceImpl implements CommonIdeaService {
+public interface ItemTypesIndexService {
 
-    protected final CommandProcessor commandProcessor;
+    void indexItemTypes();
 
-    public CommonIdeaServiceImpl(@NotNull final CommandProcessor commandProcessor) {
-        Validate.notNull(commandProcessor);
+    @NotNull
+    Set<String> getAllTypeCodes();
 
-        this.commandProcessor = commandProcessor;
-    }
+    @Nullable
+    PsiClass getPsiClassByTypeCode(@NotNull String typeCode);
 
-    @Override
-    public boolean isTypingActionInProgress() {
-        return StringUtils.equals(
-            this.commandProcessor.getCurrentCommandName(), EditorBundle.message("typing.in.editor.command.name")
-        );
-    }
 }

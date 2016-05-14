@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.business.process.diagram.impl;
 
-import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
+import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -36,9 +36,9 @@ import javax.xml.bind.UnmarshalException;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class BpDiagramVfsResolverIml implements BpDiagramVfsResolver {
+public class DefaultBpDiagramVfsResolver implements BpDiagramVfsResolver {
 
-    private static final Logger LOG = Logger.getInstance(BpDiagramVfsResolverIml.class);
+    private static final Logger LOG = Logger.getInstance(DefaultBpDiagramVfsResolver.class);
 
     @Override
     public String getQualifiedName(final BpGraphNode t) {

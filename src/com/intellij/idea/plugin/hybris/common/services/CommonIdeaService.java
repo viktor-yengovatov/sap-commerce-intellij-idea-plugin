@@ -18,6 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.common.services;
 
+
+import com.intellij.openapi.project.Project;
+
+import javax.annotation.Nullable;
+
 /**
  * Created 10:20 PM 10 February 2016.
  *
@@ -26,5 +31,8 @@ package com.intellij.idea.plugin.hybris.common.services;
 public interface CommonIdeaService {
 
     boolean isTypingActionInProgress();
+
+    @Nullable
+    Project getProject();
 
 }

@@ -22,9 +22,13 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
@@ -34,8 +38,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
-
-import static com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor.TYPE_CODES;
 
 /**
  * Created 22:13 14 May 2016
@@ -69,27 +71,40 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         final PsiElement headerElement,
         final CompletionResultSet resultSet
     ) {
-        if (headerElement != null) {
-            final PsiClass type = TYPE_CODES.get(headerElement.getText());
+        if (null == headerElement) {
+            return;
+        }
 
-            if (type != null) {
-                for (PsiMethod method : type.getAllMethods()) {
-                    if (method.getName().startsWith("set")) {
-                        String attribute = SET_PATTERN.matcher(method.getName()).replaceFirst("");
-                        attribute = attribute.substring(0, 1).toLowerCase() + attribute.substring(1);
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final Project project = commonIdeaService.getProject();
 
-                        final LookupElementBuilder element = LookupElementBuilder
-                            .create(attribute)
-                            .withStrikeoutness(method.isDeprecated()) // marks deprecation
-                            .withTypeText(
-                                method.getParameterList().getParameters()[0].getTypeElement()
-                                                                            .getType()
-                                                                            .getPresentableText(),
-                                true
-                            );
+        if (null == project) {
+            return;
+        }
 
-                        resultSet.addElement(element);
-                    }
+        final ItemTypesIndexService itemTypesIndexService = ServiceManager.getService(
+            project, ItemTypesIndexService.class
+        );
+
+        final PsiClass type = itemTypesIndexService.getPsiClassByTypeCode(headerElement.getText());
+
+        if (type != null) {
+            for (PsiMethod method : type.getAllMethods()) {
+                if (method.getName().startsWith("set")) {
+                    String attribute = SET_PATTERN.matcher(method.getName()).replaceFirst("");
+                    attribute = attribute.substring(0, 1).toLowerCase() + attribute.substring(1);
+
+                    final LookupElementBuilder element = LookupElementBuilder
+                        .create(attribute)
+                        .withStrikeoutness(method.isDeprecated()) // marks deprecation
+                        .withTypeText(
+                            method.getParameterList().getParameters()[0].getTypeElement()
+                                                                        .getType()
+                                                                        .getPresentableText(),
+                            true
+                        );
+
+                    resultSet.addElement(element);
                 }
             }
         }

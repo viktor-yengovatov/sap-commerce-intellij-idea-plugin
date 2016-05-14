@@ -35,7 +35,7 @@ import java.util.Map;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class BpGraphNodeImpl implements BpGraphNode {
+public class DefaultBpGraphNode implements BpGraphNode {
 
     protected final BpGenericAction genericAction;
     protected final VirtualFile virtualFile;
@@ -43,10 +43,10 @@ public class BpGraphNodeImpl implements BpGraphNode {
     protected final Map<String, BpGraphNode> nodeMap;
     protected final Process process;
 
-    public BpGraphNodeImpl(@NotNull final BpGenericAction genericAction,
-                           @NotNull final Map<String, BpGraphNode> nodeMap,
-                           @NotNull final VirtualFile virtualFile,
-                           @NotNull final Process process) {
+    public DefaultBpGraphNode(@NotNull final BpGenericAction genericAction,
+                              @NotNull final Map<String, BpGraphNode> nodeMap,
+                              @NotNull final VirtualFile virtualFile,
+                              @NotNull final Process process) {
         Validate.notNull(genericAction);
         Validate.notNull(nodeMap);
         Validate.notNull(virtualFile);
@@ -98,7 +98,7 @@ public class BpGraphNodeImpl implements BpGraphNode {
             return false;
         }
 
-        final BpGraphNodeImpl other = (BpGraphNodeImpl) obj;
+        final DefaultBpGraphNode other = (DefaultBpGraphNode) obj;
 
         return new EqualsBuilder()
             .append(this.genericAction.getId(), other.genericAction.getId())
@@ -114,7 +114,7 @@ public class BpGraphNodeImpl implements BpGraphNode {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("BpGraphNodeImpl{");
+        final StringBuilder sb = new StringBuilder("DefaultBpGraphNode{");
         sb.append("genericAction=").append(this.genericAction.getId());
         sb.append('}');
         return sb.toString();
