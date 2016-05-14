@@ -26,6 +26,9 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.DataManager;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
@@ -58,11 +61,7 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -71,186 +70,225 @@ public class ImpexCompletionContributor extends CompletionContributor {
 
     private static final Logger LOG = Logger.getInstance(ImpexCompletionContributor.class);
 
-    private static final Map<String, List<String>> ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES = new HashMap<String, List<String>>();
-    private static final Map<String, List<String>> TYPE_MODIFIER_TO_POSSIBLE_VALUES = new HashMap<String, List<String>>();
+    protected static final Pattern DOUBLE_QUOTE_PATTERN = Pattern.compile("\"");
+    protected static final Pattern SET_PATTERN = Pattern.compile("set");
 
-    // list see https://wiki.hybris.com/pages/viewpage.action?title=ImpEx+Syntax&spaceKey=release5
-    // values of hybris API 5.2.0
-    private static final String TYPE_MODIFIER_BATCHMODE = "batchmode";
-    private static final String TYPE_MODIFIER_CACHEUNIQUE = "cacheUnique";
-    private static final String TYPE_MODIFIER_PROCESSOR = "processor";
-    private static final String TYPE_MODIFIER_IMPEXLEGACYMODE = "impex.legacy.mode";
-
-    private static final String ATTRIBUTE_MODIFIER_ALIAS = "alias";
-    private static final String ATTRIBUTE_MODIFIER_ALLOWNULL = "allownull";
-    private static final String ATTRIBUTE_MODIFIER_CELLDECORATOR = "cellDecorator";
-    private static final String ATTRIBUTE_MODIFIER_COLLECTIONDELIMITER = "collection-delimiter";
-    private static final String ATTRIBUTE_MODIFIER_DATEFORMAT = "dateformat";
-    private static final String ATTRIBUTE_MODIFIER_DEFAULT = "default";
-    private static final String ATTRIBUTE_MODIFIER_FORCEWRITE = "forceWrite";
-    private static final String ATTRIBUTE_MODIFIER_IGNOREKEYCASE = "ignoreKeyCase";
-    private static final String ATTRIBUTE_MODIFIER_IGNORENULL = "ignorenull";
-    private static final String ATTRIBUTE_MODIFIER_KEY2VALUEDELIMITER = "key2value-delimiter ";
-    private static final String ATTRIBUTE_MODIFIER_LANG = "lang";
-    private static final String ATTRIBUTE_MODIFIER_MAPDELIMITER = "map-delimiter";
-    private static final String ATTRIBUTE_MODIFIER_MODE = "mode";
-    private static final String ATTRIBUTE_MODIFIER_NUMBERFORMAT = "numberformat";
-    private static final String ATTRIBUTE_MODIFIER_PATHDELIMITER = "path-delimiter";
-    private static final String ATTRIBUTE_MODIFIER_POS = "pos";
-    private static final String ATTRIBUTE_MODIFIER_TRANSLATOR = "translator";
-    private static final String ATTRIBUTE_MODIFIER_UNIQUE = "unique";
-    private static final String ATTRIBUTE_MODIFIER_VIRTUAL = "virtual";
-    private static final Pattern DOUBLE_QUOTE_PATTERN = Pattern.compile("\"");
-    private static final Pattern SET_PATTERN = Pattern.compile("set");
-    private static Map<String, PsiClass> TYPECODES = new ConcurrentHashMap<String, PsiClass>();
+    private static Map<String, PsiClass> TYPE_CODES = new ConcurrentHashMap<String, PsiClass>();
 
     public ImpexCompletionContributor() {
 
-        prepareModifierNameToValueMappings();
+        indexItemTypes(this.getProject());
 
         // case: header type modifier -> attribute_name
-        extend(CompletionType.BASIC,
-               PlatformPatterns.psiElement().withLanguage(ImpexLanguage.INSTANCE).withElementType(ImpexTypes.ATTRIBUTE_NAME).and(IS_TYPE_MODIFIER),
-               new CompletionProvider<CompletionParameters>() {
-                   @Override
-                   public void addCompletions(@NotNull final CompletionParameters parameters,
-                                              final ProcessingContext context,
-                                              @NotNull final CompletionResultSet result) {
-                       for (String key : TYPE_MODIFIER_TO_POSSIBLE_VALUES.keySet()) {
-                           result.addElement(LookupElementBuilder.create(key));
-                       }
-                   }
-               }
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                            .withLanguage(ImpexLanguage.INSTANCE)
+                            .withElementType(ImpexTypes.ATTRIBUTE_NAME)
+                            .and(IS_TYPE_MODIFIER),
+
+            new CompletionProvider<CompletionParameters>() {
+
+                @Override
+                public void addCompletions(
+                    @NotNull final CompletionParameters parameters,
+                    final ProcessingContext context,
+                    @NotNull final CompletionResultSet result
+                ) {
+                    for (ImpexModifier impexModifier : TypeModifier.values()) {
+                        result.addElement(LookupElementBuilder.create(impexModifier.getModifierName()));
+                    }
+                }
+            }
         );
 
         // case: header attribute's modifier name -> attribute_name
-        extend(CompletionType.BASIC,
-               PlatformPatterns.psiElement().withLanguage(ImpexLanguage.INSTANCE).withElementType(ImpexTypes.ATTRIBUTE_NAME).andNot(IS_TYPE_MODIFIER),
-               new CompletionProvider<CompletionParameters>() {
-                   @Override
-                   public void addCompletions(@NotNull final CompletionParameters parameters,
-                                              final ProcessingContext context,
-                                              @NotNull final CompletionResultSet result) {
-                       for (String key : ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.keySet()) {
-                           result.addElement(LookupElementBuilder.create(key));
-                       }
-                   }
-               }
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                            .withLanguage(ImpexLanguage.INSTANCE)
+                            .withElementType(ImpexTypes.ATTRIBUTE_NAME)
+                            .andNot(IS_TYPE_MODIFIER),
+
+            new CompletionProvider<CompletionParameters>() {
+
+                @Override
+                public void addCompletions(
+                    @NotNull final CompletionParameters parameters,
+                    final ProcessingContext context,
+                    @NotNull final CompletionResultSet result
+                ) {
+
+                    for (ImpexModifier impexModifier : AttributeModifier.values()) {
+                        result.addElement(LookupElementBuilder.create(impexModifier.getModifierName()));
+                    }
+                }
+            }
         );
 
         // case: header type value -> attribute_value
-        extend(CompletionType.BASIC,
-               PlatformPatterns.psiElement().withLanguage(ImpexLanguage.INSTANCE).and(IS_MODIFIER_VALUE).and(IS_TYPE_MODIFIER_VALUE),
-               new CompletionProvider<CompletionParameters>() {
-                   @Override
-                   public void addCompletions(@NotNull final CompletionParameters parameters,
-                                              final ProcessingContext context,
-                                              @NotNull final CompletionResultSet result) {
-                       if (parameters.getPosition().getPrevSibling() != null
-                           && parameters.getPosition().getPrevSibling().getPrevSibling() != null) {
-                           final String modifierName = parameters.getPosition().getPrevSibling().getPrevSibling().getText();
-                           final List<String> possibleValueList = TYPE_MODIFIER_TO_POSSIBLE_VALUES.get(modifierName);
-                           // the list is null when a modifier is not found in the definition
-                           if (possibleValueList != null) {
-                               for (String possibleValue : possibleValueList) {
-                                   result.addElement(LookupElementBuilder.create(possibleValue));
-                               }
-                           } else {
-                               // show error message when not defined within hybris API
-                               Notifications.Bus.notify(new Notification(ImpexLanguage.INSTANCE.getDisplayName(), "possible error in your impex", "You typed an unknown hybris-TYPE-modifier with name '" + modifierName + "'.", NotificationType.WARNING));
-                           }
-                       }
-                   }
-               }
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                            .withLanguage(ImpexLanguage.INSTANCE)
+                            .and(IS_MODIFIER_VALUE)
+                            .and(IS_TYPE_MODIFIER_VALUE),
+
+            new CompletionProvider<CompletionParameters>() {
+
+                @Override
+                public void addCompletions(
+                    @NotNull final CompletionParameters parameters,
+                    final ProcessingContext context,
+                    @NotNull final CompletionResultSet result
+                ) {
+
+                    if ((parameters.getPosition().getPrevSibling() != null)
+                        && (parameters.getPosition().getPrevSibling().getPrevSibling() != null)) {
+
+                        final String modifierName = parameters.getPosition()
+                                                              .getPrevSibling()
+                                                              .getPrevSibling()
+                                                              .getText();
+                        final ImpexModifier impexModifier = TypeModifier.getByModifierName(modifierName);
+
+                        // the list is null when a modifier is not found in the definition
+                        if ((null != impexModifier) && !impexModifier.getModifierValues().isEmpty()) {
+                            for (String possibleValue : impexModifier.getModifierValues()) {
+                                result.addElement(LookupElementBuilder.create(possibleValue));
+                            }
+                        } else {
+                            // show error message when not defined within hybris API
+                            Notifications.Bus.notify(new Notification(
+                                ImpexLanguage.INSTANCE.getDisplayName(),
+                                "possible error in your impex",
+                                "You typed an unknown hybris-TYPE-modifier with name '" + modifierName + "'.",
+                                NotificationType.WARNING
+                            ));
+                        }
+                    }
+                }
+            }
         );
 
         // case: header attribute's modifier value -> attribute_value
-        extend(CompletionType.BASIC,
-               PlatformPatterns.psiElement().withLanguage(ImpexLanguage.INSTANCE).and(IS_MODIFIER_VALUE).andNot(IS_TYPE_MODIFIER_VALUE),
-               new CompletionProvider<CompletionParameters>() {
-                   @Override
-                   public void addCompletions(@NotNull final CompletionParameters parameters,
-                                              final ProcessingContext context,
-                                              @NotNull final CompletionResultSet result) {
-                       if (parameters.getPosition().getPrevSibling() != null
-                           && parameters.getPosition().getPrevSibling().getPrevSibling() != null) {
-                           final String modifierName = parameters.getPosition().getPrevSibling().getPrevSibling().getText();
-                           final List<String> possibleValueList = ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.get(modifierName);
-                           // the list is null when a modifier is not found in the definition
-                           if (possibleValueList != null) {
-                               for (String possibleValue : possibleValueList) {
-                                   result.addElement(LookupElementBuilder.create(possibleValue));
-                               }
-                           } else {
-                               // show error message when not defined within hybris API
-                               Notifications.Bus.notify(new Notification(ImpexLanguage.INSTANCE.getDisplayName(), "possible error in your impex", "You typed an unknown hybris-ATTRIBUTE-modifier with name '" + modifierName + "'.", NotificationType.WARNING));
-                           }
-                       }
-                   }
-               }
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                            .withLanguage(ImpexLanguage.INSTANCE)
+                            .and(IS_MODIFIER_VALUE)
+                            .andNot(IS_TYPE_MODIFIER_VALUE),
+
+            new CompletionProvider<CompletionParameters>() {
+
+                @Override
+                public void addCompletions(
+                    @NotNull final CompletionParameters parameters,
+                    final ProcessingContext context,
+                    @NotNull final CompletionResultSet result
+                ) {
+
+                    if (parameters.getPosition().getPrevSibling() != null
+                        && parameters.getPosition().getPrevSibling().getPrevSibling() != null) {
+
+                        final String modifierName = parameters.getPosition()
+                                                              .getPrevSibling()
+                                                              .getPrevSibling()
+                                                              .getText();
+                        final ImpexModifier impexModifier = AttributeModifier.getByModifierName(modifierName);
+
+                        // the list is null when a modifier is not found in the definition
+                        if ((null != impexModifier) && !impexModifier.getModifierValues().isEmpty()) {
+                            for (String possibleValue : impexModifier.getModifierValues()) {
+                                result.addElement(LookupElementBuilder.create(possibleValue));
+                            }
+                        } else {
+                            // show error message when not defined within hybris API
+                            Notifications.Bus.notify(new Notification(
+                                ImpexLanguage.INSTANCE.getDisplayName(),
+                                "possible error in your impex",
+                                "You typed an unknown hybris-ATTRIBUTE-modifier with name '" + modifierName + "'.",
+                                NotificationType.WARNING
+                            ));
+                        }
+                    }
+                }
+            }
         );
 
         // case: itemtype-code
-        extend(CompletionType.BASIC,
-               PlatformPatterns.psiElement().withLanguage(ImpexLanguage.INSTANCE).withElementType(ImpexTypes.HEADER_TYPE),
-               new CompletionProvider<CompletionParameters>() {
-                   @Override
-                   public void addCompletions(@NotNull final CompletionParameters parameters,
-                                              final ProcessingContext context,
-                                              @NotNull final CompletionResultSet result) {
-                       for (String typecode : TYPECODES.keySet()) {
-                           result.addElement(LookupElementBuilder.create(typecode));
-                       }
-                   }
-               }
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                            .withLanguage(ImpexLanguage.INSTANCE)
+                            .withElementType(ImpexTypes.HEADER_TYPE),
+
+            new CompletionProvider<CompletionParameters>() {
+
+                @Override
+                public void addCompletions(
+                    @NotNull final CompletionParameters parameters,
+                    final ProcessingContext context,
+                    @NotNull final CompletionResultSet result
+                ) {
+
+                    for (String typecode : TYPE_CODES.keySet()) {
+                        result.addElement(LookupElementBuilder.create(typecode));
+                    }
+                }
+            }
         );
 
         // case: item's attribute
-        extend(CompletionType.BASIC,
-               PlatformPatterns.psiElement().withLanguage(ImpexLanguage.INSTANCE).withElementType(ImpexTypes.HEADER_PARAMETER_NAME),
-               new CompletionProvider<CompletionParameters>() {
-                   @Override
-                   public void addCompletions(@NotNull final CompletionParameters parameters,
-                                              final ProcessingContext context,
-                                              @NotNull final CompletionResultSet result) {
-                       final PsiElement headerElement = calculateHeaderElementOfAttribute(parameters.getPosition());
-                       fillAllTypeFieldsCompletionResultsSet(headerElement, result);
-                   }
-               }
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                            .withLanguage(ImpexLanguage.INSTANCE)
+                            .withElementType(ImpexTypes.HEADER_PARAMETER_NAME),
+
+            new CompletionProvider<CompletionParameters>() {
+
+                @Override
+                public void addCompletions(
+                    @NotNull final CompletionParameters parameters,
+                    final ProcessingContext context,
+                    @NotNull final CompletionResultSet result
+                ) {
+                    final PsiElement headerElement = calculateHeaderElementOfAttribute(parameters.getPosition());
+                    fillAllTypeFieldsCompletionResultsSet(headerElement, result);
+                }
+            }
         );
     }
 
-    private static void fillAllTypeFieldsCompletionResultsSet(final PsiElement headerElement, final CompletionResultSet resultSet) {
+    private static void fillAllTypeFieldsCompletionResultsSet(
+        final PsiElement headerElement,
+        final CompletionResultSet resultSet
+    ) {
         if (headerElement != null) {
-            final PsiClass type = TYPECODES.get(headerElement.getText());
+            final PsiClass type = TYPE_CODES.get(headerElement.getText());
 
             if (type != null) {
                 for (PsiMethod method : type.getAllMethods()) {
                     if (method.getName().startsWith("set")) {
                         String attribute = SET_PATTERN.matcher(method.getName()).replaceFirst("");
                         attribute = attribute.substring(0, 1).toLowerCase() + attribute.substring(1);
-                        resultSet.addElement(LookupElementBuilder.create(attribute)
-                                                                 .withStrikeoutness(method.isDeprecated()) // marks deprecation
-                                                                 .withTypeText(method.getParameterList().getParameters()[0].getTypeElement().getType().getPresentableText(), true));
+
+                        final LookupElementBuilder element = LookupElementBuilder
+                            .create(attribute)
+                            .withStrikeoutness(method.isDeprecated()) // marks deprecation
+                            .withTypeText(
+                                method.getParameterList().getParameters()[0].getTypeElement()
+                                                                            .getType()
+                                                                            .getPresentableText(),
+                                true
+                            );
+
+                        resultSet.addElement(element);
                     }
                 }
             }
         }
-    }
-
-    public static PsiMethod getTypeFieldFor(final PsiElement headerElement, final String fieldCode) {
-        if (headerElement != null) {
-            final PsiClass type = TYPECODES.get(headerElement.getText());
-
-            if (type != null) {
-                for (PsiMethod method : type.getAllMethods()) {
-                    if (method.getName().startsWith("set") && method.getName().toLowerCase().endsWith(fieldCode.toLowerCase())) {
-                        return method;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     @Contract("null -> null")
@@ -264,46 +302,55 @@ public class ImpexCompletionContributor extends CompletionContributor {
             return null;
         }
 
-        final ImpexFullHeaderType impexFullHeaderType = PsiTreeUtil.findChildOfType(impexHeaderLine, ImpexFullHeaderType.class);
+        final ImpexFullHeaderType impexFullHeaderType = PsiTreeUtil.findChildOfType(
+            impexHeaderLine,
+            ImpexFullHeaderType.class
+        );
         if (null == impexFullHeaderType) {
             return null;
         }
 
         PsiElement child = impexFullHeaderType.getFirstChild();
-        while (null != child && null != child.getNode() && !ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
+        while ((null != child)
+               && (null != child.getNode())
+               && !ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
+
             child = child.getNextSibling();
         }
 
-        if (null != child && null != child.getNode() && ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
+        if ((null != child)
+            && (null != child.getNode())
+            && ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
+
             return child;
         }
 
         return null;
     }
 
-    private void prepareModifierNameToValueMappings() {
-        fillPossibleTypeValuesMapForTypeModifier();
-        fillPossibleValuesMapForAttributeModifier();
-        indexItemTypes(getProject());
-    }
-
     public static void indexItemTypes(final Project project) {
 
         final Runnable runnable = new Runnable() {
+
             @Override
             public void run() {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
+
                     @Override
                     public void run() {
                         try {
-                            TYPECODES = new ConcurrentHashMap<String, PsiClass>();
-                            final PsiClass itemRootClass = JavaPsiFacade.getInstance(project).findClass("de.hybris.platform.core.model.ItemModel", GlobalSearchScope.allScope(project));
+                            TYPE_CODES = new ConcurrentHashMap<String, PsiClass>();
+                            final PsiClass itemRootClass = JavaPsiFacade.getInstance(project).findClass(
+                                "de.hybris.platform.core.model.ItemModel",
+                                GlobalSearchScope.allScope(project)
+                            );
 
                             if (null == itemRootClass) {
                                 return;
                             }
 
-                            final Collection<PsiClass> inheritedClasses = ClassInheritorsSearch.search(itemRootClass).findAll();
+                            final Collection<PsiClass> inheritedClasses = ClassInheritorsSearch.search(itemRootClass)
+                                                                                               .findAll();
                             // adding Item class itself
                             inheritedClasses.add(itemRootClass);
 
@@ -314,12 +361,13 @@ public class ImpexCompletionContributor extends CompletionContributor {
                                 for (PsiField field : ((PsiExtensibleClass) itemClass).getOwnFields()) {
                                     if ("_TYPECODE".equals(field.getName())) {
                                         if (null != field.getInitializer()) {
-                                            typeCode = DOUBLE_QUOTE_PATTERN.matcher(field.getInitializer().getText()).replaceAll("");
+                                            typeCode = DOUBLE_QUOTE_PATTERN.matcher(field.getInitializer().getText())
+                                                                           .replaceAll("");
                                         }
                                     }
                                 }
                                 if (typeCode != null) {
-                                    TYPECODES.put(typeCode, itemClass);
+                                    TYPE_CODES.put(typeCode, itemClass);
                                 }
                             }
 
@@ -335,7 +383,8 @@ public class ImpexCompletionContributor extends CompletionContributor {
     }
 
     private static void showDumbModeNotification(final Project project) {
-        DumbService.getInstance(project).showDumbModeNotification("[y]-typesystem information is not available during index update. Trigger 'Tools -> Index [y]-types' after IntelliJ-Index is build!");
+        DumbService.getInstance(project).showDumbModeNotification(
+            "[y]-typesystem information is not available during index update. Trigger 'Tools -> Index [y]-types' after IntelliJ-Index is build!");
     }
 
     private Project getProject() {
@@ -343,47 +392,17 @@ public class ImpexCompletionContributor extends CompletionContributor {
         return DataKeys.PROJECT.getData(dataContext.getResultSync());
     }
 
-    private void fillPossibleTypeValuesMapForTypeModifier() {
-        final List<String> booleanValue = Arrays.asList("true", "false");
-        TYPE_MODIFIER_TO_POSSIBLE_VALUES.put(TYPE_MODIFIER_BATCHMODE, booleanValue);
-        TYPE_MODIFIER_TO_POSSIBLE_VALUES.put(TYPE_MODIFIER_CACHEUNIQUE, booleanValue);
-        TYPE_MODIFIER_TO_POSSIBLE_VALUES.put(TYPE_MODIFIER_IMPEXLEGACYMODE, booleanValue);
-
-        // no suggestions available
-        TYPE_MODIFIER_TO_POSSIBLE_VALUES.put(TYPE_MODIFIER_PROCESSOR, new ArrayList<String>());
-    }
-
-    private void fillPossibleValuesMapForAttributeModifier() {
-        final List<String> booleanValue = Arrays.asList("true", "false");
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_UNIQUE, booleanValue);
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_ALLOWNULL, booleanValue);
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_FORCEWRITE, booleanValue);
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_IGNOREKEYCASE, booleanValue);
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_IGNORENULL, booleanValue);
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_VIRTUAL, booleanValue);
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_MODE, Arrays.asList("append", "remove"));
-
-        // no suggestions available
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_KEY2VALUEDELIMITER, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_ALIAS, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_CELLDECORATOR, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_COLLECTIONDELIMITER, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_DATEFORMAT, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_DEFAULT, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_LANG, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_MAPDELIMITER, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_NUMBERFORMAT, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_PATHDELIMITER, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_POS, new ArrayList<String>());
-        ATTRIBUTE_MODIFIER_TO_POSSIBLE_VALUES.put(ATTRIBUTE_MODIFIER_TRANSLATOR, new ArrayList<String>());
-    }
-
     private static final ElementPattern IS_TYPE_MODIFIER = new FilterPattern(new ElementFilter() {
+
         @Override
         public boolean isAcceptable(final Object element, final PsiElement context) {
-            return context.getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling().getNode().getElementType().equals(ImpexTypes.HEADER_TYPE);
+            return (context.getPrevSibling() != null)
+                   && (context.getPrevSibling().getPrevSibling() != null)
+                   && context.getPrevSibling()
+                             .getPrevSibling()
+                             .getNode()
+                             .getElementType()
+                             .equals(ImpexTypes.HEADER_TYPE);
         }
 
         @Override
@@ -393,13 +412,20 @@ public class ImpexCompletionContributor extends CompletionContributor {
     });
 
     private static final ElementPattern IS_TYPE_MODIFIER_VALUE = new FilterPattern(new ElementFilter() {
+
         @Override
         public boolean isAcceptable(final Object element, final PsiElement context) {
-            return context.getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling().getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling().getPrevSibling().getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling().getPrevSibling().getPrevSibling().getNode().getElementType().equals(ImpexTypes.HEADER_TYPE);
+            return (context.getPrevSibling() != null)
+                   && (context.getPrevSibling().getPrevSibling() != null)
+                   && (context.getPrevSibling().getPrevSibling().getPrevSibling() != null)
+                   && (context.getPrevSibling().getPrevSibling().getPrevSibling().getPrevSibling() != null)
+                   && context.getPrevSibling()
+                             .getPrevSibling()
+                             .getPrevSibling()
+                             .getPrevSibling()
+                             .getNode()
+                             .getElementType()
+                             .equals(ImpexTypes.HEADER_TYPE);
         }
 
         @Override
@@ -410,11 +436,16 @@ public class ImpexCompletionContributor extends CompletionContributor {
     });
 
     private static final ElementPattern IS_MODIFIER_VALUE = new FilterPattern(new ElementFilter() {
+
         @Override
         public boolean isAcceptable(final Object element, final PsiElement context) {
-            return context.getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling() != null
-                   && context.getPrevSibling().getPrevSibling().getNode().getElementType().equals(ImpexTypes.ATTRIBUTE_NAME);
+            return (context.getPrevSibling() != null)
+                   && (context.getPrevSibling().getPrevSibling() != null)
+                   && context.getPrevSibling()
+                             .getPrevSibling()
+                             .getNode()
+                             .getElementType()
+                             .equals(ImpexTypes.ATTRIBUTE_NAME);
         }
 
         @Override

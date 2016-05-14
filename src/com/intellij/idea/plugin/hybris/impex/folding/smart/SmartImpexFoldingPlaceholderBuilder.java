@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.folding.smart;
 
-import com.intellij.idea.plugin.hybris.impex.ImpexConstants;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilder;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
@@ -129,7 +129,9 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
             return impexAttribute.getText();
         }
 
-        final String clearedString = QUOTES_PATTERN.matcher(impexAttribute.getAnyAttributeValue().getText()).replaceAll("");
+        final String clearedString = QUOTES_PATTERN.matcher(impexAttribute.getAnyAttributeValue().getText()).replaceAll(
+            StringUtils.EMPTY
+        );
 
         final String className = StringUtils.substringAfterLast(clearedString, ".");
 
@@ -150,72 +152,88 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
 
     @Contract(pure = true)
     private boolean isUniqueAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.UNIQUE);
+        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, AttributeModifier.UNIQUE.getModifierName());
     }
 
     @Contract(pure = true)
     private boolean isVirtualAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.VIRTUAL);
+        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, AttributeModifier.VIRTUAL.getModifierName());
     }
 
     @Contract(pure = true)
     private boolean isAllowNullAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.ALLOW_NULL);
+        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, AttributeModifier.ALLOW_NULL.getModifierName());
     }
 
     @Contract(pure = true)
     private boolean isForceWriteAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.FORCE_WRITE);
+        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, AttributeModifier.FORCE_WRITE.getModifierName());
     }
 
     @Contract(pure = true)
     private boolean isIgnoreNullAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.IGNORE_NULL);
+        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, AttributeModifier.IGNORE_NULL.getModifierName());
     }
 
     @Contract(pure = true)
     private boolean isIgnoreKeyCaseAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, ImpexConstants.Attributes.IGNORE_KEY_CASE);
+        return this.isNameEqualsAndAndValueIsTrue(impexAttribute, AttributeModifier.IGNORE_KEY_CASE.getModifierName());
     }
 
     @Contract(pure = true)
     private boolean isDateFormatAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.quoteAwareStringEquals(ImpexConstants.Attributes.DATE_FORMAT, impexAttribute.getAnyAttributeName().getText());
+        return this.quoteAwareStringEquals(
+            AttributeModifier.DATE_FORMAT.getModifierName(), impexAttribute.getAnyAttributeName().getText()
+        );
     }
 
     @Contract(pure = true)
     private boolean isDefaultAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.quoteAwareStringEquals(ImpexConstants.Attributes.DEFAULT, impexAttribute.getAnyAttributeName().getText());
+        return this.quoteAwareStringEquals(
+            AttributeModifier.DEFAULT.getModifierName(), impexAttribute.getAnyAttributeName().getText()
+        );
     }
 
     @Contract(pure = true)
     private boolean isLangAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.quoteAwareStringEquals(ImpexConstants.Attributes.LANG, impexAttribute.getAnyAttributeName().getText());
+        return this.quoteAwareStringEquals(
+            AttributeModifier.LANG.getModifierName(), impexAttribute.getAnyAttributeName().getText()
+        );
     }
 
     @Contract(pure = true)
     private boolean isTranslatorAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.quoteAwareStringEquals(ImpexConstants.Attributes.TRANSLATOR, impexAttribute.getAnyAttributeName().getText());
+        return this.quoteAwareStringEquals(
+            AttributeModifier.TRANSLATOR.getModifierName(), impexAttribute.getAnyAttributeName().getText()
+        );
     }
 
     @Contract(pure = true)
     private boolean isNumberFormatAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.quoteAwareStringEquals(ImpexConstants.Attributes.NUMBER_FORMAT, impexAttribute.getAnyAttributeName().getText());
+        return this.quoteAwareStringEquals(
+            AttributeModifier.NUMBER_FORMAT.getModifierName(), impexAttribute.getAnyAttributeName().getText()
+        );
     }
 
     @Contract(pure = true)
     private boolean isModeAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.quoteAwareStringEquals(ImpexConstants.Attributes.MODE, impexAttribute.getAnyAttributeName().getText());
+        return this.quoteAwareStringEquals(
+            AttributeModifier.MODE.getModifierName(), impexAttribute.getAnyAttributeName().getText()
+        );
     }
 
     @Contract(pure = true)
     private boolean isCellDecoratorAttribute(@NotNull final ImpexAttribute impexAttribute) {
-        return this.quoteAwareStringEquals(ImpexConstants.Attributes.CELL_DECORATOR, impexAttribute.getAnyAttributeName().getText());
+        return this.quoteAwareStringEquals(
+            AttributeModifier.CELL_DECORATOR.getModifierName(), impexAttribute.getAnyAttributeName().getText()
+        );
     }
 
     @Contract(pure = true)
-    private boolean isNameEqualsAndAndValueIsTrue(@NotNull final ImpexAttribute impexAttribute,
-                                                  @NotNull final String name) {
+    private boolean isNameEqualsAndAndValueIsTrue(
+        @NotNull final ImpexAttribute impexAttribute,
+        @NotNull final String name
+    ) {
         Validate.notNull(impexAttribute);
         Validate.notNull(name);
 
@@ -240,11 +258,11 @@ public class SmartImpexFoldingPlaceholderBuilder implements ImpexFoldingPlacehol
 
     @Contract(pure = true)
     private boolean quoteAwareStringEquals(@Nullable final String quotedString, @Nullable final String value) {
-        return !(null == quotedString ^ null == value)
-                && (null == quotedString
-                || quotedString.equals(value)
-                || ("'" + quotedString + "'").equals(value)
-                || ("\"" + quotedString + "\"").equals(value));
+        return (null == quotedString) == (null == value)
+               && (null == quotedString
+                   || quotedString.equals(value)
+                   || ('\'' + quotedString + '\'').equals(value)
+                   || ('"' + quotedString + '"').equals(value));
 
     }
 }

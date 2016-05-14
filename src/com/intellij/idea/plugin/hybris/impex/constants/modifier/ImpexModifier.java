@@ -16,30 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex;
+package com.intellij.idea.plugin.hybris.impex.constants.modifier;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
- * Created 20:39 29 March 2015
+ * Created 18:53 14 May 2016
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public interface ImpexConstants {
+public interface ImpexModifier {
 
-    interface Attributes {
+    @NotNull
+    String getModifierName();
 
-        String UNIQUE = "unique";
-        String VIRTUAL = "virtual";
-        String ALLOW_NULL = "allownull";
-        String FORCE_WRITE = "forceWrite";
-        String IGNORE_NULL = "ignorenull";
-        String IGNORE_KEY_CASE = "ignoreKeyCase";
-        String DEFAULT = "default";
-        String LANG = "lang";
-        String TRANSLATOR = "translator";
-        String DATE_FORMAT = "dateformat";
-        String MODE = "mode";
-        String NUMBER_FORMAT = "numberformat";
-        String CELL_DECORATOR = "cellDecorator";
-    }
-
+    @NotNull
+    List<String> getModifierValues();
 }
