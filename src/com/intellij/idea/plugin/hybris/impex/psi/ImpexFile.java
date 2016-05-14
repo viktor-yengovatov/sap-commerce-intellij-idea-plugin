@@ -30,13 +30,13 @@ import javax.swing.*;
 public class ImpexFile extends PsiFileBase {
 
     public ImpexFile(@NotNull final FileViewProvider viewProvider) {
-        super(viewProvider, ImpexLanguage.INSTANCE);
+        super(viewProvider, ImpexLanguage.getInstance());
     }
 
     @NotNull
     @Override
     public FileType getFileType() {
-        return ImpexFileType.INSTANCE;
+        return ImpexFileType.getInstance();
     }
 
     @NotNull

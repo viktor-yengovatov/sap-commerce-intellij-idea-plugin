@@ -34,7 +34,7 @@ public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
     @NotNull
     @Override
     public Language getLanguage() {
-        return ImpexLanguage.INSTANCE;
+        return ImpexLanguage.getInstance();
     }
 
     @Override

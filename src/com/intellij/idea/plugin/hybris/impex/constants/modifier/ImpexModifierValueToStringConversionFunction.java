@@ -30,7 +30,14 @@ import javax.annotation.Nullable;
  */
 public class ImpexModifierValueToStringConversionFunction implements Function<ImpexModifierValue, String> {
 
-    public static final Function<ImpexModifierValue, String> INSTANCE = new ImpexModifierValueToStringConversionFunction();
+    private static final Function<ImpexModifierValue, String> INSTANCE = new ImpexModifierValueToStringConversionFunction();
+
+    public static Function<ImpexModifierValue, String> getInstance() {
+        return INSTANCE;
+    }
+
+    protected ImpexModifierValueToStringConversionFunction() {
+    }
 
     @SuppressWarnings("StandardVariableNames")
     @Nullable

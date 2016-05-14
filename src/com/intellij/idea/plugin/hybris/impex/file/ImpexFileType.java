@@ -28,10 +28,14 @@ import javax.swing.*;
 
 public class ImpexFileType extends LanguageFileType {
 
-    public static final ImpexFileType INSTANCE = new ImpexFileType();
+    private static final ImpexFileType INSTANCE = new ImpexFileType();
 
-    private ImpexFileType() {
-        super(ImpexLanguage.INSTANCE);
+    public static ImpexFileType getInstance() {
+        return INSTANCE;
+    }
+
+    protected ImpexFileType() {
+        super(ImpexLanguage.getInstance());
     }
 
     @NotNull

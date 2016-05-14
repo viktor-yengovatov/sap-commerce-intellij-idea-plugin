@@ -74,7 +74,7 @@ public enum TypeModifier implements ImpexModifier {
             this.modifierValues = Collections.emptyList();
         } else {
             this.modifierValues = Lists.transform(
-                Arrays.asList(modifierValues), ImpexModifierValueToStringConversionFunction.INSTANCE
+                Arrays.asList(modifierValues), ImpexModifierValueToStringConversionFunction.getInstance()
             );
         }
     }

@@ -69,7 +69,7 @@ public class ImpexCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
     private static class SimpleCodeStyleMainPanel extends TabbedLanguageCodeStylePanel {
 
         public SimpleCodeStyleMainPanel(final CodeStyleSettings currentSettings, final CodeStyleSettings settings) {
-            super(ImpexLanguage.INSTANCE, currentSettings, settings);
+            super(ImpexLanguage.getInstance(), currentSettings, settings);
         }
     }
 }

@@ -33,7 +33,7 @@ public class ImpexTokenType extends IElementType {
     private static final Pattern PATTERN = Pattern.compile("[_]");
 
     public ImpexTokenType(@NotNull @NonNls final String debugName) {
-        super(debugName, ImpexLanguage.INSTANCE);
+        super(debugName, ImpexLanguage.getInstance());
     }
 
     @Override

@@ -25,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 public class ImpexFileTypeFactory extends FileTypeFactory {
 
     @Override
-    public void createFileTypes(@NotNull FileTypeConsumer fileTypeConsumer) {
-        fileTypeConsumer.consume(ImpexFileType.INSTANCE, "impex");
+    public void createFileTypes(@NotNull final FileTypeConsumer consumer) {
+        consumer.consume(ImpexFileType.getInstance(), "impex");
     }
 
 }

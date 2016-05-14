@@ -53,7 +53,7 @@ public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
     private static SpacingBuilder createSpaceBuilder(final CodeStyleSettings settings) {
         final ImpexCodeStyleSettings impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings.class);
 
-        return new SpacingBuilder(settings, ImpexLanguage.INSTANCE)
+        return new SpacingBuilder(settings, ImpexLanguage.getInstance())
                 .before(ImpexTypes.VALUE_GROUP)
                 .spaceIf(impexSettings.SPACE_BEFORE_FIELD_VALUE_SEPARATOR)
 
