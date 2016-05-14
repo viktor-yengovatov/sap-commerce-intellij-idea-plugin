@@ -42,17 +42,17 @@ import static com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionCo
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ItemTypeAttributeNameCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     protected static final Pattern SET_PATTERN = Pattern.compile("set");
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new ItemTypeAttributeNameCompletionProvider();
+    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderItemTypeAttributeNameCompletionProvider();
 
     public static CompletionProvider<CompletionParameters> getInstance() {
         return INSTANCE;
     }
 
-    protected ItemTypeAttributeNameCompletionProvider() {
+    protected ImpexHeaderItemTypeAttributeNameCompletionProvider() {
     }
 
     @Override

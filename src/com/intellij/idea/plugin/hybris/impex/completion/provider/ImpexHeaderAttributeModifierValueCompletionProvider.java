@@ -23,8 +23,8 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
-import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -36,15 +36,15 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class TypeModifierValueCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class ImpexHeaderAttributeModifierValueCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new TypeModifierValueCompletionProvider();
+    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderAttributeModifierValueCompletionProvider();
 
     public static CompletionProvider<CompletionParameters> getInstance() {
         return INSTANCE;
     }
 
-    protected TypeModifierValueCompletionProvider() {
+    protected ImpexHeaderAttributeModifierValueCompletionProvider() {
     }
 
     @Override
@@ -54,14 +54,14 @@ public class TypeModifierValueCompletionProvider extends CompletionProvider<Comp
         @NotNull final CompletionResultSet result
     ) {
 
-        if ((parameters.getPosition().getPrevSibling() != null)
-            && (parameters.getPosition().getPrevSibling().getPrevSibling() != null)) {
+        if (parameters.getPosition().getPrevSibling() != null
+            && parameters.getPosition().getPrevSibling().getPrevSibling() != null) {
 
             final String modifierName = parameters.getPosition()
                                                   .getPrevSibling()
                                                   .getPrevSibling()
                                                   .getText();
-            final ImpexModifier impexModifier = TypeModifier.getByModifierName(modifierName);
+            final ImpexModifier impexModifier = AttributeModifier.getByModifierName(modifierName);
 
             // the list is null when a modifier is not found in the definition
             if ((null != impexModifier) && !impexModifier.getModifierValues().isEmpty()) {
@@ -73,7 +73,7 @@ public class TypeModifierValueCompletionProvider extends CompletionProvider<Comp
                 Notifications.Bus.notify(new Notification(
                     ImpexLanguage.getInstance().getDisplayName(),
                     "possible error in your impex",
-                    "You typed an unknown hybris-TYPE-modifier with name '" + modifierName + "'.",
+                    "You typed an unknown hybris-ATTRIBUTE-modifier with name '" + modifierName + "'.",
                     NotificationType.WARNING
                 ));
             }

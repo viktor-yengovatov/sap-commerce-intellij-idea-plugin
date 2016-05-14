@@ -22,25 +22,25 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
-import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created 22:00 14 May 2016
+ * Created 22:11 14 May 2016
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class TypeModifierNameCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class ImpexHeaderAttributeModifierNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new TypeModifierNameCompletionProvider();
+    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderAttributeModifierNameCompletionProvider();
 
     public static CompletionProvider<CompletionParameters> getInstance() {
         return INSTANCE;
     }
 
-    protected TypeModifierNameCompletionProvider() {
+    protected ImpexHeaderAttributeModifierNameCompletionProvider() {
     }
 
     @Override
@@ -49,7 +49,8 @@ public class TypeModifierNameCompletionProvider extends CompletionProvider<Compl
         final ProcessingContext context,
         @NotNull final CompletionResultSet result
     ) {
-        for (ImpexModifier impexModifier : TypeModifier.values()) {
+
+        for (ImpexModifier impexModifier : AttributeModifier.values()) {
             result.addElement(LookupElementBuilder.create(impexModifier.getModifierName()));
         }
     }

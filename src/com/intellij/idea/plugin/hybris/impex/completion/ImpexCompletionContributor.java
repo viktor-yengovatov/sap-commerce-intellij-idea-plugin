@@ -22,12 +22,15 @@ import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.ide.DataManager;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.AttributeModifierNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.AttributeModifierValueCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ItemTypeAttributeNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ItemTypeCodeCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.TypeModifierNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.TypeModifierValueCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.pattern.ImpexHeaderAttributeModifierNameElementPattern;
+import com.intellij.idea.plugin.hybris.impex.pattern.ImpexHeaderTypeModifierNameElementPattern;
+import com.intellij.idea.plugin.hybris.impex.pattern.ImpexHeaderTypeModifierValueElementPattern;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
@@ -38,18 +41,13 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.AsyncResult;
-import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.filters.ElementFilter;
-import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.impl.source.PsiExtensibleClass;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
-import org.jetbrains.annotations.Contract;
 
 import java.util.Collection;
 import java.util.Map;
@@ -74,8 +72,8 @@ public class ImpexCompletionContributor extends CompletionContributor {
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
                             .withElementType(ImpexTypes.ATTRIBUTE_NAME)
-                            .and(IS_TYPE_MODIFIER),
-            TypeModifierNameCompletionProvider.getInstance()
+                            .and(ImpexHeaderTypeModifierNameElementPattern.getPatternInstance()),
+            ImpexHeaderTypeModifierNameCompletionProvider.getInstance()
         );
 
         // case: header attribute's modifier name -> attribute_name
@@ -84,8 +82,8 @@ public class ImpexCompletionContributor extends CompletionContributor {
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
                             .withElementType(ImpexTypes.ATTRIBUTE_NAME)
-                            .andNot(IS_TYPE_MODIFIER),
-            AttributeModifierNameCompletionProvider.getInstance()
+                            .andNot(ImpexHeaderTypeModifierNameElementPattern.getPatternInstance()),
+            ImpexHeaderAttributeModifierNameCompletionProvider.getInstance()
         );
 
         // case: header type value -> attribute_value
@@ -93,9 +91,9 @@ public class ImpexCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
-                            .and(IS_MODIFIER_VALUE)
-                            .and(IS_TYPE_MODIFIER_VALUE),
-            TypeModifierValueCompletionProvider.getInstance()
+                            .and(ImpexHeaderAttributeModifierNameElementPattern.getPatternInstance())
+                            .and(ImpexHeaderTypeModifierValueElementPattern.getPatternInstance()),
+            ImpexHeaderTypeModifierValueCompletionProvider.getInstance()
         );
 
         // case: header attribute's modifier value -> attribute_value
@@ -103,9 +101,9 @@ public class ImpexCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
-                            .and(IS_MODIFIER_VALUE)
-                            .andNot(IS_TYPE_MODIFIER_VALUE),
-            AttributeModifierValueCompletionProvider.getInstance()
+                            .and(ImpexHeaderAttributeModifierNameElementPattern.getPatternInstance())
+                            .andNot(ImpexHeaderTypeModifierValueElementPattern.getPatternInstance()),
+            ImpexHeaderAttributeModifierValueCompletionProvider.getInstance()
         );
 
         // case: itemtype-code
@@ -114,7 +112,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
                             .withElementType(ImpexTypes.HEADER_TYPE),
-            ItemTypeCodeCompletionProvider.getInstance()
+            ImpexHeaderItemTypeCodeCompletionProvider.getInstance()
         );
 
         // case: item's attribute
@@ -123,7 +121,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
                             .withElementType(ImpexTypes.HEADER_PARAMETER_NAME),
-            ItemTypeAttributeNameCompletionProvider.getInstance()
+            ImpexHeaderItemTypeAttributeNameCompletionProvider.getInstance()
         );
     }
 
@@ -192,66 +190,4 @@ public class ImpexCompletionContributor extends CompletionContributor {
         final AsyncResult<DataContext> dataContext = DataManager.getInstance().getDataContextFromFocus();
         return DataKeys.PROJECT.getData(dataContext.getResultSync());
     }
-
-    private static final ElementPattern IS_TYPE_MODIFIER = new FilterPattern(new ElementFilter() {
-
-        @Override
-        public boolean isAcceptable(final Object element, final PsiElement context) {
-            return (context.getPrevSibling() != null)
-                   && (context.getPrevSibling().getPrevSibling() != null)
-                   && context.getPrevSibling()
-                             .getPrevSibling()
-                             .getNode()
-                             .getElementType()
-                             .equals(ImpexTypes.HEADER_TYPE);
-        }
-
-        @Override
-        public boolean isClassAcceptable(final Class hintClass) {
-            return true;
-        }
-    });
-
-    private static final ElementPattern IS_TYPE_MODIFIER_VALUE = new FilterPattern(new ElementFilter() {
-
-        @Override
-        public boolean isAcceptable(final Object element, final PsiElement context) {
-            return (context.getPrevSibling() != null)
-                   && (context.getPrevSibling().getPrevSibling() != null)
-                   && (context.getPrevSibling().getPrevSibling().getPrevSibling() != null)
-                   && (context.getPrevSibling().getPrevSibling().getPrevSibling().getPrevSibling() != null)
-                   && context.getPrevSibling()
-                             .getPrevSibling()
-                             .getPrevSibling()
-                             .getPrevSibling()
-                             .getNode()
-                             .getElementType()
-                             .equals(ImpexTypes.HEADER_TYPE);
-        }
-
-        @Override
-        @Contract(value = "_ -> true", pure = true)
-        public boolean isClassAcceptable(final Class hintClass) {
-            return true;
-        }
-    });
-
-    private static final ElementPattern IS_MODIFIER_VALUE = new FilterPattern(new ElementFilter() {
-
-        @Override
-        public boolean isAcceptable(final Object element, final PsiElement context) {
-            return (context.getPrevSibling() != null)
-                   && (context.getPrevSibling().getPrevSibling() != null)
-                   && context.getPrevSibling()
-                             .getPrevSibling()
-                             .getNode()
-                             .getElementType()
-                             .equals(ImpexTypes.ATTRIBUTE_NAME);
-        }
-
-        @Override
-        public boolean isClassAcceptable(final Class hintClass) {
-            return true;
-        }
-    });
 }

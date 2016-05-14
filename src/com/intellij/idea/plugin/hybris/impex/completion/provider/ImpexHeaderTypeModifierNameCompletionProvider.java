@@ -22,26 +22,25 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor.TYPE_CODES;
-
 /**
- * Created 22:08 14 May 2016
+ * Created 22:00 14 May 2016
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ItemTypeCodeCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class ImpexHeaderTypeModifierNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new ItemTypeCodeCompletionProvider();
+    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderTypeModifierNameCompletionProvider();
 
     public static CompletionProvider<CompletionParameters> getInstance() {
         return INSTANCE;
     }
 
-    protected ItemTypeCodeCompletionProvider() {
+    protected ImpexHeaderTypeModifierNameCompletionProvider() {
     }
 
     @Override
@@ -50,9 +49,8 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
         final ProcessingContext context,
         @NotNull final CompletionResultSet result
     ) {
-
-        for (String typecode : TYPE_CODES.keySet()) {
-            result.addElement(LookupElementBuilder.create(typecode));
+        for (ImpexModifier impexModifier : TypeModifier.values()) {
+            result.addElement(LookupElementBuilder.create(impexModifier.getModifierName()));
         }
     }
 }
