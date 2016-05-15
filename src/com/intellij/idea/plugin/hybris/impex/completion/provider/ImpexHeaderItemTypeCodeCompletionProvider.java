@@ -37,13 +37,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ImpexHeaderItemTypeCodeCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderItemTypeCodeCompletionProvider();
-
+    @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return INSTANCE;
-    }
-
-    protected ImpexHeaderItemTypeCodeCompletionProvider() {
+        return ServiceManager.getService(ImpexHeaderItemTypeCodeCompletionProvider.class);
     }
 
     @Override

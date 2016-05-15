@@ -49,13 +49,9 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
     protected static final boolean GRAYED = true;
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderItemTypeAttributeNameCompletionProvider();
-
+    @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return INSTANCE;
-    }
-
-    protected ImpexHeaderItemTypeAttributeNameCompletionProvider() {
+        return ServiceManager.getService(ImpexHeaderItemTypeAttributeNameCompletionProvider.class);
     }
 
     @Override

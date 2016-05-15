@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
@@ -42,13 +43,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ImpexHeaderAttributeModifierValueCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderAttributeModifierValueCompletionProvider();
-
+    @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return INSTANCE;
-    }
-
-    protected ImpexHeaderAttributeModifierValueCompletionProvider() {
+        return ServiceManager.getService(ImpexHeaderAttributeModifierValueCompletionProvider.class);
     }
 
     @Override

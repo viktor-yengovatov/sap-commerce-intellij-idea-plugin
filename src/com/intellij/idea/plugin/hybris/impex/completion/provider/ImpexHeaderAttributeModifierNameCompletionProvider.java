@@ -24,6 +24,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -35,13 +36,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ImpexHeaderAttributeModifierNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderAttributeModifierNameCompletionProvider();
-
+    @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return INSTANCE;
-    }
-
-    protected ImpexHeaderAttributeModifierNameCompletionProvider() {
+        return ServiceManager.getService(ImpexHeaderAttributeModifierNameCompletionProvider.class);
     }
 
     @Override
