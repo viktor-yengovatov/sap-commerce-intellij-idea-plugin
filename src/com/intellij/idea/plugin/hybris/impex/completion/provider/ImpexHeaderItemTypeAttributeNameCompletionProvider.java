@@ -25,19 +25,21 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils;
 import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.util.PropertyUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.regex.Pattern;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created 22:13 14 May 2016
@@ -46,7 +48,7 @@ import java.util.regex.Pattern;
  */
 public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    protected static final Pattern SET_PATTERN = Pattern.compile("set");
+    protected static final boolean GRAYED = true;
 
     private static final CompletionProvider<CompletionParameters> INSTANCE = new ImpexHeaderItemTypeAttributeNameCompletionProvider();
 
@@ -63,15 +65,21 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         final ProcessingContext context,
         @NotNull final CompletionResultSet result
     ) {
-        final PsiElement headerElement = calculateHeaderElementOfAttribute(parameters.getPosition());
-        fillAllTypeFieldsCompletionResultsSet(headerElement, result);
+        Validate.notNull(parameters);
+        Validate.notNull(result);
+
+        final PsiElement headerTypeNamePsiElement = this.getHeaderTypeNamePsiElementOfAttribute(parameters.getPosition());
+
+        this.fillAllTypeFieldsCompletionResultsSet(headerTypeNamePsiElement, result);
     }
 
-    private static void fillAllTypeFieldsCompletionResultsSet(
-        final PsiElement headerElement,
-        final CompletionResultSet resultSet
+    protected void fillAllTypeFieldsCompletionResultsSet(
+        @Nullable final PsiElement headerTypeNamePsiElement,
+        @NotNull final CompletionResultSet resultSet
     ) {
-        if (null == headerElement) {
+        Validate.notNull(resultSet);
+
+        if (null == headerTypeNamePsiElement) {
             return;
         }
 
@@ -86,64 +94,51 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
             project, ItemTypesIndexService.class
         );
 
-        final PsiClass type = itemTypesIndexService.getPsiClassByTypeCode(headerElement.getText());
+        final PsiClass psiClass = itemTypesIndexService.getPsiClassByTypeCode(headerTypeNamePsiElement.getText());
 
-        if (type != null) {
-            for (PsiMethod method : type.getAllMethods()) {
-                if (method.getName().startsWith("set")) {
-                    String attribute = SET_PATTERN.matcher(method.getName()).replaceFirst("");
-                    attribute = attribute.substring(0, 1).toLowerCase() + attribute.substring(1);
+        if (null == psiClass) {
+            return;
+        }
 
-                    final LookupElementBuilder element = LookupElementBuilder
-                        .create(attribute)
-                        .withStrikeoutness(method.isDeprecated()) // marks deprecation
-                        .withTypeText(
-                            method.getParameterList().getParameters()[0].getTypeElement()
-                                                                        .getType()
-                                                                        .getPresentableText(),
-                            true
-                        );
-
-                    resultSet.addElement(element);
-                }
+        for (PsiMethod psiMethod : psiClass.getAllMethods()) {
+            if (!CommonPsiUtils.isSetter(psiMethod)) {
+                continue;
             }
+
+            final String propertyName = PropertyUtil.getPropertyNameBySetter(psiMethod);
+            final PsiType propertyType = PropertyUtil.getPropertyType(psiMethod);
+
+            if (null == propertyType) {
+                continue;
+            }
+
+            final LookupElementBuilder element = LookupElementBuilder
+                .create(propertyName)
+                .withStrikeoutness(psiMethod.isDeprecated()) // marks deprecation
+                .withTypeText(propertyType.getPresentableText(), GRAYED);
+
+            resultSet.addElement(element);
         }
     }
 
+    @Nullable
     @Contract("null -> null")
-    private static PsiElement calculateHeaderElementOfAttribute(final PsiElement psiElement) {
-        if (null == psiElement || null == psiElement.getNode()) {
+    protected PsiElement getHeaderTypeNamePsiElementOfAttribute(@Nullable final PsiElement headerAttributePsiElement) {
+        if (null == headerAttributePsiElement || null == headerAttributePsiElement.getNode()) {
             return null;
         }
 
-        final ImpexHeaderLine impexHeaderLine = PsiTreeUtil.getParentOfType(psiElement, ImpexHeaderLine.class);
+        final ImpexHeaderLine impexHeaderLine = PsiTreeUtil.getParentOfType(
+            headerAttributePsiElement,
+            ImpexHeaderLine.class
+        );
+
         if (null == impexHeaderLine) {
             return null;
         }
 
-        final ImpexFullHeaderType impexFullHeaderType = PsiTreeUtil.findChildOfType(
-            impexHeaderLine,
-            ImpexFullHeaderType.class
-        );
-        if (null == impexFullHeaderType) {
-            return null;
-        }
+        final ImpexFullHeaderType impexFullHeaderType = impexHeaderLine.getFullHeaderType();
 
-        PsiElement child = impexFullHeaderType.getFirstChild();
-        while ((null != child)
-               && (null != child.getNode())
-               && !ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
-
-            child = child.getNextSibling();
-        }
-
-        if ((null != child)
-            && (null != child.getNode())
-            && ImpexTypes.HEADER_TYPE.equals(child.getNode().getElementType())) {
-
-            return child;
-        }
-
-        return null;
+        return null == impexFullHeaderType ? null : impexFullHeaderType.getHeaderTypeName();
     }
 }

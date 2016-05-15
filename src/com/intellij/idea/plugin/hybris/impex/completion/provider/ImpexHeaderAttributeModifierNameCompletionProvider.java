@@ -25,6 +25,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
 import com.intellij.util.ProcessingContext;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -49,6 +50,8 @@ public class ImpexHeaderAttributeModifierNameCompletionProvider extends Completi
         final ProcessingContext context,
         @NotNull final CompletionResultSet result
     ) {
+        Validate.notNull(parameters);
+        Validate.notNull(result);
 
         for (ImpexModifier impexModifier : AttributeModifier.values()) {
             result.addElement(LookupElementBuilder.create(impexModifier.getModifierName()));

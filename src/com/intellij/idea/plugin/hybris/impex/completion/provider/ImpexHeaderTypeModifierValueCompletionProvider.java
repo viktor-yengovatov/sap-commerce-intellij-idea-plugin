@@ -29,6 +29,7 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.util.ProcessingContext;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -53,6 +54,8 @@ public class ImpexHeaderTypeModifierValueCompletionProvider extends CompletionPr
         final ProcessingContext context,
         @NotNull final CompletionResultSet result
     ) {
+        Validate.notNull(parameters);
+        Validate.notNull(result);
 
         if ((parameters.getPosition().getPrevSibling() != null)
             && (parameters.getPosition().getPrevSibling().getPrevSibling() != null)) {

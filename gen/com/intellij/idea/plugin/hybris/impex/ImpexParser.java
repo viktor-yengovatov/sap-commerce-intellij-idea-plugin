@@ -53,6 +53,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     else if (t == HEADER_LINE) {
       r = header_line(b, 0);
     }
+    else if (t == HEADER_TYPE_NAME) {
+      r = header_type_name(b, 0);
+    }
     else if (t == MACRO_DECLARATION) {
       r = macro_declaration(b, 0);
     }
@@ -295,12 +298,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // header_type modifiers?
+  // header_type_name modifiers?
   public static boolean full_header_type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "full_header_type")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, FULL_HEADER_TYPE, "<full header type>");
-    r = header_type(b, l + 1);
+    r = header_type_name(b, l + 1);
     r = r && full_header_type_1(b, l + 1);
     exit_section_(b, l, m, r, false, not_line_break_or_parameters_separator_parser_);
     return r;
@@ -363,10 +366,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // HEADER_TYPE
-  static boolean header_type(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "header_type")) return false;
+  public static boolean header_type_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "header_type_name")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
+    Marker m = enter_section_(b, l, _NONE_, HEADER_TYPE_NAME, "<header type name>");
     r = consumeToken(b, HEADER_TYPE);
     exit_section_(b, l, m, r, false, recover_header_type_parser_);
     return r;

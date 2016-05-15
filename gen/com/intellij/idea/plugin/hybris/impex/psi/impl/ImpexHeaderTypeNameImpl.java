@@ -11,31 +11,19 @@ import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexFullHeaderTypeImpl extends ASTWrapperPsiElement implements ImpexFullHeaderType {
+public class ImpexHeaderTypeNameImpl extends ASTWrapperPsiElement implements ImpexHeaderTypeName {
 
-  public ImpexFullHeaderTypeImpl(ASTNode node) {
+  public ImpexHeaderTypeNameImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitFullHeaderType(this);
+    visitor.visitHeaderTypeName(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public ImpexHeaderTypeName getHeaderTypeName() {
-    return findNotNullChildByClass(ImpexHeaderTypeName.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexModifiers getModifiers() {
-    return findChildByClass(ImpexModifiers.class);
   }
 
 }

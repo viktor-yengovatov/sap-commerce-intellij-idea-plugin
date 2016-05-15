@@ -18,6 +18,7 @@ public interface ImpexTypes {
   IElementType FULL_HEADER_PARAMETER = new ImpexElementType("FULL_HEADER_PARAMETER");
   IElementType FULL_HEADER_TYPE = new ImpexElementType("FULL_HEADER_TYPE");
   IElementType HEADER_LINE = new ImpexElementType("HEADER_LINE");
+  IElementType HEADER_TYPE_NAME = new ImpexElementType("HEADER_TYPE_NAME");
   IElementType MACRO_DECLARATION = new ImpexElementType("MACRO_DECLARATION");
   IElementType MODIFIERS = new ImpexElementType("MODIFIERS");
   IElementType PARAMETER = new ImpexElementType("PARAMETER");
@@ -101,6 +102,9 @@ public interface ImpexTypes {
       }
       else if (type == HEADER_LINE) {
         return new ImpexHeaderLineImpl(node);
+      }
+      else if (type == HEADER_TYPE_NAME) {
+        return new ImpexHeaderTypeNameImpl(node);
       }
       else if (type == MACRO_DECLARATION) {
         return new ImpexMacroDeclarationImpl(node);

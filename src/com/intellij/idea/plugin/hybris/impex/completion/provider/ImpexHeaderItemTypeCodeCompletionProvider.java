@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -51,6 +52,9 @@ public class ImpexHeaderItemTypeCodeCompletionProvider extends CompletionProvide
         final ProcessingContext context,
         @NotNull final CompletionResultSet result
     ) {
+        Validate.notNull(parameters);
+        Validate.notNull(result);
+
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         final Project project = commonIdeaService.getProject();
 

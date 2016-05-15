@@ -47,6 +47,10 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitHeaderTypeName(@NotNull ImpexHeaderTypeName o) {
+    visitPsiElement(o);
+  }
+
   public void visitMacroDeclaration(@NotNull ImpexMacroDeclaration o) {
     visitPsiElement(o);
   }

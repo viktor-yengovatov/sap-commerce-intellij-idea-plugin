@@ -16,27 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.utils;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+package com.intellij.idea.plugin.hybris.common;
 
 /**
- * Created 4:23 PM 31 May 2015
+ * Created 17:48 15 May 2016
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public final class CommonAstUtils {
+public interface JavaConstants {
 
-    private CommonAstUtils() throws IllegalAccessException {
-        throw new IllegalAccessException("Should never be accessed.");
-    }
-
-    @Contract(pure = true)
-    public static IElementType getNullSafeElementType(@Nullable final ASTNode node) {
-        return node == null ? null : node.getElementType();
-    }
-
+    String SETTER_PREFIX = "set";
 }

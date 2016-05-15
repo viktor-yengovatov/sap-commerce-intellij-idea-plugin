@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.tree.IElementType;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,12 +31,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.intellij.idea.plugin.hybris.common.JavaConstants.SETTER_PREFIX;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.startsWith;
+
 /**
  * Created 4:20 PM 31 May 2015
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class CommonPsiUtils {
+public final class CommonPsiUtils {
+
+    private CommonPsiUtils() throws IllegalAccessException {
+        throw new IllegalAccessException("Should never be accessed.");
+    }
 
     @Nullable
     @Contract(pure = true)
@@ -45,6 +55,8 @@ public class CommonPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static PsiElement getNextNonWhitespaceElement(@NotNull final PsiElement element) {
+        Validate.notNull(element);
+
         PsiElement nextSibling = element.getNextSibling();
 
         while (null != nextSibling && ImpexPsiUtils.isWhiteSpace(nextSibling)) {
@@ -56,14 +68,19 @@ public class CommonPsiUtils {
 
     @NotNull
     @Contract(pure = true)
-    public static List<PsiElement> findChildrenByIElementType(@NotNull final PsiElement element,
-                                                              @NotNull final IElementType elementType) {
+    public static List<PsiElement> findChildrenByIElementType(
+        @NotNull final PsiElement element,
+        @NotNull final IElementType elementType
+    ) {
+        Validate.notNull(element);
+        Validate.notNull(elementType);
+
         List<PsiElement> result = Collections.emptyList();
         ASTNode child = element.getNode().getFirstChildNode();
 
         while (child != null) {
             if (elementType == child.getElementType()) {
-                if (null == result || result.isEmpty()) {
+                if (result.isEmpty()) {
                     result = new ArrayList<PsiElement>();
                 }
                 result.add(child.getPsi());
@@ -72,6 +89,13 @@ public class CommonPsiUtils {
         }
 
         return result;
+    }
+
+    @Contract(pure = true)
+    public static boolean isSetter(@NotNull final PsiMethod psiMethod) {
+        Validate.notNull(psiMethod);
+
+        return !isBlank(psiMethod.getName()) && startsWith(psiMethod.getName(), SETTER_PREFIX);
     }
 
 }
