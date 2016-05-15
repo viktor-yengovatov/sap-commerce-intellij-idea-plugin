@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.common.services;
 
 import com.intellij.openapi.project.Project;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created 10:20 PM 10 February 2016.

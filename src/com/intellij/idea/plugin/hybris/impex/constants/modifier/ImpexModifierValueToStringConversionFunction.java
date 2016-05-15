@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.constants.modifier;
 import com.google.common.base.Function;
 import org.apache.commons.lang3.Validate;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created 20:34 14 May 2016

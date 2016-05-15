@@ -28,7 +28,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.jgoodies.common.base.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javax.xml.bind.UnmarshalException;
 
 /**
