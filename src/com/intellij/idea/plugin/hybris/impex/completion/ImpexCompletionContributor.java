@@ -27,9 +27,9 @@ import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItem
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.pattern.ImpexHeaderAttributeModifierNameElementPattern;
-import com.intellij.idea.plugin.hybris.impex.pattern.ImpexHeaderTypeModifierNameElementPattern;
-import com.intellij.idea.plugin.hybris.impex.pattern.ImpexHeaderTypeModifierValueElementPattern;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.patterns.PlatformPatterns;
@@ -45,7 +45,8 @@ public class ImpexCompletionContributor extends CompletionContributor {
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
                             .withElementType(ImpexTypes.ATTRIBUTE_NAME)
-                            .and(ImpexHeaderTypeModifierNameElementPattern.getPatternInstance()),
+                            .inside(ImpexFullHeaderType.class)
+                            .inside(ImpexModifiers.class),
             ImpexHeaderTypeModifierNameCompletionProvider.getInstance()
         );
 
@@ -55,7 +56,8 @@ public class ImpexCompletionContributor extends CompletionContributor {
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
                             .withElementType(ImpexTypes.ATTRIBUTE_NAME)
-                            .andNot(ImpexHeaderTypeModifierNameElementPattern.getPatternInstance()),
+                            .inside(ImpexFullHeaderParameter.class)
+                            .inside(ImpexModifiers.class),
             ImpexHeaderAttributeModifierNameCompletionProvider.getInstance()
         );
 
@@ -64,8 +66,9 @@ public class ImpexCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
-                            .and(ImpexHeaderAttributeModifierNameElementPattern.getPatternInstance())
-                            .and(ImpexHeaderTypeModifierValueElementPattern.getPatternInstance()),
+                            .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
+                            .inside(ImpexFullHeaderType.class)
+                            .inside(ImpexModifiers.class),
             ImpexHeaderTypeModifierValueCompletionProvider.getInstance()
         );
 
@@ -74,8 +77,9 @@ public class ImpexCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
                             .withLanguage(ImpexLanguage.getInstance())
-                            .and(ImpexHeaderAttributeModifierNameElementPattern.getPatternInstance())
-                            .andNot(ImpexHeaderTypeModifierValueElementPattern.getPatternInstance()),
+                            .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
+                            .inside(ImpexFullHeaderParameter.class)
+                            .inside(ImpexModifiers.class),
             ImpexHeaderAttributeModifierValueCompletionProvider.getInstance()
         );
 

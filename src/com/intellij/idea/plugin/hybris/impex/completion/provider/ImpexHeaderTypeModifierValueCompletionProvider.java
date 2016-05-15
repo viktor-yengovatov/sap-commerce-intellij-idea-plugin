@@ -25,9 +25,12 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -57,29 +60,34 @@ public class ImpexHeaderTypeModifierValueCompletionProvider extends CompletionPr
         Validate.notNull(parameters);
         Validate.notNull(result);
 
-        if ((parameters.getPosition().getPrevSibling() != null)
-            && (parameters.getPosition().getPrevSibling().getPrevSibling() != null)) {
+        final PsiElement psiElementUnderCaret = parameters.getPosition();
 
-            final String modifierName = parameters.getPosition()
-                                                  .getPrevSibling()
-                                                  .getPrevSibling()
-                                                  .getText();
-            final ImpexModifier impexModifier = TypeModifier.getByModifierName(modifierName);
+        final ImpexAttribute impexAttribute = PsiTreeUtil.getParentOfType(
+            psiElementUnderCaret, ImpexAttribute.class
+        );
 
-            // the list is null when a modifier is not found in the definition
-            if ((null != impexModifier) && !impexModifier.getModifierValues().isEmpty()) {
-                for (String possibleValue : impexModifier.getModifierValues()) {
-                    result.addElement(LookupElementBuilder.create(possibleValue));
-                }
-            } else {
-                // show error message when not defined within hybris API
-                Notifications.Bus.notify(new Notification(
-                    ImpexLanguage.getInstance().getDisplayName(),
-                    "possible error in your impex",
-                    "You typed an unknown hybris-TYPE-modifier with name '" + modifierName + "'.",
-                    NotificationType.WARNING
-                ));
+        if (impexAttribute == null) {
+            return;
+        }
+
+        final String modifierName = impexAttribute.getAnyAttributeName().getText();
+
+        final ImpexModifier impexModifier = TypeModifier.getByModifierName(modifierName);
+
+        if (null != impexModifier) {
+
+            for (String possibleValue : impexModifier.getModifierValues()) {
+                result.addElement(LookupElementBuilder.create(possibleValue));
             }
+
+        } else {
+            // show error message when not defined within hybris API
+            Notifications.Bus.notify(new Notification(
+                ImpexLanguage.getInstance().getDisplayName(),
+                "possible error in your impex",
+                "You typed an unknown hybris-TYPE-modifier with name '" + modifierName + "'.",
+                NotificationType.WARNING
+            ));
         }
     }
 }

@@ -72,7 +72,8 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
             return;
         }
 
-        final PsiElement headerTypeNamePsiElement = this.getHeaderTypeNamePsiElementOfAttribute(parameters.getPosition());
+        final PsiElement psiElementUnderCaret = parameters.getPosition();
+        final PsiElement headerTypeNamePsiElement = this.getHeaderTypeNamePsiElementOfAttribute(psiElementUnderCaret);
 
         this.fillAllTypeFieldsCompletionResultsSet(project, headerTypeNamePsiElement, result);
     }
