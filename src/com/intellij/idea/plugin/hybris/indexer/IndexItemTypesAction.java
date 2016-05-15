@@ -18,26 +18,23 @@
 
 package com.intellij.idea.plugin.hybris.indexer;
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
+import org.apache.commons.lang3.Validate;
 
 public class IndexItemTypesAction extends AnAction {
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
+        Validate.notNull(e);
 
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        final Project project = commonIdeaService.getProject();
-
-        if (null == project) {
+        if (null == e.getProject()) {
             return;
         }
 
         final ItemTypesIndexService itemTypesIndexService = ServiceManager.getService(
-            project, ItemTypesIndexService.class
+            e.getProject(), ItemTypesIndexService.class
         );
 
         itemTypesIndexService.indexItemTypes();

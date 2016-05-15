@@ -22,7 +22,6 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils;
@@ -68,25 +67,25 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         Validate.notNull(parameters);
         Validate.notNull(result);
 
-        final PsiElement headerTypeNamePsiElement = this.getHeaderTypeNamePsiElementOfAttribute(parameters.getPosition());
-
-        this.fillAllTypeFieldsCompletionResultsSet(headerTypeNamePsiElement, result);
-    }
-
-    protected void fillAllTypeFieldsCompletionResultsSet(
-        @Nullable final PsiElement headerTypeNamePsiElement,
-        @NotNull final CompletionResultSet resultSet
-    ) {
-        Validate.notNull(resultSet);
-
-        if (null == headerTypeNamePsiElement) {
+        final Project project = this.getProject(parameters);
+        if (null == project) {
             return;
         }
 
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        final Project project = commonIdeaService.getProject();
+        final PsiElement headerTypeNamePsiElement = this.getHeaderTypeNamePsiElementOfAttribute(parameters.getPosition());
 
-        if (null == project) {
+        this.fillAllTypeFieldsCompletionResultsSet(project, headerTypeNamePsiElement, result);
+    }
+
+    protected void fillAllTypeFieldsCompletionResultsSet(
+        @NotNull final Project project,
+        @Nullable final PsiElement headerTypeNamePsiElement,
+        @NotNull final CompletionResultSet resultSet
+    ) {
+        Validate.notNull(project);
+        Validate.notNull(resultSet);
+
+        if (null == headerTypeNamePsiElement) {
             return;
         }
 
@@ -119,6 +118,13 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
             resultSet.addElement(element);
         }
+    }
+
+    @Nullable
+    private Project getProject(final @NotNull CompletionParameters parameters) {
+        Validate.notNull(parameters);
+
+        return parameters.getEditor().getProject();
     }
 
     @Nullable
