@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.indexer.impl;
 import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
@@ -40,7 +41,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-import static com.intellij.diff.merge.TextMergeTool.LOG;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptySetIfNull;
 
 /**
@@ -49,6 +49,8 @@ import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.empty
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public class DefaultItemTypesIndexService implements ItemTypesIndexService {
+
+    private static final Logger LOG = Logger.getInstance(DefaultItemTypesIndexService.class);
 
     protected static final Pattern DOUBLE_QUOTE_PATTERN = Pattern.compile("\"");
 
