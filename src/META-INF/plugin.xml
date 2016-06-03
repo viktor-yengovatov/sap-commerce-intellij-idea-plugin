@@ -25,7 +25,6 @@
     <depends>com.intellij.modules.lang</depends>
 
     <depends optional="true" config-file="impex-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends optional="true" config-file="type-system-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="web-optional-dependencies.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="project-import-optional-dependencies.xml">com.intellij.modules.java</depends>
