@@ -17,12 +17,8 @@ public class ImpexAnyHeaderModeImpl extends ASTWrapperPsiElement implements Impe
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitAnyHeaderMode(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitAnyHeaderMode(this);
     else super.accept(visitor);
   }
 

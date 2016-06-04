@@ -17,12 +17,8 @@ public class ImpexMacroDeclarationImpl extends ASTWrapperPsiElement implements I
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitMacroDeclaration(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitMacroDeclaration(this);
     else super.accept(visitor);
   }
 

@@ -17,12 +17,8 @@ public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implement
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitFullHeaderParameter(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitFullHeaderParameter(this);
     else super.accept(visitor);
   }
 

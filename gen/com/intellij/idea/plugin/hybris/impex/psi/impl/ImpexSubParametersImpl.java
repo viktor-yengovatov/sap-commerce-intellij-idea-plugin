@@ -16,12 +16,8 @@ public class ImpexSubParametersImpl extends ImpexParametersImpl implements Impex
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitSubParameters(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitSubParameters(this);
     else super.accept(visitor);
   }
 

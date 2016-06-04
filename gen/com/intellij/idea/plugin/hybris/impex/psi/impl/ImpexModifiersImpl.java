@@ -17,12 +17,8 @@ public class ImpexModifiersImpl extends ASTWrapperPsiElement implements ImpexMod
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitModifiers(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitModifiers(this);
     else super.accept(visitor);
   }
 

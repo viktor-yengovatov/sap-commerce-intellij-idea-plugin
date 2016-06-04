@@ -17,12 +17,8 @@ public class ImpexRootMacroUsageImpl extends ASTWrapperPsiElement implements Imp
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitRootMacroUsage(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitRootMacroUsage(this);
     else super.accept(visitor);
   }
 

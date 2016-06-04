@@ -105,7 +105,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean any_attribute_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_attribute_name")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ANY_ATTRIBUTE_NAME, "<any attribute name>");
+    Marker m = enter_section_(b, l, _NONE_, "<any attribute name>");
     r = any_attribute_name_0(b, l + 1);
     int c = current_position_(b);
     while (r) {
@@ -113,7 +113,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "any_attribute_name", c)) break;
       c = current_position_(b);
     }
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, ANY_ATTRIBUTE_NAME, r, false, null);
     return r;
   }
 
@@ -139,7 +139,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean any_attribute_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_attribute_value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ANY_ATTRIBUTE_VALUE, "<any attribute value>");
+    Marker m = enter_section_(b, l, _NONE_, "<any attribute value>");
     r = any_attribute_value_0(b, l + 1);
     int c = current_position_(b);
     while (r) {
@@ -147,7 +147,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "any_attribute_value", c)) break;
       c = current_position_(b);
     }
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, ANY_ATTRIBUTE_VALUE, r, false, null);
     return r;
   }
 
@@ -174,12 +174,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean any_header_mode(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_mode")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ANY_HEADER_MODE, "<any header mode>");
+    Marker m = enter_section_(b, l, _NONE_, "<any header mode>");
     r = consumeToken(b, HEADER_MODE_INSERT);
     if (!r) r = consumeToken(b, HEADER_MODE_UPDATE);
     if (!r) r = consumeToken(b, HEADER_MODE_INSERT_UPDATE);
     if (!r) r = consumeToken(b, HEADER_MODE_REMOVE);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, ANY_HEADER_MODE, r, false, null);
     return r;
   }
 
@@ -188,12 +188,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean any_header_parameter_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_parameter_name")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ANY_HEADER_PARAMETER_NAME, "<any header parameter name>");
+    Marker m = enter_section_(b, l, _NONE_, "<any header parameter name>");
     r = consumeToken(b, HEADER_PARAMETER_NAME);
     if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
     if (!r) r = consumeToken(b, MACRO_USAGE);
     if (!r) r = consumeToken(b, DOCUMENT_ID);
-    exit_section_(b, l, m, r, false, recover_parameter_name_parser_);
+    exit_section_(b, l, m, ANY_HEADER_PARAMETER_NAME, r, false, recover_parameter_name_parser_);
     return r;
   }
 
@@ -202,12 +202,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean attribute(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE, "<attribute>");
+    Marker m = enter_section_(b, l, _NONE_, "<attribute>");
     r = any_attribute_name(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, consumeToken(b, ASSIGN_VALUE));
     r = p && any_attribute_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, ATTRIBUTE, r, p, null);
     return r || p;
   }
 
@@ -217,11 +217,11 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "bean_shell")) return false;
     if (!nextTokenIs(b, BEAN_SHELL_MARKER)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, BEAN_SHELL, null);
+    Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, BEAN_SHELL_MARKER);
     p = r; // pin = 1
     r = r && bean_shell_1(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, BEAN_SHELL, r, p, null);
     return r || p;
   }
 
@@ -249,11 +249,11 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "comment")) return false;
     if (!nextTokenIs(b, COMMENT_MARKER)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, COMMENT, null);
+    Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, COMMENT_MARKER);
     p = r; // pin = 1
     r = r && comment_1(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, COMMENT, r, p, null);
     return r || p;
   }
 
@@ -269,12 +269,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean full_header_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "full_header_parameter")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, FULL_HEADER_PARAMETER, "<full header parameter>");
+    Marker m = enter_section_(b, l, _NONE_, "<full header parameter>");
     r = any_header_parameter_name(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, full_header_parameter_1(b, l + 1));
     r = p && full_header_parameter_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, not_line_break_or_parameters_separator_parser_);
+    exit_section_(b, l, m, FULL_HEADER_PARAMETER, r, p, not_line_break_or_parameters_separator_parser_);
     return r || p;
   }
 
@@ -302,10 +302,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean full_header_type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "full_header_type")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, FULL_HEADER_TYPE, "<full header type>");
+    Marker m = enter_section_(b, l, _NONE_, "<full header type>");
     r = header_type_name(b, l + 1);
     r = r && full_header_type_1(b, l + 1);
-    exit_section_(b, l, m, r, false, not_line_break_or_parameters_separator_parser_);
+    exit_section_(b, l, m, FULL_HEADER_TYPE, r, false, not_line_break_or_parameters_separator_parser_);
     return r;
   }
 
@@ -321,12 +321,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean header_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, HEADER_LINE, "<header line>");
+    Marker m = enter_section_(b, l, _NONE_, "<header line>");
     r = any_header_mode(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, full_header_type(b, l + 1));
     r = p && header_line_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, HEADER_LINE, r, p, null);
     return r || p;
   }
 
@@ -369,9 +369,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean header_type_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_type_name")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, HEADER_TYPE_NAME, "<header type name>");
+    Marker m = enter_section_(b, l, _NONE_, "<header type name>");
     r = consumeToken(b, HEADER_TYPE);
-    exit_section_(b, l, m, r, false, recover_header_type_parser_);
+    exit_section_(b, l, m, HEADER_TYPE_NAME, r, false, recover_header_type_parser_);
     return r;
   }
 
@@ -413,11 +413,11 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "macro_declaration")) return false;
     if (!nextTokenIs(b, MACRO_NAME_DECLARATION)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, MACRO_DECLARATION, null);
+    Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeTokens(b, 2, MACRO_NAME_DECLARATION, ASSIGN_VALUE);
     p = r; // pin = 2
     r = r && macro_declaration_2(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, MACRO_DECLARATION, r, p, null);
     return r || p;
   }
 
@@ -505,12 +505,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean modifiers(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "modifiers")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, MODIFIERS, "<modifiers>");
+    Marker m = enter_section_(b, l, _NONE_, "<modifiers>");
     r = consumeToken(b, LEFT_SQUARE_BRACKET);
     p = r; // pin = 1
     r = r && report_error_(b, modifiers_1(b, l + 1));
     r = p && consumeToken(b, RIGHT_SQUARE_BRACKET) && r;
-    exit_section_(b, l, m, r, p, recover_modifiers_parser_);
+    exit_section_(b, l, m, MODIFIERS, r, p, recover_modifiers_parser_);
     return r || p;
   }
 
@@ -575,9 +575,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean not_line_break(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_line_break")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !consumeToken(b, CRLF);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -586,9 +586,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean not_line_break_or_parameters_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_line_break_or_parameters_separator")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !not_line_break_or_parameters_separator_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -608,12 +608,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, PARAMETER, "<parameter>");
+    Marker m = enter_section_(b, l, _NONE_, "<parameter>");
     r = parameter_0(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, parameter_1(b, l + 1));
     r = p && parameter_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, PARAMETER, r, p, null);
     return r || p;
   }
 
@@ -653,12 +653,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean parameters(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameters")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, PARAMETERS, "<parameters>");
+    Marker m = enter_section_(b, l, _NONE_, "<parameters>");
     r = consumeToken(b, LEFT_ROUND_BRACKET);
     p = r; // pin = 1
     r = r && report_error_(b, parameters_1(b, l + 1));
     r = p && consumeToken(b, RIGHT_ROUND_BRACKET) && r;
-    exit_section_(b, l, m, r, p, recover_parameters_parser_);
+    exit_section_(b, l, m, PARAMETERS, r, p, recover_parameters_parser_);
     return r || p;
   }
 
@@ -719,9 +719,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean recover_header_type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_header_type")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !recover_header_type_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -742,9 +742,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean recover_modifiers(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_modifiers")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !recover_modifiers_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -768,9 +768,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean recover_parameter_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_parameter_name")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !recover_parameter_name_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -792,9 +792,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean recover_parameters(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_parameters")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !recover_parameters_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -829,9 +829,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean recover_root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_root")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !recover_root_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -874,10 +874,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
+    Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, CRLF);
     if (!r) r = root_1(b, l + 1);
-    exit_section_(b, l, m, r, false, recover_root_parser_);
+    exit_section_(b, l, m, null, r, false, recover_root_parser_);
     return r;
   }
 
@@ -897,9 +897,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   private static boolean root_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_1_0")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
+    Marker m = enter_section_(b, l, _NOT_, null);
     r = !eof(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, null, r, false, null);
     return r;
   }
 
@@ -925,7 +925,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   static boolean root_group(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_group")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
+    Marker m = enter_section_(b, l, _NONE_, null);
     r = root_macro_usage(b, l + 1);
     if (!r) r = header_line(b, l + 1);
     if (!r) r = value_line(b, l + 1);
@@ -933,7 +933,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = bean_shell(b, l + 1);
     if (!r) r = string(b, l + 1);
     if (!r) r = macro_declaration(b, l + 1);
-    exit_section_(b, l, m, r, false, not_line_break_parser_);
+    exit_section_(b, l, m, null, r, false, not_line_break_parser_);
     return r;
   }
 
@@ -968,10 +968,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "string")) return false;
     if (!nextTokenIs(b, "<string>", DOUBLE_STRING, SINGLE_STRING)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STRING, "<string>");
+    Marker m = enter_section_(b, l, _NONE_, "<string>");
     r = consumeToken(b, SINGLE_STRING);
     if (!r) r = consumeToken(b, DOUBLE_STRING);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, STRING, r, false, null);
     return r;
   }
 
@@ -981,12 +981,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "sub_parameters")) return false;
     if (!nextTokenIs(b, LEFT_ROUND_BRACKET)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, SUB_PARAMETERS, null);
+    Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, LEFT_ROUND_BRACKET);
     p = r; // pin = 1
     r = r && report_error_(b, sub_parameters_1(b, l + 1));
     r = p && consumeToken(b, RIGHT_ROUND_BRACKET) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, SUB_PARAMETERS, r, p, null);
     return r || p;
   }
 
@@ -1057,10 +1057,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, VALUE, "<value>");
+    Marker m = enter_section_(b, l, _NONE_, "<value>");
     r = value_0(b, l + 1);
     if (!r) r = consumeToken(b, FIELD_VALUE_IGNORE);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, VALUE, r, false, null);
     return r;
   }
 
@@ -1121,11 +1121,11 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "value_group")) return false;
     if (!nextTokenIs(b, FIELD_VALUE_SEPARATOR)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, VALUE_GROUP, null);
+    Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
     r = r && value_group_1(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, VALUE_GROUP, r, p, null);
     return r || p;
   }
 
@@ -1142,10 +1142,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "value_line")) return false;
     if (!nextTokenIs(b, "<value line>", FIELD_VALUE_SEPARATOR, VALUE_SUBTYPE)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, VALUE_LINE, "<value line>");
+    Marker m = enter_section_(b, l, _NONE_, "<value line>");
     r = value_line_0(b, l + 1);
     if (!r) r = value_line_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, VALUE_LINE, r, false, null);
     return r;
   }
 

@@ -17,12 +17,8 @@ public class ImpexHeaderTypeNameImpl extends ASTWrapperPsiElement implements Imp
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitHeaderTypeName(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitHeaderTypeName(this);
     else super.accept(visitor);
   }
 

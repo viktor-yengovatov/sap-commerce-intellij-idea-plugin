@@ -17,12 +17,8 @@ public class ImpexCommentImpl extends ASTWrapperPsiElement implements ImpexComme
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitComment(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitComment(this);
     else super.accept(visitor);
   }
 

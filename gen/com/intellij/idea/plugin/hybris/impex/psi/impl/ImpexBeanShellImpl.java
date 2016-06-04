@@ -17,12 +17,8 @@ public class ImpexBeanShellImpl extends ASTWrapperPsiElement implements ImpexBea
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitBeanShell(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitBeanShell(this);
     else super.accept(visitor);
   }
 

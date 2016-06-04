@@ -17,12 +17,8 @@ public class ImpexAnyHeaderParameterNameImpl extends ASTWrapperPsiElement implem
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitAnyHeaderParameterName(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitAnyHeaderParameterName(this);
     else super.accept(visitor);
   }
 

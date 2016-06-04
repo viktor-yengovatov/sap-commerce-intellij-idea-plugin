@@ -17,12 +17,8 @@ public class ImpexAnyAttributeValueImpl extends ASTWrapperPsiElement implements 
     super(node);
   }
 
-  public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitAnyAttributeValue(this);
-  }
-
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitAnyAttributeValue(this);
     else super.accept(visitor);
   }
 
