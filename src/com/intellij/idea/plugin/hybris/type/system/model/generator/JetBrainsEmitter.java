@@ -373,9 +373,11 @@ public class JetBrainsEmitter implements Emitter {
                 }
                 //else if (isAttr && nameChanged) {
                 else if (isAttr) {
-                    sbAnnotations.append((JB_OFF ? "//" : "") + "\t@com.intellij.util.xml.Attribute (\"").append(tagName).append("\")");
+                    sbAnnotations.append((JB_OFF ? "//" : "") + "\t@com.intellij.util.xml.Attribute (\"")
+                                 .append(tagName)
+                                 .append("\")");
                 } else if (isList) {
-                     sbAnnotations.append((JB_OFF ? "//" : "") +"\t@SubTagList (\"" + tagName + "\")");
+                    sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTagList (\"" + tagName + "\")");
                     //if (nameChanged) {
                     //    sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (\"").append(tagName).append("\")");
                     //} else {
@@ -392,7 +394,7 @@ public class JetBrainsEmitter implements Emitter {
                     } else if (field.clType == FieldDesc.BOOL) {
                         sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (value = \"").append(tagName).append(
                             "\", indicator = true)");
-                    //} else if (!name.equals(field.name)) {
+                        //} else if (!name.equals(field.name)) {
                     } else {
                         sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (\"").append(tagName).append("\")");
                     }

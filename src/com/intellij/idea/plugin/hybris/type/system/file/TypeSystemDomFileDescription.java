@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.file.dom.model.Items;
+import com.intellij.idea.plugin.hybris.type.system.model.Items;
 import com.intellij.util.xml.DomFileDescription;
 
 public class TypeSystemDomFileDescription extends DomFileDescription<Items> {

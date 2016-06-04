@@ -28,53 +28,54 @@ package com.intellij.idea.plugin.hybris.type.system.model.generator;
  * @author Konstantin Bulenkov
  */
 public class FieldDesc implements Comparable<FieldDesc> {
-  final static int STR = 1;
-  final static int BOOL = 2;
-  final static int OBJ = 3;
-  final static int ATTR = 4;
-  final static int DOUBLE = 5;
-  final static int SIMPLE = 6;
 
-  public FieldDesc(String name, String def) {
-    this.name = name;
-    this.def = def;
-  }
+    final static int STR = 1;
+    final static int BOOL = 2;
+    final static int OBJ = 3;
+    final static int ATTR = 4;
+    final static int DOUBLE = 5;
+    final static int SIMPLE = 6;
 
-  public FieldDesc(int clType, String name, String type, String elementType, String def, boolean required) {
-    this.clType = clType;
-    this.name = name;
-    this.type = type;
-    this.elementType = elementType;
-    this.def = def;
-    this.required = required;
-  }
+    public FieldDesc(String name, String def) {
+        this.name = name;
+        this.def = def;
+    }
 
-  int clType = STR;
-  String name;
-  String type;
-  String elementType;
-  String def;
-  boolean required;
+    public FieldDesc(int clType, String name, String type, String elementType, String def, boolean required) {
+        this.clType = clType;
+        this.name = name;
+        this.type = type;
+        this.elementType = elementType;
+        this.def = def;
+        this.required = required;
+    }
 
-  int idx;
-  String tagName;
-  String elementName;
-  String comment;
-  FieldDesc[] choice;
-  boolean choiceOpt;
+    int clType = STR;
+    String name;
+    String type;
+    String elementType;
+    String def;
+    boolean required;
 
-  String documentation;
-  String simpleTypesString;
-  int duplicateIndex = -1;
-  int realIndex;
-  String contentQualifiedName;
+    int idx;
+    String tagName;
+    String elementName;
+    String comment;
+    FieldDesc[] choice;
+    boolean choiceOpt;
 
-  public int compareTo(FieldDesc o) {
-    return name.compareTo(o.name);
-  }
+    String documentation;
+    String simpleTypesString;
+    int duplicateIndex = -1;
+    int realIndex;
+    String contentQualifiedName;
 
-  public String toString() {
-    return "Field: " + name + ";" + type + ";" + elementName + ";" + elementType;
-  }
+    public int compareTo(FieldDesc o) {
+        return name.compareTo(o.name);
+    }
+
+    public String toString() {
+        return "Field: " + name + ";" + type + ";" + elementName + ";" + elementType;
+    }
 
 }

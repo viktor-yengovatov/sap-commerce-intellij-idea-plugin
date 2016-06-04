@@ -26,11 +26,12 @@ import com.intellij.openapi.project.Project;
  * @author Konstantin Bulenkov
  */
 public class GenerateDomModelAction extends AnAction {
-  @Override
-  public void actionPerformed(AnActionEvent e) {
-    final Project project = CommonDataKeys.PROJECT.getData(e.getDataContext());
-    if (project != null) {
-      new DomGenDialog(project).show();      
+
+    @Override
+    public void actionPerformed(AnActionEvent e) {
+        final Project project = CommonDataKeys.PROJECT.getData(e.getDataContext());
+        if (project != null) {
+            new DomGenDialog(project).show();
+        }
     }
-  }
 }

@@ -30,9 +30,10 @@ import java.io.File;
  * @author Konstantin Bulenkov
  */
 public interface Emitter {
-  String JDOC_OPEN = "/**";
-  String JDOC_CONT = " * ";
-  String JDOC_CLOSE = " */";
 
-  void emit(FileManager fileManager, ModelDesc model, File outputRoot);
+    String JDOC_OPEN = "/**";
+    String JDOC_CONT = " * ";
+    String JDOC_CLOSE = " */";
+
+    void emit(FileManager fileManager, ModelDesc model, File outputRoot);
 }
