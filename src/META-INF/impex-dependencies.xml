@@ -21,7 +21,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Core elements -->
         <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
-        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemFileTypeFactory"/>
+        <!--<fileTypeFactory implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemFileTypeFactory"/>-->
 
         <lang.parserDefinition language="Impex"
                                implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
