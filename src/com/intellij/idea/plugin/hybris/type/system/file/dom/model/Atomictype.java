@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * An AtomicType represents a simple java object. (The name 'atomic' just means 'non-composed' objects.)
  * </pre>
  */
-public interface Atomictype extends DomElement {
+public interface AtomicType extends DomElement {
 
     /**
      * Returns the value of the class child.
@@ -43,7 +43,7 @@ public interface Atomictype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutocreate();
+    GenericAttributeValue<Boolean> getAutoCreate();
 
 
     /**

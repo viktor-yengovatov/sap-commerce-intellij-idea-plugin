@@ -74,7 +74,7 @@ public interface Attribute extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("metatype")
-    GenericAttributeValue<String> getMetatype();
+    GenericAttributeValue<String> getMetaType();
 
 
     /**
@@ -88,7 +88,7 @@ public interface Attribute extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutocreate();
+    GenericAttributeValue<Boolean> getAutoCreate();
 
 
     /**
@@ -130,7 +130,7 @@ public interface Attribute extends DomElement {
      */
     @NotNull
     @SubTag("defaultvalue")
-    GenericDomValue<String> getDefaultvalue();
+    GenericDomValue<String> getDefaultValue();
 
 
     /**

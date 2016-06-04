@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * Specifies a specific ComposedType.
  * </pre>
  */
-public interface Itemtype extends DomElement {
+public interface ItemType extends DomElement {
 
     /**
      * Returns the value of the simple content.
@@ -118,7 +118,7 @@ public interface Itemtype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("jaloonly")
-    GenericAttributeValue<Boolean> getJaloonly();
+    GenericAttributeValue<Boolean> getJaloOnly();
 
 
     /**
@@ -132,7 +132,7 @@ public interface Itemtype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutocreate();
+    GenericAttributeValue<Boolean> getAutoCreate();
 
 
     /**
@@ -174,7 +174,7 @@ public interface Itemtype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("metatype")
-    GenericAttributeValue<String> getMetatype();
+    GenericAttributeValue<String> getMetaType();
 
 
     /**

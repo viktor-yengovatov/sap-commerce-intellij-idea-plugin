@@ -23,7 +23,7 @@ public interface Items extends DomElement {
      */
     @NotNull
     @SubTag("atomictypes")
-    Atomictypes getAtomictypes();
+    AtomicTypes getAtomicTypes();
 
 
     /**
@@ -37,7 +37,7 @@ public interface Items extends DomElement {
      */
     @NotNull
     @SubTag("collectiontypes")
-    Collectiontypes getCollectiontypes();
+    CollectionTypes getCollectionTypes();
 
 
     /**
@@ -51,7 +51,7 @@ public interface Items extends DomElement {
      */
     @NotNull
     @SubTag("enumtypes")
-    Enumtypes getEnumtypes();
+    Enumtypes getEnumTypes();
 
 
     /**
@@ -65,7 +65,7 @@ public interface Items extends DomElement {
      */
     @NotNull
     @SubTag("maptypes")
-    Maptypes getMaptypes();
+    Maptypes getMapTypes();
 
 
     /**
@@ -93,7 +93,7 @@ public interface Items extends DomElement {
      */
     @NotNull
     @SubTag("itemtypes")
-    Itemtypes getItemtypes();
+    Itemtypes getItemTypes();
 
 
 }

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * A CollectionType defines a collection of typed elements. Attention: If using a collection type for persistent attributes (not jalo) you can not search on that attribute and you are limited in size of collection. Consider to use a relation instead.
  * </pre>
  */
-public interface Collectiontype extends DomElement {
+public interface CollectionType extends DomElement {
 
     /**
      * Returns the value of the code child.
@@ -44,7 +44,7 @@ public interface Collectiontype extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("elementtype")
     @Required
-    GenericAttributeValue<String> getElementtype();
+    GenericAttributeValue<String> getElementType();
 
 
     /**
@@ -58,7 +58,7 @@ public interface Collectiontype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutocreate();
+    GenericAttributeValue<Boolean> getAutoCreate();
 
 
     /**

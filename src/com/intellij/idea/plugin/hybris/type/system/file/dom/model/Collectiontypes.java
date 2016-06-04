@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * Defines a list of collection types.
  * </pre>
  */
-public interface Collectiontypes extends DomElement {
+public interface CollectionTypes extends DomElement {
 
     /**
      * Returns the list of collectiontype children.
@@ -27,7 +27,7 @@ public interface Collectiontypes extends DomElement {
      */
     @NotNull
     @SubTagList("collectiontype")
-    java.util.List<Collectiontype> getCollectiontypes();
+    java.util.List<CollectionType> getCollectionTypes();
 
     /**
      * Adds new child to the list of collectiontype children.
@@ -35,7 +35,7 @@ public interface Collectiontypes extends DomElement {
      * @return created child
      */
     @SubTagList("collectiontype")
-    Collectiontype addCollectiontype();
+    CollectionType addCollectionType();
 
 
 }

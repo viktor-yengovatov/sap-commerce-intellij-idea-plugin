@@ -6,7 +6,7 @@ package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
 /**
  * null:creationmodeAttrType enumeration.
  */
-public enum Creationmode implements com.intellij.util.xml.NamedEnum {
+public enum CreationMode implements com.intellij.util.xml.NamedEnum {
     ALL("all"),
     FORCE("force"),
     HSQLDB("hsqldb"),
@@ -17,7 +17,7 @@ public enum Creationmode implements com.intellij.util.xml.NamedEnum {
 
     private final String value;
 
-    private Creationmode(String value) {
+    CreationMode(String value) {
         this.value = value;
     }
 

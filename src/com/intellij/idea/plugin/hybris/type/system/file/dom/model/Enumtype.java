@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * An EnumerationType defines fixed value types. (The typesystem provides item enumeration only)
  * </pre>
  */
-public interface Enumtype extends DomElement {
+public interface EnumType extends DomElement {
 
     /**
      * Returns the value of the code child.
@@ -46,7 +46,7 @@ public interface Enumtype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutocreate();
+    GenericAttributeValue<Boolean> getAutoCreate();
 
 
     /**
@@ -74,7 +74,7 @@ public interface Enumtype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("jaloclass")
-    GenericAttributeValue<String> getJaloclass();
+    GenericAttributeValue<String> getJaloClass();
 
 
     /**

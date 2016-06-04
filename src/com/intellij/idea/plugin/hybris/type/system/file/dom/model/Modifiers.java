@@ -125,7 +125,7 @@ public interface Modifiers extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("partof")
-    GenericAttributeValue<Boolean> getPartof();
+    GenericAttributeValue<Boolean> getPartOf();
 
 
     /**
@@ -153,7 +153,7 @@ public interface Modifiers extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("dontOptimize")
-    GenericAttributeValue<Boolean> getDontOptimize();
+    GenericAttributeValue<Boolean> getDoNotOptimize();
 
 
     /**

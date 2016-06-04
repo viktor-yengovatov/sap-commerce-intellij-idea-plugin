@@ -13,7 +13,7 @@ public enum Type implements com.intellij.util.xml.NamedEnum {
 
     private final String value;
 
-    private Type(String value) {
+    Type(String value) {
         this.value = value;
     }
 

@@ -86,7 +86,7 @@ public interface Index extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("creationmode")
-    GenericAttributeValue<Creationmode> getCreationmode();
+    GenericAttributeValue<CreationMode> getCreationMode();
 
 
     /**

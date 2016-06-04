@@ -44,7 +44,7 @@ public interface Deployment extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("typecode")
     @Required
-    GenericAttributeValue<String> getTypecode();
+    GenericAttributeValue<String> getTypeCode();
 
 
     /**
@@ -58,7 +58,7 @@ public interface Deployment extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("propertytable")
-    GenericAttributeValue<String> getPropertytable();
+    GenericAttributeValue<String> getPropertyTable();
 
 
 }

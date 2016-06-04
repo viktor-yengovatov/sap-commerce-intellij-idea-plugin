@@ -12,7 +12,7 @@ public enum Cardinality implements com.intellij.util.xml.NamedEnum {
 
     private final String value;
 
-    private Cardinality(String value) {
+    Cardinality(String value) {
         this.value = value;
     }
 

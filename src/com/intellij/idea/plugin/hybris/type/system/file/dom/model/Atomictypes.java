@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * Defines a list of atomic types.
  * </pre>
  */
-public interface Atomictypes extends DomElement {
+public interface AtomicTypes extends DomElement {
 
     /**
      * Returns the list of atomicType children.
@@ -27,7 +27,7 @@ public interface Atomictypes extends DomElement {
      */
     @NotNull
     @SubTagList("atomicType")
-    java.util.List<Atomictype> getAtomicTypes();
+    java.util.List<AtomicType> getAtomicTypes();
 
     /**
      * Adds new child to the list of atomicType children.
@@ -35,7 +35,7 @@ public interface Atomictypes extends DomElement {
      * @return created child
      */
     @SubTagList("atomicType")
-    Atomictype addAtomicType();
+    AtomicType addAtomicType();
 
 
 }

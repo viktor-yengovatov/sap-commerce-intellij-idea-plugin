@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * Like the java collection framework, a type, which defines map objects. Attention: When used as type for an attribute, the attribute will not be searchable and the access performance is not effective. Consider to use a relation.
  * </pre>
  */
-public interface Maptype extends DomElement {
+public interface MapType extends DomElement {
 
     /**
      * Returns the value of the code child.
@@ -44,7 +44,7 @@ public interface Maptype extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("argumenttype")
     @Required
-    GenericAttributeValue<String> getArgumenttype();
+    GenericAttributeValue<String> getArgumentType();
 
 
     /**
@@ -59,7 +59,7 @@ public interface Maptype extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("returntype")
     @Required
-    GenericAttributeValue<String> getReturntype();
+    GenericAttributeValue<String> getReturnType();
 
 
     /**
@@ -73,7 +73,7 @@ public interface Maptype extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutocreate();
+    GenericAttributeValue<Boolean> getAutoCreate();
 
 
     /**

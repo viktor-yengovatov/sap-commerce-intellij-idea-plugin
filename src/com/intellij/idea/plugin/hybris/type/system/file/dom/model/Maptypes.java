@@ -27,7 +27,7 @@ public interface Maptypes extends DomElement {
      */
     @NotNull
     @SubTagList("maptype")
-    java.util.List<Maptype> getMaptypes();
+    java.util.List<MapType> getMapTypes();
 
     /**
      * Adds new child to the list of maptype children.
@@ -35,7 +35,7 @@ public interface Maptypes extends DomElement {
      * @return created child
      */
     @SubTagList("maptype")
-    Maptype addMaptype();
+    MapType addMapType();
 
 
 }

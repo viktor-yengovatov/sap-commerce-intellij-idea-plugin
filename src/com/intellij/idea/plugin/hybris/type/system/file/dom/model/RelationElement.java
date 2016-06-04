@@ -59,7 +59,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("metatype")
-    GenericAttributeValue<String> getMetatype();
+    GenericAttributeValue<String> getMetaType();
 
 
     /**
@@ -101,7 +101,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("collectiontype")
-    GenericAttributeValue<String> getCollectiontype();
+    GenericAttributeValue<String> getCollectionType();
 
 
     /**

@@ -72,7 +72,7 @@ public interface Persistence extends DomElement {
      */
     @NotNull
     @SubTagList("columntype")
-    java.util.List<Columntype> getColumntypes();
+    java.util.List<ColumnType> getColumnTypes();
 
     /**
      * Adds new child to the list of columntype children.
@@ -80,7 +80,7 @@ public interface Persistence extends DomElement {
      * @return created child
      */
     @SubTagList("columntype")
-    Columntype addColumntype();
+    ColumnType addColumnType();
 
 
 }

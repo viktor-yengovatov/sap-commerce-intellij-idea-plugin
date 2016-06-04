@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * Configures a persistence definition for a specific database.
  * </pre>
  */
-public interface Columntype extends DomElement {
+public interface ColumnType extends DomElement {
 
     /**
      * Returns the value of the database child.

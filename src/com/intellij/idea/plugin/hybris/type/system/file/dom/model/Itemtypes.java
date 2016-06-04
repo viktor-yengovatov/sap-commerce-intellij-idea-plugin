@@ -27,7 +27,7 @@ public interface Itemtypes extends DomElement {
      */
     @NotNull
     @SubTagList("itemtype")
-    java.util.List<Itemtype> getItemtypes();
+    java.util.List<ItemType> getItemTypes();
 
     /**
      * Adds new child to the list of itemtype children.
@@ -35,7 +35,7 @@ public interface Itemtypes extends DomElement {
      * @return created child
      */
     @SubTagList("itemtype")
-    Itemtype addItemtype();
+    ItemType addItemType();
 
 
     /**
@@ -49,7 +49,7 @@ public interface Itemtypes extends DomElement {
      */
     @NotNull
     @SubTagList("typegroup")
-    java.util.List<TypeGroup> getTypegroups();
+    java.util.List<TypeGroup> getTypeGroups();
 
     /**
      * Adds new child to the list of typegroup children.
@@ -57,7 +57,7 @@ public interface Itemtypes extends DomElement {
      * @return created child
      */
     @SubTagList("typegroup")
-    TypeGroup addTypegroup();
+    TypeGroup addTypeGroup();
 
 
 }

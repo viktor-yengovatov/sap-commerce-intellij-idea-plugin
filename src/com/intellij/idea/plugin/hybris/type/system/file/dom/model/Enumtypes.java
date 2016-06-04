@@ -27,7 +27,7 @@ public interface Enumtypes extends DomElement {
      */
     @NotNull
     @SubTagList("enumtype")
-    java.util.List<Enumtype> getEnumtypes();
+    java.util.List<EnumType> getEnumTypes();
 
     /**
      * Adds new child to the list of enumtype children.
@@ -35,7 +35,7 @@ public interface Enumtypes extends DomElement {
      * @return created child
      */
     @SubTagList("enumtype")
-    Enumtype addEnumtype();
+    EnumType addEnumType();
 
 
 }
