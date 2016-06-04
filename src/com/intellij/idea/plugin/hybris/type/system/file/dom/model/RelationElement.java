@@ -1,4 +1,4 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
@@ -7,6 +7,7 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -72,7 +73,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("cardinality")
-    GenericAttributeValue<com.intellij.idea.plugin.hybris.type.system.file.dom.model.Cardinality> getCardinality();
+    GenericAttributeValue<Cardinality> getCardinality();
 
 
     /**
@@ -127,6 +128,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
+    @SubTag("description")
     GenericDomValue<String> getDescription();
 
 
@@ -140,7 +142,8 @@ public interface RelationElement extends DomElement {
      * @return the value of the modifiers child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Modifiers getModifiers();
+    @SubTag("modifiers")
+    Modifiers getModifiers();
 
 
     /**
@@ -153,7 +156,8 @@ public interface RelationElement extends DomElement {
      * @return the value of the model child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.AttributeModel getModel();
+    @SubTag("model")
+    AttributeModel getModel();
 
 
     /**
@@ -166,7 +170,8 @@ public interface RelationElement extends DomElement {
      * @return the value of the custom-properties child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.CustomProperties getCustomProperties();
+    @SubTag("custom-properties")
+    CustomProperties getCustomProperties();
 
 
 }

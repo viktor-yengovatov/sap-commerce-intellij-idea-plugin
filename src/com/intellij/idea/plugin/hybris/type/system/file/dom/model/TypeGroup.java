@@ -1,11 +1,11 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,16 +37,16 @@ public interface TypeGroup extends DomElement {
      * @return the list of itemtype children.
      */
     @NotNull
-    @SubTag("itemtype")
-    java.util.List<com.intellij.idea.plugin.hybris.type.system.file.dom.model.Itemtype> getItemtypes();
+    @SubTagList("itemtype")
+    java.util.List<Itemtype> getItemtypes();
 
     /**
      * Adds new child to the list of itemtype children.
      *
      * @return created child
      */
-    @SubTag("itemtype")
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Itemtype addItemtype();
+    @SubTagList("itemtype")
+    Itemtype addItemtype();
 
 
 }

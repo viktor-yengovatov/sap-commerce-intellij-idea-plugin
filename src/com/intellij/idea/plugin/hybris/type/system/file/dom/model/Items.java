@@ -1,9 +1,10 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,7 +22,8 @@ public interface Items extends DomElement {
      * @return the value of the atomictypes child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Atomictypes getAtomictypes();
+    @SubTag("atomictypes")
+    Atomictypes getAtomictypes();
 
 
     /**
@@ -34,7 +36,8 @@ public interface Items extends DomElement {
      * @return the value of the collectiontypes child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Collectiontypes getCollectiontypes();
+    @SubTag("collectiontypes")
+    Collectiontypes getCollectiontypes();
 
 
     /**
@@ -47,7 +50,8 @@ public interface Items extends DomElement {
      * @return the value of the enumtypes child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Enumtypes getEnumtypes();
+    @SubTag("enumtypes")
+    Enumtypes getEnumtypes();
 
 
     /**
@@ -60,7 +64,8 @@ public interface Items extends DomElement {
      * @return the value of the maptypes child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Maptypes getMaptypes();
+    @SubTag("maptypes")
+    Maptypes getMaptypes();
 
 
     /**
@@ -73,7 +78,8 @@ public interface Items extends DomElement {
      * @return the value of the relations child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Relations getRelations();
+    @SubTag("relations")
+    Relations getRelations();
 
 
     /**
@@ -86,7 +92,8 @@ public interface Items extends DomElement {
      * @return the value of the itemtypes child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Itemtypes getItemtypes();
+    @SubTag("itemtypes")
+    Itemtypes getItemtypes();
 
 
 }

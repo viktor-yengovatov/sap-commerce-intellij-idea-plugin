@@ -1,4 +1,4 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
@@ -6,7 +6,7 @@ package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +30,7 @@ public interface Persistence extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("type")
     @Required
-    GenericAttributeValue<com.intellij.idea.plugin.hybris.type.system.file.dom.model.Type> getType();
+    GenericAttributeValue<Type> getType();
 
 
     /**
@@ -71,16 +71,16 @@ public interface Persistence extends DomElement {
      * @return the list of columntype children.
      */
     @NotNull
-    @SubTag("columntype")
-    java.util.List<com.intellij.idea.plugin.hybris.type.system.file.dom.model.Columntype> getColumntypes();
+    @SubTagList("columntype")
+    java.util.List<Columntype> getColumntypes();
 
     /**
      * Adds new child to the list of columntype children.
      *
      * @return created child
      */
-    @SubTag("columntype")
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Columntype addColumntype();
+    @SubTagList("columntype")
+    Columntype addColumntype();
 
 
 }

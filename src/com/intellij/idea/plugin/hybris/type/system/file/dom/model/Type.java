@@ -1,4 +1,4 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
@@ -11,13 +11,13 @@ public enum Type implements com.intellij.util.xml.NamedEnum {
     LIST("list"),
     SET("set");
 
-    private final java.lang.String value;
+    private final String value;
 
-    private Type(java.lang.String value) {
+    private Type(String value) {
         this.value = value;
     }
 
-    public java.lang.String getValue() {
+    public String getValue() {
         return value;
     }
 

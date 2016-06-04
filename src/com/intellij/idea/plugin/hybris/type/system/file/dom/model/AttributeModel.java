@@ -1,11 +1,11 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -41,16 +41,16 @@ public interface AttributeModel extends DomElement {
      * @return the list of getter children.
      */
     @NotNull
-    @SubTag("getter")
-    java.util.List<com.intellij.idea.plugin.hybris.type.system.file.dom.model.ModelMethod> getGetters();
+    @SubTagList("getter")
+    java.util.List<ModelMethod> getGetters();
 
     /**
      * Adds new child to the list of getter children.
      *
      * @return created child
      */
-    @SubTag("getter")
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.ModelMethod addGetter();
+    @SubTagList("getter")
+    ModelMethod addGetter();
 
 
     /**
@@ -63,16 +63,16 @@ public interface AttributeModel extends DomElement {
      * @return the list of setter children.
      */
     @NotNull
-    @SubTag("setter")
-    java.util.List<com.intellij.idea.plugin.hybris.type.system.file.dom.model.ModelMethod> getSetters();
+    @SubTagList("setter")
+    java.util.List<ModelMethod> getSetters();
 
     /**
      * Adds new child to the list of setter children.
      *
      * @return created child
      */
-    @SubTag("setter")
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.ModelMethod addSetter();
+    @SubTagList("setter")
+    ModelMethod addSetter();
 
 
 }

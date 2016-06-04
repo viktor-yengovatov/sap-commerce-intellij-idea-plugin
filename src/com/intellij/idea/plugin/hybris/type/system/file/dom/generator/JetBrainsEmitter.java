@@ -367,24 +367,23 @@ public class JetBrainsEmitter implements Emitter {
                     type = "java.util.List<" + elementType + ">";
                 }
 
-                // TODO: HACK
-                nameChanged = true;
                 StringBuffer sbAnnotations = new StringBuffer();
                 if (field.clType == FieldDesc.SIMPLE) {
                     //  sbAnnotations.append((JB_OFF ? "//" : "") +"\t@TagValue");
                 }
-                else if (isAttr && nameChanged) {
-                    sbAnnotations.append((JB_OFF ? "//" : "") + "\t@Attribute (\"").append(tagName).append("\")");
+                //else if (isAttr && nameChanged) {
+                else if (isAttr) {
+                    sbAnnotations.append((JB_OFF ? "//" : "") + "\t@com.intellij.util.xml.Attribute (\"").append(tagName).append("\")");
                 } else if (isList) {
-                    // sbAnnotations.append((JB_OFF ? "//" : "") +"\t@SubTagList (\"" + tagName + "\")");
-                    if (nameChanged) {
-                        sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (\"").append(tagName).append("\")");
-                    } else {
-                        if (isBadTagName(tagName)) {
-                            sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTagList (\"").append(tagName).append(
-                                "\")");
-                        }
-                    }
+                     sbAnnotations.append((JB_OFF ? "//" : "") +"\t@SubTagList (\"" + tagName + "\")");
+                    //if (nameChanged) {
+                    //    sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (\"").append(tagName).append("\")");
+                    //} else {
+                    //    if (isBadTagName(tagName)) {
+                    //        sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTagList (\"").append(tagName).append(
+                    //            "\")");
+                    //    }
+                    //}
                 } else {
                     if (field.duplicateIndex >= 0) {
                         sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (value = \"").append(tagName).append(
@@ -393,7 +392,8 @@ public class JetBrainsEmitter implements Emitter {
                     } else if (field.clType == FieldDesc.BOOL) {
                         sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (value = \"").append(tagName).append(
                             "\", indicator = true)");
-                    } else if (!name.equals(field.name)) {
+                    //} else if (!name.equals(field.name)) {
+                    } else {
                         sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (\"").append(tagName).append("\")");
                     }
                 }
@@ -414,10 +414,13 @@ public class JetBrainsEmitter implements Emitter {
                     out.println("\t" + JDOC_CLOSE);
                 }
                 out.println((JB_OFF ? "//" : "") + "\t@NotNull");
+                if (sbAnnotations.length() > 0) {
+                    out.println(sbAnnotations);
+                }
                 if (td.type != TypeDesc.TypeEnum.GROUP_INTERFACE) {
-                    if (sbAnnotations.length() > 0) {
-                        out.println(sbAnnotations);
-                    }
+//                    if (sbAnnotations.length() > 0) {
+//                        out.println(sbAnnotations);
+//                    }
                     if (field.required) {
                         out.println((JB_OFF ? "//" : "") + "\t@Required");
                     }

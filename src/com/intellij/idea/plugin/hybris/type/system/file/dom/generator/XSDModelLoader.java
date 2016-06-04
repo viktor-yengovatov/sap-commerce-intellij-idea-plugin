@@ -333,7 +333,7 @@ public class XSDModelLoader implements ModelLoader {
       fd1.documentation = documentation;
       fd1.realIndex = td.fdMap.size();
       td.duplicates = Util.addToNameMap(td.fdMap, fd1, false) || td.duplicates;
-      // TODO: HACK
+      // TODO: HACK !"collectiontype".equals(ad.getName()) &&
       if (!"collectiontype".equals(ad.getName()) && checkEnumType(ad.getTypeDefinition())) {
         XSTypeDefinition etRoot = ad.getTypeDefinition();
         if (etRoot.getAnonymous()) {

@@ -1,4 +1,4 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
@@ -8,6 +8,7 @@ import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -100,6 +101,7 @@ public interface Enumtype extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
+    @SubTag("description")
     GenericDomValue<String> getDescription();
 
 
@@ -113,7 +115,8 @@ public interface Enumtype extends DomElement {
      * @return the value of the model child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.EnumModel getModel();
+    @SubTag("model")
+    EnumModel getModel();
 
 
     /**
@@ -126,16 +129,16 @@ public interface Enumtype extends DomElement {
      * @return the list of value children.
      */
     @NotNull
-    @SubTag("value")
-    java.util.List<com.intellij.idea.plugin.hybris.type.system.file.dom.model.EnumValue> getValues();
+    @SubTagList("value")
+    java.util.List<EnumValue> getValues();
 
     /**
      * Adds new child to the list of value children.
      *
      * @return created child
      */
-    @SubTag("value")
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.EnumValue addValue();
+    @SubTagList("value")
+    EnumValue addValue();
 
 
 }

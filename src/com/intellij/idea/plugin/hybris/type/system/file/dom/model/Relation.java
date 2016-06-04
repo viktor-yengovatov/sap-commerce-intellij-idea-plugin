@@ -1,4 +1,4 @@
-// Generated on Sun Jun 05 00:22:21 EEST 2016
+// Generated on Sun Jun 05 01:21:13 EEST 2016
 // DTD/Schema  :    null
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
@@ -7,6 +7,7 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -117,6 +118,7 @@ public interface Relation extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
+    @SubTag("description")
     GenericDomValue<String> getDescription();
 
 
@@ -130,7 +132,8 @@ public interface Relation extends DomElement {
      * @return the value of the deployment child.
      */
     @NotNull
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Deployment getDeployment();
+    @SubTag("deployment")
+    Deployment getDeployment();
 
 
     /**
@@ -143,8 +146,9 @@ public interface Relation extends DomElement {
      * @return the value of the sourceElement child.
      */
     @NotNull
+    @SubTag("sourceElement")
     @Required
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.RelationElement getSourceElement();
+    RelationElement getSourceElement();
 
 
     /**
@@ -157,8 +161,9 @@ public interface Relation extends DomElement {
      * @return the value of the targetElement child.
      */
     @NotNull
+    @SubTag("targetElement")
     @Required
-    com.intellij.idea.plugin.hybris.type.system.file.dom.model.RelationElement getTargetElement();
+    RelationElement getTargetElement();
 
 
 }
