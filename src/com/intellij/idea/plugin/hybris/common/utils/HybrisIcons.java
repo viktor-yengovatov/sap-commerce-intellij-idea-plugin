@@ -38,5 +38,6 @@ public interface HybrisIcons {
     Icon SPLIT = IconLoader.getIcon("/icons/Split-16.png");
     Icon JOIN = IconLoader.getIcon("/icons/Join-16.png");
     Icon SCRIPT = IconLoader.getIcon("/icons/Script-16.png");
+    Icon TYPE_SYSTEM = IconLoader.getIcon("/icons/type-system.png");
 
 }
