@@ -19,9 +19,19 @@
 <idea-plugin version="2">
 
     <extensions defaultExtensionNs="com.intellij">
+        <!-- ####################################################################################################### -->
+        <!--                                            Hybris Type System                                           -->
+        <!-- ####################################################################################################### -->
+
+        <!--<fileTypeFactory implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemFileTypeFactory"/>-->
+        <dom.fileDescription implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                                   Impex                                                 -->
+        <!-- ####################################################################################################### -->
+
         <!-- Core elements -->
         <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
-        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemFileTypeFactory"/>
 
         <lang.parserDefinition language="Impex"
                                implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>

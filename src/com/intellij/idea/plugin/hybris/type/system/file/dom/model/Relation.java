@@ -1,0 +1,164 @@
+// Generated on Sun Jun 05 00:22:21 EEST 2016
+// DTD/Schema  :    null
+
+package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
+
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.Required;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * null:relationType interface.
+ * <pre>
+ * <h3>Type null:relationType documentation</h3>
+ * A RelationType defines a n-m or 1-n relation between types.
+ * </pre>
+ */
+public interface Relation extends DomElement {
+
+    /**
+     * Returns the value of the simple content.
+     *
+     * @return the value of the simple content.
+     */
+    @NotNull
+    @Required
+    String getValue();
+
+    /**
+     * Sets the value of the simple content.
+     *
+     * @param value the new value to set
+     */
+    void setValue(@NotNull String value);
+
+
+    /**
+     * Returns the value of the code child.
+     * <pre>
+     * <h3>Attribute null:code documentation</h3>
+     * The typecode.
+     * </pre>
+     *
+     * @return the value of the code child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute("code")
+    @Required
+    GenericAttributeValue<String> getCode();
+
+
+    /**
+     * Returns the value of the localized child.
+     * <pre>
+     * <h3>Attribute null:localized documentation</h3>
+     * A localized n-m relation can have a link between two items for each language.
+     * </pre>
+     *
+     * @return the value of the localized child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute("localized")
+    @Required
+    GenericAttributeValue<Boolean> getLocalized();
+
+
+    /**
+     * Returns the value of the deployment child.
+     * <pre>
+     * <h3>Attribute null:deployment documentation</h3>
+     * Deprecated, please use separate deployment sub tag. All instances of this type will be stored in a separated database table. The value of this attribute represents a reference to the specified deployment in the corresponding 'advanced-deployment.xml'. Default is empty.
+     * </pre>
+     *
+     * @return the value of the deployment child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute("deployment")
+    GenericAttributeValue<String> getDeploymentAttr();
+
+
+    /**
+     * Returns the value of the autocreate child.
+     * <pre>
+     * <h3>Attribute null:autocreate documentation</h3>
+     * If 'true', the item will be created during initialization.
+     * </pre>
+     *
+     * @return the value of the autocreate child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute("autocreate")
+    GenericAttributeValue<Boolean> getAutocreate();
+
+
+    /**
+     * Returns the value of the generate child.
+     * <pre>
+     * <h3>Attribute null:generate documentation</h3>
+     * Deprecated. Will have no effect for relations.
+     * </pre>
+     *
+     * @return the value of the generate child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute("generate")
+    GenericAttributeValue<Boolean> getGenerate();
+
+
+    /**
+     * Returns the value of the description child.
+     * <pre>
+     * <h3>Element null:description documentation</h3>
+     * Provides possibility to add meaningfull description phrase for a generated model class.
+     * </pre>
+     *
+     * @return the value of the description child.
+     */
+    @NotNull
+    GenericDomValue<String> getDescription();
+
+
+    /**
+     * Returns the value of the deployment child.
+     * <pre>
+     * <h3>Element null:deployment documentation</h3>
+     * Configures deployment information for this relation (table name and typecode).
+     * </pre>
+     *
+     * @return the value of the deployment child.
+     */
+    @NotNull
+    com.intellij.idea.plugin.hybris.type.system.file.dom.model.Deployment getDeployment();
+
+
+    /**
+     * Returns the value of the sourceElement child.
+     * <pre>
+     * <h3>Element null:sourceElement documentation</h3>
+     * Configures the generated attribute at source relation end
+     * </pre>
+     *
+     * @return the value of the sourceElement child.
+     */
+    @NotNull
+    @Required
+    com.intellij.idea.plugin.hybris.type.system.file.dom.model.RelationElement getSourceElement();
+
+
+    /**
+     * Returns the value of the targetElement child.
+     * <pre>
+     * <h3>Element null:targetElement documentation</h3>
+     * Configures the generated attribute at target relation end
+     * </pre>
+     *
+     * @return the value of the targetElement child.
+     */
+    @NotNull
+    @Required
+    com.intellij.idea.plugin.hybris.type.system.file.dom.model.RelationElement getTargetElement();
+
+
+}

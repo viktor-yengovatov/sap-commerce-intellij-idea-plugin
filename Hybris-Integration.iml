@@ -85,5 +85,6 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="com.wutka:dtdparser:1.21" level="project" />
   </component>
 </module>

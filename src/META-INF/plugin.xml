@@ -316,4 +316,14 @@
 
     </extensions>
 
+    <actions>
+        <!--
+        <action id="GenerateDomModel"
+                class="com.intellij.idea.plugin.hybris.type.system.file.dom.generator.GenerateDomModelAction"
+                text="Generate DOM Model...">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        -->
+    </actions>
+
 </idea-plugin>
