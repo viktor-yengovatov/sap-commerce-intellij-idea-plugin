@@ -26,34 +26,56 @@ import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:relationsType interface.
+ * null:itemtypesType interface.
  * <pre>
- * <h3>Type null:relationsType documentation</h3>
- * Defines a list of relation types.
+ * <h3>Type null:itemtypesType documentation</h3>
+ * Defines a grouping of item types.
  * </pre>
  */
-public interface Relations extends DomElement {
+public interface ItemTypes extends DomElement {
 
     /**
-     * Returns the list of relation children.
+     * Returns the list of itemtype children.
      * <pre>
-     * <h3>Element null:relation documentation</h3>
-     * A RelationType defines a n-m or 1-n relation between types.
+     * <h3>Element null:itemtype documentation</h3>
+     * Specifies a specific ComposedType.
      * </pre>
      *
-     * @return the list of relation children.
+     * @return the list of itemtype children.
      */
     @NotNull
-    @SubTagList("relation")
-    java.util.List<Relation> getRelations();
+    @SubTagList("itemtype")
+    java.util.List<ItemType> getItemTypes();
 
     /**
-     * Adds new child to the list of relation children.
+     * Adds new child to the list of itemtype children.
      *
      * @return created child
      */
-    @SubTagList("relation")
-    Relation addRelation();
+    @SubTagList("itemtype")
+    ItemType addItemType();
+
+
+    /**
+     * Returns the list of typegroup children.
+     * <pre>
+     * <h3>Element null:typegroup documentation</h3>
+     * Specifies a group of ComposedTypes to allow better structuring within the items.xml file.
+     * </pre>
+     *
+     * @return the list of typegroup children.
+     */
+    @NotNull
+    @SubTagList("typegroup")
+    java.util.List<TypeGroup> getTypeGroups();
+
+    /**
+     * Adds new child to the list of typegroup children.
+     *
+     * @return created child
+     */
+    @SubTagList("typegroup")
+    TypeGroup addTypeGroup();
 
 
 }

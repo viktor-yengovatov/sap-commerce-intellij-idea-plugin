@@ -22,38 +22,48 @@
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
 
 import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:relationsType interface.
+ * null:columntypeType interface.
  * <pre>
- * <h3>Type null:relationsType documentation</h3>
- * Defines a list of relation types.
+ * <h3>Type null:columntypeType documentation</h3>
+ * Configures a persistence definition for a specific database.
  * </pre>
  */
-public interface Relations extends DomElement {
+public interface ColumnType extends DomElement {
 
     /**
-     * Returns the list of relation children.
+     * Returns the value of the database child.
      * <pre>
-     * <h3>Element null:relation documentation</h3>
-     * A RelationType defines a n-m or 1-n relation between types.
+     * <h3>Attribute null:database documentation</h3>
+     * The database the given definition will be used for. One of 'oracle', 'mysql', 'sqlserver' or 'hsql'. Default is empty which configures fallback for non specified databases.
      * </pre>
      *
-     * @return the list of relation children.
+     * @return the value of the database child.
      */
     @NotNull
-    @SubTagList("relation")
-    java.util.List<Relation> getRelations();
+    @com.intellij.util.xml.Attribute("database")
+    GenericAttributeValue<String> getDatabase();
+
 
     /**
-     * Adds new child to the list of relation children.
+     * Returns the value of the value child.
+     * <pre>
+     * <h3>Element null:value documentation</h3>
+     * The attribute type used in the create statement of the database table, such as 'varchar2(4000)'.
+     * </pre>
      *
-     * @return created child
+     * @return the value of the value child.
      */
-    @SubTagList("relation")
-    Relation addRelation();
+    @NotNull
+    @SubTag("value")
+    @Required
+    GenericDomValue<String> getValue();
 
 
 }

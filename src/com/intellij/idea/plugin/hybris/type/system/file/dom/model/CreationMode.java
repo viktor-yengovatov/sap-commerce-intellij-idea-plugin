@@ -21,39 +21,26 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file.dom.model;
 
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.SubTagList;
-import org.jetbrains.annotations.NotNull;
-
 /**
- * null:relationsType interface.
- * <pre>
- * <h3>Type null:relationsType documentation</h3>
- * Defines a list of relation types.
- * </pre>
+ * null:creationmodeAttrType enumeration.
  */
-public interface Relations extends DomElement {
+public enum CreationMode implements com.intellij.util.xml.NamedEnum {
+    ALL("all"),
+    FORCE("force"),
+    HSQLDB("hsqldb"),
+    MYSQL("mysql"),
+    ORACLE("oracle"),
+    SAP("sap"),
+    SQLSERVER("sqlserver");
 
-    /**
-     * Returns the list of relation children.
-     * <pre>
-     * <h3>Element null:relation documentation</h3>
-     * A RelationType defines a n-m or 1-n relation between types.
-     * </pre>
-     *
-     * @return the list of relation children.
-     */
-    @NotNull
-    @SubTagList("relation")
-    java.util.List<Relation> getRelations();
+    private final String value;
 
-    /**
-     * Adds new child to the list of relation children.
-     *
-     * @return created child
-     */
-    @SubTagList("relation")
-    Relation addRelation();
+    CreationMode(String value) {
+        this.value = value;
+    }
 
+    public String getValue() {
+        return value;
+    }
 
 }

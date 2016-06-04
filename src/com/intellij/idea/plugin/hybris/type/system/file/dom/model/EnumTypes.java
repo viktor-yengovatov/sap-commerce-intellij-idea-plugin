@@ -26,34 +26,34 @@ import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:relationsType interface.
+ * null:enumtypesType interface.
  * <pre>
- * <h3>Type null:relationsType documentation</h3>
- * Defines a list of relation types.
+ * <h3>Type null:enumtypesType documentation</h3>
+ * Defines a list of enumeration types.
  * </pre>
  */
-public interface Relations extends DomElement {
+public interface EnumTypes extends DomElement {
 
     /**
-     * Returns the list of relation children.
+     * Returns the list of enumtype children.
      * <pre>
-     * <h3>Element null:relation documentation</h3>
-     * A RelationType defines a n-m or 1-n relation between types.
+     * <h3>Element null:enumtype documentation</h3>
+     * An EnumerationType defines fixed value types. (The typesystem provides item enumeration only)
      * </pre>
      *
-     * @return the list of relation children.
+     * @return the list of enumtype children.
      */
     @NotNull
-    @SubTagList("relation")
-    java.util.List<Relation> getRelations();
+    @SubTagList("enumtype")
+    java.util.List<EnumType> getEnumTypes();
 
     /**
-     * Adds new child to the list of relation children.
+     * Adds new child to the list of enumtype children.
      *
      * @return created child
      */
-    @SubTagList("relation")
-    Relation addRelation();
+    @SubTagList("enumtype")
+    EnumType addEnumType();
 
 
 }

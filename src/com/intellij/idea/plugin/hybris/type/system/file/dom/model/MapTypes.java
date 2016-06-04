@@ -26,34 +26,34 @@ import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:relationsType interface.
+ * null:maptypesType interface.
  * <pre>
- * <h3>Type null:relationsType documentation</h3>
- * Defines a list of relation types.
+ * <h3>Type null:maptypesType documentation</h3>
+ * Specifies a list of map types.
  * </pre>
  */
-public interface Relations extends DomElement {
+public interface MapTypes extends DomElement {
 
     /**
-     * Returns the list of relation children.
+     * Returns the list of maptype children.
      * <pre>
-     * <h3>Element null:relation documentation</h3>
-     * A RelationType defines a n-m or 1-n relation between types.
+     * <h3>Element null:maptype documentation</h3>
+     * Like the java collection framework, a type, which defines map objects. Attention: When used as type for an attribute, the attribute will not be searchable and the access performance is not effective. Consider to use a relation.
      * </pre>
      *
-     * @return the list of relation children.
+     * @return the list of maptype children.
      */
     @NotNull
-    @SubTagList("relation")
-    java.util.List<Relation> getRelations();
+    @SubTagList("maptype")
+    java.util.List<MapType> getMapTypes();
 
     /**
-     * Adds new child to the list of relation children.
+     * Adds new child to the list of maptype children.
      *
      * @return created child
      */
-    @SubTagList("relation")
-    Relation addRelation();
+    @SubTagList("maptype")
+    MapType addMapType();
 
 
 }

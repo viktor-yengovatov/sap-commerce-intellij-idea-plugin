@@ -26,34 +26,34 @@ import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:relationsType interface.
+ * null:atomictypesType interface.
  * <pre>
- * <h3>Type null:relationsType documentation</h3>
- * Defines a list of relation types.
+ * <h3>Type null:atomictypesType documentation</h3>
+ * Defines a list of atomic types.
  * </pre>
  */
-public interface Relations extends DomElement {
+public interface AtomicTypes extends DomElement {
 
     /**
-     * Returns the list of relation children.
+     * Returns the list of atomicType children.
      * <pre>
-     * <h3>Element null:relation documentation</h3>
-     * A RelationType defines a n-m or 1-n relation between types.
+     * <h3>Element null:atomicType documentation</h3>
+     * An AtomicType represents a simple java object. (The name 'atomic' just means 'non-composed' objects.)
      * </pre>
      *
-     * @return the list of relation children.
+     * @return the list of atomicType children.
      */
     @NotNull
-    @SubTagList("relation")
-    java.util.List<Relation> getRelations();
+    @SubTagList("atomicType")
+    java.util.List<AtomicType> getAtomicTypes();
 
     /**
-     * Adds new child to the list of relation children.
+     * Adds new child to the list of atomicType children.
      *
      * @return created child
      */
-    @SubTagList("relation")
-    Relation addRelation();
+    @SubTagList("atomicType")
+    AtomicType addAtomicType();
 
 
 }

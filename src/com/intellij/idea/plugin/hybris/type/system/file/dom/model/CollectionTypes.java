@@ -26,34 +26,34 @@ import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:relationsType interface.
+ * null:collectiontypesType interface.
  * <pre>
- * <h3>Type null:relationsType documentation</h3>
- * Defines a list of relation types.
+ * <h3>Type null:collectiontypesType documentation</h3>
+ * Defines a list of collection types.
  * </pre>
  */
-public interface Relations extends DomElement {
+public interface CollectionTypes extends DomElement {
 
     /**
-     * Returns the list of relation children.
+     * Returns the list of collectiontype children.
      * <pre>
-     * <h3>Element null:relation documentation</h3>
-     * A RelationType defines a n-m or 1-n relation between types.
+     * <h3>Element null:collectiontype documentation</h3>
+     * A CollectionType defines a collection of typed elements.
      * </pre>
      *
-     * @return the list of relation children.
+     * @return the list of collectiontype children.
      */
     @NotNull
-    @SubTagList("relation")
-    java.util.List<Relation> getRelations();
+    @SubTagList("collectiontype")
+    java.util.List<CollectionType> getCollectionTypes();
 
     /**
-     * Adds new child to the list of relation children.
+     * Adds new child to the list of collectiontype children.
      *
      * @return created child
      */
-    @SubTagList("relation")
-    Relation addRelation();
+    @SubTagList("collectiontype")
+    CollectionType addCollectionType();
 
 
 }
