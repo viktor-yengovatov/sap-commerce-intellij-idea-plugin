@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.business.process.jaxb.services.impl;
 
-import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Process;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.Process;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;

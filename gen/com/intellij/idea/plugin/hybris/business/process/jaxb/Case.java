@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,19 +29,18 @@ import java.util.List;
 
 
 /**
- * <p>Java class for notify complex type.
+ * <p>Java class for case complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="notify">
+ * &lt;complexType name="case">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="userGroup" type="{http://www.hybris.de/xsd/processdefinition}userGroupType" maxOccurs="unbounded"/>
+ *         &lt;element name="choice" type="{http://www.hybris.de/xsd/processdefinition}choice" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
- *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
- *       &lt;attribute name="then" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="event" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -50,93 +49,67 @@ import java.util.List;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "notify", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "userGroup"
+@XmlType(name = "case", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
+    "choice"
 })
-public class Notify implements BpGenericAction {
+public class Case {
 
-    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition", required = true)
-    protected List<UserGroupType> userGroup;
-    @XmlAttribute
-    protected String then;
+    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition")
+    protected List<Choice> choice;
     @XmlAttribute(required = true)
-    protected String id;
+    protected String event;
 
     /**
-     * Gets the value of the userGroup property.
+     * Gets the value of the choice property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the userGroup property.
+     * This is why there is not a <CODE>set</CODE> method for the choice property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getUserGroup().add(newItem);
+     *    getChoice().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link UserGroupType }
+     * {@link Choice }
      * 
      * 
      */
-    public List<UserGroupType> getUserGroup() {
-        if (userGroup == null) {
-            userGroup = new ArrayList<UserGroupType>();
+    public List<Choice> getChoice() {
+        if (choice == null) {
+            choice = new ArrayList<Choice>();
         }
-        return this.userGroup;
+        return this.choice;
     }
 
     /**
-     * Gets the value of the then property.
+     * Gets the value of the event property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getThen() {
-        return then;
+    public String getEvent() {
+        return event;
     }
 
     /**
-     * Sets the value of the then property.
+     * Sets the value of the event property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setThen(String value) {
-        this.then = value;
-    }
-
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
+    public void setEvent(String value) {
+        this.event = value;
     }
 
 }

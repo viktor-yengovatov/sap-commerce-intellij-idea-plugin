@@ -17,53 +17,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for parameterUse.
+ * <p>Java class for endState.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="parameterUse">
+ * &lt;simpleType name="endState">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="required"/>
- *     &lt;enumeration value="optional"/>
+ *     &lt;enumeration value="SUCCEEDED"/>
+ *     &lt;enumeration value="FAILED"/>
+ *     &lt;enumeration value="ERROR"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "parameterUse", namespace = "http://www.hybris.de/xsd/processdefinition")
+@XmlType(name = "endState", namespace = "http://www.hybris.de/xsd/processdefinition")
 @XmlEnum
-public enum ParameterUse {
+public enum EndState {
 
-    @XmlEnumValue("required")
-    REQUIRED("required"),
-    @XmlEnumValue("optional")
-    OPTIONAL("optional");
-    private final String value;
-
-    ParameterUse(String v) {
-        value = v;
-    }
+    SUCCEEDED,
+    FAILED,
+    ERROR;
 
     public String value() {
-        return value;
+        return name();
     }
 
-    public static ParameterUse fromValue(String v) {
-        for (ParameterUse c: ParameterUse.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
+    public static EndState fromValue(String v) {
+        return valueOf(v);
     }
 
 }

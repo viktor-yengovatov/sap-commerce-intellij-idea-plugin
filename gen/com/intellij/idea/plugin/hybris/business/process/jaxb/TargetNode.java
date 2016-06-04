@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,16 +26,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for transition complex type.
+ * Define target node for split.
+ * 			
+ * 
+ * <p>Java class for targetNode complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="transition">
+ * &lt;complexType name="targetNode">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="name" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
- *       &lt;attribute name="to" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,13 +46,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "transition", namespace = "http://www.hybris.de/xsd/processdefinition")
-public class Transition {
+@XmlType(name = "targetNode", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class TargetNode {
 
     @XmlAttribute(required = true)
     protected String name;
-    @XmlAttribute(required = true)
-    protected String to;
 
     /**
      * Gets the value of the name property.
@@ -74,30 +74,6 @@ public class Transition {
      */
     public void setName(String value) {
         this.name = value;
-    }
-
-    /**
-     * Gets the value of the to property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTo() {
-        return to;
-    }
-
-    /**
-     * Sets the value of the to property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTo(String value) {
-        this.to = value;
     }
 
 }

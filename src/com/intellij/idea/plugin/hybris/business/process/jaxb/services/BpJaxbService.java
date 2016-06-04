@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.business.process.jaxb.services;
 
-import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Process;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.Process;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;

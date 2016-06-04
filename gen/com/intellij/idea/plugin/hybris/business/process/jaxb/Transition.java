@@ -17,28 +17,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.Duration;
 
 
 /**
- * Allow to configure timeout for the wait node
- * 
- * <p>Java class for timeout complex type.
+ * <p>Java class for transition complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="timeout">
+ * &lt;complexType name="transition">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="delay" use="required" type="{http://www.w3.org/2001/XMLSchema}duration" />
- *       &lt;attribute name="then" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="name" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="to" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -47,60 +44,60 @@ import javax.xml.datatype.Duration;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "timeout", namespace = "http://www.hybris.de/xsd/processdefinition")
-public class Timeout {
+@XmlType(name = "transition", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class Transition {
 
     @XmlAttribute(required = true)
-    protected Duration delay;
+    protected String name;
     @XmlAttribute(required = true)
-    protected String then;
+    protected String to;
 
     /**
-     * Gets the value of the delay property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Duration }
-     *     
-     */
-    public Duration getDelay() {
-        return delay;
-    }
-
-    /**
-     * Sets the value of the delay property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Duration }
-     *     
-     */
-    public void setDelay(Duration value) {
-        this.delay = value;
-    }
-
-    /**
-     * Gets the value of the then property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getThen() {
-        return then;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the then property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setThen(String value) {
-        this.then = value;
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the to property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getTo() {
+        return to;
+    }
+
+    /**
+     * Sets the value of the to property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTo(String value) {
+        this.to = value;
     }
 
 }

@@ -17,7 +17,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
+
+import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,18 +31,18 @@ import java.util.List;
 
 
 /**
- * <p>Java class for case complex type.
+ * <p>Java class for split complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="case">
+ * &lt;complexType name="split">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="choice" type="{http://www.hybris.de/xsd/processdefinition}choice" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="targetNode" type="{http://www.hybris.de/xsd/processdefinition}targetNode" maxOccurs="unbounded" minOccurs="2"/>
  *       &lt;/sequence>
- *       &lt;attribute name="event" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attGroup ref="{http://www.hybris.de/xsd/processdefinition}nodeAttributes"/>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -49,67 +51,67 @@ import java.util.List;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "case", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "choice"
+@XmlType(name = "split", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
+    "targetNode"
 })
-public class Case {
+public class Split implements BpGenericAction {
 
-    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition")
-    protected List<Choice> choice;
+    @XmlElement(namespace = "http://www.hybris.de/xsd/processdefinition", required = true)
+    protected List<TargetNode> targetNode;
     @XmlAttribute(required = true)
-    protected String event;
+    protected String id;
 
     /**
-     * Gets the value of the choice property.
+     * Gets the value of the targetNode property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the choice property.
+     * This is why there is not a <CODE>set</CODE> method for the targetNode property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getChoice().add(newItem);
+     *    getTargetNode().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Choice }
+     * {@link TargetNode }
      * 
      * 
      */
-    public List<Choice> getChoice() {
-        if (choice == null) {
-            choice = new ArrayList<Choice>();
+    public List<TargetNode> getTargetNode() {
+        if (targetNode == null) {
+            targetNode = new ArrayList<TargetNode>();
         }
-        return this.choice;
+        return this.targetNode;
     }
 
     /**
-     * Gets the value of the event property.
+     * Gets the value of the id property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getEvent() {
-        return event;
+    public String getId() {
+        return id;
     }
 
     /**
-     * Sets the value of the event property.
+     * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setEvent(String value) {
-        this.event = value;
+    public void setId(String value) {
+        this.id = value;
     }
 
 }

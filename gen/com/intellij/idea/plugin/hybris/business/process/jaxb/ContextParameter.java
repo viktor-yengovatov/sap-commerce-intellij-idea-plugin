@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,16 +26,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for choice complex type.
+ * Aggregation of an items data.
+ * 			
+ * 
+ * <p>Java class for contextParameter complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="choice">
+ * &lt;complexType name="contextParameter">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="id" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
- *       &lt;attribute name="then" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="name" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="use" type="{http://www.hybris.de/xsd/processdefinition}parameterUse" />
+ *       &lt;attribute name="type" use="required" type="{http://www.hybris.de/xsd/processdefinition}javaType" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,60 +48,86 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "choice", namespace = "http://www.hybris.de/xsd/processdefinition")
-public class Choice {
+@XmlType(name = "contextParameter", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class ContextParameter {
 
     @XmlAttribute(required = true)
-    protected String id;
+    protected String name;
+    @XmlAttribute
+    protected ParameterUse use;
     @XmlAttribute(required = true)
-    protected String then;
+    protected String type;
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setId(String value) {
-        this.id = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the then property.
+     * Gets the value of the use property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ParameterUse }
+     *     
+     */
+    public ParameterUse getUse() {
+        return use;
+    }
+
+    /**
+     * Sets the value of the use property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ParameterUse }
+     *     
+     */
+    public void setUse(ParameterUse value) {
+        this.use = value;
+    }
+
+    /**
+     * Gets the value of the type property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getThen() {
-        return then;
+    public String getType() {
+        return type;
     }
 
     /**
-     * Sets the value of the then property.
+     * Sets the value of the type property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setThen(String value) {
-        this.then = value;
+    public void setType(String value) {
+        this.type = value;
     }
 
 }

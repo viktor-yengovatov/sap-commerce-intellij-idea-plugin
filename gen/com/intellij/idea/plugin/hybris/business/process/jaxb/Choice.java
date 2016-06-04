@@ -17,89 +17,87 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 
 
 /**
- * <p>Java class for script complex type.
+ * <p>Java class for choice complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="script">
- *   &lt;simpleContent>
- *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;attribute name="type" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
- *     &lt;/extension>
- *   &lt;/simpleContent>
+ * &lt;complexType name="choice">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;attribute name="id" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *       &lt;attribute name="then" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "script", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
-    "value"
-})
-public class Script {
+@XmlType(name = "choice", namespace = "http://www.hybris.de/xsd/processdefinition")
+public class Choice {
 
-    @XmlValue
-    protected String value;
     @XmlAttribute(required = true)
-    protected String type;
+    protected String id;
+    @XmlAttribute(required = true)
+    protected String then;
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the id property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getValue() {
-        return value;
+    public String getId() {
+        return id;
     }
 
     /**
-     * Sets the value of the value property.
+     * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setId(String value) {
+        this.id = value;
     }
 
     /**
-     * Gets the value of the type property.
+     * Gets the value of the then property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getType() {
-        return type;
+    public String getThen() {
+        return then;
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the then property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setType(String value) {
-        this.type = value;
+    public void setThen(String value) {
+        this.then = value;
     }
 
 }

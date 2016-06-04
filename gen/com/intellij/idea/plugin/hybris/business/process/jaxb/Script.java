@@ -17,93 +17,65 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 
 
 /**
- * Aggregation of an items data.
- * 			
- * 
- * <p>Java class for contextParameter complex type.
+ * <p>Java class for script complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="contextParameter">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="name" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
- *       &lt;attribute name="use" type="{http://www.hybris.de/xsd/processdefinition}parameterUse" />
- *       &lt;attribute name="type" use="required" type="{http://www.hybris.de/xsd/processdefinition}javaType" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
+ * &lt;complexType name="script">
+ *   &lt;simpleContent>
+ *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+ *       &lt;attribute name="type" use="required" type="{http://www.hybris.de/xsd/processdefinition}name" />
+ *     &lt;/extension>
+ *   &lt;/simpleContent>
  * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "contextParameter", namespace = "http://www.hybris.de/xsd/processdefinition")
-public class ContextParameter {
+@XmlType(name = "script", namespace = "http://www.hybris.de/xsd/processdefinition", propOrder = {
+    "value"
+})
+public class Script {
 
-    @XmlAttribute(required = true)
-    protected String name;
-    @XmlAttribute
-    protected ParameterUse use;
+    @XmlValue
+    protected String value;
     @XmlAttribute(required = true)
     protected String type;
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the value property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the value property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    /**
-     * Gets the value of the use property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ParameterUse }
-     *     
-     */
-    public ParameterUse getUse() {
-        return use;
-    }
-
-    /**
-     * Sets the value of the use property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ParameterUse }
-     *     
-     */
-    public void setUse(ParameterUse value) {
-        this.use = value;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     /**
