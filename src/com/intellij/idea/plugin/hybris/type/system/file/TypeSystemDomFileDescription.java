@@ -18,12 +18,44 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.util.Iconable;
+import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomFileDescription;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class TypeSystemDomFileDescription extends DomFileDescription<Items> {
 
     public TypeSystemDomFileDescription() {
         super(Items.class, "items");
+    }
+
+    @Override
+    public boolean isMyFile(
+        @NotNull final XmlFile file, @Nullable final Module module
+    ) {
+        boolean isMyFile = super.isMyFile(file, module);
+        boolean isItems = file.getName().endsWith("-items.xml");
+        return isMyFile && isItems;
+    }
+
+    @Override
+    public boolean hasStubs() {
+        return true;
+    }
+
+    @Override
+    public int getStubVersion() {
+        return 1;
+    }
+
+    @Nullable
+    public Icon getFileIcon(@Iconable.IconFlags int flags) {
+        return HybrisIcons.TYPE_SYSTEM;
     }
 }
