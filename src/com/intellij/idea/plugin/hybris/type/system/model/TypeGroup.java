@@ -23,12 +23,16 @@ package com.intellij.idea.plugin.hybris.type.system.model;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * null:typeGroupType interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface TypeGroup extends DomElement {
 
     /**
@@ -42,6 +46,7 @@ public interface TypeGroup extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("name")
+    @Stubbed
     GenericAttributeValue<String> getName();
 
 

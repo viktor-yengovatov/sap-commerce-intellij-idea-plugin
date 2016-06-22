@@ -155,15 +155,19 @@ full_header_type ::= header_type_name modifiers?
 {recoverWhile = not_line_break_or_parameters_separator}
 
 header_type_name ::= HEADER_TYPE
-{recoverWhile = recover_header_type}
-
+{
+    recoverWhile = recover_header_type
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.references.ImpexHeaderTypeNameMixin"
+}
 
 full_header_parameter ::= any_header_parameter_name parameters? modifiers*
 {pin = 1 recoverWhile = not_line_break_or_parameters_separator}
 
 any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | MACRO_USAGE | DOCUMENT_ID
-{recoverWhile = recover_parameter_name}
-
+{
+    recoverWhile = recover_parameter_name
+    mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAnyHeaderParameterNameMixin"
+}
 
 /*#################################################################################*/
 /*                               Parameters Block                                  */

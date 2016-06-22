@@ -49,5 +49,5 @@ You can install this plugin to your IDE directly from the [repository](https://p
 ## Credits ##
 * Vlad Bozhenok
 * Markus Priegl
-* Martin Zdarsky
+* Martin Zdarsky-Jones
 * Sergei Aksenenko

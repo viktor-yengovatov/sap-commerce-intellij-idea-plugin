@@ -21,10 +21,15 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model;
 
+import com.intellij.idea.plugin.hybris.type.system.file.ItemTypeConverter;
+import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.NameValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +40,8 @@ import org.jetbrains.annotations.NotNull;
  * Specifies a specific ComposedType.
  * </pre>
  */
+@Stubbed
+@StubbedOccurrence
 public interface ItemType extends DomElement {
 
     /**
@@ -66,6 +73,8 @@ public interface ItemType extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("code")
     @Required
+    @Stubbed
+    @NameValue
     GenericAttributeValue<String> getCode();
 
 
@@ -80,6 +89,7 @@ public interface ItemType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("extends")
+    @Convert(ItemTypeConverter.class)
     GenericAttributeValue<String> getExtends();
 
 

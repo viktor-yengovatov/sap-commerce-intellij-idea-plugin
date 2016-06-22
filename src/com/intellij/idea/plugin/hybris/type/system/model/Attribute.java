@@ -25,6 +25,8 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +37,8 @@ import org.jetbrains.annotations.NotNull;
  * Defines an attribute of a type.
  * </pre>
  */
+@Stubbed
+@StubbedOccurrence
 public interface Attribute extends DomElement {
 
     /**

@@ -21,11 +21,18 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils;
 import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -39,6 +46,9 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Created 22:13 14 May 2016
@@ -69,22 +79,48 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         }
 
         final PsiElement psiElementUnderCaret = parameters.getPosition();
-        final PsiElement headerTypeNamePsiElement = this.getHeaderTypeNamePsiElementOfAttribute(psiElementUnderCaret);
+        final ImpexHeaderTypeName headerTypeName = this.getHeaderTypeNamePsiElementOfAttribute(psiElementUnderCaret);
 
-        this.fillAllTypeFieldsCompletionResultsSet(project, headerTypeNamePsiElement, result);
+        if (headerTypeName != null) {
+            this.fillJavaTypeFieldsCompletionResultsSet(project, headerTypeName, result);
+            this.fillDomAttributesCompletions(project, headerTypeName, result);
+        }
     }
 
-    protected void fillAllTypeFieldsCompletionResultsSet(
+    protected void fillDomAttributesCompletions(
         @NotNull final Project project,
-        @Nullable final PsiElement headerTypeNamePsiElement,
+        @NotNull final ImpexHeaderTypeName headerTypeName,
+        @NotNull final CompletionResultSet resultSet
+    ) {
+
+        //FIXME: only direct properties are considered for now, no inheritance
+        final TSMetaModel metaModel = TSMetaModelAccess.getInstance(project).getTypeSystemMeta();
+        final String itemTypeCode = headerTypeName.getText();
+
+        Optional.ofNullable(metaModel.findMetaClassByName(itemTypeCode))
+                .map(TSMetaClass::getPropertiesStream)
+                .orElse(Stream.empty())
+                .filter(dom -> dom.getName() != null)
+                .map(this::createDomLookupElement)
+                .forEach(resultSet::addElement);
+    }
+
+    protected LookupElement createDomLookupElement(TSMetaProperty domProperty) {
+        //FIXME: add type
+        return LookupElementBuilder
+            .create(Optional.ofNullable(domProperty.getName()).orElse("<unnamed>")) //should not happen
+            .withIcon(HybrisIcons.TYPE_SYSTEM)
+            //.withTypeText(propertyType.getPresentableText(), GRAYED)
+            ;
+    }
+
+    protected void fillJavaTypeFieldsCompletionResultsSet(
+        @NotNull final Project project,
+        @NotNull final PsiElement headerTypeNamePsiElement,
         @NotNull final CompletionResultSet resultSet
     ) {
         Validate.notNull(project);
         Validate.notNull(resultSet);
-
-        if (null == headerTypeNamePsiElement) {
-            return;
-        }
 
         final ItemTypesIndexService itemTypesIndexService = ServiceManager.getService(
             project, ItemTypesIndexService.class
@@ -126,7 +162,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
     @Nullable
     @Contract("null -> null")
-    protected PsiElement getHeaderTypeNamePsiElementOfAttribute(@Nullable final PsiElement headerAttributePsiElement) {
+    protected ImpexHeaderTypeName getHeaderTypeNamePsiElementOfAttribute(@Nullable final PsiElement headerAttributePsiElement) {
         if (null == headerAttributePsiElement || null == headerAttributePsiElement.getNode()) {
             return null;
         }

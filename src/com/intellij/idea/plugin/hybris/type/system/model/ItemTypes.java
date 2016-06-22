@@ -22,6 +22,8 @@
 package com.intellij.idea.plugin.hybris.type.system.model;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  * Defines a grouping of item types.
  * </pre>
  */
+@Stubbed
+@StubbedOccurrence
 public interface ItemTypes extends DomElement {
 
     /**

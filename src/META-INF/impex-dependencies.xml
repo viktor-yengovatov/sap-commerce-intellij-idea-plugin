@@ -23,8 +23,26 @@
         <!--                                            Hybris Type System                                           -->
         <!-- ####################################################################################################### -->
 
-        <!--<fileTypeFactory implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemFileTypeFactory"/>-->
         <dom.fileDescription implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
+
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.editor.TypeSystemGutterAnnotator"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>
+
+        <localInspection language="XML"
+                         groupPath="hybris"
+                         groupName="[y] hybris Type System"
+                         level="ERROR"
+                         enabledByDefault="true"
+                         shortName="TSVBased"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspection.tsv.key"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.TSVBasedInspection"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.type.system.inspections.TSVRuleSetAccess"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.TSVRuleSetAccess"/>
+
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->

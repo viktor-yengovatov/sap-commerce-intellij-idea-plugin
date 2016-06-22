@@ -16,22 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.file;
+package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.openapi.fileTypes.FileNameMatcher;
-import com.intellij.openapi.fileTypes.FileTypeConsumer;
-import com.intellij.openapi.fileTypes.FileTypeFactory;
-import com.intellij.openapi.fileTypes.WildcardFileNameMatcher;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 3/06/2016.
+ * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-public class TypeSystemFileTypeFactory extends FileTypeFactory {
+class TSMetaEntityImpl<D extends DomElement> {
 
-    @Override
-    public void createFileTypes(@NotNull FileTypeConsumer fileTypeConsumer) {
-        fileTypeConsumer.consume(TypeSystemFileType.INSTANCE, new FileNameMatcher[]{new WildcardFileNameMatcher("*-items.xml")});
+    private final String myName;
+
+    private final D myDom;
+
+    public TSMetaEntityImpl(String name, D dom) {
+        myDom = dom;
+        myName = name;
     }
 
+    @Nullable
+    public String getName() {
+        return myName;
+    }
+
+    @NotNull
+    public D getDom() {
+        return myDom;
+    }
 }

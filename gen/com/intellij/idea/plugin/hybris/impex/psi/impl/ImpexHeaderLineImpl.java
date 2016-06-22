@@ -17,8 +17,12 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
     super(node);
   }
 
+  public void accept(@NotNull ImpexVisitor visitor) {
+    visitor.visitHeaderLine(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitHeaderLine(this);
+    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
   }
 

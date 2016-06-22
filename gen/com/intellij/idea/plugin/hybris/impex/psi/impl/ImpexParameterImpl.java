@@ -17,8 +17,12 @@ public class ImpexParameterImpl extends ASTWrapperPsiElement implements ImpexPar
     super(node);
   }
 
+  public void accept(@NotNull ImpexVisitor visitor) {
+    visitor.visitParameter(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitParameter(this);
+    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
   }
 

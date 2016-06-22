@@ -18,8 +18,5 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Hybris-Integration" target="1.6" />
-    </bytecodeTargetLevel>
   </component>
 </project>

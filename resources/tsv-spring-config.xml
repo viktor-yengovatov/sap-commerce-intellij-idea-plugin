@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/jee
+       http://www.springframework.org/schema/jee/spring-jee.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/oxm
+       http://www.springframework.org/schema/oxm/spring-oxm.xsd">
+
+    <context:component-scan base-package="com.hybris.ps.tsv"/>
+    <context:annotation-config />
+
+    <bean id="tsvMain" class="com.hybris.ps.tsv.main.TSVMain">
+        <property name="cmdLineOptions" ref="cmdLineOptions"/>
+        <property name="fileService" ref="fileService"/>
+        <property name="ruleService" ref="ruleService"/>
+        <property name="testExecutionService" ref="testExecutionService"/>
+        <property name="resultProvider" ref="resultProvider"/>
+        <property name="outputGenerator" ref="outputGenerator"/>
+    </bean>
+
+    <bean id="cmdLineOptions" class="com.hybris.ps.tsv.main.CmdLineOptions"/>
+
+    <alias alias="fileService" name="defaultFileService"/>
+    <bean id="defaultFileService" class="com.hybris.ps.tsv.services.impl.DefaultFileService">
+        <property name="itemsFileRegex" value=".*-items.xml"/>
+    </bean>
+
+    <alias alias="ruleService" name="defaultRuleService"/>
+    <bean id="defaultRuleService" class="com.hybris.ps.tsv.services.impl.DefaultRuleService">
+        <property name="defaultRulesFile" value="ruleset.xml"/>
+        <property name="context" value="com.hybris.ps.tsv.rules.xml"/>
+        <property name="schema" value="ruleset.xsd"/>
+        <property name="xmlRuleSetConverter" ref="xmlRuleSetConverter"/>
+    </bean>
+
+    <bean id="ruleSet" class="com.hybris.ps.tsv.rules.executable.RuleSet" scope="prototype"/>
+
+    <bean id="abstractRule" class="com.hybris.ps.tsv.rules.executable.AbstractRule" abstract="true" scope="prototype">
+        <property name="resultFactory" ref="resultFactory"/>
+    </bean>
+
+    <bean id="xpathRule" class="com.hybris.ps.tsv.rules.executable.XPathRule" parent="abstractRule" scope="prototype"/>
+
+    <alias alias="testExecutionService" name="defaultTestExecutionService"/>
+    <bean id="defaultTestExecutionService" class="com.hybris.ps.tsv.services.impl.DefaultTestExecutionService">
+        <property name="resultFactory" ref="resultFactory"/>
+    </bean>
+
+    <bean id="xmlXPathRuleConverter" class="com.hybris.ps.tsv.rules.converters.XmlXPathRuleConverter" />
+
+    <bean id="xmlRuleSetConverter" class="com.hybris.ps.tsv.rules.converters.XmlRuleSetConverter">
+        <property name="xmlXPathRuleConverter" ref="xmlXPathRuleConverter"/>
+    </bean>
+
+    <bean id="resultFactory" class="com.hybris.ps.tsv.results.impl.DefaultResultFactory"/>
+
+    <bean id="resultProvider" class="com.hybris.ps.tsv.results.impl.DefaultResultProvider"/>
+
+    <bean id="outputGenerator" class="com.hybris.ps.tsv.services.impl.DefaultOutputGenerator">
+        <property name="writers">
+            <map>
+                <entry key="CSV" value-ref="csvResultWriter"/>
+                <entry key="XML" value-ref="xmlResultWriter"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="abstractResultWriter" abstract="true" class="com.hybris.ps.tsv.output.impl.AbstractResultWriter">
+        <property name="cmdLineOptions" ref="cmdLineOptions"/>
+    </bean>
+
+    <bean id="csvResultWriter" class="com.hybris.ps.tsv.output.impl.DefaultCSVResultWriter" parent="abstractResultWriter">
+        <property name="header" value="FILENAME, LINE #, RULE, PRIORITY, STATE, ELEMENT, DESCRIPTION"/>
+        <property name="headerNoStatus" value="FILENAME, LINE #, RULE, PRIORITY, ELEMENT, DESCRIPTION"/>
+    </bean>
+
+    <bean id="xmlResultWriter" class="com.hybris.ps.tsv.output.impl.DefaultXMLResultWriter" parent="abstractResultWriter">
+        <property name="converter" ref="resultListConverter"/>
+    </bean>
+
+    <bean id="resultListConverter" class="com.hybris.ps.tsv.output.converters.ResultListConverter" />
+</beans>

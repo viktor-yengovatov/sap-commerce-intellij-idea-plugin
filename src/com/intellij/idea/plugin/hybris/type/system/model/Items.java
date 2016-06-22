@@ -22,12 +22,16 @@
 package com.intellij.idea.plugin.hybris.type.system.model;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * null:itemsElemType interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface Items extends DomElement {
 
     /**
