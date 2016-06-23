@@ -53,7 +53,6 @@ public class HybrisApplicationSettingsForm {
     private JTextField groupCustomUnusedTextField;
     private JTextField groupHybrisTextField;
     private JTextField groupHybrisUnusedTextField;
-    private JCheckBox jRebelCheckBox;
     private JCheckBox hideEmptyMiddleFoldersCheckBox;
     private JLabel projectTreeViewSettingsLabel;
 
@@ -69,7 +68,6 @@ public class HybrisApplicationSettingsForm {
         groupCustomUnusedTextField.setText(data.getGroupOtherCustom());
         groupHybrisTextField.setText(data.getGroupHybris());
         groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
-        jRebelCheckBox.setSelected(data.isJRebelOutputPath());
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
     }
 
@@ -83,7 +81,6 @@ public class HybrisApplicationSettingsForm {
         data.setGroupOtherCustom(groupCustomUnusedTextField.getText());
         data.setGroupHybris(groupHybrisTextField.getText());
         data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
-        data.setJRebelOutputPath(jRebelCheckBox.isSelected());
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
     }
 
@@ -113,9 +110,6 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (!StringUtil.equals(groupHybrisUnusedTextField.getText(),data.getGroupOtherHybris())) {
-            return true;
-        }
-        if (jRebelCheckBox.isSelected() != data.isJRebelOutputPath()) {
             return true;
         }
         if (hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()) {

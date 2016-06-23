@@ -48,23 +48,17 @@ public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPat
         );
 
         final File outputDirectory;
+        final File webOutputDir = new File(moduleDescriptor.getRootDirectory(),
+                                           HybrisConstants.WEB_COMPILER_OUTPUT_PATH);
+        final File backofficeOutputDir = new File(moduleDescriptor.getRootDirectory(),
+                                                  HybrisConstants.BACKOFFICE_COMPILER_OUTPUT_PATH);
 
-        if (isJRebelOutputPath()) {
-
-            final File webOutputDir = new File(moduleDescriptor.getRootDirectory(),
-                                               HybrisConstants.WEB_COMPILER_OUTPUT_PATH);
-            final File backofficeOutputDir = new File(moduleDescriptor.getRootDirectory(),
-                                                      HybrisConstants.BACKOFFICE_COMPILER_OUTPUT_PATH);
-
-            if (webOutputDir.exists()) {
-                outputDirectory = webOutputDir;
-            } else if (backofficeOutputDir.exists()) {
-                outputDirectory = backofficeOutputDir;
-            } else {
-                outputDirectory = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.JAVA_COMPILER_OUTPUT_PATH);
-            }
+        if (webOutputDir.exists()) {
+            outputDirectory = webOutputDir;
+        } else if (backofficeOutputDir.exists()) {
+            outputDirectory = backofficeOutputDir;
         } else {
-            outputDirectory = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.COMPILER_OUTPUT_PATH);
+            outputDirectory = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.JAVA_COMPILER_OUTPUT_PATH);
         }
 
         compilerModuleExtension.setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.getAbsolutePath()));
@@ -74,7 +68,4 @@ public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPat
         compilerModuleExtension.inheritCompilerOutputPath(false);
     }
 
-    private boolean isJRebelOutputPath() {
-        return HybrisApplicationSettingsComponent.getInstance().getState().isJRebelOutputPath();
-    }
 }
