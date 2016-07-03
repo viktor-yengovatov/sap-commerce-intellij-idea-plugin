@@ -199,6 +199,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         this.selectSdk(project);
 
+        this.saveCustomDirectoryLocation(project);
+
         this.performProjectsCleanup(this.getHybrisProjectDescriptor().getModulesChosenForImport());
 
         final ModifiableModuleModel rootProjectModifiableModel = (null == model)
@@ -266,6 +268,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         springConfigurator.configureDependencies(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
 
         return result;
+    }
+
+    private void saveCustomDirectoryLocation(final Project project) {
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final File customDirectory = this.getHybrisProjectDescriptor().getCustomExtensionsDirectory();
+        hybrisProjectSettings.setCustomDirectory(customDirectory);
     }
 
     private void selectSdk(@NotNull final Project project) {

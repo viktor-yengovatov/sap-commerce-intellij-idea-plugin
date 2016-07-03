@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.settings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.File;
+
 /**
  * Created 6:51 PM 28 June 2015.
  *
@@ -29,6 +31,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class HybrisProjectSettings {
 
     protected boolean hybisProject;
+    protected File customDirectory;
 
     public HybrisProjectSettings() {
         this.hybisProject = false;
@@ -42,10 +45,19 @@ public class HybrisProjectSettings {
         this.hybisProject = hybisProject;
     }
 
+    public File getCustomDirectory() {
+        return customDirectory;
+    }
+
+    public void setCustomDirectory(final File customDirectory) {
+        this.customDirectory = customDirectory;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .append(hybisProject)
+            .append(customDirectory)
             .toHashCode();
     }
 
@@ -63,6 +75,7 @@ public class HybrisProjectSettings {
 
         return new EqualsBuilder()
             .append(hybisProject, other.hybisProject)
+            .append(customDirectory, other.customDirectory)
             .isEquals();
     }
 
@@ -70,6 +83,7 @@ public class HybrisProjectSettings {
     public String toString() {
         final StringBuilder sb = new StringBuilder("HybrisProjectSettings{");
         sb.append("hybisProject=").append(hybisProject);
+        sb.append("customDirectoryPath=").append(customDirectory);
         sb.append('}');
         return sb.toString();
     }
