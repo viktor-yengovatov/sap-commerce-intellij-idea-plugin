@@ -291,8 +291,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
         final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
         final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
-        final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
-        configuration.addExcludedFramework(frameworkType);
+        if (facetType != null) {
+            final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
+            if (frameworkType != null) {
+                configuration.addExcludedFramework(frameworkType);
+            }
+        }
     }
 
     private void saveCustomDirectoryLocation(final Project project) {
