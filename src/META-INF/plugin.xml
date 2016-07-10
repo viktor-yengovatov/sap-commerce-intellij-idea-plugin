@@ -20,7 +20,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>4.3.2</version>
+    <version>4.3.3</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -32,7 +32,7 @@
 
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
-    <vendor email="AlexanderBartash@gmail.com" url="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">Alexander Bartash</vendor>
+    <vendor email="AlexanderBartash@gmail.com" url="https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin/wiki/Home">Alexander Bartash</vendor>
 
     <description>
         <![CDATA[
@@ -45,7 +45,7 @@
           <br/>
           or
           <br/>
-          Martin Zdarsky: martin.zdarsky@hybris.com
+          Martin Zdarsky-Jones: martin.zdarsky@hybris.com
 
           <br/>
           <br/>
@@ -54,6 +54,8 @@
           - Automatic modules dependency management.
           <br/>
           - Automatic classpath configuration.
+          <br/>
+          - Proper project configuration to make it compatible with JRebel.
           <br/>
           - Automatic Spring facet configuration (only Ultimate IDEA).
           <br/>
@@ -105,7 +107,7 @@
           <br/>
           - <a href="https://www.youtube.com/watch?v=I-YYKD0OSyY">How to use HotSwap in hybris with Oracle JDK and DCEVM OpenJDK</a>
           <br/>
-          Visit <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin">our page</a> in BitBucket for more details.
+          Visit <a href="https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin">our page</a> in BitBucket for more details.
 
           <br/>
           <br/>
@@ -113,9 +115,9 @@
           <br/>
           - <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment">How To Configure Project Environment</a>
           <br/>
-          - Available tasks <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issues?status=new&status=open">here</a> also you can suggest new features.
+          - Available tasks <a href="https://hybris-integration.atlassian.net/projects/IIP/issues">here</a> also you can suggest new features.
           <br/>
-          - Also you can find useful information in our <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/Home">wiki</a>.
+          - Also you can find useful information in our <a href="https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin/wiki/Home">wiki</a>.
           <br/>
           - For additional questions feel free to send me an email.
 
@@ -127,9 +129,9 @@
           <br/>
           - Vlad Bozhenok
           <br/>
-          - Markus Priegl
-          <br/>
           - Martin Zdarsky
+          <br/>
+          - Markus Priegl
           <br/>
           - Sergei Aksenenko
       ]]>
@@ -137,6 +139,10 @@
 
     <change-notes>
         <![CDATA[
+          4.3.3:
+          <br/> - Project import has been fixed to provide correct project configuration to support JRebel. This release is only for Intellij IDEA 141.*. After this release we discontinue updates for 141.*. If you want to receive further updates please consider updating your IDE to the latest version.
+          <br/>
+          <br/>
           4.3.2:
           <br/> - Backward compatibility fixes.
           <br/>
@@ -293,6 +299,8 @@
       ]]>
     </change-notes>
 
+    <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
+    <!-- any 141-based version.-->
     <idea-version since-build="141" until-build="141.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
