@@ -3,6 +3,6 @@
   <component name="ExternalDependencies">
     <plugin id="JFlex Support" />
     <plugin id="PsiViewer" />
-    <plugin id="org.jetbrains.idea.grammar" min-version="1.4.1" max-version="1.4.1" />
+    <plugin id="org.jetbrains.idea.grammar" />
   </component>
 </project>
