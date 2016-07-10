@@ -13,14 +13,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="com.wutka:dtdparser:1.21" level="project" />
-    <orderEntry type="library" name="javax.activation:activation:1.1" level="project" />
     <orderEntry type="library" name="commons-io:commons-io:2.5" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="com.google.code.findbugs:jsr305:3.0.1" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" name="com.sun.xml.bind:jaxb-impl:2.2.1" level="project" />
-    <orderEntry type="library" name="javax.xml.stream:stax-api:1.0-2" level="project" />
     <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
