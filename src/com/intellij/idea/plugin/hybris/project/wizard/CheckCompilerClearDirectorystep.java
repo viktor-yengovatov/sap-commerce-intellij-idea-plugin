@@ -29,7 +29,7 @@ import javax.swing.*;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 23/06/2016.
  */
-public class CheckCompilerClearDirectoryStep extends ProjectImportWizardStep {
+public class CheckCompilerClearDirectorystep extends ProjectImportWizardStep {
 
     private JPanel rootPanel;
     private JLabel warningLabel;
@@ -37,7 +37,7 @@ public class CheckCompilerClearDirectoryStep extends ProjectImportWizardStep {
     private JLabel actionLabel;
     private JLabel screenShotLabel;
 
-    public CheckCompilerClearDirectoryStep(final WizardContext context) {
+    public CheckCompilerClearDirectorystep(final WizardContext context) {
         super(context);
     }
 
@@ -52,6 +52,7 @@ public class CheckCompilerClearDirectoryStep extends ProjectImportWizardStep {
         CompilerWorkspaceConfiguration.getInstance(project).CLEAR_OUTPUT_DIRECTORY = false;
     }
 
+    @Override
     public boolean isStepVisible() {
         final Project project = ProjectManager.getInstance().getDefaultProject();
         return CompilerWorkspaceConfiguration.getInstance(project).CLEAR_OUTPUT_DIRECTORY;
