@@ -45,8 +45,7 @@ import java.util.List;
  */
 public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
-    // bug IDEA-143901 was fixed in 144.1948
-    public static final int IDEA_143901_FIX_BASELINE_VERSION = 144;
+    public static final int IDEA_2016_2_BASELINE_VERSION = 162;
 
     @NotNull
     @Override
@@ -72,7 +71,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     public SpringConfigurator getSpringConfigurator() {
         final BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();
 
-        if (buildNumber.getBaselineVersion() < IDEA_143901_FIX_BASELINE_VERSION) {
+        if (buildNumber.getBaselineVersion() < IDEA_2016_2_BASELINE_VERSION) {
             final SpringConfigurator springConfigurator = ServiceManager.getService(
                 NoInheritanceSpringConfigurator.class
             );
