@@ -75,7 +75,7 @@
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
 
-        <applicationConfigurable id="ImpexPlugin.ImpexConfigurable"
+        <applicationConfigurable id="ImpexPlugin.ImpexConfigurable" parentId="root"
                                  instance="com.intellij.idea.plugin.hybris.settings.HybrisSettingsConfigurable"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
