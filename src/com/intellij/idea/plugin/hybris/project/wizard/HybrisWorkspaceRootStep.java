@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDir
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
@@ -161,6 +162,11 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
 
+        if (hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode() == null) {
+            hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(
+                HybrisApplicationSettingsComponent.getInstance().getState().isDefaultPlatformInReadOnly()
+            );
+        }
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );

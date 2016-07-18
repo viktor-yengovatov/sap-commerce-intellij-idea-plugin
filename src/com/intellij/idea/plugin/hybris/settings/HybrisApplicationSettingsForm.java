@@ -58,6 +58,7 @@ public class HybrisApplicationSettingsForm {
     private JTextField groupHybrisUnusedTextField;
     private JCheckBox hideEmptyMiddleFoldersCheckBox;
     private JLabel projectTreeViewSettingsLabel;
+    private JCheckBox defaultPlatformInReadOnly;
 
     private JunkListPanel junkListPanel;
 
@@ -72,6 +73,7 @@ public class HybrisApplicationSettingsForm {
         groupHybrisTextField.setText(data.getGroupHybris());
         groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
+        defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
     }
 
     public void getData(final HybrisApplicationSettings data) {
@@ -85,6 +87,7 @@ public class HybrisApplicationSettingsForm {
         data.setGroupHybris(groupHybrisTextField.getText());
         data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
+        data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -116,6 +119,9 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()) {
+            return true;
+        }
+        if (defaultPlatformInReadOnly.isSelected() != data.isDefaultPlatformInReadOnly()) {
             return true;
         }
         return false;

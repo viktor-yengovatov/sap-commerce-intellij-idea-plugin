@@ -85,7 +85,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File sourceCodeZip;
     protected boolean openProjectSettingsAfterImport;
-    protected boolean importOotbModulesInReadOnlyMode = true;
+    protected Boolean importOotbModulesInReadOnlyMode;
     @NotNull
     protected final List<String> explicitlyDefinedModules = new ArrayList<String>();
     @Nullable
@@ -317,7 +317,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public boolean isImportOotbModulesInReadOnlyMode() {
+    public Boolean isImportOotbModulesInReadOnlyMode() {
         return importOotbModulesInReadOnlyMode;
     }
 
