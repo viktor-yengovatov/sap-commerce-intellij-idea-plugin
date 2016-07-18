@@ -77,6 +77,9 @@ public class HybrisApplicationSettings {
     @PropertyName("hideEmptyMiddleFolders")
     private boolean hideEmptyMiddleFolders = true;
 
+    @PropertyName("defaultPlatformInReadOnly")
+    private boolean defaultPlatformInReadOnly = false;
+
 
     public HybrisApplicationSettings() {
     }
@@ -161,6 +164,14 @@ public class HybrisApplicationSettings {
         this.hideEmptyMiddleFolders = hideEmptyMiddleFolders;
     }
 
+    public boolean isDefaultPlatformInReadOnly() {
+        return defaultPlatformInReadOnly;
+    }
+
+    public void setDefaultPlatformInReadOnly(final boolean defaultPlatformInReadOnly) {
+        this.defaultPlatformInReadOnly = defaultPlatformInReadOnly;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -184,6 +195,7 @@ public class HybrisApplicationSettings {
             .append(groupCustom, other.groupCustom)
             .append(groupOtherCustom, other.groupOtherCustom)
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
+            .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
             .isEquals();
     }
 
@@ -200,6 +212,7 @@ public class HybrisApplicationSettings {
             .append(groupCustom)
             .append(groupOtherCustom)
             .append(hideEmptyMiddleFolders)
+            .append(defaultPlatformInReadOnly)
             .toHashCode();
     }
 
@@ -216,6 +229,7 @@ public class HybrisApplicationSettings {
         sb.append(", groupCustom='").append(groupCustom).append('\'');
         sb.append(", groupOtherCustom='").append(groupOtherCustom).append('\'');
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
+        sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
         sb.append('}');
         return sb.toString();
     }

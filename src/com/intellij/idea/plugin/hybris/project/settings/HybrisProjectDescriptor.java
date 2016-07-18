@@ -71,7 +71,7 @@ public interface HybrisProjectDescriptor {
 
     void setOpenProjectSettingsAfterImport(boolean openProjectSettingsAfterImport);
 
-    boolean isImportOotbModulesInReadOnlyMode();
+    Boolean isImportOotbModulesInReadOnlyMode();
 
     void setImportOotbModulesInReadOnlyMode(boolean importOotbModulesInReadOnlyMode);
 
