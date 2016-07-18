@@ -37,13 +37,13 @@ public class HybrisSettingsConfigurable implements Configurable {
     @Nls
     @Override
     public String getDisplayName() {
-        return "hybris integration";
+        return "[y] Integration";
     }
 
     @Nullable
     @Override
     public String getHelpTopic() {
-        return "hybris integration plugin configuration.";
+        return "[y] hybris integration plugin configuration.";
     }
 
     @Nullable
