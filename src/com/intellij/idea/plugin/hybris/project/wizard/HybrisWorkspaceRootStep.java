@@ -96,10 +96,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             }
         });
 
+        this.sourceCodeZipFilesInChooser.setVisible(false);
+
         this.sourceCodeCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                sourceCodeZipFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected());
+                sourceCodeZipFilesInChooser.setVisible(((JCheckBox) e.getSource()).isSelected());
             }
         });
 
