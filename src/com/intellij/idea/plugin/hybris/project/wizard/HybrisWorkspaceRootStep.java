@@ -41,6 +41,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,8 +61,16 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private JCheckBox importOotbModulesInReadOnlyModeCheckBox;
     private volatile TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
     private volatile TextFieldWithBrowseButton customExtensionsDirectoryFilesInChooser;
-    private JCheckBox customExtensionsPresent;
+    private JCheckBox customExtensionsPresentCheckBox;
     private JTextField javadocUrlTextField;
+    private JCheckBox sourceCodeCheckBox;
+    private JLabel storeModuleFilesInLabel;
+    private JPanel directoryOverridePanel;
+    private JCheckBox directoryOverrideCheckBox;
+    private JLabel directoryOverrideLabel;
+    private JLabel sourceCodeLabel;
+    private JLabel importOotbModulesInReadOnlyModeLabel;
+    private JLabel customExtensionsPresentLabel;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -76,6 +86,50 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 storeModuleFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected());
+            }
+        });
+
+        this.storeModuleFilesInLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                storeModuleFilesInCheckBox.doClick();
+            }
+        });
+
+        this.sourceCodeCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                sourceCodeZipFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected());
+            }
+        });
+
+        this.sourceCodeLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                sourceCodeCheckBox.doClick();
+            }
+        });
+
+        this.importOotbModulesInReadOnlyModeLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                importOotbModulesInReadOnlyModeCheckBox.doClick();
+            }
+        });
+
+        this.directoryOverridePanel.setVisible(false);
+
+        this.directoryOverrideCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                directoryOverridePanel.setVisible(((JCheckBox) e.getSource()).isSelected());
+            }
+        });
+
+        this.directoryOverrideLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                directoryOverrideCheckBox.doClick();
             }
         });
 
@@ -100,10 +154,17 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
 
-        this.customExtensionsPresent.addActionListener(new ActionListener() {
+        this.customExtensionsPresentCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent actionEvent) {
-                customExtensionsDirectoryFilesInChooser.setEnabled(customExtensionsPresent.isSelected());
+                customExtensionsDirectoryFilesInChooser.setEnabled(customExtensionsPresentCheckBox.isSelected());
+            }
+        });
+
+        this.customExtensionsPresentLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                customExtensionsPresentCheckBox.doClick();
             }
         });
     }
@@ -142,7 +203,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         );
 
         this.getContext().getHybrisProjectDescriptor().setCustomExtensionsPresent(
-            this.customExtensionsPresent.isSelected()
+            this.customExtensionsPresentCheckBox.isSelected()
         );
 
         this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
@@ -206,7 +267,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         final File customDir = new File(this.customExtensionsDirectoryFilesInChooser.getText());
         if (!customDir.exists()) {
-            customExtensionsPresent.setSelected(false);
+            customExtensionsPresentCheckBox.setSelected(false);
             customExtensionsDirectoryFilesInChooser.setEnabled(false);
         }
 
@@ -254,7 +315,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 ));
         }
 
-        if (this.customExtensionsPresent.isSelected()) {
+        if (this.customExtensionsPresentCheckBox.isSelected()) {
             if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())) {
                 throw new ConfigurationException(
                     HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.empty"));
