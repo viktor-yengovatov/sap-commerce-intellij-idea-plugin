@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Ext
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -69,7 +70,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectDescriptor.class);
 
     @Nullable
-    protected final Project project;
+    protected Project project;
     @NotNull
     protected final List<HybrisModuleDescriptor> foundModules = new ArrayList<HybrisModuleDescriptor>();
     @NotNull
@@ -96,7 +97,25 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected String javadocUrl;
 
-    public DefaultHybrisProjectDescriptor(@Nullable final Project project) {
+    @Override
+    public void setProject(@Nullable final Project project) {
+        if (project == null) {
+            return;
+        }
+        // the project may not be hybris based project.
+        final HybrisProjectSettingsComponent hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project);
+        if (hybrisProjectSettings == null) {
+            return;
+        }
+        if (hybrisProjectSettings.getState() != null) {
+            if (hybrisProjectSettings.getState().isHybisProject()) {
+                this.project = project;
+            }
+        }
+    }
+
+    @Override
+    public void setHybrisProject(@Nullable final Project project) {
         this.project = project;
     }
 
@@ -129,7 +148,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @NotNull
     @Override
     public Set<HybrisModuleDescriptor> getAlreadyOpenedModules() {
-        if (null == this.project) {
+        if (null == getProject()) {
             return Collections.emptySet();
         }
 
@@ -137,7 +156,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         try {
             if (this.alreadyOpenedModules.isEmpty()) {
-                this.alreadyOpenedModules.addAll(this.getAlreadyOpenedModules(this.project));
+                this.alreadyOpenedModules.addAll(this.getAlreadyOpenedModules(getProject()));
             }
         } finally {
             this.lock.unlock();

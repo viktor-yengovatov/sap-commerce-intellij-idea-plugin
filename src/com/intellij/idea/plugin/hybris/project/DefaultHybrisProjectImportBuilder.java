@@ -133,6 +133,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return ServiceManager.getService(DefaultConfiguratorFactory.class);
     }
 
+    @Nullable
+    public Project createProject(String name, String path) {
+        final Project project = super.createProject(name, path);
+        getHybrisProjectDescriptor().setHybrisProject(project);
+        return project;
+    }
+
     @Override
     public void setRootProjectDirectory(@NotNull final File directory) {
         Validate.notNull(directory);
@@ -166,7 +173,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         try {
             if (null == this.hybrisProjectDescriptor) {
-                this.hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor(getCurrentProject());
+                this.hybrisProjectDescriptor = new DefaultHybrisProjectDescriptor();
+                this.hybrisProjectDescriptor.setProject(getCurrentProject());
             }
 
             //noinspection ConstantConditions
