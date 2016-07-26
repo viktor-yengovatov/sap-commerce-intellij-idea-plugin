@@ -327,14 +327,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                 throw new ConfigurationException(
                     HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
             }
-
-            if (virtualFileSystemService.pathDoesNotContainAnother(this.getBuilder().getFileToImport(), this.customExtensionsDirectoryFilesInChooser.getText())) {
-                throw new ConfigurationException(
-                    HybrisI18NBundleUtils.message(
-                        "hybris.import.wizard.validation.custom.extensions.directory.is.outside.of.project.root.directory",
-                        this.getBuilder().getFileToImport()
-                    ));
-            }
         }
 
         return true;

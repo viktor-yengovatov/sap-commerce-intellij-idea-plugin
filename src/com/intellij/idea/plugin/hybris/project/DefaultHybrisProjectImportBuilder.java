@@ -91,6 +91,8 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -324,7 +326,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private void saveCustomDirectoryLocation(final Project project) {
         final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
         final File customDirectory = this.getHybrisProjectDescriptor().getCustomExtensionsDirectory();
-        hybrisProjectSettings.setCustomDirectory(customDirectory);
+        final File hybrisDirectory = this.getHybrisProjectDescriptor().getHybrisDistributionDirectory();
+        final Path customPath = Paths.get(customDirectory.getAbsolutePath());
+        final Path hybrisPath = Paths.get(hybrisDirectory.getAbsolutePath());
+        final Path relativePath = hybrisPath.relativize(customPath);
+        hybrisProjectSettings.setCustomDirectory(relativePath.toString());
     }
 
     private void selectSdk(@NotNull final Project project) {

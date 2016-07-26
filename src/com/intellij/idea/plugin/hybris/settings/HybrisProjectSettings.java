@@ -31,11 +31,7 @@ import java.io.File;
 public class HybrisProjectSettings {
 
     protected boolean hybisProject;
-    protected File customDirectory;
-
-    public HybrisProjectSettings() {
-        this.hybisProject = false;
-    }
+    protected String customDirectory;
 
     public boolean isHybisProject() {
         return hybisProject;
@@ -45,11 +41,11 @@ public class HybrisProjectSettings {
         this.hybisProject = hybisProject;
     }
 
-    public File getCustomDirectory() {
+    public String getCustomDirectory() {
         return customDirectory;
     }
 
-    public void setCustomDirectory(final File customDirectory) {
+    public void setCustomDirectory(final String customDirectory) {
         this.customDirectory = customDirectory;
     }
 
