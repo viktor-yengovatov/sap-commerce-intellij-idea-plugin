@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.settings;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.MetaType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
@@ -35,7 +36,9 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.*;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_META_KEY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -144,6 +147,14 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
         }
 
+        for (MetaType metaType : emptyIfNull(this.extensionInfo.getExtension().getMeta())) {
+            if (BACK_OFFICE_MODULE_META_KEY_NAME.equalsIgnoreCase(metaType.getKey())
+                && Boolean.TRUE.toString().equals(metaType.getValue())) {
+
+                requiredExtensionNames.add(HybrisConstants.BACK_OFFICE_EXTENSION_NAME);
+            }
+        }
+
         return Collections.unmodifiableSet(requiredExtensionNames);
     }
 
@@ -195,7 +206,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             true
         ));
 
-        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY)));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY), true));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY)));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY)));
 

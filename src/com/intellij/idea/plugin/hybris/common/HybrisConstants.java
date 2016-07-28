@@ -37,6 +37,8 @@ public interface HybrisConstants {
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     String OLD_IDEA_MODULE_FILE_EXTENSION = ".eml";
     String PLATFORM_EXTENSION_NAME = "platform";
+    String BACK_OFFICE_EXTENSION_NAME = "backoffice";
+    String BACK_OFFICE_MODULE_META_KEY_NAME = "backoffice-module";
     String HMC_EXTENSION_NAME = "hmc";
     String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     String CONFIG_EXTENSION_NAME = "config";
