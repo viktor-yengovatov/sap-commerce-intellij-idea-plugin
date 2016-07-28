@@ -37,6 +37,7 @@ public interface HybrisConstants {
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     String OLD_IDEA_MODULE_FILE_EXTENSION = ".eml";
     String PLATFORM_EXTENSION_NAME = "platform";
+    String HMC_EXTENSION_NAME = "hmc";
     String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     String CONFIG_EXTENSION_NAME = "config";
     String CONFIG_RELATIVE_PATH = "/../../" + CONFIG_EXTENSION_NAME;

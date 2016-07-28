@@ -140,6 +140,10 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
 
         requiredExtensionNames.add(HybrisConstants.PLATFORM_EXTENSION_NAME);
 
+        if (null != this.extensionInfo.getExtension().getHmcmodule()) {
+            requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
+        }
+
         return Collections.unmodifiableSet(requiredExtensionNames);
     }
 
