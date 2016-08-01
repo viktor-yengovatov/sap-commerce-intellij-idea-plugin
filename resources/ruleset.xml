@@ -9,7 +9,7 @@
           nameQuery="./@code" />
     <rule type="XPATH"
           id="DeploymentTypeCodeMustBeGreaterThanTenThousand"
-          description="Type codes between 1 and 1000 are reserved fro hybris"
+          description="Type codes between 1 and 10000 are reserved for hybris"
           priority="M"
           selectionQuery="//itemtype/deployment"
           testQuery="./@typecode > 10000"
