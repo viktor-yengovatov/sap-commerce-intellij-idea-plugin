@@ -31,6 +31,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -110,7 +111,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         return Collections.unmodifiableList(moduleDescriptors);
     }
 
-    public Library createBootstrapLib(@NotNull final VirtualFile sourceCodeRoot,
+    public Library createBootstrapLib(@Nullable final VirtualFile sourceCodeRoot,
                                       @NotNull final ModifiableModelsProvider modifiableModelsProvider) {
 
         final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
