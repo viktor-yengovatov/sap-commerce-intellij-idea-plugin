@@ -45,6 +45,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private String[] groupCustom;
     private String[] groupOtherCustom;
     private String[] groupHybris;
+    private String[] groupPlatform;
     private String[] groupOtherHybris;
 
     @Override
@@ -76,7 +77,10 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Nullable
     protected String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            return groupHybris;
+            return groupPlatform;
+        }
+        if (moduleDescriptor .isPlatformExtModule()) {
+            return groupPlatform;
         }
         if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
             return groupCustom;
@@ -102,6 +106,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         groupOtherCustom = toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
         groupHybris = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
         groupOtherHybris = toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
+        groupPlatform = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
     }
 
     private String[] toIdeaGroup(final String group) {
