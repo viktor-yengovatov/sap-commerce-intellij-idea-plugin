@@ -62,23 +62,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     @NotNull
     @Override
     public Set<String> getRequiredExtensionNames() {
-        final File extDirectory = new File(this.getRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
-
-        final Set<String> platformDependencies = Sets.newHashSet(
-            HybrisConstants.CONFIG_EXTENSION_NAME
-        );
-
-        if (extDirectory.isDirectory()) {
-            final File[] files = extDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-
-            if (null != files) {
-                for (File file : files) {
-                    platformDependencies.add(file.getName());
-                }
-            }
-        }
-
-        return Collections.unmodifiableSet(platformDependencies);
+        return Collections.EMPTY_SET;
     }
 
     @NotNull
@@ -101,6 +85,12 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         }
 
         moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
+            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY),
+            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY),
+            true
+        ));
+
+        moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
             new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY)
         ));
 
@@ -109,41 +99,6 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         ));
 
         return Collections.unmodifiableList(moduleDescriptors);
-    }
-
-    public Library createBootstrapLib(@Nullable final VirtualFile sourceCodeRoot,
-                                      @NotNull final ModifiableModelsProvider modifiableModelsProvider) {
-
-        final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
-            .getLibraryTableModifiableModel(getRootProjectDescriptor().getProject());
-
-        Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.BOOTSTRAP_GROUP);
-        if (null == library) {
-            library = libraryTableModifiableModel.createLibrary(HybrisConstants.BOOTSTRAP_GROUP);
-        }
-
-        final File lib = new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY);
-        final File gen = new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY);
-
-        if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {
-            final ExistingLibraryEditor existingLibraryEditor = ((LibrariesModifiableModel) libraryTableModifiableModel).getLibraryEditor(library);
-            existingLibraryEditor.addJarDirectory(
-                VfsUtil.getUrlForLibraryRoot(lib), true, OrderRootType.CLASSES
-            );
-            existingLibraryEditor.addJarDirectory(
-                VfsUtil.getUrlForLibraryRoot(gen), true, OrderRootType.CLASSES
-            );
-            if (null != sourceCodeRoot) {
-                existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES);
-            }
-        } else {
-            final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
-            libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(lib), true);
-            libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(gen), true);
-
-            libraryModifiableModel.commit();
-        }
-        return library;
     }
 
     @Override

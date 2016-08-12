@@ -141,10 +141,6 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             requiredExtensionNames.add(requiresExtension.getName());
         }
 
-        if (!isPlatformExtModule()) {
-            requiredExtensionNames.add(HybrisConstants.PLATFORM_EXTENSION_NAME);
-        }
-
         if (null != this.extensionInfo.getExtension().getHmcmodule()) {
             requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
         }
@@ -235,9 +231,9 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     }
 
     protected Set<String> getDefaultRequiredExtensionNames() {
-        if (isPlatformExtModule()) {
-            return Collections.emptySet();
+        if (getName().equals(HybrisConstants.CORE_EXTENSION_NAME)) {
+            return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
         }
-        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
+        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
     }
 }

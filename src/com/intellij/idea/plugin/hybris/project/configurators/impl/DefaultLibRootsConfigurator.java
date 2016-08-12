@@ -69,17 +69,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
-        if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor)moduleDescriptor;
-            hybrisModuleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider);
-        }
-
-        if (moduleDescriptor.isPlatformExtModule()) {
-            if (moduleDescriptor.getDependenciesPlainList().isEmpty()) {
-                this.addBootstrapLibsToModule(modifiableRootModel.getProject(), modifiableRootModel);
-            }
-        }
-
         for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
             if (javaLibraryDescriptor.isDirectoryWithClasses()) {
                 this.addClassesToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
@@ -106,23 +95,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         return sourceCodeRoot;
-    }
-
-    protected void addBootstrapLibsToModule(@NotNull final Project project,
-                                            @NotNull final ModifiableRootModel modifiableRootModel) {
-        Validate.notNull(project);
-        Validate.notNull(modifiableRootModel);
-
-        final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(project);
-        Library libsGroup = projectLibraryTable.getLibraryByName(HybrisConstants.BOOTSTRAP_GROUP);
-
-        if (null == libsGroup) {
-            libsGroup = projectLibraryTable.createLibrary(HybrisConstants.BOOTSTRAP_GROUP);
-        }
-
-        modifiableRootModel.addLibraryEntry(libsGroup);
-
-        this.setLibraryEntryExported(modifiableRootModel, libsGroup);
     }
 
     protected void addClassesToModuleLibs(@NotNull final ModifiableRootModel modifiableRootModel,

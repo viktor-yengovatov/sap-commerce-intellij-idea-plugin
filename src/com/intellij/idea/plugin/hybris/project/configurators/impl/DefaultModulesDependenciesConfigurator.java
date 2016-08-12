@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependencies
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.*;
@@ -44,6 +45,7 @@ import java.util.List;
  */
 public class DefaultModulesDependenciesConfigurator implements ModulesDependenciesConfigurator {
 
+    private static final Logger LOG = Logger.getInstance(DefaultModulesDependenciesConfigurator.class);
     protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
 
     @Override
