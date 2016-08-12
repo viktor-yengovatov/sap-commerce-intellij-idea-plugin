@@ -80,7 +80,7 @@ public interface HybrisConstants {
     String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
     String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
 
-    String COMMON_LIBS_GROUP = "Common libs";
+    String BOOTSTRAP_GROUP = "Platform Bootstrap";
 
     String WEB_INF_LIB_DIRECTORY = "web/webroot/WEB-INF/lib";
     String WEB_INF_CLASSES_DIRECTORY = "web/webroot/WEB-INF/classes";
