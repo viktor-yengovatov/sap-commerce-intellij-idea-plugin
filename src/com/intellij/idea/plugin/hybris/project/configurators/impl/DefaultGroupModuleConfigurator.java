@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
+import com.intellij.idea.plugin.hybris.project.settings.BootstrapHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
@@ -45,6 +46,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private String[] groupCustom;
     private String[] groupOtherCustom;
     private String[] groupHybris;
+    private String[] groupPlatform;
     private String[] groupOtherHybris;
 
     @Override
@@ -76,7 +78,13 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Nullable
     protected String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            return groupHybris;
+            return groupPlatform;
+        }
+        if (moduleDescriptor instanceof BootstrapHybrisModuleDescriptor) {
+            return groupPlatform;
+        }
+        if (moduleDescriptor.isPlatformExtModule()) {
+            return groupPlatform;
         }
         if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
             return groupCustom;
@@ -102,6 +110,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         groupOtherCustom = toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
         groupHybris = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
         groupOtherHybris = toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
+        groupPlatform = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
     }
 
     private String[] toIdeaGroup(final String group) {

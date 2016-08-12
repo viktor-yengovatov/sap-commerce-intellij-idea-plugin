@@ -59,6 +59,7 @@ public class HybrisApplicationSettingsForm {
     private JCheckBox hideEmptyMiddleFoldersCheckBox;
     private JLabel projectTreeViewSettingsLabel;
     private JCheckBox defaultPlatformInReadOnly;
+    private JTextField groupPlatformTextField;
 
     private JunkListPanel junkListPanel;
 
@@ -72,6 +73,7 @@ public class HybrisApplicationSettingsForm {
         groupCustomUnusedTextField.setText(data.getGroupOtherCustom());
         groupHybrisTextField.setText(data.getGroupHybris());
         groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
+        groupPlatformTextField.setText(data.getGroupPlatform());
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
         defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
     }
@@ -86,6 +88,7 @@ public class HybrisApplicationSettingsForm {
         data.setGroupOtherCustom(groupCustomUnusedTextField.getText());
         data.setGroupHybris(groupHybrisTextField.getText());
         data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
+        data.setGroupPlatform(groupPlatformTextField.getText());
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
     }
@@ -116,6 +119,9 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (!StringUtil.equals(groupHybrisUnusedTextField.getText(),data.getGroupOtherHybris())) {
+            return true;
+        }
+        if (!StringUtil.equals(groupPlatformTextField.getText(),data.getGroupPlatform())) {
             return true;
         }
         if (hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()) {
@@ -155,6 +161,7 @@ public class HybrisApplicationSettingsForm {
                 groupCustomUnusedTextField.setEnabled(groupModulesCheckBox.isSelected());
                 groupHybrisTextField.setEnabled(groupModulesCheckBox.isSelected());
                 groupHybrisUnusedTextField.setEnabled(groupModulesCheckBox.isSelected());
+                groupPlatformTextField.setEnabled(groupModulesCheckBox.isSelected());
             }
         });
     }

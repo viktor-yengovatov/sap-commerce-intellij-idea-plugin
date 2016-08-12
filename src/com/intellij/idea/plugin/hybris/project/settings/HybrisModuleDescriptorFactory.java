@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Collection;
 
 /**
  * Created 1:58 PM 20 June 2015.
@@ -31,8 +32,8 @@ import java.io.File;
 public interface HybrisModuleDescriptorFactory {
 
     @NotNull
-    HybrisModuleDescriptor createDescriptor(@NotNull File file,
-                                            @NotNull HybrisProjectDescriptor rootProjectDescriptor
+    Collection<HybrisModuleDescriptor> createDescriptor(@NotNull File file,
+                                                        @NotNull HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException;
 
 }

@@ -141,8 +141,6 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             requiredExtensionNames.add(requiresExtension.getName());
         }
 
-        requiredExtensionNames.add(HybrisConstants.PLATFORM_EXTENSION_NAME);
-
         if (null != this.extensionInfo.getExtension().getHmcmodule()) {
             requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
         }
@@ -206,9 +204,10 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             true
         ));
 
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.LIB_DIRECTORY), true));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY), true));
-        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY)));
-        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY)));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY), true));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY), true));
 
         return Collections.unmodifiableList(libs);
     }
@@ -233,7 +232,10 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
 
     protected Set<String> getDefaultRequiredExtensionNames() {
         if (isPlatformExtModule()) {
-            return Collections.emptySet();
+            if (getName().equals(HybrisConstants.CORE_EXTENSION_NAME)) {
+                return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.BOOTSTRAP_EXTENSION_NAME));
+            }
+            return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
         }
         return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
     }
