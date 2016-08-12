@@ -231,9 +231,12 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     }
 
     protected Set<String> getDefaultRequiredExtensionNames() {
-        if (getName().equals(HybrisConstants.CORE_EXTENSION_NAME)) {
-            return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
+        if (isPlatformExtModule()) {
+            if (getName().equals(HybrisConstants.CORE_EXTENSION_NAME)) {
+                return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.BOOTSTRAP_EXTENSION_NAME));
+            }
+            return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
         }
-        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
+        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
     }
 }

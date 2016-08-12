@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
+import com.intellij.idea.plugin.hybris.project.settings.BootstrapHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
@@ -79,7 +80,10 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return groupPlatform;
         }
-        if (moduleDescriptor .isPlatformExtModule()) {
+        if (moduleDescriptor instanceof BootstrapHybrisModuleDescriptor) {
+            return groupPlatform;
+        }
+        if (moduleDescriptor.isPlatformExtModule()) {
             return groupPlatform;
         }
         if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {

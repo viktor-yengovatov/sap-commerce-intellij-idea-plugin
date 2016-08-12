@@ -25,6 +25,10 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created 1:58 PM 20 June 2015.
@@ -35,8 +39,8 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
 
     @NotNull
     @Override
-    public HybrisModuleDescriptor createDescriptor(@NotNull final File file,
-                                                   @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public Collection<HybrisModuleDescriptor> createDescriptor(@NotNull final File file,
+                                                               @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
         Validate.notNull(file);
         Validate.notNull(rootProjectDescriptor);
@@ -44,14 +48,17 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
         if (hybrisProjectService.isConfigModule(file)) {
-            return new ConfigHybrisModuleDescriptor(file, rootProjectDescriptor);
+            return Collections.singleton(new ConfigHybrisModuleDescriptor(file, rootProjectDescriptor));
         }
 
         if (hybrisProjectService.isPlatformModule(file)) {
-            return new PlatformHybrisModuleDescriptor(file, rootProjectDescriptor);
+            List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
+            moduleDescriptors.add(new PlatformHybrisModuleDescriptor(file, rootProjectDescriptor));
+            moduleDescriptors.add(new BootstrapHybrisModuleDescriptor(file, rootProjectDescriptor));
+            return moduleDescriptors;
         }
 
-        return new DefaultHybrisModuleDescriptor(file, rootProjectDescriptor);
+        return Collections.singleton(new DefaultHybrisModuleDescriptor(file, rootProjectDescriptor));
     }
 
 }

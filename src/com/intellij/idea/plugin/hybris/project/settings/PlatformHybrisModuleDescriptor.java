@@ -62,43 +62,29 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     @NotNull
     @Override
     public Set<String> getRequiredExtensionNames() {
-        return Collections.EMPTY_SET;
+        final File extDirectory = new File(this.getRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
+
+            final Set<String> platformDependencies = Sets.newHashSet(
+                HybrisConstants.CONFIG_EXTENSION_NAME
+            );
+
+            if (extDirectory.isDirectory()) {
+                final File[] files = extDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+    
+                    if (null != files) {
+                        for (File file : files) {
+                                platformDependencies.add(file.getName());
+                            }
+                    }
+            }
+
+            return Collections.unmodifiableSet(platformDependencies);
     }
 
     @NotNull
     @Override
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        final List<JavaLibraryDescriptor> moduleDescriptors = new ArrayList<JavaLibraryDescriptor>();
-
-        final File resourcesDirectory = new File(this.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
-        final File[] resourcesInnerDirectories = resourcesDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-
-        for (File resourcesInnerDirectory : resourcesInnerDirectories) {
-
-            moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
-                new File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY), true
-            ));
-
-            moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
-                new File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY), true
-            ));
-        }
-
-        moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
-            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY),
-            new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY),
-            true
-        ));
-
-        moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
-            new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY)
-        ));
-
-        moduleDescriptors.add(new DefaultJavaLibraryDescriptor(
-            new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY), true
-        ));
-
-        return Collections.unmodifiableList(moduleDescriptors);
+        return Collections.EMPTY_LIST;
     }
 
     @Override

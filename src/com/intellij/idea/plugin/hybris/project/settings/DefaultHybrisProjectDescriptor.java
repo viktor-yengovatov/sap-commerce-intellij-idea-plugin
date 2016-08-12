@@ -51,6 +51,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -405,11 +406,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                     continue;
                 }
 
-                final HybrisModuleDescriptor moduleDescriptor = hybrisModuleDescriptorFactory.createDescriptor(
+                final Collection<HybrisModuleDescriptor> moduleDescriptors = hybrisModuleDescriptorFactory.createDescriptor(
                     VfsUtil.virtualToIoFile(contentRoots[0]), this
                 );
 
-                existingModules.add(moduleDescriptor);
+                existingModules.addAll(moduleDescriptors);
             } catch (HybrisConfigurationException e) {
                 LOG.error(e);
             }
@@ -439,7 +440,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                moduleDescriptors.add(hybrisModuleDescriptorFactory.createDescriptor(moduleRootDirectory, this));
+                moduleDescriptors.addAll(hybrisModuleDescriptorFactory.createDescriptor(moduleRootDirectory, this));
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 
