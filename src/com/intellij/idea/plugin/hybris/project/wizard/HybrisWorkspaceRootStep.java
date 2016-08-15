@@ -352,6 +352,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         final String hybrisApiVersion = buildProperties.getProperty(HybrisConstants.HYBRIS_API_VERSION_KEY);
         if (StringUtils.isNotEmpty(hybrisApiVersion)) {
+            if (hybrisApiVersion.charAt(0) >= '6') {
+                return String.format(HybrisConstants.HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL, hybrisApiVersion);
+            }
             return String.format(HybrisConstants.DEFAULT_JAVADOC_ROOT_URL, hybrisApiVersion);
         } else {
             return null;
