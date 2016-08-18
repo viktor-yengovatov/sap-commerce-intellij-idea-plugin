@@ -33,5 +33,9 @@ public interface HybrisProjectService {
 
     boolean isPlatformModule(@NotNull File file);
 
+    boolean isPlatformExtModule(@NotNull File file);
+
+    boolean isCoreExtModule(@NotNull File file);
+
     boolean isRegularModule(@NotNull File file);
 }

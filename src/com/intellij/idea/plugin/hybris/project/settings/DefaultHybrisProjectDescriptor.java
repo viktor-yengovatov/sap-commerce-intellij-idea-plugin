@@ -406,11 +406,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                     continue;
                 }
 
-                final Collection<HybrisModuleDescriptor> moduleDescriptors = hybrisModuleDescriptorFactory.createDescriptor(
+                final HybrisModuleDescriptor moduleDescriptor = hybrisModuleDescriptorFactory.createDescriptor(
                     VfsUtil.virtualToIoFile(contentRoots[0]), this
                 );
 
-                existingModules.addAll(moduleDescriptors);
+                existingModules.add(moduleDescriptor);
             } catch (HybrisConfigurationException e) {
                 LOG.error(e);
             }
@@ -440,7 +440,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                moduleDescriptors.addAll(hybrisModuleDescriptorFactory.createDescriptor(moduleRootDirectory, this));
+                moduleDescriptors.add(hybrisModuleDescriptorFactory.createDescriptor(moduleRootDirectory, this));
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 
@@ -478,6 +478,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
         if (hybrisProjectService.isRegularModule(rootProjectDirectory)
+            || hybrisProjectService.isPlatformExtModule(rootProjectDirectory)
+            || hybrisProjectService.isCoreExtModule(rootProjectDirectory)
             || hybrisProjectService.isConfigModule(rootProjectDirectory)) {
 
             paths.add(rootProjectDirectory);

@@ -18,22 +18,29 @@
 
 package com.intellij.idea.plugin.hybris.project.settings;
 
+import com.google.common.collect.Sets;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 /**
- * Created 1:58 PM 20 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ * Created by Martin Zdarsky-Jones on 18/08/2016.
  */
-public interface HybrisModuleDescriptorFactory {
+public class ExtModuleDescriptor extends DefaultHybrisModuleDescriptor {
 
-    @NotNull
-    HybrisModuleDescriptor createDescriptor(@NotNull File file,
-                                            @NotNull HybrisProjectDescriptor rootProjectDescriptor
-    ) throws HybrisConfigurationException;
+    public ExtModuleDescriptor(@NotNull final File moduleRootDirectory,
+                               @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
 
+        super(moduleRootDirectory, rootProjectDescriptor);
+    }
+
+    @Override
+    protected Set<String> getDefaultRequiredExtensionNames() {
+        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
+    }
 }
