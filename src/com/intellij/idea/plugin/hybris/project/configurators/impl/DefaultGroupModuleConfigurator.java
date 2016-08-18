@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.settings.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.ExtModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.RegularHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.ExtHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
@@ -80,15 +80,15 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return groupPlatform;
         }
-        if (moduleDescriptor instanceof ExtModuleDescriptor) {
+        if (moduleDescriptor instanceof ExtHybrisModuleDescriptor) {
             return groupPlatform;
         }
         if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
             return groupCustom;
         }
-        DefaultHybrisModuleDescriptor defaultHybrisModuleDescriptor = (DefaultHybrisModuleDescriptor) moduleDescriptor;
+        RegularHybrisModuleDescriptor regularHybrisModuleDescriptor = (RegularHybrisModuleDescriptor) moduleDescriptor;
 
-        if (defaultHybrisModuleDescriptor.isInCustomDir()) {
+        if (regularHybrisModuleDescriptor.isInCustomDir()) {
             if (requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
                 return groupCustom;
             }

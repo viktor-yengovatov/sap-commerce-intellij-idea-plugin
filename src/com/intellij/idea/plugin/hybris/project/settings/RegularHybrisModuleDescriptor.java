@@ -47,9 +47,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
+public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
-    private static final Logger LOG = Logger.getInstance(DefaultHybrisModuleDescriptor.class);
+    private static final Logger LOG = Logger.getInstance(RegularHybrisModuleDescriptor.class);
 
     @Nullable
     public static final JAXBContext EXTENSION_INFO_JAXB_CONTEXT = getExtensionInfoJaxbContext();
@@ -59,7 +59,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
     @NotNull
     protected final ExtensionInfo extensionInfo;
 
-    public DefaultHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+    public RegularHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
                                          @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
         super(moduleRootDirectory, rootProjectDescriptor);
@@ -141,6 +141,8 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             requiredExtensionNames.add(requiresExtension.getName());
         }
 
+        requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames());
+
         if (null != this.extensionInfo.getExtension().getHmcmodule()) {
             requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
         }
@@ -167,7 +169,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
                 libs.add(new DefaultJavaLibraryDescriptor(
                     new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
                     new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY),
-                    true, true
+                    false, true
                 ));
 
                 libs.add(new DefaultJavaLibraryDescriptor(
@@ -193,7 +195,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
             final File webSrcDir = new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY);
             if (!webSrcDir.exists()) {
                 libs.add(new DefaultJavaLibraryDescriptor(
-                    new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY), true, true
+                    new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY), false, true
                 ));
             }
         }
@@ -205,7 +207,7 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
         ));
 
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.LIB_DIRECTORY), true));
-        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY), true));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY), false));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY), true));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY), true));
 
@@ -232,5 +234,9 @@ public class DefaultHybrisModuleDescriptor extends AbstractHybrisModuleDescripto
 
     protected Set<String> getDefaultRequiredExtensionNames() {
         return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
+    }
+
+    protected Collection<? extends String> getAdditionalRequiredExtensionNames() {
+        return Collections.singleton(HybrisConstants.PLATFORM_EXTENSION_NAME);
     }
 }

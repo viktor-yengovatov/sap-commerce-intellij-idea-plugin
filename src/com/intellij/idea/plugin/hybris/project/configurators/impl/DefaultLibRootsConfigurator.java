@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.CoreModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.CoreHybrisHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
@@ -74,7 +74,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             hybrisModuleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider);
         }
 
-        if (moduleDescriptor instanceof CoreModuleDescriptor) {
+        if (moduleDescriptor instanceof CoreHybrisHybrisModuleDescriptor) {
             addLibsToModule(modifiableRootModel, HybrisConstants.PLATFORM_LIBRARY_GROUP);
         }
 

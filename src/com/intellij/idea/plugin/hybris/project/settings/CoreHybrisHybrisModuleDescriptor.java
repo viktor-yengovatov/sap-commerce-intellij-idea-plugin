@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.google.common.collect.Sets;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,10 +28,10 @@ import java.util.Set;
 /**
  * Created by Martin Zdarsky-Jones on 18/08/2016.
  */
-public class ExtModuleDescriptor extends DefaultHybrisModuleDescriptor {
+public class CoreHybrisHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
 
-    public ExtModuleDescriptor(@NotNull final File moduleRootDirectory,
-                               @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public CoreHybrisHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                            @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
 
         super(moduleRootDirectory, rootProjectDescriptor);
@@ -41,6 +39,7 @@ public class ExtModuleDescriptor extends DefaultHybrisModuleDescriptor {
 
     @Override
     protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
+        return Collections.emptySet();
     }
+
 }

@@ -18,36 +18,26 @@
 
 package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.google.common.collect.Sets;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.libraries.LibraryTable;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 
 /**
- * Created by Martin Zdarsky-Jones on 18/08/2016.
+ * Created by Martin Zdarsky-Jones on 19/08/2016.
  */
-public class CoreModuleDescriptor extends ExtModuleDescriptor {
+public class CustomHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
 
-    public CoreModuleDescriptor(@NotNull final File moduleRootDirectory,
-                                @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public CustomHybrisModuleDescriptor(
+        @NotNull final File moduleRootDirectory,
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
-
         super(moduleRootDirectory, rootProjectDescriptor);
     }
 
-    @Override
-    protected Set<String> getDefaultRequiredExtensionNames() {
+    protected Collection<? extends String> getAdditionalRequiredExtensionNames() {
         return Collections.emptySet();
     }
-
 }

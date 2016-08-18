@@ -101,8 +101,14 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         final File[] resourcesInnerDirectories = resourcesDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
         for (File resourcesInnerDirectory : resourcesInnerDirectories) {
-            libraryDirectories.add(new File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY));
-            libraryDirectories.add(new File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY));
+            File file = new File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY);
+            if (file.exists()) {
+                libraryDirectories.add(file);
+            }
+            file = new File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY);
+            if (file.exists()) {
+                libraryDirectories.add(file);
+            }
         }
 
         libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY));
