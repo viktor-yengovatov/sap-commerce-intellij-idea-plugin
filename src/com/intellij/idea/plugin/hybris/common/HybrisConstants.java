@@ -31,11 +31,11 @@ public interface HybrisConstants {
     String LOCAL_EXTENSIONS_XML = "localextensions.xml";
     String HYBRIS_SERVER_SHELL_SCRIPT_NAME = "bin" + File.separatorChar + "platform" + File.separatorChar + "hybrisserver.sh";
     String PLATFORM_EXT_MODULE_PREFIX = "bin" + File.separatorChar + "platform" + File.separatorChar + "ext" + File.separatorChar;
+    String PLATFORM_OOTB_MODULE_PREFIX = "bin" + File.separatorChar + "ext-";
     String MEDIA_DIRECTORY = File.separatorChar + "data" + File.separatorChar + "media";
     String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = "bin" + File.separatorChar + "custom";
     String EXTENSIONS_XML = "extensions.xml";
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
-    String OLD_IDEA_MODULE_FILE_EXTENSION = ".eml";
     String PLATFORM_EXTENSION_NAME = "platform";
     String BOOTSTRAP_EXTENSION_NAME = "bootstrap";
     String CORE_EXTENSION_NAME = "core";
@@ -83,6 +83,7 @@ public interface HybrisConstants {
     String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
     String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
 
+    String PLATFORM_LIBRARY_GROUP = "Platform Bootstrap";
 
     String WEB_INF_LIB_DIRECTORY = "web/webroot/WEB-INF/lib";
     String WEB_INF_CLASSES_DIRECTORY = "web/webroot/WEB-INF/classes";
@@ -100,7 +101,6 @@ public interface HybrisConstants {
     String WEB_COMPILER_OUTPUT_PATH = WEB_INF_CLASSES_DIRECTORY;
     String BACKOFFICE_COMPILER_OUTPUT_PATH = "/backoffice/classes";
     String JAVA_COMPILER_OUTPUT_PATH = "/classes";
-    String COMPILER_OUTPUT_PATH = "/eclipsebin";
 
     String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
     String HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml";

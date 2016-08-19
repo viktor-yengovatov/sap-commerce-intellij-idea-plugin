@@ -22,8 +22,10 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
+import com.intellij.idea.plugin.hybris.project.settings.ExtHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.settings.OotbHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -36,7 +38,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created 12:22 AM 25 June 2015.
@@ -61,24 +65,37 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
             modifiableRootModels.add(this.modifiableModelsProvider.getModuleModifiableModel(module));
         }
 
+        final Set<String> extModules = new HashSet<>();
+        for (HybrisModuleDescriptor moduleDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
+            if (moduleDescriptor instanceof ExtHybrisModuleDescriptor) {
+                extModules.add(moduleDescriptor.getName());
+            }
+        }
+
         for (HybrisModuleDescriptor moduleDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
             final ModifiableRootModel modifiableRootModel = Iterables.find(
                 modifiableRootModels,
                 new FindModifiableRootModelByName(moduleDescriptor.getName())
             );
 
-            this.configureModuleDependencies(moduleDescriptor, modifiableRootModel, modifiableRootModels);
+            this.configureModuleDependencies(moduleDescriptor, modifiableRootModel, modifiableRootModels, extModules);
         }
     }
 
     protected void configureModuleDependencies(@NotNull final HybrisModuleDescriptor moduleDescriptor,
                                                @NotNull final ModifiableRootModel modifiableRootModel,
-                                               @NotNull final Collection<ModifiableRootModel> modifiableRootModels) {
+                                               @NotNull final Collection<ModifiableRootModel> modifiableRootModels,
+                                               @NotNull final Set<String> extModules) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(modifiableRootModel);
         Validate.notNull(modifiableRootModels);
 
         for (String dependsOnModuleName : moduleDescriptor.getRequiredExtensionNames()) {
+            if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
+                if (extModules.contains(dependsOnModuleName)) {
+                    continue;
+                }
+            }
             final Optional<ModifiableRootModel> dependsOnModifiableRootModelOptional = Iterables.tryFind(
                 modifiableRootModels,
                 new FindModifiableRootModelByName(dependsOnModuleName)

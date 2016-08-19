@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
+import com.intellij.idea.plugin.hybris.project.settings.CoreHybrisHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.settings.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.settings.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.libraries.Library;
@@ -68,6 +68,15 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         Validate.notNull(moduleDescriptor);
 
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
+
+        if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
+            final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor)moduleDescriptor;
+            hybrisModuleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider);
+        }
+
+        if (moduleDescriptor instanceof CoreHybrisHybrisModuleDescriptor) {
+            addLibsToModule(modifiableRootModel, HybrisConstants.PLATFORM_LIBRARY_GROUP);
+        }
 
         for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
             if (javaLibraryDescriptor.isDirectoryWithClasses()) {
@@ -166,6 +175,22 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         libraryModifiableModel.commit();
+    }
+
+    protected void addLibsToModule(@NotNull final ModifiableRootModel modifiableRootModel,
+                                   @NotNull final String libraryName) {
+        Validate.notNull(modifiableRootModel);
+
+        final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(modifiableRootModel.getProject());
+        Library libsGroup = projectLibraryTable.getLibraryByName(libraryName);
+
+        if (null == libsGroup) {
+            libsGroup = projectLibraryTable.createLibrary(libraryName);
+        }
+
+        modifiableRootModel.addLibraryEntry(libsGroup);
+
+        setLibraryEntryExported(modifiableRootModel, libsGroup);
     }
 
     protected void setLibraryEntryExported(@NotNull final ModifiableRootModel modifiableRootModel,

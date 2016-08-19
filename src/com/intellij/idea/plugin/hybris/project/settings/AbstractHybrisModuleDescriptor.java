@@ -205,13 +205,6 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         return this.getRootProjectDescriptor().isCustomExtensionsPresent();
     }
 
-    @Override
-    public boolean isPlatformExtModule() {
-        return this.moduleRootDirectory.getAbsolutePath().endsWith(
-            HybrisConstants.PLATFORM_EXT_MODULE_PREFIX + getName()
-        );
-    }
-
     @Nullable
     @Override
     public File getWebRoot() {

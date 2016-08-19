@@ -22,18 +22,16 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Collection;
 
 /**
- * Created 1:58 PM 20 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ * Created by Martin Zdarsky-Jones on 19/08/2016.
  */
-public interface HybrisModuleDescriptorFactory {
+public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
 
-    @NotNull
-    HybrisModuleDescriptor createDescriptor(@NotNull File file,
-                                            @NotNull HybrisProjectDescriptor rootProjectDescriptor
-    ) throws HybrisConfigurationException;
-
+    public OotbHybrisModuleDescriptor(
+        @NotNull final File moduleRootDirectory,
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
+        super(moduleRootDirectory, rootProjectDescriptor);
+    }
 }

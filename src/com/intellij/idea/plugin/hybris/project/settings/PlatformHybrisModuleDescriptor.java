@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -91,4 +92,56 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     public boolean isPreselected() {
         return true;
     }
+
+    public Library createBootstrapLib(@Nullable final VirtualFile sourceCodeRoot,
+                                      @NotNull final ModifiableModelsProvider modifiableModelsProvider) {
+
+        final Collection<File> libraryDirectories = new ArrayList<>();
+        final File resourcesDirectory = new File(this.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+        final File[] resourcesInnerDirectories = resourcesDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+
+        for (File resourcesInnerDirectory : resourcesInnerDirectories) {
+            File file = new File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY);
+            if (file.exists()) {
+                libraryDirectories.add(file);
+            }
+            file = new File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY);
+            if (file.exists()) {
+                libraryDirectories.add(file);
+            }
+        }
+
+        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY));
+        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY));
+        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY));
+        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY));
+
+        final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
+            .getLibraryTableModifiableModel(getRootProjectDescriptor().getProject());
+
+        Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP);
+        if (null == library) {
+            library = libraryTableModifiableModel.createLibrary(HybrisConstants.PLATFORM_LIBRARY_GROUP);
+        }
+
+        if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {
+            final ExistingLibraryEditor existingLibraryEditor = ((LibrariesModifiableModel) libraryTableModifiableModel).getLibraryEditor(library);
+            for (final File libRoot: libraryDirectories) {
+                existingLibraryEditor.addJarDirectory(
+                    VfsUtil.getUrlForLibraryRoot(libRoot), true, OrderRootType.CLASSES
+                );
+                if (null != sourceCodeRoot) {
+                    existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES);
+                }
+            }
+        } else {
+            final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
+            for (final File libRoot: libraryDirectories) {
+                libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libRoot), true);
+            }
+            libraryModifiableModel.commit();
+        }
+        return library;
+    }
+
 }

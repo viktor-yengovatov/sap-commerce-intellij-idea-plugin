@@ -52,9 +52,36 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
     }
 
     @Override
+    public boolean isPlatformExtModule(@NotNull final File file) {
+        Validate.notNull(file);
+
+        return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
+               && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
+               && !isCoreExtModule(file);
+    }
+
+    @Override
+    public boolean isCoreExtModule(@NotNull final File file) {
+        Validate.notNull(file);
+
+        return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
+               && file.getName().equals(HybrisConstants.CORE_EXTENSION_NAME)
+               && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
+    }
+
+    @Override
     public boolean isRegularModule(@NotNull final File file) {
         Validate.notNull(file);
 
-        return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
+        return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
+               && !isPlatformExtModule(file);
+    }
+
+    @Override
+    public boolean isOutOfTheBoxModule(@NotNull final File file) {
+        Validate.notNull(file);
+
+        return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX)
+               && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 }
