@@ -85,7 +85,9 @@ public interface HybrisConstants {
 
     String PLATFORM_LIBRARY_GROUP = "Platform Bootstrap";
 
-    String WEB_INF_LIB_DIRECTORY = "web/webroot/WEB-INF/lib";
+    String WEBINF_LIB_DIRECTORY = "webroot/WEB-INF/lib";
+    String WEB_WEBINF_LIB_DIRECTORY = WEB_MODULE_DIRECTORY+"/"+WEBINF_LIB_DIRECTORY;
+    String COMMONWEB_WEBINF_LIB_DIRECTORY = COMMON_WEB_MODULE_DIRECTORY+"/"+WEBINF_LIB_DIRECTORY;
     String WEB_INF_CLASSES_DIRECTORY = "web/webroot/WEB-INF/classes";
     String WEB_SRC_DIRECTORY = "web/src";
     String HMC_LIB_DIRECTORY = "hmc/bin";
