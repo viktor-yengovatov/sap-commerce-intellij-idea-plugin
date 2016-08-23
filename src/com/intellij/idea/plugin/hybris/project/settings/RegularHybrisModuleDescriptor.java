@@ -207,7 +207,8 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         ));
 
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.LIB_DIRECTORY), true));
-        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_INF_LIB_DIRECTORY), false));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.WEB_WEBINF_LIB_DIRECTORY), false));
+        libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.COMMONWEB_WEBINF_LIB_DIRECTORY), false));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY), true));
         libs.add(new DefaultJavaLibraryDescriptor(new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY), true));
 
