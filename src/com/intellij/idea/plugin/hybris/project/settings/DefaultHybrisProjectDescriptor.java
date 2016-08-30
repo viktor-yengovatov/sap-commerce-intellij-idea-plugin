@@ -448,6 +448,18 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
+        final PlatformHybrisModuleDescriptor platformDsc = getPlatformDescriptor(moduleDescriptors);
+        if (platformDsc != null) {
+            final File strapRoot = new File (platformDsc.getRootDirectory(), HybrisConstants.BOOTSTRAP_EXTENSION_NAME);
+            try {
+                moduleDescriptors.add(new BootstrapModuleDescriptor(strapRoot, this));
+            } catch (HybrisConfigurationException e) {
+                LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
+
+                pathsFailedToImport.add(strapRoot);
+            }
+        }
+
         if (null != errorsProcessor) {
             if (errorsProcessor.shouldContinue(pathsFailedToImport)) {
                 throw new InterruptedException("Modules scanning has been interrupted.");
@@ -459,6 +471,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.buildDependencies(moduleDescriptors);
 
         this.foundModules.addAll(moduleDescriptors);
+    }
+
+    private PlatformHybrisModuleDescriptor getPlatformDescriptor(final List<HybrisModuleDescriptor> moduleDescriptors) {
+        for (final HybrisModuleDescriptor descriptor: moduleDescriptors) {
+            if (descriptor instanceof PlatformHybrisModuleDescriptor) {
+                return (PlatformHybrisModuleDescriptor) descriptor;
+            }
+        }
+        return null;
     }
 
     @NotNull

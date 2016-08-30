@@ -24,23 +24,41 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Martin Zdarsky-Jones on 18/08/2016.
+ * Created by Martin Zdarsky-Jones on 30/08/2016.
  */
-public class CoreHybrisHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
+public class BootstrapModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
-    public CoreHybrisHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
-                                            @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public BootstrapModuleDescriptor(
+        @NotNull final File moduleRootDirectory,
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
-
         super(moduleRootDirectory, rootProjectDescriptor);
     }
 
+    @NotNull
     @Override
-    protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.singleton(HybrisConstants.BOOTSTRAP_EXTENSION_NAME);
+    public String getName() {
+        return HybrisConstants.BOOTSTRAP_EXTENSION_NAME;
     }
 
+    @NotNull
+    @Override
+    public Set<String> getRequiredExtensionNames() {
+        return Collections.EMPTY_SET;
+    }
+
+    @NotNull
+    @Override
+    public List<JavaLibraryDescriptor> getLibraryDescriptors() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public boolean isPreselected() {
+        return true;
+    }
 }
