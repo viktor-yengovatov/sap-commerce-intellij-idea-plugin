@@ -38,6 +38,7 @@ public interface HybrisConstants {
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     String PLATFORM_EXTENSION_NAME = "platform";
     String BOOTSTRAP_EXTENSION_NAME = "bootstrap";
+    String BOOTSTRAP_MODELS_JAR = "models.jar";
     String CORE_EXTENSION_NAME = "core";
     String BACK_OFFICE_EXTENSION_NAME = "backoffice";
     String BACK_OFFICE_MODULE_META_KEY_NAME = "backoffice-module";
@@ -93,8 +94,6 @@ public interface HybrisConstants {
     String HMC_LIB_DIRECTORY = "hmc/bin";
     String BACKOFFICE_LIB_DIRECTORY = "backoffice/bin";
 
-    String PL_BOOTSTRAP_LIB_DIRECTORY = "bootstrap/bin";
-    String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = "bootstrap/gensrc";
     String PL_TOMCAT_LIB_DIRECTORY = "tomcat/lib";
     String PL_TOMCAT_BIN_DIRECTORY = "tomcat/bin";
 

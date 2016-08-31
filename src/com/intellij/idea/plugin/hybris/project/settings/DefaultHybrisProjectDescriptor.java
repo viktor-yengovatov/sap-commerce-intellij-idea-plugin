@@ -448,17 +448,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        final PlatformHybrisModuleDescriptor platformDsc = getPlatformDescriptor(moduleDescriptors);
-        if (platformDsc != null) {
-            final File strapRoot = new File (platformDsc.getRootDirectory(), HybrisConstants.BOOTSTRAP_EXTENSION_NAME);
-            try {
-                moduleDescriptors.add(new BootstrapModuleDescriptor(strapRoot, this));
-            } catch (HybrisConfigurationException e) {
-                LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
-
-                pathsFailedToImport.add(strapRoot);
-            }
-        }
+        addBootStrapModule(moduleDescriptors, pathsFailedToImport);
 
         if (null != errorsProcessor) {
             if (errorsProcessor.shouldContinue(pathsFailedToImport)) {
@@ -482,6 +472,23 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         return null;
     }
 
+    private void addBootStrapModule(
+        final List<HybrisModuleDescriptor> moduleDescriptors,
+        final List<File> pathsFailedToImport
+    ) {
+        final PlatformHybrisModuleDescriptor platformDsc = getPlatformDescriptor(moduleDescriptors);
+        if (platformDsc != null) {
+            final File strapRoot = new File (platformDsc.getRootDirectory(), HybrisConstants.BOOTSTRAP_EXTENSION_NAME);
+            try {
+                moduleDescriptors.add(new BootstrapModuleDescriptor(strapRoot, this));
+            } catch (HybrisConfigurationException e) {
+                LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
+
+                pathsFailedToImport.add(strapRoot);
+            }
+        }
+    }
+
     @NotNull
     protected List<File> findModuleRoots(@NotNull final File rootProjectDirectory,
                                          @Nullable final TaskProgressProcessor<File> progressListenerProcessor
@@ -500,6 +507,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.isRegularModule(rootProjectDirectory)
             || hybrisProjectService.isPlatformExtModule(rootProjectDirectory)
+            || hybrisProjectService.isOutOfTheBoxModule(rootProjectDirectory)
             || hybrisProjectService.isCoreExtModule(rootProjectDirectory)
             || hybrisProjectService.isConfigModule(rootProjectDirectory)) {
 

@@ -129,20 +129,20 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     private Collection<File> getLibraryDirectories() {
         final Collection<File> libraryDirectories = new ArrayList<>();
         final File resourcesDirectory = new File(this.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
-        final File[] resourcesInnerDirectories = resourcesDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-
-        for (File resourcesInnerDirectory : resourcesInnerDirectories) {
-            File file = new File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY);
-            if (file.exists()) {
-                libraryDirectories.add(file);
-            }
-            file = new File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY);
-            if (file.exists()) {
-                libraryDirectories.add(file);
+        if (resourcesDirectory.exists()) {
+            final File[] resourcesInnerDirectories = resourcesDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+            for (File resourcesInnerDirectory : resourcesInnerDirectories) {
+                File file = new File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY);
+                if (file.exists()) {
+                    libraryDirectories.add(file);
+                }
+                file = new File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY);
+                if (file.exists()) {
+                    libraryDirectories.add(file);
+                }
             }
         }
 
-        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY));
         libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY));
         libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY));
 

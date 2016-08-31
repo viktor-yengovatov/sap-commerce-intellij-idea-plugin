@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +55,25 @@ public class BootstrapModuleDescriptor extends AbstractHybrisModuleDescriptor {
     @NotNull
     @Override
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        return Collections.EMPTY_LIST;
+        final List<JavaLibraryDescriptor> libraryDescriptors = new ArrayList<>();
+        final File binDir = new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY);
+        if (binDir.isDirectory()) {
+            final File[] jarFiles = binDir.listFiles(
+                (dir, name) -> {
+                    if (!name.endsWith(".jar")) {
+                        return false;
+                    }
+                    if (name.equals(HybrisConstants.BOOTSTRAP_MODELS_JAR)) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            for (File jarFile: jarFiles) {
+                libraryDescriptors.add(new DefaultJavaLibraryDescriptor(jarFile, true));
+            }
+        }
+        return libraryDescriptors;
     }
 
     @Override
