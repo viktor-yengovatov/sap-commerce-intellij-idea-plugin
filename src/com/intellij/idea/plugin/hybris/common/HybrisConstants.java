@@ -62,6 +62,7 @@ public interface HybrisConstants {
     String GEN_SRC_DIRECTORY = "gensrc";
     String TEST_SRC_DIRECTORY = "testsrc";
     String HMC_MODULE_DIRECTORY = "hmc";
+    String HAC_MODULE_DIRECTORY = "hac";
     String WEB_MODULE_DIRECTORY = "web";
     String BACK_OFFICE_MODULE_DIRECTORY = "backoffice";
     String ADDON_SRC_DIRECTORY = "addonsrc";
