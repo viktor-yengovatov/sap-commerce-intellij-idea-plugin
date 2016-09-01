@@ -26,6 +26,8 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Ext
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -434,6 +436,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<HybrisModuleDescriptor>();
         final List<File> pathsFailedToImport = new ArrayList<File>();
 
+        addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport);
+
         final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ServiceManager.getService(
             HybrisModuleDescriptorFactory.class
         );
@@ -461,6 +465,23 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.buildDependencies(moduleDescriptors);
 
         this.foundModules.addAll(moduleDescriptors);
+    }
+
+    private void addRootModule(
+        final File rootDirectory, final List<HybrisModuleDescriptor> moduleDescriptors,
+        final List<File> pathsFailedToImport
+    ) {
+        final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final boolean groupModules = hybrisApplicationSettings.isGroupModules();
+        if (groupModules) {
+            return;
+        }
+        try {
+            moduleDescriptors.add(new RootModuleDescriptor(rootDirectory, this));
+        } catch (HybrisConfigurationException e) {
+            LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
+            pathsFailedToImport.add(rootDirectory);
+        }
     }
 
     private PlatformHybrisModuleDescriptor getPlatformDescriptor(final List<HybrisModuleDescriptor> moduleDescriptors) {
