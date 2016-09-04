@@ -74,7 +74,9 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
 
 
         this.configureCommonRoots(moduleDescriptor, contentEntry);
-        this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
+        if (moduleDescriptor.getRequiredExtensionNames().contains(HybrisConstants.HMC_EXTENSION_NAME)) {
+            this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
+        }
         this.configureAdditionalRoots(moduleDescriptor, HAC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
         this.configureWebRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory());
         this.configureCommonWebRoots(moduleDescriptor, contentEntry);
