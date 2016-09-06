@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.settings;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +39,7 @@ public class CoreHybrisHybrisModuleDescriptor extends ExtHybrisModuleDescriptor 
 
     @Override
     protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.singleton(HybrisConstants.BOOTSTRAP_EXTENSION_NAME);
+        return Collections.emptySet();
     }
 
 }

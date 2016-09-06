@@ -37,8 +37,6 @@ public interface HybrisConstants {
     String EXTENSIONS_XML = "extensions.xml";
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     String PLATFORM_EXTENSION_NAME = "platform";
-    String BOOTSTRAP_EXTENSION_NAME = "bootstrap";
-    String BOOTSTRAP_MODELS_JAR = "models.jar";
     String CORE_EXTENSION_NAME = "core";
     String BACK_OFFICE_EXTENSION_NAME = "backoffice";
     String BACK_OFFICE_MODULE_META_KEY_NAME = "backoffice-module";
@@ -56,7 +54,7 @@ public interface HybrisConstants {
     String BUILD_NUMBER_FILE_PATH = File.separatorChar + "bin" + File.separatorChar + "platform" + File.separatorChar + "build.number";
     String HYBRIS_API_VERSION_KEY = "version.api";
     String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/%s/commercesuite";
-    String HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL = "https://help.hybris.com/%s/hcd/index.html";
+    String HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL = "https://help.hybris.com/%s/api/commercesuite/index.html";
 
     String SRC_DIRECTORY = "src";
     String GEN_SRC_DIRECTORY = "gensrc";
@@ -95,6 +93,8 @@ public interface HybrisConstants {
     String HMC_LIB_DIRECTORY = "hmc/bin";
     String BACKOFFICE_LIB_DIRECTORY = "backoffice/bin";
 
+    String PL_BOOTSTRAP_LIB_DIRECTORY = "bootstrap/bin";
+    String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = "bootstrap/gensrc";
     String PL_TOMCAT_LIB_DIRECTORY = "tomcat/lib";
     String PL_TOMCAT_BIN_DIRECTORY = "tomcat/bin";
 

@@ -97,6 +97,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
                                       @NotNull final ModifiableModelsProvider modifiableModelsProvider) {
 
         final Collection<File> libraryDirectories = getLibraryDirectories();
+        final File bootStrapSrc = new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY);
 
         final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
             .getLibraryTableModifiableModel(getRootProjectDescriptor().getProject());
@@ -116,11 +117,16 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
                     existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES);
                 }
             }
+            existingLibraryEditor.addRoot(
+                VfsUtil.getUrlForLibraryRoot(bootStrapSrc), OrderRootType.SOURCES
+            );
+
         } else {
             final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
             for (final File libRoot: libraryDirectories) {
                 libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libRoot), true);
             }
+            libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(bootStrapSrc), OrderRootType.SOURCES);
             libraryModifiableModel.commit();
         }
         return library;
@@ -143,6 +149,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
             }
         }
 
+        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY));
         libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY));
         libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY));
 
