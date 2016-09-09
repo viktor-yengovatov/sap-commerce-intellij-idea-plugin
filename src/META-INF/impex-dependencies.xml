@@ -38,11 +38,7 @@
                          shortName="TSVBased"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspection.tsv.key"
-                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.TSVBasedInspection"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.type.system.inspections.TSVRuleSetAccess"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.TSVRuleSetAccess"/>
-
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.XmlRuleInspection"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->
