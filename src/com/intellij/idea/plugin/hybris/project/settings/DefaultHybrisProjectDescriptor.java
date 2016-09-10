@@ -53,7 +53,6 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -578,9 +577,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         Validate.notNull(addOn);
         Validate.notNull(addOnDependencies);
 
-        for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
-            if (moduleDescriptor.getRequiredExtensionNames().contains(addOn.getName())) {
-                addOnDependencies.add(moduleDescriptor);
+        if (HybrisApplicationSettingsComponent.getInstance().getState().isCreateBackwardCyclicDependenciesForAddOns()) {
+            for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
+                if (moduleDescriptor.getRequiredExtensionNames().contains(addOn.getName())) {
+                    addOnDependencies.add(moduleDescriptor);
+                }
             }
         }
     }

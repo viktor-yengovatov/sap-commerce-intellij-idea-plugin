@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.List;
 
@@ -82,6 +83,9 @@ public class HybrisApplicationSettings {
 
     @PropertyName("defaultPlatformInReadOnly")
     private boolean defaultPlatformInReadOnly = false;
+
+    @PropertyName("createBackwardCyclicDependenciesForAddOns")
+    private boolean createBackwardCyclicDependenciesForAddOns = false;
 
 
     public HybrisApplicationSettings() {
@@ -175,6 +179,15 @@ public class HybrisApplicationSettings {
         this.defaultPlatformInReadOnly = defaultPlatformInReadOnly;
     }
 
+    public boolean isCreateBackwardCyclicDependenciesForAddOns() {
+        return createBackwardCyclicDependenciesForAddOns;
+    }
+
+    @Required
+    public void setCreateBackwardCyclicDependenciesForAddOns(final boolean createBackwardCyclicDependenciesForAddOns) {
+        this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
+    }
+
     public String getGroupPlatform() {
         return groupPlatform;
     }
@@ -208,6 +221,7 @@ public class HybrisApplicationSettings {
             .append(groupPlatform, other.groupPlatform)
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
+            .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .isEquals();
     }
 
@@ -226,6 +240,7 @@ public class HybrisApplicationSettings {
             .append(groupPlatform)
             .append(hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly)
+            .append(createBackwardCyclicDependenciesForAddOns)
             .toHashCode();
     }
 
@@ -244,6 +259,7 @@ public class HybrisApplicationSettings {
         sb.append(", groupPlatform='").append(groupPlatform).append('\'');
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
+        sb.append(", createBackwardCyclicDependenciesForAddOns='").append(createBackwardCyclicDependenciesForAddOns).append('\'');
         sb.append('}');
         return sb.toString();
     }

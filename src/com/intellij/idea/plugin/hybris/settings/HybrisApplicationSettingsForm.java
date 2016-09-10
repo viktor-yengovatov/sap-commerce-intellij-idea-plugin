@@ -60,6 +60,7 @@ public class HybrisApplicationSettingsForm {
     private JLabel projectTreeViewSettingsLabel;
     private JCheckBox defaultPlatformInReadOnly;
     private JTextField groupPlatformTextField;
+    private JCheckBox createBackwardCyclicDependenciesForAddOns;
 
     private JunkListPanel junkListPanel;
 
@@ -76,6 +77,7 @@ public class HybrisApplicationSettingsForm {
         groupPlatformTextField.setText(data.getGroupPlatform());
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
         defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
+        createBackwardCyclicDependenciesForAddOns.setSelected(data.isCreateBackwardCyclicDependenciesForAddOns());
     }
 
     public void getData(final HybrisApplicationSettings data) {
@@ -91,6 +93,7 @@ public class HybrisApplicationSettingsForm {
         data.setGroupPlatform(groupPlatformTextField.getText());
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
+        data.setCreateBackwardCyclicDependenciesForAddOns(createBackwardCyclicDependenciesForAddOns.isSelected());
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -128,6 +131,9 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (defaultPlatformInReadOnly.isSelected() != data.isDefaultPlatformInReadOnly()) {
+            return true;
+        }
+        if (createBackwardCyclicDependenciesForAddOns.isSelected() != data.isCreateBackwardCyclicDependenciesForAddOns()) {
             return true;
         }
         return false;
