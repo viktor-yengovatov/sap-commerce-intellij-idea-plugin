@@ -40,8 +40,8 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,6 +61,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 
 /**
@@ -544,8 +545,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
             for (String requiresExtensionName : requiredExtensionNames) {
 
-                final Iterable<HybrisModuleDescriptor> dependsOn = Iterables.filter(
-                    moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
+                final Iterable<HybrisModuleDescriptor> dependsOn = this.findHybrisModuleDescriptorsByName(
+                    moduleDescriptors, requiresExtensionName
                 );
 
                 if (Iterables.isEmpty(dependsOn)) {
@@ -560,7 +561,40 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 }
             }
 
+            if (moduleDescriptor.isAddOn()) {
+                this.processAddOnBackwardDependencies(moduleDescriptors, moduleDescriptor, dependencies);
+            }
+
             moduleDescriptor.setDependenciesTree(dependencies);
         }
+    }
+
+    protected void processAddOnBackwardDependencies(
+        @NotNull final Iterable<HybrisModuleDescriptor> moduleDescriptors,
+        @NotNull final HybrisModuleDescriptor addOn,
+        @NotNull final Set<HybrisModuleDescriptor> addOnDependencies
+    ) {
+        Validate.notNull(moduleDescriptors);
+        Validate.notNull(addOn);
+        Validate.notNull(addOnDependencies);
+
+        for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
+            if (moduleDescriptor.getRequiredExtensionNames().contains(addOn.getName())) {
+                addOnDependencies.add(moduleDescriptor);
+            }
+        }
+    }
+
+    @NotNull
+    protected Iterable<HybrisModuleDescriptor> findHybrisModuleDescriptorsByName(
+        @NotNull final Iterable<HybrisModuleDescriptor> moduleDescriptors,
+        @NotNull final String requiresExtensionName
+    ) {
+        Validate.notNull(moduleDescriptors);
+        Validate.notEmpty(requiresExtensionName);
+
+        return emptyIfNull(Iterables.filter(
+            moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
+        ));
     }
 }
