@@ -19,11 +19,11 @@
 package com.intellij.idea.plugin.hybris.project.settings;
 
 import com.google.common.collect.Sets;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.MetaType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -34,7 +34,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_META_KEY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
@@ -147,15 +152,31 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
         }
 
-        for (MetaType metaType : emptyIfNull(this.extensionInfo.getExtension().getMeta())) {
-            if (BACK_OFFICE_MODULE_META_KEY_NAME.equalsIgnoreCase(metaType.getKey())
-                && Boolean.TRUE.toString().equals(metaType.getValue())) {
-
-                requiredExtensionNames.add(HybrisConstants.BACK_OFFICE_EXTENSION_NAME);
-            }
+        if (this.hasBackofficeModule()) {
+            requiredExtensionNames.add(HybrisConstants.BACK_OFFICE_EXTENSION_NAME);
         }
 
         return Collections.unmodifiableSet(requiredExtensionNames);
+    }
+
+    protected boolean hasBackofficeModule() {
+        return this.isMetaKeySetToTrue(BACK_OFFICE_MODULE_META_KEY_NAME) && this.doesBackofficeDirectoryExist();
+    }
+
+    protected boolean isMetaKeySetToTrue(@NotNull final String metaKeyName) {
+        Validate.notEmpty(metaKeyName);
+
+        for (MetaType metaType : emptyIfNull(this.extensionInfo.getExtension().getMeta())) {
+            if (metaKeyName.equalsIgnoreCase(metaType.getKey())) {
+                return Boolean.TRUE.toString().equals(metaType.getValue());
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean doesBackofficeDirectoryExist() {
+        return new File(this.getRootDirectory(), HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY).isDirectory();
     }
 
     @NotNull
