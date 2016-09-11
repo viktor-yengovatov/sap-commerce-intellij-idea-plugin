@@ -69,6 +69,14 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
+        for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
+            if (javaLibraryDescriptor.isDirectoryWithClasses()) {
+                this.addClassesToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
+            } else {
+                this.addJarFolderToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
+            }
+        }
+
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor)moduleDescriptor;
             hybrisModuleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider);
@@ -76,14 +84,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
         if (moduleDescriptor instanceof CoreHybrisHybrisModuleDescriptor) {
             addLibsToModule(modifiableRootModel, HybrisConstants.PLATFORM_LIBRARY_GROUP);
-        }
-
-        for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
-            if (javaLibraryDescriptor.isDirectoryWithClasses()) {
-                this.addClassesToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
-            } else {
-                this.addJarFolderToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
-            }
         }
     }
 
