@@ -99,8 +99,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             return;
         }
 
-        for (String dependsOnModuleName : moduleDescriptor.getRequiredExtensionNames()) {
-            final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModuleName);
+        for (HybrisModuleDescriptor dependsOnModule : moduleDescriptor.getDependenciesTree()) {
+            final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModule.getName());
             if (parentFileSet == null) {
                 continue;
             }

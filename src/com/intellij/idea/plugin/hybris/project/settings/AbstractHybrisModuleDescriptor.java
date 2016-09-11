@@ -212,6 +212,11 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
+    public boolean isAddOn() {
+        return new File(this.getRootDirectory(), HybrisConstants.ACCELERATOR_ADDON_DIRECTORY).isDirectory();
+    }
+
+    @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .append(this.getName())

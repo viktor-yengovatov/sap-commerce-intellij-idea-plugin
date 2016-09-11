@@ -78,4 +78,6 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     @Nullable
     File getWebRoot();
+
+    boolean isAddOn();
 }
