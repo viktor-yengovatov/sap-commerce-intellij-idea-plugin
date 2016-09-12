@@ -24,6 +24,7 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -57,7 +58,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final boolean isOnTheFly
     ) {
 
-        if (false == file instanceof XmlFile) {
+        if (!isTypeSystemFile(file)) {
             return null;
         }
         XmlFile xmlFile = (XmlFile) file;
@@ -93,6 +94,10 @@ public class XmlRuleInspection extends LocalInspectionTool {
     protected boolean shouldCheckFilesWithoutHybrisSettings() {
         //probably it is a test project where we DO want to show warnings
         return true;
+    }
+
+    private boolean isTypeSystemFile(@NotNull PsiFile file) {
+        return TypeSystemDomFileDescription.isTypeSystemXmlFile(file);
     }
 
     protected boolean shouldCheckFile(@NotNull PsiFile file) {
