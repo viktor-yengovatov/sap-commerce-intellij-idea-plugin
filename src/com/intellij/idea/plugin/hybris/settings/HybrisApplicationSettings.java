@@ -22,7 +22,6 @@ import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.beans.factory.annotation.Required;
 
 import java.util.List;
 
@@ -183,7 +182,6 @@ public class HybrisApplicationSettings {
         return createBackwardCyclicDependenciesForAddOns;
     }
 
-    @Required
     public void setCreateBackwardCyclicDependenciesForAddOns(final boolean createBackwardCyclicDependenciesForAddOns) {
         this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
     }
