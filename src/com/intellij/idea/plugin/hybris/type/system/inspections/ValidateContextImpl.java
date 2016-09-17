@@ -57,24 +57,24 @@ class ValidateContextImpl implements ValidateContext {
     private final MyXPath myXPath = new MyXPath();
 
     public ValidateContextImpl(
-        @NotNull InspectionManager manager,
-        @NotNull XmlFile psiFile,
-        @NotNull Document document,
-        boolean isOnTheFly
+        @NotNull final InspectionManager manager,
+        @NotNull final XmlFile psiFile,
+        @NotNull final Document document,
+        final boolean isOnTheFly
     ) {
-        myManager = manager;
-        myPsiFile = psiFile;
-        myDocument = document;
-        myIsOnTheFly = isOnTheFly;
+        this.myManager = manager;
+        this.myPsiFile = psiFile;
+        this.myDocument = document;
+        this.myIsOnTheFly = isOnTheFly;
     }
 
     @Nullable
     public static ValidateContext createFileContext(
-        @NotNull InspectionManager manager,
-        boolean isOnTheFly,
-        @SuppressWarnings("TypeMayBeWeakened") @NotNull XmlFile psiFile
+        @NotNull final InspectionManager manager,
+        final boolean isOnTheFly,
+        @SuppressWarnings("TypeMayBeWeakened") @NotNull final XmlFile psiFile
     ) {
-        Document mappedDocument;
+        final Document mappedDocument;
         try (StringReader reader = new StringReader(psiFile.getText())) {
             mappedDocument = buildMappedDocument(new InputSource(reader));
         } catch (SAXException | IOException e) {
@@ -87,43 +87,43 @@ class ValidateContextImpl implements ValidateContext {
     @NotNull
     @Override
     public InspectionManager getManager() {
-        return myManager;
+        return this.myManager;
     }
 
     @NotNull
     @Override
     public MyXPath getXPath() {
-        return myXPath;
+        return this.myXPath;
     }
 
     @Override
     public boolean isOnTheFly() {
-        return myIsOnTheFly;
+        return this.myIsOnTheFly;
     }
 
     @NotNull
     @Override
     public Document getDocument() {
-        return myDocument;
+        return this.myDocument;
     }
 
     @NotNull
     @Override
     public PsiElement mapNodeToPsi(@NotNull final Node xmlNode) {
-        PsiElement result = findByLineAndColumn(myPsiFile, MappedDocumentBuilder.START_LOC.get(xmlNode));
-        return result == null ? myPsiFile : result;
+        final PsiElement result = findByLineAndColumn(this.myPsiFile, MappedDocumentBuilder.START_LOC.get(xmlNode));
+        return result == null ? this.myPsiFile : result;
     }
 
     @Nullable
     private static PsiElement findByLineAndColumn(
-        @NotNull XmlFile file,
-        @Nullable Point columnAndLine
+        @NotNull final PsiElement file,
+        @Nullable final Point columnAndLine
     ) {
         if (columnAndLine == null) {
             return file;
         }
-        int line = columnAndLine.y - 1;
-        int column = columnAndLine.x - 1;
+        final int line = columnAndLine.y - 1;
+        final int column = columnAndLine.x - 1;
 
         PsiElement leaf = findByLineAndColumn(file, line, column);
 
@@ -131,27 +131,28 @@ class ValidateContextImpl implements ValidateContext {
             leaf = PsiTreeUtil.prevVisibleLeaf(leaf);
         }
 
-        PsiElement tag = leaf instanceof XmlTag ? leaf : PsiTreeUtil.getParentOfType(leaf, XmlTag.class);
+        final PsiElement tag = leaf instanceof XmlTag ? leaf : PsiTreeUtil.getParentOfType(leaf, XmlTag.class);
         return tag == null ? leaf : tag;
     }
 
-    private static PsiElement findByLineAndColumn(@NotNull XmlFile file, int line, int column) {
-        String fullText = file.getText();
+    private static PsiElement findByLineAndColumn(@NotNull final PsiElement file, final int line, final int column) {
+        final String fullText = file.getText();
         int offset = StringUtil.lineColToOffset(fullText, line, column);
+
         if (offset < 0) {
             offset = StringUtil.lineColToOffset(fullText, line, 0);
         }
-        PsiElement result = file.findElementAt(offset);
-        return result;
+
+        return file.findElementAt(offset);
     }
 
-    private static Document buildMappedDocument(InputSource source) throws SAXException, IOException {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
+    private static Document buildMappedDocument(final InputSource source) throws SAXException, IOException {
+        final SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
 
-        Document result;
+        final Document result;
         try {
-            SAXParser sp = factory.newSAXParser();
+            final SAXParser sp = factory.newSAXParser();
             result = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             sp.parse(source, new MappedDocumentBuilder(result));
         } catch (ParserConfigurationException e) {
@@ -164,21 +165,21 @@ class ValidateContextImpl implements ValidateContext {
 
         private final String myName;
 
-        public NodeKey(@NotNull Class<?> contextClazz, @NotNull String name) {
+        public NodeKey(@NotNull final Class<?> contextClazz, @NotNull final String name) {
             this(contextClazz.getName() + ':' + name);
         }
 
-        public NodeKey(@NotNull String name) {
-            myName = name;
+        public NodeKey(@NotNull final String name) {
+            this.myName = name;
         }
 
-        public T get(@NotNull Node node) {
+        public T get(@NotNull final Node node) {
             //noinspection unchecked
-            return (T) node.getUserData(myName);
+            return (T) node.getUserData(this.myName);
         }
 
-        public void put(@NotNull Node node, T value) {
-            node.setUserData(myName, value, null);
+        public void put(@NotNull final Node node, final T value) {
+            node.setUserData(this.myName, value, null);
         }
 
     }
@@ -192,92 +193,88 @@ class ValidateContextImpl implements ValidateContext {
         private Locator myLocator;
         private LinkedList<Node> myElements = new LinkedList<>();
 
-        public MappedDocumentBuilder(Document doc) {
-            myDoc = doc;
-            myElements.addFirst(myDoc);
+        public MappedDocumentBuilder(final Document doc) {
+            this.myDoc = doc;
+            this.myElements.addFirst(this.myDoc);
         }
 
         @Override
-        public void setDocumentLocator(Locator locator) {
-            myLocator = locator;
+        public void setDocumentLocator(final Locator locator) {
+            this.myLocator = locator;
         }
 
-        protected Locator getLocator() {
-            return myLocator;
-        }
-
-        protected void markLocation(@NotNull Node node, @NotNull NodeKey<Point> key) {
-            if (myLocator != null) {
-                int line = myLocator.getLineNumber();
-                int column = myLocator.getColumnNumber();
-                Point point = new Point(column, line);
+        protected void markLocation(@NotNull final Node node, @NotNull final NodeKey<Point> key) {
+            if (this.myLocator != null) {
+                final int line = this.myLocator.getLineNumber();
+                final int column = this.myLocator.getColumnNumber();
+                final Point point = new Point(column, line);
                 key.put(node, point);
             }
         }
 
         @Override
         public void startElement(
-            String uri, String localName, String qName, Attributes attributes
+            final String uri, final String localName, final String qName, final Attributes attributes
         ) {
 
-            Element currentElement;
+            final Element currentElement;
             if (localName != null && !localName.isEmpty()) {
-                currentElement = myDoc.createElementNS(uri, localName);
+                currentElement = this.myDoc.createElementNS(uri, localName);
             } else {
-                currentElement = myDoc.createElement(qName);
+                currentElement = this.myDoc.createElement(qName);
             }
 
-            markLocation(currentElement, START_LOC);
-            appendElement(currentElement);
+            this.markLocation(currentElement, START_LOC);
+            this.appendElement(currentElement);
 
             if (attributes != null) {
                 for (int i = 0; i < attributes.getLength(); i++) {
-                    Attr nextAttr = createAndAppendAttribute(currentElement, attributes, i);
+                    final Attr nextAttr = this.createAndAppendAttribute(currentElement, attributes, i);
                     nextAttr.setValue(attributes.getValue(i));
-                    markLocation(nextAttr, START_LOC);
+                    this.markLocation(nextAttr, START_LOC);
                 }
             }
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) {
-            Node last = myElements.removeLast();
-            markLocation(last, END_LOC);
+        public void endElement(final String uri, final String localName, final String qName) {
+            final Node last = this.myElements.removeLast();
+            this.markLocation(last, END_LOC);
 
-            if (myElements.isEmpty()) {
+            if (this.myElements.isEmpty()) {
                 last.normalize();
             }
         }
 
         @Override
-        public void characters(@SuppressWarnings("StandardVariableNames") char[] ch, int start, int length) {
-            if (myElements.isEmpty()) {
+        public void characters(@SuppressWarnings("StandardVariableNames") final char[] ch, final int start, final int length) {
+            if (this.myElements.isEmpty()) {
                 //should never happen ?
                 return;
             }
-            Text text = myDoc.createTextNode(new String(ch, start, length));
-            markLocation(text, START_LOC);
-            myElements.peekLast().appendChild(text);
+            final Text text = this.myDoc.createTextNode(new String(ch, start, length));
+            this.markLocation(text, START_LOC);
+            this.myElements.peekLast().appendChild(text);
         }
 
-        private Attr createAndAppendAttribute(@NotNull Element owner, @NotNull Attributes attrs, int idx) {
-            String localName = attrs.getLocalName(idx);
-            Attr result;
+        private Attr createAndAppendAttribute(@NotNull final Element owner, @NotNull final Attributes attrs, final int idx) {
+            final String localName = attrs.getLocalName(idx);
+            final Attr result;
             if (StringUtil.isEmpty(localName)) {
-                result = myDoc.createAttribute(attrs.getQName(idx));
+                result = this.myDoc.createAttribute(attrs.getQName(idx));
                 owner.setAttributeNode(result);
             } else {
-                result = myDoc.createAttributeNS(attrs.getURI(idx), localName);
+                result = this.myDoc.createAttributeNS(attrs.getURI(idx), localName);
                 owner.setAttributeNodeNS(result);
             }
             return result;
         }
 
         @SuppressWarnings("TypeMayBeWeakened")
-        private void appendElement(@NotNull Element childElement) {
-            Node last = myElements.getLast();
+        private void appendElement(@NotNull final Element childElement) {
+            final Node last = this.myElements.getLast();
             last.appendChild(childElement);
-            myElements.addLast(childElement);
+            this.myElements.addLast(childElement);
         }
 
     }

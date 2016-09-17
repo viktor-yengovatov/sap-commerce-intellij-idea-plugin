@@ -30,9 +30,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 interface ValidateContext {
 
@@ -54,44 +51,24 @@ interface ValidateContext {
 
         private final XPath myXPath = XPathFactory.newInstance().newXPath();
 
-        public XPath getXPath() {
-            return myXPath;
-        }
-
         @NotNull
-        public NodeList computeNodeSet(@Nullable String xpath, @NotNull Object start) throws
-                                                                                      XPathExpressionException {
+        public NodeList computeNodeSet(@Nullable final String xpath, @NotNull final Object start)
+        throws XPathExpressionException {
             if (xpath == null) {
                 return EMPTY_NODE_LIST;
             }
-            return (NodeList) myXPath.evaluate(xpath, start, XPathConstants.NODESET);
+
+            return (NodeList) this.myXPath.evaluate(xpath, start, XPathConstants.NODESET);
         }
 
-        @NotNull
-        public List<Node> computeList(@Nullable String xpath, @NotNull Object start) throws
-                                                                                     XPathExpressionException {
-            return asList(computeNodeSet(xpath, start));
-        }
-
-        public boolean computeBoolean(@Nullable String xpath, @NotNull Object start) throws
-                                                                                     XPathExpressionException {
+        public boolean computeBoolean(@Nullable final String xpath, @NotNull final Object start)
+        throws XPathExpressionException {
             if (xpath == null) {
                 return false;
             }
-            Object result = myXPath.evaluate(xpath, start, XPathConstants.BOOLEAN);
-            return Boolean.TRUE.equals(result);
-        }
 
-        private static List<Node> asList(@NotNull NodeList nodeList) {
-            int length = nodeList.getLength();
-            if (length == 0) {
-                return Collections.emptyList();
-            }
-            List<Node> result = new ArrayList<>(length);
-            for (int i = 0; i < length; i++) {
-                result.add(nodeList.item(i));
-            }
-            return result;
+            final Object result = this.myXPath.evaluate(xpath, start, XPathConstants.BOOLEAN);
+            return Boolean.TRUE.equals(result);
         }
 
         private static NodeList EMPTY_NODE_LIST = new NodeList() {
@@ -106,7 +83,5 @@ interface ValidateContext {
                 return 0;
             }
         };
-
     }
-
 }

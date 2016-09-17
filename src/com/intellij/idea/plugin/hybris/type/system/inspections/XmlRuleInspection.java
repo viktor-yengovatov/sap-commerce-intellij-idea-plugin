@@ -30,6 +30,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.xml.XmlFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +42,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,27 +59,26 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final @NotNull InspectionManager manager,
         final boolean isOnTheFly
     ) {
-
-        if (!isTypeSystemFile(file)) {
+        if (!this.isTypeSystemFile(file)) {
             return null;
         }
-        XmlFile xmlFile = (XmlFile) file;
+        final XmlFile xmlFile = (XmlFile) file;
 
-        if (!shouldCheckFile(file)) {
+        if (!this.shouldCheckFile(file)) {
             return null;
         }
 
-        ValidateContext sharedContext = ValidateContextImpl.createFileContext(manager, isOnTheFly, xmlFile);
+        final ValidateContext sharedContext = ValidateContextImpl.createFileContext(manager, isOnTheFly, xmlFile);
         if (sharedContext == null) {
             return null;
         }
 
-        List<ProblemDescriptor> result = new ArrayList<>();
-        for (XmlRule nextRule : getRules()) {
+        final List<ProblemDescriptor> result = new ArrayList<>();
+        for (XmlRule nextRule : this.getRules()) {
             try {
-                validateOneRule(nextRule, sharedContext, result);
+                this.validateOneRule(nextRule, sharedContext, result);
             } catch (XPathExpressionException e) {
-                result.add(createValidationFailedProblem(sharedContext, xmlFile, nextRule, e));
+                result.add(this.createValidationFailedProblem(sharedContext, xmlFile, nextRule, e));
             }
         }
 
@@ -85,7 +86,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
     }
 
     @NotNull
-    protected Optional<String> getCustomDirectory(@NotNull PsiFile file) {
+    protected Optional<String> getCustomDirectory(@NotNull final PsiElement file) {
         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(file.getProject()))
                        .map(HybrisProjectSettingsComponent::getState)
                        .map(HybrisProjectSettings::getCustomDirectory);
@@ -96,19 +97,19 @@ public class XmlRuleInspection extends LocalInspectionTool {
         return true;
     }
 
-    private boolean isTypeSystemFile(@NotNull PsiFile file) {
+    private boolean isTypeSystemFile(@NotNull final PsiFile file) {
         return TypeSystemDomFileDescription.isTypeSystemXmlFile(file);
     }
 
-    protected boolean shouldCheckFile(@NotNull PsiFile file) {
+    protected boolean shouldCheckFile(@NotNull final PsiFileSystemItem file) {
         if (file.getVirtualFile() == null) {
             return false;
         }
 
-        Optional<String> optionalCustomDir = getCustomDirectory(file);
+        final Optional<String> optionalCustomDir = this.getCustomDirectory(file);
 
         //FIXME: workaround to always enable validation in test projects without hybris settings
-        if (!optionalCustomDir.isPresent() && shouldCheckFilesWithoutHybrisSettings()) {
+        if (!optionalCustomDir.isPresent() && this.shouldCheckFilesWithoutHybrisSettings()) {
             return true;
         }
 
@@ -123,35 +124,34 @@ public class XmlRuleInspection extends LocalInspectionTool {
         //FIXME: However, I don't see how to access the hybris home here, so will assume that
         //FIXME: it is the somewhere under project base directory
         //FIXME: Hence, we are checking contains() instead of some kind of startsWith(..)
-        String relativePath = VfsUtilCore.getRelativePath(file.getVirtualFile(), file.getProject().getBaseDir());
+        final String relativePath = VfsUtilCore.getRelativePath(file.getVirtualFile(), file.getProject().getBaseDir());
         return relativePath != null && relativePath.contains(customDir);
     }
 
     protected void validateOneRule(
-        @NotNull XmlRule rule,
-        @NotNull ValidateContext context,
-        @NotNull List<? super ProblemDescriptor> output
+        @NotNull final XmlRule rule,
+        @NotNull final ValidateContext context,
+        @NotNull final Collection<? super ProblemDescriptor> output
     ) throws XPathExpressionException {
 
-        NodeList selection = context.getXPath().computeNodeSet(rule.getSelectionXPath(), context.getDocument());
+        final NodeList selection = context.getXPath().computeNodeSet(rule.getSelectionXPath(), context.getDocument());
         for (int i = 0; i < selection.getLength(); i++) {
-            Node nextSelected = selection.item(i);
+            final Node nextSelected = selection.item(i);
             //noinspection BooleanVariableAlwaysNegated
-            boolean passed = context.getXPath().computeBoolean(rule.getTestXPath(), nextSelected);
+            final boolean passed = context.getXPath().computeBoolean(rule.getTestXPath(), nextSelected);
             if (!passed) {
-                output.add(createProblem(context, nextSelected, rule));
+                output.add(this.createProblem(context, nextSelected, rule));
             }
         }
     }
 
     protected ProblemDescriptor createProblem(
-        @NotNull ValidateContext context,
-        @NotNull Node problemNode,
-        @NotNull XmlRule rule
+        @NotNull final ValidateContext context,
+        @NotNull final Node problemNode,
+        @NotNull final XmlRule rule
     ) {
-
-        @NotNull PsiElement problemPsi = context.mapNodeToPsi(problemNode);
-        @NotNull ProblemHighlightType highlightType = computePriority(rule);
+        final PsiElement problemPsi = context.mapNodeToPsi(problemNode);
+        final ProblemHighlightType highlightType = this.computePriority(rule);
 
         return context.getManager().createProblemDescriptor(
             problemPsi,
@@ -163,10 +163,10 @@ public class XmlRuleInspection extends LocalInspectionTool {
     }
 
     protected ProblemDescriptor createValidationFailedProblem(
-        @NotNull ValidateContext context,
-        @NotNull PsiElement file,
-        @NotNull XmlRule failedRule,
-        @NotNull Exception failure
+        @NotNull final ValidateContext context,
+        @NotNull final PsiElement file,
+        @NotNull final XmlRule failedRule,
+        @NotNull final Exception failure
     ) {
 
         return context.getManager().createProblemDescriptor(
@@ -179,7 +179,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
     }
 
     @NotNull
-    protected ProblemHighlightType computePriority(@NotNull XmlRule rule) {
+    protected ProblemHighlightType computePriority(@NotNull final XmlRule rule) {
         switch (rule.getPriority()) {
             case LOW:
                 return ProblemHighlightType.WEAK_WARNING;
@@ -190,23 +190,24 @@ public class XmlRuleInspection extends LocalInspectionTool {
 
     @NotNull
     private XmlRule[] getRules() {
-        if (myRules == null) {
+        if (this.myRules == null) {
             try {
-                myRules = loadRules();
+                this.myRules = this.loadRules();
             } catch (IOException e) {
                 LOG.error("Error loading ruleset", e);
-                myRules = new XmlRule[0];
+                this.myRules = new XmlRule[0];
             }
         }
-        return myRules;
+
+        return this.myRules;
     }
 
     private XmlRule[] loadRules() throws IOException {
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("ruleset.xml")) {
+        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("ruleset.xml")) {
             if (input == null) {
                 throw new IOException("Ruleset file is not found");
             }
-            List<XmlRule> rules = new XmlRuleParser().parseRules(new BufferedInputStream(input));
+            final List<XmlRule> rules = new XmlRuleParser().parseRules(new BufferedInputStream(input));
             return rules.toArray(new XmlRule[rules.size()]);
         }
     }

@@ -37,15 +37,15 @@ public class XmlRuleParser {
 
     private static final Logger LOG = Logger.getInstance(XmlRuleParser.class);
 
-    public List<XmlRule> parseRules(InputStream input) throws IOException {
-        SAXParser parser;
+    public List<XmlRule> parseRules(final InputStream input) throws IOException {
+        final SAXParser parser;
         try {
             parser = SAXParserFactory.newInstance().newSAXParser();
-            RulesHandler handler = new RulesHandler();
+            final RulesHandler handler = new RulesHandler();
             parser.parse(input, handler);
 
-            List<XmlRuleImpl> rules = handler.getRules();
-            List<XmlRule> result = new ArrayList<>(rules.size());
+            final List<XmlRuleImpl> rules = handler.getRules();
+            final List<XmlRule> result = new ArrayList<>(rules.size());
             result.addAll(rules);
 
             return result;
@@ -59,7 +59,7 @@ public class XmlRuleParser {
         private List<XmlRuleImpl> myRules = new ArrayList<>();
 
         public List<XmlRuleImpl> getRules() {
-            return myRules;
+            return this.myRules;
         }
 
         @Override
@@ -71,12 +71,12 @@ public class XmlRuleParser {
         ) {
 
             if ("rule".equals(qName)) {
-                String type = attributes.getValue("type");
+                final String type = attributes.getValue("type");
                 if ("XPATH".equals(type)) {
-                    XmlRuleImpl rule = createRule(attributes);
+                    final XmlRuleImpl rule = this.createRule(attributes);
                     if (rule != null) {
                         rule.validate(LOG);
-                        myRules.add(rule);
+                        this.myRules.add(rule);
                     }
                 }
             }
@@ -84,9 +84,9 @@ public class XmlRuleParser {
 
         private
         @Nullable
-        XmlRuleImpl createRule(Attributes attrs) {
-            String id = attrs.getValue("id");
-            XmlRule.Priority priority = XmlRule.Priority.fromAcronym(attrs.getValue("priority"));
+        XmlRuleImpl createRule(final Attributes attrs) {
+            final String id = attrs.getValue("id");
+            final XmlRule.Priority priority = XmlRule.Priority.fromAcronym(attrs.getValue("priority"));
             if (id == null) {
                 LOG.warn("XPath validation rule without ID found, ignored: " + attrs);
                 return null;
@@ -103,7 +103,7 @@ public class XmlRuleParser {
                          "', id: " + id + ": " + attrs);
             }
 
-            XmlRuleImpl result = new XmlRuleImpl(id, priority, description);
+            final XmlRuleImpl result = new XmlRuleImpl(id, priority, description);
 
             result.setSelectionXPath(attrs.getValue("selectionQuery"));
             result.setTestXPath(attrs.getValue("testQuery"));
@@ -122,68 +122,68 @@ public class XmlRuleParser {
         private String mySelectionXPath;
         private String myTestXPath;
 
-        public XmlRuleImpl(@NotNull String id, @NotNull Priority priority, @NotNull String description) {
-            myId = id;
-            myPriority = priority;
-            myDescription = description;
+        public XmlRuleImpl(@NotNull final String id, @NotNull final Priority priority, @NotNull final String description) {
+            this.myId = id;
+            this.myPriority = priority;
+            this.myDescription = description;
         }
 
         @NotNull
         @Override
         public Priority getPriority() {
-            return myPriority;
+            return this.myPriority;
         }
 
         @NotNull
         @Override
         public String getID() {
-            return myId;
+            return this.myId;
         }
 
         @NotNull
         @Override
         public String getDescription() {
-            return myDescription;
+            return this.myDescription;
         }
 
         @Nullable
         @Override
         public String getNameXPath() {
-            return myNameXPath;
+            return this.myNameXPath;
         }
 
         void setNameXPath(final String nameXPath) {
-            myNameXPath = nameXPath;
+            this.myNameXPath = nameXPath;
         }
 
         @Nullable
         @Override
         public String getTestXPath() {
-            return myTestXPath;
+            return this.myTestXPath;
         }
 
         void setTestXPath(final String testXPath) {
-            myTestXPath = testXPath;
+            this.myTestXPath = testXPath;
         }
 
         @Nullable
         @Override
         public String getSelectionXPath() {
-            return mySelectionXPath;
+            return this.mySelectionXPath;
         }
 
         public void setSelectionXPath(final String selectionXPath) {
-            mySelectionXPath = selectionXPath;
+            this.mySelectionXPath = selectionXPath;
         }
 
-        public boolean validate(Logger logger) {
-            boolean isValid = validateNotNull("Missing name XPath", getNameXPath(), logger);
-            isValid &= validateNotNull("Missing selection XPath", getSelectionXPath(), logger);
-            isValid &= validateNotNull("Missing test XPath", getTestXPath(), logger);
+        public boolean validate(final Logger logger) {
+            boolean isValid = this.validateNotNull("Missing name XPath", this.getNameXPath(), logger);
+            isValid &= this.validateNotNull("Missing selection XPath", this.getSelectionXPath(), logger);
+            isValid &= this.validateNotNull("Missing test XPath", this.getTestXPath(), logger);
             return isValid;
         }
 
-        private boolean validateNotNull(@NotNull String problem, @Nullable String subj, @NotNull Logger logger) {
+        private boolean validateNotNull(@NotNull final String problem, @Nullable final String subj, @NotNull final Logger logger) {
             boolean isValid = true;
             if (subj == null || subj.isEmpty()) {
                 logger.warn(problem + ": " + this);
@@ -194,7 +194,7 @@ public class XmlRuleParser {
 
         @Override
         public String toString() {
-            return getClass().getSimpleName() + " for :" + getID();
+            return this.getClass().getSimpleName() + " for :" + this.getID();
         }
     }
 
