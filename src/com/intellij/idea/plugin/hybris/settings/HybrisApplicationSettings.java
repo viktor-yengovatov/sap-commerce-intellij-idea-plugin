@@ -81,7 +81,7 @@ public class HybrisApplicationSettings {
     private boolean hideEmptyMiddleFolders = true;
 
     @PropertyName("defaultPlatformInReadOnly")
-    private boolean defaultPlatformInReadOnly = false;
+    private boolean defaultPlatformInReadOnly = true;
 
     @PropertyName("createBackwardCyclicDependenciesForAddOns")
     private boolean createBackwardCyclicDependenciesForAddOns = false;

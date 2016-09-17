@@ -75,7 +75,6 @@ public interface HybrisConstants {
     String WEB_XML_FILE_NAME = "web.xml";
     String WEB_XML_DIRECTORY_RELATIVE_PATH = WEB_INF_DIRECTORY_RELATIVE_PATH + '/' + WEB_XML_FILE_NAME;
     String COMMON_WEB_SRC_DIRECTORY = "commonwebsrc";
-    String ECLIPSE_BIN_DIRECTORY = "eclipsebin";
     String COMMON_WEB_MODULE_DIRECTORY = "commonweb";
     String ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon";
     String PLATFORM_BOOTSTRAP_DIRECTORY = "bootstrap";
@@ -100,9 +99,13 @@ public interface HybrisConstants {
 
     String CONFIG_LICENCE_DIRECTORY = "licence";
 
+    String ECLIPSE_BIN_DIRECTORY = "eclipsebin";
     String WEB_COMPILER_OUTPUT_PATH = WEB_INF_CLASSES_DIRECTORY;
+    String WEB_COMPILER_FAKE_OUTPUT_PATH = "web/webroot/WEB-INF/eclipsebin";
     String BACKOFFICE_COMPILER_OUTPUT_PATH = "/backoffice/classes";
+    String BACKOFFICE_COMPILER_FAKE_OUTPUT_PATH = "/backoffice/eclipsebin";
     String JAVA_COMPILER_OUTPUT_PATH = "/classes";
+    String JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY;
 
     String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
     String HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml";
