@@ -18,14 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CoreHybrisHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
+import com.intellij.openapi.roots.LibraryOrderEntry;
+import com.intellij.openapi.roots.ModifiableModelsProvider;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
@@ -49,21 +53,20 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
 
     @Override
-    public void configure(@NotNull final ModifiableRootModel modifiableRootModel,
-                          @NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    public void configure(
+        @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor
+    ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(modifiableRootModel);
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                configureInner(modifiableRootModel, moduleDescriptor);
-            }
-        });
+        ApplicationManager.getApplication().runWriteAction(() -> configureInner(modifiableRootModel, moduleDescriptor));
     }
 
-    protected void configureInner(@NotNull final ModifiableRootModel modifiableRootModel,
-                                  @NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    protected void configureInner(
+        @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor
+    ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);
 
@@ -78,7 +81,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor)moduleDescriptor;
+            final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor) moduleDescriptor;
             hybrisModuleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider);
         }
 
@@ -106,9 +109,11 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         return sourceCodeRoot;
     }
 
-    protected void addClassesToModuleLibs(@NotNull final ModifiableRootModel modifiableRootModel,
-                                          @Nullable final VirtualFile sourceCodeRoot,
-                                          @NotNull final JavaLibraryDescriptor javaLibraryDescriptor) {
+    protected void addClassesToModuleLibs(
+        @NotNull final ModifiableRootModel modifiableRootModel,
+        @Nullable final VirtualFile sourceCodeRoot,
+        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor
+    ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(javaLibraryDescriptor);
 
@@ -140,9 +145,11 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         libraryModifiableModel.commit();
     }
 
-    protected void addJarFolderToModuleLibs(@NotNull final ModifiableRootModel modifiableRootModel,
-                                            @Nullable final VirtualFile sourceCodeRoot,
-                                            @NotNull final JavaLibraryDescriptor javaLibraryDescriptor) {
+    protected void addJarFolderToModuleLibs(
+        @NotNull final ModifiableRootModel modifiableRootModel,
+        @Nullable final VirtualFile sourceCodeRoot,
+        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor
+    ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(javaLibraryDescriptor);
 
@@ -177,8 +184,10 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         libraryModifiableModel.commit();
     }
 
-    protected void addLibsToModule(@NotNull final ModifiableRootModel modifiableRootModel,
-                                   @NotNull final String libraryName) {
+    protected void addLibsToModule(
+        @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull final String libraryName
+    ) {
         Validate.notNull(modifiableRootModel);
 
         final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(modifiableRootModel.getProject());
@@ -193,8 +202,10 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         setLibraryEntryExported(modifiableRootModel, libsGroup);
     }
 
-    protected void setLibraryEntryExported(@NotNull final ModifiableRootModel modifiableRootModel,
-                                           @NotNull final Library library) {
+    protected void setLibraryEntryExported(
+        @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull final Library library
+    ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(library);
 
