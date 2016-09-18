@@ -18,22 +18,21 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections;
 
-import com.intellij.codeInspection.InspectionManager;
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.jetbrains.annotations.Nullable;
+import org.w3c.dom.NodeList;
 
-interface ValidateContext {
+import javax.xml.xpath.XPathExpressionException;
 
-    boolean isOnTheFly();
+/**
+ * Created 5:14 PM 18 September 2016.
+ *
+ * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ */
+public interface XPathService {
 
     @NotNull
-    Document getDocument();
+    NodeList computeNodeSet(@Nullable String xpath, @NotNull Object start) throws XPathExpressionException;
 
-    @NotNull
-    InspectionManager getManager();
-
-    @NotNull
-    PsiElement mapNodeToPsi(@NotNull Node xmlNode);
+    boolean computeBoolean(@Nullable String xpath, @NotNull Object start) throws XPathExpressionException;
 }

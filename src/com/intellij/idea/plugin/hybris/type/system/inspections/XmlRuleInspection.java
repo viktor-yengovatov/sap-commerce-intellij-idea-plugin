@@ -25,6 +25,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -133,12 +134,13 @@ public class XmlRuleInspection extends LocalInspectionTool {
         @NotNull final ValidateContext context,
         @NotNull final Collection<? super ProblemDescriptor> output
     ) throws XPathExpressionException {
+        final XPathService xPathService = ServiceManager.getService(XPathService.class);
 
-        final NodeList selection = context.getXPath().computeNodeSet(rule.getSelectionXPath(), context.getDocument());
+        final NodeList selection = xPathService.computeNodeSet(rule.getSelectionXPath(), context.getDocument());
         for (int i = 0; i < selection.getLength(); i++) {
             final Node nextSelected = selection.item(i);
             //noinspection BooleanVariableAlwaysNegated
-            final boolean passed = context.getXPath().computeBoolean(rule.getTestXPath(), nextSelected);
+            final boolean passed = xPathService.computeBoolean(rule.getTestXPath(), nextSelected);
             if (!passed) {
                 output.add(this.createProblem(context, nextSelected, rule));
             }

@@ -49,12 +49,11 @@ import java.util.LinkedList;
 
 class ValidateContextImpl implements ValidateContext {
 
-    private final InspectionManager myManager;
+    private final InspectionManager inspectionManager;
     @NotNull
-    private final XmlFile myPsiFile;
-    private final Document myDocument;
-    private final boolean myIsOnTheFly;
-    private final MyXPath myXPath = new MyXPath();
+    private final XmlFile xmlFile;
+    private final Document document;
+    private final boolean isOnTheFly;
 
     public ValidateContextImpl(
         @NotNull final InspectionManager manager,
@@ -62,10 +61,10 @@ class ValidateContextImpl implements ValidateContext {
         @NotNull final Document document,
         final boolean isOnTheFly
     ) {
-        this.myManager = manager;
-        this.myPsiFile = psiFile;
-        this.myDocument = document;
-        this.myIsOnTheFly = isOnTheFly;
+        this.inspectionManager = manager;
+        this.xmlFile = psiFile;
+        this.document = document;
+        this.isOnTheFly = isOnTheFly;
     }
 
     @Nullable
@@ -87,31 +86,25 @@ class ValidateContextImpl implements ValidateContext {
     @NotNull
     @Override
     public InspectionManager getManager() {
-        return this.myManager;
-    }
-
-    @NotNull
-    @Override
-    public MyXPath getXPath() {
-        return this.myXPath;
+        return this.inspectionManager;
     }
 
     @Override
     public boolean isOnTheFly() {
-        return this.myIsOnTheFly;
+        return this.isOnTheFly;
     }
 
     @NotNull
     @Override
     public Document getDocument() {
-        return this.myDocument;
+        return this.document;
     }
 
     @NotNull
     @Override
     public PsiElement mapNodeToPsi(@NotNull final Node xmlNode) {
-        final PsiElement result = findByLineAndColumn(this.myPsiFile, MappedDocumentBuilder.START_LOC.get(xmlNode));
-        return result == null ? this.myPsiFile : result;
+        final PsiElement result = findByLineAndColumn(this.xmlFile, MappedDocumentBuilder.START_LOC.get(xmlNode));
+        return result == null ? this.xmlFile : result;
     }
 
     @Nullable

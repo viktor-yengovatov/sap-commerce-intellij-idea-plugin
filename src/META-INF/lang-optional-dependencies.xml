@@ -40,6 +40,9 @@
                          key="hybris.inspection.tsv.key"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.XmlRuleInspection"/>
 
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.type.system.inspections.XPathService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.DefaultXPathService"/>
+
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->
         <!-- ####################################################################################################### -->
