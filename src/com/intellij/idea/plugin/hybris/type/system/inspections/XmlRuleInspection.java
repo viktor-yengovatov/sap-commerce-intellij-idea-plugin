@@ -102,7 +102,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
             return true;
         }
 
-        final String DEFAULT_LOCATION = "bin/custom";
+        final String DEFAULT_LOCATION = "bin" + VfsUtilCore.VFS_SEPARATOR_CHAR + "custom";
         String customDir = optionalCustomDir.orElse(DEFAULT_LOCATION);
 
         //next line enforces <code>customDit.endsWith(VfsUtilCore.VFS_SEPARATOR_CHAR)</code>

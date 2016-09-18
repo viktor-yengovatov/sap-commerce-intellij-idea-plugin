@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.common;
 
-import java.io.File;
+import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
 /**
  * Created 10:30 PM 07 June 2015
@@ -29,11 +29,11 @@ public interface HybrisConstants {
 
     String EXTENSION_INFO_XML = "extensioninfo.xml";
     String LOCAL_EXTENSIONS_XML = "localextensions.xml";
-    String HYBRIS_SERVER_SHELL_SCRIPT_NAME = "bin" + File.separatorChar + "platform" + File.separatorChar + "hybrisserver.sh";
-    String PLATFORM_EXT_MODULE_PREFIX = "bin" + File.separatorChar + "platform" + File.separatorChar + "ext" + File.separatorChar;
-    String PLATFORM_OOTB_MODULE_PREFIX = "bin" + File.separatorChar + "ext-";
-    String MEDIA_DIRECTORY = File.separatorChar + "data" + File.separatorChar + "media";
-    String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = "bin" + File.separatorChar + "custom";
+    String HYBRIS_SERVER_SHELL_SCRIPT_NAME = separatorsToSystem("bin/platform/hybrisserver.sh");
+    String PLATFORM_EXT_MODULE_PREFIX = separatorsToSystem("bin/platform/ext/");
+    String PLATFORM_OOTB_MODULE_PREFIX = separatorsToSystem("bin/ext-");
+    String MEDIA_DIRECTORY = separatorsToSystem("/data/media");
+    String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = separatorsToSystem("bin/custom");
     String EXTENSIONS_XML = "extensions.xml";
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
     String PLATFORM_EXTENSION_NAME = "platform";
@@ -43,7 +43,7 @@ public interface HybrisConstants {
     String HMC_EXTENSION_NAME = "hmc";
     String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     String CONFIG_EXTENSION_NAME = "config";
-    String CONFIG_RELATIVE_PATH = "/../../" + CONFIG_EXTENSION_NAME;
+    String CONFIG_RELATIVE_PATH = separatorsToSystem("/../../" + CONFIG_EXTENSION_NAME);
     String LIB_DIRECTORY = "lib";
     String BIN_DIRECTORY = "bin";
     String RESOURCES_DIRECTORY = "resources";
@@ -51,7 +51,7 @@ public interface HybrisConstants {
     String APPLICATION_CONTEXT_SPRING_FILES = "application-context";
     String ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs";
     String GLOBAL_CONTEXT_SPRING_FILES = "global-context";
-    String BUILD_NUMBER_FILE_PATH = File.separatorChar + "bin" + File.separatorChar + "platform" + File.separatorChar + "build.number";
+    String BUILD_NUMBER_FILE_PATH = separatorsToSystem("/bin/platform/build.number");
     String HYBRIS_API_VERSION_KEY = "version.api";
     String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/%s/commercesuite";
     String HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL = "https://help.hybris.com/%s/api/commercesuite/index.html";
@@ -69,11 +69,11 @@ public interface HybrisConstants {
     String SETTINGS_DIRECTORY = ".settings";
     String EXTERNAL_TOOL_BUILDERS_DIRECTORY = ".externalToolBuilders";
     String WEB_ROOT_DIRECTORY = "webroot";
-    String WEB_ROOT_DIRECTORY_RELATIVE_PATH = WEB_MODULE_DIRECTORY + '/' + WEB_ROOT_DIRECTORY;
+    String WEB_ROOT_DIRECTORY_RELATIVE_PATH = separatorsToSystem(WEB_MODULE_DIRECTORY + '/' + WEB_ROOT_DIRECTORY);
     String WEB_INF_DIRECTORY = "WEB-INF";
-    String WEB_INF_DIRECTORY_RELATIVE_PATH = WEB_ROOT_DIRECTORY_RELATIVE_PATH + '/' + WEB_INF_DIRECTORY;
+    String WEB_INF_DIRECTORY_RELATIVE_PATH = separatorsToSystem(WEB_ROOT_DIRECTORY_RELATIVE_PATH + '/' + WEB_INF_DIRECTORY);
     String WEB_XML_FILE_NAME = "web.xml";
-    String WEB_XML_DIRECTORY_RELATIVE_PATH = WEB_INF_DIRECTORY_RELATIVE_PATH + '/' + WEB_XML_FILE_NAME;
+    String WEB_XML_DIRECTORY_RELATIVE_PATH = separatorsToSystem(WEB_INF_DIRECTORY_RELATIVE_PATH + '/' + WEB_XML_FILE_NAME);
     String COMMON_WEB_SRC_DIRECTORY = "commonwebsrc";
     String COMMON_WEB_MODULE_DIRECTORY = "commonweb";
     String ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon";
@@ -84,27 +84,27 @@ public interface HybrisConstants {
 
     String PLATFORM_LIBRARY_GROUP = "Platform Bootstrap";
 
-    String WEBINF_LIB_DIRECTORY = "webroot/WEB-INF/lib";
-    String WEB_WEBINF_LIB_DIRECTORY = WEB_MODULE_DIRECTORY+"/"+WEBINF_LIB_DIRECTORY;
-    String COMMONWEB_WEBINF_LIB_DIRECTORY = COMMON_WEB_MODULE_DIRECTORY+"/"+WEBINF_LIB_DIRECTORY;
-    String WEB_INF_CLASSES_DIRECTORY = "web/webroot/WEB-INF/classes";
-    String WEB_SRC_DIRECTORY = "web/src";
-    String HMC_LIB_DIRECTORY = "hmc/bin";
-    String BACKOFFICE_LIB_DIRECTORY = "backoffice/bin";
+    String WEBINF_LIB_DIRECTORY = separatorsToSystem("webroot/WEB-INF/lib");
+    String WEB_WEBINF_LIB_DIRECTORY = separatorsToSystem(WEB_MODULE_DIRECTORY + '/' + WEBINF_LIB_DIRECTORY);
+    String COMMONWEB_WEBINF_LIB_DIRECTORY = separatorsToSystem(COMMON_WEB_MODULE_DIRECTORY + '/' + WEBINF_LIB_DIRECTORY);
+    String WEB_INF_CLASSES_DIRECTORY = separatorsToSystem("web/webroot/WEB-INF/classes");
+    String WEB_SRC_DIRECTORY = separatorsToSystem("web/src");
+    String HMC_LIB_DIRECTORY = separatorsToSystem("hmc/bin");
+    String BACKOFFICE_LIB_DIRECTORY = separatorsToSystem("backoffice/bin");
 
-    String PL_BOOTSTRAP_LIB_DIRECTORY = "bootstrap/bin";
-    String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = "bootstrap/gensrc";
-    String PL_TOMCAT_LIB_DIRECTORY = "tomcat/lib";
-    String PL_TOMCAT_BIN_DIRECTORY = "tomcat/bin";
+    String PL_BOOTSTRAP_LIB_DIRECTORY = separatorsToSystem("bootstrap/bin");
+    String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = separatorsToSystem("bootstrap/gensrc");
+    String PL_TOMCAT_LIB_DIRECTORY = separatorsToSystem("tomcat/lib");
+    String PL_TOMCAT_BIN_DIRECTORY = separatorsToSystem("tomcat/bin");
 
     String CONFIG_LICENCE_DIRECTORY = "licence";
 
     String ECLIPSE_BIN_DIRECTORY = "eclipsebin";
     String WEB_COMPILER_OUTPUT_PATH = WEB_INF_CLASSES_DIRECTORY;
-    String WEB_COMPILER_FAKE_OUTPUT_PATH = "web/webroot/WEB-INF/eclipsebin";
-    String BACKOFFICE_COMPILER_OUTPUT_PATH = "/backoffice/classes";
-    String BACKOFFICE_COMPILER_FAKE_OUTPUT_PATH = "/backoffice/eclipsebin";
-    String JAVA_COMPILER_OUTPUT_PATH = "/classes";
+    String WEB_COMPILER_FAKE_OUTPUT_PATH = separatorsToSystem("web/webroot/WEB-INF/eclipsebin");
+    String BACKOFFICE_COMPILER_OUTPUT_PATH = separatorsToSystem("/backoffice/classes");
+    String BACKOFFICE_COMPILER_FAKE_OUTPUT_PATH = separatorsToSystem("/backoffice/eclipsebin");
+    String JAVA_COMPILER_OUTPUT_PATH = separatorsToSystem("/classes");
     String JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY;
 
     String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
