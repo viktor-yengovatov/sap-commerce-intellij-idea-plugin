@@ -83,10 +83,19 @@ class ValidateContextImpl implements ValidateContext {
         return new ValidateContextImpl(manager, psiFile, mappedDocument, isOnTheFly);
     }
 
-    @NotNull
-    @Override
-    public InspectionManager getManager() {
-        return this.inspectionManager;
+    private static Document buildMappedDocument(final InputSource source) throws SAXException, IOException {
+        final SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+
+        final Document result;
+        try {
+            final SAXParser sp = factory.newSAXParser();
+            result = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            sp.parse(source, new MappedDocumentBuilder(result));
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException("Invalid Parser Configuration", e);
+        }
+        return result;
     }
 
     @Override
@@ -98,6 +107,12 @@ class ValidateContextImpl implements ValidateContext {
     @Override
     public Document getDocument() {
         return this.document;
+    }
+
+    @NotNull
+    @Override
+    public InspectionManager getManager() {
+        return this.inspectionManager;
     }
 
     @NotNull
@@ -137,21 +152,6 @@ class ValidateContextImpl implements ValidateContext {
         }
 
         return file.findElementAt(offset);
-    }
-
-    private static Document buildMappedDocument(final InputSource source) throws SAXException, IOException {
-        final SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-
-        final Document result;
-        try {
-            final SAXParser sp = factory.newSAXParser();
-            result = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-            sp.parse(source, new MappedDocumentBuilder(result));
-        } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("Invalid Parser Configuration", e);
-        }
-        return result;
     }
 
     public static class NodeKey<T> {
@@ -196,15 +196,6 @@ class ValidateContextImpl implements ValidateContext {
             this.myLocator = locator;
         }
 
-        protected void markLocation(@NotNull final Node node, @NotNull final NodeKey<Point> key) {
-            if (this.myLocator != null) {
-                final int line = this.myLocator.getLineNumber();
-                final int column = this.myLocator.getColumnNumber();
-                final Point point = new Point(column, line);
-                key.put(node, point);
-            }
-        }
-
         @Override
         public void startElement(
             final String uri, final String localName, final String qName, final Attributes attributes
@@ -229,28 +220,27 @@ class ValidateContextImpl implements ValidateContext {
             }
         }
 
-        @Override
-        public void endElement(final String uri, final String localName, final String qName) {
-            final Node last = this.myElements.removeLast();
-            this.markLocation(last, END_LOC);
-
-            if (this.myElements.isEmpty()) {
-                last.normalize();
+        protected void markLocation(@NotNull final Node node, @NotNull final NodeKey<Point> key) {
+            if (this.myLocator != null) {
+                final int line = this.myLocator.getLineNumber();
+                final int column = this.myLocator.getColumnNumber();
+                final Point point = new Point(column, line);
+                key.put(node, point);
             }
         }
 
-        @Override
-        public void characters(@SuppressWarnings("StandardVariableNames") final char[] ch, final int start, final int length) {
-            if (this.myElements.isEmpty()) {
-                //should never happen ?
-                return;
-            }
-            final Text text = this.myDoc.createTextNode(new String(ch, start, length));
-            this.markLocation(text, START_LOC);
-            this.myElements.peekLast().appendChild(text);
+        @SuppressWarnings("TypeMayBeWeakened")
+        private void appendElement(@NotNull final Element childElement) {
+            final Node last = this.myElements.getLast();
+            last.appendChild(childElement);
+            this.myElements.addLast(childElement);
         }
 
-        private Attr createAndAppendAttribute(@NotNull final Element owner, @NotNull final Attributes attrs, final int idx) {
+        private Attr createAndAppendAttribute(
+            @NotNull final Element owner,
+            @NotNull final Attributes attrs,
+            final int idx
+        ) {
             final String localName = attrs.getLocalName(idx);
             final Attr result;
             if (StringUtil.isEmpty(localName)) {
@@ -263,11 +253,29 @@ class ValidateContextImpl implements ValidateContext {
             return result;
         }
 
-        @SuppressWarnings("TypeMayBeWeakened")
-        private void appendElement(@NotNull final Element childElement) {
-            final Node last = this.myElements.getLast();
-            last.appendChild(childElement);
-            this.myElements.addLast(childElement);
+        @Override
+        public void endElement(final String uri, final String localName, final String qName) {
+            final Node last = this.myElements.removeLast();
+            this.markLocation(last, END_LOC);
+
+            if (this.myElements.isEmpty()) {
+                last.normalize();
+            }
+        }
+
+        @Override
+        public void characters(
+            @SuppressWarnings("StandardVariableNames") final char[] ch,
+            final int start,
+            final int length
+        ) {
+            if (this.myElements.isEmpty()) {
+                //should never happen ?
+                return;
+            }
+            final Text text = this.myDoc.createTextNode(new String(ch, start, length));
+            this.markLocation(text, START_LOC);
+            this.myElements.peekLast().appendChild(text);
         }
 
     }

@@ -86,18 +86,6 @@ public class XmlRuleInspection extends LocalInspectionTool {
         return result.toArray(new ProblemDescriptor[result.size()]);
     }
 
-    @NotNull
-    protected Optional<String> getCustomDirectory(@NotNull final PsiElement file) {
-        return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(file.getProject()))
-                       .map(HybrisProjectSettingsComponent::getState)
-                       .map(HybrisProjectSettings::getCustomDirectory);
-    }
-
-    protected boolean shouldCheckFilesWithoutHybrisSettings() {
-        //probably it is a test project where we DO want to show warnings
-        return true;
-    }
-
     private boolean isTypeSystemFile(@NotNull final PsiFile file) {
         return TypeSystemDomFileDescription.isTypeSystemXmlFile(file);
     }
@@ -129,6 +117,20 @@ public class XmlRuleInspection extends LocalInspectionTool {
         return relativePath != null && relativePath.contains(customDir);
     }
 
+    @NotNull
+    private XmlRule[] getRules() {
+        if (this.myRules == null) {
+            try {
+                this.myRules = this.loadRules();
+            } catch (IOException e) {
+                LOG.error("Error loading ruleset", e);
+                this.myRules = new XmlRule[0];
+            }
+        }
+
+        return this.myRules;
+    }
+
     protected void validateOneRule(
         @NotNull final XmlRule rule,
         @NotNull final ValidateContext context,
@@ -144,6 +146,44 @@ public class XmlRuleInspection extends LocalInspectionTool {
             if (!passed) {
                 output.add(this.createProblem(context, nextSelected, rule));
             }
+        }
+    }
+
+    protected ProblemDescriptor createValidationFailedProblem(
+        @NotNull final ValidateContext context,
+        @NotNull final PsiElement file,
+        @NotNull final XmlRule failedRule,
+        @NotNull final Exception failure
+    ) {
+
+        return context.getManager().createProblemDescriptor(
+            file,
+            "XmlRule '" + failedRule.getID() + "' has failed to validate: " + failure.getMessage(),
+            true,
+            ProblemHighlightType.GENERIC_ERROR,
+            context.isOnTheFly()
+        );
+    }
+
+    @NotNull
+    protected Optional<String> getCustomDirectory(@NotNull final PsiElement file) {
+        return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(file.getProject()))
+                       .map(HybrisProjectSettingsComponent::getState)
+                       .map(HybrisProjectSettings::getCustomDirectory);
+    }
+
+    protected boolean shouldCheckFilesWithoutHybrisSettings() {
+        //probably it is a test project where we DO want to show warnings
+        return true;
+    }
+
+    private XmlRule[] loadRules() throws IOException {
+        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("ruleset.xml")) {
+            if (input == null) {
+                throw new IOException("Ruleset file is not found");
+            }
+            final List<XmlRule> rules = new XmlRuleParser().parseRules(new BufferedInputStream(input));
+            return rules.toArray(new XmlRule[rules.size()]);
         }
     }
 
@@ -164,22 +204,6 @@ public class XmlRuleInspection extends LocalInspectionTool {
         );
     }
 
-    protected ProblemDescriptor createValidationFailedProblem(
-        @NotNull final ValidateContext context,
-        @NotNull final PsiElement file,
-        @NotNull final XmlRule failedRule,
-        @NotNull final Exception failure
-    ) {
-
-        return context.getManager().createProblemDescriptor(
-            file,
-            "XmlRule '" + failedRule.getID() + "' has failed to validate: " + failure.getMessage(),
-            true,
-            ProblemHighlightType.GENERIC_ERROR,
-            context.isOnTheFly()
-        );
-    }
-
     @NotNull
     protected ProblemHighlightType computePriority(@NotNull final XmlRule rule) {
         switch (rule.getPriority()) {
@@ -187,30 +211,6 @@ public class XmlRuleInspection extends LocalInspectionTool {
                 return ProblemHighlightType.WEAK_WARNING;
             default:
                 return ProblemHighlightType.ERROR;
-        }
-    }
-
-    @NotNull
-    private XmlRule[] getRules() {
-        if (this.myRules == null) {
-            try {
-                this.myRules = this.loadRules();
-            } catch (IOException e) {
-                LOG.error("Error loading ruleset", e);
-                this.myRules = new XmlRule[0];
-            }
-        }
-
-        return this.myRules;
-    }
-
-    private XmlRule[] loadRules() throws IOException {
-        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("ruleset.xml")) {
-            if (input == null) {
-                throw new IOException("Ruleset file is not found");
-            }
-            final List<XmlRule> rules = new XmlRuleParser().parseRules(new BufferedInputStream(input));
-            return rules.toArray(new XmlRule[rules.size()]);
         }
     }
 
