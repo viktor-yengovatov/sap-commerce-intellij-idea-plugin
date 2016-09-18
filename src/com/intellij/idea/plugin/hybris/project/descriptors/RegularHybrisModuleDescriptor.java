@@ -24,6 +24,8 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.MetaType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -278,7 +280,35 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             ));
         }
 
+        if (this.isAddOn()) {
+            this.processAddOnBackwardDependencies(libs);
+        }
+
         return Collections.unmodifiableList(libs);
+    }
+
+    protected void processAddOnBackwardDependencies(@NotNull final List<JavaLibraryDescriptor> libs) {
+        Validate.notNull(libs);
+
+        final HybrisApplicationSettingsComponent applicationSettings = HybrisApplicationSettingsComponent.getInstance();
+        final HybrisApplicationSettings hybrisApplicationSettings = applicationSettings.getState();
+
+        if (!hybrisApplicationSettings.isCreateBackwardCyclicDependenciesForAddOns()) {
+            return;
+        }
+
+        final List<DefaultJavaLibraryDescriptor> backwardDependencies =
+            this.getDependenciesTree()
+                .stream()
+                .filter(moduleDescriptor -> moduleDescriptor.getRequiredExtensionNames().contains(this.getName()))
+                .map(moduleDescriptor -> new DefaultJavaLibraryDescriptor(
+                    new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
+                    false,
+                    false
+                ))
+                .collect(Collectors.toList());
+
+        libs.addAll(backwardDependencies);
     }
 
     @Override
