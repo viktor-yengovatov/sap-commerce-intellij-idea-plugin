@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.roots.JavaModuleExternalPaths;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.apache.commons.lang3.Validate;

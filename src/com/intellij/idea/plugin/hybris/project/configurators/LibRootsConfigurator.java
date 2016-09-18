@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 

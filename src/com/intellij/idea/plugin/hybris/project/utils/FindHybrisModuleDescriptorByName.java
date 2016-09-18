@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
 import com.google.common.base.Predicate;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

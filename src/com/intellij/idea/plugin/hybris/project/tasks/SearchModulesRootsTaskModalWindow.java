@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;

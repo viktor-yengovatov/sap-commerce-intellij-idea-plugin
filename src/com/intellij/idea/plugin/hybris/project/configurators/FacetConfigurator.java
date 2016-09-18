@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.facet.ModifiableFacetModel;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;

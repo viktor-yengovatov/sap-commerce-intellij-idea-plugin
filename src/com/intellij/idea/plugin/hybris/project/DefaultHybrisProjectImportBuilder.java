@@ -37,9 +37,9 @@ import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigur
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;

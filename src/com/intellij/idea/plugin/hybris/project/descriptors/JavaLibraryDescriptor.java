@@ -16,19 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.module.ModifiableModuleModel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
 
 /**
- * Created 12:24 AM 25 June 2015.
+ * Created 10:59 PM 24 June 2015.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public interface ModulesDependenciesConfigurator {
+public interface JavaLibraryDescriptor extends Comparable<JavaLibraryDescriptor> {
 
-    void configure(@NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-                   @NotNull ModifiableModuleModel rootProjectModifiableModuleModel);
+    @NotNull
+    File getLibraryFile();
+
+    @Nullable
+    File getSourcesFile();
+
+    boolean isExported();
+
+    boolean isDirectoryWithClasses();
 }

@@ -16,32 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings;
+package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.google.common.collect.Sets;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 
 /**
- * Created by Martin Zdarsky-Jones on 18/08/2016.
+ * Created by Martin Zdarsky-Jones on 19/08/2016.
  */
-public class ExtHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
+public class CustomHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
 
-    public ExtHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
-                                     @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public CustomHybrisModuleDescriptor(
+        @NotNull final File moduleRootDirectory,
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
         super(moduleRootDirectory, rootProjectDescriptor);
-    }
-
-    @Override
-    protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
     }
 
     protected Collection<? extends String> getAdditionalRequiredExtensionNames() {

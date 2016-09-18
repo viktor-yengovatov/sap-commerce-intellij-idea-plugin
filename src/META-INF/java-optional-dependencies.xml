@@ -28,8 +28,8 @@
         <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptorFactory"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptorFactory"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorFactory"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisModuleDescriptorFactory"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.services.HybrisProjectService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.services.impl.DefaultHybrisProjectService"/>

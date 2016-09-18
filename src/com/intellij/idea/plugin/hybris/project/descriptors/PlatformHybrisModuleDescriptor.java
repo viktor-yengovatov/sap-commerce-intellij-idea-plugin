@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings;
+package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;

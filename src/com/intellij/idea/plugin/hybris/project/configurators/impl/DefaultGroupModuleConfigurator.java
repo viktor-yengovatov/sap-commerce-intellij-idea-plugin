@@ -19,11 +19,11 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.RegularHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.ExtHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.RegularHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.module.ModifiableModuleModel;

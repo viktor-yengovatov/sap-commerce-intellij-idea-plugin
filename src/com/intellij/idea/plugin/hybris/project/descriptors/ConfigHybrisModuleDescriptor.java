@@ -16,9 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings;
+package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -27,13 +28,16 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Martin Zdarsky-Jones on 1/09/2016.
+ * Created 3:55 PM 13 June 2015.
+ *
+ * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
+public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
-    public RootModuleDescriptor(
-        @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    private boolean preselected;
+
+    public ConfigHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
         super(moduleRootDirectory, rootProjectDescriptor);
     }
@@ -41,7 +45,7 @@ public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
     @NotNull
     @Override
     public String getName() {
-        return moduleRootDirectory.getName();
+        return HybrisConstants.CONFIG_EXTENSION_NAME;
     }
 
     @NotNull
@@ -53,11 +57,17 @@ public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
     @NotNull
     @Override
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        return Collections.emptyList();
+        return Collections.<JavaLibraryDescriptor>singletonList(new DefaultJavaLibraryDescriptor(
+            new File(this.getRootDirectory(), HybrisConstants.CONFIG_LICENCE_DIRECTORY), true
+        ));
     }
 
     @Override
     public boolean isPreselected() {
-        return true;
+        return preselected;
+    }
+
+    public void setPreselected(final boolean preselected) {
+        this.preselected = preselected;
     }
 }

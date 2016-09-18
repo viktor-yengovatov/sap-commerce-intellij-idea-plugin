@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 

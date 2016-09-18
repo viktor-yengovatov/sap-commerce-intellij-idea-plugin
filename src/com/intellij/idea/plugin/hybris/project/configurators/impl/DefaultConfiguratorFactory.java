@@ -27,8 +27,8 @@ import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfig
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.ModifiableModuleModel;

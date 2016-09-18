@@ -19,11 +19,11 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.CoreHybrisHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.JavaLibraryDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.CoreHybrisHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.settings.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;

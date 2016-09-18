@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
