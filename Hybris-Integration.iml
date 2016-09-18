@@ -18,6 +18,5 @@
     <orderEntry type="library" name="com.google.code.findbugs:jsr305:3.0.1" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="commons-collections:commons-collections:3.2.2" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
