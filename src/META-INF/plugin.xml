@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
 <!--
   ~ This file is part of "hybris integration" plugin for Intellij IDEA.
   ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
@@ -24,11 +26,11 @@
 
     <depends>com.intellij.modules.lang</depends>
 
-    <depends optional="true" config-file="impex-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="lang-optional-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="web-optional-dependencies.xml">com.intellij.javaee</depends>
-    <depends optional="true" config-file="project-import-optional-dependencies.xml">com.intellij.modules.java</depends>
-    <depends optional="true" config-file="business-process-optional-dependencies.xml">com.intellij.diagram</depends>
+    <depends optional="true" config-file="javaee-optional-dependencies.xml">com.intellij.javaee</depends>
+    <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="diagram-optional-dependencies.xml">com.intellij.diagram</depends>
 
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
