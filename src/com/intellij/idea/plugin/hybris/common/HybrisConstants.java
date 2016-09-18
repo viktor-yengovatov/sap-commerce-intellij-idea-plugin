@@ -113,5 +113,8 @@ public interface HybrisConstants {
     String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
     String CONFIGURATOR_FACTORY_ID = "ccom.intellij.idea.plugin.hybris.impex.hybrisConfiguratorFactory";
 
+    String HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml";
+    String RULESET_XML = "ruleset.xml";
+
     int MAX_EXISTING_MODULE_NAMES = 20;
 }

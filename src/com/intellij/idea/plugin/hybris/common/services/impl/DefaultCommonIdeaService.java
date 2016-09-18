@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.common.services.impl;
 
 import com.intellij.ide.DataManager;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.command.CommandProcessor;
@@ -29,8 +31,9 @@ import com.intellij.openapi.util.AsyncResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * Created 10:24 PM 10 February 2016.
@@ -59,5 +62,15 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     public Project getProject() {
         final AsyncResult<DataContext> dataContext = DataManager.getInstance().getDataContextFromFocus();
         return DataKeys.PROJECT.getData(dataContext.getResultSync());
+    }
+
+    @Override
+    @NotNull
+    public Optional<String> getCustomDirectory(@NotNull final Project project) {
+        Validate.notNull(project);
+
+        return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
+                       .map(HybrisProjectSettingsComponent::getState)
+                       .map(HybrisProjectSettings::getCustomDirectory);
     }
 }

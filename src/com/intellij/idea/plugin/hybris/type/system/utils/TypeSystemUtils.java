@@ -16,28 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common.services;
+package com.intellij.idea.plugin.hybris.type.system.utils;
 
-
-import com.intellij.openapi.project.Project;
-
-import org.jetbrains.annotations.NotNull;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.xml.XmlFile;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 /**
- * Created 10:20 PM 10 February 2016.
+ * Created 6:46 PM 18 September 2016.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public interface CommonIdeaService {
+public final class TypeSystemUtils {
 
-    boolean isTypingActionInProgress();
+    public static boolean isTypeSystemXmlFile(@Nullable final PsiFile psiFile) {
+        return psiFile instanceof XmlFile && psiFile.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING);
+    }
 
-    @Nullable
-    Project getProject();
-
-    @NotNull
-    Optional<String> getCustomDirectory(@NotNull Project project);
 }

@@ -22,13 +22,14 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Iconable;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomFileDescription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+
+import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.isTypeSystemXmlFile;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -46,10 +47,6 @@ public class TypeSystemDomFileDescription extends DomFileDescription<Items> {
         final boolean isMyFile = super.isMyFile(file, module);
         final boolean isTypeSystem = isTypeSystemXmlFile(file);
         return isMyFile && isTypeSystem;
-    }
-
-    public static boolean isTypeSystemXmlFile(@Nullable final PsiFile psiFile) {
-        return psiFile instanceof XmlFile && psiFile.getName().endsWith("-items.xml");
     }
 
     @Override

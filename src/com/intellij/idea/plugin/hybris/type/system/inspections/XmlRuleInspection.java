@@ -22,9 +22,8 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
@@ -47,6 +46,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RULESET_XML;
+
 public class XmlRuleInspection extends LocalInspectionTool {
 
     private static final Logger LOG = Logger.getInstance(XmlRuleInspection.class);
@@ -60,7 +61,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final @NotNull InspectionManager manager,
         final boolean isOnTheFly
     ) {
-        if (!this.isTypeSystemFile(file)) {
+        if (!TypeSystemUtils.isTypeSystemXmlFile(file)) {
             return null;
         }
         final XmlFile xmlFile = (XmlFile) file;
@@ -86,16 +87,13 @@ public class XmlRuleInspection extends LocalInspectionTool {
         return result.toArray(new ProblemDescriptor[result.size()]);
     }
 
-    private boolean isTypeSystemFile(@NotNull final PsiFile file) {
-        return TypeSystemDomFileDescription.isTypeSystemXmlFile(file);
-    }
-
     protected boolean shouldCheckFile(@NotNull final PsiFileSystemItem file) {
         if (file.getVirtualFile() == null) {
             return false;
         }
 
-        final Optional<String> optionalCustomDir = this.getCustomDirectory(file);
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final Optional<String> optionalCustomDir = commonIdeaService.getCustomDirectory(file.getProject());
 
         //FIXME: workaround to always enable validation in test projects without hybris settings
         if (!optionalCustomDir.isPresent() && this.shouldCheckFilesWithoutHybrisSettings()) {
@@ -165,20 +163,13 @@ public class XmlRuleInspection extends LocalInspectionTool {
         );
     }
 
-    @NotNull
-    protected Optional<String> getCustomDirectory(@NotNull final PsiElement file) {
-        return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(file.getProject()))
-                       .map(HybrisProjectSettingsComponent::getState)
-                       .map(HybrisProjectSettings::getCustomDirectory);
-    }
-
     protected boolean shouldCheckFilesWithoutHybrisSettings() {
         //probably it is a test project where we DO want to show warnings
         return true;
     }
 
     private XmlRule[] loadRules() throws IOException {
-        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("ruleset.xml")) {
+        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream(RULESET_XML)) {
             if (input == null) {
                 throw new IOException("Ruleset file is not found");
             }
