@@ -43,9 +43,9 @@ public class ItemTypeConverter extends ResolvingConverter<ItemType> {
     @Nullable
     @Override
     public ItemType fromString(
-        @Nullable @NonNls final String s, final ConvertContext convertContext
+        @Nullable @NonNls final String s, final ConvertContext context
     ) {
-        final TSMetaModel meta = getTypeSystemMeta(convertContext);
+        final TSMetaModel meta = getTypeSystemMeta(context);
         return Optional.ofNullable(meta.findMetaClassByName(s))
                        .map(TSMetaClass::getAllDomsStream)
                        .orElse(Stream.empty())
@@ -55,8 +55,8 @@ public class ItemTypeConverter extends ResolvingConverter<ItemType> {
 
     @NotNull
     @Override
-    public Collection<? extends ItemType> getVariants(final ConvertContext convertContext) {
-        final TSMetaModel meta = getTypeSystemMeta(convertContext);
+    public Collection<? extends ItemType> getVariants(final ConvertContext context) {
+        final TSMetaModel meta = getTypeSystemMeta(context);
         return meta.getMetaClassesStream()
                    .map(TSMetaClass::getAllDomsStream)
                    .map(Stream::findFirst)
@@ -67,8 +67,8 @@ public class ItemTypeConverter extends ResolvingConverter<ItemType> {
 
     @Nullable
     @Override
-    public String toString(@Nullable final ItemType itemType, final ConvertContext convertContext) {
-        return Optional.ofNullable(itemType)
+    public String toString(@Nullable final ItemType t, final ConvertContext context) {
+        return Optional.ofNullable(t)
                        .map(ItemType::getCode)
                        .map(GenericAttributeValue::getValue)
                        .orElse(null);
@@ -83,7 +83,7 @@ public class ItemTypeConverter extends ResolvingConverter<ItemType> {
                        .orElse(null);
     }
 
-    private TSMetaModel getTypeSystemMeta(@NotNull ConvertContext convertContext) {
+    private TSMetaModel getTypeSystemMeta(@NotNull final ConvertContext convertContext) {
         return TSMetaModelAccess.getInstance(convertContext.getProject()).getTypeSystemMeta();
     }
 }

@@ -43,8 +43,8 @@ public class TypeSystemDomFileDescription extends DomFileDescription<Items> {
     public boolean isMyFile(
         @NotNull final XmlFile file, @Nullable final Module module
     ) {
-        boolean isMyFile = super.isMyFile(file, module);
-        boolean isTypeSystem = isTypeSystemXmlFile(file);
+        final boolean isMyFile = super.isMyFile(file, module);
+        final boolean isTypeSystem = isTypeSystemXmlFile(file);
         return isMyFile && isTypeSystem;
     }
 
@@ -62,8 +62,9 @@ public class TypeSystemDomFileDescription extends DomFileDescription<Items> {
         return 19;
     }
 
+    @Override
     @Nullable
-    public Icon getFileIcon(@Iconable.IconFlags int flags) {
+    public Icon getFileIcon(@Iconable.IconFlags final int flags) {
         return HybrisIcons.TYPE_SYSTEM;
     }
 }
