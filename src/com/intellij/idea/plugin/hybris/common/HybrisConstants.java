@@ -116,5 +116,8 @@ public interface HybrisConstants {
     String HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml";
     String RULESET_XML = "ruleset.xml";
 
+    String HMC_WEB_INF_CLASSES = separatorsToSystem("/bin/ext-platform-optional/hmc/web/webroot/WEB-INF/classes");
+    String BACKOFFICE_WEB_INF_LIB = separatorsToSystem("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");
+
     int MAX_EXISTING_MODULE_NAMES = 20;
 }

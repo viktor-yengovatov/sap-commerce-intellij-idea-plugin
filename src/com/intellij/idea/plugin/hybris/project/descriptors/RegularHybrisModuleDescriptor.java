@@ -150,7 +150,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
 
         requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames());
 
-        if (null != this.extensionInfo.getExtension().getHmcmodule()) {
+        if (this.hasHmcModule()) {
             requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
         }
 
@@ -161,7 +161,11 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         return Collections.unmodifiableSet(requiredExtensionNames);
     }
 
-    protected boolean hasBackofficeModule() {
+    public boolean hasHmcModule() {
+        return null != this.extensionInfo.getExtension().getHmcmodule();
+    }
+
+    public boolean hasBackofficeModule() {
         return this.isMetaKeySetToTrue(BACK_OFFICE_MODULE_META_KEY_NAME) && this.doesBackofficeDirectoryExist();
     }
 
@@ -184,7 +188,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     @NotNull
     @Override
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        final List<JavaLibraryDescriptor> libs = new ArrayList<JavaLibraryDescriptor>(6);
+        final List<JavaLibraryDescriptor> libs = new ArrayList<>();
 
         if (this.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
 
@@ -234,25 +238,45 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             true
         ));
 
-        libs.add(new DefaultJavaLibraryDescriptor(new File(
-            this.getRootDirectory(),
-            HybrisConstants.WEB_WEBINF_LIB_DIRECTORY
-        ), false));
+        libs.add(new DefaultJavaLibraryDescriptor(
+            new File(this.getRootDirectory(), HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
+            false
+        ));
 
-        libs.add(new DefaultJavaLibraryDescriptor(new File(
-            this.getRootDirectory(),
-            HybrisConstants.COMMONWEB_WEBINF_LIB_DIRECTORY
-        ), false));
+        libs.add(new DefaultJavaLibraryDescriptor(
+            new File(this.getRootDirectory(), HybrisConstants.COMMONWEB_WEBINF_LIB_DIRECTORY),
+            false
+        ));
 
         libs.add(new DefaultJavaLibraryDescriptor(
             new File(this.getRootDirectory(), HybrisConstants.HMC_LIB_DIRECTORY),
             true
         ));
 
-        libs.add(new DefaultJavaLibraryDescriptor(new File(
-            this.getRootDirectory(),
-            HybrisConstants.BACKOFFICE_LIB_DIRECTORY
-        ), true));
+        libs.add(new DefaultJavaLibraryDescriptor(
+            new File(this.getRootDirectory(), HybrisConstants.BACKOFFICE_LIB_DIRECTORY),
+            true
+        ));
+
+        if (this.hasHmcModule()) {
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(
+                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
+                    HybrisConstants.HMC_WEB_INF_CLASSES
+                ),
+                false, true
+            ));
+        }
+
+        if (this.hasBackofficeModule()) {
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(
+                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
+                    HybrisConstants.BACKOFFICE_WEB_INF_LIB
+                ),
+                false, false
+            ));
+        }
 
         return Collections.unmodifiableList(libs);
     }
