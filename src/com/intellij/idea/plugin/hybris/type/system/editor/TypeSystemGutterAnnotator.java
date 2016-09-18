@@ -41,7 +41,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription.isTypeSystemXmlFile;
+import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.isTypeSystemXmlFile;
+
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
