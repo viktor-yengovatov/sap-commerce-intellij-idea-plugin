@@ -38,86 +38,48 @@
 
     <description>
         <![CDATA[
-          This plugin is an open source (LGPL) and <b>official</b> plugin for hybris platform supported by community and hybris.
+          This plugin is an open source (LGPL) and <b>official</b> plugin for Hybris platform supported by community and Hybris.
 
+          <br/>
           <br/>
           If you have any questions you can send an email to me:
-          <br/>
-          Alexander Bartash: AlexanderBartash@gmail.com
-          <br/>
+          <a href="mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com">Alexander Bartash</a>
           or
-          <br/>
-          Martin Zdarsky-Jones: martin.zdarsky@hybris.com
+          <a href="mailto:martin.zdarsky@hybris.com?cc=AlexanderBartash@gmail.com">Martin Zdarsky-Jones</a>
 
           <br/>
           <br/>
-          <b>Import of hybris extensions to Intellij IDEA:</b>
-          <br/>
-          - Automatic modules dependency management.
-          <br/>
-          - Automatic classpath configuration.
-          <br/>
-          - Proper project configuration to make it compatible with JRebel.
-          <br/>
-          - Automatic Spring facet configuration (only Ultimate IDEA).
-          <br/>
-          - Automatic Web facet configuration (only Ultimate IDEA).
+          Bug tracker: <a href="https://hybris-integration.atlassian.net/projects/IIPS">Intellij IDEA Plugin Support</a>
 
           <br/>
           <br/>
-          <b>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram"). (only Ultimate IDEA)</b>
-
+          <b>Features:</b>
           <br/>
+          - Import of Hybris extensions to Intellij IDEA.
           <br/>
-          <b>Enhanced project view tree:</b>
+          - Editor for impex files.
           <br/>
-          - Rarely used elements are grouped into "junk" virtual folder also you can include to or exclude specific folder from the "Junk" list.
+          - items.xml validation.
           <br/>
-          - Compacting of empty middle folders in the project tree like it is done for java packages.
-
+          - Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).
           <br/>
-          <br/>
-          <b>Editor for impex files:</b>
-
-          <br/>
-          - Syntax highlighting and errors indication for hybris impex files.
-          <br/>
-          - Selected column name highlighting.
-          <br/>
-          - Automatic alignment into columns via "Reformat code".
-          <br/>
-          - Code folding to improve readability.
-          <br/>
-          - Autocompletion within the header for modifier name and value. *
-          <br/>
-          - Autocompletion for hybris types based on the current IntelliJ-Project (hybris coretypes + your custom types). *
-          <br/>
-          - Autocompletion for hybris attributes based on the current IntelliJ-Project (hybris coretypes + your custom types). *
-
-          <br/>
-          <br/>
-          * Due autocompletion based on the IntelliJ-Class-Index this feature is only available after the IntelliJ-indexing
-          process is finished. The indexing is automatically run on the first completion-action. After an *-item.xml change or
-          adding a new hybris-extension - and ant install - you can rerun the "indexing" mechanism with "Tools/Index [y]-types".
-
-
-          <br/>
-          <br/>
-          <b>Guides:</b>
-          <br/>
-          - <a href="https://www.youtube.com/watch?v=_wVbowe39GM">How to import hybris project using Intellij IDEA "hybris integration" plugin</a>
-          <br/>
-          - <a href="https://www.youtube.com/watch?v=I-YYKD0OSyY">How to use HotSwap in hybris with Oracle JDK and DCEVM OpenJDK</a>
-          <br/>
-          Visit <a href="https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin">our page</a> in BitBucket for more details.
+          - Enhanced project view tree.
 
           <br/>
           <br/>
           <b>Contribution guidelines:</b>
           <br/>
-          - <a href="https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment">How To Configure Project Environment</a>
+          - Please read <a href="http://developercertificate.org/">Contributor License Agreement</a>
+          <br/>
+          - We are working with <a href="https://www.atlassian.com/git/tutorials/making-a-pull-request/">Pull Requests</a> because it allows us to review the code before merging it. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.
+          <br/>
+          - Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name <your.email@email.com>" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
+          <br/>
+          - <a href="https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment">How To Configure Project Environment</a>
           <br/>
           - Available tasks <a href="https://hybris-integration.atlassian.net/projects/IIP/issues">here</a> also you can suggest new features.
+          <br/>
+          - <a href="https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment">How To Configure Project Environment</a>
           <br/>
           - Also you can find useful information in our <a href="https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin/wiki/Home">wiki</a>.
           <br/>
@@ -156,8 +118,8 @@
           <br/>
           <br/>
           4.3:
-          <br/> - An ability to import hybris distribution without config folder.
-          <br/> - Automatic hybris API JavaDoc configuration.
+          <br/> - An ability to import Hybris distribution without config folder.
+          <br/> - Automatic Hybris API JavaDoc configuration.
           <br/>
           <br/>
           4.2.2:
@@ -176,7 +138,7 @@
           <br/>
           <br/>
           4.1:
-          <br/> - Business process visualisation has been improved to support new features from the latest hybris versions.
+          <br/> - Business process visualisation has been improved to support new features from the latest Hybris versions.
           <br/>
           <br/>
           4.0.1:
@@ -215,7 +177,7 @@
           <br/>
           <br/>
           2.0:
-          <br/> - Import of hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
+          <br/> - Import of Hybris extensions to Intellij IDEA with automatic module dependency management and classpath configuration.
           <br/>
           <br/>
           1.8:
@@ -271,7 +233,7 @@
           <br/>
           <br/>
           1.3.1:
-          <br/> - Added autocompletion for hybris type system based on ItemModel-inheritance. (Thanks to Markus Priegl)
+          <br/> - Added autocompletion for Hybris type system based on ItemModel-inheritance. (Thanks to Markus Priegl)
           <br/>
           <br/>
           1.3:
