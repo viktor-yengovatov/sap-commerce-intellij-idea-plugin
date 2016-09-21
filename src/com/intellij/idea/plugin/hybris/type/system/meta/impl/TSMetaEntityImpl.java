@@ -31,7 +31,7 @@ class TSMetaEntityImpl<D extends DomElement> {
 
     private final D myDom;
 
-    public TSMetaEntityImpl(String name, D dom) {
+    public TSMetaEntityImpl(final String name, final D dom) {
         myDom = dom;
         myName = name;
     }

@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.model.Attributes;
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import com.intellij.idea.plugin.hybris.type.system.model.ItemTypes;
-import com.intellij.idea.plugin.hybris.type.system.model.Items;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.model.Attributes;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
+import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.Items;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.ProjectScope;
@@ -72,24 +72,27 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
 
+    @SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
     @Override
     public boolean process(final PsiFile psiFile) {
         final DomFileElement<Items> rootWrapper = myDomManager.getFileElement((XmlFile) psiFile, Items.class);
-        final ItemTypes itemTypes = Optional.ofNullable(rootWrapper)
-                                              .map(DomFileElement::getRootElement)
-                                              .map(Items::getItemTypes)
-                                              .orElse(null);
+        final Items items = Optional.ofNullable(rootWrapper).map(DomFileElement::getRootElement).orElse(null);
 
-        if (itemTypes != null) {
-            itemTypes.getItemTypes().stream()
-                     .forEach(this::processItemType);
-            itemTypes.getTypeGroups().stream()
-                     .flatMap(tg -> tg.getItemTypes().stream())
-                     .forEach(this::processItemType);
+        if (items != null) {
+            items.getItemTypes().getItemTypes().forEach(this::processItemType);
+            items.getItemTypes().getTypeGroups().stream()
+                 .flatMap(tg -> tg.getItemTypes().stream())
+                 .forEach(this::processItemType);
+
+            items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
         }
 
         //continue visiting
         return true;
+    }
+
+    private void processEnumType(final @NotNull EnumType enumType) {
+        myResult.findOrCreateEnum(enumType);
     }
 
     private void processItemType(final @NotNull ItemType itemType) {
@@ -102,7 +105,6 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
         Optional.ofNullable(itemType.getAttributes())
                 .map(Attributes::getAttributes)
                 .orElse(Collections.emptyList())
-                .stream()
                 .forEach(metaclass::createProperty);
     }
 }

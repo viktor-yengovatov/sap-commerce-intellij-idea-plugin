@@ -18,30 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.Stream;
-
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public interface TSMetaModel {
+public interface TSMetaEnum {
 
     @NotNull
-    Stream<? extends TSMetaClass> getMetaClassesStream();
+    String getName();
 
     @NotNull
-    Stream<? extends TSMetaEnum> getMetaEnumsStream();
-
-    @Nullable
-    TSMetaClass findMetaClassByName(@NotNull String name);
-
-    @Nullable
-    TSMetaEnum findMetaEnumByName(@NotNull String name);
-
-    @Nullable
-    TSMetaClass findMetaClassForDom(@NotNull ItemType dom);
+    EnumType getDom();
 
 }

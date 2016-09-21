@@ -18,9 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
+import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +37,7 @@ import java.util.stream.Stream;
 class TSMetaModelImpl implements TSMetaModel {
 
     private final Map<String, TSMetaClassImpl> myClasses = new TreeMap<>();
+    private final Map<String, TSMetaEnumImpl> myEnums = new TreeMap<>();
 
     @Nullable
     TSMetaClassImpl findOrCreateClass(final @NotNull ItemType domItemType) {
@@ -52,10 +55,20 @@ class TSMetaModelImpl implements TSMetaModel {
         return impl;
     }
 
-    @NotNull
-    @Override
-    public Iterable<? extends TSMetaClass> getMetaClasses() {
-        return myClasses.values();
+    @Nullable
+    TSMetaEnumImpl findOrCreateEnum(final @NotNull EnumType domEnumType) {
+        final String name = TSMetaEnumImpl.extractName(domEnumType);
+        if (name == null) {
+            return null;
+        }
+        TSMetaEnumImpl impl = myEnums.get(name);
+        if (impl == null) {
+            impl = new TSMetaEnumImpl(name, domEnumType);
+            myEnums.put(name, impl);
+        } else {
+            //report a problem
+        }
+        return impl;
     }
 
     @NotNull
@@ -76,5 +89,17 @@ class TSMetaModelImpl implements TSMetaModel {
         return Optional.ofNullable(TSMetaClassImpl.extractMetaClassName(dom))
                        .map(this::findMetaClassByName)
                        .orElse(null);
+    }
+
+    @NotNull
+    @Override
+    public Stream<? extends TSMetaEnum> getMetaEnumsStream() {
+        return myEnums.values().stream();
+    }
+
+    @Nullable
+    @Override
+    public TSMetaEnum findMetaEnumByName(@NotNull final String name) {
+        return myEnums.get(name);
     }
 }
