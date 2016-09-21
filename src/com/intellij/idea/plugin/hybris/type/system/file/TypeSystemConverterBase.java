@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.file;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.DomElement;
@@ -57,13 +58,26 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
     }
 
     /**
-     * This method is needed to combine converters of different target types in the {@link CompositeConverter}
+     * This method is needed to combine converters of different target types in the
+     * {@link CompositeConverter#toString(Object, ConvertContext)}
+     * <p/>
      * Implementor should not assume that the value passed to this method is of some particular class (since it
      * may be produced by other sibling converter)
      */
     @Nullable
     public String tryToString(@Nullable final Object dom, final ConvertContext context) {
         return myResolvesToClass.isInstance(dom) ? toString(myResolvesToClass.cast(dom), context) : null;
+    }
+
+    /**
+     * This method is needed to combine converters of different target types from the
+     * {@link CompositeConverter#getPsiElement(Object)}.
+     * <p/>
+     * Implementor should not assume that the value passed to this method is of some particular class (since it
+     * may be produced by other sibling converter)
+     */
+    public PsiElement tryGetPsiElement(@Nullable final Object dom) {
+        return myResolvesToClass.isInstance(dom) ? getPsiElement(myResolvesToClass.cast(dom)) : null;
     }
 
     @Nullable

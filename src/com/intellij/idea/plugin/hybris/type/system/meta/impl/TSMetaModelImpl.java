@@ -19,8 +19,10 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +40,7 @@ class TSMetaModelImpl implements TSMetaModel {
 
     private final Map<String, TSMetaClassImpl> myClasses = new TreeMap<>();
     private final Map<String, TSMetaEnumImpl> myEnums = new TreeMap<>();
+    private final Map<String, TSMetaCollectionImpl> myCollections = new TreeMap<>();
 
     @Nullable
     TSMetaClassImpl findOrCreateClass(final @NotNull ItemType domItemType) {
@@ -67,6 +70,20 @@ class TSMetaModelImpl implements TSMetaModel {
             myEnums.put(name, impl);
         } else {
             //report a problem
+        }
+        return impl;
+    }
+
+    @Nullable
+    TSMetaCollectionImpl findOrCreateCollection(final @NotNull CollectionType domCollectionType) {
+        final String name = TSMetaCollectionImpl.extractName(domCollectionType);
+        if (name == null) {
+            return null;
+        }
+        TSMetaCollectionImpl impl = myCollections.get(name);
+        if (impl == null) {
+            impl = new TSMetaCollectionImpl(this, name, domCollectionType);
+            myCollections.put(name, impl);
         }
         return impl;
     }
@@ -101,5 +118,17 @@ class TSMetaModelImpl implements TSMetaModel {
     @Override
     public TSMetaEnum findMetaEnumByName(@NotNull final String name) {
         return myEnums.get(name);
+    }
+
+    @NotNull
+    @Override
+    public Stream<? extends TSMetaCollection> getMetaCollectionsStream() {
+        return myCollections.values().stream();
+    }
+
+    @Nullable
+    @Override
+    public TSMetaCollection findMetaCollectionByName(@NotNull final String name) {
+        return myCollections.get(name);
     }
 }

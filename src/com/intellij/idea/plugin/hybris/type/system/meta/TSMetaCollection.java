@@ -18,10 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
+import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
+import com.intellij.util.xml.DomElement;
+import org.jetbrains.annotations.Nullable;
 
-public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
+public interface TSMetaCollection extends TSMetaClassifier<CollectionType> {
 
-    // literals?
+    @Nullable
+    String getElementTypeName();
+
+    @Nullable
+    TSMetaClassifier<? extends DomElement> getElementType();
 
 }

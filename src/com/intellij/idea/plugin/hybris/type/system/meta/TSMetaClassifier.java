@@ -18,10 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
+import com.intellij.util.xml.DomElement;
 
-public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
+public interface TSMetaClassifier<DOM extends DomElement> {
 
-    // literals?
+    String getName();
+
+    DOM getDom();
 
 }

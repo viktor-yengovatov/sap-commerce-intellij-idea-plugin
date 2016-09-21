@@ -85,7 +85,7 @@ public interface Attribute extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("type")
     @Required
-    @Convert(value = CompositeConverter.TypeOrEnum.class, soft = true)
+    @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getType();
 
 

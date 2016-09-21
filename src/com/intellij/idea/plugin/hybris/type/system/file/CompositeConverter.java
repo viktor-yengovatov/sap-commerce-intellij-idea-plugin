@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.ResolvingConverter;
@@ -40,7 +41,7 @@ public class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
     @NotNull
     @Override
     public Collection<? extends DOM> getVariants(final ConvertContext context) {
-        List<DOM> result = new LinkedList<>();
+        final List<DOM> result = new LinkedList<>();
         for (TypeSystemConverterBase<? extends DOM> next : myDelegates) {
             result.addAll(next.getVariants(context));
         }
@@ -73,10 +74,32 @@ public class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
         return null;
     }
 
+    @Nullable
+    @Override
+    public PsiElement getPsiElement(@Nullable final DOM resolvedValue) {
+        for (TypeSystemConverterBase<? extends DOM> next : myDelegates) {
+            if (next.getResolvesToClass().isInstance(resolvedValue)) {
+                final PsiElement nextResult = next.tryGetPsiElement(resolvedValue);
+                if (nextResult != null) {
+                    return nextResult;
+                }
+            }
+        }
+        return null;
+    }
+
     public static class TypeOrEnum extends CompositeConverter<DomElement> {
 
         public TypeOrEnum() {
             super(new EnumTypeConverter(), new ItemTypeConverter());
         }
+    }
+
+    public static class AnyClassifier extends CompositeConverter<DomElement> {
+
+        public AnyClassifier() {
+            super(new EnumTypeConverter(), new ItemTypeConverter(), new CollectionTypeConverter());
+        }
+
     }
 }

@@ -28,10 +28,7 @@ import java.util.stream.Stream;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-public interface TSMetaClass {
-
-    @NotNull
-    String getName();
+public interface TSMetaClass extends TSMetaClassifier<ItemType> {
 
     @Nullable
     String getExtendedMetaClassName();

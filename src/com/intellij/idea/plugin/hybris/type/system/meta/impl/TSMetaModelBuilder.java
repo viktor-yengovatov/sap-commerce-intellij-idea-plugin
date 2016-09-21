@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.model.Attributes;
+import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
@@ -85,6 +86,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
                  .forEach(this::processItemType);
 
             items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
+            items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
         }
 
         //continue visiting
@@ -93,6 +95,10 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
 
     private void processEnumType(final @NotNull EnumType enumType) {
         myResult.findOrCreateEnum(enumType);
+    }
+
+    private void processCollectionType(final @NotNull CollectionType collectionType) {
+        myResult.findOrCreateCollection(collectionType);
     }
 
     private void processItemType(final @NotNull ItemType itemType) {
