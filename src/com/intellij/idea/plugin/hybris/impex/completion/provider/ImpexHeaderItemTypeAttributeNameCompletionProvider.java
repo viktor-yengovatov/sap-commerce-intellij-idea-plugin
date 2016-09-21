@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils;
 import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
@@ -93,19 +92,18 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         @NotNull final CompletionResultSet resultSet
     ) {
 
-        //FIXME: only direct properties are considered for now, no inheritance
         final TSMetaModel metaModel = TSMetaModelAccess.getInstance(project).getTypeSystemMeta();
         final String itemTypeCode = headerTypeName.getText();
 
         Optional.ofNullable(metaModel.findMetaClassByName(itemTypeCode))
-                .map(TSMetaClass::getPropertiesStream)
+                .map(meta -> meta.getPropertiesStream(true))
                 .orElse(Stream.empty())
                 .filter(dom -> dom.getName() != null)
                 .map(this::createDomLookupElement)
                 .forEach(resultSet::addElement);
     }
 
-    protected LookupElement createDomLookupElement(TSMetaProperty domProperty) {
+    protected LookupElement createDomLookupElement(@NotNull final TSMetaProperty domProperty) {
         //FIXME: add type
         return LookupElementBuilder
             .create(Optional.ofNullable(domProperty.getName()).orElse("<unnamed>")) //should not happen

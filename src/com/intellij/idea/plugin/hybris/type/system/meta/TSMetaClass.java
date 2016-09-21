@@ -40,10 +40,10 @@ public interface TSMetaClass {
     Iterable<? extends TSMetaProperty> getProperties();
 
     @NotNull
-    Stream<? extends TSMetaProperty> getPropertiesStream();
+    Stream<? extends TSMetaProperty> getPropertiesStream(boolean includeInherited);
 
     @NotNull
-    Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name);
+    Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name, boolean includeInherited);
 
     @NotNull
     Stream<? extends ItemType> getAllDomsStream();
