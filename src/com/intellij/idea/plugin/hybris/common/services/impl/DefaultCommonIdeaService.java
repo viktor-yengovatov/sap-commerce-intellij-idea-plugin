@@ -66,6 +66,16 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     @Override
     @NotNull
+    public Optional<String> getHybrisDirectory(@NotNull final Project project) {
+        Validate.notNull(project);
+
+        return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
+                       .map(HybrisProjectSettingsComponent::getState)
+                       .map(HybrisProjectSettings::getHybrisDirectory);
+    }
+
+    @Override
+    @NotNull
     public Optional<String> getCustomDirectory(@NotNull final Project project) {
         Validate.notNull(project);
 

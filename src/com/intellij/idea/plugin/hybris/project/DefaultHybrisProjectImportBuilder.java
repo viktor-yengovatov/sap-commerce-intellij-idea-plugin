@@ -75,6 +75,7 @@ import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.StructureConfigurableContext;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
@@ -327,10 +328,14 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
         final File customDirectory = this.getHybrisProjectDescriptor().getCustomExtensionsDirectory();
         final File hybrisDirectory = this.getHybrisProjectDescriptor().getHybrisDistributionDirectory();
+        final File baseDirectory = VfsUtilCore.virtualToIoFile(project.getBaseDir());
+        final Path projectPath = Paths.get(baseDirectory.getAbsolutePath());
         final Path customPath = Paths.get(customDirectory.getAbsolutePath());
         final Path hybrisPath = Paths.get(hybrisDirectory.getAbsolutePath());
-        final Path relativePath = hybrisPath.relativize(customPath);
-        hybrisProjectSettings.setCustomDirectory(relativePath.toString());
+        final Path relativeHybrisPath = projectPath.relativize(hybrisPath);
+        final Path relativeCustomPath = hybrisPath.relativize(customPath);
+        hybrisProjectSettings.setHybrisDirectory(relativeHybrisPath.toString());
+        hybrisProjectSettings.setCustomDirectory(relativeCustomPath.toString());
     }
 
     private void selectSdk(@NotNull final Project project) {
