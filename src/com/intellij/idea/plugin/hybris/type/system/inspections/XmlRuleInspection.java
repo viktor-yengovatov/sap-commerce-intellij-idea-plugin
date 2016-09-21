@@ -23,6 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -39,8 +40,11 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -93,26 +97,27 @@ public class XmlRuleInspection extends LocalInspectionTool {
         }
 
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final Optional<String> optionalHybrisDir = commonIdeaService.getHybrisDirectory(file.getProject());
         final Optional<String> optionalCustomDir = commonIdeaService.getCustomDirectory(file.getProject());
 
-        //FIXME: workaround to always enable validation in test projects without hybris settings
-        if (!optionalCustomDir.isPresent() && this.shouldCheckFilesWithoutHybrisSettings()) {
+        if (!optionalHybrisDir.isPresent() && this.shouldCheckFilesWithoutHybrisSettings()) {
             return true;
         }
 
-        final String DEFAULT_LOCATION = "bin" + VfsUtilCore.VFS_SEPARATOR_CHAR + "custom";
-        String customDir = optionalCustomDir.orElse(DEFAULT_LOCATION);
+        if (!optionalCustomDir.isPresent()) {
+            return false;
+        }
 
-        //next line enforces <code>customDit.endsWith(VfsUtilCore.VFS_SEPARATOR_CHAR)</code>
-        customDir = StringUtil.trimEnd(customDir, VfsUtilCore.VFS_SEPARATOR_CHAR) + VfsUtilCore.VFS_SEPARATOR_CHAR;
+        final File baseDirectory = VfsUtilCore.virtualToIoFile(file.getProject().getBaseDir());
+        final File itemsfile = VfsUtilCore.virtualToIoFile(file.getVirtualFile());
 
-        //FIXME: revisit: according to DefaultHybrisProjectImportBuilder#saveCustomDirectoryLocation
-        //FIXME: customDir is stored as a relative path from hybris home
-        //FIXME: However, I don't see how to access the hybris home here, so will assume that
-        //FIXME: it is the somewhere under project base directory
-        //FIXME: Hence, we are checking contains() instead of some kind of startsWith(..)
-        final String relativePath = VfsUtilCore.getRelativePath(file.getVirtualFile(), file.getProject().getBaseDir());
-        return relativePath != null && relativePath.contains(customDir);
+        final Path hybrisPath = Paths.get(baseDirectory.getAbsolutePath(), optionalHybrisDir.get());
+        final Path customPath = hybrisPath.resolve(optionalCustomDir.get());
+
+        final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
+            VirtualFileSystemService.class
+        );
+        return virtualFileSystemService.fileContainsAnother(itemsfile, customPath.toFile());
     }
 
     @NotNull
@@ -164,8 +169,8 @@ public class XmlRuleInspection extends LocalInspectionTool {
     }
 
     protected boolean shouldCheckFilesWithoutHybrisSettings() {
-        //probably it is a test project where we DO want to show warnings
-        return true;
+        // it can be a test project or completely different project
+        return false;
     }
 
     private XmlRule[] loadRules() throws IOException {
