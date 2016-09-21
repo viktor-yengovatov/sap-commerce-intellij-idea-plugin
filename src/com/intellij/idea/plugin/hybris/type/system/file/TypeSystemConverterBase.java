@@ -36,11 +36,35 @@ import java.util.function.Function;
 
 public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DOM> {
 
+    private final Class<? extends DOM> myResolvesToClass;
+
     protected abstract DOM searchForName(
         @NotNull String name, @NotNull ConvertContext context, @NotNull TSMetaModel meta
     );
 
     protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, @NotNull TSMetaModel meta);
+
+    public TypeSystemConverterBase(@NotNull final Class<? extends DOM> resolvesToClass) {
+        myResolvesToClass = resolvesToClass;
+    }
+
+    public boolean canResolveTo(final @NotNull Object dom) {
+        return myResolvesToClass.isInstance(dom);
+    }
+
+    public Class<? extends DOM> getResolvesToClass() {
+        return myResolvesToClass;
+    }
+
+    /**
+     * This method is needed to combine converters of different target types in the {@link CompositeConverter}
+     * Implementor should not assume that the value passed to this method is of some particular class (since it
+     * may be produced by other sibling converter)
+     */
+    @Nullable
+    public String tryToString(@Nullable final Object dom, final ConvertContext context) {
+        return myResolvesToClass.isInstance(dom) ? toString(myResolvesToClass.cast(dom), context) : null;
+    }
 
     @Nullable
     @Override

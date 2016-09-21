@@ -32,6 +32,10 @@ import java.util.stream.Collectors;
 
 public class EnumTypeConverter extends TypeSystemConverterBase<EnumType> {
 
+    public EnumTypeConverter() {
+        super(EnumType.class);
+    }
+
     @Override
     protected EnumType searchForName(
         @NotNull final String name, @NotNull final ConvertContext context, @NotNull final TSMetaModel meta

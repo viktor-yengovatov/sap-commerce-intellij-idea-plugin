@@ -36,6 +36,10 @@ import java.util.stream.Stream;
  */
 public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
 
+    public ItemTypeConverter() {
+        super(ItemType.class);
+    }
+
     @Override
     protected ItemType searchForName(
         @NotNull final String name, @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
