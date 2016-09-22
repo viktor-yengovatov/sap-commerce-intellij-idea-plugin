@@ -59,7 +59,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
 
             if (dom instanceof ItemType) {
                 final ItemType itemType = (ItemType) dom;
-                if (itemType.getCode() == null || itemType.getCode().getXmlAttributeValue() == null) {
+                if (itemType.getCode().getXmlAttributeValue() == null) {
                     return;
                 }
 
@@ -117,8 +117,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
     ) {
         return getExtendingMetaClassNamesStream(source)
             .flatMap(TSMetaClass::getAllDomsStream)
-            .filter(dom -> dom.getExtends() != null)
-            .map(ItemType::getExtends)
+            .map(ItemType::getCode)
             .map(GenericAttributeValue::getXmlAttributeValue)
             .filter(psi -> psi != null)
             .collect(Collectors.toList());
