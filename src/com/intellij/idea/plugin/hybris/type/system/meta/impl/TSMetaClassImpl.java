@@ -22,15 +22,17 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.util.containers.HashSet;
 import com.intellij.util.containers.MultiMap;
-import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -44,7 +46,7 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     private final TSMetaModelImpl myMetaModel;
 
-    private Optional<String> myExtendedMetaClassName = Optional.empty();
+    private String myExtendedMetaClassName = null;
 
     public TSMetaClassImpl(
         final @NotNull TSMetaModelImpl model,
@@ -64,9 +66,8 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     private void registerExtends(final @NotNull ItemType dom) {
         //only one extends is allowed
-        if (!myExtendedMetaClassName.isPresent()) {
-            myExtendedMetaClassName = Optional.ofNullable(dom.getExtends())
-                                              .map(GenericAttributeValue::getRawText);
+        if (myExtendedMetaClassName == null) {
+            myExtendedMetaClassName = dom.getExtends().getRawText();
         }
     }
 
@@ -103,27 +104,84 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     @Override
     @NotNull
-    public Stream<? extends TSMetaProperty> getPropertiesStream() {
-        return myProperties.values().stream();
+    public Stream<? extends TSMetaProperty> getPropertiesStream(final boolean includeInherited) {
+        final LinkedList<TSMetaProperty> result = new LinkedList<>();
+        if (includeInherited) {
+            walkInheritance(meta -> meta.collectOwnProperties(result));
+        } else {
+            this.collectOwnProperties(result);
+        }
+        return result.stream();
+    }
+
+    private void collectOwnProperties(@NotNull final Collection<TSMetaProperty> output) {
+        output.addAll(myProperties.values());
     }
 
     @NotNull
     @Override
-    public Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull final String name) {
-        //FIXME: does not consider inheritance as of yet
-        return myProperties.get(name);
+    public Collection<? extends TSMetaProperty> findPropertiesByName(
+        @NotNull final String name,
+        final boolean includeInherited
+    ) {
+        final LinkedList<TSMetaProperty> result = new LinkedList<>();
+        if (includeInherited) {
+            walkInheritance(meta -> meta.collectOwnPropertiesByName(name, result));
+        } else {
+            this.collectOwnPropertiesByName(name, result);
+        }
+        return result;
+    }
+
+    private void collectOwnPropertiesByName(
+        @NotNull final String name,
+        @NotNull final Collection<TSMetaProperty> output
+    ) {
+        output.addAll(myProperties.get(name));
+    }
+
+    /**
+     * Iteratively applies given consumer for this class and all its super-classes.
+     * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
+     */
+    private void walkInheritance(
+        @NotNull final Consumer<TSMetaClassImpl> visitor
+    ) {
+        final Set<String> visited = new HashSet<>();
+        visited.add(getName());
+        visitor.accept(this);
+        doWalkInheritance(visited, visitor);
+    }
+
+    /**
+     * Iteratively applies given consumer for inheritance chain, <strong>starting from the super-class</strong>.
+     * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
+     */
+    private void doWalkInheritance(
+        @NotNull Set<String> visitedParents,
+        @NotNull final Consumer<TSMetaClassImpl> visitor
+    ) {
+        Optional.ofNullable(myExtendedMetaClassName)
+                .filter(aName -> !visitedParents.contains(aName))
+                .map(myMetaModel::findMetaClassByName)
+                .filter(TSMetaClassImpl.class::isInstance)
+                .map(TSMetaClassImpl.class::cast)
+                .ifPresent(parent -> {
+                    visitedParents.add(parent.getName());
+                    visitor.accept(parent);
+                    parent.doWalkInheritance(visitedParents, visitor);
+                });
     }
 
     @Nullable
     @Override
     public String getExtendedMetaClassName() {
-        return myExtendedMetaClassName.orElse(null);
+        return myExtendedMetaClassName;
     }
 
     @Nullable
     static String extractMetaClassName(@NotNull final ItemType dom) {
-        final GenericAttributeValue<String> code = dom.getCode();
-        return code == null ? null : code.getValue();
+        return dom.getCode().getValue();
     }
 
 }

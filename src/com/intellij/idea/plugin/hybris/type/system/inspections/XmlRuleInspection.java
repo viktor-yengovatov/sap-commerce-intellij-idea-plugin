@@ -117,7 +117,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
             VirtualFileSystemService.class
         );
-        return virtualFileSystemService.fileContainsAnother(itemsfile, customPath.toFile());
+        return virtualFileSystemService.fileContainsAnother(customPath.toFile(), itemsfile);
     }
 
     @NotNull

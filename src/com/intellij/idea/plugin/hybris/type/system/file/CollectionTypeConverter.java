@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
 import org.jetbrains.annotations.NotNull;
@@ -29,49 +29,41 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
+public class CollectionTypeConverter extends TypeSystemConverterBase<CollectionType> {
 
-    public ItemTypeConverter() {
-        super(ItemType.class);
+    public CollectionTypeConverter() {
+        super(CollectionType.class);
     }
 
     @Override
-    protected ItemType searchForName(
+    protected CollectionType searchForName(
         @NotNull final String name, @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
     ) {
-        return Optional.ofNullable(meta.findMetaClassByName(name))
-                       .map(TSMetaClass::getAllDomsStream)
-                       .orElse(Stream.empty())
-                       .findFirst()
+        return Optional.ofNullable(meta.findMetaCollectionByName(name))
+                       .map(TSMetaCollection::getDom)
                        .orElse(null);
     }
 
     @Override
-    protected Collection<? extends ItemType> searchAll(
+    protected Collection<? extends CollectionType> searchAll(
         @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
     ) {
-        return meta.getMetaClassesStream()
-                   .map(TSMetaClass::getAllDomsStream)
-                   .map(Stream::findFirst)
-                   .filter(Optional::isPresent)
-                   .map(Optional::get)
+        return meta.getMetaCollectionsStream()
+                   .map(TSMetaCollection::getDom)
+                   .filter(dom -> dom != null)
                    .collect(Collectors.toList());
     }
 
     @Nullable
     @Override
-    public String toString(@Nullable final ItemType t, final ConvertContext context) {
-        return useAttributeValue(t, ItemType::getCode);
+    public String toString(@Nullable final CollectionType t, final ConvertContext context) {
+        return useAttributeValue(t, CollectionType::getCode);
     }
 
     @Nullable
     @Override
-    public PsiElement getPsiElement(@Nullable final ItemType resolvedValue) {
-        return navigateToValue(resolvedValue, ItemType::getCode);
+    public PsiElement getPsiElement(@Nullable final CollectionType resolvedValue) {
+        return navigateToValue(resolvedValue, CollectionType::getCode);
     }
 }

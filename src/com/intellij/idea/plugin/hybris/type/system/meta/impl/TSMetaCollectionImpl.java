@@ -18,31 +18,37 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
+import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-class TSMetaEntityImpl<D extends DomElement> {
+public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> implements TSMetaCollection {
 
-    private final String myName;
+    private final TSMetaModelImpl myMetaModel;
 
-    private final D myDom;
-
-    public TSMetaEntityImpl(final String name, final D dom) {
-        myDom = dom;
-        myName = name;
+    public TSMetaCollectionImpl(final TSMetaModelImpl model, final String name, final CollectionType dom) {
+        super(name, dom);
+        myMetaModel = model;
     }
 
     @Nullable
-    public String getName() {
-        return myName;
+    public static String extractName(final @NotNull CollectionType dom) {
+        return dom.getCode().getValue();
     }
 
-    @NotNull
-    public D getDom() {
-        return myDom;
+    @Nullable
+    @Override
+    public String getElementTypeName() {
+        return getDom().getElementType().getValue();
+    }
+
+    @Nullable
+    @Override
+    public TSMetaClassifier<? extends DomElement> getElementType() {
+        final String typeName = getElementTypeName();
+        return typeName == null ? null : myMetaModel.findMetaClassifierByName(typeName);
     }
 }

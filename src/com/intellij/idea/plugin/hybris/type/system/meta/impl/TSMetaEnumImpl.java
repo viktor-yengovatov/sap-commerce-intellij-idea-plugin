@@ -16,33 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.stream.Stream;
+public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMetaEnum {
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public interface TSMetaClass extends TSMetaClassifier<ItemType> {
+    public TSMetaEnumImpl(final String name, final EnumType dom) {
+        super(name, dom);
+    }
 
-    @Nullable
-    String getExtendedMetaClassName();
+    public static String extractName(@NotNull final EnumType domEnumType) {
+        return domEnumType.getCode().getValue();
+    }
 
-    @NotNull
-    Iterable<? extends TSMetaProperty> getProperties();
-
-    @NotNull
-    Stream<? extends TSMetaProperty> getPropertiesStream(boolean includeInherited);
-
-    @NotNull
-    Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name, boolean includeInherited);
-
-    @NotNull
-    Stream<? extends ItemType> getAllDomsStream();
+    //literals code will be added here when we find usage for it
 
 }

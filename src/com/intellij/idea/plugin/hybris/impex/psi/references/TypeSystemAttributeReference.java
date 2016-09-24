@@ -54,7 +54,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         return findItemTypeReference()
             .map(PsiElement::getText)
             .map(meta::findMetaClassByName)
-            .map(metaclass -> metaclass.findPropertiesByName(attributeName))
+            .map(metaclass -> metaclass.findPropertiesByName(attributeName, true))
             .map(Collection::stream)
             .orElse(Stream.empty())
             .map(TSMetaProperty::getDom)

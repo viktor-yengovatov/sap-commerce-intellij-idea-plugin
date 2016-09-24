@@ -21,6 +21,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model;
 
+import com.intellij.idea.plugin.hybris.type.system.file.CompositeConverter;
+import com.intellij.idea.plugin.hybris.type.system.file.EnumTypeConverter;
+import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
@@ -82,6 +85,7 @@ public interface Attribute extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("type")
     @Required
+    @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getType();
 
 

@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
 import org.jetbrains.annotations.NotNull;
@@ -29,49 +29,40 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
+public class EnumTypeConverter extends TypeSystemConverterBase<EnumType> {
 
-    public ItemTypeConverter() {
-        super(ItemType.class);
+    public EnumTypeConverter() {
+        super(EnumType.class);
     }
 
     @Override
-    protected ItemType searchForName(
+    protected EnumType searchForName(
         @NotNull final String name, @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
     ) {
-        return Optional.ofNullable(meta.findMetaClassByName(name))
-                       .map(TSMetaClass::getAllDomsStream)
-                       .orElse(Stream.empty())
-                       .findFirst()
+        return Optional.ofNullable(meta.findMetaEnumByName(name))
+                       .map(TSMetaEnum::getDom)
                        .orElse(null);
     }
 
     @Override
-    protected Collection<? extends ItemType> searchAll(
+    protected Collection<? extends EnumType> searchAll(
         @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
     ) {
-        return meta.getMetaClassesStream()
-                   .map(TSMetaClass::getAllDomsStream)
-                   .map(Stream::findFirst)
-                   .filter(Optional::isPresent)
-                   .map(Optional::get)
+        return meta.getMetaEnumsStream()
+                   .map(TSMetaEnum::getDom)
                    .collect(Collectors.toList());
     }
 
     @Nullable
     @Override
-    public String toString(@Nullable final ItemType t, final ConvertContext context) {
-        return useAttributeValue(t, ItemType::getCode);
+    public String toString(@Nullable final EnumType t, final ConvertContext context) {
+        return useAttributeValue(t, EnumType::getCode);
     }
 
     @Nullable
     @Override
-    public PsiElement getPsiElement(@Nullable final ItemType resolvedValue) {
-        return navigateToValue(resolvedValue, ItemType::getCode);
+    public PsiElement getPsiElement(@Nullable final EnumType resolvedValue) {
+        return navigateToValue(resolvedValue, EnumType::getCode);
     }
 }

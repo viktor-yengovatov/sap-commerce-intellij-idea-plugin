@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,13 +31,34 @@ import java.util.stream.Stream;
 public interface TSMetaModel {
 
     @NotNull
-    Iterable<? extends TSMetaClass> getMetaClasses();
+    Stream<? extends TSMetaClass> getMetaClassesStream();
 
     @NotNull
-    Stream<? extends TSMetaClass> getMetaClassesStream();
+    Stream<? extends TSMetaEnum> getMetaEnumsStream();
+
+    @NotNull
+    Stream<? extends TSMetaCollection> getMetaCollectionsStream();
+
+    @Nullable
+    default TSMetaClassifier<? extends DomElement> findMetaClassifierByName(final @NotNull String name) {
+        TSMetaClassifier<? extends DomElement> result = findMetaClassByName(name);
+        if (result == null) {
+            result = findMetaCollectionByName(name);
+        }
+        if (result == null) {
+            result = findMetaEnumByName(name);
+        }
+        return result;
+    }
 
     @Nullable
     TSMetaClass findMetaClassByName(@NotNull String name);
+
+    @Nullable
+    TSMetaEnum findMetaEnumByName(@NotNull String name);
+
+    @Nullable
+    TSMetaCollection findMetaCollectionByName(@NotNull String name);
 
     @Nullable
     TSMetaClass findMetaClassForDom(@NotNull ItemType dom);

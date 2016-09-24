@@ -24,7 +24,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.openapi.components.ServiceManager;
@@ -69,13 +68,9 @@ public class ImpexHeaderItemTypeCodeCompletionProvider extends CompletionProvide
         }
 
         final TSMetaModel typeSystemMeta = TSMetaModelAccess.getInstance(project).getTypeSystemMeta();
-        for (TSMetaClass domClass : typeSystemMeta.getMetaClasses()) {
-            final LookupElementBuilder nextResult = LookupElementBuilder
-                .create(domClass.getName())
-                .withIcon(HybrisIcons.TYPE_SYSTEM);
-
-            result.addElement(nextResult);
-        }
+        typeSystemMeta.getMetaClassesStream()
+                      .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
+                      .forEach(result::addElement);
     }
 
     @Nullable

@@ -18,31 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.util.xml.DomElement;
 
-import java.util.Collection;
-import java.util.stream.Stream;
+public interface TSMetaClassifier<DOM extends DomElement> {
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public interface TSMetaClass extends TSMetaClassifier<ItemType> {
+    String getName();
 
-    @Nullable
-    String getExtendedMetaClassName();
-
-    @NotNull
-    Iterable<? extends TSMetaProperty> getProperties();
-
-    @NotNull
-    Stream<? extends TSMetaProperty> getPropertiesStream(boolean includeInherited);
-
-    @NotNull
-    Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name, boolean includeInherited);
-
-    @NotNull
-    Stream<? extends ItemType> getAllDomsStream();
+    DOM getDom();
 
 }
