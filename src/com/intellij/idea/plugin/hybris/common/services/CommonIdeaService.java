@@ -43,4 +43,6 @@ public interface CommonIdeaService {
 
     @NotNull
     Optional<String> getCustomDirectory(@NotNull Project project);
+
+    boolean isHybrisProject(@NotNull Project project);
 }

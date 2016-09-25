@@ -32,6 +32,7 @@ public interface HybrisConstants {
     String HYBRIS_SERVER_SHELL_SCRIPT_NAME = separatorsToSystem("bin/platform/hybrisserver.sh");
     String PLATFORM_EXT_MODULE_PREFIX = separatorsToSystem("bin/platform/ext/");
     String PLATFORM_OOTB_MODULE_PREFIX = separatorsToSystem("bin/ext-");
+    String HYBRIS_OOTB_MODULE_PREFIX = separatorsToSystem("hybris/")+PLATFORM_OOTB_MODULE_PREFIX;
     String MEDIA_DIRECTORY = separatorsToSystem("/data/media");
     String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = separatorsToSystem("bin/custom");
     String EXTENSIONS_XML = "extensions.xml";

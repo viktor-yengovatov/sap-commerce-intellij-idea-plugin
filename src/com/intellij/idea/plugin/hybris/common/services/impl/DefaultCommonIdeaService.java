@@ -83,4 +83,9 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
                        .map(HybrisProjectSettingsComponent::getState)
                        .map(HybrisProjectSettings::getCustomDirectory);
     }
+
+    @Override
+    public boolean isHybrisProject(@NotNull final Project project) {
+        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybisProject();
+    }
 }

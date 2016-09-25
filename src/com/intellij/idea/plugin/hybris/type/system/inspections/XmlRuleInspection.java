@@ -22,12 +22,13 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -50,6 +51,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static com.intellij.openapi.util.io.FileUtil.normalize;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RULESET_XML;
 
 public class XmlRuleInspection extends LocalInspectionTool {
@@ -100,11 +102,10 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final Optional<String> optionalHybrisDir = commonIdeaService.getHybrisDirectory(file.getProject());
         final Optional<String> optionalCustomDir = commonIdeaService.getCustomDirectory(file.getProject());
 
-        if (!optionalHybrisDir.isPresent() && this.shouldCheckFilesWithoutHybrisSettings()) {
-            return true;
-        }
-
-        if (!optionalCustomDir.isPresent()) {
+        if (!optionalCustomDir.isPresent() || !optionalHybrisDir.isPresent()) {
+            if (shouldCheckFilesWithoutHybrisSettings(file.getProject())) {
+                return estimateIsCustomExtension(file);
+            }
             return false;
         }
 
@@ -118,6 +119,22 @@ public class XmlRuleInspection extends LocalInspectionTool {
             VirtualFileSystemService.class
         );
         return virtualFileSystemService.fileContainsAnother(customPath.toFile(), itemsfile);
+    }
+
+    /*
+     * This method disqualifies known hybris extensions. Anything else is considered for TSV validation.
+     */
+    private boolean estimateIsCustomExtension(final PsiFileSystemItem file) {
+        final File itemsfile = VfsUtilCore.virtualToIoFile(file.getVirtualFile());
+        final String itemsfilePath = normalize(itemsfile.getAbsolutePath());
+
+        if (itemsfilePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))) {
+            return false;
+        }
+        if (itemsfilePath.contains(normalize(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX))) {
+            return false;
+        }
+        return true;
     }
 
     @NotNull
@@ -168,9 +185,10 @@ public class XmlRuleInspection extends LocalInspectionTool {
         );
     }
 
-    protected boolean shouldCheckFilesWithoutHybrisSettings() {
-        // it can be a test project or completely different project
-        return false;
+    protected boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
+        // at least it needs to have hybris flag
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        return commonIdeaService.isHybrisProject(project);
     }
 
     private XmlRule[] loadRules() throws IOException {
