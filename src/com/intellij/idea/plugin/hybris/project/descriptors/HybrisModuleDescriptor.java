@@ -32,6 +32,8 @@ import java.util.Set;
  */
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
 
+    enum DescriptorType {CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM}
+
     @NotNull
     String getName();
 
@@ -80,4 +82,8 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     File getWebRoot();
 
     boolean isAddOn();
+
+    @NotNull
+    DescriptorType getDescriptorType();
+
 }

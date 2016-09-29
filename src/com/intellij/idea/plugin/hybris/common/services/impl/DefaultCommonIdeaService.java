@@ -26,6 +26,8 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.EditorBundle;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.AsyncResult;
 import org.apache.commons.lang3.StringUtils;
@@ -87,5 +89,34 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     @Override
     public boolean isHybrisProject(@NotNull final Project project) {
         return HybrisProjectSettingsComponent.getInstance(project).getState().isHybisProject();
+    }
+
+    @Override
+    public boolean isOutDatedHybrisProject(@NotNull final Project project) {
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final String version = hybrisProjectSettings.getImportedByVersion();
+        if (version == null) {
+            return true;
+        }
+        final String[] versionParts = version.split(".");
+        final String majorVersion = versionParts[0];
+        try {
+            final int majorVersionNumber = Integer.valueOf(majorVersion);
+            return majorVersionNumber < 5;
+        } catch (NumberFormatException nfe) {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean isPotentiallyHybrisProject(@NotNull final Project project) {
+        final Module[] modules = ModuleManager.getInstance(project).getModules();
+        if (modules.length == 0) {
+            return false;
+        }
+        // this is a hybris developer machine since the plugin is installed.
+        // If any project has "hybris" in the path directory we can assume it might be
+        // a hybris project imported from eclipse sources.
+        return modules[0].getModuleFilePath().contains("hybris");
     }
 }

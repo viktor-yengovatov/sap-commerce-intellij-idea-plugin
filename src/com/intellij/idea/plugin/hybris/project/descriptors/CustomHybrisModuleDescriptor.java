@@ -40,4 +40,9 @@ public class CustomHybrisModuleDescriptor extends RegularHybrisModuleDescriptor 
     protected Collection<? extends String> getAdditionalRequiredExtensionNames() {
         return Collections.emptySet();
     }
+
+    @Override
+    public DescriptorType getDescriptorType() {
+        return DescriptorType.CUSTOM;
+    }
 }

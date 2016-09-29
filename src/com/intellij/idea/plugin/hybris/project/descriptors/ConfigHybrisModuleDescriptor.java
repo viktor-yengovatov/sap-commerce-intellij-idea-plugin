@@ -70,4 +70,9 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
     public void setPreselected(final boolean preselected) {
         this.preselected = preselected;
     }
+
+    @Override
+    public DescriptorType getDescriptorType() {
+        return DescriptorType.CONFIG;
+    }
 }

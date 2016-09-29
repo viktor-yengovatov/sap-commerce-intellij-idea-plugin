@@ -55,6 +55,9 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
 
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleSettingsConfigurator"/>
+
     </extensions>
 
 </idea-plugin>

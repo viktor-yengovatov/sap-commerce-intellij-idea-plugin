@@ -177,4 +177,9 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
 
         return libraryDirectories;
     }
+
+    @Override
+    public DescriptorType getDescriptorType() {
+        return DescriptorType.PLATFORM;
+    }
 }
