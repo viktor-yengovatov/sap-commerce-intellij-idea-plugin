@@ -123,7 +123,7 @@ public interface HybrisConstants {
     String BACKOFFICE_WEB_INF_LIB = separatorsToSystem("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");
 
     String DESCRIPTOR_TYPE = "descriptorType";
-    String READ_ONLY = "readOnly";
+    String READ_ONLY = "importedAsReadOnly";
 
     int MAX_EXISTING_MODULE_NAMES = 20;
 }

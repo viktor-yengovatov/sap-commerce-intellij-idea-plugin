@@ -98,7 +98,10 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         if (version == null) {
             return true;
         }
-        final String[] versionParts = version.split(".");
+        final String[] versionParts = version.split("\\.");
+        if (versionParts.length != 2) {
+            return true;
+        }
         final String majorVersion = versionParts[0];
         try {
             final int majorVersionNumber = Integer.valueOf(majorVersion);
