@@ -60,4 +60,9 @@ public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
     public boolean isPreselected() {
         return true;
     }
+
+    @Override
+    public DescriptorType getDescriptorType() {
+        return DescriptorType.NONE;
+    }
 }

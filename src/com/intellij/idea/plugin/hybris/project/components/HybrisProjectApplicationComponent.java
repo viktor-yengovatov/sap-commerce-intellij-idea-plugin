@@ -16,27 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+package com.intellij.idea.plugin.hybris.project.components;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.project.ProjectManagerListener;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-
 /**
- * Created by Martin Zdarsky-Jones on 19/08/2016.
+ * Created by Martin zdarsky-Jones on 29/09/2016.
  */
-public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
+public class HybrisProjectApplicationComponent implements ApplicationComponent {
 
-    public OotbHybrisModuleDescriptor(
-        @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
-    ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
+    private ProjectManagerListener projectManagerListener = new HybrisProjectManagerListener();
+
+    @Override
+    public void initComponent() {
+        ProjectManager.getInstance().addProjectManagerListener(this.projectManagerListener);
     }
 
     @Override
-    public DescriptorType getDescriptorType() {
-        return DescriptorType.OOTB;
+    public void disposeComponent() {
+        ProjectManager.getInstance().removeProjectManagerListener(this.projectManagerListener);
+    }
+
+    @NotNull
+    @Override
+    public String getComponentName() {
+        return this.getClass().getName();
     }
 }

@@ -113,13 +113,17 @@ public interface HybrisConstants {
     String HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml";
 
     String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
-    String CONFIGURATOR_FACTORY_ID = "ccom.intellij.idea.plugin.hybris.impex.hybrisConfiguratorFactory";
+    String PLUGIN_ID = "ccom.intellij.idea.plugin.hybris.impex";
+    String CONFIGURATOR_FACTORY_ID = PLUGIN_ID + ".hybrisConfiguratorFactory";
 
     String HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml";
     String RULESET_XML = "ruleset.xml";
 
     String HMC_WEB_INF_CLASSES = separatorsToSystem("/bin/ext-platform-optional/hmc/web/webroot/WEB-INF/classes");
     String BACKOFFICE_WEB_INF_LIB = separatorsToSystem("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");
+
+    String DESCRIPTOR_TYPE = "descriptorType";
+    String READ_ONLY = "readOnly";
 
     int MAX_EXISTING_MODULE_NAMES = 20;
 }

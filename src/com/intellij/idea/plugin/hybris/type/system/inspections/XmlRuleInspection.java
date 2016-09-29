@@ -24,10 +24,12 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.psi.PsiElement;
@@ -98,27 +100,18 @@ public class XmlRuleInspection extends LocalInspectionTool {
             return false;
         }
 
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        final Optional<String> optionalHybrisDir = commonIdeaService.getHybrisDirectory(file.getProject());
-        final Optional<String> optionalCustomDir = commonIdeaService.getCustomDirectory(file.getProject());
+        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+        final String descriptorTypeName = module.getOptionValue(HybrisConstants.DESCRIPTOR_TYPE);
 
-        if (!optionalCustomDir.isPresent() || !optionalHybrisDir.isPresent()) {
+        if (descriptorTypeName == null) {
             if (shouldCheckFilesWithoutHybrisSettings(file.getProject())) {
                 return estimateIsCustomExtension(file);
             }
             return false;
         }
 
-        final File baseDirectory = VfsUtilCore.virtualToIoFile(file.getProject().getBaseDir());
-        final File itemsfile = VfsUtilCore.virtualToIoFile(file.getVirtualFile());
-
-        final Path hybrisPath = Paths.get(baseDirectory.getAbsolutePath(), optionalHybrisDir.get());
-        final Path customPath = hybrisPath.resolve(optionalCustomDir.get());
-
-        final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
-            VirtualFileSystemService.class
-        );
-        return virtualFileSystemService.fileContainsAnother(customPath.toFile(), itemsfile);
+        final DescriptorType descriptorType = DescriptorType.valueOf(descriptorTypeName);
+        return descriptorType == DescriptorType.CUSTOM;
     }
 
     /*
