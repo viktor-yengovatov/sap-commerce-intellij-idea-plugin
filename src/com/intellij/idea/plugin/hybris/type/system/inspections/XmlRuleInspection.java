@@ -46,12 +46,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static com.intellij.openapi.util.io.FileUtil.normalize;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RULESET_XML;
