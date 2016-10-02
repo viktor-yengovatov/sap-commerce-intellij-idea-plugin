@@ -22,12 +22,17 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.Relation;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -41,6 +46,7 @@ class TSMetaModelImpl implements TSMetaModel {
     private final Map<String, TSMetaClassImpl> myClasses = new TreeMap<>();
     private final Map<String, TSMetaEnumImpl> myEnums = new TreeMap<>();
     private final Map<String, TSMetaCollectionImpl> myCollections = new TreeMap<>();
+    private final MultiMap<String, TSMetaReferenceImpl> myReferencesBySourceTypeName = MultiMap.createLinked();
 
     @Nullable
     TSMetaClassImpl findOrCreateClass(final @NotNull ItemType domItemType) {
@@ -61,7 +67,7 @@ class TSMetaModelImpl implements TSMetaModel {
     @Nullable
     TSMetaEnumImpl findOrCreateEnum(final @NotNull EnumType domEnumType) {
         final String name = TSMetaEnumImpl.extractName(domEnumType);
-        if (name == null) {
+        if (StringUtil.isEmpty(name)) {
             return null;
         }
         TSMetaEnumImpl impl = myEnums.get(name);
@@ -75,17 +81,35 @@ class TSMetaModelImpl implements TSMetaModel {
     }
 
     @Nullable
-    TSMetaCollectionImpl findOrCreateCollection(final @NotNull CollectionType domCollectionType) {
+    TSMetaCollectionImpl findOrCreateCollection(@NotNull final CollectionType domCollectionType) {
         final String name = TSMetaCollectionImpl.extractName(domCollectionType);
-        if (name == null) {
+        if (StringUtil.isEmpty(name)) {
             return null;
         }
         TSMetaCollectionImpl impl = myCollections.get(name);
         if (impl == null) {
-            impl = new TSMetaCollectionImpl(this, name, domCollectionType);
+            impl = new TSMetaCollectionImpl(this, domCollectionType);
             myCollections.put(name, impl);
         }
         return impl;
+    }
+
+    @Nullable
+    TSMetaReference createReference(@NotNull final Relation domRelation) {
+        final TSMetaReferenceImpl result = new TSMetaReferenceImpl(this, domRelation);
+        final String sourceTypeName = result.getSource().getTypeName();
+        if (StringUtil.isEmpty(sourceTypeName)) {
+            return null;
+        }
+        myReferencesBySourceTypeName.putValue(sourceTypeName, result);
+        return result;
+    }
+
+    void collectReferencesForSourceType(
+        final @NotNull TSMetaClassImpl source,
+        final @NotNull Collection<TSMetaReference> out
+    ) {
+        out.addAll(myReferencesBySourceTypeName.get(source.getName()));
     }
 
     @NotNull

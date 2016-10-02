@@ -56,7 +56,7 @@ public class TypeSystemDomFileDescription extends DomFileDescription<Items> {
 
     @Override
     public int getStubVersion() {
-        return 19;
+        return 20;
     }
 
     @Override
