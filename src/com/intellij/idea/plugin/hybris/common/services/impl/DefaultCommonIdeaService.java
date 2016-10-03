@@ -35,7 +35,11 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created 10:24 PM 10 February 2016.
@@ -93,7 +97,8 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     @Override
     public boolean isOutDatedHybrisProject(@NotNull final Project project) {
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+                                                                                          .getState();
         final String version = hybrisProjectSettings.getImportedByVersion();
         if (version == null) {
             return true;
@@ -117,9 +122,34 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         if (modules.length == 0) {
             return false;
         }
-        // this is a hybris developer machine since the plugin is installed.
-        // If any project has "hybris" in the path directory we can assume it might be
-        // a hybris project imported from eclipse sources.
-        return modules[0].getModuleFilePath().contains("hybris");
+        final ArrayList<String> moduleNames = Arrays.stream(modules)
+                                                    .map(Module::getName)
+                                                    .collect(Collectors.toCollection(ArrayList::new));
+
+        final Collection<String> acceleratorNames = Arrays.asList("*cockpits", "*core", "*facades", "*storefront");
+        if (matchAllModuleNames(acceleratorNames, moduleNames)) {
+            return true;
+        }
+        final Collection<String> webservicesNames = Arrays.asList("*hmc", "hmc", "platform");
+        if (matchAllModuleNames(webservicesNames, moduleNames)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean matchAllModuleNames(@NotNull final Collection<String> namePaterns,
+                                        @NotNull final Collection<String> moduleNames) {
+        return namePaterns.stream()
+                          .allMatch(pattern->matchModuleName(pattern, moduleNames));
+    }
+
+    private boolean matchModuleName(@NotNull final String pattern, final Collection<String> moduleNames) {
+        String regex = ("\\Q" + pattern + "\\E").replace("*", "\\E.*\\Q");
+        return moduleNames.stream()
+                          .parallel()
+                          .filter(p -> p.matches(regex))
+                          .sequential()
+                          .findAny()
+                          .isPresent();
     }
 }
