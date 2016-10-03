@@ -23,19 +23,18 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMap;
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Stream;
 
 /**
@@ -43,10 +42,10 @@ import java.util.stream.Stream;
  */
 class TSMetaModelImpl implements TSMetaModel {
 
-    private final Map<String, TSMetaClassImpl> myClasses = new TreeMap<>();
-    private final Map<String, TSMetaEnumImpl> myEnums = new TreeMap<>();
-    private final Map<String, TSMetaCollectionImpl> myCollections = new TreeMap<>();
-    private final MultiMap<String, TSMetaReferenceImpl> myReferencesBySourceTypeName = MultiMap.createLinked();
+    private final NoCaseMap<TSMetaClassImpl> myClasses = new NoCaseMap<>();
+    private final NoCaseMap<TSMetaEnumImpl> myEnums = new NoCaseMap<>();
+    private final NoCaseMap<TSMetaCollectionImpl> myCollections = new NoCaseMap<>();
+    private final NoCaseMultiMap<TSMetaReferenceImpl> myReferencesBySourceTypeName = new NoCaseMultiMap<>();
 
     @Nullable
     TSMetaClassImpl findOrCreateClass(final @NotNull ItemType domItemType) {
@@ -155,4 +154,6 @@ class TSMetaModelImpl implements TSMetaModel {
     public TSMetaCollection findMetaCollectionByName(@NotNull final String name) {
         return myCollections.get(name);
     }
+
+
 }

@@ -21,10 +21,10 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.util.containers.HashSet;
-import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +42,7 @@ import java.util.stream.Stream;
  */
 class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass {
 
-    private final MultiMap<String, TSMetaPropertyImpl> myProperties = MultiMap.create();
+    private final NoCaseMultiMap<TSMetaPropertyImpl> myProperties = new NoCaseMultiMap<>();
 
     private final Set<ItemType> myAllDoms = new LinkedHashSet<>();
 
