@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.project.providers;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.WritingAccessProvider;
@@ -30,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Martin Zdarsky-Jones on 30/09/2016.
@@ -39,8 +39,8 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
     @NotNull
     @Override
     public Collection<VirtualFile> requestWriting(final VirtualFile... files) {
-        List<VirtualFile> writingDenied = new ArrayList<>();
-        for (VirtualFile file: files) {
+        final List<VirtualFile> writingDenied = new ArrayList<>();
+        for (VirtualFile file : files) {
             if (isFileReadOnly(file)) {
                 writingDenied.add(file);
             }
@@ -54,13 +54,10 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
     }
 
     protected boolean isFileReadOnly(@NotNull final VirtualFile file) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        final Module module = ModuleUtilCore.findModuleForFile(file, commonIdeaService.getProject());
-        final String readOnly = module.getOptionValue(HybrisConstants.READ_ONLY);
-        if (readOnly == null) {
-            return false;
-        }
-        return Boolean.parseBoolean(readOnly);
-
+        return Optional.ofNullable(ServiceManager.getService(CommonIdeaService.class).getProject())
+                       .map(p -> ModuleUtilCore.findModuleForFile(file, p))
+                       .map(module -> module.getOptionValue(HybrisConstants.READ_ONLY))
+                       .map(Boolean::parseBoolean)
+                       .orElse(false);
     }
 }

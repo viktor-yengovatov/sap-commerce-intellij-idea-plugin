@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.model.Attributes;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
@@ -35,7 +34,6 @@ import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.stubs.index.DomElementClassIndex;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -67,7 +65,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
             PsiFile.class,
             this
         );
-        TSMetaModelImpl result = myResult;
+        final TSMetaModelImpl result = myResult;
         myResult = null;
         return result;
     }
@@ -87,6 +85,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
 
             items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
             items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
+            items.getRelations().getRelations().forEach(myResult::createReference);
         }
 
         //continue visiting
@@ -108,9 +107,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
             return;
         }
 
-        Optional.ofNullable(itemType.getAttributes())
-                .map(Attributes::getAttributes)
-                .orElse(Collections.emptyList())
+        itemType.getAttributes().getAttributes()
                 .forEach(metaclass::createProperty);
     }
 }

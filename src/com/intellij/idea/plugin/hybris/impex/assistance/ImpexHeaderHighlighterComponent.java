@@ -28,6 +28,7 @@ import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.project.ProjectManagerAdapter;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -52,8 +53,10 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
     protected final EditorFactoryListener editorFactoryListener = new ImpexEditorFactoryListener();
     protected final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService;
 
-    public ImpexHeaderHighlighterComponent(final CommonIdeaService commonIdeaService,
-                                           final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService) {
+    public ImpexHeaderHighlighterComponent(
+        final CommonIdeaService commonIdeaService,
+        final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService
+    ) {
         Validate.notNull(commonIdeaService);
         Validate.notNull(impexHeaderNameHighlighterService);
 
@@ -99,28 +102,21 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
         }
     }
 
-    protected class ImpexProjectManagerListener implements ProjectManagerListener {
+    protected class ImpexProjectManagerListener extends ProjectManagerAdapter implements ProjectManagerListener {
 
         @Override
         public void projectOpened(final Project project) {
+            super.projectOpened(project);
             PsiManager.getInstance(project).addPsiTreeChangeListener(psiTreeChangeListener);
             EditorFactory.getInstance().addEditorFactoryListener(editorFactoryListener, project);
         }
 
         @Override
-        public boolean canCloseProject(final Project project) {
-            return true;
-        }
-
-        @Override
         public void projectClosed(final Project project) {
+            super.projectClosed(project);
             PsiManager.getInstance(project).removePsiTreeChangeListener(psiTreeChangeListener);
         }
 
-        @Override
-        public void projectClosing(final Project project) {
-
-        }
     }
 
     protected class ImpexPsiTreeChangeListener implements PsiTreeChangeListener {

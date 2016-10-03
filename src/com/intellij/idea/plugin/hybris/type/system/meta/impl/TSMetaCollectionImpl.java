@@ -29,8 +29,8 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
 
     private final TSMetaModelImpl myMetaModel;
 
-    public TSMetaCollectionImpl(final TSMetaModelImpl model, final String name, final CollectionType dom) {
-        super(name, dom);
+    public TSMetaCollectionImpl(final TSMetaModelImpl model, final CollectionType dom) {
+        super(extractName(dom), dom);
         myMetaModel = model;
     }
 

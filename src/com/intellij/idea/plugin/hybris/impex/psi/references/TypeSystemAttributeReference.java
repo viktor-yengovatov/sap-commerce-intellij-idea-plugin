@@ -22,19 +22,22 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -49,17 +52,29 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final TSMetaModel meta = getTypeSystemMeta();
-        final String attributeName = getElement().getText();
-
-        return findItemTypeReference()
+        final String featureName = getElement().getText();
+        final Optional<TSMetaClass> metaClass = findItemTypeReference()
             .map(PsiElement::getText)
-            .map(meta::findMetaClassByName)
-            .map(metaclass -> metaclass.findPropertiesByName(attributeName, true))
-            .map(Collection::stream)
-            .orElse(Stream.empty())
-            .map(TSMetaProperty::getDom)
-            .map(AttributeResolveResult::new)
-            .toArray(ResolveResult[]::new);
+            .map(meta::findMetaClassByName);
+
+        if (!metaClass.isPresent()) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
+
+        final List<ResolveResult> result = metaClass.get()
+                                                    .findPropertiesByName(featureName, true)
+                                                    .stream()
+                                                    .map(TSMetaProperty::getDom)
+                                                    .map(AttributeResolveResult::new)
+                                                    .collect(Collectors.toCollection(LinkedList::new));
+
+        metaClass.get().findReferencesByTargetRole(featureName, true)
+                 .stream()
+                 .map(TSMetaReference::getDom)
+                 .map(RelationResolveResult::new)
+                 .collect(Collectors.toCollection(() -> result));
+
+        return result.toArray(new ResolveResult[result.size()]);
     }
 
     private Optional<ImpexHeaderTypeName> findItemTypeReference() {
@@ -79,8 +94,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         @Nullable
         @Override
         public PsiElement getElement() {
-            final GenericAttributeValue<String> codeAttr = myDomAttribute.getQualifier();
-            return codeAttr == null ? null : codeAttr.getXmlAttributeValue();
+            return myDomAttribute.getQualifier().getXmlAttributeValue();
         }
 
         @Override
@@ -88,5 +102,28 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
             return getElement() != null;
         }
     }
+
+    private static class RelationResolveResult implements ResolveResult {
+
+        @NotNull
+        private final Relation myDomRelation;
+
+        public RelationResolveResult(@NotNull final Relation domRelation) {
+            myDomRelation = domRelation;
+        }
+
+        @Nullable
+        @Override
+        public PsiElement getElement() {
+            return myDomRelation.getTargetElement().getQualifier().getXmlAttributeValue();
+        }
+
+        @Override
+        public boolean isValidResult() {
+            return getElement() != null;
+        }
+
+    }
+
 
 }

@@ -20,10 +20,11 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.util.containers.HashSet;
-import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +34,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -40,7 +42,7 @@ import java.util.stream.Stream;
  */
 class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass {
 
-    private final MultiMap<String, TSMetaPropertyImpl> myProperties = MultiMap.create();
+    private final NoCaseMultiMap<TSMetaPropertyImpl> myProperties = new NoCaseMultiMap<>();
 
     private final Set<ItemType> myAllDoms = new LinkedHashSet<>();
 
@@ -98,12 +100,6 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     @Override
     @NotNull
-    public Iterable<? extends TSMetaProperty> getProperties() {
-        return myProperties.values();
-    }
-
-    @Override
-    @NotNull
     public Stream<? extends TSMetaProperty> getPropertiesStream(final boolean includeInherited) {
         final LinkedList<TSMetaProperty> result = new LinkedList<>();
         if (includeInherited) {
@@ -140,6 +136,30 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
         output.addAll(myProperties.get(name));
     }
 
+    @NotNull
+    @Override
+    public Stream<? extends TSMetaReference> getReferencesStream(final boolean includeInherited) {
+        final LinkedList<TSMetaReference> result = new LinkedList<>();
+        final Consumer<TSMetaClassImpl> visitor = mc -> mc.getMetaModel().collectReferencesForSourceType(mc, result);
+        if (includeInherited) {
+            walkInheritance(visitor);
+        } else {
+            visitor.accept(this);
+        }
+        return result.stream();
+    }
+
+    @NotNull
+    @Override
+    public Collection<? extends TSMetaReference> findReferencesByTargetRole(
+        @NotNull final String targetRole, final boolean includeInherited
+    ) {
+        final String targetRoleNoCase = targetRole.toLowerCase();
+        return getReferencesStream(includeInherited)
+            .filter(ref -> ref.getTarget().getRole().equalsIgnoreCase(targetRoleNoCase))
+            .collect(Collectors.toList());
+    }
+
     /**
      * Iteratively applies given consumer for this class and all its super-classes.
      * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
@@ -158,7 +178,7 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
      * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
      */
     private void doWalkInheritance(
-        @NotNull Set<String> visitedParents,
+        @NotNull final Set<String> visitedParents,
         @NotNull final Consumer<TSMetaClassImpl> visitor
     ) {
         Optional.ofNullable(myExtendedMetaClassName)

@@ -18,37 +18,28 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.stream.Stream;
-
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public interface TSMetaClass extends TSMetaClassifier<ItemType> {
-
-    @Nullable
-    String getExtendedMetaClassName();
+public interface TSMetaReference extends TSMetaClassifier<Relation> {
 
     @NotNull
-    Stream<? extends TSMetaProperty> getPropertiesStream(boolean includeInherited);
+    ReferenceEnd getSource();
 
     @NotNull
-    Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name, boolean includeInherited);
+    ReferenceEnd getTarget();
 
-    @NotNull
-    Collection<? extends TSMetaReference> findReferencesByTargetRole(
-        @NotNull String targetRole,
-        boolean includeInherited
-    );
+    interface ReferenceEnd {
 
-    @NotNull
-    Stream<? extends TSMetaReference> getReferencesStream(boolean includeInherited);
+        @NotNull
+        String getRole();
 
-    @NotNull
-    Stream<? extends ItemType> getAllDomsStream();
+        @NotNull
+        String getTypeName();
+
+        @Nullable
+        TSMetaClassifier<?> resolveType();
+    }
 
 }

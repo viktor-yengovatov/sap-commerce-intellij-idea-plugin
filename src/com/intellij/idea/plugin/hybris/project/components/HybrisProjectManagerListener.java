@@ -28,40 +28,29 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManagerAdapter;
 import com.intellij.openapi.project.ProjectManagerListener;
 
 /**
  * Created by Martin Zdarsky-Jones on 29/09/2016.
  */
-public class HybrisProjectManagerListener implements ProjectManagerListener {
+public class HybrisProjectManagerListener extends ProjectManagerAdapter implements ProjectManagerListener {
 
     public static final NotificationGroup GROUP_DISPLAY_ID_INFO =
-        new NotificationGroup("[y] project",
-                              NotificationDisplayType.BALLOON,
-                              true,
-                              null,
-                              HybrisIcons.HYBRIS_ICON);
+        new NotificationGroup(
+            "[y] project",
+            NotificationDisplayType.BALLOON,
+            true,
+            null,
+            HybrisIcons.HYBRIS_ICON
+        );
 
     @Override
     public void projectOpened(final Project project) {
+        super.projectOpened(project);
         if (isOldHybrisProject(project)) {
             showNotification(project);
         }
-    }
-
-    @Override
-    public boolean canCloseProject(final Project project) {
-        return false;
-    }
-
-    @Override
-    public void projectClosed(final Project project) {
-
-    }
-
-    @Override
-    public void projectClosing(final Project project) {
-
     }
 
     private boolean isOldHybrisProject(final Project project) {
