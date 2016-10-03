@@ -19,9 +19,8 @@
 package com.intellij.idea.plugin.hybris.project.providers;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.WritingAccessProvider;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +34,12 @@ import java.util.Optional;
  * Created by Martin Zdarsky-Jones on 30/09/2016.
  */
 public class HybrisWritingAccessProvider extends WritingAccessProvider {
+
+    private final Project myProject;
+
+    public HybrisWritingAccessProvider(@NotNull final Project project) {
+        myProject = project;
+    }
 
     @NotNull
     @Override
@@ -54,8 +59,7 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
     }
 
     protected boolean isFileReadOnly(@NotNull final VirtualFile file) {
-        return Optional.ofNullable(ServiceManager.getService(CommonIdeaService.class).getProject())
-                       .map(p -> ModuleUtilCore.findModuleForFile(file, p))
+        return Optional.ofNullable(ModuleUtilCore.findModuleForFile(file, myProject))
                        .map(module -> module.getOptionValue(HybrisConstants.READ_ONLY))
                        .map(Boolean::parseBoolean)
                        .orElse(false);
