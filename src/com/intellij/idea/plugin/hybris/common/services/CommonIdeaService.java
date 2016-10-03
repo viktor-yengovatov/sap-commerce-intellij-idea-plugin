@@ -20,9 +20,7 @@ package com.intellij.idea.plugin.hybris.common.services;
 
 
 import com.intellij.openapi.project.Project;
-
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -34,9 +32,6 @@ import java.util.Optional;
 public interface CommonIdeaService {
 
     boolean isTypingActionInProgress();
-
-    @Nullable
-    Project getProject();
 
     @NotNull
     Optional<String> getHybrisDirectory(@NotNull Project project);
