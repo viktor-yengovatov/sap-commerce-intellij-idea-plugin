@@ -105,9 +105,9 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
             .forEach(resultSet::addElement);
 
         metaClass
-            .map(meta -> meta.getReferencesStream(true))
+            .map(meta -> meta.getReferenceEndsStream(true))
             .orElse(Stream.empty())
-            .map(ref -> createLookup(ref.getTarget().getRole()))
+            .map(ref -> createLookup(ref.getRole()))
             .forEach(resultSet::addElement);
     }
 

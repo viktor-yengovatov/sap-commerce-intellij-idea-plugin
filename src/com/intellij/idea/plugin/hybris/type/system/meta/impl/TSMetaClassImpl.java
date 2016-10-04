@@ -138,8 +138,8 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     @NotNull
     @Override
-    public Stream<? extends TSMetaReference> getReferencesStream(final boolean includeInherited) {
-        final LinkedList<TSMetaReference> result = new LinkedList<>();
+    public Stream<? extends TSMetaReference.ReferenceEnd> getReferenceEndsStream(final boolean includeInherited) {
+        final LinkedList<TSMetaReference.ReferenceEnd> result = new LinkedList<>();
         final Consumer<TSMetaClassImpl> visitor = mc -> mc.getMetaModel().collectReferencesForSourceType(mc, result);
         if (includeInherited) {
             walkInheritance(visitor);
@@ -151,12 +151,12 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     @NotNull
     @Override
-    public Collection<? extends TSMetaReference> findReferencesByTargetRole(
-        @NotNull final String targetRole, final boolean includeInherited
+    public Collection<? extends TSMetaReference.ReferenceEnd> findReferenceEndsByRole(
+        @NotNull final String role, final boolean includeInherited
     ) {
-        final String targetRoleNoCase = targetRole.toLowerCase();
-        return getReferencesStream(includeInherited)
-            .filter(ref -> ref.getTarget().getRole().equalsIgnoreCase(targetRoleNoCase))
+        final String targetRoleNoCase = role.toLowerCase();
+        return getReferenceEndsStream(includeInherited)
+            .filter(ref -> ref.getRole().equalsIgnoreCase(targetRoleNoCase))
             .collect(Collectors.toList());
     }
 
