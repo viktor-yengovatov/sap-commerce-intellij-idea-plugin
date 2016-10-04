@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
+import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +41,14 @@ public interface TSMetaReference extends TSMetaClassifier<Relation> {
 
         @Nullable
         TSMetaClassifier<?> resolveType();
+
+        boolean isNavigable();
+
+        @NotNull
+        TSMetaReference getOwningReference();
+
+        @NotNull
+        RelationElement getDom();
     }
 
 }

@@ -45,7 +45,7 @@ class TSMetaModelImpl implements TSMetaModel {
     private final NoCaseMap<TSMetaClassImpl> myClasses = new NoCaseMap<>();
     private final NoCaseMap<TSMetaEnumImpl> myEnums = new NoCaseMap<>();
     private final NoCaseMap<TSMetaCollectionImpl> myCollections = new NoCaseMap<>();
-    private final NoCaseMultiMap<TSMetaReferenceImpl> myReferencesBySourceTypeName = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName = new NoCaseMultiMap<>();
 
     @Nullable
     TSMetaClassImpl findOrCreateClass(final @NotNull ItemType domItemType) {
@@ -96,18 +96,31 @@ class TSMetaModelImpl implements TSMetaModel {
     @Nullable
     TSMetaReference createReference(@NotNull final Relation domRelation) {
         final TSMetaReferenceImpl result = new TSMetaReferenceImpl(this, domRelation);
-        final String sourceTypeName = result.getSource().getTypeName();
-        if (StringUtil.isEmpty(sourceTypeName)) {
-            return null;
-        }
-        myReferencesBySourceTypeName.putValue(sourceTypeName, result);
+
+        registerReferenceEnd(result.getSource(), result.getTarget());
+        registerReferenceEnd(result.getTarget(), result.getSource());
+
         return result;
+    }
+
+    private void registerReferenceEnd(
+        @NotNull final TSMetaReference.ReferenceEnd ownerEnd,
+        @NotNull final TSMetaReference.ReferenceEnd targetEnd
+    ) {
+        if (!targetEnd.isNavigable()) {
+            return;
+        }
+        final String ownerTypeName = ownerEnd.getTypeName();
+        if (!StringUtil.isEmpty(ownerTypeName)) {
+            myReferencesBySourceTypeName.putValue(ownerTypeName, targetEnd);
+        }
     }
 
     void collectReferencesForSourceType(
         final @NotNull TSMetaClassImpl source,
-        final @NotNull Collection<TSMetaReference> out
+        final @NotNull Collection<TSMetaReference.ReferenceEnd> out
     ) {
+
         out.addAll(myReferencesBySourceTypeName.get(source.getName()));
     }
 

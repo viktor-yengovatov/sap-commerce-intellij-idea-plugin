@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
-import com.intellij.idea.plugin.hybris.type.system.model.Relation;
+import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -68,10 +68,10 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
                                                     .map(AttributeResolveResult::new)
                                                     .collect(Collectors.toCollection(LinkedList::new));
 
-        metaClass.get().findReferencesByTargetRole(featureName, true)
+        metaClass.get().findReferenceEndsByRole(featureName, true)
                  .stream()
-                 .map(TSMetaReference::getDom)
-                 .map(RelationResolveResult::new)
+                 .map(TSMetaReference.ReferenceEnd::getDom)
+                 .map(RelationElementResolveResult::new)
                  .collect(Collectors.toCollection(() -> result));
 
         return result.toArray(new ResolveResult[result.size()]);
@@ -103,19 +103,19 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         }
     }
 
-    private static class RelationResolveResult implements ResolveResult {
+    private static class RelationElementResolveResult implements ResolveResult {
 
         @NotNull
-        private final Relation myDomRelation;
+        private final RelationElement myDomRelationEnd;
 
-        public RelationResolveResult(@NotNull final Relation domRelation) {
-            myDomRelation = domRelation;
+        public RelationElementResolveResult(@NotNull final RelationElement domRelationEnd) {
+            myDomRelationEnd = domRelationEnd;
         }
 
         @Nullable
         @Override
         public PsiElement getElement() {
-            return myDomRelation.getTargetElement().getQualifier().getXmlAttributeValue();
+            return myDomRelationEnd.getQualifier().getXmlAttributeValue();
         }
 
         @Override

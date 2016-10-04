@@ -40,13 +40,13 @@ public interface TSMetaClass extends TSMetaClassifier<ItemType> {
     Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name, boolean includeInherited);
 
     @NotNull
-    Collection<? extends TSMetaReference> findReferencesByTargetRole(
-        @NotNull String targetRole,
+    Collection<? extends TSMetaReference.ReferenceEnd> findReferenceEndsByRole(
+        @NotNull String role,
         boolean includeInherited
     );
 
     @NotNull
-    Stream<? extends TSMetaReference> getReferencesStream(boolean includeInherited);
+    Stream<? extends TSMetaReference.ReferenceEnd> getReferenceEndsStream(boolean includeInherited);
 
     @NotNull
     Stream<? extends ItemType> getAllDomsStream();
