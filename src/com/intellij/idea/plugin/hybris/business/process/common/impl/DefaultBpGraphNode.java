@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.business.process.common.impl;
 
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
-import com.intellij.idea.plugin.hybris.business.process.jaxb.model.Process;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.Process;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;

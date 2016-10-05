@@ -21,11 +21,17 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils;
 import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -40,6 +46,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 /**
  * Created 22:13 14 May 2016
  *
@@ -48,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     protected static final boolean GRAYED = true;
+    protected static final String UNNAMED = "<unnamed>";
 
     @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
@@ -69,22 +79,54 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         }
 
         final PsiElement psiElementUnderCaret = parameters.getPosition();
-        final PsiElement headerTypeNamePsiElement = this.getHeaderTypeNamePsiElementOfAttribute(psiElementUnderCaret);
+        final ImpexHeaderTypeName headerTypeName = this.getHeaderTypeNamePsiElementOfAttribute(psiElementUnderCaret);
 
-        this.fillAllTypeFieldsCompletionResultsSet(project, headerTypeNamePsiElement, result);
+        if (headerTypeName != null) {
+            this.fillJavaTypeFieldsCompletionResultsSet(project, headerTypeName, result);
+            this.fillDomAttributesCompletions(project, headerTypeName, result);
+        }
     }
 
-    protected void fillAllTypeFieldsCompletionResultsSet(
+    protected void fillDomAttributesCompletions(
         @NotNull final Project project,
-        @Nullable final PsiElement headerTypeNamePsiElement,
+        @NotNull final ImpexHeaderTypeName headerTypeName,
+        @NotNull final CompletionResultSet resultSet
+    ) {
+
+        final TSMetaModel metaModel = TSMetaModelAccess.getInstance(project).getTypeSystemMeta();
+        final String itemTypeCode = headerTypeName.getText();
+        final Optional<TSMetaClass> metaClass = Optional.ofNullable(metaModel.findMetaClassByName(itemTypeCode));
+
+        metaClass
+            .map(meta -> meta.getPropertiesStream(true))
+            .orElse(Stream.empty())
+            .filter(prop -> prop.getName() != null)
+            .map(prop -> createLookup(prop.getName()))
+            .forEach(resultSet::addElement);
+
+        metaClass
+            .map(meta -> meta.getReferenceEndsStream(true))
+            .orElse(Stream.empty())
+            .map(ref -> createLookup(ref.getRole()))
+            .forEach(resultSet::addElement);
+    }
+
+    protected LookupElement createLookup(final @Nullable String name) {
+        //FIXME: add type
+        return LookupElementBuilder
+            .create(Optional.ofNullable(name).orElse("<unnamed>")) //should not happen
+            .withIcon(HybrisIcons.TYPE_SYSTEM)
+            //.withTypeText(propertyType.getPresentableText(), GRAYED)
+            ;
+    }
+
+    protected void fillJavaTypeFieldsCompletionResultsSet(
+        @NotNull final Project project,
+        @NotNull final PsiElement headerTypeNamePsiElement,
         @NotNull final CompletionResultSet resultSet
     ) {
         Validate.notNull(project);
         Validate.notNull(resultSet);
-
-        if (null == headerTypeNamePsiElement) {
-            return;
-        }
 
         final ItemTypesIndexService itemTypesIndexService = ServiceManager.getService(
             project, ItemTypesIndexService.class
@@ -126,7 +168,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
     @Nullable
     @Contract("null -> null")
-    protected PsiElement getHeaderTypeNamePsiElementOfAttribute(@Nullable final PsiElement headerAttributePsiElement) {
+    protected ImpexHeaderTypeName getHeaderTypeNamePsiElementOfAttribute(@Nullable final PsiElement headerAttributePsiElement) {
         if (null == headerAttributePsiElement || null == headerAttributePsiElement.getNode()) {
             return null;
         }

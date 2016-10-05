@@ -22,7 +22,10 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
@@ -63,6 +66,11 @@ public class ImpexHeaderItemTypeCodeCompletionProvider extends CompletionProvide
         for (String typeCode : itemTypesIndexService.getAllTypeCodes()) {
             result.addElement(LookupElementBuilder.create(typeCode));
         }
+
+        final TSMetaModel typeSystemMeta = TSMetaModelAccess.getInstance(project).getTypeSystemMeta();
+        typeSystemMeta.getMetaClassesStream()
+                      .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
+                      .forEach(result::addElement);
     }
 
     @Nullable

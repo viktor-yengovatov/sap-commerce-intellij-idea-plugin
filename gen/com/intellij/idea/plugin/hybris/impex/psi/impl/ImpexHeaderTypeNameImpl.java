@@ -8,17 +8,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexHeaderTypeNameMixin;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexHeaderTypeNameImpl extends ASTWrapperPsiElement implements ImpexHeaderTypeName {
+public class ImpexHeaderTypeNameImpl extends ImpexHeaderTypeNameMixin implements ImpexHeaderTypeName {
 
   public ImpexHeaderTypeNameImpl(ASTNode node) {
     super(node);
   }
 
+  public void accept(@NotNull ImpexVisitor visitor) {
+    visitor.visitHeaderTypeName(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ImpexVisitor) ((ImpexVisitor)visitor).visitHeaderTypeName(this);
+    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
   }
 

@@ -54,4 +54,7 @@ public interface ConfiguratorFactory {
 
     @NotNull
     JavadocModuleConfigurator getJavadocModuleConfigurator();
+
+    @NotNull
+    ModuleSettingsConfigurator getModuleSettingsConfigurator();
 }

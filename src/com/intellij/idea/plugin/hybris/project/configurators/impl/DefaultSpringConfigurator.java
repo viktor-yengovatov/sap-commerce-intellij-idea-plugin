@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -99,8 +99,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             return;
         }
 
-        for (String dependsOnModuleName : moduleDescriptor.getRequiredExtensionNames()) {
-            final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModuleName);
+        for (HybrisModuleDescriptor dependsOnModule : moduleDescriptor.getDependenciesTree()) {
+            final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModule.getName());
             if (parentFileSet == null) {
                 continue;
             }

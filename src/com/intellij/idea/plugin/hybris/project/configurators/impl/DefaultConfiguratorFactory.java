@@ -25,10 +25,11 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -45,8 +46,7 @@ import java.util.List;
  */
 public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
-    // bug IDEA-143901 was fixed in 144.1948
-    public static final int IDEA_143901_FIX_BASELINE_VERSION = 144;
+    public static final int IDEA_2016_2_BASELINE_VERSION = 162;
 
     @NotNull
     @Override
@@ -72,7 +72,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     public SpringConfigurator getSpringConfigurator() {
         final BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();
 
-        if (buildNumber.getBaselineVersion() < IDEA_143901_FIX_BASELINE_VERSION) {
+        if (buildNumber.getBaselineVersion() < IDEA_2016_2_BASELINE_VERSION) {
             final SpringConfigurator springConfigurator = ServiceManager.getService(
                 NoInheritanceSpringConfigurator.class
             );
@@ -127,6 +127,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public JavadocModuleConfigurator getJavadocModuleConfigurator() {
         return ServiceManager.getService(JavadocModuleConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public ModuleSettingsConfigurator getModuleSettingsConfigurator() {
+        return ServiceManager.getService(ModuleSettingsConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {

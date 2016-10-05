@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -41,6 +41,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ECLIPSE_BIN_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GEN_SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
@@ -73,7 +74,10 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
 
 
         this.configureCommonRoots(moduleDescriptor, contentEntry);
-        this.configureHmcRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory());
+        if (moduleDescriptor.getRequiredExtensionNames().contains(HybrisConstants.HMC_EXTENSION_NAME)) {
+            this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
+        }
+        this.configureAdditionalRoots(moduleDescriptor, HAC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
         this.configureWebRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory());
         this.configureCommonWebRoots(moduleDescriptor, contentEntry);
         this.configureAcceleratorAddonRoots(moduleDescriptor, contentEntry);
@@ -137,33 +141,37 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         );
     }
 
-    protected void configureHmcRoots(@NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                     @NotNull final ContentEntry contentEntry,
-                                     @NotNull final File parentDirectory) {
+    protected void configureAdditionalRoots(@NotNull final HybrisModuleDescriptor moduleDescriptor,
+                                            @NotNull final String directoryName,
+                                            @NotNull final ContentEntry contentEntry,
+                                            @NotNull final File parentDirectory) {
         Validate.notNull(moduleDescriptor);
+        Validate.notNull(directoryName);
         Validate.notNull(contentEntry);
         Validate.notNull(parentDirectory);
 
-
-        final File hmcModuleDirectory = new File(parentDirectory, HMC_MODULE_DIRECTORY);
+        final File additionalModuleDirectory = new File(parentDirectory, directoryName);
+        if (!additionalModuleDirectory.exists() || additionalModuleDirectory.isFile()) {
+            return;
+        }
 
         if (moduleDescriptor.isInCustomDir() || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
-            final File hmcSrcDirectory = new File(hmcModuleDirectory, SRC_DIRECTORY);
+            final File additionalSrcDirectory = new File(additionalModuleDirectory, SRC_DIRECTORY);
             contentEntry.addSourceFolder(
-                VfsUtil.pathToUrl(hmcSrcDirectory.getAbsolutePath()),
+                VfsUtil.pathToUrl(additionalSrcDirectory.getAbsolutePath()),
                 JavaSourceRootType.SOURCE
             );
 
-            final File hmcResourcesDirectory = new File(hmcModuleDirectory, RESOURCES_DIRECTORY);
+            final File additionalResourcesDirectory = new File(additionalModuleDirectory, RESOURCES_DIRECTORY);
             contentEntry.addSourceFolder(
-                VfsUtil.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
+                VfsUtil.pathToUrl(additionalResourcesDirectory.getAbsolutePath()),
                 JavaResourceRootType.RESOURCE
             );
         }
 
-        final File hmcClassesDirectory = new File(hmcModuleDirectory, CLASSES_DIRECTORY);
+        final File additionalClassesDirectory = new File(additionalModuleDirectory, CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(hmcClassesDirectory.getAbsolutePath())
+            VfsUtil.pathToUrl(additionalClassesDirectory.getAbsolutePath())
         );
     }
 
@@ -199,7 +207,7 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getRootDirectory(), ACCELERATOR_ADDON_DIRECTORY
         );
         this.configureWebRoots(moduleDescriptor, contentEntry, commonWebModuleDirectory);
-        this.configureHmcRoots(moduleDescriptor, contentEntry, commonWebModuleDirectory);
+        this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, commonWebModuleDirectory);
     }
 
     protected void configureBackOfficeRoots(@NotNull final HybrisModuleDescriptor moduleDescriptor,

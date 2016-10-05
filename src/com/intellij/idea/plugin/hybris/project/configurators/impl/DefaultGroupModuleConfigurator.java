@@ -19,10 +19,11 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.settings.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.DefaultHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.settings.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.RegularHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -45,6 +46,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private String[] groupCustom;
     private String[] groupOtherCustom;
     private String[] groupHybris;
+    private String[] groupPlatform;
     private String[] groupOtherHybris;
 
     @Override
@@ -76,14 +78,17 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Nullable
     protected String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            return groupHybris;
+            return groupPlatform;
+        }
+        if (moduleDescriptor instanceof ExtHybrisModuleDescriptor) {
+            return groupPlatform;
         }
         if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
             return groupCustom;
         }
-        DefaultHybrisModuleDescriptor defaultHybrisModuleDescriptor = (DefaultHybrisModuleDescriptor) moduleDescriptor;
+        RegularHybrisModuleDescriptor regularHybrisModuleDescriptor = (RegularHybrisModuleDescriptor) moduleDescriptor;
 
-        if (defaultHybrisModuleDescriptor.isInCustomDir()) {
+        if (regularHybrisModuleDescriptor.isInCustomDir()) {
             if (requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
                 return groupCustom;
             }
@@ -102,6 +107,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         groupOtherCustom = toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
         groupHybris = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
         groupOtherHybris = toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
+        groupPlatform = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
     }
 
     private String[] toIdeaGroup(final String group) {

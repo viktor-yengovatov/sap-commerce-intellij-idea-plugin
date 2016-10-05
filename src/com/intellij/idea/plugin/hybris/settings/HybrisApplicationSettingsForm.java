@@ -19,12 +19,15 @@
 package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
+import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.ui.InputValidatorEx;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.AddEditDeleteListPanel;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBLabel;
+import com.intellij.util.ui.CheckBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +46,7 @@ public class HybrisApplicationSettingsForm {
 
     private JCheckBox enableFoldingCheckBox;
     private JCheckBox useSmartFoldingCheckBox;
-    private JCheckBox limitedSpringConfigComboBox;
+    private JCheckBox limitedSpringConfigCheckBox;
     private JPanel mainPanel;
     private JPanel junkDirectoriesPanel;
     private JLabel impexLabel;
@@ -55,33 +58,42 @@ public class HybrisApplicationSettingsForm {
     private JTextField groupHybrisUnusedTextField;
     private JCheckBox hideEmptyMiddleFoldersCheckBox;
     private JLabel projectTreeViewSettingsLabel;
+    private JCheckBox defaultPlatformInReadOnly;
+    private JTextField groupPlatformTextField;
+    private JCheckBox createBackwardCyclicDependenciesForAddOns;
 
     private JunkListPanel junkListPanel;
 
     public void setData(final HybrisApplicationSettings data) {
         enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
         useSmartFoldingCheckBox.setSelected(data.isUseSmartFolding());
-        limitedSpringConfigComboBox.setSelected(data.isLimitedSpringConfig());
+        limitedSpringConfigCheckBox.setSelected(data.isLimitedSpringConfig());
         junkListPanel.setJunkDirectoryList(data.getJunkDirectoryList());
         groupModulesCheckBox.setSelected(data.isGroupModules());
         groupCustomTextField.setText(data.getGroupCustom());
         groupCustomUnusedTextField.setText(data.getGroupOtherCustom());
         groupHybrisTextField.setText(data.getGroupHybris());
         groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
+        groupPlatformTextField.setText(data.getGroupPlatform());
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
+        defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
+        createBackwardCyclicDependenciesForAddOns.setSelected(data.isCreateBackwardCyclicDependenciesForAddOns());
     }
 
     public void getData(final HybrisApplicationSettings data) {
         data.setFoldingEnabled(enableFoldingCheckBox.isSelected());
         data.setUseSmartFolding(useSmartFoldingCheckBox.isSelected());
-        data.setLimitedSpringConfig(limitedSpringConfigComboBox.isSelected());
+        data.setLimitedSpringConfig(limitedSpringConfigCheckBox.isSelected());
         data.setJunkDirectoryList(junkListPanel.getJunkDirectoryList());
         data.setGroupModules(groupModulesCheckBox.isSelected());
         data.setGroupCustom(groupCustomTextField.getText());
         data.setGroupOtherCustom(groupCustomUnusedTextField.getText());
         data.setGroupHybris(groupHybrisTextField.getText());
         data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
+        data.setGroupPlatform(groupPlatformTextField.getText());
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
+        data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
+        data.setCreateBackwardCyclicDependenciesForAddOns(createBackwardCyclicDependenciesForAddOns.isSelected());
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -91,7 +103,7 @@ public class HybrisApplicationSettingsForm {
         if (useSmartFoldingCheckBox.isSelected() != data.isUseSmartFolding()) {
             return true;
         }
-        if (limitedSpringConfigComboBox.isSelected() != data.isLimitedSpringConfig()) {
+        if (limitedSpringConfigCheckBox.isSelected() != data.isLimitedSpringConfig()) {
             return true;
         }
         if (!junkListPanel.getJunkDirectoryList().equals(data.getJunkDirectoryList())) {
@@ -112,7 +124,16 @@ public class HybrisApplicationSettingsForm {
         if (!StringUtil.equals(groupHybrisUnusedTextField.getText(),data.getGroupOtherHybris())) {
             return true;
         }
+        if (!StringUtil.equals(groupPlatformTextField.getText(),data.getGroupPlatform())) {
+            return true;
+        }
         if (hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()) {
+            return true;
+        }
+        if (defaultPlatformInReadOnly.isSelected() != data.isDefaultPlatformInReadOnly()) {
+            return true;
+        }
+        if (createBackwardCyclicDependenciesForAddOns.isSelected() != data.isCreateBackwardCyclicDependenciesForAddOns()) {
             return true;
         }
         return false;
@@ -123,6 +144,10 @@ public class HybrisApplicationSettingsForm {
     }
 
     private void createUIComponents() {
+        final int baselineVersion = ApplicationInfo.getInstance().getBuild().getBaselineVersion();
+        final boolean boxVisible = baselineVersion < DefaultConfiguratorFactory.IDEA_2016_2_BASELINE_VERSION;
+        limitedSpringConfigCheckBox = new JCheckBox();
+        limitedSpringConfigCheckBox.setVisible(boxVisible);
         impexLabel = new JBLabel();
         impexLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.impex.title"), false));
         projectImportLabel = new JBLabel();
@@ -142,6 +167,7 @@ public class HybrisApplicationSettingsForm {
                 groupCustomUnusedTextField.setEnabled(groupModulesCheckBox.isSelected());
                 groupHybrisTextField.setEnabled(groupModulesCheckBox.isSelected());
                 groupHybrisUnusedTextField.setEnabled(groupModulesCheckBox.isSelected());
+                groupPlatformTextField.setEnabled(groupModulesCheckBox.isSelected());
             }
         });
     }

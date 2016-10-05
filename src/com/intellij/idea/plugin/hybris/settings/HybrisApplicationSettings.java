@@ -74,8 +74,17 @@ public class HybrisApplicationSettings {
     @PropertyName("groupOtherCustom")
     private String groupOtherCustom = "Custom/Unused";
 
+    @PropertyName("groupPlatform")
+    private String groupPlatform = "Platform";
+
     @PropertyName("hideEmptyMiddleFolders")
     private boolean hideEmptyMiddleFolders = true;
+
+    @PropertyName("defaultPlatformInReadOnly")
+    private boolean defaultPlatformInReadOnly = true;
+
+    @PropertyName("createBackwardCyclicDependenciesForAddOns")
+    private boolean createBackwardCyclicDependenciesForAddOns = false;
 
 
     public HybrisApplicationSettings() {
@@ -161,6 +170,30 @@ public class HybrisApplicationSettings {
         this.hideEmptyMiddleFolders = hideEmptyMiddleFolders;
     }
 
+    public boolean isDefaultPlatformInReadOnly() {
+        return defaultPlatformInReadOnly;
+    }
+
+    public void setDefaultPlatformInReadOnly(final boolean defaultPlatformInReadOnly) {
+        this.defaultPlatformInReadOnly = defaultPlatformInReadOnly;
+    }
+
+    public boolean isCreateBackwardCyclicDependenciesForAddOns() {
+        return createBackwardCyclicDependenciesForAddOns;
+    }
+
+    public void setCreateBackwardCyclicDependenciesForAddOns(final boolean createBackwardCyclicDependenciesForAddOns) {
+        this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
+    }
+
+    public String getGroupPlatform() {
+        return groupPlatform;
+    }
+
+    public void setGroupPlatform(final String groupPlatform) {
+        this.groupPlatform = groupPlatform;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -183,7 +216,10 @@ public class HybrisApplicationSettings {
             .append(groupOtherHybris, other.groupOtherHybris)
             .append(groupCustom, other.groupCustom)
             .append(groupOtherCustom, other.groupOtherCustom)
+            .append(groupPlatform, other.groupPlatform)
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
+            .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
+            .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .isEquals();
     }
 
@@ -199,7 +235,10 @@ public class HybrisApplicationSettings {
             .append(groupOtherHybris)
             .append(groupCustom)
             .append(groupOtherCustom)
+            .append(groupPlatform)
             .append(hideEmptyMiddleFolders)
+            .append(defaultPlatformInReadOnly)
+            .append(createBackwardCyclicDependenciesForAddOns)
             .toHashCode();
     }
 
@@ -215,7 +254,10 @@ public class HybrisApplicationSettings {
         sb.append(", groupOtherHybris='").append(groupOtherHybris).append('\'');
         sb.append(", groupCustom='").append(groupCustom).append('\'');
         sb.append(", groupOtherCustom='").append(groupOtherCustom).append('\'');
+        sb.append(", groupPlatform='").append(groupPlatform).append('\'');
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
+        sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
+        sb.append(", createBackwardCyclicDependenciesForAddOns='").append(createBackwardCyclicDependenciesForAddOns).append('\'');
         sb.append('}');
         return sb.toString();
     }
