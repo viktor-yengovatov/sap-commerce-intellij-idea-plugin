@@ -26,7 +26,7 @@ You can install this plugin to your IDE directly from the [repository](https://p
 
 * Please read [Contributor License Agreement](http://developercertificate.org/)
 * Available tasks are in our [JIRA](https://hybris-integration.atlassian.net/projects/IIP) also you can suggest new features or report bugs without login on our [Support Desk](https://hybris-integration.atlassian.net/projects/IIPS) it has anonymous access.
-* [How To Configure Project Environment](https://bitbucket.org/AlexanderBartash/hybris-integration-intellij-idea-plugin/wiki/How%20To%20Configure%20Project%20Environment)
+* [How To Configure Project Environment For Plugin Developers](https://hybris-integration.atlassian.net/wiki/display/IIPPS/How+to+Configure+Project+Environment+For+Plugin+Developers)
 * We are working with [Pull Requests](https://www.atlassian.com/git/tutorials/making-a-pull-request/) because it allows us to review the code before merging it. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.
 * Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name <your.email@email.com>" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
 * Also you can find useful information in our [wiki](https://hybris-integration.atlassian.net/wiki/display/IIPPS/Intellij+IDEA+Plugin+Public+Space).
