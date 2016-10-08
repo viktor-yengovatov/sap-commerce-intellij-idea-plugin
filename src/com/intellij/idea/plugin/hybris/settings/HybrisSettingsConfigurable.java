@@ -37,7 +37,7 @@ public class HybrisSettingsConfigurable implements Configurable {
     @Nls
     @Override
     public String getDisplayName() {
-        return "[y] Integration";
+        return "[y] hybris Integration";
     }
 
     @Nullable
