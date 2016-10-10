@@ -38,18 +38,19 @@
 
     <description>
         <![CDATA[
-          This plugin is an open source (LGPL) and <b>official</b> plugin for Hybris platform supported by community and Hybris.
-
-          <br/>
-          <br/>
-          If you have any questions you can send an email to me:
-          <a href="mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com">Alexander Bartash</a>
-          or
-          <a href="mailto:martin.zdarsky@hybris.com?cc=AlexanderBartash@gmail.com">Martin Zdarsky-Jones</a>
+          This plugin is an open source (LGPL) plugin for SAP Hybris Commerce integration.
 
           <br/>
           <br/>
           Bug tracker: <a href="https://hybris-integration.atlassian.net/projects/IIPS">Intellij IDEA Plugin Support</a>
+
+          <br/>
+          <br/>
+          If you have any questions you can send an email to:
+          <br/>
+          <a href="mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com">Alexander Bartash</a> (repo owner)
+          <br/>
+          <a href="mailto:martin.zdarsky@hybris.com?cc=AlexanderBartash@gmail.com">Martin Zdarsky-Jones</a>
 
           <br/>
           <br/>
@@ -93,7 +94,7 @@
           <br/>
           - Vlad Bozhenok
           <br/>
-          - Martin Zdarsky
+          - Martin Zdarsky-Jones
           <br/>
           - Michael Golubev
           <br/>
