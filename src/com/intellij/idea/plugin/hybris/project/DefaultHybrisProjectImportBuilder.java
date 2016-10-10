@@ -86,6 +86,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.util.Function;
+import com.intellij.util.PlatformUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -219,7 +220,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final JavadocModuleConfigurator javadocModuleConfigurator = configuratorFactory.getJavadocModuleConfigurator();
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
 
-        final List<Module> result = new ArrayList<Module>();
+        final List<Module> result = new ArrayList<>();
 
         if (this.getHybrisProjectDescriptor().getModulesChosenForImport().isEmpty()) {
             return Collections.emptyList();
@@ -233,9 +234,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         this.disableWrapOnType(ImpexLanguage.getInstance());
 
-        this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
-        this.excludeFrameworkDetection(project, WebFacet.ID);
-        this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
+        if (PlatformUtils.isIdeaUltimate()) {
+            this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
+            this.excludeFrameworkDetection(project, WebFacet.ID);
+            this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
+        }
 
         this.performProjectsCleanup(this.getHybrisProjectDescriptor().getModulesChosenForImport());
 
