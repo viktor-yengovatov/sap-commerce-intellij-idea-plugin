@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -145,7 +146,7 @@ public class HybrisApplicationSettingsForm {
 
     private void createUIComponents() {
         final int baselineVersion = ApplicationInfo.getInstance().getBuild().getBaselineVersion();
-        final boolean boxVisible = baselineVersion < DefaultConfiguratorFactory.IDEA_2016_2_BASELINE_VERSION;
+        final boolean boxVisible = baselineVersion < CommonIdeaService.IDEA_2016_2_BASELINE_VERSION;
         limitedSpringConfigCheckBox = new JCheckBox();
         limitedSpringConfigCheckBox.setVisible(boxVisible);
         impexLabel = new JBLabel();

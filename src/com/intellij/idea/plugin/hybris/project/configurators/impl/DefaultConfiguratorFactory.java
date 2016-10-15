@@ -41,12 +41,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.intellij.idea.plugin.hybris.common.services.CommonIdeaService.IDEA_2016_2_BASELINE_VERSION;
+
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
 public class DefaultConfiguratorFactory implements ConfiguratorFactory {
-
-    public static final int IDEA_2016_2_BASELINE_VERSION = 162;
 
     @NotNull
     @Override
