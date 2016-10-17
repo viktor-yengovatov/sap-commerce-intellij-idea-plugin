@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfig
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -140,6 +141,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public VersionControlSystemConfigurator getVersionControlSystemConfigurator() {
         return ServiceManager.getService(VersionControlSystemConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public RunConfigurationConfigurator getRunConfigurationConfigurator() {
+        return ServiceManager.getService(RunConfigurationConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {

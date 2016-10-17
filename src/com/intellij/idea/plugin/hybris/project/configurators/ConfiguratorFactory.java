@@ -60,4 +60,7 @@ public interface ConfiguratorFactory {
 
     @NotNull
     VersionControlSystemConfigurator getVersionControlSystemConfigurator();
+
+    @NotNull
+    RunConfigurationConfigurator getRunConfigurationConfigurator();
 }
