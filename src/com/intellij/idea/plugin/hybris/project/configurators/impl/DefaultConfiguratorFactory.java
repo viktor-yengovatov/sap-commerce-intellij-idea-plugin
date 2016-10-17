@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurato
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -133,6 +134,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public ModuleSettingsConfigurator getModuleSettingsConfigurator() {
         return ServiceManager.getService(ModuleSettingsConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public VersionControlSystemConfigurator getVersionControlSystemConfigurator() {
+        return ServiceManager.getService(VersionControlSystemConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {
