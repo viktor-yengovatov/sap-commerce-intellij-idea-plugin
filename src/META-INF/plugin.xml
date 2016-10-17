@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>5.0.1</version>
+    <version>5.1.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -102,15 +102,13 @@
 
     <change-notes>
         <![CDATA[
-         - Project import has been improved to provide more correct configuration.
+         - Automatic remote debug configuration has been implemented.
           <br/>
-         - *-items.xml validation has implemented.
+         - Automatic VCS root configuration has been implemented.
           <br/>
-         - Navigation from *.impex to *-items.xml has implemented.
+         - False triggering of "Outdated Project Structure" popup has been fixed.
           <br/>
-         - Support of new features from SAP Hybris 6.0.
-          <br/>
-         - Modules grouping has been improved.
+         - "java.lang.NoSuchMethodError: com.intellij.notification.NotificationGroup." has been fixed.
       ]]>
     </change-notes>
 
