@@ -27,7 +27,9 @@ import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfig
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -41,12 +43,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.intellij.idea.plugin.hybris.common.services.CommonIdeaService.IDEA_2016_2_BASELINE_VERSION;
+
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
  */
 public class DefaultConfiguratorFactory implements ConfiguratorFactory {
-
-    public static final int IDEA_2016_2_BASELINE_VERSION = 162;
 
     @NotNull
     @Override
@@ -133,6 +135,18 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public ModuleSettingsConfigurator getModuleSettingsConfigurator() {
         return ServiceManager.getService(ModuleSettingsConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public VersionControlSystemConfigurator getVersionControlSystemConfigurator() {
+        return ServiceManager.getService(VersionControlSystemConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public RunConfigurationConfigurator getRunConfigurationConfigurator() {
+        return ServiceManager.getService(RunConfigurationConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {

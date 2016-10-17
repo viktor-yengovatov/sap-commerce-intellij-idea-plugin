@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.project.components;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -35,15 +35,6 @@ import com.intellij.openapi.project.ProjectManagerListener;
  * Created by Martin Zdarsky-Jones on 29/09/2016.
  */
 public class HybrisProjectManagerListener extends ProjectManagerAdapter implements ProjectManagerListener {
-
-    public static final NotificationGroup GROUP_DISPLAY_ID_INFO =
-        new NotificationGroup(
-            "[y] project",
-            NotificationDisplayType.BALLOON,
-            true,
-            null,
-            HybrisIcons.HYBRIS_ICON
-        );
 
     @Override
     public void projectOpened(final Project project) {
@@ -63,11 +54,15 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
     }
 
     private void showNotification(final Project project) {
-        final Notification notification = GROUP_DISPLAY_ID_INFO.createNotification(
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final VersionSpecificService versionSpecificService = commonIdeaService.getVersionSpecificService();
+
+        final Notification notification = versionSpecificService.createNotification(
+            "[y] project",
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.title"),
-            null,
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.text"),
-            NotificationType.INFORMATION
+            NotificationType.INFORMATION,
+            HybrisIcons.HYBRIS_ICON
         );
         notification.setImportant(true);
         Notifications.Bus.notify(notification, project);

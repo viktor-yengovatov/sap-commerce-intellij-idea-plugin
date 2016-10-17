@@ -16,37 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common.services;
+package com.intellij.idea.plugin.hybris.project.configurators;
 
-
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 /**
- * Created 10:20 PM 10 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 17/10/2016.
  */
-public interface CommonIdeaService {
+public interface RunConfigurationConfigurator {
 
-    int IDEA_2016_2_BASELINE_VERSION = 162;
-    int IDEA_15x_BASELINE_VERSION = 145;
-
-    boolean isTypingActionInProgress();
-
-    @NotNull
-    Optional<String> getHybrisDirectory(@NotNull Project project);
-
-    @NotNull
-    Optional<String> getCustomDirectory(@NotNull Project project);
-
-    boolean isHybrisProject(@NotNull Project project);
-
-    boolean isOutDatedHybrisProject(@NotNull Project project);
-
-    boolean isPotentiallyHybrisProject(@NotNull Project project);
-
-    VersionSpecificService getVersionSpecificService();
+    void configure(final HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final Project project);
 }

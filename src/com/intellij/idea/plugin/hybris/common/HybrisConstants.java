@@ -49,6 +49,7 @@ public interface HybrisConstants {
     String LIB_DIRECTORY = "lib";
     String BIN_DIRECTORY = "bin";
     String RESOURCES_DIRECTORY = "resources";
+    String LOCAL_PROPERTIES = "local.properties";
     String PROJECT_PROPERTIES = "project.properties";
     String APPLICATION_CONTEXT_SPRING_FILES = "application-context";
     String ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs";
@@ -126,4 +127,8 @@ public interface HybrisConstants {
     String READ_ONLY = "importedAsReadOnly";
 
     int MAX_EXISTING_MODULE_NAMES = 20;
+    String DEBUG_PORT = "8000";
+    String TOMCAT_JAVA_DEBUG_OPTIONS = "tomcat.debugjavaoptions";
+    java.lang.String X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport=";
+    java.lang.String ADDRESS = "address=";
 }

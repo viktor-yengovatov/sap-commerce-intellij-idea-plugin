@@ -57,4 +57,10 @@ public interface ConfiguratorFactory {
 
     @NotNull
     ModuleSettingsConfigurator getModuleSettingsConfigurator();
+
+    @NotNull
+    VersionControlSystemConfigurator getVersionControlSystemConfigurator();
+
+    @NotNull
+    RunConfigurationConfigurator getRunConfigurationConfigurator();
 }

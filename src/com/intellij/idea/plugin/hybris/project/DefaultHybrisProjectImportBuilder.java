@@ -30,6 +30,8 @@ import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
@@ -219,6 +221,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final GroupModuleConfigurator groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
         final JavadocModuleConfigurator javadocModuleConfigurator = configuratorFactory.getJavadocModuleConfigurator();
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
+        final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
+        final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getRunConfigurationConfigurator();
 
         final List<Module> result = new ArrayList<>();
 
@@ -307,6 +311,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         modulesDependenciesConfigurator.configure(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
         springConfigurator.configureDependencies(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
+        runConfigurationConfigurator.configure(this.getHybrisProjectDescriptor(), project);
+        versionControlSystemConfigurator.configure(project);
 
         return result;
     }
