@@ -26,8 +26,10 @@ import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.plugins.PluginManager;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
@@ -44,6 +46,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
@@ -78,6 +81,7 @@ import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.StructureConfigurableContext;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -209,7 +213,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                                final ModifiableModuleModel model,
                                final ModulesProvider modulesProvider,
                                final ModifiableArtifactModel artifactModel) {
-
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
@@ -223,6 +227,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
         final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
         final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getRunConfigurationConfigurator();
+        final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
 
         final List<Module> result = new ArrayList<>();
 
@@ -313,6 +318,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         springConfigurator.configureDependencies(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
         runConfigurationConfigurator.configure(this.getHybrisProjectDescriptor(), project);
         versionControlSystemConfigurator.configure(project);
+
+        final List<HybrisModuleDescriptor> allModules = getHybrisProjectDescriptor().getModulesChosenForImport();
+        StartupManager.getInstance(project).registerPostStartupActivity(
+            () -> antConfigurator.configure(allModules,project)
+        );
+
 
         return result;
     }

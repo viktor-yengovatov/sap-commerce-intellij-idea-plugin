@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.common.services.impl;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -133,6 +135,16 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     @Override
     public VersionSpecificService getVersionSpecificService() {
         return versionSpecificService;
+    }
+
+    @Override
+    public PlatformHybrisModuleDescriptor getPlatformDescriptor(final HybrisProjectDescriptor hybrisProjectDescriptor) {
+        return (PlatformHybrisModuleDescriptor) hybrisProjectDescriptor
+            .getFoundModules()
+            .stream()
+            .filter(e->e instanceof PlatformHybrisModuleDescriptor)
+            .findAny()
+            .orElse(null);
     }
 
     private VersionSpecificService createVersionSpecificService() {

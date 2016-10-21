@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.common.services;
 
 
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,4 +51,6 @@ public interface CommonIdeaService {
     boolean isPotentiallyHybrisProject(@NotNull Project project);
 
     VersionSpecificService getVersionSpecificService();
+
+    PlatformHybrisModuleDescriptor getPlatformDescriptor(HybrisProjectDescriptor hybrisProjectDescriptor);
 }

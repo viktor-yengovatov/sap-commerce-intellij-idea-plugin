@@ -25,11 +25,13 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.remote.RemoteConfiguration;
 import com.intellij.execution.remote.RemoteConfigurationType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,22 +61,23 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
         final String debugName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.debug");
         final RunnerAndConfigurationSettings runner = runManager.createRunConfiguration(debugName, configurationFactory);
         final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
-        remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, project);
+        remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor);
         runner.setSingleton(true);
         runner.setActivateToolWindowBeforeRun(true);
         runManager.addConfiguration(runner, true);
         runManager.setSelectedConfiguration(runner);
     }
 
-    private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final Project project) {
-        ConfigHybrisModuleDescriptor configDescriptor = getConfigDescriptor(hybrisProjectDescriptor);
+    private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final ConfigHybrisModuleDescriptor configDescriptor = getConfigDescriptor(hybrisProjectDescriptor);
         if (configDescriptor != null) {
             String port = findPortProperty(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
             if (port != null) {
                 return port;
             }
         }
-        PlatformHybrisModuleDescriptor platformDescriptor = getPlatformDescriptor(hybrisProjectDescriptor);
+        final PlatformHybrisModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(hybrisProjectDescriptor);
         if (platformDescriptor != null) {
             String port = findPortProperty(platformDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
             if (port != null) {
@@ -129,12 +132,5 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
             .orElse(null);
     }
 
-    private PlatformHybrisModuleDescriptor getPlatformDescriptor(final HybrisProjectDescriptor hybrisProjectDescriptor) {
-        return (PlatformHybrisModuleDescriptor) hybrisProjectDescriptor
-            .getFoundModules()
-            .stream()
-            .filter(e->e instanceof PlatformHybrisModuleDescriptor)
-            .findFirst()
-            .orElse(null);
-    }
+
 }
