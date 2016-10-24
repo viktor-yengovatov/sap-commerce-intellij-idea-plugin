@@ -32,12 +32,15 @@ import com.intellij.lang.ant.config.impl.AntBuildFileImpl;
 import com.intellij.lang.ant.config.impl.AntClasspathEntry;
 import com.intellij.lang.ant.config.impl.AntInstallation;
 import com.intellij.lang.ant.config.impl.BuildFileProperty;
+import com.intellij.lang.ant.config.impl.SinglePathEntry;
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
+import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.rt.ant.execution.HybrisIdeaAntLogger;
 import com.intellij.util.config.AbstractProperty;
 import com.intellij.util.config.ListProperty;
 import org.jetbrains.annotations.NotNull;
@@ -97,11 +100,13 @@ public class DefaultAntConfigurator implements AntConfigurator {
         final File platformDir
     ) {
         AntBuildFileImpl.ADDITIONAL_CLASSPATH.set(editPropertyContainer, classPaths);
-        AntBuildFileImpl.ANT_COMMAND_LINE_PARAMETERS.set(editPropertyContainer, HybrisConstants.ANT_ENCODING);
+        AntBuildFileImpl.ANT_COMMAND_LINE_PARAMETERS.set(editPropertyContainer, "-l com.intellij.rt.ant.execution.HybrisIdeaAntLogger -logger com.intellij.rt.ant.execution.HybrisIdeaAntLogger");
+        AntBuildFileImpl.TREE_VIEW.set(editPropertyContainer, false);
         AntBuildFileImpl.ANT_INSTALLATION.set(editPropertyContainer, antInstallation);
         AntBuildFileImpl.ANT_REFERENCE.set(editPropertyContainer, antInstallation.getReference());
         AntBuildFileImpl.RUN_WITH_ANT.set(editPropertyContainer, antInstallation);
         AntBuildFileImpl.MAX_HEAP_SIZE.set(editPropertyContainer, HybrisConstants.ANT_HEAP_SIZE_MB);
+        AntBuildFileImpl.MAX_STACK_SIZE.set(editPropertyContainer, HybrisConstants.ANT_STACK_SIZE_MB);
         AntBuildFileImpl.RUN_IN_BACKGROUND.set(editPropertyContainer, false);
         AntBuildFileImpl.VERBOSE.set(editPropertyContainer, false);
 
@@ -133,6 +138,13 @@ public class DefaultAntConfigurator implements AntConfigurator {
         final List<ExtHybrisModuleDescriptor> extHybrisModuleDescriptorList
     ) {
         final List<AntClasspathEntry> classpath = new ArrayList<>();
+        //brutal hack. Do not do this at home, kids!
+        //we are hiding class in a classpath to confuse the classloader and pick our implementation
+        final String entry = PathManager.getResourceRoot(
+            HybrisIdeaAntLogger.class, "/" + HybrisIdeaAntLogger.class.getName().replace('.', '/') + ".class"
+        );
+        classpath.add(new SinglePathEntry(entry));
+        //end of hack
         final File libDir = new File (platformDir, HybrisConstants.ANT_LIB_DIR);
         classpath.add(new AllJarsUnderDirEntry(libDir));
         final File platformLibDir = new File (platformDir, HybrisConstants.LIB_DIRECTORY);

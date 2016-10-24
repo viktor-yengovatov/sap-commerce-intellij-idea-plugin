@@ -139,4 +139,5 @@ public interface HybrisConstants {
     String ANT_LIB_DIR = "resources/ant/lib";
     String ANT_BUILD_XML = "build.xml";
     int ANT_HEAP_SIZE_MB = 512;
+    int ANT_STACK_SIZE_MB = 128;
 }
