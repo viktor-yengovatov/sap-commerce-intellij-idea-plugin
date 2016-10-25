@@ -21,6 +21,7 @@ package com.intellij.rt.ant.execution;
 import com.intellij.rt.execution.junit.segments.PacketWriter;
 import com.intellij.rt.execution.junit.segments.SegmentedOutputStream;
 import org.apache.tools.ant.BuildEvent;
+import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.listener.AnsiColorLogger;
@@ -35,9 +36,13 @@ import java.lang.reflect.Field;
  *
  * It's the same class like Intellij's IdeaAntLogger2 class but it fixes
  * https://youtrack.jetbrains.com/issue/IDEA-162949
+ * Task started and finished are not logged anymore
+ *
+ * https://youtrack.jetbrains.com/issue/IDEA-163081
+ * exceptions "macro not found" is not logged either
  *
  */
-public class HybrisIdeaAntLogger extends AnsiColorLogger {
+public class HybrisIdeaAntLogger extends DefaultLogger {
     static SegmentedOutputStream ourErr;
     public static final char MESSAGE_CONTENT = 'M';
     public static final char EXCEPTION_CONTENT = 'X';
@@ -94,6 +99,10 @@ public class HybrisIdeaAntLogger extends AnsiColorLogger {
     }
 
     public synchronized void targetFinished(BuildEvent event) {
+        if (isMarcoNotFound(event)) {
+            myTargetPriority.sendMessage(MESSAGE, Project.MSG_INFO, event.getException().getMessage());
+            return;
+        }
         sendException(event, true);
         myTargetPriority.sendMessage(TARGET_END, event.getPriority(), event.getException());
     }
@@ -103,11 +112,19 @@ public class HybrisIdeaAntLogger extends AnsiColorLogger {
     }
 
     public synchronized void taskFinished(BuildEvent event) {
+        if (isMarcoNotFound(event)) {
+            myTaskPriority.sendMessage(MESSAGE, Project.MSG_INFO, event.getException().getMessage());
+            return;
+        }
         sendException(event, true);
         myTaskPriority.sendMessage(TASK_END, event.getPriority(), event.getException());
     }
 
     public synchronized void messageLogged(BuildEvent event) {
+        if (isMarcoNotFound(event)) {
+            myMessagePriority.sendMessage(MESSAGE, Project.MSG_INFO, event.getException().getMessage());
+            return;
+        }
         final boolean failOnError = isFailOnError(event);
         if (sendException(event, failOnError)) {
             return;
@@ -129,6 +146,10 @@ public class HybrisIdeaAntLogger extends AnsiColorLogger {
         else {
             myMessagePriority.sendMessage(MESSAGE, priority, message);
         }
+    }
+
+    private boolean isMarcoNotFound(final BuildEvent event) {
+        return event.getException() != null && event.getException().getMessage().contains("macro not found");
     }
 
     private static boolean isFailOnError(BuildEvent event) {
