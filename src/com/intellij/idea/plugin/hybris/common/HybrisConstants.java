@@ -129,6 +129,15 @@ public interface HybrisConstants {
     int MAX_EXISTING_MODULE_NAMES = 20;
     String DEBUG_PORT = "8000";
     String TOMCAT_JAVA_DEBUG_OPTIONS = "tomcat.debugjavaoptions";
-    java.lang.String X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport=";
-    java.lang.String ADDRESS = "address=";
+    String X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport=";
+    String ADDRESS = "address=";
+    String ANT_ENCODING = "-Dfile.encoding=UTF-8";
+    String ANT_XMX = "-Xmx";
+    String ANT_PLATFORM_HOME = "PLATFORM_HOME";
+    String ANT_OPTS = "ANT_OPTS";
+    String ANT_HOME = "ANT_HOME";
+    String ANT_LIB_DIR = "resources/ant/lib";
+    String ANT_BUILD_XML = "build.xml";
+    int ANT_HEAP_SIZE_MB = 512;
+    int ANT_STACK_SIZE_MB = 128;
 }
