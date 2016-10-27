@@ -24,12 +24,12 @@ import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.listener.AnsiColorLogger;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.util.Stack;
 
 /**
  * Created by Martin Zdarsky-Jones on 24/10/16.
@@ -38,11 +38,12 @@ import java.lang.reflect.Field;
  * https://youtrack.jetbrains.com/issue/IDEA-162949
  * Task started and finished are not logged anymore
  *
- * https://youtrack.jetbrains.com/issue/IDEA-163081
+ * https://youtrack.jetbrains.com/issue/IDEA-141243
  * exceptions "macro not found" is not logged either
  *
  */
 public class HybrisIdeaAntLogger extends DefaultLogger {
+
     static SegmentedOutputStream ourErr;
     public static final char MESSAGE_CONTENT = 'M';
     public static final char EXCEPTION_CONTENT = 'X';
@@ -62,9 +63,11 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
      * @noinspection HardCodedStringLiteral
      */
     public static final String OUTPUT_PREFIX = "IDEA_ANT_INTEGRATION";
+    private final Thread mainThread;
+    private final Stack<String> callingTasks = new Stack<>();
 
     private final HybrisIdeaAntLogger.Priority myMessagePriority = new HybrisIdeaAntLogger.MessagePriority();
-    private final HybrisIdeaAntLogger.Priority myTargetPriority = new HybrisIdeaAntLogger.StatePriority(Project.MSG_VERBOSE);
+    private final HybrisIdeaAntLogger.Priority myTargetPriority = new HybrisIdeaAntLogger.StatePriority(Project.MSG_INFO);
     private final HybrisIdeaAntLogger.Priority myTaskPriority = new HybrisIdeaAntLogger.StatePriority(Project.MSG_VERBOSE);
     private final HybrisIdeaAntLogger.Priority myAlwaysSend = new HybrisIdeaAntLogger.Priority() {
         public void setPriority(int level) {}
@@ -76,6 +79,7 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
 
     public HybrisIdeaAntLogger() {
         guardStreams();
+        mainThread = Thread.currentThread();
     }
 
     public synchronized void setMessageOutputLevel(int level) {
@@ -99,32 +103,26 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
     }
 
     public synchronized void targetFinished(BuildEvent event) {
-        if (isMarcoNotFound(event)) {
-            myTargetPriority.sendMessage(MESSAGE, Project.MSG_INFO, event.getException().getMessage());
-            return;
-        }
         sendException(event, true);
         myTargetPriority.sendMessage(TARGET_END, event.getPriority(), event.getException());
     }
 
     public synchronized void taskStarted(BuildEvent event) {
-        myTaskPriority.sendMessage(TASK, event.getPriority(), event.getTask().getTaskName());
+        if (Thread.currentThread() == mainThread) {
+            callingTasks.push(event.getTask().getTaskName());
+        }
+        myTaskPriority.sendMessage(TASK, event.getPriority(), event.getTask().getTaskName()+":");
     }
 
     public synchronized void taskFinished(BuildEvent event) {
-        if (isMarcoNotFound(event)) {
-            myTaskPriority.sendMessage(MESSAGE, Project.MSG_INFO, event.getException().getMessage());
-            return;
-        }
         sendException(event, true);
         myTaskPriority.sendMessage(TASK_END, event.getPriority(), event.getException());
+        if (Thread.currentThread() == mainThread) {
+            callingTasks.pop();
+        }
     }
 
     public synchronized void messageLogged(BuildEvent event) {
-        if (isMarcoNotFound(event)) {
-            myMessagePriority.sendMessage(MESSAGE, Project.MSG_INFO, event.getException().getMessage());
-            return;
-        }
         final boolean failOnError = isFailOnError(event);
         if (sendException(event, failOnError)) {
             return;
@@ -148,10 +146,6 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
         }
     }
 
-    private boolean isMarcoNotFound(final BuildEvent event) {
-        return event.getException() != null && event.getException().getMessage().contains("macro not found");
-    }
-
     private static boolean isFailOnError(BuildEvent event) {
         final Task task = event.getTask();
         if (task != null) {
@@ -169,13 +163,17 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
     private boolean sendException(BuildEvent event, boolean isFailOnError) {
         Throwable exception = event.getException();
         if (exception != null) {
-            if (isFailOnError) {
+            if (isFailOnError && !isInTryCatch()) {
                 myAlwaysSend.sendMessage(EXCEPTION, event.getPriority(), exception);
                 return true;
             }
-            myMessagePriority.sendMessage(MESSAGE, Project.MSG_WARN, exception.getMessage());
+            myMessagePriority.sendMessage(MESSAGE, isInTryCatch() ? Project.MSG_VERBOSE : Project.MSG_WARN, exception.getMessage());
         }
         return false;
+    }
+
+    private boolean isInTryCatch() {
+        return callingTasks.contains("try");
     }
 
     public static void guardStreams() {
