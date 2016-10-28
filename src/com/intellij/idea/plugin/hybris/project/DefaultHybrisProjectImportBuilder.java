@@ -26,33 +26,32 @@ import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.plugins.PluginManager;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -209,10 +208,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Nullable
     @Override
-    public List<Module> commit(final Project project,
-                               final ModifiableModuleModel model,
-                               final ModulesProvider modulesProvider,
-                               final ModifiableArtifactModel artifactModel) {
+    public List<Module> commit(
+        final Project project,
+        final ModifiableModuleModel model,
+        final ModulesProvider modulesProvider,
+        final ModifiableArtifactModel artifactModel
+    ) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
@@ -227,6 +228,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
         final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
         final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getRunConfigurationConfigurator();
+        final RunConfigurationConfigurator antCleanAllRunConfigurationConfigurator = configuratorFactory.getAntCleanAllRunConfigurationConfigurator();
         final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
 
         final List<Module> result = new ArrayList<>();
@@ -294,12 +296,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
-            ApplicationManager.getApplication().runWriteAction(new Runnable() {
-                @Override
-                public void run() {
-                    modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
-                }
-            });
+            ApplicationManager.getApplication().runWriteAction(
+                () -> modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel)
+            );
 
             for (FacetConfigurator facetConfigurator : facetConfigurators) {
                 facetConfigurator.configure(
@@ -321,7 +320,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final List<HybrisModuleDescriptor> allModules = getHybrisProjectDescriptor().getModulesChosenForImport();
         StartupManager.getInstance(project).registerPostStartupActivity(
-            () -> antConfigurator.configure(allModules,project)
+            () -> {
+                antConfigurator.configure(allModules, project);
+                antCleanAllRunConfigurationConfigurator.configure(this.getHybrisProjectDescriptor(), project);
+            }
         );
 
 
@@ -351,7 +353,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     private void saveCustomDirectoryLocation(final Project project) {
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+                                                                                          .getState();
         final File customDirectory = this.getHybrisProjectDescriptor().getCustomExtensionsDirectory();
         final File hybrisDirectory = this.getHybrisProjectDescriptor().getHybrisDistributionDirectory();
         final File baseDirectory = VfsUtilCore.virtualToIoFile(project.getBaseDir());
@@ -388,7 +391,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected void initializeHybrisProjectSettings(@NotNull final Project project) {
         Validate.notNull(project);
 
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+                                                                                          .getState();
         if (null != hybrisProjectSettings) {
             hybrisProjectSettings.setHybisProject(true);
             final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
@@ -420,6 +424,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         Validate.notNull(rootProjectModifiableModuleModel);
 
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
+
             @Override
             public void run() {
                 rootProjectModifiableModuleModel.commit();
@@ -436,9 +441,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final String message;
         if (files.size() > HybrisConstants.MAX_EXISTING_MODULE_NAMES) {
-            final String trimmedNames = StringUtil.join(files.subList(0, HybrisConstants.MAX_EXISTING_MODULE_NAMES),
-                                                        new GetFileNameFunction(),
-                                                        "\n");
+            final String trimmedNames = StringUtil.join(
+                files.subList(0, HybrisConstants.MAX_EXISTING_MODULE_NAMES),
+                new GetFileNameFunction(),
+                "\n"
+            );
             message = trimmedNames + "\n...\n...";
         } else {
             message = StringUtil.join(files, new GetFileNameFunction(), "\n");

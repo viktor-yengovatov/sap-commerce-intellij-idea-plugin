@@ -147,7 +147,13 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public RunConfigurationConfigurator getRunConfigurationConfigurator() {
-        return ServiceManager.getService(RunConfigurationConfigurator.class);
+        return ServiceManager.getService(DefaultRunConfigurationConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public RunConfigurationConfigurator getAntCleanAllRunConfigurationConfigurator() {
+        return ServiceManager.getService(AntCleanAllRunConfigurationConfigurator.class);
     }
 
     @NotNull
