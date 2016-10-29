@@ -107,7 +107,7 @@ public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPat
             moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
         );
 
-        return readOnlyMode && !moduleDescriptor.isInCustomDir();
+        return readOnlyMode && moduleDescriptor.getDescriptorType() != HybrisModuleDescriptor.DescriptorType.CUSTOM;
     }
 
     @NotNull

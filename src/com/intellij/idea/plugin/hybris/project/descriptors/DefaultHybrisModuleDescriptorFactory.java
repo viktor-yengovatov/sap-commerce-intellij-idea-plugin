@@ -59,7 +59,7 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
             return new ExtHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isOutOfTheBoxModule(file)) {
+        if (hybrisProjectService.isOutOfTheBoxModule(file, rootProjectDescriptor)) {
             return new OotbHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 

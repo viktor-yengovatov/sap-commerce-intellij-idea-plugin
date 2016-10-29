@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
@@ -95,8 +96,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File hybrisDistributionDirectory;
     @Nullable
-    protected File customExtensionsDirectory;
-    protected boolean customExtensionsPresent;
+    protected File externalExtensionsDirectory;
     @Nullable
     protected String javadocUrl;
 
@@ -178,7 +178,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     public void clear() {
         this.rootDirectory = null;
         this.hybrisDistributionDirectory = null;
-        this.customExtensionsDirectory = null;
+        this.externalExtensionsDirectory = null;
         this.foundModules.clear();
         this.modulesChosenForImport.clear();
         this.explicitlyDefinedModules.clear();
@@ -361,18 +361,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Override
     @Nullable
-    public File getCustomExtensionsDirectory() {
-        return customExtensionsDirectory;
+    public File getExternalExtensionsDirectory() {
+        return externalExtensionsDirectory;
     }
 
     @Override
-    public void setCustomExtensionsDirectory(@Nullable final File customExtensionsDirectory) {
-        this.customExtensionsDirectory = customExtensionsDirectory;
-    }
-
-    @Override
-    public void setCustomExtensionsPresent(final boolean present) {
-        this.customExtensionsPresent = present;
+    public void setExternalExtensionsDirectory(@Nullable final File externalExtensionsDirectory) {
+        this.externalExtensionsDirectory = externalExtensionsDirectory;
     }
 
     @Nullable
@@ -384,10 +379,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setJavadocUrl(@Nullable final String javadocUrl) {
         this.javadocUrl = javadocUrl;
-    }
-
-    public boolean isCustomExtensionsPresent() {
-        return customExtensionsPresent;
     }
 
     @NotNull
@@ -432,6 +423,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final List<File> moduleRootDirectories = this.findModuleRoots(
             rootDirectory, progressListenerProcessor
         );
+        if (externalExtensionsDirectory != null) {
+            moduleRootDirectories.addAll(
+                this.findModuleRoots(externalExtensionsDirectory, progressListenerProcessor)
+                    .stream()
+                    .filter(e->!moduleRootDirectories.contains(e))
+                    .collect(Collectors.toList())
+            );
+        }
 
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<HybrisModuleDescriptor>();
         final List<File> pathsFailedToImport = new ArrayList<File>();
@@ -498,27 +497,24 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
-        if (hybrisProjectService.isRegularModule(rootProjectDirectory)
-            || hybrisProjectService.isPlatformExtModule(rootProjectDirectory)
-            || hybrisProjectService.isOutOfTheBoxModule(rootProjectDirectory)
-            || hybrisProjectService.isCoreExtModule(rootProjectDirectory)
-            || hybrisProjectService.isConfigModule(rootProjectDirectory)) {
-
+        if (hybrisProjectService.isHybrisModule(rootProjectDirectory) ||
+            hybrisProjectService.isConfigModule(rootProjectDirectory))
+        {
             paths.add(rootProjectDirectory);
+            return paths;
+        }
 
-        } else {
-            if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
-                paths.add(rootProjectDirectory);
-            }
+        if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
+            paths.add(rootProjectDirectory);
+        }
 
-            if (rootProjectDirectory.isDirectory()) {
-                final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+        if (rootProjectDirectory.isDirectory()) {
+            final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
-                if (null != files) {
-                    for (File file : files) {
-                        if (!file.getPath().endsWith(HybrisConstants.MEDIA_DIRECTORY)) {
-                            paths.addAll(this.findModuleRoots(file, progressListenerProcessor));
-                        }
+            if (null != files) {
+                for (File file : files) {
+                    if (!file.getPath().endsWith(HybrisConstants.MEDIA_DIRECTORY)) {
+                        paths.addAll(this.findModuleRoots(file, progressListenerProcessor));
                     }
                 }
             }
