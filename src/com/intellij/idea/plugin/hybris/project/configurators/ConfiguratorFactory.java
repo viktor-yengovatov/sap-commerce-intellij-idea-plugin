@@ -65,8 +65,5 @@ public interface ConfiguratorFactory {
     RunConfigurationConfigurator getRunConfigurationConfigurator();
 
     @NotNull
-    RunConfigurationConfigurator getAntCleanAllRunConfigurationConfigurator();
-
-    @NotNull
     AntConfigurator getAntConfigurator();
 }

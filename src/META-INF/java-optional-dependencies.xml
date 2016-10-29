@@ -62,11 +62,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultVersionControlSystemConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultRunConfigurationConfigurator"
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultRunConfigurationConfigurator"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.AntCleanAllRunConfigurationConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.AntCleanAllRunConfigurationConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultAntConfigurator"/>
