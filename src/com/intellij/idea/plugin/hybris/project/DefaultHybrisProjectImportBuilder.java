@@ -157,8 +157,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     public void setRootProjectDirectory(@NotNull final File directory) {
         Validate.notNull(directory);
 
-        this.cleanup();
-
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
             directory, this.getHybrisProjectDescriptor()
         ));
@@ -352,16 +350,18 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     private void saveCustomDirectoryLocation(final Project project) {
         final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
-        final File customDirectory = this.getHybrisProjectDescriptor().getCustomExtensionsDirectory();
+        final File customDirectory = this.getHybrisProjectDescriptor().getExternalExtensionsDirectory();
         final File hybrisDirectory = this.getHybrisProjectDescriptor().getHybrisDistributionDirectory();
         final File baseDirectory = VfsUtilCore.virtualToIoFile(project.getBaseDir());
         final Path projectPath = Paths.get(baseDirectory.getAbsolutePath());
-        final Path customPath = Paths.get(customDirectory.getAbsolutePath());
         final Path hybrisPath = Paths.get(hybrisDirectory.getAbsolutePath());
         final Path relativeHybrisPath = projectPath.relativize(hybrisPath);
-        final Path relativeCustomPath = hybrisPath.relativize(customPath);
         hybrisProjectSettings.setHybrisDirectory(relativeHybrisPath.toString());
-        hybrisProjectSettings.setCustomDirectory(relativeCustomPath.toString());
+        if (customDirectory != null) {
+            final Path customPath = Paths.get(customDirectory.getAbsolutePath());
+            final Path relativeCustomPath = hybrisPath.relativize(customPath);
+            hybrisProjectSettings.setCustomDirectory(relativeCustomPath.toString());
+        }
     }
 
     private void selectSdk(@NotNull final Project project) {

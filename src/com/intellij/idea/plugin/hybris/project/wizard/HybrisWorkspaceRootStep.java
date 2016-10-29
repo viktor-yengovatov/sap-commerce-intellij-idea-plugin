@@ -60,8 +60,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private JTextField projectNameTextField;
     private JCheckBox importOotbModulesInReadOnlyModeCheckBox;
     private volatile TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
-    private volatile TextFieldWithBrowseButton customExtensionsDirectoryFilesInChooser;
-    private JCheckBox customExtensionsPresentCheckBox;
+    private volatile TextFieldWithBrowseButton externalExtensionsDirectoryFilesInChooser;
     private JTextField javadocUrlTextField;
     private JCheckBox sourceCodeCheckBox;
     private JLabel storeModuleFilesInLabel;
@@ -70,7 +69,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private JLabel directoryOverrideLabel;
     private JLabel sourceCodeLabel;
     private JLabel importOotbModulesInReadOnlyModeLabel;
-    private JLabel customExtensionsPresentLabel;
+    private JLabel externalExtensionsPresentLabel;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -149,26 +148,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
 
-        this.customExtensionsDirectoryFilesInChooser.addBrowseFolderListener(
+        this.externalExtensionsDirectoryFilesInChooser.addBrowseFolderListener(
             HybrisI18NBundleUtils.message("hybris.import.label.select.custom.extensions.directory"),
             "",
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
-
-        this.customExtensionsPresentCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                customExtensionsDirectoryFilesInChooser.setEnabled(customExtensionsPresentCheckBox.isSelected());
-            }
-        });
-
-        this.customExtensionsPresentLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-                customExtensionsPresentCheckBox.doClick();
-            }
-        });
     }
 
     @Override
@@ -178,7 +163,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
     @Override
     public void updateDataModel() {
-        this.getContext().setRootProjectDirectory(new File(this.getContext().getFileToImport()));
+
+        this.getContext().cleanup();
 
         if (this.storeModuleFilesInCheckBox.isSelected()) {
             this.getContext().getHybrisProjectDescriptor().setModulesFilesDirectory(
@@ -200,17 +186,15 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             new File(this.hybrisDistributionDirectoryFilesInChooser.getText())
         );
 
-        this.getContext().getHybrisProjectDescriptor().setCustomExtensionsDirectory(
-            new File(this.customExtensionsDirectoryFilesInChooser.getText())
-        );
-
-        this.getContext().getHybrisProjectDescriptor().setCustomExtensionsPresent(
-            this.customExtensionsPresentCheckBox.isSelected()
+        this.getContext().getHybrisProjectDescriptor().setExternalExtensionsDirectory(
+            directoryOverrideCheckBox.isSelected() ? new File(this.externalExtensionsDirectoryFilesInChooser.getText()) : null
         );
 
         this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
             this.javadocUrlTextField.getText()
         );
+
+        this.getContext().setRootProjectDirectory(new File(this.getContext().getFileToImport()));
     }
 
     @Override
@@ -252,9 +236,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         if (StringUtils.isNotBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
 
-            if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())) {
+            if (StringUtils.isBlank(this.externalExtensionsDirectoryFilesInChooser.getText())) {
 
-                this.customExtensionsDirectoryFilesInChooser.setText(
+                this.externalExtensionsDirectoryFilesInChooser.setText(
                     new File(
                         this.hybrisDistributionDirectoryFilesInChooser.getText(),
                         HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH
@@ -265,12 +249,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
 
         if (StringUtils.isBlank(this.sourceCodeZipFilesInChooser.getText())) {
             sourceCodeZipFilesInChooser.setText(this.hybrisDistributionDirectoryFilesInChooser.getText());
-        }
-
-        final File customDir = new File(this.customExtensionsDirectoryFilesInChooser.getText());
-        if (!customDir.exists()) {
-            customExtensionsPresentCheckBox.setSelected(false);
-            customExtensionsDirectoryFilesInChooser.setEnabled(false);
         }
 
         if (StringUtils.isNotBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
@@ -295,6 +273,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
             }
         }
 
+        if (directoryOverrideCheckBox.isSelected()) {
+            if (!new File(this.externalExtensionsDirectoryFilesInChooser.getText()).isDirectory()) {
+                throw new ConfigurationException(
+                    HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
+            }
+        }
 
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
             throw new ConfigurationException(
@@ -315,18 +299,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
                     "hybris.import.wizard.validation.hybris.distribution.directory.is.outside.of.project.root.directory",
                     this.getBuilder().getFileToImport()
                 ));
-        }
-
-        if (this.customExtensionsPresentCheckBox.isSelected()) {
-            if (StringUtils.isBlank(this.customExtensionsDirectoryFilesInChooser.getText())) {
-                throw new ConfigurationException(
-                    HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.empty"));
-            }
-
-            if (!new File(this.customExtensionsDirectoryFilesInChooser.getText()).isDirectory()) {
-                throw new ConfigurationException(
-                    HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
-            }
         }
 
         return true;

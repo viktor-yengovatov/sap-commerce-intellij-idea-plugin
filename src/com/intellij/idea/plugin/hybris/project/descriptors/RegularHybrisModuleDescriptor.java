@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_META_KEY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType.CUSTOM;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -194,7 +195,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
 
         if (this.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
 
-            if (!this.isInCustomDir()) {
+            if (this.getDescriptorType() != CUSTOM) {
                 libs.add(new DefaultJavaLibraryDescriptor(
                     new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
                     new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY),

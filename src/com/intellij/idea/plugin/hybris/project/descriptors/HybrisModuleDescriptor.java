@@ -63,10 +63,6 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     List<JavaLibraryDescriptor> getLibraryDescriptors();
 
-    boolean isInCustomDir();
-
-    boolean isCustomExtensionsPresent();
-
     boolean isPreselected();
 
     boolean isInLocalExtensions();

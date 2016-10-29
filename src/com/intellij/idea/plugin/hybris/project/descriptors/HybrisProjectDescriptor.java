@@ -85,13 +85,9 @@ public interface HybrisProjectDescriptor {
     void setHybrisDistributionDirectory(@Nullable File hybrisDistributionDirectory);
 
     @Nullable
-    File getCustomExtensionsDirectory();
+    File getExternalExtensionsDirectory();
 
-    void setCustomExtensionsDirectory(@Nullable File customExtensionsDirectory);
-
-    boolean isCustomExtensionsPresent();
-
-    void setCustomExtensionsPresent(boolean present);
+    void setExternalExtensionsDirectory(@Nullable File externalExtensionsDirectory);
 
     @Nullable
     String getJavadocUrl();

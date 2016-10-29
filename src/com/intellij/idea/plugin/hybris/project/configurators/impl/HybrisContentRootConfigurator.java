@@ -54,6 +54,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSE
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType.CUSTOM;
 
 /**
  * Created 2:07 AM 15 June 2015.
@@ -90,7 +91,7 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
 
-        if (moduleDescriptor.isInCustomDir() || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
             final File srcDirectory = new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY);
             contentEntry.addSourceFolder(
                 VfsUtil.pathToUrl(srcDirectory.getAbsolutePath()),
@@ -155,7 +156,7 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
             return;
         }
 
-        if (moduleDescriptor.isInCustomDir() || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
             final File additionalSrcDirectory = new File(additionalModuleDirectory, SRC_DIRECTORY);
             contentEntry.addSourceFolder(
                 VfsUtil.pathToUrl(additionalSrcDirectory.getAbsolutePath()),
@@ -219,7 +220,7 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY
         );
 
-        if (moduleDescriptor.isInCustomDir() || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
             final File backOfficeSrcDirectory = new File(backOfficeModuleDirectory, SRC_DIRECTORY);
             contentEntry.addSourceFolder(
                 VfsUtil.pathToUrl(backOfficeSrcDirectory.getAbsolutePath()),
@@ -289,7 +290,7 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
                                          final File webModuleDirectory) {
         Validate.notNull(moduleDescriptor);
 
-        if (moduleDescriptor.isInCustomDir() || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM || !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
             final File webSrcDirectory = new File(webModuleDirectory, SRC_DIRECTORY);
             contentEntry.addSourceFolder(
                 VfsUtil.pathToUrl(webSrcDirectory.getAbsolutePath()),
@@ -327,7 +328,7 @@ public class HybrisContentRootConfigurator implements ContentRootConfigurator {
 
         if (moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
 
-            if (moduleDescriptor.isInCustomDir()) {
+            if (moduleDescriptor.getDescriptorType() == CUSTOM) {
                 final File webInfClassesDirectory = new File(moduleDescriptor.getRootDirectory(), WEB_INF_CLASSES_DIRECTORY);
                 contentEntry.addExcludeFolder(
                     VfsUtil.pathToUrl(webInfClassesDirectory.getAbsolutePath())

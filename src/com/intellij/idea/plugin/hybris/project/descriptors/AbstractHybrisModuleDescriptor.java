@@ -131,7 +131,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public Set<HybrisModuleDescriptor> getDependenciesPlainList() {
         return Collections.unmodifiableSet(this.recursivelyCollectDependenciesPlainSet(
-            this, new TreeSet<HybrisModuleDescriptor>()
+            this, new TreeSet<>()
         ));
     }
 
@@ -180,31 +180,6 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         this.inLocalExtensions = inLocalExtensions;
     }
 
-    @Override
-    public boolean isInCustomDir() {
-        if (!isCustomExtensionsPresent()) {
-            return false;
-        }
-        if (null == this.getRootProjectDescriptor().getCustomExtensionsDirectory()) {
-            throw new IllegalStateException("CustomExtensionsDirectory is not set.");
-        } else {
-
-            final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
-                VirtualFileSystemService.class
-            );
-
-            return virtualFileSystemService.fileContainsAnother(
-                this.getRootProjectDescriptor().getCustomExtensionsDirectory(),
-                this.moduleRootDirectory
-            );
-        }
-    }
-
-    @Override
-    public boolean isCustomExtensionsPresent() {
-        return this.getRootProjectDescriptor().isCustomExtensionsPresent();
-    }
-
     @Nullable
     @Override
     public File getWebRoot() {
@@ -244,7 +219,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ConfigHybrisModuleDescriptor{");
+        final StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " {");
         sb.append("name='").append(this.getName()).append('\'');
         sb.append(", moduleRootDirectory=").append(moduleRootDirectory);
         sb.append(", moduleFile=").append(this.getIdeaModuleFile());
