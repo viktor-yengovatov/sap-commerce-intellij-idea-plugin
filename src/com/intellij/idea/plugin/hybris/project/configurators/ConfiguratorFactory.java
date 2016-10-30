@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -64,6 +65,6 @@ public interface ConfiguratorFactory {
     @NotNull
     RunConfigurationConfigurator getRunConfigurationConfigurator();
 
-    @NotNull
+    @Nullable
     AntConfigurator getAntConfigurator();
 }

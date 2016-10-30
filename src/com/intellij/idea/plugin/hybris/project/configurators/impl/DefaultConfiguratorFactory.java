@@ -40,6 +40,7 @@ import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.util.BuildNumber;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
         return ServiceManager.getService(RunConfigurationConfigurator.class);
     }
 
-    @NotNull
+    @Nullable
     @Override
     public AntConfigurator getAntConfigurator() {
         return ServiceManager.getService(AntConfigurator.class);
