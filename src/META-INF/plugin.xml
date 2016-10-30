@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>5.1.2</version>
+    <version>5.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -58,6 +58,8 @@
           <b>Features:</b>
           <br/>
           - Import of Hybris extensions to Intellij IDEA.
+          <br/>
+          - Automatic configuration of Spring, Web and Ant Intellij IDEA plugins.
           <br/>
           - Editor for impex files.
           <br/>
@@ -103,13 +105,9 @@
 
     <change-notes>
         <![CDATA[
-         - Automatic remote debug configuration has been implemented.
+         - Project import has been improved to support multiple custom directories.
           <br/>
-         - Automatic VCS root configuration has been implemented.
-          <br/>
-         - False triggering of "Outdated Project Structure" popup has been fixed.
-          <br/>
-         - "java.lang.NoSuchMethodError: com.intellij.notification.NotificationGroup." has been fixed.
+         - Automatic ant configuration of Ant Intellij IDEA plugin has been implemented.
       ]]>
     </change-notes>
 
