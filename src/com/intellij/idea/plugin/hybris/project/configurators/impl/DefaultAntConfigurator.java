@@ -41,6 +41,7 @@ import com.intellij.lang.ant.config.impl.AntBuildFileImpl;
 import com.intellij.lang.ant.config.impl.AntClasspathEntry;
 import com.intellij.lang.ant.config.impl.AntInstallation;
 import com.intellij.lang.ant.config.impl.BuildFileProperty;
+import com.intellij.lang.ant.config.impl.ExecuteCompositeTargetEvent;
 import com.intellij.lang.ant.config.impl.SinglePathEntry;
 import com.intellij.lang.ant.config.impl.TargetFilter;
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
@@ -74,12 +75,17 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     public final List<String> desirablePlatformTargets = new ArrayList<>(asList("clean", "customize", "all", "deployment", "build"));
     public final List<String> desirableCustomTargets = new ArrayList<>(asList("build"));
+    public final String[][] metaTargets = new String[][]{
+        {"clean","all"},
+        {"clean","customize","all","initialize"},
+        {"clean","customize","all","production"}
+    };
 
     private PlatformHybrisModuleDescriptor platformDescriptor;
     private List<ExtHybrisModuleDescriptor> extHybrisModuleDescriptorList;
     private List<CustomHybrisModuleDescriptor> customHybrisModuleDescriptorList;
     private AntInstallation antInstallation;
-    private AntConfiguration antConfiguration;
+    private AntConfigurationBase antConfiguration;
     private List<AntClasspathEntry> classPaths;
 
     @Override
@@ -95,16 +101,26 @@ public class DefaultAntConfigurator implements AntConfigurator {
         }
         createAntClassPath(platformDir);
         AntConfigurationBase.getInstance(project).setFilterTargets(true);
-        antConfiguration = AntConfiguration.getInstance(project);
-        registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
+        antConfiguration = AntConfigurationBase.getInstance(project);
+        final AntBuildFileBase buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
         customHybrisModuleDescriptorList.stream().forEach(
             e->registerAntInstallation(platformDir, e.getRootDirectory(), desirableCustomTargets)
         );
         removeMake(project);
+        createMetaTargets(buildFile);
 
         final ToolWindowManager manager = ToolWindowManager.getInstance(project);
         final ToolWindow window = manager.getToolWindow("Ant Build");
         window.show(null);
+    }
+
+    private void createMetaTargets(final AntBuildFileBase buildFile) {
+        Arrays.stream(metaTargets).forEach(meta->{
+            final ExecuteCompositeTargetEvent event = new ExecuteCompositeTargetEvent(meta);
+            if (antConfiguration.getTargetForEvent(event) == null) {
+                antConfiguration.setTargetForEvent(buildFile, event.getMetaTargetName(), event);
+            }
+        });
     }
 
     private void parseModules(final List<HybrisModuleDescriptor> allModules) {
@@ -134,7 +150,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
                      .collect(Collectors.toList());
     }
 
-    private void registerAntInstallation(
+    private AntBuildFileBase registerAntInstallation(
         final File platformDir,
         final File extensionDir,
         final List<String> desiredTargets
@@ -142,13 +158,14 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
         final AntBuildFileBase antBuildFile = findBuildFile(extensionDir);
         if (antBuildFile == null) {
-            return;
+            return null;
         }
         final List<TargetFilter> filterList = getFilteredTargets(antBuildFile, desiredTargets);
         final AbstractProperty.AbstractPropertyContainer allOptions = antBuildFile.getAllOptions();
         final EditPropertyContainer editPropertyContainer = new EditPropertyContainer(allOptions);
         setAntProperties(editPropertyContainer, platformDir, filterList);
         editPropertyContainer.apply();
+        return antBuildFile;
     }
 
     private void setAntProperties(
