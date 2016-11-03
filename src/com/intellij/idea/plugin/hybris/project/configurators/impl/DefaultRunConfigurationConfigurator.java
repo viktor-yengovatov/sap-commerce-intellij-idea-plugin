@@ -18,10 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
+import com.intellij.execution.impl.RunManagerImpl;
+import com.intellij.execution.junit.JUnitConfiguration;
+import com.intellij.execution.junit.JUnitConfigurationType;
 import com.intellij.execution.remote.RemoteConfiguration;
 import com.intellij.execution.remote.RemoteConfigurationType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
@@ -40,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -51,11 +54,16 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
     @Override
     public void configure(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final Project project) {
 
-        final RunManager runManager = RunManager.getInstance(project);
+        final RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
         if (runManager == null) {
             return;
         }
 
+        createRemoteDebug(runManager, hybrisProjectDescriptor);
+        configureJUnitTemplateOnly(runManager, hybrisProjectDescriptor);
+    }
+
+    private void createRemoteDebug(final RunManagerImpl runManager, final HybrisProjectDescriptor hybrisProjectDescriptor) {
         final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(RemoteConfigurationType.class);
         final ConfigurationFactory configurationFactory = remoteConfigurationType.getConfigurationFactories()[0];
         final String debugName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.debug");
@@ -66,6 +74,30 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
         runner.setActivateToolWindowBeforeRun(true);
         runManager.addConfiguration(runner, true);
         runManager.setSelectedConfiguration(runner);
+    }
+
+    private void configureJUnitTemplateOnly(final RunManagerImpl runManager, final HybrisProjectDescriptor hybrisProjectDescriptor) {
+        final String platformRootDirectoryPath = getPlatformRootDirectoryPath(hybrisProjectDescriptor);
+        if (platformRootDirectoryPath == null) {
+            return;
+        }
+        final JUnitConfigurationType configurationType = ConfigurationTypeUtil.findConfigurationType(JUnitConfigurationType.class);
+        final ConfigurationFactory configurationFactory = configurationType.getConfigurationFactories()[0];
+        RunnerAndConfigurationSettings template = runManager.getConfigurationTemplate(configurationFactory);
+        JUnitConfiguration runConfiguration = (JUnitConfiguration) template.getConfiguration();
+        runConfiguration.setVMParameters("-ea -Dplatformhome=" + platformRootDirectoryPath);
+        runManager.setBeforeRunTasks(runConfiguration, Collections.emptyList(), false);
+    }
+
+    private String getPlatformRootDirectoryPath(final HybrisProjectDescriptor hybrisProjectDescriptor) {
+        return hybrisProjectDescriptor
+            .getModulesChosenForImport()
+            .stream()
+            .filter(e -> e instanceof PlatformHybrisModuleDescriptor)
+            .map(e -> e.getRootDirectory())
+            .map(e -> e.getPath())
+            .findAny()
+            .orElse(null);
     }
 
     private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
