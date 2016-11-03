@@ -37,6 +37,12 @@ public class AntMain2 {
                                            UnsupportedEncodingException {
         HybrisIdeaAntLogger.guardStreams();
 
+        for (int index=0; index<args.length; index++) {
+            if (IdeaAntLogger2.class.getName().equals(args[index])) {
+                args[index]=HybrisIdeaAntLogger.class.getName();
+            }
+        }
+
         // as we build classpath ourselves, and ensure all libraries are added to classpath,
         // preferred way for us to run ant will be using the traditional ant entry point, via the "Main" class
         try {

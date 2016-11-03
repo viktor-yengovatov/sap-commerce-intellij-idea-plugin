@@ -99,13 +99,16 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
             return true;
         }
         final String[] versionParts = version.split("\\.");
-        if (versionParts.length == 0) {
+        if (versionParts.length < 2) {
             return true;
         }
         final String majorVersion = versionParts[0];
+        final String minorVersion = versionParts[1];
         try {
             final int majorVersionNumber = Integer.valueOf(majorVersion);
-            return majorVersionNumber < 5;
+            final int minorVersionNumber = Integer.valueOf(minorVersion);
+            final int versionNumber = majorVersionNumber * 10 + minorVersionNumber;
+            return versionNumber < 52;
         } catch (NumberFormatException nfe) {
             return true;
         }

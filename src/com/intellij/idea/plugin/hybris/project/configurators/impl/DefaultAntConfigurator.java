@@ -73,7 +73,7 @@ import static java.util.Arrays.asList;
  */
 public class DefaultAntConfigurator implements AntConfigurator {
 
-    public final List<String> desirablePlatformTargets = new ArrayList<>(asList("clean", "customize", "all", "deployment", "build"));
+    public final List<String> desirablePlatformTargets = new ArrayList<>(asList("clean", "customize", "all", "deployment", "build", "extgen", "modulegen"));
     public final List<String> desirableCustomTargets = new ArrayList<>(asList("build"));
     public final String[][] metaTargets = new String[][]{
         {"clean","all"},
@@ -174,7 +174,6 @@ public class DefaultAntConfigurator implements AntConfigurator {
         final List<TargetFilter> filterList
     ) {
         AntBuildFileImpl.ADDITIONAL_CLASSPATH.set(editPropertyContainer, classPaths);
-        AntBuildFileImpl.ANT_COMMAND_LINE_PARAMETERS.set(editPropertyContainer, "-l com.intellij.rt.ant.execution.HybrisIdeaAntLogger -logger com.intellij.rt.ant.execution.HybrisIdeaAntLogger");
         AntBuildFileImpl.TREE_VIEW.set(editPropertyContainer, true);
         AntBuildFileImpl.ANT_INSTALLATION.set(editPropertyContainer, antInstallation);
         AntBuildFileImpl.ANT_REFERENCE.set(editPropertyContainer, antInstallation.getReference());
