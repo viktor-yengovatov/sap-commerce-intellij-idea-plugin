@@ -25,9 +25,10 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
+import com.intellij.ide.DataManager;
+import com.intellij.ide.actions.InvalidateCachesAction;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
@@ -55,6 +56,11 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
+import com.intellij.openapi.actionSystem.ActionPlaces;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.ex.CheckboxAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -320,11 +326,21 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 if (null != antConfigurator) {
                     antConfigurator.configure(allModules, project);
                 }
+                offerCacheInvalidation();
             }
         );
 
 
         return result;
+    }
+
+    private void offerCacheInvalidation() {
+        final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
+        final AnAction action = new InvalidateCachesAction();
+        final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(
+            new InvalidateCachesAction(), null, ActionPlaces.UNKNOWN, dataContext
+        );
+        action.actionPerformed(actionEvent);
     }
 
     private void disableWrapOnType(final Language impexLanguage) {
