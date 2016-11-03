@@ -184,6 +184,7 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
         ourErr = new SegmentedOutputStream(err);
         System.setErr(new PrintStream(ourErr));
         ourErr.sendStart();
+        IdeaAntLogger2.ourErr = ourErr;
     }
 
     private void send(PacketWriter packet) {
