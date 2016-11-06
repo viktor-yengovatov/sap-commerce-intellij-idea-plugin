@@ -42,6 +42,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
+import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
+
 /**
  * Created 11:45 PM 24 June 2015.
  *
@@ -60,7 +62,13 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(modifiableRootModel);
 
-        ApplicationManager.getApplication().runWriteAction(() -> configureInner(modifiableRootModel, moduleDescriptor));
+        invokeAndWaitIfNeeded(
+            (Runnable) () ->
+                ApplicationManager.getApplication().runWriteAction(() -> configureInner(
+                    modifiableRootModel,
+                    moduleDescriptor
+                ))
+        );
     }
 
     protected void configureInner(

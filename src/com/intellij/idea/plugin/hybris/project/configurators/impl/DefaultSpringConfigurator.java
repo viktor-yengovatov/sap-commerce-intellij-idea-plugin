@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
+
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
  */
@@ -135,12 +137,13 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final Module module = moduleMap.get(moduleDescriptor.getName());
         final ModifiableFacetModel modifiableFacetModel = modifiableFacetModelMap.get(moduleDescriptor.getName());
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                modifiableModelsProvider.commitFacetModifiableModel(module, modifiableFacetModel);
-            }
-        });
+        invokeAndWaitIfNeeded(
+            (Runnable) () -> ApplicationManager.getApplication().runWriteAction(
+                () -> ApplicationManager.getApplication().runWriteAction(
+                    () -> modifiableModelsProvider.commitFacetModifiableModel(module, modifiableFacetModel)
+                )
+            )
+        );
     }
 
     protected void processHybrisModule(@NotNull final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,

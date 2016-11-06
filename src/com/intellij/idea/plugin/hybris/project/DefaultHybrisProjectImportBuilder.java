@@ -18,87 +18,39 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.facet.FacetType;
-import com.intellij.facet.FacetTypeId;
-import com.intellij.facet.FacetTypeRegistry;
-import com.intellij.facet.ModifiableFacetModel;
-import com.intellij.framework.FrameworkType;
-import com.intellij.framework.detection.DetectionExcludesConfiguration;
-import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
-import com.intellij.ide.DataManager;
-import com.intellij.ide.actions.InvalidateCachesAction;
-import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.caches.CachesInvalidator;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
-import com.intellij.javaee.web.facet.WebFacet;
-import com.intellij.lang.Language;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.ex.CheckboxAction;
+import com.intellij.internal.statistic.UsageTrigger;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ex.ApplicationEx;
+import com.intellij.openapi.application.ex.ApplicationManagerEx;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
 import com.intellij.openapi.extensions.Extensions;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkVersion;
-import com.intellij.openapi.projectRoots.JdkVersionUtil;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.LanguageLevelProjectExtension;
-import com.intellij.openapi.roots.ModifiableModelsProvider;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
-import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
-import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.StructureConfigurableContext;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.newvfs.persistent.FSRecords;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
-import com.intellij.psi.codeStyle.CodeStyleScheme;
-import com.intellij.psi.codeStyle.CodeStyleSchemes;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.spring.facet.SpringFacet;
 import com.intellij.util.Function;
-import com.intellij.util.PlatformUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -107,8 +59,6 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -218,203 +168,52 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModulesProvider modulesProvider,
         final ModifiableArtifactModel artifactModel
     ) {
-        final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
-        final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
-        final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
-        final List<FacetConfigurator> facetConfigurators = configuratorFactory.getFacetConfigurators();
-        final ContentRootConfigurator contentRootConfigurator = configuratorFactory.getContentRootConfigurator();
-        final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = configuratorFactory.getCompilerOutputPathsConfigurator();
-        final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
-        final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
-        final GroupModuleConfigurator groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
-        final JavadocModuleConfigurator javadocModuleConfigurator = configuratorFactory.getJavadocModuleConfigurator();
-        final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
-        final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
-        final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getRunConfigurationConfigurator();
-
         final List<Module> result = new ArrayList<>();
-
-        if (this.getHybrisProjectDescriptor().getModulesChosenForImport().isEmpty()) {
+        final HybrisProjectDescriptor hybrisProjectDescriptor = getHybrisProjectDescriptor();
+        final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor.getModulesChosenForImport();
+        if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
+        final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
 
-        this.initializeHybrisProjectSettings(project);
+        this.performProjectsCleanup(allModules);
 
-        this.selectSdk(project);
+        new ImportProjectProgressModalWindow(
+            project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
+        ).queue();
 
-        this.saveCustomDirectoryLocation(project);
-
-        this.disableWrapOnType(ImpexLanguage.getInstance());
-
-        if (PlatformUtils.isIdeaUltimate()) {
-            this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
-            this.excludeFrameworkDetection(project, WebFacet.ID);
-            this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
-        }
-
-        this.performProjectsCleanup(this.getHybrisProjectDescriptor().getModulesChosenForImport());
-
-        final ModifiableModuleModel rootProjectModifiableModel = (null == model)
-            ? ModuleManager.getInstance(project).getModifiableModel()
-            : model;
-
-        final ProjectStructureConfigurable projectStructureConfigurable = ProjectStructureConfigurable.getInstance(
-            project
-        );
-
-        springConfigurator.findSpringConfiguration(this.getHybrisProjectDescriptor().getModulesChosenForImport());
-        groupModuleConfigurator.findDependencyModules(this.getHybrisProjectDescriptor().getModulesChosenForImport());
-
-        for (HybrisModuleDescriptor moduleDescriptor : this.getHybrisProjectDescriptor().getModulesChosenForImport()) {
-
-            final Module javaModule = rootProjectModifiableModel.newModule(
-                moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
-            );
-
-            moduleSettingsConfigurator.configure(moduleDescriptor, javaModule);
-
-            if (projectStructureConfigurable.isUiInitialized()) {
-                final StructureConfigurableContext context = projectStructureConfigurable.getContext();
-                if (null != context) {
-                    context.getModulesConfigurator().getOrCreateModuleEditor(javaModule);
-                }
-            }
-
-            final ModifiableRootModel modifiableRootModel = modifiableModelsProvider.getModuleModifiableModel(
-                javaModule
-            );
-            final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getFacetModifiableModel(
-                javaModule
-            );
-
-            ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
-            modifiableRootModel.inheritSdk();
-
-            libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            javadocModuleConfigurator.configure(modifiableRootModel, moduleDescriptor);
-
-            groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
-
-            ApplicationManager.getApplication().runWriteAction(
-                () -> modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel)
-            );
-
-            for (FacetConfigurator facetConfigurator : facetConfigurators) {
-                facetConfigurator.configure(
-                    modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel, modifiableModelsProvider
-                );
-            }
-
-            result.add(javaModule);
-        }
-
-        if (!this.isUpdate()) {
-            this.commitRootModule(rootProjectModifiableModel);
-        }
-
-        modulesDependenciesConfigurator.configure(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
-        springConfigurator.configureDependencies(this.getHybrisProjectDescriptor(), rootProjectModifiableModel);
-        runConfigurationConfigurator.configure(this.getHybrisProjectDescriptor(), project);
-        versionControlSystemConfigurator.configure(project);
-
-        final List<HybrisModuleDescriptor> allModules = getHybrisProjectDescriptor().getModulesChosenForImport();
         StartupManager.getInstance(project).registerPostStartupActivity(
             () -> {
                 final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
                 if (null != antConfigurator) {
                     antConfigurator.configure(allModules, project);
                 }
-                offerCacheInvalidation();
+                offerCacheInvalidation(project);
             }
         );
-
 
         return result;
     }
-
-    private void offerCacheInvalidation() {
-        final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
-        final AnAction action = new InvalidateCachesAction();
-        final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(
-            new InvalidateCachesAction(), null, ActionPlaces.UNKNOWN, dataContext
+    private void offerCacheInvalidation(final Project project) {
+        final int result = Messages.showYesNoDialog(
+            project,
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.message"),
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.title"),
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.yes"),
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.no"),
+            Messages.getInformationIcon()
         );
-        action.actionPerformed(actionEvent);
-    }
+        if (result == Messages.YES) {
+            final ApplicationEx app = (ApplicationEx) ApplicationManager.getApplication();
+            UsageTrigger.trigger(ApplicationManagerEx.getApplicationEx().getName() + ".caches.invalidated");
+            FSRecords.invalidateCaches();
 
-    private void disableWrapOnType(final Language impexLanguage) {
-        final CodeStyleScheme currentScheme = CodeStyleSchemes.getInstance().getCurrentScheme();
-        final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
-        if (impexLanguage != null) {
-            CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
-            if (langSettings != null) {
-                langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
+            for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
+                invalidater.invalidateCaches();
             }
+            app.restart(true);
         }
     }
-
-    private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
-        final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
-        final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
-        if (facetType != null) {
-            final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
-            if (frameworkType != null) {
-                configuration.addExcludedFramework(frameworkType);
-            }
-        }
-    }
-
-    private void saveCustomDirectoryLocation(final Project project) {
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                          .getState();
-        final File customDirectory = this.getHybrisProjectDescriptor().getExternalExtensionsDirectory();
-        final File hybrisDirectory = this.getHybrisProjectDescriptor().getHybrisDistributionDirectory();
-        final File baseDirectory = VfsUtilCore.virtualToIoFile(project.getBaseDir());
-        final Path projectPath = Paths.get(baseDirectory.getAbsolutePath());
-        final Path hybrisPath = Paths.get(hybrisDirectory.getAbsolutePath());
-        final Path relativeHybrisPath = projectPath.relativize(hybrisPath);
-        hybrisProjectSettings.setHybrisDirectory(relativeHybrisPath.toString());
-        if (customDirectory != null) {
-            final Path customPath = Paths.get(customDirectory.getAbsolutePath());
-            final Path relativeCustomPath = hybrisPath.relativize(customPath);
-            hybrisProjectSettings.setCustomDirectory(relativeCustomPath.toString());
-        }
-    }
-
-    private void selectSdk(@NotNull final Project project) {
-        Validate.notNull(project);
-
-        final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
-
-        final Sdk projectSdk = projectRootManager.getProjectSdk();
-
-        if (null == projectSdk) {
-            return;
-        }
-
-        if (StringUtils.isNotBlank(projectSdk.getVersionString())) {
-            final JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(projectSdk.getVersionString());
-            final LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
-
-            if (sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
-                languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
-            }
-        }
-    }
-
-    protected void initializeHybrisProjectSettings(@NotNull final Project project) {
-        Validate.notNull(project);
-
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                          .getState();
-        if (null != hybrisProjectSettings) {
-            hybrisProjectSettings.setHybisProject(true);
-            final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
-            hybrisProjectSettings.setImportedByVersion(version);
-        }
-    }
-
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 
@@ -433,18 +232,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 LOG.error("Can not remove old module files.", e);
             }
         }
-    }
-
-    protected void commitRootModule(@NotNull final ModifiableModuleModel rootProjectModifiableModuleModel) {
-        Validate.notNull(rootProjectModifiableModuleModel);
-
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-
-            @Override
-            public void run() {
-                rootProjectModifiableModuleModel.commit();
-            }
-        });
     }
 
     protected boolean shouldRemoveAlreadyExistingModuleFiles(@NotNull final List<File> files) {
