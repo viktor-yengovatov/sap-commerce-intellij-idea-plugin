@@ -28,6 +28,8 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
+
 /**
  * Created 8:40 PM 13 February 2016.
  *
@@ -47,13 +49,15 @@ public abstract class AbstractFacetConfigurator implements FacetConfigurator {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(modifiableModelsProvider);
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                configureInner(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
-                modifiableModelsProvider.commitFacetModifiableModel(javaModule, modifiableFacetModel);
-            }
-        });
+
+        invokeAndWaitIfNeeded(
+            (Runnable) () -> ApplicationManager.getApplication().runWriteAction(
+                () -> {
+                    configureInner(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
+                    modifiableModelsProvider.commitFacetModifiableModel(javaModule, modifiableFacetModel);
+                }
+            )
+        );
     }
 
     protected abstract void configureInner(@NotNull ModifiableFacetModel modifiableFacetModel,

@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescri
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
+import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -46,6 +47,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
+
 /**
  * Created 12:22 AM 25 June 2015.
  *
@@ -61,13 +64,18 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
                           final @NotNull ModifiableModuleModel rootProjectModifiableModuleModel) {
         Validate.notNull(hybrisProjectDescriptor);
         Validate.notNull(rootProjectModifiableModuleModel);
-
+        AccessToken token = null;
         final List<Module> modules = Arrays.asList(rootProjectModifiableModuleModel.getModules());
-        final Collection<ModifiableRootModel> modifiableRootModels = modules
-            .stream()
-            .map(this.modifiableModelsProvider::getModuleModifiableModel)
-            .collect(Collectors.toCollection(ArrayList::new));
-
+        Collection<ModifiableRootModel> modifiableRootModels = null;
+        try {
+            token = ApplicationManager.getApplication().acquireReadActionLock();
+            modifiableRootModels = modules
+                .stream()
+                .map(this.modifiableModelsProvider::getModuleModifiableModel)
+                .collect(Collectors.toCollection(ArrayList::new));
+        } finally {
+            token.finish();
+        }
         final Set<HybrisModuleDescriptor> extModules = hybrisProjectDescriptor
             .getModulesChosenForImport()
             .stream()
@@ -118,9 +126,12 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
 
     protected void commitModule(@NotNull final ModifiableRootModel modifiableRootModel) {
         Validate.notNull(modifiableRootModel);
-
-        ApplicationManager.getApplication().runWriteAction(
-            () -> modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel)
+        invokeAndWaitIfNeeded(
+            (Runnable) () -> ApplicationManager.getApplication().runWriteAction(
+                () -> ApplicationManager.getApplication().runWriteAction(
+                    () -> modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel)
+                )
+            )
         );
     }
 
