@@ -18,8 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.ide.DataManager;
-import com.intellij.ide.actions.InvalidateCachesAction;
+import com.intellij.ide.caches.CachesInvalidator;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
@@ -32,10 +31,10 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.internal.statistic.UsageTrigger;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ex.ApplicationEx;
+import com.intellij.openapi.application.ex.ApplicationManagerEx;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
@@ -49,6 +48,7 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.newvfs.persistent.FSRecords;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
 import org.apache.commons.lang3.Validate;
@@ -188,19 +188,31 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 if (null != antConfigurator) {
                     antConfigurator.configure(allModules, project);
                 }
-                offerCacheInvalidation();
+                offerCacheInvalidation(project);
             }
         );
 
         return result;
     }
-    private void offerCacheInvalidation() {
-        final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
-        final AnAction action = new InvalidateCachesAction();
-        final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(
-            new InvalidateCachesAction(), null, ActionPlaces.UNKNOWN, dataContext
+    private void offerCacheInvalidation(final Project project) {
+        final int result = Messages.showYesNoDialog(
+            project,
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.message"),
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.title"),
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.yes"),
+            HybrisI18NBundleUtils.message("hybris.project.import.cache.no"),
+            Messages.getInformationIcon()
         );
-        action.actionPerformed(actionEvent);
+        if (result == Messages.YES) {
+            final ApplicationEx app = (ApplicationEx) ApplicationManager.getApplication();
+            UsageTrigger.trigger(ApplicationManagerEx.getApplicationEx().getName() + ".caches.invalidated");
+            FSRecords.invalidateCaches();
+
+            for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
+                invalidater.invalidateCaches();
+            }
+            app.restart(true);
+        }
     }
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
