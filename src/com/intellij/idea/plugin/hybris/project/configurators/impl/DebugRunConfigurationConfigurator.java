@@ -22,8 +22,6 @@ import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.impl.RunManagerImpl;
-import com.intellij.execution.junit.JUnitConfiguration;
-import com.intellij.execution.junit.JUnitConfigurationType;
 import com.intellij.execution.remote.RemoteConfiguration;
 import com.intellij.execution.remote.RemoteConfigurationType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
@@ -42,17 +40,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Properties;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 17/10/2016.
  */
-public class DefaultRunConfigurationConfigurator implements RunConfigurationConfigurator {
+public class DebugRunConfigurationConfigurator implements RunConfigurationConfigurator {
 
     @Override
-    public void configure(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final Project project) {
+    public void configure(
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final Project project
+    ) {
 
         final RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
         if (runManager == null) {
@@ -60,14 +60,20 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
         }
 
         createRemoteDebug(runManager, hybrisProjectDescriptor);
-        configureJUnitTemplateOnly(runManager, hybrisProjectDescriptor);
     }
 
-    private void createRemoteDebug(final RunManagerImpl runManager, final HybrisProjectDescriptor hybrisProjectDescriptor) {
-        final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(RemoteConfigurationType.class);
+    private void createRemoteDebug(
+        final RunManagerImpl runManager,
+        final HybrisProjectDescriptor hybrisProjectDescriptor
+    ) {
+        final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(
+            RemoteConfigurationType.class);
         final ConfigurationFactory configurationFactory = remoteConfigurationType.getConfigurationFactories()[0];
         final String debugName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.debug");
-        final RunnerAndConfigurationSettings runner = runManager.createRunConfiguration(debugName, configurationFactory);
+        final RunnerAndConfigurationSettings runner = runManager.createRunConfiguration(
+            debugName,
+            configurationFactory
+        );
         final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
         remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor);
         runner.setSingleton(true);
@@ -76,42 +82,22 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
         runManager.setSelectedConfiguration(runner);
     }
 
-    private void configureJUnitTemplateOnly(final RunManagerImpl runManager, final HybrisProjectDescriptor hybrisProjectDescriptor) {
-        final String platformRootDirectoryPath = getPlatformRootDirectoryPath(hybrisProjectDescriptor);
-        if (platformRootDirectoryPath == null) {
-            return;
-        }
-        final JUnitConfigurationType configurationType = ConfigurationTypeUtil.findConfigurationType(JUnitConfigurationType.class);
-        final ConfigurationFactory configurationFactory = configurationType.getConfigurationFactories()[0];
-        RunnerAndConfigurationSettings template = runManager.getConfigurationTemplate(configurationFactory);
-        JUnitConfiguration runConfiguration = (JUnitConfiguration) template.getConfiguration();
-        runConfiguration.setVMParameters("-ea -Dplatformhome=" + platformRootDirectoryPath);
-        runManager.setBeforeRunTasks(runConfiguration, Collections.emptyList(), false);
-    }
-
-    private String getPlatformRootDirectoryPath(final HybrisProjectDescriptor hybrisProjectDescriptor) {
-        return hybrisProjectDescriptor
-            .getModulesChosenForImport()
-            .stream()
-            .filter(e -> e instanceof PlatformHybrisModuleDescriptor)
-            .map(e -> e.getRootDirectory())
-            .map(e -> e.getPath())
-            .findAny()
-            .orElse(null);
-    }
-
     private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         final ConfigHybrisModuleDescriptor configDescriptor = getConfigDescriptor(hybrisProjectDescriptor);
         if (configDescriptor != null) {
-            String port = findPortProperty(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
+            final String port = findPortProperty(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
             if (port != null) {
                 return port;
             }
         }
-        final PlatformHybrisModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(hybrisProjectDescriptor);
+        final PlatformHybrisModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(
+            hybrisProjectDescriptor);
         if (platformDescriptor != null) {
-            String port = findPortProperty(platformDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
+            final String port = findPortProperty(
+                platformDescriptor.getRootDirectory(),
+                HybrisConstants.PROJECT_PROPERTIES
+            );
             if (port != null) {
                 return port;
             }
@@ -121,14 +107,14 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
 
 
     private String findPortProperty(final File rootDirectory, final String fileName) {
-        File propertiesFile = new File(rootDirectory, fileName);
+        final File propertiesFile = new File(rootDirectory, fileName);
         if (!propertiesFile.exists()) {
             return null;
         }
 
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
         try {
-            FileReader fr = new FileReader(propertiesFile);
+            final FileReader fr = new FileReader(propertiesFile);
             properties.load(fr);
         } catch (FileNotFoundException e) {
             return null;
@@ -159,7 +145,7 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
         return (ConfigHybrisModuleDescriptor) hybrisProjectDescriptor
             .getFoundModules()
             .stream()
-            .filter(e->e instanceof ConfigHybrisModuleDescriptor)
+            .filter(e -> e instanceof ConfigHybrisModuleDescriptor)
             .findFirst()
             .orElse(null);
     }

@@ -63,7 +63,10 @@ public interface ConfiguratorFactory {
     VersionControlSystemConfigurator getVersionControlSystemConfigurator();
 
     @NotNull
-    RunConfigurationConfigurator getRunConfigurationConfigurator();
+    RunConfigurationConfigurator getDebugRunConfigurationConfigurator();
+
+    @Nullable
+    RunConfigurationConfigurator getJUnitRunConfigurationConfigurator();
 
     @Nullable
     AntConfigurator getAntConfigurator();

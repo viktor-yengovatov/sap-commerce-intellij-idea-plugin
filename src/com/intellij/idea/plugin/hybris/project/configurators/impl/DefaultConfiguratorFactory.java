@@ -147,8 +147,14 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @NotNull
     @Override
-    public RunConfigurationConfigurator getRunConfigurationConfigurator() {
-        return ServiceManager.getService(RunConfigurationConfigurator.class);
+    public RunConfigurationConfigurator getDebugRunConfigurationConfigurator() {
+        return ServiceManager.getService(DebugRunConfigurationConfigurator.class);
+    }
+
+    @Nullable
+    @Override
+    public RunConfigurationConfigurator getJUnitRunConfigurationConfigurator() {
+        return ServiceManager.getService(JUnitRunConfigurationConfigurator.class);
     }
 
     @Nullable
@@ -165,8 +171,10 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
         }
 
         @Override
-        public void configureDependencies(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-                                          @NotNull final ModifiableModuleModel rootProjectModifiableModuleModel) {
+        public void configureDependencies(
+            @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+            @NotNull final ModifiableModuleModel rootProjectModifiableModuleModel
+        ) {
 
         }
     }

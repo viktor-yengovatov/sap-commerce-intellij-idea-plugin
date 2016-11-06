@@ -62,8 +62,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultVersionControlSystemConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultRunConfigurationConfigurator"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"/>
 
     </extensions>
 

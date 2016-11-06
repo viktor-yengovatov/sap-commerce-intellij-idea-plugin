@@ -75,26 +75,23 @@ import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.spring.facet.SpringFacet;
-import com.intellij.ui.GuiUtils;
 import com.intellij.util.PlatformUtils;
-import com.sun.glass.ui.Application;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
-import static com.intellij.util.ui.UIUtil.invokeLaterIfNeeded;
 
 /**
  * Created by Martin Zdarsky-Jones on 2/11/16.
  */
 public class ImportProjectProgressModalWindow extends Task.Modal {
+
     private final Project project;
     private final ModifiableModuleModel model;
     private final ConfiguratorFactory configuratorFactory;
@@ -142,7 +139,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final JavadocModuleConfigurator javadocModuleConfigurator = configuratorFactory.getJavadocModuleConfigurator();
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
         final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
-        final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getRunConfigurationConfigurator();
+        final RunConfigurationConfigurator debugRunConfigurationConfigurator = configuratorFactory.getDebugRunConfigurationConfigurator();
 
         this.initializeHybrisProjectSettings(project);
         this.selectSdk(project);
@@ -173,7 +170,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         groupModuleConfigurator.findDependencyModules(allModules);
 
         for (HybrisModuleDescriptor moduleDescriptor : allModules) {
-            indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.module.import", moduleDescriptor.getName()));
+            indicator.setText(HybrisI18NBundleUtils.message(
+                "hybris.project.import.module.import",
+                moduleDescriptor.getName()
+            ));
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.settings"));
             final Module javaModule = rootProjectModifiableModel.newModule(
                 moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
@@ -266,7 +266,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modulesDependenciesConfigurator.configure(hybrisProjectDescriptor, rootProjectModifiableModel);
         springConfigurator.configureDependencies(hybrisProjectDescriptor, rootProjectModifiableModel);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.runconfigurations"));
-        runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+        debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.finishing"));

@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -188,12 +189,19 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 if (null != antConfigurator) {
                     antConfigurator.configure(allModules, project);
                 }
+
+                final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getJUnitRunConfigurationConfigurator();
+                if (null != runConfigurationConfigurator) {
+                    runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+                }
+
                 offerCacheInvalidation(project);
             }
         );
 
         return result;
     }
+
     private void offerCacheInvalidation(final Project project) {
         final int result = Messages.showYesNoDialog(
             project,
@@ -214,6 +222,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             app.restart(true);
         }
     }
+
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 

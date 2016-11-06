@@ -27,6 +27,7 @@
     <depends>com.intellij.modules.lang</depends>
 
     <depends optional="true" config-file="ant-support-optional-dependencies.xml">AntSupport</depends>
+    <depends optional="true" config-file="junit-optional-dependencies.xml">JUnit</depends>
     <depends optional="true" config-file="lang-optional-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="javaee-optional-dependencies.xml">com.intellij.javaee</depends>
