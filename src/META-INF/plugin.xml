@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>5.2</version>
+    <version>5.3.1</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -105,9 +105,13 @@
 
     <change-notes>
         <![CDATA[
-         - Project import has been improved to support multiple custom directories.
+         - A progress bar has been added to the project import dialog to visualise progress of project configuration.
           <br/>
-         - Automatic ant configuration of Ant Intellij IDEA plugin has been implemented.
+         - Project import has been improved by adding a dialog suggesting to invalidate caches after project import.
+          <br/>
+         - Business Process diagram generator has been fixed.
+          <br/>
+         - An error in ant extgen task has been fixed.
       ]]>
     </change-notes>
 
