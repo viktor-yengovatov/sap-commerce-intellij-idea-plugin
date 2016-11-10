@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
 
-    enum DescriptorType {CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM}
+    enum DescriptorType {CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM, ECLIPSE, MAVEN}
 
     @NotNull
     String getName();

@@ -43,6 +43,8 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,6 +54,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -432,8 +435,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             );
         }
 
-        final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<HybrisModuleDescriptor>();
-        final List<File> pathsFailedToImport = new ArrayList<File>();
+        final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
+        final List<File> pathsFailedToImport = new ArrayList<>();
 
         addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport);
 
@@ -443,7 +446,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                moduleDescriptors.add(hybrisModuleDescriptorFactory.createDescriptor(moduleRootDirectory, this));
+                final HybrisModuleDescriptor moduleDescriptor = hybrisModuleDescriptorFactory.createDescriptor(
+                    moduleRootDirectory, this
+                );
+                moduleDescriptors.add(moduleDescriptor);
+                if (moduleDescriptor instanceof MavenModuleDescriptor) {
+                    getMavenSubDescriptors((MavenModuleDescriptor)moduleDescriptor, moduleDescriptors);
+                }
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 
@@ -462,6 +471,27 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.buildDependencies(moduleDescriptors);
 
         this.foundModules.addAll(moduleDescriptors);
+    }
+
+    private void getMavenSubDescriptors(
+        final MavenModuleDescriptor moduleDescriptor,
+        final List<HybrisModuleDescriptor> moduleDescriptors
+    ) {
+        final File rootProjectDirectory = moduleDescriptor.getRootDirectory();
+        final MavenXpp3Reader mavenReader = new MavenXpp3Reader();
+        try {
+            final File pomfile = new File(rootProjectDirectory, HybrisConstants.POM_XML);
+            final FileReader reader = new FileReader(pomfile);
+            final Model model = mavenReader.read(reader);
+            model.setPomFile(pomfile);
+            for (String moduleName : model.getModules()) {
+                MavenModuleDescriptor mavenModuleDescriptor = new MavenModuleDescriptor(new File(rootProjectDirectory, moduleName), moduleDescriptor.getRootProjectDescriptor());
+                moduleDescriptors.add(mavenModuleDescriptor);
+                getMavenSubDescriptors(mavenModuleDescriptor, moduleDescriptors);
+            }
+        } catch(Exception ex) {
+            return;
+        }
     }
 
     private void addRootModule(
@@ -498,7 +528,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
         if (hybrisProjectService.isHybrisModule(rootProjectDirectory) ||
-            hybrisProjectService.isConfigModule(rootProjectDirectory))
+            hybrisProjectService.isConfigModule(rootProjectDirectory) ||
+            hybrisProjectService.isMavenModule(rootProjectDirectory))
         {
             paths.add(rootProjectDirectory);
             return paths;
@@ -506,6 +537,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
             paths.add(rootProjectDirectory);
+        } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory)) {
+            paths.add(rootProjectDirectory);
+            return paths;
         }
 
         if (rootProjectDirectory.isDirectory()) {
