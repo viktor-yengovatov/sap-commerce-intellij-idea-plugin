@@ -71,6 +71,9 @@ public class HybrisApplicationSettings {
     @PropertyName("groupCustom")
     private String groupCustom = "Custom";
 
+    @PropertyName("groupNonHybris")
+    private String groupNonHybris = "Others";
+
     @PropertyName("groupOtherCustom")
     private String groupOtherCustom = "Custom/Unused";
 
@@ -162,6 +165,14 @@ public class HybrisApplicationSettings {
         this.groupOtherCustom = groupOtherCustom;
     }
 
+    public String getGroupNonHybris() {
+        return groupNonHybris;
+    }
+
+    public void setGroupNonHybris(final String groupNonHybris) {
+        this.groupNonHybris = groupNonHybris;
+    }
+
     public boolean isHideEmptyMiddleFolders() {
         return hideEmptyMiddleFolders;
     }
@@ -216,6 +227,7 @@ public class HybrisApplicationSettings {
             .append(groupOtherHybris, other.groupOtherHybris)
             .append(groupCustom, other.groupCustom)
             .append(groupOtherCustom, other.groupOtherCustom)
+            .append(groupNonHybris, other.groupNonHybris)
             .append(groupPlatform, other.groupPlatform)
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
@@ -235,6 +247,7 @@ public class HybrisApplicationSettings {
             .append(groupOtherHybris)
             .append(groupCustom)
             .append(groupOtherCustom)
+            .append(groupNonHybris)
             .append(groupPlatform)
             .append(hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly)
@@ -254,6 +267,7 @@ public class HybrisApplicationSettings {
         sb.append(", groupOtherHybris='").append(groupOtherHybris).append('\'');
         sb.append(", groupCustom='").append(groupCustom).append('\'');
         sb.append(", groupOtherCustom='").append(groupOtherCustom).append('\'');
+        sb.append(", groupNonHybris='").append(groupNonHybris).append('\'');
         sb.append(", groupPlatform='").append(groupPlatform).append('\'');
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');

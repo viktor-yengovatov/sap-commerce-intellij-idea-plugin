@@ -16,34 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.services;
+package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 /**
- * Created 1:51 AM 11 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ * Created by Martin Zdarsky-Jones on 10/11/16.
  */
-public interface HybrisProjectService {
+public class EclipseModuleDescriptor extends RootModuleDescriptor {
 
-    boolean isConfigModule(@NotNull File file);
+    public EclipseModuleDescriptor(
+        @NotNull final File moduleRootDirectory,
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    ) throws HybrisConfigurationException {
+        super(moduleRootDirectory, rootProjectDescriptor);
+    }
 
-    boolean isPlatformModule(@NotNull File file);
-
-    boolean isPlatformExtModule(@NotNull File file);
-
-    boolean isCoreExtModule(@NotNull File file);
-
-    boolean isHybrisModule(@NotNull File file);
-
-    boolean isOutOfTheBoxModule(@NotNull File file, @NotNull HybrisProjectDescriptor rootProjectDescriptor);
-
-    boolean isMavenModule(File rootProjectDirectory);
-
-    boolean isEclipseModule(File rootProjectDirectory);
-
+    @Override
+    public DescriptorType getDescriptorType() {
+        return DescriptorType.ECLIPSE;
+    }
 }

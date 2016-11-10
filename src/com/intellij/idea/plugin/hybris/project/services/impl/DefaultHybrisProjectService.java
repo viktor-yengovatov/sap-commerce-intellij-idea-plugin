@@ -95,4 +95,23 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX)
                && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
+
+    @Override
+    public boolean isMavenModule(@NotNull final File file) {
+        Validate.notNull(file);
+        if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+            return false;
+        }
+        return new File(file, HybrisConstants.POM_XML).isFile();
+    }
+
+    @Override
+    public boolean isEclipseModule(@NotNull final File file) {
+        Validate.notNull(file);
+        if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+            return false;
+        }
+        return new File(file, HybrisConstants.DOT_PROJECT).isFile();
+    }
+
 }

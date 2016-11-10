@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDes
 import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -44,6 +45,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private Set<HybrisModuleDescriptor> requiredHybrisModuleDescriptorList;
     private boolean groupModules;
     private String[] groupCustom;
+    private String[] groupNonHybris;
     private String[] groupOtherCustom;
     private String[] groupHybris;
     private String[] groupPlatform;
@@ -55,7 +57,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (!groupModules) {
             return;
         }
-        requiredHybrisModuleDescriptorList = new HashSet<HybrisModuleDescriptor>();
+        requiredHybrisModuleDescriptorList = new HashSet<>();
         for (HybrisModuleDescriptor hybrisModuleDescriptor: modulesChosenForImport) {
             if (hybrisModuleDescriptor.isPreselected()) {
                 requiredHybrisModuleDescriptorList.add(hybrisModuleDescriptor);
@@ -86,6 +88,9 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
             return groupCustom;
         }
+        if (moduleDescriptor instanceof RootModuleDescriptor) {
+            return groupNonHybris;
+        }
         if (moduleDescriptor instanceof CustomHybrisModuleDescriptor) {
             if (requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
                 return groupCustom;
@@ -102,6 +107,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         groupModules = hybrisApplicationSettings.isGroupModules();
         groupCustom = toIdeaGroup(hybrisApplicationSettings.getGroupCustom());
+        groupNonHybris = toIdeaGroup(hybrisApplicationSettings.getGroupNonHybris());
         groupOtherCustom = toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
         groupHybris = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
         groupOtherHybris = toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());

@@ -221,17 +221,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
 
             ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
-                new File(this.getBuilder().getFileToImport()), new Processor<String>() {
-
-                @Override
-                public void process(final String parameter) {
+                new File(this.getBuilder().getFileToImport()), parameter -> {
                     hybrisDistributionDirectoryFilesInChooser.setText(parameter);
 
                     if (StringUtils.isBlank(sourceCodeZipFilesInChooser.getText())) {
                         sourceCodeZipFilesInChooser.setText(hybrisDistributionDirectoryFilesInChooser.getText());
                     }
                 }
-            }));
+            ));
         }
 
         if (StringUtils.isNotBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {

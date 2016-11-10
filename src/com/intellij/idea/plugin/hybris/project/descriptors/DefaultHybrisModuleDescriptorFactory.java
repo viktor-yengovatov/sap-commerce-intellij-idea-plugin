@@ -63,7 +63,15 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
             return new OotbHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
-        return new CustomHybrisModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isHybrisModule(file)) {
+            return new CustomHybrisModuleDescriptor(file, rootProjectDescriptor);
+        }
+
+        if (hybrisProjectService.isMavenModule(file)) {
+            return new MavenModuleDescriptor(file, rootProjectDescriptor);
+        }
+
+        return new EclipseModuleDescriptor(file, rootProjectDescriptor);
     }
 
 }
