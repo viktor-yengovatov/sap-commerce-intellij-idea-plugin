@@ -83,12 +83,15 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
             .collect(Collectors.toSet());
 
         for (HybrisModuleDescriptor moduleDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
-            final ModifiableRootModel modifiableRootModel = Iterables.find(
+            final Optional<ModifiableRootModel> modifiableRootModel = Iterables.tryFind(
                 modifiableRootModels,
                 new FindModifiableRootModelByName(moduleDescriptor.getName())
             );
+            if (!modifiableRootModel.isPresent()) {
+                continue;
+            }
 
-            this.configureModuleDependencies(moduleDescriptor, modifiableRootModel, modifiableRootModels, extModules);
+            this.configureModuleDependencies(moduleDescriptor, modifiableRootModel.get(), modifiableRootModels, extModules);
         }
     }
 
