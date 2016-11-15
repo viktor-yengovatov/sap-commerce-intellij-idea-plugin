@@ -47,11 +47,12 @@ dependencies {
 apply plugin: 'org.jetbrains.intellij'
 intellij {
     type 'IU'
-    version '163.7342.3'
+    //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
+    version '163.9166.29'
     downloadSources true
 
     sandboxDirectory "$buildDir/idea-sandbox"
 
     pluginName 'ccom.intellij.idea.plugin.hybris.impex'
-    plugins = ['ant', 'spring', 'uml', 'junit', 'JavaEE']
+    plugins = ['ant', 'spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
 }
