@@ -26,6 +26,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.maven.model.MavenConstants;
 
 import java.io.File;
 
@@ -102,7 +103,7 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
-        return new File(file, HybrisConstants.POM_XML).isFile();
+        return new File(file, MavenConstants.POM_XML).isFile();
     }
 
     @Override

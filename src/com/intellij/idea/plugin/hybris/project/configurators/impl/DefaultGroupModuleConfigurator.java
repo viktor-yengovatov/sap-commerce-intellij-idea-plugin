@@ -51,6 +51,10 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private String[] groupPlatform;
     private String[] groupOtherHybris;
 
+    public DefaultGroupModuleConfigurator() {
+        readSettings();
+    }
+
     @Override
     public void findDependencyModules(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
         readSettings();
@@ -78,7 +82,8 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     @Nullable
-    protected String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    @Override
+    public String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return groupPlatform;
         }

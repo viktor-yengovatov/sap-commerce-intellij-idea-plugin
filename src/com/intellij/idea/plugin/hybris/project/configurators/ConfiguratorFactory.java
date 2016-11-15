@@ -70,4 +70,10 @@ public interface ConfiguratorFactory {
 
     @Nullable
     AntConfigurator getAntConfigurator();
+
+    @Nullable
+    MavenConfigurator getMavenConfigurator();
+
+    @Nullable
+    EclipseConfigurator getEclipseConfigurator();
 }

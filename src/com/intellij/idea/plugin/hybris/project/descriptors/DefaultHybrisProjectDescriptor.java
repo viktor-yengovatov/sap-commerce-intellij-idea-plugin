@@ -43,8 +43,6 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -450,9 +448,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                     moduleRootDirectory, this
                 );
                 moduleDescriptors.add(moduleDescriptor);
-                if (moduleDescriptor instanceof MavenModuleDescriptor) {
-                    getMavenSubDescriptors((MavenModuleDescriptor)moduleDescriptor, moduleDescriptors);
-                }
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 
@@ -471,27 +466,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.buildDependencies(moduleDescriptors);
 
         this.foundModules.addAll(moduleDescriptors);
-    }
-
-    private void getMavenSubDescriptors(
-        final MavenModuleDescriptor moduleDescriptor,
-        final List<HybrisModuleDescriptor> moduleDescriptors
-    ) {
-        final File rootProjectDirectory = moduleDescriptor.getRootDirectory();
-        final MavenXpp3Reader mavenReader = new MavenXpp3Reader();
-        try {
-            final File pomfile = new File(rootProjectDirectory, HybrisConstants.POM_XML);
-            final FileReader reader = new FileReader(pomfile);
-            final Model model = mavenReader.read(reader);
-            model.setPomFile(pomfile);
-            for (String moduleName : model.getModules()) {
-                MavenModuleDescriptor mavenModuleDescriptor = new MavenModuleDescriptor(new File(rootProjectDirectory, moduleName), moduleDescriptor.getRootProjectDescriptor());
-                moduleDescriptors.add(mavenModuleDescriptor);
-                getMavenSubDescriptors(mavenModuleDescriptor, moduleDescriptors);
-            }
-        } catch(Exception ex) {
-            return;
-        }
     }
 
     private void addRootModule(

@@ -41,8 +41,10 @@ import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependencies
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
@@ -84,6 +86,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
@@ -127,7 +130,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setIndeterminate(true);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.preparation"));
 
-        final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor.getModulesChosenForImport();
+        final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor
+            .getModulesChosenForImport()
+            .stream()
+            .filter(e->!(e instanceof MavenModuleDescriptor))
+            .filter(e->!(e instanceof EclipseModuleDescriptor))
+            .collect(Collectors.toList());
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
         final List<FacetConfigurator> facetConfigurators = configuratorFactory.getFacetConfigurators();

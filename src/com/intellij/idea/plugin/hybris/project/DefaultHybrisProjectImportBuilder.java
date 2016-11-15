@@ -25,11 +25,15 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.internal.statistic.UsageTrigger;
@@ -65,6 +69,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * Created 8:58 PM 07 June 2015
@@ -183,6 +188,32 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
         ).queue();
 
+        final List<MavenModuleDescriptor> mavenModules = hybrisProjectDescriptor
+            .getModulesChosenForImport()
+            .stream()
+            .filter(e -> e instanceof MavenModuleDescriptor)
+            .map(e -> (MavenModuleDescriptor) e)
+            .collect(Collectors.toList());
+
+        final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
+        if (mavenConfigurator != null && !mavenModules.isEmpty()) {
+            mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
+        }
+
+        final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
+        if (eclipseConfigurator != null) {
+            final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
+                .getModulesChosenForImport()
+                .stream()
+                .filter(e -> e instanceof EclipseModuleDescriptor)
+                .map(e -> (EclipseModuleDescriptor) e)
+                .collect(Collectors.toList());
+            if (!eclipseModules.isEmpty()) {
+                final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(eclipseModules.get(0));
+                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
+            }
+        }
+
         StartupManager.getInstance(project).registerPostStartupActivity(
             () -> {
                 final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
@@ -194,11 +225,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 if (null != runConfigurationConfigurator) {
                     runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
                 }
-
+                if (mavenConfigurator != null && !mavenModules.isEmpty()) {
+                    final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(mavenModules.get(0));
+                    mavenConfigurator.configurePostStartup(project, mavenModules, rootGroup);
+                }
                 offerCacheInvalidation(project);
             }
         );
-
         return result;
     }
 

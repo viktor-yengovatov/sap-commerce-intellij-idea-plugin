@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -36,4 +37,6 @@ public interface GroupModuleConfigurator {
                    @NotNull final Module module,
                    @NotNull final HybrisModuleDescriptor moduleDescriptor);
 
+    @Nullable
+    String[] getGroupName(@NotNull HybrisModuleDescriptor moduleDescriptor);
 }

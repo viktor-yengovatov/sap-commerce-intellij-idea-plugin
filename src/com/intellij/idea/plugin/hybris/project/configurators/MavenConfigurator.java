@@ -16,29 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Martin Zdarsky-Jones on 10/11/16.
+ * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 13/11/16.
  */
-public class MavenModuleDescriptor extends RootModuleDescriptor {
+public interface MavenConfigurator {
 
-    public MavenModuleDescriptor(
-        @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
-    ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
-    }
+    void configure(
+        @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull Project project,
+        @NotNull List<MavenModuleDescriptor> mavenModules
+    );
 
-    @Override
-    public DescriptorType getDescriptorType() {
-        return DescriptorType.MAVEN;
-    }
+    void configurePostStartup(
+        @NotNull Project project,
+        @NotNull List<MavenModuleDescriptor> mavenModules,
+        @Nullable String[] rootGroup
+    );
 }
