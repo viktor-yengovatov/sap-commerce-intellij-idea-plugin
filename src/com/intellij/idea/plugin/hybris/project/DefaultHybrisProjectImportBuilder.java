@@ -25,10 +25,12 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
@@ -196,6 +198,20 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
         if (mavenConfigurator != null && !mavenModules.isEmpty()) {
             mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
+        }
+
+        final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
+        if (eclipseConfigurator != null) {
+            final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
+                .getModulesChosenForImport()
+                .stream()
+                .filter(e -> e instanceof EclipseModuleDescriptor)
+                .map(e -> (EclipseModuleDescriptor) e)
+                .collect(Collectors.toList());
+            if (!eclipseModules.isEmpty()) {
+                final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(eclipseModules.get(0));
+                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
+            }
         }
 
         StartupManager.getInstance(project).registerPostStartupActivity(

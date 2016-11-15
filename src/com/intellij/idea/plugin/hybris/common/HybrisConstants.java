@@ -29,7 +29,6 @@ public interface HybrisConstants {
 
     String EXTENSION_INFO_XML = "extensioninfo.xml";
     String DOT_PROJECT = ".project";
-    String POM_XML = "pom.xml";
     String LOCAL_EXTENSIONS_XML = "localextensions.xml";
     String PLATFORM_MODULE_PREFIX = separatorsToSystem("/bin/platform/");
     String HYBRIS_SERVER_SHELL_SCRIPT_NAME = separatorsToSystem("bin/platform/hybrisserver.sh");

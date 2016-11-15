@@ -73,4 +73,7 @@ public interface ConfiguratorFactory {
 
     @Nullable
     MavenConfigurator getMavenConfigurator();
+
+    @Nullable
+    EclipseConfigurator getEclipseConfigurator();
 }

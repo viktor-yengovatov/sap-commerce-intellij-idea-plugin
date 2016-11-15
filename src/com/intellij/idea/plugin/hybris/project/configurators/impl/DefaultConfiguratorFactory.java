@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
@@ -168,6 +169,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public MavenConfigurator getMavenConfigurator() {
         return ServiceManager.getService(MavenConfigurator.class);
+    }
+
+    @Nullable
+    @Override
+    public EclipseConfigurator getEclipseConfigurator() {
+        return ServiceManager.getService(EclipseConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {
