@@ -40,6 +40,7 @@ public interface MavenConfigurator {
     void configurePostStartup(
         @NotNull Project project,
         @NotNull List<MavenModuleDescriptor> mavenModules,
-        @Nullable String[] rootGroup
+        @Nullable String[] rootGroup,
+        @NotNull Runnable runnable
     );
 }

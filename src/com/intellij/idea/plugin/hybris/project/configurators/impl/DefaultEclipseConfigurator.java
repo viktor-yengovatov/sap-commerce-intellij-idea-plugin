@@ -57,6 +57,8 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
             .map(e -> e.getRootDirectory())
             .map(e -> e.getPath())
             .collect(Collectors.toList());
+        eclipseImportBuilder.getParameters().converterOptions.commonModulesDirectory=
+            hybrisProjectDescriptor.getModulesFilesDirectory().getPath();
         eclipseImportBuilder.setList(projectList);
         invokeAndWaitIfNeeded((Runnable) () -> {
             final List<Module> newRootModules = eclipseImportBuilder.commit(project);

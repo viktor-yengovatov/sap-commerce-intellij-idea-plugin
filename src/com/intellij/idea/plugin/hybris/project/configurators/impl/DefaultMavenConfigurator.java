@@ -40,7 +40,6 @@ import org.jetbrains.idea.maven.wizards.MavenProjectBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,7 +51,6 @@ import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
  */
 public class DefaultMavenConfigurator implements MavenConfigurator {
 
-    private List<Module> originalModules;
     @Override
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
@@ -62,7 +60,6 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         if (mavenModules.isEmpty()) {
             return;
         }
-        originalModules = Arrays.asList(ModuleManager.getInstance(project).getModules());
 
         final MavenProjectBuilder mavenProjectBuilder = new MavenProjectBuilder();
         final List<VirtualFile> pomList = mavenModules
@@ -95,15 +92,16 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
     public void configurePostStartup(
         @NotNull final Project project,
         @NotNull final List<MavenModuleDescriptor> mavenModules,
-        @Nullable final String[] rootGroup
+        @Nullable final String[] rootGroup,
+        @NotNull final Runnable runnable
     ) {
         final MavenProjectsManager projectManager = MavenProjectsManager.getInstance(project);
         projectManager.scheduleImportAndResolve();
         projectManager.waitForResolvingCompletion();
-        projectManager.importProjects();
-        final List<Module> newRootModules = Arrays
-            .stream(ModuleManager.getInstance(project).getModules())
-            .filter(e -> !originalModules.contains(e))
+        final List<Module> newModules = projectManager.importProjects();
+
+        final List<Module> newRootModules = newModules
+            .stream()
             .filter(e ->
                 mavenModules
                     .stream()
@@ -116,6 +114,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         if (rootGroup != null && rootGroup.length > 0) {
             moveMavenModulesToGroup(project, newRootModules, rootGroup);
         }
+        runnable.run();
     }
 
     private void moveMavenModulesToGroup(
