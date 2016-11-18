@@ -227,9 +227,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 }
                 if (mavenConfigurator != null && !mavenModules.isEmpty()) {
                     final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(mavenModules.get(0));
-                    mavenConfigurator.configurePostStartup(project, mavenModules, rootGroup);
+                    mavenConfigurator.configurePostStartup(project, mavenModules, rootGroup, ()->offerCacheInvalidation(project));
+                } else {
+                    offerCacheInvalidation(project);
                 }
-                offerCacheInvalidation(project);
             }
         );
         return result;
