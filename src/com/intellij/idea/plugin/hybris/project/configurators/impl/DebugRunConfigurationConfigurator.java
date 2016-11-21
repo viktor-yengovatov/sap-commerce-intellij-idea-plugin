@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationCon
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -76,10 +77,13 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         );
         final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
         remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor);
-        runner.setSingleton(true);
-        runner.setActivateToolWindowBeforeRun(true);
-        runManager.addConfiguration(runner, true);
-        runManager.setSelectedConfiguration(runner);
+
+        ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
+            runner.setSingleton(true);
+            runner.setActivateToolWindowBeforeRun(true);
+            runManager.addConfiguration(runner, true);
+            runManager.setSelectedConfiguration(runner);
+        }));
     }
 
     private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {

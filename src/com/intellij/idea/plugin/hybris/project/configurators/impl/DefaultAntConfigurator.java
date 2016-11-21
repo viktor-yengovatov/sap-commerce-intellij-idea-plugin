@@ -103,8 +103,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
         AntConfigurationBase.getInstance(project).setFilterTargets(true);
         antConfiguration = AntConfigurationBase.getInstance(project);
         final AntBuildFileBase buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
-        customHybrisModuleDescriptorList.stream().forEach(
-            e->registerAntInstallation(platformDir, e.getRootDirectory(), desirableCustomTargets)
+        customHybrisModuleDescriptorList.forEach(
+            e -> registerAntInstallation(platformDir, e.getRootDirectory(), desirableCustomTargets)
         );
         removeMake(project);
         createMetaTargets(buildFile);

@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationCon
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,8 +60,11 @@ public class JUnitRunConfigurationConfigurator implements RunConfigurationConfig
         final ConfigurationFactory configurationFactory = configurationType.getConfigurationFactories()[0];
         final RunnerAndConfigurationSettings template = runManager.getConfigurationTemplate(configurationFactory);
         final JUnitConfiguration runConfiguration = (JUnitConfiguration) template.getConfiguration();
-        runConfiguration.setVMParameters("-ea -Dplatformhome=" + platformRootDirectoryPath);
-        runManager.setBeforeRunTasks(runConfiguration, Collections.emptyList(), false);
+
+        ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
+            runConfiguration.setVMParameters("-ea -Dplatformhome=" + platformRootDirectoryPath);
+            runManager.setBeforeRunTasks(runConfiguration, Collections.emptyList(), false);
+        }));
     }
 
     private String getPlatformRootDirectoryPath(final HybrisProjectDescriptor hybrisProjectDescriptor) {
