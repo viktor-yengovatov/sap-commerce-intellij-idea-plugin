@@ -52,6 +52,7 @@ import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
@@ -87,8 +88,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
 /**
  * Created by Martin Zdarsky-Jones on 2/11/16.
@@ -211,16 +210,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.sdk"));
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
-            invokeAndWaitIfNeeded(
-                (Runnable) () -> {
-                    try {
-                        token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
-                        modifiableRootModel.inheritSdk();
-                    } finally {
-                        token.finish();
-                    }
-                }
-            );
+            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
+                () -> modifiableRootModel.inheritSdk()));
 
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.libs"));
             libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
@@ -234,16 +225,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.save"));
 
-            invokeAndWaitIfNeeded(
-                (Runnable) () -> {
-                    try {
-                        token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
-                        modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
-                    } finally {
-                        token.finish();
-                    }
-                }
-            );
+            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
+                // [MG] modifiableRootModel::commit should work as well here
+                () -> modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel)));
 
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.facet"));
             for (FacetConfigurator facetConfigurator : facetConfigurators) {
@@ -258,16 +242,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.save"));
         indicator.setText2("");
         if (!isUpdate) {
-            invokeAndWaitIfNeeded(
-                (Runnable) () -> {
-                    try {
-                        token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
-                        rootProjectModifiableModel.commit();
-                    } finally {
-                        token.finish();
-                    }
-                }
-            );
+            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(rootProjectModifiableModel::commit));
         }
 
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.dependencies"));
@@ -343,12 +318,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     protected void initializeHybrisProjectSettings(@NotNull final Project project) {
         Validate.notNull(project);
 
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        final @NotNull HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                                           .getState();
-        if (null != hybrisProjectSettings) {
-            hybrisProjectSettings.setHybisProject(true);
-            final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
-            hybrisProjectSettings.setImportedByVersion(version);
-        }
+        hybrisProjectSettings.setHybisProject(true);
+        final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
+        hybrisProjectSettings.setImportedByVersion(version);
     }
 }

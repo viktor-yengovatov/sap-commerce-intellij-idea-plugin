@@ -22,13 +22,11 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-
-import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
 /**
  * Created 8:40 PM 13 February 2016.
@@ -43,21 +41,13 @@ public abstract class AbstractFacetConfigurator implements FacetConfigurator {
                           @NotNull final Module javaModule,
                           @NotNull final ModifiableRootModel modifiableRootModel,
                           @NotNull final ModifiableModelsProvider modifiableModelsProvider) {
-        Validate.notNull(modifiableFacetModel);
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(javaModule);
-        Validate.notNull(modifiableRootModel);
-        Validate.notNull(modifiableModelsProvider);
 
 
-        invokeAndWaitIfNeeded(
-            (Runnable) () -> ApplicationManager.getApplication().runWriteAction(
-                () -> {
-                    configureInner(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
-                    modifiableModelsProvider.commitFacetModifiableModel(javaModule, modifiableFacetModel);
-                }
-            )
-        );
+        ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
+            () -> {
+                configureInner(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
+                modifiableModelsProvider.commitFacetModifiableModel(javaModule, modifiableFacetModel);
+            }));
     }
 
     protected abstract void configureInner(@NotNull ModifiableFacetModel modifiableFacetModel,
