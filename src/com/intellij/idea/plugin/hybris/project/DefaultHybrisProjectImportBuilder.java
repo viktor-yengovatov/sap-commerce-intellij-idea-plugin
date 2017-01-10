@@ -62,6 +62,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -180,6 +181,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
         final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
 
+        this.performProjectsCleanup(allModules);
+
         new ImportProjectProgressModalWindow(
             project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
         ).queue();
@@ -251,6 +254,26 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             }
             app.restart(true);
         }
+    }
+
+    protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
+        Validate.notNull(modulesChosenForImport);
+
+        final List<File> alreadyExistingModuleFiles = new ArrayList<File>();
+        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+            if (moduleDescriptor.getIdeaModuleFile().exists()) {
+                alreadyExistingModuleFiles.add(moduleDescriptor.getIdeaModuleFile());
+            }
+        }
+
+        Collections.sort(alreadyExistingModuleFiles);
+
+        try {
+            this.virtualFileSystemService.removeAllFiles(alreadyExistingModuleFiles);
+        } catch (IOException e) {
+            LOG.error("Can not remove old module files.", e);
+        }
+
     }
 
     @NotNull
