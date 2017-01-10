@@ -52,7 +52,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.newvfs.persistent.FSRecords;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.Function;
@@ -63,7 +62,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -182,8 +180,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
         final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
 
-        this.performProjectsCleanup(allModules);
-
         new ImportProjectProgressModalWindow(
             project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
         ).queue();
@@ -255,53 +251,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             }
             app.restart(true);
         }
-    }
-
-    protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
-        Validate.notNull(modulesChosenForImport);
-
-        final List<File> alreadyExistingModuleFiles = new ArrayList<File>();
-        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
-            if (moduleDescriptor.getIdeaModuleFile().exists()) {
-                alreadyExistingModuleFiles.add(moduleDescriptor.getIdeaModuleFile());
-            }
-        }
-
-        Collections.sort(alreadyExistingModuleFiles);
-        if (this.shouldRemoveAlreadyExistingModuleFiles(alreadyExistingModuleFiles)) {
-            try {
-                this.virtualFileSystemService.removeAllFiles(alreadyExistingModuleFiles);
-            } catch (IOException e) {
-                LOG.error("Can not remove old module files.", e);
-            }
-        }
-    }
-
-    protected boolean shouldRemoveAlreadyExistingModuleFiles(@NotNull final List<File> files) {
-        Validate.notNull(files);
-
-        if (files.isEmpty()) {
-            return false;
-        }
-
-        final String message;
-        if (files.size() > HybrisConstants.MAX_EXISTING_MODULE_NAMES) {
-            final String trimmedNames = StringUtil.join(
-                files.subList(0, HybrisConstants.MAX_EXISTING_MODULE_NAMES),
-                new GetFileNameFunction(),
-                "\n"
-            );
-            message = trimmedNames + "\n...\n...";
-        } else {
-            message = StringUtil.join(files, new GetFileNameFunction(), "\n");
-        }
-
-        final int resultCode = Messages.showYesNoDialog(
-            HybrisI18NBundleUtils.message("hybris.project.import.duplicate.modules.found", message),
-            HybrisI18NBundleUtils.message("hybris.project.import.found.idea.module.files"),
-            Messages.getQuestionIcon()
-        );
-        return (Messages.YES != resultCode) && (Messages.NO == resultCode);
     }
 
     @NotNull
