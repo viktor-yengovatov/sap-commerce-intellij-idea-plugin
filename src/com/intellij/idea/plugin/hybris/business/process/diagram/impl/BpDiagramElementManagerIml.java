@@ -29,6 +29,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.source.html.HtmlFileImpl;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.ui.SimpleColoredText;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +57,8 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
 
         final PsiFile psiFile = CommonDataKeys.PSI_FILE.getData(dataContext);
 
-        if (!(psiFile instanceof XmlFile)) {
+        if (!(psiFile instanceof XmlFile) ||
+                psiFile instanceof HtmlFileImpl) { // but psiFile must not be html. 
             return null;
         }
 
