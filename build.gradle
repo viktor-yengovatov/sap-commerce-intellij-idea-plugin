@@ -54,5 +54,5 @@ intellij {
     sandboxDirectory "$buildDir/idea-sandbox"
 
     pluginName 'ccom.intellij.idea.plugin.hybris.impex'
-    plugins = ['ant', 'spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
+    plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
 }
