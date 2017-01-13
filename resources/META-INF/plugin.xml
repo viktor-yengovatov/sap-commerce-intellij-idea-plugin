@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>5.3.1</version>
+    <version>5.4.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -108,13 +108,11 @@
 
     <change-notes>
         <![CDATA[
-         - A progress bar has been added to the project import dialog to visualise progress of project configuration.
+         - Added support for left-over modules, eclipse and maven based.
           <br/>
-         - Project import has been improved by adding a dialog suggesting to invalidate caches after project import.
+         - Import error in the latest idea has been fixed.
           <br/>
-         - Business Process diagram generator has been fixed.
-          <br/>
-         - An error in ant extgen task has been fixed.
+         - Import dialog has been improved.
       ]]>
     </change-notes>
 
