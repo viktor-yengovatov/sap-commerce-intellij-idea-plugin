@@ -3,7 +3,7 @@ buildscript {
         maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-    }
+    }//noinspection GroovyAssignabilityCheck
     dependencies {
         classpath "org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.0-SNAPSHOT"
     }
@@ -21,7 +21,9 @@ allprojects {
     targetCompatibility = '1.8'
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
+    //noinspection GroovyAssignabilityCheck
     sourceSets {
+        //noinspection GroovyAssignabilityCheck
         main {
             java.srcDirs 'src', 'gen'
             resources.srcDirs 'resources'
@@ -31,6 +33,7 @@ allprojects {
 
 apply plugin: 'idea'
 apply plugin: 'java'
+//noinspection GroovyAssignabilityCheck
 dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'com.google.guava:guava:19.0'
@@ -44,6 +47,7 @@ dependencies {
     compileOnly 'org.apache.ant:ant:1.9.4'
 }
 
+// https://github.com/JetBrains/gradle-intellij-plugin
 apply plugin: 'org.jetbrains.intellij'
 intellij {
     type 'IU'
@@ -54,5 +58,5 @@ intellij {
     sandboxDirectory "$buildDir/idea-sandbox"
 
     pluginName 'ccom.intellij.idea.plugin.hybris.impex'
-    plugins = ['ant', 'spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
+    plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
 }
