@@ -213,25 +213,37 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             }
         }
 
-        StartupManager.getInstance(project).registerPostStartupActivity(
-            () -> {
-                final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
-                if (null != antConfigurator) {
-                    antConfigurator.configure(allModules, project);
-                }
+        if (project.isDisposed()) {
+            return result;
+        }
 
-                final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getJUnitRunConfigurationConfigurator();
-                if (null != runConfigurationConfigurator) {
-                    runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+        if (!project.isInitialized()) {
+            StartupManager.getInstance(project).registerPostStartupActivity(
+                () -> {
+                    final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
+                    if (null != antConfigurator) {
+                        antConfigurator.configure(allModules, project);
+                    }
+
+                    final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getJUnitRunConfigurationConfigurator();
+                    if (null != runConfigurationConfigurator) {
+                        runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+                    }
+                    if (mavenConfigurator != null && !mavenModules.isEmpty()) {
+                        final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
+                            mavenModules.get(0));
+                        mavenConfigurator.configurePostStartup(
+                            project,
+                            mavenModules,
+                            rootGroup,
+                            () -> offerCacheInvalidation(project)
+                        );
+                    } else {
+                        offerCacheInvalidation(project);
+                    }
                 }
-                if (mavenConfigurator != null && !mavenModules.isEmpty()) {
-                    final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(mavenModules.get(0));
-                    mavenConfigurator.configurePostStartup(project, mavenModules, rootGroup, ()->offerCacheInvalidation(project));
-                } else {
-                    offerCacheInvalidation(project);
-                }
-            }
-        );
+            );
+        }
         return result;
     }
 
