@@ -98,6 +98,10 @@ public class XmlRuleInspection extends LocalInspectionTool {
         }
 
         final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+        
+        if (null == module) {
+            return false;
+        }
         final String descriptorTypeName = module.getOptionValue(HybrisConstants.DESCRIPTOR_TYPE);
 
         if (descriptorTypeName == null) {
