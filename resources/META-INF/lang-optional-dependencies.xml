@@ -147,6 +147,10 @@
                 description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
+        <action id="Impex.NewImpexFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
+                text="Impex File" description="Create new Impex file">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
     </actions>
 
 </idea-plugin>
