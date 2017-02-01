@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItem
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
@@ -99,6 +100,15 @@ public class ImpexCompletionContributor extends CompletionContributor {
                             .withLanguage(ImpexLanguage.getInstance())
                             .withElementType(ImpexTypes.HEADER_PARAMETER_NAME),
             ImpexHeaderItemTypeAttributeNameCompletionProvider.getInstance()
+        );
+
+        // case: impex macros
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                            .withLanguage(ImpexLanguage.getInstance())
+                            .withElementType(ImpexTypes.MACRO_USAGE),
+            new ImpexMacrosCompletionProvider()
         );
     }
 }
