@@ -36,7 +36,7 @@ import java.util.Collection;
 /**
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */
-class ImpexMacrosReferenceBase extends PsiReferenceBase.Poly<PsiElement> {
+public class ImpexMacrosReferenceBase extends PsiReferenceBase.Poly<PsiElement> {
 
     protected static final Object[] NO_VARIANTS = new Object[0];
 
