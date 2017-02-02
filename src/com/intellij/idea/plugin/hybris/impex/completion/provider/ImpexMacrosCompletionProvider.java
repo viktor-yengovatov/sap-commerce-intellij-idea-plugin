@@ -22,10 +22,12 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +56,8 @@ public class ImpexMacrosCompletionProvider extends CompletionProvider<Completion
 
         for (ImpexMacroDeclaration macroDeclaration : macroDeclarations) {
             final PsiElement declaration = macroDeclaration.getFirstChild();
-            result.addElement(LookupElementBuilder.create(declaration.getText()));
+            result.addElement(LookupElementBuilder.create(declaration.getText())
+                                                  .withIcon(AllIcons.Nodes.MethodReference));
         }
     }
 }
