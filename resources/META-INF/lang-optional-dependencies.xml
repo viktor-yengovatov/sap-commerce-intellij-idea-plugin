@@ -125,6 +125,7 @@
 
         <!-- ####################################################################################################### -->
 
+        <gotoDeclarationHandler implementation="com.intellij.idea.plugin.hybris.impex.psi.gotoHandler.ImpexMacrosGoToDeclarationHandler"/>
     </extensions>
 
     <application-components>
