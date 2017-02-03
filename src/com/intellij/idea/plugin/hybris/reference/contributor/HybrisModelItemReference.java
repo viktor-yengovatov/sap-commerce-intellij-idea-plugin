@@ -21,9 +21,15 @@ public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> imple
 
     private static final String JALO_PREFIX_MODEL = "Generated";
     private static final String JAVA_MODEL_SUFFIX = "Model";
+    private static final int QUOTE_LENGTH = 2;
 
-    public HybrisModelItemReference(final PsiElement element, final TextRange rangeInElement, final boolean soft) {
-        super(element, rangeInElement, soft);
+    public HybrisModelItemReference(final PsiElement element, final boolean soft) {
+        super(element, soft);
+    }
+    
+    @Override
+    public final TextRange getRangeInElement() {
+        return TextRange.from(1, getElement().getTextLength() - QUOTE_LENGTH);
     }
 
     @NotNull
