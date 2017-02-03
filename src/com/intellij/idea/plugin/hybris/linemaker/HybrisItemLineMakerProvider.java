@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlTag;
-import com.intellij.spring.gutter.SpringBeansPsiElementCellRenderer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -48,7 +47,6 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
                     "hybris.bean.class.navigate.choose.class.title",
                     new Object[0]
                 ));
-                builder.setCellRenderer(SpringBeansPsiElementCellRenderer.INSTANCE);
                 builder.setTooltipText(HybrisI18NBundleUtils.message(
                     "hybris.item.class.tooltip.navigate.declaration", new Object[0]
                 ));
