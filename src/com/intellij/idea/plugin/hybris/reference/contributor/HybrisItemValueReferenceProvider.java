@@ -27,7 +27,7 @@ public class HybrisItemValueReferenceProvider extends PsiReferenceProvider {
     ) {
 
         final HybrisModelItemReference reference = new HybrisModelItemReference(
-            element, new TextRange(0, element.getText().length()),
+            element, 
             true
         );
         final List<PsiReference> results = new ArrayList<>();
