@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurato
 import com.intellij.idea.plugin.hybris.project.descriptors.CoreHybrisHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.WriteAction;
@@ -86,6 +87,19 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
         if (moduleDescriptor instanceof CoreHybrisHybrisModuleDescriptor) {
             addLibsToModule(modifiableRootModel, HybrisConstants.PLATFORM_LIBRARY_GROUP);
+        }
+
+        if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
+            final OotbHybrisModuleDescriptor hybrisModuleDescriptor = (OotbHybrisModuleDescriptor)moduleDescriptor;
+            if (hybrisModuleDescriptor.hasBackofficeModule()) {
+                final File backofficeJarDirectory = new File(hybrisModuleDescriptor.getRootDirectory(), HybrisConstants.BACKOFFICE_JAR_DIRECTORY);
+                if (backofficeJarDirectory.exists()) {
+                    hybrisModuleDescriptor.createBackofficeLib(modifiableModelsProvider, backofficeJarDirectory);
+                }
+            }
+            if (moduleDescriptor.getName().equals(HybrisConstants.BACK_OFFICE_EXTENSION_NAME)) {
+                addLibsToModule(modifiableRootModel, HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
+            }
         }
     }
 
