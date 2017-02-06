@@ -18,7 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.openapi.roots.ModifiableModelsProvider;
+import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.roots.ui.configuration.libraryEditor.ExistingLibraryEditor;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel;
+import com.intellij.openapi.vfs.VfsUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -38,5 +46,33 @@ public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
     @Override
     public DescriptorType getDescriptorType() {
         return DescriptorType.OOTB;
+    }
+
+    public Library createBackofficeLib(
+        @NotNull final ModifiableModelsProvider modifiableModelsProvider,
+        @NotNull final File libraryDirRoot
+    ) {
+
+        final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
+            .getLibraryTableModifiableModel(getRootProjectDescriptor().getProject());
+
+        Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
+        if (null == library) {
+            library = libraryTableModifiableModel.createLibrary(HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
+        }
+
+        if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {
+            final ExistingLibraryEditor existingLibraryEditor = ((LibrariesModifiableModel) libraryTableModifiableModel)
+                .getLibraryEditor(library);
+            existingLibraryEditor.addJarDirectory(
+                VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true, OrderRootType.CLASSES
+            );
+        } else {
+            final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
+            libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true);
+            libraryModifiableModel.commit();
+        }
+
+        return library;
     }
 }

@@ -88,6 +88,7 @@ public interface HybrisConstants {
     String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
 
     String PLATFORM_LIBRARY_GROUP = "Platform Bootstrap";
+    String BACKOFFICE_LIBRARY_GROUP = "Backoffice Library";
 
     String WEBINF_LIB_DIRECTORY = separatorsToSystem("webroot/WEB-INF/lib");
     String WEB_WEBINF_LIB_DIRECTORY = separatorsToSystem(WEB_MODULE_DIRECTORY + '/' + WEBINF_LIB_DIRECTORY);
@@ -96,6 +97,7 @@ public interface HybrisConstants {
     String WEB_SRC_DIRECTORY = separatorsToSystem("web/src");
     String HMC_LIB_DIRECTORY = separatorsToSystem("hmc/bin");
     String BACKOFFICE_LIB_DIRECTORY = separatorsToSystem("backoffice/bin");
+    String BACKOFFICE_JAR_DIRECTORY = separatorsToSystem("resources/backoffice");
 
     String PL_BOOTSTRAP_LIB_DIRECTORY = separatorsToSystem("bootstrap/bin");
     String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = separatorsToSystem("bootstrap/gensrc");
