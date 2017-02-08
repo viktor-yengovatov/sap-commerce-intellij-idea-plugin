@@ -38,6 +38,7 @@ import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalW
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.internal.statistic.UsageTrigger;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.ex.ApplicationEx;
 import com.intellij.openapi.application.ex.ApplicationManagerEx;
 import com.intellij.openapi.components.ServiceManager;
@@ -183,39 +184,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         this.performProjectsCleanup(allModules);
 
-        new ImportProjectProgressModalWindow(
-            project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
-        ).queue();
-
+        final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
         final List<MavenModuleDescriptor> mavenModules = hybrisProjectDescriptor
             .getModulesChosenForImport()
             .stream()
             .filter(e -> e instanceof MavenModuleDescriptor)
             .map(e -> (MavenModuleDescriptor) e)
             .collect(Collectors.toList());
-
-        final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
-        if (mavenConfigurator != null && !mavenModules.isEmpty()) {
-            mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
-        }
-
-        final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
-        if (eclipseConfigurator != null) {
-            final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
-                .getModulesChosenForImport()
-                .stream()
-                .filter(e -> e instanceof EclipseModuleDescriptor)
-                .map(e -> (EclipseModuleDescriptor) e)
-                .collect(Collectors.toList());
-            if (!eclipseModules.isEmpty()) {
-                final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(eclipseModules.get(0));
-                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
-            }
-        }
-
-        if (project.isDisposed()) {
-            return result;
-        }
 
         if (!project.isInitialized()) {
             StartupManager.getInstance(project).registerPostStartupActivity(
@@ -244,6 +219,35 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 }
             );
         }
+
+        new ImportProjectProgressModalWindow(
+            project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
+        ).queue();
+
+        if (project.isDisposed()) {
+            return result;
+        }
+        if (mavenConfigurator != null && !mavenModules.isEmpty()) {
+            mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
+        }
+
+        if (project.isDisposed()) {
+            return result;
+        }
+        final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
+        if (eclipseConfigurator != null) {
+            final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
+                .getModulesChosenForImport()
+                .stream()
+                .filter(e -> e instanceof EclipseModuleDescriptor)
+                .map(e -> (EclipseModuleDescriptor) e)
+                .collect(Collectors.toList());
+            if (!eclipseModules.isEmpty()) {
+                final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(eclipseModules.get(0));
+                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
+            }
+        }
+
         return result;
     }
 
@@ -264,7 +268,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
                 invalidater.invalidateCaches();
             }
-            app.restart(true);
+            ApplicationManager.getApplication().invokeLater(() -> app.restart(true), ModalityState.NON_MODAL);
         }
     }
 
