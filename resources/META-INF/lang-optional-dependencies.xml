@@ -158,13 +158,14 @@
             <action id="ImpexTableFormatter.Format"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAction"
                     text="Format"
-                    description="Formats table with pipe delimiters">
+                    description="Formats Impex table with pipe delimiters">
             </action>
-            <action id="ImpexTableFormatter.FormatAllTables"
-                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"
-                    text="Format All"
-                    description="Formats table with pipe delimiters">
-            </action>
+            <!-- This feature not ready for production. Temporary disabled.  -->
+            <!--<action id="ImpexTableFormatter.FormatAllTables"-->
+                    <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
+                    <!--text="Format All"-->
+                    <!--description="Formats table with pipe delimiters">-->
+            <!--</action>-->
             <action id="ImpexTableFormatter.AddColumnBefore"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"
                     text="Add Column Before"
