@@ -152,6 +152,33 @@
                 text="Impex File" description="Create new Impex file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
+
+
+        <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true">
+            <action id="ImpexTableFormatter.Format"
+                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAction"
+                    text="Format"
+                    description="Formats table with pipe delimiters">
+            </action>
+            <action id="ImpexTableFormatter.FormatAllTables"
+                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"
+                    text="Format All"
+                    description="Formats table with pipe delimiters">
+            </action>
+            <action id="ImpexTableFormatter.AddColumnBefore"
+                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"
+                    text="Add Column Before"
+                    description="Add Column Before">
+            </action>
+            <action id="ImpexTableFormatter.SelectTable"
+                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
+                    text="Select Impex Table"
+                    description="Select Impex table">
+            </action>
+
+            <add-to-group group-id="CodeMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
     </actions>
 
 </idea-plugin>

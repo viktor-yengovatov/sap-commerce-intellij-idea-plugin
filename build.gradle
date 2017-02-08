@@ -28,6 +28,10 @@ allprojects {
             java.srcDirs 'src', 'gen'
             resources.srcDirs 'resources'
         }
+
+        test {
+            java.srcDir 'tests'
+        }
     }
 }
 
@@ -45,6 +49,9 @@ dependencies {
 
     //this should be pulled from <idea-home>/lib/ant/lib
     compileOnly 'org.apache.ant:ant:1.9.4'
+
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+
 }
 
 // https://github.com/JetBrains/gradle-intellij-plugin
