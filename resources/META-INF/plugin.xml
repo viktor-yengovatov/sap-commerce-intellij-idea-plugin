@@ -138,7 +138,7 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
 
-        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisItemLineMakerProvider"/>
     </extensions>
 

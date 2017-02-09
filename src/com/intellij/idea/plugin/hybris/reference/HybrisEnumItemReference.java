@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.reference.contributor;
+package com.intellij.idea.plugin.hybris.reference;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -10,23 +10,20 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
-import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Nosov Aleksandr
  */
-public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class HybrisEnumItemReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
-    private static final String JALO_PREFIX_MODEL = "Generated";
-    private static final String JAVA_MODEL_SUFFIX = "Model";
     private static final int QUOTE_LENGTH = 2;
 
-    public HybrisModelItemReference(final PsiElement element, final boolean soft) {
+    public HybrisEnumItemReference(final PsiElement element, final boolean soft) {
         super(element, soft);
     }
-    
+
     @Override
     public final TextRange getRangeInElement() {
         return TextRange.from(1, getElement().getTextLength() - QUOTE_LENGTH);
@@ -36,22 +33,13 @@ public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> imple
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         Project project = myElement.getProject();
-        final String modelName = myElement.getText().replaceAll("\"", "");
+        final String enumJavaModelName = myElement.getText().replaceAll("\"", "");
 
-        final String javaModelName = modelName + JAVA_MODEL_SUFFIX;
-        final String jaloModelName = JALO_PREFIX_MODEL + modelName;
         final PsiClass[] javaModelClasses = PsiShortNamesCache.getInstance(project).getClassesByName(
-            javaModelName,
-            GlobalSearchScope.allScope(
-                project)
-        );
-        final PsiClass[] jaloModelClasses = PsiShortNamesCache.getInstance(project).getClassesByName(
-            jaloModelName,
-            GlobalSearchScope.allScope(project)
+            enumJavaModelName, GlobalSearchScope.allScope(project)
         );
 
-        final PsiClass[] psiClasses = ArrayUtil.mergeArrays(javaModelClasses, jaloModelClasses);
-        return PsiElementResolveResult.createResults(psiClasses);
+        return PsiElementResolveResult.createResults(javaModelClasses);
     }
 
     @Nullable

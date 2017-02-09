@@ -1,7 +1,7 @@
-package com.intellij.idea.plugin.hybris.reference.contributor;
+package com.intellij.idea.plugin.hybris.reference.provider;
 
+import com.intellij.idea.plugin.hybris.reference.HybrisModelItemReference;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceProvider;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Nosov Aleksandr
  */
-public class HybrisItemValueReferenceProvider extends PsiReferenceProvider {
+public class HybrisModelItemReferenceProvider extends PsiReferenceProvider {
 
     private final static Logger LOG = Logger.getInstance(
         "#com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemValueReferenceProvider");
@@ -26,10 +26,8 @@ public class HybrisItemValueReferenceProvider extends PsiReferenceProvider {
         @NotNull final ProcessingContext context
     ) {
 
-        final HybrisModelItemReference reference = new HybrisModelItemReference(
-            element, 
-            true
-        );
+        final HybrisModelItemReference reference
+            = new HybrisModelItemReference(element, true);
         final List<PsiReference> results = new ArrayList<>();
         results.add(reference);
         return results.toArray(new PsiReference[results.size()]);
