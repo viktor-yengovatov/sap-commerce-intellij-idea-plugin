@@ -3,6 +3,7 @@ package com.intellij.idea.plugin.hybris.impex.tableFormatting;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.ImpexTable;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.Row;
 import com.intellij.openapi.util.text.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.idea.plugin.hybris.impex.tableFormatting.util.ImpexTableFormatterConstants.PIPE;
 import static com.intellij.idea.plugin.hybris.impex.tableFormatting.util.ImpexTableFormatterConstants.PIPE_COMMENT_START;
@@ -13,12 +14,17 @@ public class ImpexTableFormatter {
     private ImpexTableFormatter() {
     }
 
-    public String format(ImpexTable impexTable) {
-        return formatPipeTable(
-            impexTable
-        );
+    public String format(final ImpexTable impexTable) {
+        final String result = formatPipeTable(impexTable);
+        if (result.contains("\r\n")) {
+            // All documents inside IntelliJ IDEA always use the \n line separator. 
+            // The correct line separator is put in when saving the files.
+            return result.replaceAll("\\r\\n", "\n");
+        }
+        return result;
     }
 
+    @NotNull
     private String formatPipeTable(ImpexTable table) {
         final int[] columnsMaxLength = calculateColumnsMaxLength(table);
 
