@@ -8,7 +8,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.xml.XmlTag;
+import com.intellij.psi.xml.XmlElement;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,14 +34,14 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
             if (psiClass.getName() != null && (psiClass.getName().contains("Model") ||
                                                psiClass.getSuperClass().getName().contains("Generated"))) {
 
-                final Collection<XmlTag> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
+                final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
                 createTargetsWithGutterIcon(result, psiClass, list);
 
             } else if (psiClass.getImplementsListTypes().length > 0) {
                 final boolean anyMatch = ContainerUtil.newHashSet(psiClass.getImplementsListTypes()).stream()
                                                       .anyMatch(psiClassType -> "HybrisEnumValue".equals(psiClassType.getClassName()));
                 if (anyMatch) {
-                    final Collection<XmlTag> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
+                    final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
                     createTargetsWithGutterIcon(result, psiClass, list);
                 }
             }
@@ -51,7 +51,7 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
     private void createTargetsWithGutterIcon(
         final Collection<? super RelatedItemLineMarkerInfo> result,
         final PsiClass psiClass,
-        final Collection<XmlTag> list
+        final Collection<XmlElement> list
     ) {
         final NavigationGutterIconBuilder builder
             = NavigationGutterIconBuilder.create(HybrisIcons.TYPE_SYSTEM).setTargets(list);
