@@ -18,8 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.impex.utils;
 
-import com.intellij.idea.plugin.hybris.impex.psi.*;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexBeanShell;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexComment;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -30,13 +39,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created 22:43 01 January 2015
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexPsiUtils {
+public final class ImpexPsiUtils {
 
     private ImpexPsiUtils() throws IllegalAccessException {
         throw new IllegalAccessException();
@@ -51,12 +61,7 @@ public class ImpexPsiUtils {
     public static boolean isImpexAttribute(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpexAttribute;
     }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isImpexModifiers(@Nullable final PsiElement psiElement) {
-        return psiElement instanceof ImpexModifiers;
-    }
-
+    
     @Contract(value = "null -> false", pure = true)
     public static boolean isImpexValueGroup(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpexValueGroup;
@@ -83,26 +88,110 @@ public class ImpexPsiUtils {
     }
 
     @Contract(value = "null -> false", pure = true)
-    public static boolean isString(@Nullable final PsiElement psiElement) {
-        return isSingleString(psiElement) || isDoubleString(psiElement);
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isSingleString(@Nullable final PsiElement psiElement) {
-        return ImpexTypes.SINGLE_STRING == CommonPsiUtils.getNullSafeElementType(psiElement);
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isDoubleString(@Nullable final PsiElement psiElement) {
-        return ImpexTypes.DOUBLE_STRING == CommonPsiUtils.getNullSafeElementType(psiElement);
-    }
-
-    @Contract(value = "null -> false", pure = true)
     public static boolean isImpexFullHeaderParameter(@Nullable final PsiElement psiElement) {
         return ImpexTypes.FULL_HEADER_PARAMETER == CommonPsiUtils.getNullSafeElementType(psiElement);
     }
 
-    @Contract(pure = false)
+
+    @Contract(value = "null -> false", pure = true)
+    public static boolean isHeaderLine(@Nullable final PsiElement psiElement) {
+        return Objects.equals(ImpexTypes.HEADER_LINE, CommonPsiUtils.getNullSafeElementType(psiElement));
+    }
+
+    @Contract(pure = true)
+    public static boolean aroundIsValueLine(@Nullable final PsiElement element) {
+        if (element == null) {
+            return false;
+        }
+
+        if (isImpexValueLine(element)
+            || isImpexValueLine(element.getParent())
+            || isImpexValueLine(element.getParent().getParent())) {
+            return true;
+        }
+
+        boolean prevElementIsValueLine = false;
+        PsiElement prevSibling = PsiTreeUtil.skipSiblingsBackward(
+            element,
+            PsiWhiteSpace.class,
+            PsiComment.class,
+            ImpexBeanShell.class,
+            ImpexComment.class
+        );
+        while (null != prevSibling) {
+            if (isHeaderLine(prevSibling) || isImpexValueLine(prevSibling)) {
+                prevElementIsValueLine = true;
+                break;
+            }
+            prevSibling = PsiTreeUtil.skipSiblingsBackward(
+                prevSibling,
+                PsiWhiteSpace.class,
+                PsiComment.class,
+                ImpexBeanShell.class,
+                ImpexComment.class
+            );
+        }
+
+
+        boolean nextElementIsValueLine = false;
+        PsiElement nextSibling = PsiTreeUtil.skipSiblingsForward(element,
+                                                                 PsiWhiteSpace.class, ImpexBeanShell.class,
+                                                                 ImpexComment.class
+        );
+
+        while (null != nextSibling) {
+            if (isImpexValueLine(nextSibling)) {
+                nextElementIsValueLine = true;
+                break;
+            }
+            if (isHeaderLine(nextSibling)) {
+                nextElementIsValueLine = false;
+                break;
+            }
+            nextSibling = PsiTreeUtil.skipSiblingsForward(nextSibling,
+                                                          PsiWhiteSpace.class, ImpexBeanShell.class,
+                                                          ImpexComment.class
+            );
+        }
+
+        return nextElementIsValueLine && prevElementIsValueLine;
+    }
+
+    @Nullable
+    @Contract(pure = true)
+    public static boolean nextElementIsHeaderLine(@NotNull final PsiElement element) {
+        Validate.notNull(element);
+
+        PsiElement nextSibling = element.getNextSibling();
+
+        while (null != nextSibling) {
+            if (isImpexValueLine(nextSibling)) {
+                return false;
+            }
+            if (isHeaderLine(nextSibling)) {
+                return true;
+            }
+            nextSibling = nextSibling.getNextSibling();
+        }
+
+        return true;
+    }
+
+    @Nullable
+    @Contract(pure = true)
+    public static PsiElement getPrevNonWhitespaceElement(@NotNull final PsiElement element) {
+        Validate.notNull(element);
+
+        PsiElement prevSibling = element.getPrevSibling();
+
+        while (null != prevSibling && (isWhiteSpace(prevSibling) || isLineBreak(prevSibling))) {
+            prevSibling = prevSibling.getPrevSibling();
+        }
+
+        return prevSibling;
+    }
+
+
     public static PsiElement getHeaderOfValueGroupUnderCaret(@NotNull final Editor editor) {
         Validate.notNull(editor);
 
@@ -111,7 +200,8 @@ public class ImpexPsiUtils {
             return null;
         }
 
-        final ImpexValueGroup valueGroup = ImpexPsiUtils.getClosestSelectedValueGroupFromTheSameLine(psiElementUnderCaret);
+        final ImpexValueGroup valueGroup = ImpexPsiUtils.getClosestSelectedValueGroupFromTheSameLine(
+            psiElementUnderCaret);
         if (null != valueGroup) {
 
             final PsiElement header = ImpexPsiUtils.getHeaderForValueGroup(valueGroup);
@@ -190,7 +280,10 @@ public class ImpexPsiUtils {
             return null;
         }
 
-        final ImpexFullHeaderParameter header = ImpexPsiUtils.getImpexFullHeaderParameterFromHeaderLineByNumber(columnNumber, impexHeaderLine);
+        final ImpexFullHeaderParameter header = ImpexPsiUtils.getImpexFullHeaderParameterFromHeaderLineByNumber(
+            columnNumber,
+            impexHeaderLine
+        );
 
         if (null == header) {
             return ImpexPsiUtils.getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
@@ -202,7 +295,7 @@ public class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static ImpexValueGroup skipAllExceptLineBreaksAndGetImpexValueGroup(
-            @NotNull final PsiElement psiElement
+        @NotNull final PsiElement psiElement
     ) {
         Validate.notNull(psiElement);
 
@@ -249,13 +342,16 @@ public class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static ImpexFullHeaderParameter getImpexFullHeaderParameterFromHeaderLineByNumber(
-            final int columnNumber,
-            @NotNull final ImpexHeaderLine impexHeaderLine
+        final int columnNumber,
+        @NotNull final ImpexHeaderLine impexHeaderLine
     ) {
         Validate.isTrue(columnNumber >= 0);
         Validate.notNull(impexHeaderLine);
 
-        final PsiElement columnSeparator = getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
+        final PsiElement columnSeparator = getHeaderParametersSeparatorFromHeaderLineByNumber(
+            columnNumber,
+            impexHeaderLine
+        );
         if (null == columnSeparator) {
             return null;
         }
@@ -272,14 +368,14 @@ public class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static PsiElement getHeaderParametersSeparatorFromHeaderLineByNumber(
-            final int columnNumber,
-            @NotNull final ImpexHeaderLine impexHeaderLine
+        final int columnNumber,
+        @NotNull final ImpexHeaderLine impexHeaderLine
     ) {
         Validate.isTrue(columnNumber >= 0);
         Validate.notNull(impexHeaderLine);
 
         final List<PsiElement> parameterSeparators = CommonPsiUtils.findChildrenByIElementType(
-                impexHeaderLine, ImpexTypes.PARAMETERS_SEPARATOR
+            impexHeaderLine, ImpexTypes.PARAMETERS_SEPARATOR
         );
 
         if (columnNumber >= parameterSeparators.size()) {
