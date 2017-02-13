@@ -23,10 +23,10 @@ import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
-import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
@@ -70,6 +70,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
     private JLabel sourceCodeLabel;
     private JLabel importOotbModulesInReadOnlyModeLabel;
     private JLabel externalExtensionsPresentLabel;
+
+    public HybrisWorkspaceRootStep(final WizardContext context, final boolean nonGuiMode){
+        super(context);
+    }
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -330,4 +334,48 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         }
     }
 
+    public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
+
+        this.getContext().cleanup();
+
+        final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
+
+        hybrisProjectDescriptor.setSourceCodeZip(toFile(settings.getSourceCodeZip()));
+        hybrisProjectDescriptor.setExternalExtensionsDirectory(toFile(settings.getExternalExtensionsDirectory()));
+        hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
+
+        if (hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode() == null) {
+            hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(
+                HybrisApplicationSettingsComponent.getInstance().getState().isDefaultPlatformInReadOnly()
+            );
+        }
+
+        this.getContext().setRootProjectDirectory(new File(this.getBuilder().getFileToImport()));
+
+        hybrisProjectDescriptor.setModulesFilesDirectory(
+            new File(this.getBuilder().getFileToImport(), HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES)
+        );
+
+        ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
+            new File(this.getBuilder().getFileToImport()), parameter -> {
+                hybrisProjectDescriptor.setHybrisDistributionDirectory(new File(parameter));
+            }
+        ));
+
+        final String defaultJavadocUrl = getDefaultJavadocUrl(this.getBuilder().getFileToImport());
+        if (StringUtils.isNotBlank(defaultJavadocUrl)) {
+            hybrisProjectDescriptor.setJavadocUrl(defaultJavadocUrl);
+        }
+    }
+
+    private File toFile(final String directory) {
+        if (directory == null) {
+            return null;
+        }
+        final File file = new File(directory);
+        if (!file.exists()) {
+            return null;
+        }
+        return file;
+    }
 }
