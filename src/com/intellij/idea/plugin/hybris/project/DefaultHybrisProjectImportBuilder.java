@@ -323,21 +323,4 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return false;
     }
 
-    protected class GetFileNameFunction implements Function<File, String> {
-
-        @Override
-        public String fun(final File param) {
-            final File projectRootDir = getHybrisProjectDescriptor().getRootDirectory();
-
-            final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
-                VirtualFileSystemService.class
-            );
-
-            if (null != projectRootDir && virtualFileSystemService.fileContainsAnother(projectRootDir, param)) {
-                return virtualFileSystemService.getRelativePath(projectRootDir, param);
-            }
-
-            return param.getPath();
-        }
-    }
 }

@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilde
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
@@ -37,12 +38,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
 public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
     final static int COLUMN_WIDTH = 300;
+
+    public SelectHybrisImportedProjectsStep(final WizardContext context, final boolean nonGuiMode) {
+        super(context);
+    }
+
     public SelectHybrisImportedProjectsStep(final WizardContext context) {
         super(context);
 
@@ -127,6 +134,21 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     @Override
     public boolean validate() throws ConfigurationException {
+        validateCommon();
+
+        if (this.fileChooser.getMarkedElements().isEmpty()) {
+            throw new ConfigurationException(
+                HybrisI18NBundleUtils.message("hybris.project.import.error.nothing.found.to.import"),
+                HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
+            );
+        }
+
+        this.getContext().setList(this.fileChooser.getMarkedElements());
+
+        return true;
+    }
+
+    private boolean validateCommon() throws ConfigurationException {
         final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
         final Collection<String> moduleDuplicateNames = new ArrayList<String>(moduleDuplicates.size());
 
@@ -144,16 +166,30 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
             );
         }
 
-        if (this.fileChooser.getMarkedElements().isEmpty()) {
-            throw new ConfigurationException(
-                HybrisI18NBundleUtils.message("hybris.project.import.error.nothing.found.to.import"),
-                HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
-            );
-        }
-
-        this.getContext().setList(this.fileChooser.getMarkedElements());
-
         return true;
+    }
+
+    public void nonGuiModeImport() throws ConfigurationException {
+        validateCommon();
+        final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
+        final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
+        for (HybrisModuleDescriptor hybrisModuleDescriptor : getContext().getList()) {
+            if (hybrisModuleDescriptor.isPreselected()) {
+                moduleToImport.add(hybrisModuleDescriptor);
+                moduleToCheck.add(hybrisModuleDescriptor);
+            }
+        }
+        while (!moduleToCheck.isEmpty()) {
+            final HybrisModuleDescriptor currentModule = moduleToCheck.iterator().next();
+            for (HybrisModuleDescriptor moduleDescriptor : currentModule.getDependenciesPlainList()) {
+                if (!moduleToImport.contains(moduleDescriptor)) {
+                    moduleToImport.add(moduleDescriptor);
+                    moduleToCheck.add(moduleDescriptor);
+                }
+            }
+            moduleToCheck.remove(currentModule);
+        }
+        this.getContext().setList(moduleToImport);
     }
 
     /*
