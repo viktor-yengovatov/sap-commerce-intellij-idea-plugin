@@ -34,6 +34,9 @@ public class HybrisProjectSettings {
     protected String customDirectory;
     protected String hybrisDirectory;
     protected String importedByVersion;
+    protected String sourceCodeZip;
+    protected String externalExtensionsDirectory;
+    protected boolean importOotbModulesInReadOnlyMode;
 
     public boolean isHybisProject() {
         return hybisProject;
@@ -67,6 +70,30 @@ public class HybrisProjectSettings {
         this.importedByVersion = importedByVersion;
     }
 
+    public String getSourceCodeZip() {
+        return sourceCodeZip;
+    }
+
+    public void setSourceCodeZip(final String sourceCodeZip) {
+        this.sourceCodeZip = sourceCodeZip;
+    }
+
+    public String getExternalExtensionsDirectory() {
+        return externalExtensionsDirectory;
+    }
+
+    public void setExternalExtensionsDirectory(final String externalExtensionsDirectory) {
+        this.externalExtensionsDirectory = externalExtensionsDirectory;
+    }
+
+    public boolean getImportOotbModulesInReadOnlyMode() {
+        return importOotbModulesInReadOnlyMode;
+    }
+
+    public void setImportOotbModulesInReadOnlyMode(final boolean importOotbModulesInReadOnlyMode) {
+        this.importOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyMode;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -74,6 +101,9 @@ public class HybrisProjectSettings {
             .append(customDirectory)
             .append(hybrisDirectory)
             .append(importedByVersion)
+            .append(sourceCodeZip)
+            .append(externalExtensionsDirectory)
+            .append(importOotbModulesInReadOnlyMode)
             .toHashCode();
     }
 
@@ -94,6 +124,9 @@ public class HybrisProjectSettings {
             .append(customDirectory, other.customDirectory)
             .append(hybrisDirectory, other.hybrisDirectory)
             .append(importedByVersion, other.importedByVersion)
+            .append(sourceCodeZip, other.sourceCodeZip)
+            .append(externalExtensionsDirectory, other.externalExtensionsDirectory)
+            .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
             .isEquals();
     }
 
@@ -104,6 +137,9 @@ public class HybrisProjectSettings {
         sb.append("customDirectoryPath=").append(customDirectory);
         sb.append("hybrisDirectory=").append(hybrisDirectory);
         sb.append("importedByVersion=").append(importedByVersion);
+        sb.append("sourceCodeZip=").append(sourceCodeZip);
+        sb.append("externalExtensionsDirectory=").append(externalExtensionsDirectory);
+        sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
         sb.append('}');
         return sb.toString();
     }
