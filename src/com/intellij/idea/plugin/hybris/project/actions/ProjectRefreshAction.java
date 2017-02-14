@@ -20,13 +20,14 @@ package com.intellij.idea.plugin.hybris.project.actions;
 
 import com.intellij.ide.actions.ImportModuleAction;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
+import com.intellij.ide.util.newProjectWizard.StepSequence;
+import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
-import com.intellij.idea.plugin.hybris.project.wizard.HybrisWorkspaceRootStep;
-import com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjectsStep;
+import com.intellij.idea.plugin.hybris.project.wizard.NonGuiSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -103,8 +104,12 @@ public class ProjectRefreshAction extends ImportModuleAction {
         wizardContext.setProjectJdk(jdk);
         wizardContext.setProjectName(projectName);
         wizardContext.setCompilerOutputDirectory(compilerOutputUrl);
-        new HybrisWorkspaceRootStep(wizardContext, true).nonGuiModeImport(settings);
-        new SelectHybrisImportedProjectsStep(wizardContext, true).nonGuiModeImport();
+        final StepSequence stepSequence = wizard.getSequence();
+        for (ModuleWizardStep step: stepSequence.getAllSteps()) {
+            if (step instanceof NonGuiSupport) {
+                ((NonGuiSupport) step).nonGuiModeImport(settings);
+            }
+        }
         return wizard;
     }
 

@@ -51,7 +51,7 @@ import java.util.Properties;
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
-public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
+public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements NonGuiSupport {
 
     private JPanel rootPanel;
     private TextFieldWithBrowseButton storeModuleFilesInChooser;
@@ -334,6 +334,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep {
         }
     }
 
+    @Override
     public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
 
         this.getContext().cleanup();
