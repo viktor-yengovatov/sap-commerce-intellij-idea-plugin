@@ -151,6 +151,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.initializeHybrisProjectSettings(project);
         this.selectSdk(project);
         this.saveCustomDirectoryLocation(project);
+        this.saveImportedSettings(project);
         this.disableWrapOnType(ImpexLanguage.getInstance());
 
         if (PlatformUtils.isIdeaUltimate()) {
@@ -293,6 +294,21 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             hybrisProjectSettings.setCustomDirectory(relativeCustomPath.toString());
         }
     }
+
+    private void saveImportedSettings(final Project project) {
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+                                                                                          .getState();
+        hybrisProjectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
+        final File extDir = hybrisProjectDescriptor.getExternalExtensionsDirectory();
+        if (extDir != null && extDir.exists()) {
+            hybrisProjectSettings.setExternalExtensionsDirectory(extDir.getPath());
+        }
+        File sourceZip = hybrisProjectDescriptor.getSourceCodeZip();
+        if (sourceZip != null && sourceZip.exists()) {
+            hybrisProjectSettings.setSourceCodeZip(sourceZip.getPath());
+        }
+    }
+
 
     private void selectSdk(@NotNull final Project project) {
         Validate.notNull(project);
