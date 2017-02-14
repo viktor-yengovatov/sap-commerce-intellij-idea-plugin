@@ -192,48 +192,14 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             .map(e -> (MavenModuleDescriptor) e)
             .collect(Collectors.toList());
 
-        if (!project.isInitialized()) {
-            StartupManager.getInstance(project).registerPostStartupActivity(
-                () -> {
-                    final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
-                    if (null != antConfigurator) {
-                        antConfigurator.configure(allModules, project);
-                    }
-
-                    final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getJUnitRunConfigurationConfigurator();
-                    if (null != runConfigurationConfigurator) {
-                        runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
-                    }
-                    if (mavenConfigurator != null && !mavenModules.isEmpty()) {
-                        final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
-                            mavenModules.get(0));
-                        mavenConfigurator.configurePostStartup(
-                            project,
-                            mavenModules,
-                            rootGroup,
-                            () -> offerCacheInvalidation(project)
-                        );
-                    } else {
-                        offerCacheInvalidation(project);
-                    }
-                }
-            );
-        }
-
         new ImportProjectProgressModalWindow(
             project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
         ).queue();
 
-        if (project.isDisposed()) {
-            return result;
-        }
         if (mavenConfigurator != null && !mavenModules.isEmpty()) {
             mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
         }
 
-        if (project.isDisposed()) {
-            return result;
-        }
         final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
         if (eclipseConfigurator != null) {
             final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
@@ -247,6 +213,32 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
             }
         }
+
+        StartupManager.getInstance(project).runWhenProjectIsInitialized(
+            () -> {
+                final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
+                if (null != antConfigurator) {
+                    antConfigurator.configure(allModules, project);
+                }
+
+                final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getJUnitRunConfigurationConfigurator();
+                if (null != runConfigurationConfigurator) {
+                    runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+                }
+                if (mavenConfigurator != null && !mavenModules.isEmpty()) {
+                    final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
+                        mavenModules.get(0));
+                    mavenConfigurator.configurePostStartup(
+                        project,
+                        mavenModules,
+                        rootGroup,
+                        () -> offerCacheInvalidation(project)
+                    );
+                } else {
+                    offerCacheInvalidation(project);
+                }
+            }
+        );
 
         return result;
     }

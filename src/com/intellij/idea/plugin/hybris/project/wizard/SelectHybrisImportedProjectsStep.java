@@ -24,6 +24,7 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -43,7 +44,7 @@ import java.util.List;
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
-public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
+public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> implements NonGuiSupport {
     final static int COLUMN_WIDTH = 300;
 
     public SelectHybrisImportedProjectsStep(final WizardContext context, final boolean nonGuiMode) {
@@ -169,7 +170,8 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         return true;
     }
 
-    public void nonGuiModeImport() throws ConfigurationException {
+    @Override
+    public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
         validateCommon();
         final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();

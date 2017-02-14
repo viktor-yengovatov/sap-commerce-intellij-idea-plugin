@@ -3,6 +3,7 @@ package com.intellij.idea.plugin.hybris.impex.tableFormatting.util;
 import com.intellij.idea.plugin.hybris.impex.constants.ImpexKeywords;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.DelimitersCount;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.Range;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -25,9 +26,15 @@ public final class ImpexTableUtil {
      *
      * @return true or false
      */
-    public static boolean isHeaderLine(String line) {
-        return ImpexKeywords.keywords().stream()
-                            .anyMatch(keyword -> line.trim().toLowerCase().startsWith(keyword));
+    public static boolean isHeaderLine(@NotNull final String line) {
+        if (line.trim().startsWith(";")) return false;
+        final Set<String> keywords = ImpexKeywords.keywords();
+        for (final String keyword : keywords) {
+            if (line.trim().toLowerCase().startsWith(keyword)) {
+                return true;
+            } 
+        }
+        return false;
     }
 
     /**
