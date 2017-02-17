@@ -9,3 +9,8 @@ Hybris-Integration.zip
 
 **/.directory
 
+.idea/*
+
+!.idea/codeStyleSettings.xml
+!.idea/copyright
+!.idea/inspectionProfiles
