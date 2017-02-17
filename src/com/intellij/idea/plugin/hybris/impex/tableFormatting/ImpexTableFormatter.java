@@ -1,110 +1,209 @@
 package com.intellij.idea.plugin.hybris.impex.tableFormatting;
 
-import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.ImpexTable;
-import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.Row;
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderMode;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.impex.tableFormatting.util.ImpexTableFormatterConstants.PIPE;
-import static com.intellij.idea.plugin.hybris.impex.tableFormatting.util.ImpexTableFormatterConstants.PIPE_COMMENT_START;
+import java.util.Collection;
 
+import static com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils.getNextSiblingOfAnyType;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexValueGroup;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexValueLine;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isParameterSeparator;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isWhiteSpace;
+import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
+import static com.intellij.psi.util.PsiTreeUtil.getChildOfType;
+import static com.intellij.psi.util.PsiTreeUtil.getChildrenOfType;
+import static com.intellij.psi.util.PsiTreeUtil.getNextSiblingOfType;
 
+/**
+ * @author Aleksandr Nosov <nosovae.dev@gmail.com>
+ */
 public class ImpexTableFormatter {
 
     private ImpexTableFormatter() {
     }
 
-    public String format(final ImpexTable impexTable) {
-        final String result = formatPipeTable(impexTable);
-        if (result.contains("\r\n")) {
-            // All documents inside IntelliJ IDEA always use the \n line separator. 
-            // The correct line separator is put in when saving the files.
-            return result.replaceAll("\\r\\n", "\n");
-        }
-        return result;
+    public static ImpexTable format(final Pair<PsiElement, PsiElement> table) {
+        final ImpexTableFormatter tableFormatter = new ImpexTableFormatter();
+
+        final int[] maxColumnWidth = tableFormatter.calculateMaxWidth(table, table.first);
+
+        final StringBuilder sb = tableFormatter.createNewTable(table, maxColumnWidth);
+
+        final int startOffset = table.first.getTextRange().getStartOffset() == 0
+            ? table.first.getTextRange().getStartOffset()
+            : table.first.getTextRange().getStartOffset();
+        final int endOffset = table.second.getTextRange().getEndOffset();
+
+        return new ImpexTable(startOffset, endOffset, sb.toString());
     }
+
 
     @NotNull
-    private String formatPipeTable(ImpexTable table) {
-        final int[] columnsMaxLength = calculateColumnsMaxLength(table);
+    private StringBuilder createNewTable(
+        final Pair<PsiElement, PsiElement> table,
+        final int[] maxColumnWidth
+    ) {
+        final StringBuilder sb = new StringBuilder();
+        PsiElement currentValueLine = table.first;
+        boolean keepProcess = true;
+        while (keepProcess) {
+            if (currentValueLine == null) {
+                break;
+            }
+            if (isHeaderLine(currentValueLine)) {
+                writeHeader(table.first, maxColumnWidth, sb);
+            } else if (isImpexValueLine(currentValueLine)) {
+                writeValueLine(maxColumnWidth, sb, currentValueLine);
+            } else {
+                sb.append(currentValueLine.getText().replaceAll(" ", ""));
+            }
 
-        final StringBuilder buffer = new StringBuilder();
-        for (Row row : table.rows()) {
-            if (StringUtil.isEmptyOrSpaces(row.line())) {
-                buffer.append(System.lineSeparator());
+            if (table.second.equals(currentValueLine)) {
+                keepProcess = false;
                 continue;
             }
-            appendFirstCommentedSign(buffer, row);
-            int columnIndex = 0;
-            for (ImpexTable.Cell cell : row.columns()) {
-                int width = correctWidthForCommentedRow(columnsMaxLength[columnIndex], row, columnIndex);
-                String formattedValue = padValue(width, cell.getValue());
-                buffer.append(formattedValue);
-                columnIndex++;
-                appendInternalPipe(buffer, row, columnIndex);
-            }
-            if (row.hasTrailingPipe()) {
-                appendLastPipe(buffer, row);
-            }
-            buffer.append(row.endOfLine());
+            currentValueLine = getNextSiblingOfAnyType(currentValueLine, PsiElement.class);
         }
-        return buffer.toString();
+        return sb;
     }
 
-    private int correctWidthForCommentedRow(int maxWidth, Row row, int columnIndex) {
-        return maxWidth - (row.isCommented() && (columnIndex == 0 || columnIndex == row.size() - 1) ? 2 : 0);
-    }
-
-    private void appendLastPipe(StringBuilder buffer, Row row) {
-        String pipe = Character.toString(PIPE);
-        if (row.hasTrailingPipe()) {
-            buffer.append(" ").append(pipe);
-        }
-    }
-
-    private void appendFirstCommentedSign(StringBuilder buffer, Row row) {
-        if (row.isCommented()) {
-            buffer.append(PIPE_COMMENT_START);
-        }
-    }
-
-    private void appendInternalPipe(StringBuilder buffer, Row row, int columnIndex) {
-        if (columnIndex < row.size()) {
-            buffer.append(" ").append(PIPE).append(" ");
-        }
-    }
-
-    private String padValue(int width, String value) {
-        if (width > 0) {
-            return String.format("%-" + width + "s", value);
+    private void writeValueLine(final int[] maxColumnWidth, final StringBuilder sb, final PsiElement currentValueLine) {
+        if (isImpexValueGroup(currentValueLine.getFirstChild())) {
+            sb.append(StringUtils.rightPad("", maxColumnWidth[0] + 1));
         } else {
-            return "";
+            final String text = StringUtils.rightPad(
+                currentValueLine.getFirstChild().getText().trim(),
+                maxColumnWidth[0]
+            );
+            sb.append(text);
+        }
+        final PsiElement[] children = currentValueLine.getChildren();
+
+        int i = 1;
+        for (final PsiElement element : children) {
+            if (isFirstFieldValueIsEmpty(element)) {
+                sb.append(';').append(' ').append(StringUtils.rightPad("", maxColumnWidth[i]));
+            } else {
+                sb
+                    .append(';')
+                    .append(' ')
+                    .append(StringUtils.rightPad(element.getLastChild().getText().trim(), maxColumnWidth[i]));
+            }
+            i++;
         }
     }
 
-    private int[] calculateColumnsMaxLength(ImpexTable table) {
-        int[] columnsMaxLength = new int[table.getColumnCount()];
+    private static boolean isFirstFieldValueIsEmpty(final PsiElement element) {
+        final PsiElement[] childrenOfType = getChildrenOfType(element, PsiElement.class);
+        return childrenOfType != null && childrenOfType.length == 1;
+    }
 
-        for (Row row : table.rows()) {
-            int columnIndex = 0;
-            for (ImpexTable.Cell cell : row.columns()) {
-                int length = cellValueLength(row, columnIndex, cell);
-                if (length > columnsMaxLength[columnIndex]) {
-                    columnsMaxLength[columnIndex] = length;
+    private void writeHeader(
+        final PsiElement header,
+        final int[] maxColumnWidth,
+        final StringBuilder sb
+    ) {
+        final Collection<PsiElement> columns = findChildrenOfAnyType(
+            header,
+            ImpexAnyHeaderMode.class,
+            ImpexFullHeaderParameter.class,
+            ImpexHeaderTypeName.class,
+            PsiElement.class
+        );
+
+        int i = 1;
+        for (PsiElement column : columns) {
+            if (isWhiteSpace(column)) {
+                continue;
+            }
+
+            if (isParameterSeparator(column)) {
+                sb.append(column.getText()).append(' ');
+
+            } else if (column instanceof ImpexAnyHeaderMode
+                       || column instanceof ImpexHeaderTypeName
+                       || column instanceof ImpexFullHeaderParameter) {
+
+                if (column instanceof ImpexAnyHeaderMode
+                    || column instanceof ImpexHeaderTypeName) {
+
+                    sb.append(column.getText());
+                    if (column instanceof ImpexAnyHeaderMode) {
+                        sb.append(' ');
+                    }
+                } else {
+                    final int width = maxColumnWidth[i];
+                    if (i == maxColumnWidth.length - 1) {
+                        sb.append(column.getText());
+                    } else {
+                        sb.append(StringUtils.rightPad(column.getText().trim(), width));
+                    }
+                    i++;
                 }
-                columnIndex++;
             }
         }
-        return columnsMaxLength;
     }
 
-    private int cellValueLength(Row row, int columnIndex, ImpexTable.Cell cell) {
-        return cell.getValue().length() +
-               (row.isCommented() && (columnIndex == 0 || columnIndex == row.size() - 1) ? 2 : 0);
-    }
+    private int[] calculateMaxWidth(final Pair<PsiElement, PsiElement> table, @NotNull final PsiElement header) {
+        final Collection<PsiElement> columns = findChildrenOfAnyType(
+            header,
+            ImpexAnyHeaderMode.class,
+            ImpexFullHeaderParameter.class,
+            ImpexHeaderTypeName.class,
+            PsiWhiteSpace.class
+        );
 
-    public static ImpexTableFormatter formatter() {
-        return new ImpexTableFormatter();
-    }
+        final int[] maxColumnWidth = new int[header.getChildren().length - 1];
 
+        int k = 0;
+        for (PsiElement column : columns) {
+            if (column.getPrevSibling() != null && isParameterSeparator(column.getPrevSibling())) {
+                k++;
+            }
+            if (!(column instanceof PsiWhiteSpace)) {
+                maxColumnWidth[k] += column.getText().replaceAll(";", "").length();
+            }
+        }
+
+
+        PsiElement currentValueLine = getNextSiblingOfType(header, ImpexValueLine.class);
+        boolean keepProcessing = true;
+        while (keepProcessing) {
+            if (currentValueLine == null) {
+                break;
+            }
+            if (!isImpexValueGroup(currentValueLine.getFirstChild())) {
+                final int textLength = currentValueLine.getFirstChild().getText().replace(";", "").length();
+                maxColumnWidth[0] = Math.max(textLength, maxColumnWidth[0]);
+            }
+            final PsiElement[] children = currentValueLine.getChildren();
+
+            int i = 1;
+            for (final PsiElement element : children) {
+                if (!isFirstFieldValueIsEmpty(element)) {
+                    final int textLength = getChildOfType(element, ImpexValue.class).getTextLength();
+                    maxColumnWidth[i] = Math.max(textLength, maxColumnWidth[i]);
+                }
+                i++;
+            }
+
+
+            if (table.second.equals(currentValueLine)) {
+                keepProcessing = false;
+                continue;
+            }
+            currentValueLine = getNextSiblingOfType(currentValueLine, ImpexValueLine.class);
+        }
+        return maxColumnWidth;
+    }
 }

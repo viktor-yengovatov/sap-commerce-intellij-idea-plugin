@@ -1,11 +1,10 @@
 package com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.operation;
 
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTable;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableEditor;
-import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableParser;
-import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.ImpexTable;
-import com.intellij.idea.plugin.hybris.impex.tableFormatting.model.TableText;
-
-import static com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableFormatter.formatter;
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableFormatter;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
@@ -17,13 +16,16 @@ public class FormatTableOperation extends AbstractOperation {
         super(editor);
     }
 
+    @Override
     protected void perform() {
-        final TableText tableText = getSelectedTable(editor);
-        if (tableText.isNotEmpty()) {
-            ImpexTable impexTable = new ImpexTableParser(tableText.getText()).parse();
-            String formattedText = formatter().format(impexTable);
-            editor.replaceText(formattedText, tableText.getRange());
-        }
+        final Pair<PsiElement, PsiElement> table = getSelectedTable(editor);
+        final ImpexTable formattedTable = ImpexTableFormatter.format(table);
+        editor.getIdeaEditor().getDocument().replaceString(
+            formattedTable.getStartOffset(),
+            formattedTable.getEndOffset(),
+            formattedTable.getContent()
+        );
     }
+
 
 }

@@ -88,6 +88,11 @@ public final class ImpexPsiUtils {
     }
 
     @Contract(value = "null -> false", pure = true)
+    public static boolean isParameterSeparator(@Nullable final PsiElement psiElement) {
+        return ImpexTypes.PARAMETERS_SEPARATOR == CommonPsiUtils.getNullSafeElementType(psiElement);
+    }
+
+    @Contract(value = "null -> false", pure = true)
     public static boolean isImpexFullHeaderParameter(@Nullable final PsiElement psiElement) {
         return ImpexTypes.FULL_HEADER_PARAMETER == CommonPsiUtils.getNullSafeElementType(psiElement);
     }
@@ -189,6 +194,20 @@ public final class ImpexPsiUtils {
         }
 
         return prevSibling;
+    }
+
+    @Nullable
+    @Contract(pure = true)
+    public static PsiElement getNextNonWhitespaceElement(@NotNull final PsiElement element) {
+        Validate.notNull(element);
+
+        PsiElement nextSibling = element.getNextSibling();
+
+        while (null != nextSibling && (isWhiteSpace(nextSibling) || isLineBreak(nextSibling))) {
+            nextSibling = nextSibling.getNextSibling();
+        }
+
+        return nextSibling;
     }
 
 
