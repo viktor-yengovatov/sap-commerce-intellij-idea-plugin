@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.components;
 
+import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
@@ -41,6 +41,14 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
         super.projectOpened(project);
         if (isOldHybrisProject(project)) {
             showNotification(project);
+        }
+        registerAntListener(project);
+    }
+
+    private void registerAntListener(final Project project) {
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        if (commonIdeaService.isHybrisProject(project)) {
+            HybrisAntBuildListener.registerAntListener();
         }
     }
 
