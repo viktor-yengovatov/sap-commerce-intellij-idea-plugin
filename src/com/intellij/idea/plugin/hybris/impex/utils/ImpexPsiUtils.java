@@ -53,6 +53,16 @@ public final class ImpexPsiUtils {
     }
 
     @Contract(value = "null -> false", pure = true)
+    public static boolean isMacroNameDeclaration(@Nullable final PsiElement element) {
+        return Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_NAME_DECLARATION);
+    }
+    
+    @Contract(value = "null -> false", pure = true)
+    public static boolean isMacroUsage(@Nullable final PsiElement element) {
+        return Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_USAGE);
+    }
+
+    @Contract(value = "null -> false", pure = true)
     public static boolean isImpexParameters(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpexParameters;
     }
