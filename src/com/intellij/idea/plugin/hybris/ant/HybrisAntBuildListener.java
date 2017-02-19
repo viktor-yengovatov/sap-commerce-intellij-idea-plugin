@@ -150,7 +150,10 @@ public class HybrisAntBuildListener implements AntBuildListener {
 
                     for (String newExtension : result.getExtensionsToAdd()) {
                         final XmlTag newTag = extensions.createChildTag("extension", null, null, false);
-                        newTag.setAttribute("dir", newExtension);
+                        final String name = newExtension.substring(newExtension.lastIndexOf("/")+1);
+                        final String dir = "${HYBRIS_BIN_DIR}"+newExtension.substring(newExtension.indexOf("/custom"));
+                        newTag.setAttribute("dir", dir);
+                        newTag.setAttribute("name", name);
                         extensions.addSubTag(newTag, false);
                     }
                 }
