@@ -127,6 +127,8 @@
 
         <gotoDeclarationHandler implementation="com.intellij.idea.plugin.hybris.impex.psi.gotoHandler.ImpexMacrosGoToDeclarationHandler"/>
 
+        <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.impex.highlighting.HighlightMacrosHandlerFactory"/>
+
         <highlightUsagesHandlerFactory
             implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
         <findUsagesHandlerFactory

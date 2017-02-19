@@ -30,7 +30,7 @@ import javax.swing.*;
 public interface HybrisIcons {
 
     Icon IMPEX_FILE = IconLoader.getIcon("/icons/impexFile.png");
-    Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybris_icon.png");
+    Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybrisIcon.png");
     Icon WAIT = IconLoader.getIcon("/icons/Wait-16.png");
     Icon END = IconLoader.getIcon("/icons/End-16.png");
     Icon NOTIFY = IconLoader.getIcon("/icons/Notify-16.png");
