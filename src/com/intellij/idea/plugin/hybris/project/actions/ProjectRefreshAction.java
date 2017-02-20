@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.actions;
 
+import com.intellij.ide.DataManager;
 import com.intellij.ide.actions.ImportModuleAction;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
 import com.intellij.ide.util.newProjectWizard.StepSequence;
@@ -30,9 +31,14 @@ import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.wizard.NonGuiSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.openapi.actionSystem.ActionPlaces;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.module.Module;
@@ -83,6 +89,15 @@ public class ProjectRefreshAction extends ImportModuleAction {
     @Override
     public boolean displayTextInToolbar() {
         return true;
+    }
+
+    public static void triggerAction() {
+        ApplicationManager.getApplication().invokeLater(() -> {
+            final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
+            final AnAction action = new ProjectRefreshAction();
+            final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(action, null, ActionPlaces.UNKNOWN, dataContext);
+            action.actionPerformed(actionEvent);
+        }, ModalityState.NON_MODAL);
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {

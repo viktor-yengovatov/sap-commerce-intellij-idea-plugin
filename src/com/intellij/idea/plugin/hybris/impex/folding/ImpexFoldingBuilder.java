@@ -38,9 +38,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getPrevNonWhitespaceElement;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getPrevValueLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsHeaderLine;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsUserRightsMacros;
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
@@ -112,17 +115,20 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
         boolean groupIsNotFresh = false;
         final int size = foldingBlocks.size();
         for (int i = 0; i < size; i++) {
-            final int nextIdx = Math.min(i + 1, size);
+            final int nextIdx = Math.min(i + 1, size - 1);
 
             final PsiElement element = foldingBlocks.get(i);
-            if (isHeaderLine(element)) {
+            if (isHeaderLine(element) || isUserRightsMacros(element)) {
                 startGroupElement = foldingBlocks.get(nextIdx);
                 if (groupIsNotFresh) {
                     currentLineGroup = FoldingGroup.newGroup(LINE_GROUP_NAME);
                     groupIsNotFresh = false;
                 }
             } else {
-                if (nextElementIsHeaderLine(element) || nextIdx == size) {
+                if (nextElementIsHeaderLine(element)
+                    || nextElementIsUserRightsMacros(element)
+                    || nextIdx == size) {
+
                     descriptors.add(new ImpexFoldingDescriptor(
                         startGroupElement,
                         startGroupElement.getTextRange().getStartOffset(),
@@ -130,7 +136,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
                         currentLineGroup,
                         (elm) -> {
                             final PsiElement prevSibling = getPrevNonWhitespaceElement(elm);
-                            if (prevSibling != null && isHeaderLine(prevSibling)) {
+                            if (prevSibling != null && (isHeaderLine(prevSibling) || isUserRightsMacros(prevSibling))) {
                                 return "/.../";
                             }
                             return "";

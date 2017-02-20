@@ -40,4 +40,6 @@ public interface HybrisIcons {
     Icon SCRIPT = IconLoader.getIcon("/icons/Script-16.png");
     Icon TYPE_SYSTEM = IconLoader.getIcon("/icons/type-system.png");
 
+
+    Icon MACROS = IconLoader.getIcon("/icons/macros.png");
 }

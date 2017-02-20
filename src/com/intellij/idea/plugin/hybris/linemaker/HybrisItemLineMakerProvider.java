@@ -35,14 +35,18 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
                                                psiClass.getSuperClass().getName().contains("Generated"))) {
 
                 final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
-                createTargetsWithGutterIcon(result, psiClass, list);
-
+                if (!list.isEmpty()) {
+                    createTargetsWithGutterIcon(result, psiClass, list);
+                }
             } else if (psiClass.getImplementsListTypes().length > 0) {
                 final boolean anyMatch = ContainerUtil.newHashSet(psiClass.getImplementsListTypes()).stream()
                                                       .anyMatch(psiClassType -> "HybrisEnumValue".equals(psiClassType.getClassName()));
                 if (anyMatch) {
                     final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
-                    createTargetsWithGutterIcon(result, psiClass, list);
+                    
+                    if (!list.isEmpty()) {
+                        createTargetsWithGutterIcon(result, psiClass, list);
+                    }
                 }
             }
         }

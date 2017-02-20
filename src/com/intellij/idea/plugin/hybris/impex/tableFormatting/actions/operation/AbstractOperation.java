@@ -1,20 +1,21 @@
 package com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.operation;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexRootMacroUsage;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableEditor;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.FoldRegion;
-import com.intellij.openapi.editor.FoldingModel;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getNextSiblingOfAnyType;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
+import static com.intellij.psi.util.PsiTreeUtil.getNextSiblingOfType;
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType;
 import static com.intellij.psi.util.PsiUtilBase.getElementAtCaret;
 
 /**
@@ -42,9 +43,9 @@ public abstract class AbstractOperation implements Runnable {
 
         final PsiElement valueLineAt;
         if (elementAtCaret != null) {
-            if (elementAtCaret.getNextSibling() instanceof ImpexValueLine) {
+            if (getNextSiblingOfType(elementAtCaret, ImpexValueLine.class) != null) {
                 valueLineAt = elementAtCaret.getNextSibling();
-            } else if (elementAtCaret.getPrevSibling() instanceof ImpexValueLine) {
+            } else if (getPrevSiblingOfType(elementAtCaret, ImpexValueLine.class) != null) {
                 valueLineAt = elementAtCaret.getPrevSibling();
             } else {
                 valueLineAt = getParentOfType(
@@ -57,24 +58,56 @@ public abstract class AbstractOperation implements Runnable {
             return null;
         }
 
+        if (valueLineAt == null) {
+            return null;
+        }
 
-        final ImpexHeaderLine secondHeaderLine = PsiTreeUtil.getNextSiblingOfType(
-            valueLineAt,
-            ImpexHeaderLine.class
-        );
+        final PsiElement headerLine = scanFirstLine(elementAtCaret, valueLineAt);
 
-        final ImpexHeaderLine headerLine;
+        final PsiElement lastValueLine = scanLastLine(valueLineAt, headerLine);
+
+        return Pair.create(headerLine, lastValueLine);
+    }
+
+    @Nullable
+    private PsiElement scanFirstLine(
+        @NotNull final PsiElement elementAtCaret,
+        @NotNull final PsiElement valueLineAt
+    ) {
+        final PsiElement headerLine;
+
         if (isHeaderLine(elementAtCaret)) {
-            headerLine = (ImpexHeaderLine) elementAtCaret;
+            headerLine = elementAtCaret;
+        } else if (isUserRightsMacros(elementAtCaret)) {
+            headerLine = elementAtCaret;
+        } else if (getParentOfType(elementAtCaret, ImpexRootMacroUsage.class) != null &&
+                   isUserRightsMacros(getParentOfType(elementAtCaret, ImpexRootMacroUsage.class))) {
+            headerLine = getParentOfType(elementAtCaret, ImpexRootMacroUsage.class);
         } else if (getParentOfType(elementAtCaret, ImpexHeaderLine.class) != null) {
             headerLine = getParentOfType(elementAtCaret, ImpexHeaderLine.class);
         } else {
-            headerLine = PsiTreeUtil.getPrevSiblingOfType(
-                valueLineAt,
-                ImpexHeaderLine.class
-            );
+            if (isUserRightsMacros(getPrevSiblingOfType(valueLineAt, ImpexRootMacroUsage.class))) {
+                headerLine = getPrevSiblingOfType(
+                    valueLineAt,
+                    ImpexRootMacroUsage.class
+                );
+            } else {
+                headerLine = getPrevSiblingOfType(
+                    valueLineAt,
+                    ImpexHeaderLine.class
+                );
+            }
         }
+        return headerLine;
+    }
 
+    @Nullable
+    private PsiElement scanLastLine(final PsiElement valueLineAt, final PsiElement headerLine) {
+        final PsiElement secondHeaderLine = getNextSiblingOfAnyType(
+            valueLineAt,
+            ImpexRootMacroUsage.class,
+            ImpexHeaderLine.class
+        );
         if (secondHeaderLine == null) {
             PsiElement lastValueLine = valueLineAt != null ? valueLineAt.getNextSibling() : headerLine.getNextSibling();
             boolean flag = true;
@@ -90,14 +123,17 @@ public abstract class AbstractOperation implements Runnable {
                 lastValueLine = valueLineAt;
             }
 
-            return Pair.create(headerLine, lastValueLine);
+            return lastValueLine;
         }
 
-        final ImpexValueLine lastValueLine = PsiTreeUtil.getPrevSiblingOfType(
+        if (secondHeaderLine instanceof ImpexRootMacroUsage && secondHeaderLine.getText().startsWith("$END")) {
+            return secondHeaderLine;
+        }
+
+        return getPrevSiblingOfType(
             secondHeaderLine,
             ImpexValueLine.class
         );
-
-        return Pair.create(headerLine, lastValueLine);
     }
+
 }

@@ -12,6 +12,9 @@ import java.util.Set;
  */
 public final class ImpexKeywords {
 
+    private ImpexKeywords() {
+    }
+
     /**
      * @return set of keywords.
      */
@@ -23,4 +26,16 @@ public final class ImpexKeywords {
             "REMOVE"
         );
     }
+
+    /**
+     * @return set of keywords.
+     */
+    public static Set<String> keywordMacros() {
+        return ContainerUtil.newHashSet(
+            "$START_USERRIGHTS",
+            "$END_USERRIGHTS"
+        );
+    }
+
+
 }
