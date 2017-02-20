@@ -91,7 +91,7 @@ public class HybrisAntBuildListener implements AntBuildListener {
         final Project project = resultMap.keySet().iterator().next();
         final AntGenResult antGenResult = resultMap.get(project);
         modifyLocalExtensions(project, antGenResult);
-        triggerRefreshProjectAction();
+        ProjectRefreshAction.triggerAction();
     }
 
     private void findAntResult(final Map<Project, AntGenResult> resultMap) {
@@ -161,15 +161,6 @@ public class HybrisAntBuildListener implements AntBuildListener {
                 FileDocumentManager.getInstance().saveAllDocuments();
             }
         }.execute();
-    }
-
-    private void triggerRefreshProjectAction() {
-        ApplicationManager.getApplication().invokeLater(() -> {
-            final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
-            final AnAction action = new ProjectRefreshAction();
-            final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(action, null, ActionPlaces.UNKNOWN, dataContext);
-            action.actionPerformed(actionEvent);
-        }, ModalityState.NON_MODAL);
     }
 
     static void setFinalStatic(Field field, Object newValue) throws NoSuchFieldException, IllegalAccessException {
