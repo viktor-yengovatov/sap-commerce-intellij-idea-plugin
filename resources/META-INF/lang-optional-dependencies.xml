@@ -158,6 +158,7 @@
         <action id="ImpexPlugin.IndexHybrisItemTypes"
                 class="com.intellij.idea.plugin.hybris.indexer.IndexItemTypesAction"
                 text="Index [y]-types"
+                icon="/icons/hybrisIcon.png"
                 description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
