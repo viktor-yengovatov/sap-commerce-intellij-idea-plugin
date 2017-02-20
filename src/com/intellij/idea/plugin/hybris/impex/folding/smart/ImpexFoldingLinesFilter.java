@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.aroundIsValueLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 
 /**
  * Elements filter for folding by lines.
@@ -60,6 +61,7 @@ public class ImpexFoldingLinesFilter implements PsiElementFilter {
         return null != element
                && this.isSupportedType(element)
                && !(isLineBreak(element) && isHeaderLine(element.getPrevSibling()))
+               && !(isLineBreak(element) && isUserRightsMacros(element.getPrevSibling()))
                && !(isLineBreak(element) && element.getNextSibling() == null);
     }
 
