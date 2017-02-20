@@ -20,6 +20,9 @@ package com.intellij.idea.plugin.hybris.impex.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider;
@@ -110,7 +113,18 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             topLevel(),
-            new ImpexKeywordCompletionProvider(ImpexKeywords.keywords())
+            new ImpexKeywordCompletionProvider(ImpexKeywords.keywords(), (keyword) ->
+                LookupElementBuilder.create(keyword)
+                                    .withIcon(AllIcons.Nodes.Function))
+        );
+
+        // case: macros keywords
+        extend(
+            CompletionType.BASIC,
+            topLevel(),
+            new ImpexKeywordCompletionProvider(ImpexKeywords.keywordMacros(), (keyword) ->
+                LookupElementBuilder.create(keyword)
+                                    .withIcon(HybrisIcons.MACROS))
         );
 
         // case: impex macros
@@ -140,6 +154,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
                             psiElement(ImpexTypes.HEADER_TYPE_NAME),
                             psiElement(ImpexTypes.HEADER_PARAMETER_NAME),
                             psiElement(ImpexTypes.ATTRIBUTE_NAME),
+                            psiElement(ImpexTypes.FIELD_VALUE),
                             psiElement(ImpexTypes.ATTRIBUTE_VALUE)
                         )
             );

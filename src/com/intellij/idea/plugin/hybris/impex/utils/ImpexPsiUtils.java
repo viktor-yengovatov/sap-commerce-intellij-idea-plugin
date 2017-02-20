@@ -56,7 +56,7 @@ public final class ImpexPsiUtils {
     public static boolean isMacroNameDeclaration(@Nullable final PsiElement element) {
         return Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_NAME_DECLARATION);
     }
-    
+
     @Contract(value = "null -> false", pure = true)
     public static boolean isMacroUsage(@Nullable final PsiElement element) {
         return Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_USAGE);
@@ -71,7 +71,7 @@ public final class ImpexPsiUtils {
     public static boolean isImpexAttribute(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpexAttribute;
     }
-    
+
     @Contract(value = "null -> false", pure = true)
     public static boolean isImpexValueGroup(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpexValueGroup;
@@ -107,11 +107,40 @@ public final class ImpexPsiUtils {
         return ImpexTypes.FULL_HEADER_PARAMETER == CommonPsiUtils.getNullSafeElementType(psiElement);
     }
 
-
     @Contract(value = "null -> false", pure = true)
     public static boolean isHeaderLine(@Nullable final PsiElement psiElement) {
         return Objects.equals(ImpexTypes.HEADER_LINE, CommonPsiUtils.getNullSafeElementType(psiElement));
     }
+
+    @Contract(value = "null -> false", pure = true)
+    public static boolean isUserRightsMacros(@Nullable final PsiElement psiElement) {
+        return psiElement != null && Objects.equals(
+            ImpexTypes.ROOT_MACRO_USAGE,
+            CommonPsiUtils.getNullSafeElementType(psiElement)
+        ) && (psiElement.getText().equals("$START_USERRIGHTS")|| psiElement.getText().equals("$END_USERRIGHTS"));
+
+    }
+
+
+
+    @Nullable
+    @Contract("null, _ -> null")
+    public static <T extends PsiElement> T getNextSiblingOfAnyType(@Nullable PsiElement sibling, @NotNull Class... aClasses) {
+        if(sibling == null) {
+            return null;
+        } else {
+            for(PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
+                for (final Class<T> aClass : aClasses) {
+                    if(aClass.isInstance(child)) {
+                        return (T) child;
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+
 
     @Contract(pure = true)
     public static boolean aroundIsValueLine(@Nullable final PsiElement element) {
@@ -134,7 +163,7 @@ public final class ImpexPsiUtils {
             ImpexComment.class
         );
         while (null != prevSibling) {
-            if (isHeaderLine(prevSibling) || isImpexValueLine(prevSibling)) {
+            if (isHeaderLine(prevSibling) || isImpexValueLine(prevSibling) || isUserRightsMacros(prevSibling)) {
                 prevElementIsValueLine = true;
                 break;
             }
@@ -163,6 +192,10 @@ public final class ImpexPsiUtils {
                 nextElementIsValueLine = false;
                 break;
             }
+            if (isUserRightsMacros(nextSibling)) {
+                nextElementIsValueLine = false;
+                break;
+            }
             nextSibling = PsiTreeUtil.skipSiblingsForward(nextSibling,
                                                           PsiWhiteSpace.class, ImpexBeanShell.class,
                                                           ImpexComment.class
@@ -183,6 +216,9 @@ public final class ImpexPsiUtils {
             if (isImpexValueLine(nextSibling)) {
                 return false;
             }
+            if (isUserRightsMacros(nextSibling)) {
+                return false;
+            }
             if (isHeaderLine(nextSibling)) {
                 return true;
             }
@@ -190,6 +226,50 @@ public final class ImpexPsiUtils {
         }
 
         return true;
+    }
+
+    @Nullable
+    @Contract(pure = true)
+    public static boolean nextElementIsUserRightsMacros(@NotNull final PsiElement element) {
+        Validate.notNull(element);
+
+        PsiElement nextSibling = element.getNextSibling();
+
+        while (null != nextSibling) {
+            if (isHeaderLine(nextSibling)) {
+                return false;
+            }
+            if (isImpexValueLine(nextSibling)) {
+                return false;
+            }
+            if (isUserRightsMacros(nextSibling)) {
+                return true;
+            }
+            nextSibling = nextSibling.getNextSibling();
+        }
+
+        return true;
+    }
+
+    @Nullable
+    @Contract(pure = true)
+    public static boolean prevElementIsUserRightsMacros(@NotNull final PsiElement element) {
+        Validate.notNull(element);
+
+        final Class[] skipClasses = {ImpexValueLine.class, PsiComment.class, PsiWhiteSpace.class};
+        PsiElement prevElement = PsiTreeUtil.skipSiblingsBackward(element, skipClasses);
+
+        while (null != prevElement) {
+            if (isHeaderLine(prevElement)) {
+                return false;
+            }
+            if (isUserRightsMacros(prevElement)) {
+                return true;
+            }
+            prevElement = PsiTreeUtil.skipSiblingsBackward(prevElement, skipClasses);
+        }
+
+        return false;
     }
 
     @Nullable
@@ -218,6 +298,21 @@ public final class ImpexPsiUtils {
         }
 
         return nextSibling;
+    }
+
+
+    @Nullable
+    @Contract(pure = true)
+    public static PsiElement getPrevValueLine(@NotNull final PsiElement element) {
+        Validate.notNull(element);
+
+        PsiElement prevSibling = element.getPrevSibling();
+
+        while (null != prevSibling && !isImpexValueLine(prevSibling)) {
+            prevSibling = prevSibling.getPrevSibling();
+        }
+
+        return prevSibling;
     }
 
 
@@ -301,6 +396,10 @@ public final class ImpexPsiUtils {
 
         final ImpexValueLine impexValueLine = PsiTreeUtil.getParentOfType(valueGroup, ImpexValueLine.class);
         if (null == impexValueLine) {
+            return null;
+        }
+
+        if (prevElementIsUserRightsMacros(impexValueLine)) {
             return null;
         }
 

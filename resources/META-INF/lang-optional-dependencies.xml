@@ -103,6 +103,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighter"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
 
+        <defaultLiveTemplatesProvider implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexTemplateProvider"/>
+        <liveTemplateContext implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContext"/>
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->
@@ -169,6 +171,7 @@
             <action id="ImpexTableFormatter.Format"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAction"
                     text="Format"
+                    icon="/icons/hybrisIcon.png"
                     description="Formats Impex table with pipe delimiters">
             </action>
             <!-- This feature not ready for production. Temporary disabled.  -->
@@ -177,14 +180,15 @@
                     <!--text="Format All"-->
                     <!--description="Formats table with pipe delimiters">-->
             <!--</action>-->
-            <action id="ImpexTableFormatter.AddColumnBefore"
-                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"
-                    text="Add Column Before"
-                    description="Add Column Before">
-            </action>
+            <!--<action id="ImpexTableFormatter.AddColumnBefore"-->
+                    <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
+                    <!--text="Add Column Before"-->
+                    <!--description="Add Column Before">-->
+            <!--</action>-->
             <action id="ImpexTableFormatter.SelectTable"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
                     text="Select Impex Table"
+                    icon="/icons/hybrisIcon.png"
                     description="Select Impex table">
             </action>
 
