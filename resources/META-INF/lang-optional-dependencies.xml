@@ -43,6 +43,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.type.system.inspections.XPathService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.DefaultXPathService"/>
 
+        <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.type.system.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
+
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->
         <!-- ####################################################################################################### -->
