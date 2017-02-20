@@ -232,10 +232,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                         project,
                         mavenModules,
                         rootGroup,
-                        () -> offerCacheInvalidation(project)
+                        () -> triggerCacheInvalidation()
                     );
                 } else {
-                    offerCacheInvalidation(project);
+                    triggerCacheInvalidation();
                 }
             }
         );
@@ -243,24 +243,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return result;
     }
 
-    private void offerCacheInvalidation(final Project project) {
-        final int result = Messages.showYesNoDialog(
-            project,
-            HybrisI18NBundleUtils.message("hybris.project.import.cache.message"),
-            HybrisI18NBundleUtils.message("hybris.project.import.cache.title"),
-            HybrisI18NBundleUtils.message("hybris.project.import.cache.yes"),
-            HybrisI18NBundleUtils.message("hybris.project.import.cache.no"),
-            Messages.getInformationIcon()
-        );
-        if (result == Messages.YES) {
-            final ApplicationEx app = (ApplicationEx) ApplicationManager.getApplication();
-            UsageTrigger.trigger(ApplicationManagerEx.getApplicationEx().getName() + ".caches.invalidated");
-            FSRecords.invalidateCaches();
+    private void triggerCacheInvalidation() {
+        UsageTrigger.trigger(ApplicationManagerEx.getApplicationEx().getName() + ".caches.invalidated");
+        FSRecords.invalidateCaches();
 
-            for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
-                invalidater.invalidateCaches();
-            }
-            ApplicationManager.getApplication().invokeLater(() -> app.restart(true), ModalityState.NON_MODAL);
+        for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
+            invalidater.invalidateCaches();
         }
     }
 

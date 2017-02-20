@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.common.services.impl;
 import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
@@ -52,9 +53,9 @@ public class LatestVersionService implements VersionSpecificService {
 
         final Notification notification = notificationGroup.createNotification(
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.title"),
-            null,
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.text"),
-            NotificationType.INFORMATION
+            NotificationType.INFORMATION,
+            (myNotification, myHyperlinkEvent) -> ProjectRefreshAction.triggerAction()
         );
 
         return notification;
