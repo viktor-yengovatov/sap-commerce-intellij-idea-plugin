@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.folding;
 
 import com.intellij.idea.plugin.hybris.impex.folding.smart.ImpexFoldingLinesFilter;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
@@ -36,10 +37,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getPrevNonWhitespaceElement;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getPrevValueLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexValueLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsHeaderLine;
@@ -114,6 +116,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
          /* Avoid spawning a lot of unnecessary objects for each line break. */
         boolean groupIsNotFresh = false;
         final int size = foldingBlocks.size();
+        int countLinesOnGroup = 0;
         for (int i = 0; i < size; i++) {
             final int nextIdx = Math.min(i + 1, size - 1);
 
@@ -122,30 +125,34 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
                 startGroupElement = foldingBlocks.get(nextIdx);
                 if (groupIsNotFresh) {
                     currentLineGroup = FoldingGroup.newGroup(LINE_GROUP_NAME);
+                    countLinesOnGroup = 0;
                     groupIsNotFresh = false;
                 }
             } else {
                 if (nextElementIsHeaderLine(element)
                     || nextElementIsUserRightsMacros(element)
                     || nextIdx == size) {
-
-                    descriptors.add(new ImpexFoldingDescriptor(
-                        startGroupElement,
-                        startGroupElement.getTextRange().getStartOffset(),
-                        element.getTextRange().getEndOffset(),
-                        currentLineGroup,
-                        (elm) -> {
-                            final PsiElement prevSibling = getPrevNonWhitespaceElement(elm);
-                            if (prevSibling != null && (isHeaderLine(prevSibling) || isUserRightsMacros(prevSibling))) {
-                                return "/.../";
+                    if (countLinesOnGroup >  1) {
+                        descriptors.add(new ImpexFoldingDescriptor(
+                            startGroupElement,
+                            startGroupElement.getTextRange().getStartOffset(),
+                            element.getTextRange().getEndOffset(),
+                            currentLineGroup,
+                            (elm) -> {
+                                final PsiElement prevSibling = getPrevNonWhitespaceElement(elm);
+                                if (prevSibling != null && (isHeaderLine(prevSibling) || isUserRightsMacros(prevSibling))) {
+                                    return ";....;....";
+                                }
+                                return "";
                             }
-                            return "";
-                        }
-                    ));
+                        ));
+                    }
                     groupIsNotFresh = true;
                 }
             }
-
+            if (isImpexValueLine(element)) {
+                countLinesOnGroup++;
+            }
         }
     }
 
@@ -193,6 +200,9 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
+        if (Objects.equals(node.getElementType(), ImpexTypes.VALUE_LINE)) {
+            return false;
+        }
         return true;
     }
 }
