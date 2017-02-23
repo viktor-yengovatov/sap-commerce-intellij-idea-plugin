@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.structure.view;
 
+import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.xml.XmlFileTreeElement;
 import com.intellij.openapi.editor.Editor;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
  */
-public class TSStructureViewTreeModel extends DomStructureViewTreeModel {
+public class TSStructureViewTreeModel extends DomStructureViewTreeModel implements StructureViewModel.ElementInfoProvider {
     private final DomElementNavigationProvider myNavigationProvider;
     private final Function<DomElement, DomService.StructureViewMode> myDescriptor;
 
@@ -56,4 +57,13 @@ public class TSStructureViewTreeModel extends DomStructureViewTreeModel {
             new TSStructureTreeElement(fileElement.getRootElement().createStableCopy(), myDescriptor, myNavigationProvider);
     }
 
+    @Override
+    public boolean isAlwaysShowsPlus(final StructureViewTreeElement element) {
+        return false;
+    }
+
+    @Override
+    public boolean isAlwaysLeaf(final StructureViewTreeElement element) {
+        return false;
+    }
 }
