@@ -604,7 +604,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (HEADER_PARAMETER_NAME | MACRO_USAGE | DOCUMENT_ID) sub_parameters? modifiers*
+  // (HEADER_PARAMETER_NAME | MACRO_USAGE | DOCUMENT_ID) (sub_parameters | MACRO_USAGE)? modifiers*
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r, p;
@@ -629,11 +629,22 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // sub_parameters?
+  // (sub_parameters | MACRO_USAGE)?
   private static boolean parameter_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1")) return false;
-    sub_parameters(b, l + 1);
+    parameter_1_0(b, l + 1);
     return true;
+  }
+
+  // sub_parameters | MACRO_USAGE
+  private static boolean parameter_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = sub_parameters(b, l + 1);
+    if (!r) r = consumeToken(b, MACRO_USAGE);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // modifiers*
