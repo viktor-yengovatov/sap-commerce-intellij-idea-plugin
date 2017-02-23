@@ -47,6 +47,7 @@ public interface ImpexTypes {
   IElementType DEFAULT_PATH_DELIMITER = new ImpexTokenType("DEFAULT_PATH_DELIMITER");
   IElementType DIGIT = new ImpexTokenType("DIGIT");
   IElementType DOCUMENT_ID = new ImpexTokenType("DOCUMENT_ID");
+  IElementType DOT = new ImpexTokenType("DOT");
   IElementType DOUBLE_STRING = new ImpexTokenType("DOUBLE_STRING");
   IElementType FIELD_LIST_ITEM_SEPARATOR = new ImpexTokenType("FIELD_LIST_ITEM_SEPARATOR");
   IElementType FIELD_VALUE = new ImpexTokenType("FIELD_VALUE");
