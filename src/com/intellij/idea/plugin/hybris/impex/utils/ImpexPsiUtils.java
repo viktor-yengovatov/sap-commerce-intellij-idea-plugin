@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexComment;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexRootMacroUsage;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
@@ -40,6 +41,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
  * Created 22:43 01 January 2015
@@ -117,21 +120,23 @@ public final class ImpexPsiUtils {
         return psiElement != null && Objects.equals(
             ImpexTypes.ROOT_MACRO_USAGE,
             CommonPsiUtils.getNullSafeElementType(psiElement)
-        ) && (psiElement.getText().equals("$START_USERRIGHTS")|| psiElement.getText().equals("$END_USERRIGHTS"));
+        ) && (psiElement.getText().equals("$START_USERRIGHTS") || psiElement.getText().equals("$END_USERRIGHTS"));
 
     }
 
 
-
     @Nullable
     @Contract("null, _ -> null")
-    public static <T extends PsiElement> T getNextSiblingOfAnyType(@Nullable PsiElement sibling, @NotNull Class... aClasses) {
-        if(sibling == null) {
+    public static <T extends PsiElement> T getNextSiblingOfAnyType(
+        @Nullable PsiElement sibling,
+        @NotNull Class... aClasses
+    ) {
+        if (sibling == null) {
             return null;
         } else {
-            for(PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
+            for (PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
                 for (final Class<T> aClass : aClasses) {
-                    if(aClass.isInstance(child)) {
+                    if (aClass.isInstance(child)) {
                         return (T) child;
                     }
                 }
@@ -333,6 +338,60 @@ public final class ImpexPsiUtils {
 
                 return header;
             }
+        }
+
+        return null;
+    }
+
+    public static List<PsiElement> getColumnOfHeaderUnderCaret(@NotNull final Editor editor) {
+        Validate.notNull(editor);
+
+        final PsiElement psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
+        if (null == psiElementUnderCaret) {
+            return null;
+        }
+
+        final ImpexFullHeaderParameter headerParameter = PsiTreeUtil.getParentOfType(
+            psiElementUnderCaret,
+            ImpexFullHeaderParameter.class
+        );
+        if (null != headerParameter) {
+
+            final PsiElement[] children = headerParameter.getParent().getChildren();
+            int i = -2;
+            for (final PsiElement child : children) {
+                if (!child.equals(headerParameter)) {
+                    i++;
+                } else {
+                    break;
+                }
+            }
+
+            final List<PsiElement> result = newArrayList();
+            PsiElement psiElement = getNextSiblingOfAnyType(
+                PsiTreeUtil.getParentOfType(headerParameter, ImpexHeaderLine.class),
+                ImpexValueLine.class,
+                ImpexHeaderLine.class,
+                ImpexRootMacroUsage.class
+            );
+
+            while (psiElement != null && !isHeaderLine(psiElement) && !isUserRightsMacros(psiElement)) {
+                if (isImpexValueLine(psiElement)) {
+                    final PsiElement[] elements = psiElement.getChildren();
+                    if (elements.length > i)
+                        result.add(elements[i]);
+                }
+
+
+                psiElement = getNextSiblingOfAnyType(
+                    psiElement,
+                    ImpexValueLine.class,
+                    ImpexHeaderLine.class,
+                    ImpexRootMacroUsage.class
+                );
+            }
+            
+            return result;
         }
 
         return null;

@@ -27,17 +27,16 @@ import static com.intellij.psi.util.PsiTreeUtil.getNextSiblingOfType;
 /**
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */
-public class ImpexTableFormatter {
+public final class ImpexTableFormatter {
 
     private ImpexTableFormatter() {
     }
 
     public static ImpexTable format(final Pair<PsiElement, PsiElement> table) {
-        final ImpexTableFormatter tableFormatter = new ImpexTableFormatter();
 
-        final int[] maxColumnWidth = tableFormatter.calculateMaxWidth(table, table.first);
+        final int[] maxColumnWidth = calculateMaxWidth(table, table.first);
 
-        final StringBuilder sb = tableFormatter.createNewTable(table, maxColumnWidth);
+        final StringBuilder sb = createNewTable(table, maxColumnWidth);
 
         final int startOffset = table.first.getTextRange().getStartOffset() == 0
             ? table.first.getTextRange().getStartOffset()
@@ -49,7 +48,7 @@ public class ImpexTableFormatter {
 
 
     @NotNull
-    private StringBuilder createNewTable(
+    private static StringBuilder createNewTable(
         final Pair<PsiElement, PsiElement> table,
         final int[] maxColumnWidth
     ) {
@@ -77,7 +76,7 @@ public class ImpexTableFormatter {
         return sb;
     }
 
-    private void writeValueLine(final int[] maxColumnWidth, final StringBuilder sb, final PsiElement currentValueLine) {
+    private static void writeValueLine(final int[] maxColumnWidth, final StringBuilder sb, final PsiElement currentValueLine) {
         if (isImpexValueGroup(currentValueLine.getFirstChild())) {
             sb.append(StringUtils.rightPad("", maxColumnWidth[0] + 1));
         } else {
@@ -108,7 +107,7 @@ public class ImpexTableFormatter {
         return childrenOfType != null && childrenOfType.length == 1;
     }
 
-    private void writeHeader(
+    private static void writeHeader(
         final PsiElement header,
         final int[] maxColumnWidth,
         final StringBuilder sb
@@ -154,7 +153,7 @@ public class ImpexTableFormatter {
         }
     }
 
-    private int[] calculateMaxWidth(final Pair<PsiElement, PsiElement> table, @NotNull final PsiElement header) {
+    private static int[] calculateMaxWidth(final Pair<PsiElement, PsiElement> table, @NotNull final PsiElement header) {
         final Collection<PsiElement> columns = findChildrenOfAnyType(
             header,
             ImpexAnyHeaderMode.class,

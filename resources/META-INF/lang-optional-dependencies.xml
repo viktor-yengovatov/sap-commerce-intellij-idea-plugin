@@ -76,11 +76,17 @@
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
 
+        <lang.foldingBuilder language="Impex"
+                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingLinesBuilder"/>
+
         <applicationConfigurable id="ImpexPlugin.ImpexConfigurable" parentId="root"
                                  instance="com.intellij.idea.plugin.hybris.settings.HybrisSettingsConfigurable"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
 
         <completion.contributor language="Impex"
                                 implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
@@ -130,15 +136,16 @@
         <!-- ####################################################################################################### -->
 
         <gotoDeclarationHandler implementation="com.intellij.idea.plugin.hybris.impex.psi.gotoHandler.ImpexMacrosGoToDeclarationHandler"/>
-
-        <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.impex.highlighting.HighlightMacrosHandlerFactory"/>
-
+        
         <highlightUsagesHandlerFactory
             implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
+        
         <findUsagesHandlerFactory
             implementation="com.intellij.idea.plugin.hybris.impex.find.findUsages.MacrosFindUsagesHandlerFactory"/>
+        
         <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
-        <lang.findUsagesProvider language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
+        <lang.findUsagesProvider language="Impex" 
+                                 implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
     </extensions>
 
     <application-components>
