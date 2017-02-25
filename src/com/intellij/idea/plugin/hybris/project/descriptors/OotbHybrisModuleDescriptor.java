@@ -59,6 +59,7 @@ public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
         Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
         if (null == library) {
             library = libraryTableModifiableModel.createLibrary(HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
+            libraryTableModifiableModel.commit();
         }
 
         if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {

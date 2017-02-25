@@ -52,7 +52,7 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
         }
 
         if (hybrisProjectService.isCoreExtModule(file)) {
-            return new CoreHybrisHybrisModuleDescriptor(file, rootProjectDescriptor);
+            return new CoreHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
         if (hybrisProjectService.isPlatformExtModule(file)) {
