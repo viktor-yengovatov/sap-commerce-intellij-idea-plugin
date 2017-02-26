@@ -28,10 +28,10 @@ import java.util.Set;
 /**
  * Created by Martin Zdarsky-Jones on 18/08/2016.
  */
-public class CoreHybrisHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
+public class CoreHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
 
-    public CoreHybrisHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
-                                            @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public CoreHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                      @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
 
         super(moduleRootDirectory, rootProjectDescriptor);
