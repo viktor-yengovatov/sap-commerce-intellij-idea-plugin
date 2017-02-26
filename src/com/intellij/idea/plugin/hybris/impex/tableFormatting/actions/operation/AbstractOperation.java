@@ -86,16 +86,18 @@ public abstract class AbstractOperation implements Runnable {
         } else if (getParentOfType(elementAtCaret, ImpexHeaderLine.class) != null) {
             headerLine = getParentOfType(elementAtCaret, ImpexHeaderLine.class);
         } else {
-            if (isUserRightsMacros(getPrevSiblingOfType(valueLineAt, ImpexRootMacroUsage.class))) {
+            if (isHeaderLine(getPrevSiblingOfType(valueLineAt, ImpexHeaderLine.class))) {
+                headerLine = getPrevSiblingOfType(
+                    valueLineAt,
+                    ImpexHeaderLine.class
+                );
+            } else if (isUserRightsMacros(getPrevSiblingOfType(valueLineAt, ImpexRootMacroUsage.class))) {
                 headerLine = getPrevSiblingOfType(
                     valueLineAt,
                     ImpexRootMacroUsage.class
                 );
             } else {
-                headerLine = getPrevSiblingOfType(
-                    valueLineAt,
-                    ImpexHeaderLine.class
-                );
+                return null;
             }
         }
         return headerLine;
@@ -108,6 +110,7 @@ public abstract class AbstractOperation implements Runnable {
             ImpexRootMacroUsage.class,
             ImpexHeaderLine.class
         );
+
         if (secondHeaderLine == null) {
             PsiElement lastValueLine = valueLineAt != null ? valueLineAt.getNextSibling() : headerLine.getNextSibling();
             boolean flag = true;

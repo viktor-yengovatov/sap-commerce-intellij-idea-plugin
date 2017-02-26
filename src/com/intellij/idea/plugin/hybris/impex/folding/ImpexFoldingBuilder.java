@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.folding;
 
-import com.intellij.idea.plugin.hybris.impex.folding.smart.ImpexFoldingLinesFilter;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
@@ -37,15 +35,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getPrevNonWhitespaceElement;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexValueLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsHeaderLine;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsUserRightsMacros;
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
@@ -56,7 +47,6 @@ import static com.intellij.util.containers.ContainerUtil.newArrayList;
 public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
     private static final String GROUP_NAME = "impex";
-    private static final String LINE_GROUP_NAME = "impex_fold_line";
 
     private static final FoldingDescriptor[] EMPTY_ARRAY = new FoldingDescriptor[0];
 
@@ -94,67 +84,10 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
                 groupIsNotFresh = true;
             }
         }
-
-        buildFoldingLines(root, descriptors);
-
+        
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
-    /**
-     * Optimized method.
-     *
-     * @param root
-     * @param descriptors
-     */
-    private void buildFoldingLines(final @NotNull PsiElement root, final List<FoldingDescriptor> descriptors) {
-        FoldingGroup currentLineGroup = FoldingGroup.newGroup(LINE_GROUP_NAME);
-
-        final List<PsiElement> foldingBlocks = foldingLines(root);
-
-        PsiElement startGroupElement = foldingBlocks.isEmpty() ? null : foldingBlocks.get(0);
-        
-         /* Avoid spawning a lot of unnecessary objects for each line break. */
-        boolean groupIsNotFresh = false;
-        final int size = foldingBlocks.size();
-        int countLinesOnGroup = 0;
-        for (int i = 0; i < size; i++) {
-            final int nextIdx = Math.min(i + 1, size - 1);
-
-            final PsiElement element = foldingBlocks.get(i);
-            if (isHeaderLine(element) || isUserRightsMacros(element)) {
-                startGroupElement = foldingBlocks.get(nextIdx);
-                if (groupIsNotFresh) {
-                    currentLineGroup = FoldingGroup.newGroup(LINE_GROUP_NAME);
-                    countLinesOnGroup = 0;
-                    groupIsNotFresh = false;
-                }
-            } else {
-                if (nextElementIsHeaderLine(element)
-                    || nextElementIsUserRightsMacros(element)
-                    || nextIdx == size) {
-                    if (countLinesOnGroup >  1) {
-                        descriptors.add(new ImpexFoldingDescriptor(
-                            startGroupElement,
-                            startGroupElement.getTextRange().getStartOffset(),
-                            element.getTextRange().getEndOffset(),
-                            currentLineGroup,
-                            (elm) -> {
-                                final PsiElement prevSibling = getPrevNonWhitespaceElement(elm);
-                                if (prevSibling != null && (isHeaderLine(prevSibling) || isUserRightsMacros(prevSibling))) {
-                                    return ";....;....";
-                                }
-                                return "";
-                            }
-                        ));
-                    }
-                    groupIsNotFresh = true;
-                }
-            }
-            if (isImpexValueLine(element)) {
-                countLinesOnGroup++;
-            }
-        }
-    }
 
     @Contract(pure = true)
     protected boolean isFoldingDisabled() {
@@ -176,20 +109,6 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
         return foldingBlocks;
     }
 
-    @NotNull
-    @Contract(pure = true)
-    protected List<PsiElement> foldingLines(@Nullable final PsiElement root) {
-        if (root == null) {
-            return Collections.emptyList();
-        }
-
-        final List<PsiElement> foldingBlocks = newArrayList();
-        PsiTreeUtil.processElements(root, new CollectFilteredElements<>(
-            new ImpexFoldingLinesFilter(), foldingBlocks));
-
-        return foldingBlocks;
-    }
-
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull final ASTNode node) {
@@ -200,9 +119,6 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
-        if (Objects.equals(node.getElementType(), ImpexTypes.VALUE_LINE)) {
-            return false;
-        }
         return true;
     }
 }

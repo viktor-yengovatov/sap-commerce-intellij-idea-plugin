@@ -112,6 +112,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP);
         if (null == library) {
             library = libraryTableModifiableModel.createLibrary(HybrisConstants.PLATFORM_LIBRARY_GROUP);
+            libraryTableModifiableModel.commit();
         }
 
         if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {
