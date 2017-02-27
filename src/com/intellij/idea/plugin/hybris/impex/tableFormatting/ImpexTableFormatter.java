@@ -23,6 +23,8 @@ import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
 import static com.intellij.psi.util.PsiTreeUtil.getChildOfType;
 import static com.intellij.psi.util.PsiTreeUtil.getChildrenOfType;
 import static com.intellij.psi.util.PsiTreeUtil.getNextSiblingOfType;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
@@ -90,13 +92,15 @@ public final class ImpexTableFormatter {
 
         int i = 1;
         for (final PsiElement element : children) {
+            final int length = maxColumnWidth.length - 1;
             if (isFirstFieldValueIsEmpty(element)) {
-                sb.append(';').append(' ').append(StringUtils.rightPad("", maxColumnWidth[i]));
+                sb.append(';').append(' ').append(StringUtils.rightPad("", maxColumnWidth[min(i, length
+                )]));
             } else {
                 sb
                     .append(';')
                     .append(' ')
-                    .append(StringUtils.rightPad(element.getLastChild().getText().trim(), maxColumnWidth[i]));
+                    .append(StringUtils.rightPad(element.getLastChild().getText().trim(), maxColumnWidth[min(i, length)]));
             }
             i++;
         }
@@ -183,7 +187,7 @@ public final class ImpexTableFormatter {
             }
             if (!isImpexValueGroup(currentValueLine.getFirstChild())) {
                 final int textLength = currentValueLine.getFirstChild().getText().replace(";", "").length();
-                maxColumnWidth[0] = Math.max(textLength, maxColumnWidth[0]);
+                maxColumnWidth[0] = max(textLength, maxColumnWidth[0]);
             }
             final PsiElement[] children = currentValueLine.getChildren();
 
@@ -191,7 +195,7 @@ public final class ImpexTableFormatter {
             for (final PsiElement element : children) {
                 if (!isFirstFieldValueIsEmpty(element)) {
                     final int textLength = getChildOfType(element, ImpexValue.class).getTextLength();
-                    maxColumnWidth[i] = Math.max(textLength, maxColumnWidth[i]);
+                    maxColumnWidth[i] = max(textLength, maxColumnWidth[i]);
                 }
                 i++;
             }

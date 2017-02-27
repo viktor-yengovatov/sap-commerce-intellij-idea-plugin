@@ -32,12 +32,14 @@ import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import com.intellij.idea.plugin.hybris.type.system.model.Persistence;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
+import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.idea.plugin.hybris.type.system.model.TypeGroup;
 import com.intellij.idea.plugin.hybris.type.system.model.Value;
 import com.intellij.util.Function;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomElementNavigationProvider;
 import com.intellij.util.xml.DomService;
+import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.structure.DomStructureTreeElement;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,51 +73,120 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
     public String getPresentableText() {
         final DomElement dom = getElement();
         if (dom instanceof Attribute) {
-            return ((Attribute) dom).getQualifier().getXmlAttributeValue().getValue();
+            final GenericAttributeValue<String> qualifier = ((Attribute) dom).getQualifier();
+            String value = resolveValue(qualifier);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof CollectionType) {
-            return ((CollectionType) dom).getCode().getValue();
+            final GenericAttributeValue<String> code = ((CollectionType) dom).getCode();
+            String value = resolveValue(code);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof ColumnType) {
-            return ((ColumnType) dom).getDatabase().getValue();
+            final GenericAttributeValue<String> database = ((ColumnType) dom).getDatabase();
+            String value = resolveValue(database);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof CustomProperty) {
-            return ((CustomProperty) dom).getName().getValue();
+            final GenericAttributeValue<String> name = ((CustomProperty) dom).getName();
+            String value = resolveValue(name);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof Deployment) {
-            return ((Deployment) dom).getTable().getValue();
+            final GenericAttributeValue<String> table = ((Deployment) dom).getTable();
+            String value = resolveValue(table);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof EnumType) {
-            return ((EnumType) dom).getCode().getValue();
+            final GenericAttributeValue<String> code = ((EnumType) dom).getCode();
+            String value = resolveValue(code);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof EnumValue) {
-            return ((EnumValue) dom).getCode().getValue();
+            final GenericAttributeValue<String> code = ((EnumValue) dom).getCode();
+            String value = resolveValue(code);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof Index) {
-            return ((Index) dom).getName().getValue();
+            final GenericAttributeValue<String> name = ((Index) dom).getName();
+            String value = resolveValue(name);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof ItemType) {
-            return ((ItemType) dom).getCode().getValue();
+            final GenericAttributeValue<String> code = ((ItemType) dom).getCode();
+            String value = resolveValue(code);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof MapType) {
-            return ((MapType) dom).getCode().getValue();
+            final GenericAttributeValue<String> code = ((MapType) dom).getCode();
+            String value = resolveValue(code);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof Persistence) {
-            return ((Persistence) dom).getType().getValue().getValue();
+            final GenericAttributeValue<Type> type = ((Persistence) dom).getType();
+            if (type != null) {
+                final String value = type.getStringValue();
+                if (value != null) {
+                    return value;
+                }
+            }
         }
         if (dom instanceof Relation) {
-            return ((Relation) dom).getCode().getValue();
+            final GenericAttributeValue<String> code = ((Relation) dom).getCode();
+            String value = resolveValue(code);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof RelationElement) {
-            return ((RelationElement) dom).getQualifier().getXmlAttributeValue().getValue();
+            final GenericAttributeValue<String> qualifier = ((RelationElement) dom).getQualifier();
+            String value = resolveValue(qualifier);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof TypeGroup) {
-            return ((TypeGroup) dom).getName().getValue();
+            final GenericAttributeValue<String> name = ((TypeGroup) dom).getName();
+            String value = resolveValue(name);
+            if (value != null) {
+                return value;
+            }
         }
         if (dom instanceof Value) {
-            ((Value) dom).getCode().getXmlAttributeValue();
+            final GenericAttributeValue<String> code = ((Value) dom).getCode();
+            String value = resolveValue(code);
+            if (value != null) {
+                return value;
+            }
         }
         return super.getPresentableText();
+    }
+
+    private String resolveValue(final GenericAttributeValue<String> attributeValue) {
+        if (attributeValue != null) {
+            return attributeValue.getStringValue();
+        }
+        return null;
     }
 
     /**

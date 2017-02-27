@@ -19,6 +19,9 @@ public class FormatTableOperation extends AbstractOperation {
     @Override
     protected void perform() {
         final Pair<PsiElement, PsiElement> table = getSelectedTable(editor);
+        if (table == null || table.first == null || table.second == null) {
+            return;
+        }
         final ImpexTable formattedTable = ImpexTableFormatter.format(table);
         editor.getIdeaEditor().getDocument().replaceString(
             formattedTable.getStartOffset(),

@@ -9,8 +9,11 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.findSiblingByPredicate;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getNextSiblingOfAnyType;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLastElement;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexValueLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 import static com.intellij.psi.util.PsiTreeUtil.getNextSiblingOfType;
@@ -113,15 +116,21 @@ public abstract class AbstractOperation implements Runnable {
 
         if (secondHeaderLine == null) {
             PsiElement lastValueLine = valueLineAt != null ? valueLineAt.getNextSibling() : headerLine.getNextSibling();
-            boolean flag = true;
-            while (lastValueLine != null && lastValueLine.getNextSibling() != null && flag) {
-                if (isLineBreak(lastValueLine) && isLineBreak(lastValueLine.getNextSibling())) {
-                    flag = false;
-                } else {
-                    lastValueLine = lastValueLine.getNextSibling();
-                }
+            final PsiElement nextSiblingOfAnyType = getNextSiblingOfAnyType(
+                lastValueLine,
+                ImpexHeaderLine.class,
+                ImpexRootMacroUsage.class
+            );
+            
+            if (nextSiblingOfAnyType != null) {
+                lastValueLine = nextSiblingOfAnyType.getPrevSibling();
+            } else {
+                lastValueLine = findSiblingByPredicate(
+                    lastValueLine,
+                    (sibling) -> (isImpexValueLine(sibling) || isLineBreak(sibling)) && isLastElement(sibling)
+                );
             }
-
+            
             if (lastValueLine == null) {
                 lastValueLine = valueLineAt;
             }
