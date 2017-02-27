@@ -67,9 +67,10 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
             return new CustomHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isMavenModule(file)) {
-            return new MavenModuleDescriptor(file, rootProjectDescriptor);
-        }
+//        IIP-210
+//        if (hybrisProjectService.isMavenModule(file)) {
+//            return new MavenModuleDescriptor(file, rootProjectDescriptor);
+//        }
 
         return new EclipseModuleDescriptor(file, rootProjectDescriptor);
     }

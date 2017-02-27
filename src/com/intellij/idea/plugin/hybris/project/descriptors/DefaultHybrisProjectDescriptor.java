@@ -502,8 +502,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
         if (hybrisProjectService.isHybrisModule(rootProjectDirectory) ||
-            hybrisProjectService.isConfigModule(rootProjectDirectory) ||
-            hybrisProjectService.isMavenModule(rootProjectDirectory))
+            hybrisProjectService.isConfigModule(rootProjectDirectory))
+//            hybrisProjectService.isMavenModule(rootProjectDirectory)) //IIP-210
         {
             paths.add(rootProjectDirectory);
             return paths;
