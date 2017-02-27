@@ -22,6 +22,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.CoreHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
@@ -77,7 +78,15 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             }
         }
         for (HybrisModuleDescriptor moduleDescriptor: modulesChosenForImport) {
-            processHybrisModule(moduleDescriptorMap, moduleDescriptor, localProperties, advancedProperties);
+            processHybrisModule(moduleDescriptorMap, moduleDescriptor);
+            if (moduleDescriptor instanceof CoreHybrisModuleDescriptor) {
+                if (advancedProperties != null) {
+                    moduleDescriptor.addSpringFile(advancedProperties.getAbsolutePath());
+                }
+                if (localProperties != null) {
+                    moduleDescriptor.addSpringFile(localProperties.getAbsolutePath());
+                }
+            }
         }
     }
 
@@ -161,9 +170,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
 
     protected void processHybrisModule(
         @NotNull final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @Nullable final File localProperties,
-        @Nullable final File advancedProperties
+        @NotNull final HybrisModuleDescriptor moduleDescriptor
     ) {
         Validate.notNull(moduleDescriptorMap);
         Validate.notNull(moduleDescriptor);
@@ -171,13 +178,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final Properties projectProperties = new Properties();
 
         final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
-        if (advancedProperties != null) {
-            moduleDescriptor.addSpringFile(advancedProperties.getAbsolutePath());
-        }
         moduleDescriptor.addSpringFile(propFile.getAbsolutePath());
-        if (localProperties != null) {
-            moduleDescriptor.addSpringFile(localProperties.getAbsolutePath());
-        }
 
         try {
             final FileInputStream fis = new FileInputStream(propFile);
