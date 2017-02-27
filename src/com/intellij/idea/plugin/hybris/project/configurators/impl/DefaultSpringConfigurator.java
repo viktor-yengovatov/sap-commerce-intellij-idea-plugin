@@ -21,8 +21,10 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -33,6 +35,7 @@ import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,11 +63,21 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         Validate.notNull(modulesChosenForImport);
 
         final Map<String, HybrisModuleDescriptor> moduleDescriptorMap = new HashMap<String, HybrisModuleDescriptor>();
+        File localProperties = null;
+        File advancedProperties = null;
         for (HybrisModuleDescriptor moduleDescriptor: modulesChosenForImport) {
             moduleDescriptorMap.put(moduleDescriptor.getName(), moduleDescriptor);
+            if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
+                final ConfigHybrisModuleDescriptor configModule = (ConfigHybrisModuleDescriptor) moduleDescriptor;
+                localProperties = new File(configModule.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
+            }
+            if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
+                final PlatformHybrisModuleDescriptor platformModule = (PlatformHybrisModuleDescriptor) moduleDescriptor;
+                advancedProperties = new File(platformModule.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
+            }
         }
         for (HybrisModuleDescriptor moduleDescriptor: modulesChosenForImport) {
-            processHybrisModule(moduleDescriptorMap, moduleDescriptor);
+            processHybrisModule(moduleDescriptorMap, moduleDescriptor, localProperties, advancedProperties);
         }
     }
 
@@ -146,14 +159,26 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         );
     }
 
-    protected void processHybrisModule(@NotNull final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
-                                     @NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    protected void processHybrisModule(
+        @NotNull final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @Nullable final File localProperties,
+        @Nullable final File advancedProperties
+    ) {
         Validate.notNull(moduleDescriptorMap);
         Validate.notNull(moduleDescriptor);
 
         final Properties projectProperties = new Properties();
 
         final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
+        if (advancedProperties != null) {
+            moduleDescriptor.addSpringFile(advancedProperties.getAbsolutePath());
+        }
+        moduleDescriptor.addSpringFile(propFile.getAbsolutePath());
+        if (localProperties != null) {
+            moduleDescriptor.addSpringFile(localProperties.getAbsolutePath());
+        }
+
         try {
             final FileInputStream fis = new FileInputStream(propFile);
             projectProperties.load(fis);
