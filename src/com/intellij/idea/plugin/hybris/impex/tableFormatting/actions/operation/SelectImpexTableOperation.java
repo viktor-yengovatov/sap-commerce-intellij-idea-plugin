@@ -17,7 +17,7 @@ public class SelectImpexTableOperation extends AbstractOperation {
     @Override
     protected void perform() {
         final Pair<PsiElement, PsiElement> table = getSelectedTable(editor);
-        if (table != null) {
+        if (table != null && table.first != null && table.second != null) {
             final int startOffset = table.first.getTextRange().getStartOffset();
             final int endOffset = table.second.getTextRange().getEndOffset();
             editor.setSelection(new Range<>(startOffset, endOffset));
