@@ -110,7 +110,7 @@
 
     <change-notes>
         <![CDATA[
-         - Refresh project action has been added as well as automatic refreshing after modulegen performed though IDEA ant menu.
+         - Refresh project action has been added in "File -> Refresh Y project" as well as automatic refreshing after modulegen performed though IDEA ant menu.
           <br/>
          - An error in importing ybackoffice extension has been fixed.
           <br/>
@@ -118,7 +118,7 @@
           <br/>
          - Cache invalidation logic after new project import has been improved.
           <br/>
-         - Various errors in importing Maven and Eclipse modules have been fixed.
+         - Various errors in importing Maven and Eclipse modules have been fixed (Maven modules support has been temporary disabled due to a bug in the IDE).
           <br/>
          - "Go to declaration" action has been implemented for Hybris Model and Data classes.
           <br/>
@@ -137,6 +137,8 @@
          - Autocompletion of impex keywords has been implemented.
           <br/>
          - Autocompletion for impex macroses has been implemented.
+          <br/>
+         - Highlighting of the same header attributes and macroces thoughout an impex file has been implemented.
           <br/>
          - "Go to declaration" action has been implemented for impex macroses.
           <br/>
