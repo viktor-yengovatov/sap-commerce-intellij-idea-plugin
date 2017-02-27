@@ -61,7 +61,7 @@ apply plugin: 'org.jetbrains.intellij'
 intellij {
     type 'IU'
     //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
-    version '163.11103.6'
+    version '163.12024.16'
     downloadSources true
 
     sandboxDirectory "$buildDir/idea-sandbox"
