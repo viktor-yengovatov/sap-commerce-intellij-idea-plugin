@@ -159,7 +159,7 @@
     </change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="163.9166"/>
+    <idea-version since-build="163.9166" until-build="171.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
 
