@@ -34,6 +34,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
+import com.intellij.util.containers.Predicate;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -95,6 +96,11 @@ public final class ImpexPsiUtils {
         return ImpexTypes.CRLF == CommonPsiUtils.getNullSafeElementType(psiElement);
     }
 
+    @Contract(pure = true)
+    public static boolean isLastElement(final PsiElement element) {
+        return element.getNextSibling() == null;
+    }
+
     @Contract(value = "null -> false", pure = true)
     public static boolean isFieldValueSeparator(@Nullable final PsiElement psiElement) {
         return ImpexTypes.FIELD_VALUE_SEPARATOR == CommonPsiUtils.getNullSafeElementType(psiElement);
@@ -139,6 +145,25 @@ public final class ImpexPsiUtils {
                     if (aClass.isInstance(child)) {
                         return (T) child;
                     }
+                }
+            }
+
+            return null;
+        }
+    }
+
+    @Nullable
+    @Contract("null, _ -> null")
+    public static PsiElement findSiblingByPredicate(
+        @Nullable final PsiElement sibling,
+        @NotNull final Predicate<PsiElement> predicate
+    ) {
+        if (sibling == null) {
+            return null;
+        } else {
+            for (PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
+                if (predicate.apply(child)) {
+                    return child;
                 }
             }
 
@@ -378,8 +403,9 @@ public final class ImpexPsiUtils {
             while (psiElement != null && !isHeaderLine(psiElement) && !isUserRightsMacros(psiElement)) {
                 if (isImpexValueLine(psiElement)) {
                     final PsiElement[] elements = psiElement.getChildren();
-                    if (elements.length > i)
+                    if (elements.length > i) {
                         result.add(elements[i]);
+                    }
                 }
 
 
@@ -390,7 +416,7 @@ public final class ImpexPsiUtils {
                     ImpexRootMacroUsage.class
                 );
             }
-            
+
             return result;
         }
 
