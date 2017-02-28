@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>5.4.2</version>
+    <version>6.0</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -64,9 +64,9 @@
           <br/>
           - Automatic configuration of Spring, Web and Ant Intellij IDEA plugins.
           <br/>
-          - Editor for impex files.
+          - Custom editor for impex files with automatic formatting, find usages and go to declaration actions.
           <br/>
-          - items.xml validation.
+          - Custom editor for items.xml with validation and easy navigation.
           <br/>
           - Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).
           <br/>
@@ -98,6 +98,8 @@
           <br/>
           - Martin Zdarsky-Jones
           <br/>
+          - Alexander Nosov
+          <br/>
           - Michael Golubev
           <br/>
           - Markus Priegl
@@ -108,16 +110,56 @@
 
     <change-notes>
         <![CDATA[
-         - Added support for left-over modules, eclipse and maven based.
+         - Refresh project action has been added in "File -> Refresh Y project" as well as automatic refreshing after modulegen performed though IDEA ant menu.
           <br/>
-         - Import error in the latest idea has been fixed.
+         - An error in importing ybackoffice extension has been fixed.
           <br/>
-         - Import dialog has been improved.
+         - Hybris temp directory has been excluded from project import.
+          <br/>
+         - Cache invalidation logic after new project import has been improved.
+          <br/>
+         - Various errors in importing Maven and Eclipse modules have been fixed (Maven modules support has been temporary disabled due to a bug in the IDE).
+          <br/>
+         - "Go to declaration" action has been implemented for Hybris Model and Data classes.
+          <br/>
+         - Structure View has been implemented for hybris items.xml files.
+          <br/>
+         - Highlighting of impex column values for a selected header has been implemented (the reverse of header name highlighting).
+          <br/>
+         - Folding of impex values lines has been implemented.
+          <br/>
+         - Impex formatter has been improved to support User Rights structure.
+          <br/>
+         - Impex syntax highlighting has been improved.
+          <br/>
+         - An action for creating impex files has been added to IDEA's menu "New->Impex File".
+          <br/>
+         - Autocompletion of impex keywords has been implemented.
+          <br/>
+         - Autocompletion for impex macroses has been implemented.
+          <br/>
+         - Highlighting of the same header attributes and macroces thoughout an impex file has been implemented.
+          <br/>
+         - "Go to declaration" action has been implemented for impex macroses.
+          <br/>
+         - "Find Usages" action has been implemented for impex macroses.
+          <br/>
+         - Icons have been added for type-system files.
+          <br/>
+         - Table formatting has been implemented for impex files. It allows to align value columns with header names.
+          <br/>
+         - Navigatation between java class and <enumtype> tag for *-item.xml files has been implemented.
+          <br/>
+         - Icons for impex files have been updated.
+          <br/>
+         - project.properties and additional properties have been added to Spring context.
+          <br/>
+         - Various errors in project import have been fixed.
       ]]>
     </change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="143"/>
+    <idea-version since-build="163.9166"/>
 
     <extensions defaultExtensionNs="com.intellij">
 
