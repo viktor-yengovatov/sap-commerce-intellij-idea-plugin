@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -54,10 +55,16 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
 
     private boolean isOldHybrisProject(final Project project) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
         if (commonIdeaService.isHybrisProject(project)) {
+            statsCollector.collectStat(StatsCollector.ACTIONS.OPEN_PROJECT);
             return commonIdeaService.isOutDatedHybrisProject(project);
         } else {
-            return commonIdeaService.isPotentiallyHybrisProject(project);
+            final boolean potential = commonIdeaService.isPotentiallyHybrisProject(project);
+            if (potential) {
+                statsCollector.collectStat(StatsCollector.ACTIONS.OPEN_POTENTIAL_PROJECT);
+            }
+            return potential;
         }
     }
 
