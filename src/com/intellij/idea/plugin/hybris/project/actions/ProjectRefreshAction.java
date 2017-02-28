@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.wizard.NonGuiSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -72,6 +73,7 @@ public class ProjectRefreshAction extends ImportModuleAction {
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
         try {
+            collectStatistics();
             doReImport(getEventProject(anActionEvent));
         } catch (ConfigurationException e) {
             Messages.showErrorDialog(anActionEvent.getProject(),
@@ -79,6 +81,11 @@ public class ProjectRefreshAction extends ImportModuleAction {
                                      HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
             );
         }
+    }
+
+    private void collectStatistics() {
+        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
+        statsCollector.collectStat(StatsCollector.ACTIONS.REFRESH_PROJECT);
     }
 
     public List<Module> doReImport(final Project project) throws ConfigurationException {

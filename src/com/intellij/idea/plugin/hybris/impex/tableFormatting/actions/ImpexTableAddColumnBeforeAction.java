@@ -3,6 +3,8 @@ package com.intellij.idea.plugin.hybris.impex.tableFormatting.actions;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableEditor;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.handler.ImpexTableActionHandler;
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.operation.AddColumnBeforeOperation;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 
 /**

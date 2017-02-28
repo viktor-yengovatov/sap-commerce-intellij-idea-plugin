@@ -36,10 +36,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.internal.statistic.UsageTrigger;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.application.ex.ApplicationEx;
 import com.intellij.openapi.application.ex.ApplicationManagerEx;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -52,10 +50,8 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.newvfs.persistent.FSRecords;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
-import com.intellij.util.Function;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -183,6 +179,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
 
         this.performProjectsCleanup(allModules);
+        this.collectStatistics(hybrisProjectDescriptor);
 
         final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
         final List<MavenModuleDescriptor> mavenModules = hybrisProjectDescriptor
@@ -241,6 +238,20 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         );
 
         return result;
+    }
+
+    private void collectStatistics(HybrisProjectDescriptor hybrisProjectDescriptor) {
+        StringBuilder parameters = new StringBuilder();
+        parameters.append("readOnly:");
+        parameters.append(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
+        parameters.append(",customDirectoryOverride:");
+        final boolean override = hybrisProjectDescriptor.getExternalExtensionsDirectory()!=null;
+        parameters.append(override);
+        final boolean hasSourceZip = hybrisProjectDescriptor.getSourceCodeZip() != null;
+        parameters.append(",hasSources:");
+        parameters.append(hasSourceZip);
+        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
+        statsCollector.collectStat(StatsCollector.ACTIONS.IMPORT_PROJECT, parameters.toString());
     }
 
     private void triggerCacheInvalidation() {
