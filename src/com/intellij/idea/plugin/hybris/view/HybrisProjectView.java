@@ -297,7 +297,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     protected boolean isNotHybrisProject() {
-        return null != this.hybrisProjectSettings && !this.hybrisProjectSettings.isHybisProject();
+        return null != this.hybrisProjectSettings && !this.hybrisProjectSettings.isHybrisProject();
     }
 
     protected boolean isJunk(@NotNull final VirtualFile virtualFile, @NotNull final List<String> junkFileNames) {

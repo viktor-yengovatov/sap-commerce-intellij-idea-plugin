@@ -31,6 +31,7 @@ import java.io.File;
 public class HybrisProjectSettings {
 
     protected boolean hybisProject;
+    protected boolean hybrisProject;
     protected String customDirectory;
     protected String hybrisDirectory;
     protected String importedByVersion;
@@ -38,12 +39,12 @@ public class HybrisProjectSettings {
     protected String externalExtensionsDirectory;
     protected boolean importOotbModulesInReadOnlyMode;
 
-    public boolean isHybisProject() {
-        return hybisProject;
+    public boolean isHybrisProject() {
+        return hybisProject || hybrisProject;
     }
 
-    public void setHybisProject(final boolean hybisProject) {
-        this.hybisProject = hybisProject;
+    public void setHybrisProject(final boolean hybrisProject) {
+        this.hybrisProject = hybrisProject;
     }
 
     public String getCustomDirectory() {
@@ -97,7 +98,7 @@ public class HybrisProjectSettings {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(hybisProject)
+            .append(hybrisProject)
             .append(customDirectory)
             .append(hybrisDirectory)
             .append(importedByVersion)
@@ -120,7 +121,7 @@ public class HybrisProjectSettings {
         final HybrisProjectSettings other = (HybrisProjectSettings) o;
 
         return new EqualsBuilder()
-            .append(hybisProject, other.hybisProject)
+            .append(hybrisProject, other.hybrisProject)
             .append(customDirectory, other.customDirectory)
             .append(hybrisDirectory, other.hybrisDirectory)
             .append(importedByVersion, other.importedByVersion)
@@ -133,7 +134,7 @@ public class HybrisProjectSettings {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("HybrisProjectSettings{");
-        sb.append("hybisProject=").append(hybisProject);
+        sb.append("hybrisProject=").append(hybrisProject);
         sb.append("customDirectoryPath=").append(customDirectory);
         sb.append("hybrisDirectory=").append(hybrisDirectory);
         sb.append("importedByVersion=").append(importedByVersion);

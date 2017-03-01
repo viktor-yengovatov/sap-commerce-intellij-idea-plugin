@@ -98,7 +98,7 @@ public class HybrisAntBuildListener implements AntBuildListener {
         for (Project project: ProjectManager.getInstance().getOpenProjects()) {
             final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                                               .getState();
-            if (!hybrisProjectSettings.isHybisProject()) {
+            if (!hybrisProjectSettings.isHybrisProject()) {
                 continue;
             }
 

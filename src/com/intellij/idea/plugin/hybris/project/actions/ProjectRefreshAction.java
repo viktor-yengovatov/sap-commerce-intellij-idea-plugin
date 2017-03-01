@@ -65,6 +65,10 @@ public class ProjectRefreshAction extends ImportModuleAction {
     public void update(AnActionEvent event) {
         final Project project = event.getData(PlatformDataKeys.PROJECT);
         final Presentation presentation = event.getPresentation();
+        if (project == null) {
+            presentation.setVisible(false);
+            return;
+        }
         presentation.setIcon(HybrisIcons.HYBRIS_ICON);
         final boolean visible = commonIdeaService.isHybrisProject(project);
         presentation.setVisible(visible);
