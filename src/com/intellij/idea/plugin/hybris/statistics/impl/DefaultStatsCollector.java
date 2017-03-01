@@ -18,12 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.statistics.impl;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.ui.LicensingFacade;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -31,6 +33,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -67,19 +70,28 @@ public class DefaultStatsCollector implements StatsCollector {
         try {
             final HttpPost post = buildRequest(action.name(), parameters);
             sendRequest(post);
-        } catch(UnsupportedEncodingException e) {
+        } catch(Throwable e) {
             // we don't care
         }
     }
 
-    private HttpPost buildRequest(String action, String parameters) throws UnsupportedEncodingException {
+    private HttpPost buildRequest(final String action, final String parameters) throws UnsupportedEncodingException {
         final HttpPost post = new HttpPost(HybrisConstants.STATS_COLLECTOR_URL);
         final List<NameValuePair> urlParameters = new ArrayList<>();
 
         urlParameters.add(new BasicNameValuePair("ide_version", getIdeVersion()));
         urlParameters.add(new BasicNameValuePair("ide_type", getIdeType()));
-        urlParameters.add(new BasicNameValuePair("registered_to", getRegisteredTo()));
-        urlParameters.add(new BasicNameValuePair("computer_name", getComputerName()));
+
+        final String registeredTo = getRegisteredTo();
+        if (null != registeredTo) {
+            urlParameters.add(new BasicNameValuePair("registered_to", DigestUtils.sha512Hex(registeredTo)));
+        }
+
+        final String computerName = getComputerName();
+        if (null != computerName) {
+            urlParameters.add(new BasicNameValuePair("computer_name", DigestUtils.sha512Hex(computerName)));
+        }
+
         urlParameters.add(new BasicNameValuePair("plugin_version", getPluginVersion()));
         urlParameters.add(new BasicNameValuePair("request_date", getCurrentDateTimeWithTimeZone()));
         urlParameters.add(new BasicNameValuePair("action", action));
@@ -95,7 +107,8 @@ public class DefaultStatsCollector implements StatsCollector {
     }
 
     private String getPluginVersion() {
-        return PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
+        final IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
+        return null == plugin ? null : plugin.getVersion();
     }
 
     private Future<StatsResponse> sendRequest(final HttpPost post) {
@@ -111,8 +124,11 @@ public class DefaultStatsCollector implements StatsCollector {
         return ApplicationInfo.getInstance().getBuild().getProductCode();
     }
 
+    @Nullable
     public String getRegisteredTo() {
-        return LicensingFacade.getInstance().getLicensedToMessage();
+        final LicensingFacade instance = LicensingFacade.getInstance();
+
+        return null == instance ? null : instance.getLicensedToMessage();
     }
 
     //the same user can have multiple computers with identical license. This would affect the user counter.
