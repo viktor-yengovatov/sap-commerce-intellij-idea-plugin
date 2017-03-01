@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -105,12 +105,16 @@
           - Markus Priegl
           <br/>
           - Sergei Aksenenko
+          <br/>
+          - Roger Ye
+          <br/>
+          - Hector Longarte
       ]]>
     </description>
 
     <change-notes>
         <![CDATA[
-         - An error in project refresh action has been fixed.
+         - An error in project import has been fixed.
       ]]>
     </change-notes>
 
