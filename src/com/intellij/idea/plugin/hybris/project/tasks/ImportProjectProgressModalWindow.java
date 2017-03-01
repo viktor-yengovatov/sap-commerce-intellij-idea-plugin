@@ -336,7 +336,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         final @NotNull HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                                           .getState();
-        hybrisProjectSettings.setHybisProject(true);
+        hybrisProjectSettings.setHybrisProject(true);
         final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
         hybrisProjectSettings.setImportedByVersion(version);
     }

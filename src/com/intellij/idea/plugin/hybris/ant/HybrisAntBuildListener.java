@@ -18,18 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.ant;
 
-import com.intellij.ide.DataManager;
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.lang.ant.config.AntBuildListener;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -82,8 +77,8 @@ public class HybrisAntBuildListener implements AntBuildListener {
     @Override
     public void buildFinished(final int state, final int errorCount) {
         final Map<Project, AntGenResult> resultMap = new HashMap<>();
-
         findAntResult(resultMap);
+        collectStatistics();
 
         if (resultMap.isEmpty()) {
             return;
@@ -94,11 +89,16 @@ public class HybrisAntBuildListener implements AntBuildListener {
         ProjectRefreshAction.triggerAction();
     }
 
+    private void collectStatistics() {
+        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
+        statsCollector.collectStat(StatsCollector.ACTIONS.ANT);
+    }
+
     private void findAntResult(final Map<Project, AntGenResult> resultMap) {
         for (Project project: ProjectManager.getInstance().getOpenProjects()) {
             final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                                               .getState();
-            if (!hybrisProjectSettings.isHybisProject()) {
+            if (!hybrisProjectSettings.isHybrisProject()) {
                 continue;
             }
 
