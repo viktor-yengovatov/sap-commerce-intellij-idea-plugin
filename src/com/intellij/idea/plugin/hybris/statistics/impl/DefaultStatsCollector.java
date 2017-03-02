@@ -62,7 +62,7 @@ public class DefaultStatsCollector implements StatsCollector {
 
     @Override
     public void collectStat(final ACTIONS action) {
-        collectStat(action, "");
+        collectStat(action, null);
     }
 
     @Override
@@ -95,8 +95,9 @@ public class DefaultStatsCollector implements StatsCollector {
         urlParameters.add(new BasicNameValuePair("plugin_version", getPluginVersion()));
         urlParameters.add(new BasicNameValuePair("request_date", getCurrentDateTimeWithTimeZone()));
         urlParameters.add(new BasicNameValuePair("action", action));
-        urlParameters.add(new BasicNameValuePair("parameters", parameters));
-
+        if (parameters != null) {
+            urlParameters.add(new BasicNameValuePair("parameters", parameters));
+        }
         post.setEntity(new UrlEncodedFormEntity(urlParameters, UTF_8));
         return post;
     }
@@ -143,13 +144,14 @@ public class DefaultStatsCollector implements StatsCollector {
 
         // try environment properties.
         final String envCompName = System.getenv("COMPUTERNAME");
-        if (envCompName != null)
+        if (envCompName != null) {
             return envCompName;
+        }
         final String host = System.getenv("HOSTNAME");
-        if (host != null)
+        if (host != null) {
             return host;
+        }
 
-        // undetermined.
-        return "UNDETERMINED";
+        return null;
     }
 }
