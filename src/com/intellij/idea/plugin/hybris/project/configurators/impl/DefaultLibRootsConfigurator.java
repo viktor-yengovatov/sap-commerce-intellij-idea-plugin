@@ -130,10 +130,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(javaLibraryDescriptor);
 
-        if (!javaLibraryDescriptor.getLibraryFile().exists()) {
-            return;
-        }
-
         final Library library = modifiableRootModel.getModuleLibraryTable().createLibrary();
         final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
         libraryModifiableModel.addRoot(
@@ -165,10 +161,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(javaLibraryDescriptor);
-
-        if (!javaLibraryDescriptor.getLibraryFile().exists()) {
-            return;
-        }
 
         final LibraryTable projectLibraryTable = modifiableRootModel.getModuleLibraryTable();
 
