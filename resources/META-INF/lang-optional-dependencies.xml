@@ -44,6 +44,7 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.DefaultXPathService"/>
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.type.system.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
+        <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->

@@ -21,10 +21,13 @@ package com.intellij.idea.plugin.hybris.statistics.impl;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.ui.LicensingFacade;
+import com.intellij.util.containers.HashSet;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -67,12 +70,20 @@ public class DefaultStatsCollector implements StatsCollector {
 
     @Override
     public void collectStat(final ACTIONS action, final String parameters) {
+        addInternalFlag(action);
         try {
             final HttpPost post = buildRequest(action.name(), parameters);
             sendRequest(post);
         } catch(Throwable e) {
             // we don't care
         }
+    }
+
+    private void addInternalFlag(final ACTIONS action) {
+        final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final HashSet<ACTIONS> usedActions = settings.getUsedActions();
+        usedActions.add(action);
+        settings.setUsedActions(usedActions);
     }
 
     private HttpPost buildRequest(final String action, final String parameters) throws UnsupportedEncodingException {
