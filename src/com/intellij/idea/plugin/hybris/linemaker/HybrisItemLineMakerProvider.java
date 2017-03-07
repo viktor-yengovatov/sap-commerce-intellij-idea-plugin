@@ -31,8 +31,8 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
     ) {
         if (element instanceof PsiClass) {
             final PsiClass psiClass = (PsiClass) element;
-            if (psiClass.getName() != null && (psiClass.getName().contains("Model") ||
-                                               psiClass.getSuperClass().getName().contains("Generated"))) {
+            if ((psiClass.getName() != null && psiClass.getName().endsWith("Model") ||
+                (psiClass.getSuperClass() != null && psiClass.getSuperClass().getName().startsWith("Generated")))) {
 
                 final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
                 if (!list.isEmpty()) {
