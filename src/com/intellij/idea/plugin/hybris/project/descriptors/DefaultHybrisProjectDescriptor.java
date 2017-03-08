@@ -431,7 +431,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                     .collect(Collectors.toList())
             );
         }
-
+        
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
         final List<File> pathsFailedToImport = new ArrayList<>();
 
@@ -494,23 +494,30 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (null != progressListenerProcessor) {
             if (!progressListenerProcessor.shouldContinue(rootProjectDirectory)) {
+                LOG.error("Modules scanning has been interrupted.");
                 throw new InterruptedException("Modules scanning has been interrupted.");
             }
         }
 
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
-        if (hybrisProjectService.isHybrisModule(rootProjectDirectory) ||
-            hybrisProjectService.isConfigModule(rootProjectDirectory))
+        if (hybrisProjectService.isHybrisModule(rootProjectDirectory)) {
+            LOG.info("Detected hybris module "+rootProjectDirectory.getAbsolutePath());
+            paths.add(rootProjectDirectory);
+            return paths;
+        }
+        if (hybrisProjectService.isConfigModule(rootProjectDirectory)) {
 //            hybrisProjectService.isMavenModule(rootProjectDirectory)) //IIP-210
-        {
+            LOG.info("Detected config module "+rootProjectDirectory.getAbsolutePath());
             paths.add(rootProjectDirectory);
             return paths;
         }
 
         if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
+            LOG.info("Detected platform module "+rootProjectDirectory.getAbsolutePath());
             paths.add(rootProjectDirectory);
         } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory)) {
+            LOG.info("Detected eclipse module "+rootProjectDirectory.getAbsolutePath());
             paths.add(rootProjectDirectory);
             return paths;
         }
