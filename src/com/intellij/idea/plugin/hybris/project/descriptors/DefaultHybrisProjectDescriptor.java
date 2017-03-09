@@ -264,12 +264,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (foundConfigModules.isEmpty()) {
             return null;
         }
+        if (foundConfigModules.size() == 1) {
+            return foundConfigModules.get(0);
+        }
+        if (platformHybrisModuleDescriptor == null) {
+           return null;
+        }
         final File platformDir = platformHybrisModuleDescriptor.getRootDirectory();
         final File expectedConfigDir = new File(platformDir+ HybrisConstants.CONFIG_RELATIVE_PATH);
         if (!expectedConfigDir.isDirectory()) {
-            if (foundConfigModules.size() == 1) {
-                return foundConfigModules.get(0);
-            }
             return null;
         }
         for (ConfigHybrisModuleDescriptor configHybrisModuleDescriptor: foundConfigModules) {
