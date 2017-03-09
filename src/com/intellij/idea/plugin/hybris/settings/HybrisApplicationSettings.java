@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.settings;
 
 import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
+import com.intellij.util.containers.HashSet;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -88,6 +90,9 @@ public class HybrisApplicationSettings {
 
     @PropertyName("createBackwardCyclicDependenciesForAddOns")
     private boolean createBackwardCyclicDependenciesForAddOns = false;
+
+    @PropertyName("usedActions")
+    private HashSet<StatsCollector.ACTIONS> usedActions = new HashSet<>();
 
     @PropertyName("hybrisInstanceUsername")
     private String hybrisInstanceUsername = "admin";
@@ -214,6 +219,15 @@ public class HybrisApplicationSettings {
         this.groupPlatform = groupPlatform;
     }
 
+    public HashSet<StatsCollector.ACTIONS> getUsedActions() {
+        return usedActions;
+    }
+
+    public void setUsedActions(final HashSet<StatsCollector.ACTIONS> usedActions) {
+        this.usedActions = usedActions;
+    }
+
+
     public String getHybrisInstanceUsername() {
         return hybrisInstanceUsername;
     }
@@ -265,6 +279,7 @@ public class HybrisApplicationSettings {
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
+            .append(usedActions, other.usedActions)
             .isEquals();
     }
 
@@ -285,6 +300,7 @@ public class HybrisApplicationSettings {
             .append(hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly)
             .append(createBackwardCyclicDependenciesForAddOns)
+            .append(usedActions)
             .toHashCode();
     }
 
@@ -305,6 +321,7 @@ public class HybrisApplicationSettings {
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
         sb.append(", createBackwardCyclicDependenciesForAddOns='").append(createBackwardCyclicDependenciesForAddOns).append('\'');
+        sb.append(", usedActions='").append(usedActions).append('\'');
         sb.append('}');
         return sb.toString();
     }

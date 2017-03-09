@@ -52,7 +52,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -112,7 +111,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
         if (hybrisProjectSettings.getState() != null) {
-            if (hybrisProjectSettings.getState().isHybisProject()) {
+            if (hybrisProjectSettings.getState().isHybrisProject()) {
                 setHybrisProject(project);
             }
         }

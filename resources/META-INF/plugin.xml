@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>6.0</version>
+    <version>6.0.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -105,56 +105,16 @@
           - Markus Priegl
           <br/>
           - Sergei Aksenenko
+          <br/>
+          - Roger Ye
+          <br/>
+          - Hector Longarte
       ]]>
     </description>
 
     <change-notes>
         <![CDATA[
-         - Refresh project action has been added in "File -> Refresh Y project" as well as automatic refreshing after modulegen performed though IDEA ant menu.
-          <br/>
-         - An error in importing ybackoffice extension has been fixed.
-          <br/>
-         - Hybris temp directory has been excluded from project import.
-          <br/>
-         - Cache invalidation logic after new project import has been improved.
-          <br/>
-         - Various errors in importing Maven and Eclipse modules have been fixed (Maven modules support has been temporary disabled due to a bug in the IDE).
-          <br/>
-         - "Go to declaration" action has been implemented for Hybris Model and Data classes.
-          <br/>
-         - Structure View has been implemented for hybris items.xml files.
-          <br/>
-         - Highlighting of impex column values for a selected header has been implemented (the reverse of header name highlighting).
-          <br/>
-         - Folding of impex values lines has been implemented.
-          <br/>
-         - Impex formatter has been improved to support User Rights structure.
-          <br/>
-         - Impex syntax highlighting has been improved.
-          <br/>
-         - An action for creating impex files has been added to IDEA's menu "New->Impex File".
-          <br/>
-         - Autocompletion of impex keywords has been implemented.
-          <br/>
-         - Autocompletion for impex macroses has been implemented.
-          <br/>
-         - Highlighting of the same header attributes and macroces thoughout an impex file has been implemented.
-          <br/>
-         - "Go to declaration" action has been implemented for impex macroses.
-          <br/>
-         - "Find Usages" action has been implemented for impex macroses.
-          <br/>
-         - Icons have been added for type-system files.
-          <br/>
-         - Table formatting has been implemented for impex files. It allows to align value columns with header names.
-          <br/>
-         - Navigatation between java class and <enumtype> tag for *-item.xml files has been implemented.
-          <br/>
-         - Icons for impex files have been updated.
-          <br/>
-         - project.properties and additional properties have been added to Spring context.
-          <br/>
-         - Various errors in project import have been fixed.
+         - An error in project import has been fixed.
       ]]>
     </change-notes>
 
@@ -179,6 +139,9 @@
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.statistics.StatsCollector"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.statistics.impl.DefaultStatsCollector"/>
 
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisItemLineMakerProvider"/>

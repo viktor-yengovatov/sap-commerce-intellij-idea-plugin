@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created 22:21 21 December 2014
@@ -72,7 +73,8 @@ public class ImpexBlock extends AbstractBlock {
 
             alignmentStrategy.processNode(currentNode);
 
-            if (isNotWhitespaceOrNewLine(currentNode)) {
+            if (isNotWhitespaceOrNewLine(currentNode) 
+                && !isCurrentNodeHasParentValue(currentNode)) {
 
                 final Block block = new ImpexBlock(
                         currentNode,
@@ -105,6 +107,10 @@ public class ImpexBlock extends AbstractBlock {
     private boolean isNotWhitespaceOrNewLine(final ASTNode currentNode) {
         return TokenType.WHITE_SPACE != currentNode.getElementType()
                && ImpexTypes.CRLF != currentNode.getElementType();
+    }
+
+    private boolean isCurrentNodeHasParentValue(final @NotNull ASTNode currentNode) {
+        return Objects.equals(currentNode.getTreeParent().getElementType(), ImpexTypes.VALUE);
     }
 
     @Override

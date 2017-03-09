@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.common.services.impl;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -87,7 +86,7 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     @Override
     public boolean isHybrisProject(@NotNull final Project project) {
-        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybisProject();
+        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybrisProject();
     }
 
     @Override
