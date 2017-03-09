@@ -89,6 +89,15 @@ public class HybrisApplicationSettings {
     @PropertyName("createBackwardCyclicDependenciesForAddOns")
     private boolean createBackwardCyclicDependenciesForAddOns = false;
 
+    @PropertyName("hybrisInstanceUsername")
+    private String hybrisInstanceUsername = "admin";
+
+    @PropertyName("hybrisInstancePassword")
+    private String hybrisInstancePassword = "nimda";
+
+    @PropertyName("hybrisHostUrl")
+    private String hybrisHostUrl = "https://localhost:9001";
+
 
     public HybrisApplicationSettings() {
     }
@@ -203,6 +212,30 @@ public class HybrisApplicationSettings {
 
     public void setGroupPlatform(final String groupPlatform) {
         this.groupPlatform = groupPlatform;
+    }
+
+    public String getHybrisInstanceUsername() {
+        return hybrisInstanceUsername;
+    }
+
+    public void setHybrisInstanceUsername(final String hybrisInstanceUsername) {
+        this.hybrisInstanceUsername = hybrisInstanceUsername;
+    }
+
+    public String getHybrisInstancePassword() {
+        return hybrisInstancePassword;
+    }
+
+    public void setHybrisInstancePassword(final String hybrisInstancePassword) {
+        this.hybrisInstancePassword = hybrisInstancePassword;
+    }
+
+    public String getHybrisHostUrl() {
+        return hybrisHostUrl;
+    }
+
+    public void setHybrisHostUrl(final String hybrisHostUrl) {
+        this.hybrisHostUrl = hybrisHostUrl;
     }
 
     @Override
