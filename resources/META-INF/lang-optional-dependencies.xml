@@ -23,9 +23,11 @@
         <!--                                            Hybris Type System                                           -->
         <!-- ####################################################################################################### -->
 
-        <dom.fileDescription implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
+        <dom.fileDescription
+            implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
 
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.editor.TypeSystemGutterAnnotator"/>
+        <annotator language="XML"
+                   implementationClass="com.intellij.idea.plugin.hybris.type.system.editor.TypeSystemGutterAnnotator"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>
@@ -70,9 +72,11 @@
         <lang.formatter language="Impex"
                         implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
 
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+        <codeStyleSettingsProvider
+            implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
 
-        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider
+            implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
@@ -83,26 +87,32 @@
         <applicationConfigurable id="ImpexPlugin.ImpexConfigurable" parentId="root"
                                  instance="com.intellij.idea.plugin.hybris.settings.HybrisSettingsConfigurable"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
 
         <completion.contributor language="Impex"
                                 implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultImpexFoldingPlaceholderBuilder"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultImpexFoldingPlaceholderBuilder"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartImpexFoldingPlaceholderBuilder"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartImpexFoldingPlaceholderBuilder"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.formatting.AlignmentStrategy"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.ColumnsAlignmentStrategy"/>
@@ -110,42 +120,50 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighter"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
 
-        <defaultLiveTemplatesProvider implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexTemplateProvider"/>
+        <defaultLiveTemplatesProvider
+            implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexTemplateProvider"/>
         <liveTemplateContext implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContext"/>
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
 
-        <gotoDeclarationHandler implementation="com.intellij.idea.plugin.hybris.impex.psi.gotoHandler.ImpexMacrosGoToDeclarationHandler"/>
-        
+        <gotoDeclarationHandler
+            implementation="com.intellij.idea.plugin.hybris.impex.psi.gotoHandler.ImpexMacrosGoToDeclarationHandler"/>
+
         <highlightUsagesHandlerFactory
             implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
-        
+
         <findUsagesHandlerFactory
             implementation="com.intellij.idea.plugin.hybris.impex.find.findUsages.MacrosFindUsagesHandlerFactory"/>
-        
+
         <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
-        <lang.findUsagesProvider language="Impex" 
+        <lang.findUsagesProvider language="Impex"
                                  implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
     </extensions>
 
@@ -175,30 +193,50 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-
         <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true">
             <action id="ImpexTableFormatter.Format"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAction"
-                    text="Format"
+                    text="Format Impex"
                     icon="/icons/hybrisIcon.png"
-                    description="Formats Impex table with pipe delimiters">
+                    description="Format Impex to table">
             </action>
             <!-- This feature not ready for production. Temporary disabled.  -->
             <!--<action id="ImpexTableFormatter.FormatAllTables"-->
-                    <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
-                    <!--text="Format All"-->
-                    <!--description="Formats table with pipe delimiters">-->
+            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
+            <!--text="Format All"-->
+            <!--description="Formats table with pipe delimiters">-->
             <!--</action>-->
             <!--<action id="ImpexTableFormatter.AddColumnBefore"-->
-                    <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
-                    <!--text="Add Column Before"-->
-                    <!--description="Add Column Before">-->
+            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
+            <!--text="Add Column Before"-->
+            <!--description="Add Column Before">-->
             <!--</action>-->
             <action id="ImpexTableFormatter.SelectTable"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
-                    text="Select Impex Table"
+                    text="Select Impex"
                     icon="/icons/hybrisIcon.png"
-                    description="Select Impex table">
+                    description="Select Impex">
+            </action>
+
+            <add-to-group group-id="CodeMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
+
+        <group id="ImpexRemoteControl.Actions" text="Impex Remote Control" popup="true">
+            <action id="ImpexRemoteControl.Validate"
+                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
+                    text="Validate selected Impex"
+                    icon="/icons/hybrisIcon.png"
+                    description="validate">
+                <add-to-group group-id="ToolsMenu" anchor="last"/>
+            </action>
+
+            <action id="ImpexRemoteControl.Import"
+                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ImportImpexAction"
+                    text="Import selected Impex"
+                    icon="/icons/hybrisIcon.png"
+                    description="import">
+                <add-to-group group-id="ToolsMenu" anchor="last"/>
             </action>
 
             <add-to-group group-id="CodeMenu" anchor="last"/>

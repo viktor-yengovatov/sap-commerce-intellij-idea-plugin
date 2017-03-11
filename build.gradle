@@ -49,6 +49,7 @@ dependencies {
     compile 'com.wutka:dtdparser:1.21'
 
     compile 'com.github.ben-manes.caffeine:caffeine:2.4.0'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
 
     //this should be pulled from <idea-home>/lib/ant/lib
     compileOnly 'org.apache.ant:ant:1.9.4'
