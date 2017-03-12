@@ -59,6 +59,10 @@ public class HybrisApplicationSettingsForm {
     private JCheckBox defaultPlatformInReadOnly;
     private JTextField groupPlatformTextField;
     private JCheckBox createBackwardCyclicDependenciesForAddOns;
+    private JTextField hybrisInstanceUsernameTextField;
+    private JTextField hybrisInstancePasswordTextField;
+    private JTextField hybrisHostUrlTextField;
+    private JLabel hybrisRemoteControlLabel;
 
     private JunkListPanel junkListPanel;
 
@@ -77,6 +81,9 @@ public class HybrisApplicationSettingsForm {
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
         defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
         createBackwardCyclicDependenciesForAddOns.setSelected(data.isCreateBackwardCyclicDependenciesForAddOns());
+        hybrisInstanceUsernameTextField.setText(data.getHybrisInstanceUsername());
+        hybrisInstancePasswordTextField.setText(data.getHybrisInstancePassword());
+        hybrisHostUrlTextField.setText(data.getHybrisHostUrl());
     }
 
     public void getData(final HybrisApplicationSettings data) {
@@ -94,6 +101,11 @@ public class HybrisApplicationSettingsForm {
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
         data.setCreateBackwardCyclicDependenciesForAddOns(createBackwardCyclicDependenciesForAddOns.isSelected());
+        
+        data.setHybrisInstanceUsername(hybrisInstanceUsernameTextField.getText());
+        data.setHybrisInstancePassword(hybrisInstancePasswordTextField.getText());
+        data.setHybrisHostUrl(hybrisHostUrlTextField.getText());
+        
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -127,6 +139,15 @@ public class HybrisApplicationSettingsForm {
         if (!StringUtil.equals(groupPlatformTextField.getText(),data.getGroupPlatform())) {
             return true;
         }
+        if (!StringUtil.equals(hybrisHostUrlTextField.getText(),data.getHybrisHostUrl())) {
+            return true;
+        }
+        if (!StringUtil.equals(hybrisInstancePasswordTextField.getText(),data.getHybrisInstancePassword())) {
+            return true;
+        }
+        if (!StringUtil.equals(hybrisInstanceUsernameTextField.getText(),data.getHybrisInstanceUsername())) {
+            return true;
+        }
         if (!StringUtil.equals(groupNonHybrisTextField.getText(), data.getGroupNonHybris())) {
             return true;
         }
@@ -153,6 +174,8 @@ public class HybrisApplicationSettingsForm {
         limitedSpringConfigCheckBox.setVisible(boxVisible);
         impexLabel = new JBLabel();
         impexLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.impex.title"), false));
+        hybrisRemoteControlLabel = new JBLabel();
+        hybrisRemoteControlLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.tools.remote.title"), false));
         projectImportLabel = new JBLabel();
         projectImportLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.project.title")));
         junkListPanel = new JunkListPanel("hybris.import.settings.junk.directory.name", new ArrayList<String>());
