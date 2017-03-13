@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.common.utils;
 
+import com.google.common.base.Verify;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumTypes;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
@@ -40,7 +42,11 @@ public final class PsiItemXmlUtil {
 
     public static List<XmlElement> findTags(final PsiClass psiClass, final String tagName) {
         final Project project = psiClass.getProject();
-        final String searchName = cleanSearchName(psiClass.getName());
+        final String psiClassName = psiClass.getName();
+        if (psiClassName == null) {
+            throw new IllegalStateException("class name must not be a null");
+        }
+        final String searchName = cleanSearchName(psiClassName);
 
         final Collection<VirtualFile> files =
             FilenameIndex.getAllFilesByExt(project, "xml", GlobalSearchScope.allScope(project)).stream()
@@ -55,16 +61,23 @@ public final class PsiItemXmlUtil {
             if (xmlFile != null) {
                 final DomManager manager = DomManager.getDomManager(project);
                 final DomFileElement<DomElement> domFile = manager.getFileElement(xmlFile);
+                assert domFile != null;
                 final Items root = (Items) domFile.getRootElement();
 
                 if (ITEM_TYPE_TAG_NAME.equals(tagName)) {
                     final ItemTypes sourceItems = root.getItemTypes();
                     final List<ItemType> itemTypes = sourceItems.getItemTypes();
-                    result.addAll(itemTypes.stream()
-                                           .filter(itemType ->
-                                                       searchName.equals(itemType.getCode().getValue()))
-                                           .map(DomElement::getXmlElement)
-                                           .collect(Collectors.toList()));
+                    final Stream<ItemType> streamItemTypes = itemTypes.stream();
+                    final Stream<ItemType> streamItemGroups =
+                        sourceItems.getTypeGroups()
+                                   .parallelStream()
+                                   .flatMap(typeGroup -> typeGroup.getItemTypes().stream())
+                                   .collect(Collectors.toList()).stream();
+                    result.addAll(Stream.concat(streamItemTypes, streamItemGroups)
+                                        .filter(itemType ->
+                                                    searchName.equals(itemType.getCode().getValue()))
+                                        .map(DomElement::getXmlElement)
+                                        .collect(Collectors.toList()));
                 } else if (ENUM_TYPE_TAG_NAME.equals(tagName)) {
                     final EnumTypes sourceItems = root.getEnumTypes();
                     final List<EnumType> enumTypes = sourceItems.getEnumTypes();
