@@ -42,10 +42,12 @@ import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependencies
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
@@ -87,6 +89,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -326,6 +329,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (sourceZip != null && sourceZip.exists()) {
             hybrisProjectSettings.setSourceCodeZip(sourceZip.getPath());
         }
+        HashSet<String> completeSetOfHybrisModules = new HashSet<>();
+        hybrisProjectDescriptor.getFoundModules().stream()
+                               .filter(e->e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
+                               .forEach(e-> completeSetOfHybrisModules.add(e.getName()));
+        hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
     }
 
 

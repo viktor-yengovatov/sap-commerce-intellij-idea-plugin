@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.settings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.File;
+import java.util.HashSet;
 
 /**
  * Created 6:51 PM 28 June 2015.
@@ -30,7 +30,6 @@ import java.io.File;
  */
 public class HybrisProjectSettings {
 
-    protected boolean hybisProject;
     protected boolean hybrisProject;
     protected String customDirectory;
     protected String hybrisDirectory;
@@ -38,9 +37,10 @@ public class HybrisProjectSettings {
     protected String sourceCodeZip;
     protected String externalExtensionsDirectory;
     protected boolean importOotbModulesInReadOnlyMode;
+    protected HashSet<String> completeSetOfAvailableExtensionsInHybris;
 
     public boolean isHybrisProject() {
-        return hybisProject || hybrisProject;
+        return hybrisProject;
     }
 
     public void setHybrisProject(final boolean hybrisProject) {
@@ -95,6 +95,14 @@ public class HybrisProjectSettings {
         this.importOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyMode;
     }
 
+    public HashSet<String> getCompleteSetOfAvailableExtensionsInHybris() {
+        return completeSetOfAvailableExtensionsInHybris;
+    }
+
+    public void setCompleteSetOfAvailableExtensionsInHybris(final HashSet<String> completeSetOfAvailableExtensionsInHybris) {
+        this.completeSetOfAvailableExtensionsInHybris = completeSetOfAvailableExtensionsInHybris;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -105,6 +113,7 @@ public class HybrisProjectSettings {
             .append(sourceCodeZip)
             .append(externalExtensionsDirectory)
             .append(importOotbModulesInReadOnlyMode)
+            .append(completeSetOfAvailableExtensionsInHybris)
             .toHashCode();
     }
 
@@ -128,6 +137,7 @@ public class HybrisProjectSettings {
             .append(sourceCodeZip, other.sourceCodeZip)
             .append(externalExtensionsDirectory, other.externalExtensionsDirectory)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
+            .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
             .isEquals();
     }
 
@@ -141,6 +151,7 @@ public class HybrisProjectSettings {
         sb.append("sourceCodeZip=").append(sourceCodeZip);
         sb.append("externalExtensionsDirectory=").append(externalExtensionsDirectory);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
+        sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);
         sb.append('}');
         return sb.toString();
     }
