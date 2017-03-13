@@ -71,10 +71,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JLabel importOotbModulesInReadOnlyModeLabel;
     private JLabel externalExtensionsPresentLabel;
 
-    public HybrisWorkspaceRootStep(final WizardContext context, final boolean nonGuiMode){
-        super(context);
-    }
-
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
 
