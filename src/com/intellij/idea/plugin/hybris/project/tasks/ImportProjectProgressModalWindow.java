@@ -25,6 +25,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
@@ -94,6 +95,8 @@ import java.util.stream.Collectors;
  */
 public class ImportProjectProgressModalWindow extends Task.Modal {
 
+    private static final String SPRING_PLUGIN_ID = "com.intellij.spring";
+    private static final String JAVAEE_PLUGIN_ID = "com.intellij.javaee";
     private final Project project;
     private final ModifiableModuleModel model;
     private final ConfiguratorFactory configuratorFactory;
@@ -156,9 +159,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         if (PlatformUtils.isIdeaUltimate()) {
             indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.facets"));
-            this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
-            this.excludeFrameworkDetection(project, WebFacet.ID);
-            this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
+            if (isPluginActive(SPRING_PLUGIN_ID)) {
+                this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
+            }
+            if (isPluginActive(JAVAEE_PLUGIN_ID)) {
+                this.excludeFrameworkDetection(project, WebFacet.ID);
+                this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
+            }
         }
 
         try {
@@ -254,6 +261,18 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.finishing"));
+    }
+
+    private boolean isPluginActive(final String id) {
+        final PluginId pluginId = PluginId.getId(id);
+        if (pluginId == null) {
+            return false;
+        }
+        final IdeaPluginDescriptor plugin = PluginManager.getPlugin(pluginId);
+        if (plugin == null) {
+            return false;
+        }
+        return plugin.isEnabled();
     }
 
     private void disableWrapOnType(final Language impexLanguage) {

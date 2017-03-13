@@ -193,7 +193,7 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true">
+        <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true" icon="/icons/hybrisIcon.png">
             <action id="ImpexTableFormatter.Format"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAction"
                     text="Format Impex"
@@ -222,7 +222,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <group id="ImpexRemoteControl.Actions" text="Impex Remote Control" popup="true">
+        <group id="ImpexRemoteControl.Actions" text="Impex Remote Control" popup="true" icon="/icons/hybrisIcon.png">
             <action id="ImpexRemoteControl.Validate"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
                     text="Validate selected Impex"

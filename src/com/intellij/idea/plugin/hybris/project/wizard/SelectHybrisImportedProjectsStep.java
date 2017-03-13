@@ -47,10 +47,6 @@ import java.util.List;
 public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> implements NonGuiSupport {
     final static int COLUMN_WIDTH = 300;
 
-    public SelectHybrisImportedProjectsStep(final WizardContext context, final boolean nonGuiMode) {
-        super(context);
-    }
-
     public SelectHybrisImportedProjectsStep(final WizardContext context) {
         super(context);
 
