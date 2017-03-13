@@ -33,7 +33,6 @@ public interface EclipseConfigurator {
     void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<EclipseModuleDescriptor> eclipseModules,
-        @NotNull final String[] eclipseRootGroup
+        @NotNull final List<EclipseModuleDescriptor> eclipseModules
     );
 }
