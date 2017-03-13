@@ -1,6 +1,5 @@
 package com.intellij.idea.plugin.hybris.common.utils;
 
-import com.google.common.base.Verify;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumTypes;
