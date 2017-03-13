@@ -45,8 +45,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<EclipseModuleDescriptor> eclipseModules,
-        @NotNull final String[] eclipseRootGroup
+        @NotNull final List<EclipseModuleDescriptor> eclipseModules
     ) {
         if (eclipseModules.isEmpty()) {
             return;
@@ -62,23 +61,20 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         eclipseImportBuilder.setList(projectList);
         invokeAndWaitIfNeeded((Runnable) () -> {
             final List<Module> newRootModules = eclipseImportBuilder.commit(project);
-            if (eclipseRootGroup != null && eclipseRootGroup.length > 0) {
-                moveEclipseModulesToGroup(project, newRootModules, eclipseRootGroup);
-            }}
-        );
+            moveEclipseModulesToGroup(project, newRootModules);
+        });
 
     }
 
     private void moveEclipseModulesToGroup(
         @NotNull final Project project,
-        @NotNull final List<Module> eclipseModules,
-        @NotNull final String[] eclipseRootGroup
+        @NotNull final List<Module> eclipseModules
     ) {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         for (Module module: eclipseModules) {
             final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
-            modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(eclipseRootGroup, groupPath));
+            modifiableModuleModel.setModuleGroupPath(module, groupPath.clone());
         }
         AccessToken token = null;
         try {
