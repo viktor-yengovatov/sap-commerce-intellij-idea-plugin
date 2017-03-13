@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public interface EclipseConfigurator {
     void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<EclipseModuleDescriptor> eclipseModules
+        @NotNull final List<EclipseModuleDescriptor> eclipseModules,
+        @Nullable final String[] eclipseRootGroup
     );
 }

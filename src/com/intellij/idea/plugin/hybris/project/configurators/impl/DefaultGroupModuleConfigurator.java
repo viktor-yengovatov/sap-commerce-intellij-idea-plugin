@@ -84,6 +84,14 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Nullable
     @Override
     public String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        final String[] groupPath = getGroupPath(moduleDescriptor);
+        if (groupPath == null) {
+            return null;
+        }
+        return groupPath.clone();
+    }
+
+    private String[] getGroupPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return groupPlatform;
         }
