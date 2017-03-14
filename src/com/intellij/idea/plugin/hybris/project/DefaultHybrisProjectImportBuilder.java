@@ -206,7 +206,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 .map(e -> (EclipseModuleDescriptor) e)
                 .collect(Collectors.toList());
             if (!eclipseModules.isEmpty()) {
-                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules);
+                final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(eclipseModules.get(0));
+                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
             }
         }
 
