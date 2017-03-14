@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
@@ -25,6 +26,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMap;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
+import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
@@ -45,6 +47,7 @@ class TSMetaModelImpl implements TSMetaModel {
     private final NoCaseMap<TSMetaClassImpl> myClasses = new NoCaseMap<>();
     private final NoCaseMap<TSMetaEnumImpl> myEnums = new NoCaseMap<>();
     private final NoCaseMap<TSMetaCollectionImpl> myCollections = new NoCaseMap<>();
+    private final NoCaseMap<TSMetaAtomicImpl> myAtomics = new NoCaseMap<>();
     private final NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName = new NoCaseMultiMap<>();
 
     @Nullable
@@ -130,6 +133,12 @@ class TSMetaModelImpl implements TSMetaModel {
         return myClasses.values().stream();
     }
 
+    @NotNull
+    @Override
+    public Stream<? extends TSMetaAtomic> getMetaAtomicStream() {
+        return myAtomics.values().stream();
+    }
+
     @Nullable
     @Override
     public TSMetaClass findMetaClassByName(@NotNull final String name) {
@@ -156,6 +165,12 @@ class TSMetaModelImpl implements TSMetaModel {
         return myEnums.get(name);
     }
 
+    @Nullable
+    @Override
+    public TSMetaAtomic findMetaAtomicByName(@NotNull final String name) {
+        return myAtomics.get(name);
+    }
+
     @NotNull
     @Override
     public Stream<? extends TSMetaCollection> getMetaCollectionsStream() {
@@ -168,5 +183,16 @@ class TSMetaModelImpl implements TSMetaModel {
         return myCollections.get(name);
     }
 
-
+    @Nullable
+    @Override
+    public TSMetaAtomic findOrCreateAtomicType(@NotNull final AtomicType atomicType) {
+        final String clazzName = atomicType.getClazz().getValue();
+        final TSMetaAtomicImpl tsMetaAtomic = myAtomics.get(clazzName);
+        if (tsMetaAtomic == null) {
+            TSMetaAtomic atomic = new TSMetaAtomicImpl(clazzName, atomicType);
+            myAtomics.put(clazzName, (TSMetaAtomicImpl) atomic);
+            return atomic;
+        }
+        return tsMetaAtomic;
+    }
 }
