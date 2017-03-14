@@ -21,7 +21,9 @@ package com.intellij.idea.plugin.hybris.settings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.HashSet;
+import java.util.Set;
+
+import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 /**
  * Created 6:51 PM 28 June 2015.
@@ -37,7 +39,7 @@ public class HybrisProjectSettings {
     protected String sourceCodeZip;
     protected String externalExtensionsDirectory;
     protected boolean importOotbModulesInReadOnlyMode;
-    protected HashSet<String> completeSetOfAvailableExtensionsInHybris;
+    protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
 
     public boolean isHybrisProject() {
         return hybrisProject;
@@ -95,11 +97,11 @@ public class HybrisProjectSettings {
         this.importOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyMode;
     }
 
-    public HashSet<String> getCompleteSetOfAvailableExtensionsInHybris() {
+    public Set<String> getCompleteSetOfAvailableExtensionsInHybris() {
         return completeSetOfAvailableExtensionsInHybris;
     }
 
-    public void setCompleteSetOfAvailableExtensionsInHybris(final HashSet<String> completeSetOfAvailableExtensionsInHybris) {
+    public void setCompleteSetOfAvailableExtensionsInHybris(final Set<String> completeSetOfAvailableExtensionsInHybris) {
         this.completeSetOfAvailableExtensionsInHybris = completeSetOfAvailableExtensionsInHybris;
     }
 
