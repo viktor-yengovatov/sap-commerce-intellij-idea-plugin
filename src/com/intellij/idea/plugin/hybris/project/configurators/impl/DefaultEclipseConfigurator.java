@@ -27,8 +27,8 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
 
 import java.util.List;
@@ -45,7 +45,8 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<EclipseModuleDescriptor> eclipseModules
+        @NotNull final List<EclipseModuleDescriptor> eclipseModules,
+        @Nullable final String[] eclipseGroup
     ) {
         if (eclipseModules.isEmpty()) {
             return;
@@ -61,20 +62,20 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         eclipseImportBuilder.setList(projectList);
         invokeAndWaitIfNeeded((Runnable) () -> {
             final List<Module> newRootModules = eclipseImportBuilder.commit(project);
-            moveEclipseModulesToGroup(project, newRootModules);
+            moveEclipseModulesToGroup(project, newRootModules, eclipseGroup);
         });
 
     }
 
     private void moveEclipseModulesToGroup(
         @NotNull final Project project,
-        @NotNull final List<Module> eclipseModules
+        @NotNull final List<Module> eclipseModules,
+        @Nullable final String[] eclipseGroup
     ) {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         for (Module module: eclipseModules) {
-            final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
-            modifiableModuleModel.setModuleGroupPath(module, groupPath.clone());
+            modifiableModuleModel.setModuleGroupPath(module, eclipseGroup);
         }
         AccessToken token = null;
         try {
