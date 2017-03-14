@@ -14,6 +14,8 @@ import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Nosov Aleksandr
  */
@@ -21,6 +23,7 @@ public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> imple
 
     private static final String JAVA_MODEL_SUFFIX = "Model";
     private static final int QUOTE_LENGTH = 2;
+    private static final Pattern PATTERN = Pattern.compile("\"");
 
     public HybrisModelItemReference(final PsiElement element, final boolean soft) {
         super(element, soft);
@@ -34,8 +37,8 @@ public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> imple
     @NotNull
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
-        Project project = myElement.getProject();
-        final String modelName = myElement.getText().replaceAll("\"", "");
+        final Project project = myElement.getProject();
+        final String modelName = PATTERN.matcher(myElement.getText()).replaceAll("");
 
         final String javaModelName = modelName + JAVA_MODEL_SUFFIX;
         final String jaloModelName = modelName;
