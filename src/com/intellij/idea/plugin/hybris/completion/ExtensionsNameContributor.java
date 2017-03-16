@@ -26,8 +26,6 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,16 +50,11 @@ public class ExtensionsNameContributor extends CompletionContributor {
                     final ProcessingContext context,
                     @NotNull final CompletionResultSet result
                 ) {
-                    final Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
-                    if (openProjects.length > 0) {
-                        final Project currentProject = openProjects[0];
-                        final HybrisProjectSettings hybrisProjectSettings
-                            = HybrisProjectSettingsComponent.getInstance(currentProject).getState();
-                        final Set<String> extensions = hybrisProjectSettings.getCompleteSetOfAvailableExtensionsInHybris();
+                    final HybrisProjectSettings hybrisProjectSettings
+                        = HybrisProjectSettingsComponent.getInstance(parameters.getOriginalFile().getProject()).getState();
+                    final Set<String> extensions = hybrisProjectSettings.getCompleteSetOfAvailableExtensionsInHybris();
 
-                        extensions.forEach(name -> result.addElement(LookupElementBuilder.create(name)));
-
-                    }
+                    extensions.forEach(name -> result.addElement(LookupElementBuilder.create(name)));
                 }
             }
         );
