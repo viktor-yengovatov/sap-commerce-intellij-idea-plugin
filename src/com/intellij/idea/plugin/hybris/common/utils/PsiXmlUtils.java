@@ -22,6 +22,7 @@ import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.PsiFilePattern;
 import com.intellij.patterns.XmlAttributeValuePattern;
 import com.intellij.patterns.XmlPatterns;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,11 @@ public class PsiXmlUtils {
     /**
      * <tagName attributeName="XmlAttributeValue">
      */
-    public static XmlAttributeValuePattern tagAttributeValuePattern(String tagName, String attributeName, String fileType) {
+    public static XmlAttributeValuePattern tagAttributeValuePattern(
+        String tagName,
+        String attributeName,
+        String fileName
+    ) {
         return XmlPatterns
             .xmlAttributeValue()
             .withParent(
@@ -47,16 +52,16 @@ public class PsiXmlUtils {
                     )
             ).inside(
                 insideTagPattern(tagName)
-            ).inFile(getXmlFilePattern(fileType));
+            ).inFile(getXmlFilePattern(fileName));
     }
-    
+
     public static PsiFilePattern.Capture<PsiFile> getXmlFilePattern(@Nullable String fileName) {
         if (fileName == null) {
             return getXmlFilePattern();
         }
 
         return XmlPatterns.psiFile()
-                          .withName(XmlPatterns.string().endsWith(fileName + ".xml"));
+                          .withName(XmlPatterns.string().equalTo(fileName + ".xml"));
     }
 
     public static PsiFilePattern.Capture<PsiFile> getXmlFilePattern() {
@@ -81,5 +86,26 @@ public class PsiXmlUtils {
     public static PsiElementPattern.Capture<XmlTag> insideTagPattern(String insideTagName) {
         return XmlPatterns.psiElement(XmlTag.class).withName(insideTagName);
     }
+
+    public static PsiElementPattern.Capture<PsiElement> tagAttributePattern(
+        String tag,
+        String attributeName,
+        String fileName
+    ) {
+        return XmlPatterns
+            .psiElement()
+            .inside(XmlPatterns
+                        .xmlAttributeValue()
+                        .inside(XmlPatterns
+                                    .xmlAttribute()
+                                    .withName(attributeName)
+                                    .withParent(XmlPatterns
+                                                    .xmlTag()
+                                                    .withName(tag)
+                                    )
+                        )
+            ).inFile(getXmlFilePattern(fileName));
+    }
+
 
 }
