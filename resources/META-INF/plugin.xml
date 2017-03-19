@@ -145,6 +145,8 @@
 
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisItemLineMakerProvider"/>
+        
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
     </extensions>
 
     <actions>

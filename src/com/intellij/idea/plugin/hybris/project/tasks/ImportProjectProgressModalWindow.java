@@ -91,7 +91,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 /**
  * Created by Martin Zdarsky-Jones on 2/11/16.
@@ -329,7 +332,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (sourceZip != null && sourceZip.exists()) {
             hybrisProjectSettings.setSourceCodeZip(sourceZip.getPath());
         }
-        HashSet<String> completeSetOfHybrisModules = new HashSet<>();
+        final Set<String> completeSetOfHybrisModules = newHashSet();
         hybrisProjectDescriptor.getFoundModules().stream()
                                .filter(e->e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
                                .forEach(e-> completeSetOfHybrisModules.add(e.getName()));
