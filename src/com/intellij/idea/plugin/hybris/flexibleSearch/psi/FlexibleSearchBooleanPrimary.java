@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchBooleanPrimary extends PsiElement {
 
-  @NotNull
+  @Nullable
+  FlexibleSearchBooleanPredicand getBooleanPredicand();
+
+  @Nullable
   FlexibleSearchPredicate getPredicate();
 
 }

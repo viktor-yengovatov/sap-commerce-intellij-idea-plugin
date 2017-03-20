@@ -13,6 +13,7 @@ public interface FlexibleSearchTypes {
   IElementType BETWEEN_PREDICATE = new FlexibleSearchElementType("BETWEEN_PREDICATE");
   IElementType BETWEEN_PREDICATE_PART_2 = new FlexibleSearchElementType("BETWEEN_PREDICATE_PART_2");
   IElementType BOOLEAN_FACTOR = new FlexibleSearchElementType("BOOLEAN_FACTOR");
+  IElementType BOOLEAN_PREDICAND = new FlexibleSearchElementType("BOOLEAN_PREDICAND");
   IElementType BOOLEAN_PRIMARY = new FlexibleSearchElementType("BOOLEAN_PRIMARY");
   IElementType BOOLEAN_TERM = new FlexibleSearchElementType("BOOLEAN_TERM");
   IElementType BOOLEAN_TEST = new FlexibleSearchElementType("BOOLEAN_TEST");
@@ -53,6 +54,7 @@ public interface FlexibleSearchTypes {
   IElementType ORDERING_SPECIFICATION = new FlexibleSearchElementType("ORDERING_SPECIFICATION");
   IElementType ORDER_BY_CLAUSE = new FlexibleSearchElementType("ORDER_BY_CLAUSE");
   IElementType ORDINARY_GROUPING_SET = new FlexibleSearchElementType("ORDINARY_GROUPING_SET");
+  IElementType PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION = new FlexibleSearchElementType("PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION");
   IElementType PREDICATE = new FlexibleSearchElementType("PREDICATE");
   IElementType QUERY_SPECIFICATION = new FlexibleSearchElementType("QUERY_SPECIFICATION");
   IElementType ROW_VALUE_PREDICAND = new FlexibleSearchElementType("ROW_VALUE_PREDICAND");
@@ -160,6 +162,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == BOOLEAN_FACTOR) {
         return new FlexibleSearchBooleanFactorImpl(node);
+      }
+      else if (type == BOOLEAN_PREDICAND) {
+        return new FlexibleSearchBooleanPredicandImpl(node);
       }
       else if (type == BOOLEAN_PRIMARY) {
         return new FlexibleSearchBooleanPrimaryImpl(node);
@@ -280,6 +285,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == ORDINARY_GROUPING_SET) {
         return new FlexibleSearchOrdinaryGroupingSetImpl(node);
+      }
+      else if (type == PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION) {
+        return new FlexibleSearchParenthesizedBooleanValueExpressionImpl(node);
       }
       else if (type == PREDICATE) {
         return new FlexibleSearchPredicateImpl(node);

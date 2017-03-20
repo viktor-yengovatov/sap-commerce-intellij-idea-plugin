@@ -41,6 +41,6 @@ public class FlexibleSearchFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return HybrisIcons.SCRIPT;
+        return HybrisIcons.FS_FILE;
     }
 }
