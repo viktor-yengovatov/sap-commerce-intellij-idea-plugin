@@ -1,0 +1,298 @@
+/*
+ * Copyright 2012-2013 Brandon Kearby
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+//
+// FlexibleSearch BNF Grammar
+//
+{
+  parserClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParser"
+  parserUtilClass="com.intellij.idea.plugin.hybris.flexibleSearch.utils.FlexibleSearchParserUtils"
+  
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="FlexibleSearch"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.intellij.idea.plugin.hybris.flexibleSearch.psi"
+  psiImplPackage="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl"
+
+  elementTypeHolderClass="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes"
+  elementTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementType"
+  tokenTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTokenType"
+ 
+  tokens = [
+        percent = '%'
+        quote = "'"
+        left_paren = "("
+        right_paren = ")"
+        asterisk = "*"
+        plus_sign = "+"
+        comma = ","
+        minus_sign = "-"
+        dot = "."
+        colon = ":"
+        SEMICOLON = ";"
+        less_than_operator = "<"
+        equals_operator = "="
+        greater_than_operator = '>'
+        question_mark = "?"
+        exclamation_mark = "!"
+        left_bracket = "["
+        right_bracket = "]"
+        underscore = "_"
+        left_brace = "{"
+        right_brace = "}"
+        right_double_brace = "regexp:(}})"
+        left_double_brace = "regexp:({{)"
+        
+        not_equals_operator = 'regexp:(<>)'
+        greater_than_or_equals_operator = "regexp:(>=)"
+        less_than_or_equals_operator = "regexp:(<=)"
+
+
+        space='regexp:\s+'
+        identifier="regexp:([:jletter:] [:jletterdigit:]*)"
+        string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
+        number="regexp:[:jdigit:]*"
+  ]
+}
+
+flexibleSearchFile ::= statement *
+
+private statement ::= !<<eof>> (query_specification empty_statement?)* empty_statement?
+{recoverWhile = expressionRecoverWhile }
+ 
+private expressionRecoverWhile ::= !(SEMICOLON | <<eof>> )
+
+private empty_statement ::= SEMICOLON | <<eof>>
+
+// Specify a table derived from the result of a <table expression>.
+
+query_specification ::= SELECT [ set_quantifier ] select_list table_expression
+
+select_list ::= asterisk | select_sublist [ ( comma select_sublist )* ]
+
+select_sublist ::= derived_column | (aggregate_function [comma aggregate_function*])
+
+derived_column ::= value_expression [ AS  correlation_name ]
+
+
+//10.9 <aggregate function> (p503)
+//Specify a value computed from a collection of rows.
+
+set_quantifier ::= (DISTINCT | ALL)
+
+aggregate_function ::=
+		COUNT '(' asterisk ')' 
+	|	general_set_function 
+
+general_set_function ::= set_function_type left_paren [ set_quantifier ] value_expression right_paren [ [ AS ] correlation_name ]
+
+set_function_type ::= computational_operation
+
+computational_operation ::=
+		AVG | MAX | MIN | SUM
+	|	EVERY | ANY | SOME
+	|	COUNT
+
+
+
+table_expression ::= from_clause 
+		 (where_clause)? 
+		 order_by_clause? 
+		 group_by_clause?
+		  
+//		[ <having clause> ]
+		
+		
+order_by_clause ::= ORDER BY sort_specification_list
+
+sort_specification_list ::= sort_specification [ { comma sort_specification }* ]
+
+sort_specification ::= sort_key [ ordering_specification ] [ null_ordering ]
+
+sort_key ::= value_expression
+
+ordering_specification ::= ASC | DESC
+
+null_ordering ::= NULLS FIRST | NULLS LAST
+
+
+//Specify a table derived from one or more tables. <from clause>
+
+//<from clause> ::= FROM <table reference list>
+from_clause ::= FROM (left_brace table_reference_list right_brace | subquery )
+
+table_reference_list ::=  table_reference [ { comma? table_reference }* ] 
+
+table_reference ::= table_primary [joined_table] | joined_table
+
+table_primary ::= table_name [ [ AS ] correlation_name ]
+
+table_name ::= identifier [ exclamation_mark ]
+{pin=1}
+correlation_name ::= identifier
+
+// 7.7 <joined table> (p312)
+// Specify a table derived from a Cartesian product, inner or outer join, or union join.
+
+joined_table ::= [(table_primary [joined_table] | joined_table)] [ join_type ] JOIN table_reference join_specification 
+
+join_specification ::= join_condition 
+
+join_condition ::= ON search_condition
+
+join_type ::= LEFT
+
+
+table_subquery ::= subquery
+
+subquery ::= '(' left_double_brace query_specification right_double_brace [(UNION ALL left_double_brace query_specification right_double_brace)*]  ')' [ [ AS ] correlation_name ]
+
+//<where clause>. Specify a table derived by the application of a <search condition> to the result of the preceding
+//<from clause>.
+
+where_clause ::= WHERE search_condition
+
+//Specify a condition that is True , False , or Unknown , depending on the value of a <boolean value
+//expression>. <search condition> 
+
+search_condition ::= boolean_value_expression
+
+// boolean_value_expression 
+boolean_value_expression ::= boolean_term
+
+boolean_term ::= boolean_factor [((AND|OR) boolean_term)*]
+{pin = 1}
+
+boolean_factor ::= [ NOT ] boolean_test
+
+boolean_test ::= boolean_primary  [ IS [ NOT ] truth_value ]
+
+truth_value ::= TRUE | FALSE 
+
+boolean_primary ::= predicate /*| boolean_predicand
+
+boolean_predicand ::= parenthesized_boolean_value_expression
+
+parenthesized_boolean_value_expression ::= left_paren boolean_value_expression left_paren
+
+nonparenthesized_value_expression_primary ::= id
+*/
+//Predicates
+//Specify a condition that can be evaluated to give a boolean value.
+
+predicate ::= comparison_predicate
+	|	between_predicate
+	|	like_predicate
+	|	null_predicate
+	|	exists_predicate
+
+null_predicate ::= row_value_predicand null_predicate_part_2
+
+null_predicate_part_2 ::= IS [ NOT ] NULL 
+
+exists_predicate ::= EXISTS table_subquery
+
+
+
+//Specify a comparison of two row values. <comparison predicate>
+comparison_predicate ::= row_value_predicand comparison_predicate_part_2
+
+comparison_predicate_part_2 ::= comp_op row_value_predicand
+
+comp_op ::=
+		equals_operator
+	|	greater_than_operator
+	|	not_equals_operator
+	|	less_than_operator
+	|	less_than_or_equals_operator
+	|	greater_than_or_equals_operator
+
+
+
+// Specify a range comparison. <between predicate>
+between_predicate ::= row_value_predicand between_predicate_part_2
+
+between_predicate_part_2 ::= [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
+
+row_value_predicand ::= value_expression | common_value_expression
+
+common_value_expression ::= string_value_expression
+
+
+
+
+like_predicate ::= character_like_predicate
+
+character_like_predicate ::= row_value_predicand character_like_predicate_part_2
+
+character_like_predicate_part_2 ::= [ NOT ] LIKE (character_pattern | value_expression)
+
+character_pattern ::=  string | string_value_function
+
+string_value_expression ::=  general_literal
+
+general_literal ::= character_string_literal
+
+character_string_literal ::= string 
+
+string_value_function ::= character_value_function 
+
+character_value_function ::= character_substring_function
+
+character_substring_function ::=
+        CONCAT '(' string_value_expression comma  (character_substring_function | string_value_expression) ')'
+
+
+
+//6.25 <value expression> (p236)
+//Specify a value.
+value_expression ::=
+ number 
+| (question_mark? column_reference) 
+| left_brace column_reference [ left_bracket lang right_bracket] [':'] [column_reference] right_brace
+{pin=1}
+
+lang ::= identifier
+
+
+// 6.6 <identifier chain> (p183)
+identifier_chain ::= identifier [ { (dot|colon) identifier }* ]
+basic_identifier_chain ::= identifier_chain
+
+// 6.7 <column reference> (p187)
+column_reference ::=
+		basic_identifier_chain
+		
+		
+// 7.9 <group by clause> (p320)
+// Specify a grouped table derived by the application of the <group by clause> to the result of the
+// previously specified clause.
+
+group_by_clause ::= GROUP BY [ set_quantifier ] grouping_element_list
+
+grouping_element_list ::= grouping_element [ { comma grouping_element }* ]
+
+grouping_element ::=
+		ordinary_grouping_set
+
+ordinary_grouping_set ::=
+		grouping_column_reference
+	|	'(' grouping_column_reference_list ')'
+
+grouping_column_reference ::= value_expression
+
+grouping_column_reference_list ::= grouping_column_reference [ { comma grouping_column_reference }* ]

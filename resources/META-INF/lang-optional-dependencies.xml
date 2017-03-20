@@ -53,8 +53,20 @@
         <!-- ####################################################################################################### -->
 
         <!-- Core elements -->
-        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
+        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchTypeFactory"/>
 
+        <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
+
+        <lang.syntaxHighlighterFactory key="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
+
+        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
+
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
+
+
+
+        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
         <lang.parserDefinition language="Impex"
                                implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
 
