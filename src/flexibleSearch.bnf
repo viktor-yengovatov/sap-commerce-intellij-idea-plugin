@@ -174,7 +174,7 @@ search_condition ::= boolean_value_expression
 // boolean_value_expression 
 boolean_value_expression ::= boolean_term
 
-boolean_term ::= boolean_factor [((AND|OR) boolean_term)*]
+boolean_term ::= boolean_factor (((AND|OR) boolean_term)*)?
 {pin = 1}
 
 boolean_factor ::= [ NOT ] boolean_test
@@ -183,14 +183,23 @@ boolean_test ::= boolean_primary  [ IS [ NOT ] truth_value ]
 
 truth_value ::= TRUE | FALSE 
 
-boolean_primary ::= predicate /*| boolean_predicand
+boolean_primary ::= boolean_predicand | predicate 
 
+/*
 boolean_predicand ::= parenthesized_boolean_value_expression
 
 parenthesized_boolean_value_expression ::= left_paren boolean_value_expression left_paren
 
 nonparenthesized_value_expression_primary ::= id
 */
+
+boolean_predicand ::=
+		parenthesized_boolean_value_expression
+	|	nonparenthesized_value_expression_primary
+
+parenthesized_boolean_value_expression ::= '(' boolean_value_expression ')'
+
+private nonparenthesized_value_expression_primary ::= column_reference
 //Predicates
 //Specify a condition that can be evaluated to give a boolean value.
 
@@ -231,8 +240,6 @@ between_predicate_part_2 ::= [ NOT ] BETWEEN row_value_predicand AND row_value_p
 row_value_predicand ::= value_expression | common_value_expression
 
 common_value_expression ::= string_value_expression
-
-
 
 
 like_predicate ::= character_like_predicate

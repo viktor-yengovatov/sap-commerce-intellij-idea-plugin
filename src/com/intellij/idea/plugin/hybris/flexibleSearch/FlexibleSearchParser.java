@@ -38,6 +38,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     else if (t == BOOLEAN_FACTOR) {
       r = boolean_factor(b, 0);
     }
+    else if (t == BOOLEAN_PREDICAND) {
+      r = boolean_predicand(b, 0);
+    }
     else if (t == BOOLEAN_PRIMARY) {
       r = boolean_primary(b, 0);
     }
@@ -157,6 +160,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     }
     else if (t == ORDINARY_GROUPING_SET) {
       r = ordinary_grouping_set(b, 0);
+    }
+    else if (t == PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION) {
+      r = parenthesized_boolean_value_expression(b, 0);
     }
     else if (t == PREDICATE) {
       r = predicate(b, 0);
@@ -317,18 +323,33 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // predicate
-  public static boolean boolean_primary(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "boolean_primary")) return false;
+  // parenthesized_boolean_value_expression
+  // 	|	nonparenthesized_value_expression_primary
+  public static boolean boolean_predicand(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "boolean_predicand")) return false;
+    if (!nextTokenIs(b, "<boolean predicand>", LEFT_PAREN, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, BOOLEAN_PRIMARY, "<boolean primary>");
-    r = predicate(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, BOOLEAN_PREDICAND, "<boolean predicand>");
+    r = parenthesized_boolean_value_expression(b, l + 1);
+    if (!r) r = nonparenthesized_value_expression_primary(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // boolean_factor [((AND|OR) boolean_term)*]
+  // boolean_predicand | predicate
+  public static boolean boolean_primary(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "boolean_primary")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BOOLEAN_PRIMARY, "<boolean primary>");
+    r = boolean_predicand(b, l + 1);
+    if (!r) r = predicate(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // boolean_factor (((AND|OR) boolean_term)*)?
   public static boolean boolean_term(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "boolean_term")) return false;
     boolean r, p;
@@ -340,7 +361,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // [((AND|OR) boolean_term)*]
+  // (((AND|OR) boolean_term)*)?
   private static boolean boolean_term_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "boolean_term_1")) return false;
     boolean_term_1_0(b, l + 1);
@@ -1121,6 +1142,12 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // column_reference
+  static boolean nonparenthesized_value_expression_primary(PsiBuilder b, int l) {
+    return column_reference(b, l + 1);
+  }
+
+  /* ********************************************************** */
   // NULLS FIRST | NULLS LAST
   public static boolean null_ordering(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "null_ordering")) return false;
@@ -1214,6 +1241,20 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = r && grouping_column_reference_list(b, l + 1);
     r = r && consumeToken(b, RIGHT_PAREN);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '(' boolean_value_expression ')'
+  public static boolean parenthesized_boolean_value_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parenthesized_boolean_value_expression")) return false;
+    if (!nextTokenIs(b, LEFT_PAREN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LEFT_PAREN);
+    r = r && boolean_value_expression(b, l + 1);
+    r = r && consumeToken(b, RIGHT_PAREN);
+    exit_section_(b, m, PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION, r);
     return r;
   }
 

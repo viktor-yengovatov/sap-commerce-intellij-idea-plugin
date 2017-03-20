@@ -27,9 +27,15 @@ public class FlexibleSearchBooleanPrimaryImpl extends ASTWrapperPsiElement imple
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public FlexibleSearchBooleanPredicand getBooleanPredicand() {
+    return findChildByClass(FlexibleSearchBooleanPredicand.class);
+  }
+
+  @Override
+  @Nullable
   public FlexibleSearchPredicate getPredicate() {
-    return findNotNullChildByClass(FlexibleSearchPredicate.class);
+    return findChildByClass(FlexibleSearchPredicate.class);
   }
 
 }

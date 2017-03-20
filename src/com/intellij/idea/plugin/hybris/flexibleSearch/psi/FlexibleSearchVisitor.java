@@ -27,6 +27,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitBooleanPredicand(@NotNull FlexibleSearchBooleanPredicand o) {
+    visitPsiElement(o);
+  }
+
   public void visitBooleanPrimary(@NotNull FlexibleSearchBooleanPrimary o) {
     visitPsiElement(o);
   }
@@ -184,6 +188,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitOrdinaryGroupingSet(@NotNull FlexibleSearchOrdinaryGroupingSet o) {
+    visitPsiElement(o);
+  }
+
+  public void visitParenthesizedBooleanValueExpression(@NotNull FlexibleSearchParenthesizedBooleanValueExpression o) {
     visitPsiElement(o);
   }
 
