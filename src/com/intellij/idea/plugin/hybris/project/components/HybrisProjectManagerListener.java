@@ -32,6 +32,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerAdapter;
 import com.intellij.openapi.project.ProjectManagerListener;
 
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.ANT_SUPPORT_PLUGIN_ID;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
+
 /**
  * Created by Martin Zdarsky-Jones on 29/09/2016.
  */
@@ -49,7 +52,9 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
     private void registerAntListener(final Project project) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         if (commonIdeaService.isHybrisProject(project)) {
-            HybrisAntBuildListener.registerAntListener();
+            if (isPluginActive(ANT_SUPPORT_PLUGIN_ID)) {
+                HybrisAntBuildListener.registerAntListener();
+            }
         }
     }
 
