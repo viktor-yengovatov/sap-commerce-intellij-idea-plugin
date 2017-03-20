@@ -24,8 +24,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.ValidateImpexHttpClient
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -42,5 +45,13 @@ public class ValidateImpexAction extends AnAction {
 
             ExecuteImpexConsole.getInstance().show(impexHttpResult, e.getProject());
         }
+    }
+
+    @Override
+    public void update(final AnActionEvent e) {
+        super.update(e);
+        final VirtualFile file = e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE);
+        final boolean enabled = file != null && file.getName().endsWith(".impex");
+        e.getPresentation().setEnabledAndVisible(enabled);
     }
 }

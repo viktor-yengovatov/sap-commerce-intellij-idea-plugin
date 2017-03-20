@@ -34,7 +34,7 @@ public abstract class AbstractImpexTableFormatAction extends EditorAction {
     ) {
         super.update(editor, presentation, dataContext);
         final VirtualFile file = dataContext.getData(CommonDataKeys.VIRTUAL_FILE);
-        final boolean visible = file != null && file.getName().endsWith(".impex");
-        presentation.setEnabledAndVisible(visible);
+        final boolean enabled = file != null && file.getName().endsWith(".impex");
+        presentation.setEnabledAndVisible(enabled);
     }
 }
