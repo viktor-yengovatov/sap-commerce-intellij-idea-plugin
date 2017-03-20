@@ -25,7 +25,6 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
@@ -89,11 +88,13 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
 import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 /**
@@ -101,8 +102,6 @@ import static com.intellij.util.containers.ContainerUtil.newHashSet;
  */
 public class ImportProjectProgressModalWindow extends Task.Modal {
 
-    private static final String SPRING_PLUGIN_ID = "com.intellij.spring";
-    private static final String JAVAEE_PLUGIN_ID = "com.intellij.javaee";
     private final Project project;
     private final ModifiableModuleModel model;
     private final ConfiguratorFactory configuratorFactory;
@@ -267,18 +266,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.finishing"));
-    }
-
-    private boolean isPluginActive(final String id) {
-        final PluginId pluginId = PluginId.getId(id);
-        if (pluginId == null) {
-            return false;
-        }
-        final IdeaPluginDescriptor plugin = PluginManager.getPlugin(pluginId);
-        if (plugin == null) {
-            return false;
-        }
-        return plugin.isEnabled();
     }
 
     private void disableWrapOnType(final Language impexLanguage) {
