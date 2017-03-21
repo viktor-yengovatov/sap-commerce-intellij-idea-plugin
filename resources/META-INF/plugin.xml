@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>6.0.2</version>
+    <version>6.1</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -39,7 +39,7 @@
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
     <vendor email="AlexanderBartash@gmail.com" url="https://hybris-integration.atlassian.net/wiki/display/IIPPS/Intellij+IDEA+Plugin+Public+Space">Alexander Bartash</vendor>
-    
+
     <description>
         <![CDATA[
           This plugin is an open source (LGPL) plugin for SAP Hybris Commerce integration.
@@ -90,6 +90,10 @@
 
           <br/>
           <br/>
+          By installing thing plugin you agree to sending us anonymous statistics about plugin usage. We do not collect any information about you or your project. We just want to know which features from this plugin our users need most and learn new ways to make thing plugin better.
+
+          <br/>
+          <br/>
           <b>Developers:</b>
           <br/>
           - Alexander Bartash
@@ -114,7 +118,53 @@
 
     <change-notes>
         <![CDATA[
-         - An error in project import has been fixed.
+        <h2>Fault</h2>
+        <ul>
+            <li>
+               [<a href='https://hybris-integration.atlassian.net/browse/IIPS-10'>IIPS-10</a>] - Importing Hybris project fails when JavaEE and Spring plugins are disabled
+            </li>
+        </ul>
+
+        <h2>Tasks</h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-6'>IIP-6</a>] - Usable IMPEX execution via IntelliJ IDEA
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-180'>IIP-180</a>] - Autocomplete module&#39;s name for extensioninfo.xml file
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-213'>IIP-213</a>] - read only module only if possible
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-217'>IIP-217</a>] - Don&#39;t remove custom modules upon refresh
+            </li>
+        </ul>
+
+        <h2>Bug</h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-105'>IIP-105</a>] -  Impex formatting is breaking the price by adding extra space
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-160'>IIP-160</a>] - Project import is not working in Ultimate IDEA when Spring or JavaEE plugins are disabled
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-218'>IIP-218</a>] - NPE on Project Refresh - IDE Fatal Error
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-221'>IIP-221</a>] - Line marker with reference between -item.xml and java model class was not shown
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-222'>IIP-222</a>] - Enable autocomplete atomictypes for type attribute in -items.xml
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-224'>IIP-224</a>] - Exception in plugin hybris integration
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-225'>IIP-225</a>] - fix for remote control features
+            </li>
+        </ul>
       ]]>
     </change-notes>
 
@@ -145,7 +195,7 @@
 
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisItemLineMakerProvider"/>
-        
+
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
     </extensions>
 
