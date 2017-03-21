@@ -315,9 +315,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (extDir != null && extDir.exists()) {
             hybrisProjectSettings.setExternalExtensionsDirectory(extDir.getPath());
         }
-        File sourceZip = hybrisProjectDescriptor.getSourceCodeZip();
+        final File sourceZip = hybrisProjectDescriptor.getSourceCodeZip();
         if (sourceZip != null && sourceZip.exists()) {
             hybrisProjectSettings.setSourceCodeZip(sourceZip.getPath());
+        }
+        final File modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
+        if (modulesFilesDirectory != null && modulesFilesDirectory.exists()) {
+            hybrisProjectSettings.setIdeModulesFilesDirectory(modulesFilesDirectory.getPath());
         }
         final Set<String> completeSetOfHybrisModules = newHashSet();
         hybrisProjectDescriptor.getFoundModules().stream()

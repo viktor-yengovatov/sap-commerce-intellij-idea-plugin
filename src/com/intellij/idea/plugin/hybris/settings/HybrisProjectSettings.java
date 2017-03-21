@@ -38,6 +38,7 @@ public class HybrisProjectSettings {
     protected String importedByVersion;
     protected String sourceCodeZip;
     protected String externalExtensionsDirectory;
+    protected String ideModulesFilesDirectory;
     protected boolean importOotbModulesInReadOnlyMode;
     protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
 
@@ -89,6 +90,14 @@ public class HybrisProjectSettings {
         this.externalExtensionsDirectory = externalExtensionsDirectory;
     }
 
+    public String getIdeModulesFilesDirectory() {
+        return ideModulesFilesDirectory;
+    }
+
+    public void setIdeModulesFilesDirectory(final String ideModulesFilesDirectory) {
+        this.ideModulesFilesDirectory = ideModulesFilesDirectory;
+    }
+
     public boolean getImportOotbModulesInReadOnlyMode() {
         return importOotbModulesInReadOnlyMode;
     }
@@ -114,6 +123,7 @@ public class HybrisProjectSettings {
             .append(importedByVersion)
             .append(sourceCodeZip)
             .append(externalExtensionsDirectory)
+            .append(ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris)
             .toHashCode();
@@ -138,6 +148,7 @@ public class HybrisProjectSettings {
             .append(importedByVersion, other.importedByVersion)
             .append(sourceCodeZip, other.sourceCodeZip)
             .append(externalExtensionsDirectory, other.externalExtensionsDirectory)
+            .append(ideModulesFilesDirectory, other.ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
             .isEquals();
@@ -152,6 +163,7 @@ public class HybrisProjectSettings {
         sb.append("importedByVersion=").append(importedByVersion);
         sb.append("sourceCodeZip=").append(sourceCodeZip);
         sb.append("externalExtensionsDirectory=").append(externalExtensionsDirectory);
+        sb.append("ideModulesFilesDirectory=").append(ideModulesFilesDirectory);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
         sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);
         sb.append('}');
