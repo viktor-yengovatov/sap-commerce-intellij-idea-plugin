@@ -53,14 +53,14 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
     private static final Logger LOG = Logger.getInstance(FlexibleSearchCompletionContributor.class);
 
     public FlexibleSearchCompletionContributor() {
-        // case: macros keywords
+        // keywords
         extend(
             CompletionType.BASIC,
             psiElement().withLanguage(FlexibleSearchLanguage.getInstance()), 
             new FSKeywordCompletionProvider(FSKeywords.keywords(), (keyword) ->
                 LookupElementBuilder.create(keyword)
                                     .withCaseSensitivity(false)
-                                    .withIcon(HybrisIcons.MACROS))
+                                    .withIcon(AllIcons.Nodes.Function))
         );
 
 

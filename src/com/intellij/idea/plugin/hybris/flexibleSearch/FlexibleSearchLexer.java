@@ -24,7 +24,6 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 
 import com.intellij.psi.TokenType;
-import com.intellij.psi.JavaTokenType;
 
 import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
