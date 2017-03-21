@@ -182,84 +182,122 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.collectStatistics(hybrisProjectDescriptor);
 
         final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
-        final List<MavenModuleDescriptor> mavenModules = hybrisProjectDescriptor
-            .getModulesChosenForImport()
-            .stream()
-            .filter(e -> e instanceof MavenModuleDescriptor)
-            .map(e -> (MavenModuleDescriptor) e)
-            .collect(Collectors.toList());
+        final List<MavenModuleDescriptor> mavenModules = new ArrayList<>();
 
-        new ImportProjectProgressModalWindow(
-            project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
-        ).queue();
+        try {
+            mavenModules.addAll(
+                hybrisProjectDescriptor.getModulesChosenForImport()
+                                       .stream()
+                                       .filter(e -> e instanceof MavenModuleDescriptor)
+                                       .map(e -> (MavenModuleDescriptor) e)
+                                       .collect(Collectors.toList())
+            );
 
-        if (mavenConfigurator != null && !mavenModules.isEmpty()) {
-            mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
-        }
+            new ImportProjectProgressModalWindow(
+                project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
+            ).queue();
 
-        final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
-        if (eclipseConfigurator != null) {
-            final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
-                .getModulesChosenForImport()
-                .stream()
-                .filter(e -> e instanceof EclipseModuleDescriptor)
-                .map(e -> (EclipseModuleDescriptor) e)
-                .collect(Collectors.toList());
-            if (!eclipseModules.isEmpty()) {
-                final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(eclipseModules.get(0));
-                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
+            if (mavenConfigurator != null && !mavenModules.isEmpty()) {
+                mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
             }
+        } catch (Exception e) {
+            LOG.error("Can not import Maven modules due to an error.", e);
         }
 
-        StartupManager.getInstance(project).runWhenProjectIsInitialized(
-            () -> {
+        try {
+            final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
+            if (eclipseConfigurator != null) {
+                final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
+                    .getModulesChosenForImport()
+                    .stream()
+                    .filter(e -> e instanceof EclipseModuleDescriptor)
+                    .map(e -> (EclipseModuleDescriptor) e)
+                    .collect(Collectors.toList());
+                if (!eclipseModules.isEmpty()) {
+                    final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
+                        eclipseModules.get(0));
+                    eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Can not import Eclipse modules due to an error.", e);
+        }
+
+        StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
+            try {
                 final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
                 if (null != antConfigurator) {
                     antConfigurator.configure(allModules, project);
                 }
+            } catch (Exception e) {
+                LOG.error("Can not configure Ant due to an error.", e);
+            }
 
+            try {
                 final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getJUnitRunConfigurationConfigurator();
                 if (null != runConfigurationConfigurator) {
                     runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
                 }
-                if (mavenConfigurator != null && !mavenModules.isEmpty()) {
+            } catch (Exception e) {
+                LOG.error("Can not configure JUnit due to an error.", e);
+            }
+
+            if ((null != mavenConfigurator) && !mavenModules.isEmpty()) {
+
+                try {
                     final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
-                        mavenModules.get(0));
+                        mavenModules.get(0)
+                    );
+
                     mavenConfigurator.configurePostStartup(
                         project,
                         mavenModules,
                         rootGroup,
-                        () -> triggerCacheInvalidation()
+                        this::triggerCacheInvalidation
                     );
-                } else {
+                } catch (Exception e) {
+                    LOG.error("Can not configure Maven due to an error.", e);
                     triggerCacheInvalidation();
                 }
+            } else {
+                triggerCacheInvalidation();
             }
-        );
+        });
 
         return result;
     }
 
-    private void collectStatistics(HybrisProjectDescriptor hybrisProjectDescriptor) {
-        StringBuilder parameters = new StringBuilder();
-        parameters.append("readOnly:");
-        parameters.append(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
-        parameters.append(",customDirectoryOverride:");
-        final boolean override = hybrisProjectDescriptor.getExternalExtensionsDirectory()!=null;
-        parameters.append(override);
-        final boolean hasSourceZip = hybrisProjectDescriptor.getSourceCodeZip() != null;
-        parameters.append(",hasSources:");
-        parameters.append(hasSourceZip);
-        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
-        statsCollector.collectStat(StatsCollector.ACTIONS.IMPORT_PROJECT, parameters.toString());
+    private void collectStatistics(final HybrisProjectDescriptor hybrisProjectDescriptor) {
+        try {
+            final StringBuilder parameters = new StringBuilder();
+            parameters.append("readOnly:");
+            parameters.append(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
+            parameters.append(",customDirectoryOverride:");
+
+            final boolean override = hybrisProjectDescriptor.getExternalExtensionsDirectory() != null;
+            parameters.append(override);
+
+            final boolean hasSourceZip = hybrisProjectDescriptor.getSourceCodeZip() != null;
+            parameters.append(",hasSources:");
+            parameters.append(hasSourceZip);
+
+            final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
+            statsCollector.collectStat(StatsCollector.ACTIONS.IMPORT_PROJECT, parameters.toString());
+        } catch (Exception e) {
+            // we do not care
+        }
     }
 
     private void triggerCacheInvalidation() {
-        UsageTrigger.trigger(ApplicationManagerEx.getApplicationEx().getName() + ".caches.invalidated");
-        FSRecords.invalidateCaches();
+        try {
+            UsageTrigger.trigger(ApplicationManagerEx.getApplicationEx().getName() + ".caches.invalidated");
+            FSRecords.invalidateCaches();
 
-        for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
-            invalidater.invalidateCaches();
+            for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
+                invalidater.invalidateCaches();
+            }
+        } catch (Exception e) {
+            LOG.error("Can not invalidate cache due to an error.", e);
         }
     }
 
