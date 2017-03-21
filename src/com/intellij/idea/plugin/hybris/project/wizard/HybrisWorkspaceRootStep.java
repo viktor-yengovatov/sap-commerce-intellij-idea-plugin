@@ -349,9 +349,16 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.getContext().setRootProjectDirectory(new File(this.getBuilder().getFileToImport()));
 
-        hybrisProjectDescriptor.setModulesFilesDirectory(
-            new File(this.getBuilder().getFileToImport(), HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES)
-        );
+        final String ideModulesFilesDirectory = settings.getIdeModulesFilesDirectory();
+        if (ideModulesFilesDirectory != null) {
+            hybrisProjectDescriptor.setModulesFilesDirectory(
+                new File(ideModulesFilesDirectory)
+            );
+        } else {
+            hybrisProjectDescriptor.setModulesFilesDirectory(
+                new File(this.getBuilder().getFileToImport(), HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES)
+            );
+        }
 
         ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
             new File(this.getBuilder().getFileToImport()), parameter -> {
