@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchSetFunctionType extends PsiElement {
 
-  @NotNull
-  FlexibleSearchComputationalOperation getComputationalOperation();
-
 }

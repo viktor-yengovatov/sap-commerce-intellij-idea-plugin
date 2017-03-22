@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchComparisonPredicate extends PsiElement {
 
   @NotNull
-  FlexibleSearchComparisonPredicatePart2 getComparisonPredicatePart2();
+  FlexibleSearchCompOp getCompOp();
 
   @NotNull
-  FlexibleSearchRowValuePredicand getRowValuePredicand();
+  List<FlexibleSearchRowValuePredicand> getRowValuePredicandList();
 
 }

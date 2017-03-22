@@ -28,14 +28,14 @@ public class FlexibleSearchBooleanPredicandImpl extends ASTWrapperPsiElement imp
 
   @Override
   @Nullable
-  public FlexibleSearchColumnReference getColumnReference() {
-    return findChildByClass(FlexibleSearchColumnReference.class);
+  public FlexibleSearchBooleanValueExpression getBooleanValueExpression() {
+    return findChildByClass(FlexibleSearchBooleanValueExpression.class);
   }
 
   @Override
   @Nullable
-  public FlexibleSearchParenthesizedBooleanValueExpression getParenthesizedBooleanValueExpression() {
-    return findChildByClass(FlexibleSearchParenthesizedBooleanValueExpression.class);
+  public FlexibleSearchColumnReference getColumnReference() {
+    return findChildByClass(FlexibleSearchColumnReference.class);
   }
 
 }

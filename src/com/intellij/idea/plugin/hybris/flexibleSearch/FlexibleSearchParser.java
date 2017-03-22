@@ -26,14 +26,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     if (t == AGGREGATE_FUNCTION) {
       r = aggregate_function(b, 0);
     }
-    else if (t == BASIC_IDENTIFIER_CHAIN) {
-      r = basic_identifier_chain(b, 0);
-    }
     else if (t == BETWEEN_PREDICATE) {
       r = between_predicate(b, 0);
-    }
-    else if (t == BETWEEN_PREDICATE_PART_2) {
-      r = between_predicate_part_2(b, 0);
     }
     else if (t == BOOLEAN_FACTOR) {
       r = boolean_factor(b, 0);
@@ -56,9 +50,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     else if (t == CHARACTER_LIKE_PREDICATE) {
       r = character_like_predicate(b, 0);
     }
-    else if (t == CHARACTER_LIKE_PREDICATE_PART_2) {
-      r = character_like_predicate_part_2(b, 0);
-    }
     else if (t == CHARACTER_PATTERN) {
       r = character_pattern(b, 0);
     }
@@ -79,15 +70,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     }
     else if (t == COMP_OP) {
       r = comp_op(b, 0);
-    }
-    else if (t == COMPARISON_PREDICATE) {
-      r = comparison_predicate(b, 0);
-    }
-    else if (t == COMPARISON_PREDICATE_PART_2) {
-      r = comparison_predicate_part_2(b, 0);
-    }
-    else if (t == COMPUTATIONAL_OPERATION) {
-      r = computational_operation(b, 0);
     }
     else if (t == CORRELATION_NAME) {
       r = correlation_name(b, 0);
@@ -122,9 +104,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     else if (t == GROUPING_ELEMENT_LIST) {
       r = grouping_element_list(b, 0);
     }
-    else if (t == IDENTIFIER_CHAIN) {
-      r = identifier_chain(b, 0);
-    }
     else if (t == JOIN_CONDITION) {
       r = join_condition(b, 0);
     }
@@ -149,9 +128,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     else if (t == NULL_PREDICATE) {
       r = null_predicate(b, 0);
     }
-    else if (t == NULL_PREDICATE_PART_2) {
-      r = null_predicate_part_2(b, 0);
-    }
     else if (t == ORDER_BY_CLAUSE) {
       r = order_by_clause(b, 0);
     }
@@ -160,9 +136,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     }
     else if (t == ORDINARY_GROUPING_SET) {
       r = ordinary_grouping_set(b, 0);
-    }
-    else if (t == PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION) {
-      r = parenthesized_boolean_value_expression(b, 0);
     }
     else if (t == PREDICATE) {
       r = predicate(b, 0);
@@ -257,37 +230,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier_chain
-  public static boolean basic_identifier_chain(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "basic_identifier_chain")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = identifier_chain(b, l + 1);
-    exit_section_(b, m, BASIC_IDENTIFIER_CHAIN, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // row_value_predicand between_predicate_part_2
+  // row_value_predicand [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
   public static boolean between_predicate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "between_predicate")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, BETWEEN_PREDICATE, "<between predicate>");
     r = row_value_predicand(b, l + 1);
-    r = r && between_predicate_part_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
-  public static boolean between_predicate_part_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "between_predicate_part_2")) return false;
-    if (!nextTokenIs(b, "<between predicate part 2>", BETWEEN, NOT)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, BETWEEN_PREDICATE_PART_2, "<between predicate part 2>");
-    r = between_predicate_part_2_0(b, l + 1);
+    r = r && between_predicate_1(b, l + 1);
     r = r && consumeToken(b, BETWEEN);
     r = r && row_value_predicand(b, l + 1);
     r = r && consumeToken(b, AND);
@@ -297,8 +246,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   // [ NOT ]
-  private static boolean between_predicate_part_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "between_predicate_part_2_0")) return false;
+  private static boolean between_predicate_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "between_predicate_1")) return false;
     consumeToken(b, NOT);
     return true;
   }
@@ -452,41 +401,29 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // row_value_predicand character_like_predicate_part_2
+  // row_value_predicand [ NOT ] LIKE (character_pattern | value_expression)
   public static boolean character_like_predicate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "character_like_predicate")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, CHARACTER_LIKE_PREDICATE, "<character like predicate>");
     r = row_value_predicand(b, l + 1);
-    r = r && character_like_predicate_part_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // [ NOT ] LIKE (character_pattern | value_expression)
-  public static boolean character_like_predicate_part_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "character_like_predicate_part_2")) return false;
-    if (!nextTokenIs(b, "<character like predicate part 2>", LIKE, NOT)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CHARACTER_LIKE_PREDICATE_PART_2, "<character like predicate part 2>");
-    r = character_like_predicate_part_2_0(b, l + 1);
+    r = r && character_like_predicate_1(b, l + 1);
     r = r && consumeToken(b, LIKE);
-    r = r && character_like_predicate_part_2_2(b, l + 1);
+    r = r && character_like_predicate_3(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // [ NOT ]
-  private static boolean character_like_predicate_part_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "character_like_predicate_part_2_0")) return false;
+  private static boolean character_like_predicate_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "character_like_predicate_1")) return false;
     consumeToken(b, NOT);
     return true;
   }
 
   // character_pattern | value_expression
-  private static boolean character_like_predicate_part_2_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "character_like_predicate_part_2_2")) return false;
+  private static boolean character_like_predicate_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "character_like_predicate_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = character_pattern(b, l + 1);
@@ -560,13 +497,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // basic_identifier_chain
+  // identifier_chain
   public static boolean column_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_reference")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = basic_identifier_chain(b, l + 1);
+    r = identifier_chain(b, l + 1);
     exit_section_(b, m, COLUMN_REFERENCE, r);
     return r;
   }
@@ -605,26 +542,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // row_value_predicand comparison_predicate_part_2
-  public static boolean comparison_predicate(PsiBuilder b, int l) {
+  // row_value_predicand comp_op row_value_predicand
+  static boolean comparison_predicate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "comparison_predicate")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, COMPARISON_PREDICATE, "<comparison predicate>");
+    Marker m = enter_section_(b);
     r = row_value_predicand(b, l + 1);
-    r = r && comparison_predicate_part_2(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // comp_op row_value_predicand
-  public static boolean comparison_predicate_part_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "comparison_predicate_part_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, COMPARISON_PREDICATE_PART_2, "<comparison predicate part 2>");
-    r = comp_op(b, l + 1);
+    r = r && comp_op(b, l + 1);
     r = r && row_value_predicand(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -632,10 +558,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // AVG | MAX | MIN | SUM
   // 	|	EVERY | ANY | SOME
   // 	|	COUNT
-  public static boolean computational_operation(PsiBuilder b, int l) {
+  static boolean computational_operation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "computational_operation")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, COMPUTATIONAL_OPERATION, "<computational operation>");
+    Marker m = enter_section_(b);
     r = consumeToken(b, AVG);
     if (!r) r = consumeToken(b, MAX);
     if (!r) r = consumeToken(b, MIN);
@@ -644,7 +570,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, ANY);
     if (!r) r = consumeToken(b, SOME);
     if (!r) r = consumeToken(b, COUNT);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -975,14 +901,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // identifier [ { (dot|colon) identifier }* ]
-  public static boolean identifier_chain(PsiBuilder b, int l) {
+  static boolean identifier_chain(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier_chain")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, IDENTIFIER);
     r = r && identifier_chain_1(b, l + 1);
-    exit_section_(b, m, IDENTIFIER_CHAIN, r);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1161,34 +1087,22 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // row_value_predicand null_predicate_part_2
+  // row_value_predicand IS [ NOT ] NULL
   public static boolean null_predicate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "null_predicate")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, NULL_PREDICATE, "<null predicate>");
     r = row_value_predicand(b, l + 1);
-    r = r && null_predicate_part_2(b, l + 1);
+    r = r && consumeToken(b, IS);
+    r = r && null_predicate_2(b, l + 1);
+    r = r && consumeToken(b, NULL);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  /* ********************************************************** */
-  // IS [ NOT ] NULL
-  public static boolean null_predicate_part_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "null_predicate_part_2")) return false;
-    if (!nextTokenIs(b, IS)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IS);
-    r = r && null_predicate_part_2_1(b, l + 1);
-    r = r && consumeToken(b, NULL);
-    exit_section_(b, m, NULL_PREDICATE_PART_2, r);
-    return r;
-  }
-
   // [ NOT ]
-  private static boolean null_predicate_part_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "null_predicate_part_2_1")) return false;
+  private static boolean null_predicate_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "null_predicate_2")) return false;
     consumeToken(b, NOT);
     return true;
   }
@@ -1246,7 +1160,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // '(' boolean_value_expression ')'
-  public static boolean parenthesized_boolean_value_expression(PsiBuilder b, int l) {
+  static boolean parenthesized_boolean_value_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parenthesized_boolean_value_expression")) return false;
     if (!nextTokenIs(b, LEFT_PAREN)) return false;
     boolean r;
@@ -1254,7 +1168,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, LEFT_PAREN);
     r = r && boolean_value_expression(b, l + 1);
     r = r && consumeToken(b, RIGHT_PAREN);
-    exit_section_(b, m, PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION, r);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1691,7 +1605,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // from_clause 
-  // 		 (where_clause)? 
+  // 		 where_clause? 
   // 		 order_by_clause? 
   // 		 group_by_clause?
   public static boolean table_expression(PsiBuilder b, int l) {
@@ -1707,21 +1621,11 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (where_clause)?
+  // where_clause?
   private static boolean table_expression_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "table_expression_1")) return false;
-    table_expression_1_0(b, l + 1);
+    where_clause(b, l + 1);
     return true;
-  }
-
-  // (where_clause)
-  private static boolean table_expression_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "table_expression_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = where_clause(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   // order_by_clause?
@@ -1906,7 +1810,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // number 
   // | (question_mark? column_reference) 
-  // | left_brace column_reference [ left_bracket lang right_bracket] [':'] [column_reference] right_brace
+  // | left_brace column_reference (left_bracket lang right_bracket)? colon? column_reference? right_brace
   public static boolean value_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_expression")) return false;
     boolean r;
@@ -1936,7 +1840,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // left_brace column_reference [ left_bracket lang right_bracket] [':'] [column_reference] right_brace
+  // left_brace column_reference (left_bracket lang right_bracket)? colon? column_reference? right_brace
   private static boolean value_expression_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_expression_2")) return false;
     boolean r;
@@ -1951,7 +1855,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [ left_bracket lang right_bracket]
+  // (left_bracket lang right_bracket)?
   private static boolean value_expression_2_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_expression_2_2")) return false;
     value_expression_2_2_0(b, l + 1);
@@ -1970,14 +1874,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [':']
+  // colon?
   private static boolean value_expression_2_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_expression_2_3")) return false;
     consumeToken(b, COLON);
     return true;
   }
 
-  // [column_reference]
+  // column_reference?
   private static boolean value_expression_2_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_expression_2_4")) return false;
     column_reference(b, l + 1);

@@ -28,12 +28,6 @@ public class FlexibleSearchNullPredicateImpl extends ASTWrapperPsiElement implem
 
   @Override
   @NotNull
-  public FlexibleSearchNullPredicatePart2 getNullPredicatePart2() {
-    return findNotNullChildByClass(FlexibleSearchNullPredicatePart2.class);
-  }
-
-  @Override
-  @NotNull
   public FlexibleSearchRowValuePredicand getRowValuePredicand() {
     return findNotNullChildByClass(FlexibleSearchRowValuePredicand.class);
   }

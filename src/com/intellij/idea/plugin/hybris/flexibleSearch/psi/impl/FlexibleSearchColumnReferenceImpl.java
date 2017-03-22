@@ -26,10 +26,4 @@ public class FlexibleSearchColumnReferenceImpl extends ASTWrapperPsiElement impl
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public FlexibleSearchBasicIdentifierChain getBasicIdentifierChain() {
-    return findNotNullChildByClass(FlexibleSearchBasicIdentifierChain.class);
-  }
-
 }

@@ -28,14 +28,8 @@ public class FlexibleSearchBetweenPredicateImpl extends ASTWrapperPsiElement imp
 
   @Override
   @NotNull
-  public FlexibleSearchBetweenPredicatePart2 getBetweenPredicatePart2() {
-    return findNotNullChildByClass(FlexibleSearchBetweenPredicatePart2.class);
-  }
-
-  @Override
-  @NotNull
-  public FlexibleSearchRowValuePredicand getRowValuePredicand() {
-    return findNotNullChildByClass(FlexibleSearchRowValuePredicand.class);
+  public List<FlexibleSearchRowValuePredicand> getRowValuePredicandList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchRowValuePredicand.class);
   }
 
 }

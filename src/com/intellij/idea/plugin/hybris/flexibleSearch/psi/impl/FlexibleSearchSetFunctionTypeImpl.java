@@ -26,10 +26,4 @@ public class FlexibleSearchSetFunctionTypeImpl extends ASTWrapperPsiElement impl
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public FlexibleSearchComputationalOperation getComputationalOperation() {
-    return findNotNullChildByClass(FlexibleSearchComputationalOperation.class);
-  }
-
 }

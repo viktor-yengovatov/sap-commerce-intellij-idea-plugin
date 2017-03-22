@@ -83,9 +83,9 @@ EXCLAMATION_MARK                = [!]
 LEFT_BRACKET                    = [\[]
 RIGHT_BRACKET                   = [\]]
 UNDERSCORE                      = [_]
-LEFT_BRACE                      = [{]
+LEFT_BRACE                      = "{"
 LEFT_DOUBLE_BRACE               = "{{"
-RIGHT_BRACE                     = [}]
+RIGHT_BRACE                     = "}"
 RIGHT_DOUBLE_BRACE              = "}}"
 EOL                             = \n|\r\n
 

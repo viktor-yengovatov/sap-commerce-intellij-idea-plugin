@@ -11,15 +11,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitBasicIdentifierChain(@NotNull FlexibleSearchBasicIdentifierChain o) {
-    visitPsiElement(o);
-  }
-
   public void visitBetweenPredicate(@NotNull FlexibleSearchBetweenPredicate o) {
-    visitPsiElement(o);
-  }
-
-  public void visitBetweenPredicatePart2(@NotNull FlexibleSearchBetweenPredicatePart2 o) {
     visitPsiElement(o);
   }
 
@@ -51,10 +43,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitCharacterLikePredicatePart2(@NotNull FlexibleSearchCharacterLikePredicatePart2 o) {
-    visitPsiElement(o);
-  }
-
   public void visitCharacterPattern(@NotNull FlexibleSearchCharacterPattern o) {
     visitPsiElement(o);
   }
@@ -80,18 +68,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitCompOp(@NotNull FlexibleSearchCompOp o) {
-    visitPsiElement(o);
-  }
-
-  public void visitComparisonPredicate(@NotNull FlexibleSearchComparisonPredicate o) {
-    visitPsiElement(o);
-  }
-
-  public void visitComparisonPredicatePart2(@NotNull FlexibleSearchComparisonPredicatePart2 o) {
-    visitPsiElement(o);
-  }
-
-  public void visitComputationalOperation(@NotNull FlexibleSearchComputationalOperation o) {
     visitPsiElement(o);
   }
 
@@ -139,10 +115,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitIdentifierChain(@NotNull FlexibleSearchIdentifierChain o) {
-    visitPsiElement(o);
-  }
-
   public void visitJoinCondition(@NotNull FlexibleSearchJoinCondition o) {
     visitPsiElement(o);
   }
@@ -175,10 +147,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitNullPredicatePart2(@NotNull FlexibleSearchNullPredicatePart2 o) {
-    visitPsiElement(o);
-  }
-
   public void visitOrderByClause(@NotNull FlexibleSearchOrderByClause o) {
     visitPsiElement(o);
   }
@@ -188,10 +156,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitOrdinaryGroupingSet(@NotNull FlexibleSearchOrdinaryGroupingSet o) {
-    visitPsiElement(o);
-  }
-
-  public void visitParenthesizedBooleanValueExpression(@NotNull FlexibleSearchParenthesizedBooleanValueExpression o) {
     visitPsiElement(o);
   }
 

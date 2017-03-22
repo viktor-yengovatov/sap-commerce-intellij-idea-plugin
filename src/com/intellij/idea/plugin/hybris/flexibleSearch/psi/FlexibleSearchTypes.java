@@ -9,9 +9,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.*;
 public interface FlexibleSearchTypes {
 
   IElementType AGGREGATE_FUNCTION = new FlexibleSearchElementType("AGGREGATE_FUNCTION");
-  IElementType BASIC_IDENTIFIER_CHAIN = new FlexibleSearchElementType("BASIC_IDENTIFIER_CHAIN");
   IElementType BETWEEN_PREDICATE = new FlexibleSearchElementType("BETWEEN_PREDICATE");
-  IElementType BETWEEN_PREDICATE_PART_2 = new FlexibleSearchElementType("BETWEEN_PREDICATE_PART_2");
   IElementType BOOLEAN_FACTOR = new FlexibleSearchElementType("BOOLEAN_FACTOR");
   IElementType BOOLEAN_PREDICAND = new FlexibleSearchElementType("BOOLEAN_PREDICAND");
   IElementType BOOLEAN_PRIMARY = new FlexibleSearchElementType("BOOLEAN_PRIMARY");
@@ -19,16 +17,12 @@ public interface FlexibleSearchTypes {
   IElementType BOOLEAN_TEST = new FlexibleSearchElementType("BOOLEAN_TEST");
   IElementType BOOLEAN_VALUE_EXPRESSION = new FlexibleSearchElementType("BOOLEAN_VALUE_EXPRESSION");
   IElementType CHARACTER_LIKE_PREDICATE = new FlexibleSearchElementType("CHARACTER_LIKE_PREDICATE");
-  IElementType CHARACTER_LIKE_PREDICATE_PART_2 = new FlexibleSearchElementType("CHARACTER_LIKE_PREDICATE_PART_2");
   IElementType CHARACTER_PATTERN = new FlexibleSearchElementType("CHARACTER_PATTERN");
   IElementType CHARACTER_STRING_LITERAL = new FlexibleSearchElementType("CHARACTER_STRING_LITERAL");
   IElementType CHARACTER_SUBSTRING_FUNCTION = new FlexibleSearchElementType("CHARACTER_SUBSTRING_FUNCTION");
   IElementType CHARACTER_VALUE_FUNCTION = new FlexibleSearchElementType("CHARACTER_VALUE_FUNCTION");
   IElementType COLUMN_REFERENCE = new FlexibleSearchElementType("COLUMN_REFERENCE");
   IElementType COMMON_VALUE_EXPRESSION = new FlexibleSearchElementType("COMMON_VALUE_EXPRESSION");
-  IElementType COMPARISON_PREDICATE = new FlexibleSearchElementType("COMPARISON_PREDICATE");
-  IElementType COMPARISON_PREDICATE_PART_2 = new FlexibleSearchElementType("COMPARISON_PREDICATE_PART_2");
-  IElementType COMPUTATIONAL_OPERATION = new FlexibleSearchElementType("COMPUTATIONAL_OPERATION");
   IElementType COMP_OP = new FlexibleSearchElementType("COMP_OP");
   IElementType CORRELATION_NAME = new FlexibleSearchElementType("CORRELATION_NAME");
   IElementType DERIVED_COLUMN = new FlexibleSearchElementType("DERIVED_COLUMN");
@@ -41,7 +35,6 @@ public interface FlexibleSearchTypes {
   IElementType GROUPING_ELEMENT = new FlexibleSearchElementType("GROUPING_ELEMENT");
   IElementType GROUPING_ELEMENT_LIST = new FlexibleSearchElementType("GROUPING_ELEMENT_LIST");
   IElementType GROUP_BY_CLAUSE = new FlexibleSearchElementType("GROUP_BY_CLAUSE");
-  IElementType IDENTIFIER_CHAIN = new FlexibleSearchElementType("IDENTIFIER_CHAIN");
   IElementType JOINED_TABLE = new FlexibleSearchElementType("JOINED_TABLE");
   IElementType JOIN_CONDITION = new FlexibleSearchElementType("JOIN_CONDITION");
   IElementType JOIN_SPECIFICATION = new FlexibleSearchElementType("JOIN_SPECIFICATION");
@@ -50,11 +43,9 @@ public interface FlexibleSearchTypes {
   IElementType LIKE_PREDICATE = new FlexibleSearchElementType("LIKE_PREDICATE");
   IElementType NULL_ORDERING = new FlexibleSearchElementType("NULL_ORDERING");
   IElementType NULL_PREDICATE = new FlexibleSearchElementType("NULL_PREDICATE");
-  IElementType NULL_PREDICATE_PART_2 = new FlexibleSearchElementType("NULL_PREDICATE_PART_2");
   IElementType ORDERING_SPECIFICATION = new FlexibleSearchElementType("ORDERING_SPECIFICATION");
   IElementType ORDER_BY_CLAUSE = new FlexibleSearchElementType("ORDER_BY_CLAUSE");
   IElementType ORDINARY_GROUPING_SET = new FlexibleSearchElementType("ORDINARY_GROUPING_SET");
-  IElementType PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION = new FlexibleSearchElementType("PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION");
   IElementType PREDICATE = new FlexibleSearchElementType("PREDICATE");
   IElementType QUERY_SPECIFICATION = new FlexibleSearchElementType("QUERY_SPECIFICATION");
   IElementType ROW_VALUE_PREDICAND = new FlexibleSearchElementType("ROW_VALUE_PREDICAND");
@@ -95,7 +86,7 @@ public interface FlexibleSearchTypes {
   IElementType DESC = new FlexibleSearchTokenType("DESC");
   IElementType DISTINCT = new FlexibleSearchTokenType("DISTINCT");
   IElementType DOT = new FlexibleSearchTokenType(".");
-  IElementType EQUALS_OPERATOR = new FlexibleSearchTokenType("=");
+  IElementType EQUALS_OPERATOR = new FlexibleSearchTokenType("equals_operator");
   IElementType EVERY = new FlexibleSearchTokenType("EVERY");
   IElementType EXCLAMATION_MARK = new FlexibleSearchTokenType("!");
   IElementType EXISTS = new FlexibleSearchTokenType("EXISTS");
@@ -151,14 +142,8 @@ public interface FlexibleSearchTypes {
        if (type == AGGREGATE_FUNCTION) {
         return new FlexibleSearchAggregateFunctionImpl(node);
       }
-      else if (type == BASIC_IDENTIFIER_CHAIN) {
-        return new FlexibleSearchBasicIdentifierChainImpl(node);
-      }
       else if (type == BETWEEN_PREDICATE) {
         return new FlexibleSearchBetweenPredicateImpl(node);
-      }
-      else if (type == BETWEEN_PREDICATE_PART_2) {
-        return new FlexibleSearchBetweenPredicatePart2Impl(node);
       }
       else if (type == BOOLEAN_FACTOR) {
         return new FlexibleSearchBooleanFactorImpl(node);
@@ -181,9 +166,6 @@ public interface FlexibleSearchTypes {
       else if (type == CHARACTER_LIKE_PREDICATE) {
         return new FlexibleSearchCharacterLikePredicateImpl(node);
       }
-      else if (type == CHARACTER_LIKE_PREDICATE_PART_2) {
-        return new FlexibleSearchCharacterLikePredicatePart2Impl(node);
-      }
       else if (type == CHARACTER_PATTERN) {
         return new FlexibleSearchCharacterPatternImpl(node);
       }
@@ -201,15 +183,6 @@ public interface FlexibleSearchTypes {
       }
       else if (type == COMMON_VALUE_EXPRESSION) {
         return new FlexibleSearchCommonValueExpressionImpl(node);
-      }
-      else if (type == COMPARISON_PREDICATE) {
-        return new FlexibleSearchComparisonPredicateImpl(node);
-      }
-      else if (type == COMPARISON_PREDICATE_PART_2) {
-        return new FlexibleSearchComparisonPredicatePart2Impl(node);
-      }
-      else if (type == COMPUTATIONAL_OPERATION) {
-        return new FlexibleSearchComputationalOperationImpl(node);
       }
       else if (type == COMP_OP) {
         return new FlexibleSearchCompOpImpl(node);
@@ -247,9 +220,6 @@ public interface FlexibleSearchTypes {
       else if (type == GROUP_BY_CLAUSE) {
         return new FlexibleSearchGroupByClauseImpl(node);
       }
-      else if (type == IDENTIFIER_CHAIN) {
-        return new FlexibleSearchIdentifierChainImpl(node);
-      }
       else if (type == JOINED_TABLE) {
         return new FlexibleSearchJoinedTableImpl(node);
       }
@@ -274,9 +244,6 @@ public interface FlexibleSearchTypes {
       else if (type == NULL_PREDICATE) {
         return new FlexibleSearchNullPredicateImpl(node);
       }
-      else if (type == NULL_PREDICATE_PART_2) {
-        return new FlexibleSearchNullPredicatePart2Impl(node);
-      }
       else if (type == ORDERING_SPECIFICATION) {
         return new FlexibleSearchOrderingSpecificationImpl(node);
       }
@@ -285,9 +252,6 @@ public interface FlexibleSearchTypes {
       }
       else if (type == ORDINARY_GROUPING_SET) {
         return new FlexibleSearchOrdinaryGroupingSetImpl(node);
-      }
-      else if (type == PARENTHESIZED_BOOLEAN_VALUE_EXPRESSION) {
-        return new FlexibleSearchParenthesizedBooleanValueExpressionImpl(node);
       }
       else if (type == PREDICATE) {
         return new FlexibleSearchPredicateImpl(node);

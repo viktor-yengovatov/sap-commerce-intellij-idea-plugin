@@ -28,6 +28,12 @@ public class FlexibleSearchCompOpImpl extends ASTWrapperPsiElement implements Fl
 
   @Override
   @Nullable
+  public PsiElement getEqualsOperator() {
+    return findChildByType(EQUALS_OPERATOR);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getGreaterThanOrEqualsOperator() {
     return findChildByType(GREATER_THAN_OR_EQUALS_OPERATOR);
   }

@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchBetweenPredicate extends PsiElement {
 
   @NotNull
-  FlexibleSearchBetweenPredicatePart2 getBetweenPredicatePart2();
-
-  @NotNull
-  FlexibleSearchRowValuePredicand getRowValuePredicand();
+  List<FlexibleSearchRowValuePredicand> getRowValuePredicandList();
 
 }

@@ -61,8 +61,7 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
         FlexibleSearchTypes.ASC,
         FlexibleSearchTypes.UNION,
         FlexibleSearchTypes.NOT,
-        FlexibleSearchTypes.EXISTS,
-        FlexibleSearchTypes.COMPUTATIONAL_OPERATION
+        FlexibleSearchTypes.EXISTS
     );
 
     public static final TextAttributesKey[] KEYWORD_KEYS = pack(FS_KEYWORD);

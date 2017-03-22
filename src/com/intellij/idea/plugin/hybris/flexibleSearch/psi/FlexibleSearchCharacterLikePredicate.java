@@ -7,10 +7,13 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchCharacterLikePredicate extends PsiElement {
 
-  @NotNull
-  FlexibleSearchCharacterLikePredicatePart2 getCharacterLikePredicatePart2();
+  @Nullable
+  FlexibleSearchCharacterPattern getCharacterPattern();
 
   @NotNull
   FlexibleSearchRowValuePredicand getRowValuePredicand();
+
+  @Nullable
+  FlexibleSearchValueExpression getValueExpression();
 
 }

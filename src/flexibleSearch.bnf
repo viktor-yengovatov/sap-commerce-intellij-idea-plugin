@@ -45,7 +45,7 @@
         colon = ":"
         SEMICOLON = ";"
         less_than_operator = "<"
-        equals_operator = "="
+        equals_operator = 'regexp:(=)'
         greater_than_operator = '>'
         question_mark = "?"
         exclamation_mark = "!"
@@ -88,10 +88,6 @@ select_sublist ::= derived_column | (aggregate_function [comma aggregate_functio
 
 derived_column ::= value_expression [ AS  correlation_name ]
 
-
-//10.9 <aggregate function> (p503)
-//Specify a value computed from a collection of rows.
-
 set_quantifier ::= (DISTINCT | ALL)
 
 aggregate_function ::=
@@ -102,21 +98,16 @@ general_set_function ::= set_function_type left_paren [ set_quantifier ] value_e
 
 set_function_type ::= computational_operation
 
-computational_operation ::=
+private computational_operation ::=
 		AVG | MAX | MIN | SUM
 	|	EVERY | ANY | SOME
 	|	COUNT
 
-
-
 table_expression ::= from_clause 
-		 (where_clause)? 
+		 where_clause? 
 		 order_by_clause? 
 		 group_by_clause?
-		  
-//		[ <having clause> ]
-		
-		
+
 order_by_clause ::= ORDER BY sort_specification_list
 
 sort_specification_list ::= sort_specification [ { comma sort_specification }* ]
@@ -197,7 +188,7 @@ boolean_predicand ::=
 		parenthesized_boolean_value_expression
 	|	nonparenthesized_value_expression_primary
 
-parenthesized_boolean_value_expression ::= '(' boolean_value_expression ')'
+private parenthesized_boolean_value_expression ::= '(' boolean_value_expression ')'
 
 private nonparenthesized_value_expression_primary ::= column_reference
 //Predicates
@@ -209,18 +200,12 @@ predicate ::= comparison_predicate
 	|	null_predicate
 	|	exists_predicate
 
-null_predicate ::= row_value_predicand null_predicate_part_2
-
-null_predicate_part_2 ::= IS [ NOT ] NULL 
+null_predicate ::= row_value_predicand IS [ NOT ] NULL
 
 exists_predicate ::= EXISTS table_subquery
 
-
-
 //Specify a comparison of two row values. <comparison predicate>
-comparison_predicate ::= row_value_predicand comparison_predicate_part_2
-
-comparison_predicate_part_2 ::= comp_op row_value_predicand
+private comparison_predicate ::= row_value_predicand comp_op row_value_predicand
 
 comp_op ::=
 		equals_operator
@@ -231,22 +216,16 @@ comp_op ::=
 	|	greater_than_or_equals_operator
 
 
-
 // Specify a range comparison. <between predicate>
-between_predicate ::= row_value_predicand between_predicate_part_2
-
-between_predicate_part_2 ::= [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
+between_predicate ::= row_value_predicand [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
 
 row_value_predicand ::= value_expression | common_value_expression
 
 common_value_expression ::= string_value_expression
 
-
 like_predicate ::= character_like_predicate
 
-character_like_predicate ::= row_value_predicand character_like_predicate_part_2
-
-character_like_predicate_part_2 ::= [ NOT ] LIKE (character_pattern | value_expression)
+character_like_predicate ::= row_value_predicand [ NOT ] LIKE (character_pattern | value_expression)
 
 character_pattern ::=  string | string_value_function
 
@@ -263,31 +242,16 @@ character_value_function ::= character_substring_function
 character_substring_function ::=
         CONCAT '(' string_value_expression comma  (character_substring_function | string_value_expression) ')'
 
-
-
-//6.25 <value expression> (p236)
-//Specify a value.
 value_expression ::=
  number 
 | (question_mark? column_reference) 
-| left_brace column_reference [ left_bracket lang right_bracket] [':'] [column_reference] right_brace
-{pin=1}
+| left_brace column_reference (left_bracket lang right_bracket)? colon? column_reference? right_brace
 
 lang ::= identifier
 
+private identifier_chain ::= identifier [ { (dot|colon) identifier }* ]
 
-// 6.6 <identifier chain> (p183)
-identifier_chain ::= identifier [ { (dot|colon) identifier }* ]
-basic_identifier_chain ::= identifier_chain
-
-// 6.7 <column reference> (p187)
-column_reference ::=
-		basic_identifier_chain
-		
-		
-// 7.9 <group by clause> (p320)
-// Specify a grouped table derived by the application of the <group by clause> to the result of the
-// previously specified clause.
+column_reference ::= identifier_chain
 
 group_by_clause ::= GROUP BY [ set_quantifier ] grouping_element_list
 

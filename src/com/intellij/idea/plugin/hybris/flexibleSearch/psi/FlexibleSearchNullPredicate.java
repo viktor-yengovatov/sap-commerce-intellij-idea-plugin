@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchNullPredicate extends PsiElement {
 
   @NotNull
-  FlexibleSearchNullPredicatePart2 getNullPredicatePart2();
-
-  @NotNull
   FlexibleSearchRowValuePredicand getRowValuePredicand();
 
 }

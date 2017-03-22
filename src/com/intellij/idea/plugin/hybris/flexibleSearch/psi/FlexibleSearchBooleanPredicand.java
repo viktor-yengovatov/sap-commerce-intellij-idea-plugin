@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchBooleanPredicand extends PsiElement {
 
   @Nullable
-  FlexibleSearchColumnReference getColumnReference();
+  FlexibleSearchBooleanValueExpression getBooleanValueExpression();
 
   @Nullable
-  FlexibleSearchParenthesizedBooleanValueExpression getParenthesizedBooleanValueExpression();
+  FlexibleSearchColumnReference getColumnReference();
 
 }

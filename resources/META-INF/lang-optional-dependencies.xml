@@ -72,6 +72,8 @@
         <completion.contributor language="FlexibleSearch"
                                 implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
 
+        <lang.formatter language="FlexibleSearch"
+                        implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FlexibleSearchFormattingModelBuilder"/>
 
 
         <!-- Support Impex Language-->

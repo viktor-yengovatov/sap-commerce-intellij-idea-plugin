@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchCompOp extends PsiElement {
 
   @Nullable
+  PsiElement getEqualsOperator();
+
+  @Nullable
   PsiElement getGreaterThanOrEqualsOperator();
 
   @Nullable

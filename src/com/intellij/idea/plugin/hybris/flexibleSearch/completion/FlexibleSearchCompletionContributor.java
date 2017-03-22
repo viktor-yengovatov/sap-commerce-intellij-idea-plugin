@@ -65,27 +65,4 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 
 
     }
-
-
-    private static final TokenSet KEYWORD_TOKEN_SET = TokenSet.create(
-        FlexibleSearchTypes.SELECT,
-        FlexibleSearchTypes.FROM,
-        FlexibleSearchTypes.WHERE,
-        FlexibleSearchTypes.GROUP,
-        FlexibleSearchTypes.AS,
-        FlexibleSearchTypes.IS,
-        FlexibleSearchTypes.NULL,
-        FlexibleSearchTypes.LIKE,
-        FlexibleSearchTypes.AND,
-        FlexibleSearchTypes.OR,
-        FlexibleSearchTypes.ORDER,
-        FlexibleSearchTypes.BY,
-        FlexibleSearchTypes.DESC,
-        FlexibleSearchTypes.ASC,
-        FlexibleSearchTypes.UNION,
-        FlexibleSearchTypes.NOT,
-        FlexibleSearchTypes.EXISTS,
-        FlexibleSearchTypes.COMPUTATIONAL_OPERATION
-    );
-
 }

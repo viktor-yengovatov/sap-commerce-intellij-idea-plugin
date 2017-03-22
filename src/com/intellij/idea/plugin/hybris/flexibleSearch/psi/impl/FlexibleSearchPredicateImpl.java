@@ -34,8 +34,8 @@ public class FlexibleSearchPredicateImpl extends ASTWrapperPsiElement implements
 
   @Override
   @Nullable
-  public FlexibleSearchComparisonPredicate getComparisonPredicate() {
-    return findChildByClass(FlexibleSearchComparisonPredicate.class);
+  public FlexibleSearchCompOp getCompOp() {
+    return findChildByClass(FlexibleSearchCompOp.class);
   }
 
   @Override
@@ -54,6 +54,12 @@ public class FlexibleSearchPredicateImpl extends ASTWrapperPsiElement implements
   @Nullable
   public FlexibleSearchNullPredicate getNullPredicate() {
     return findChildByClass(FlexibleSearchNullPredicate.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FlexibleSearchRowValuePredicand> getRowValuePredicandList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchRowValuePredicand.class);
   }
 
 }

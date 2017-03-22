@@ -11,7 +11,7 @@ public interface FlexibleSearchPredicate extends PsiElement {
   FlexibleSearchBetweenPredicate getBetweenPredicate();
 
   @Nullable
-  FlexibleSearchComparisonPredicate getComparisonPredicate();
+  FlexibleSearchCompOp getCompOp();
 
   @Nullable
   FlexibleSearchExistsPredicate getExistsPredicate();
@@ -21,5 +21,8 @@ public interface FlexibleSearchPredicate extends PsiElement {
 
   @Nullable
   FlexibleSearchNullPredicate getNullPredicate();
+
+  @NotNull
+  List<FlexibleSearchRowValuePredicand> getRowValuePredicandList();
 
 }

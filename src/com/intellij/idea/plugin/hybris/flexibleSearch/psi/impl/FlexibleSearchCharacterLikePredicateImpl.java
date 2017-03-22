@@ -27,15 +27,21 @@ public class FlexibleSearchCharacterLikePredicateImpl extends ASTWrapperPsiEleme
   }
 
   @Override
-  @NotNull
-  public FlexibleSearchCharacterLikePredicatePart2 getCharacterLikePredicatePart2() {
-    return findNotNullChildByClass(FlexibleSearchCharacterLikePredicatePart2.class);
+  @Nullable
+  public FlexibleSearchCharacterPattern getCharacterPattern() {
+    return findChildByClass(FlexibleSearchCharacterPattern.class);
   }
 
   @Override
   @NotNull
   public FlexibleSearchRowValuePredicand getRowValuePredicand() {
     return findNotNullChildByClass(FlexibleSearchRowValuePredicand.class);
+  }
+
+  @Override
+  @Nullable
+  public FlexibleSearchValueExpression getValueExpression() {
+    return findChildByClass(FlexibleSearchValueExpression.class);
   }
 
 }
