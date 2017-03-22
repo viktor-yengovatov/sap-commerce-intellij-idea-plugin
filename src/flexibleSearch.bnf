@@ -33,39 +33,40 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTokenType"
  
   tokens = [
-        percent = '%'
-        quote = "'"
-        left_paren = "("
-        right_paren = ")"
-        asterisk = "*"
-        plus_sign = "+"
-        comma = ","
-        minus_sign = "-"
-        dot = "."
-        colon = ":"
-        SEMICOLON = ";"
-        less_than_operator = "<"
-        equals_operator = 'regexp:(=)'
-        greater_than_operator = '>'
-        question_mark = "?"
-        exclamation_mark = "!"
-        left_bracket = "["
-        right_bracket = "]"
-        underscore = "_"
-        left_brace = "{"
-        right_brace = "}"
-        right_double_brace = "regexp:(}})"
-        left_double_brace = "regexp:({{)"
+        PERCENT                         = '%'
+        QUOTE                           = "'"
+        ASTERISK                        = "*"
+        PLUS_SIGN                       = "+"
+        COMMA                           = ","
+        MINUS_SIGN                      = "-"
+        DOT                             = "."
+        COLON                           = ":"
+        SEMICOLON                       = ";"
+        QUESTION_MARK                   = "?"
+        EXCLAMATION_MARK                = "!"
+        UNDERSCORE                      = "_"
+
+        LEFT_BRACKET                    = "["
+        RIGHT_BRACKET                   = "]"
+        LEFT_PAREN                      = "("
+        RIGHT_PAREN                     = ")"
+        LEFT_BRACE                      = "{"
+        RIGHT_BRACE                     = "}"
+        RIGHT_DOUBLE_BRACE              = "regexp:(}})"
+        LEFT_DOUBLE_BRACE               = "regexp:({{)"
         
-        not_equals_operator = 'regexp:(<>)'
-        greater_than_or_equals_operator = "regexp:(>=)"
-        less_than_or_equals_operator = "regexp:(<=)"
+        EQUALS_OPERATOR                 = 'regexp:(=)'
+        NOT_EQUALS_OPERATOR             = 'regexp:(<>)'
+        GREATER_THAN_OPERATOR           = '>'
+        GREATER_THAN_OR_EQUALS_OPERATOR = "regexp:(>=)"
+        LESS_THAN_OPERATOR              = "<"
+        LESS_THAN_OR_EQUALS_OPERATOR    = "regexp:(<=)"
 
 
-        space='regexp:\s+'
-        identifier="regexp:([:jletter:] [:jletterdigit:]*)"
-        string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
-        number="regexp:[:jdigit:]*"
+        SPACE                           = 'regexp:\s+'
+        IDENTIFIER                      = "regexp:([:jletter:] [:jletterdigit:]*)"
+        STRING                          = "regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
+        NUMBER                          = "regexp:[:jdigit:]*"
   ]
 }
 
@@ -82,19 +83,19 @@ private empty_statement ::= SEMICOLON | <<eof>>
 
 query_specification ::= SELECT [ set_quantifier ] select_list table_expression
 
-select_list ::= asterisk | select_sublist [ ( comma select_sublist )* ]
+select_list ::= ASTERISK | select_sublist [ ( COMMA select_sublist )* ]
 
-select_sublist ::= derived_column | (aggregate_function [comma aggregate_function*])
+select_sublist ::= derived_column | (aggregate_function [COMMA aggregate_function*])
 
 derived_column ::= value_expression [ AS  correlation_name ]
 
 set_quantifier ::= (DISTINCT | ALL)
 
 aggregate_function ::=
-		COUNT '(' asterisk ')' 
+		COUNT LEFT_PAREN ASTERISK RIGHT_PAREN 
 	|	general_set_function 
 
-general_set_function ::= set_function_type left_paren [ set_quantifier ] value_expression right_paren [ [ AS ] correlation_name ]
+general_set_function ::= set_function_type LEFT_PAREN [ set_quantifier ] value_expression RIGHT_PAREN [ [ AS ] correlation_name ]
 
 set_function_type ::= computational_operation
 
@@ -110,7 +111,7 @@ table_expression ::= from_clause
 
 order_by_clause ::= ORDER BY sort_specification_list
 
-sort_specification_list ::= sort_specification [ { comma sort_specification }* ]
+sort_specification_list ::= sort_specification [ { COMMA sort_specification }* ]
 
 sort_specification ::= sort_key [ ordering_specification ] [ null_ordering ]
 
@@ -124,17 +125,17 @@ null_ordering ::= NULLS FIRST | NULLS LAST
 //Specify a table derived from one or more tables. <from clause>
 
 //<from clause> ::= FROM <table reference list>
-from_clause ::= FROM (left_brace table_reference_list right_brace | subquery )
+from_clause ::= FROM (LEFT_BRACE table_reference_list RIGHT_BRACE | subquery )
 
-table_reference_list ::=  table_reference [ { comma? table_reference }* ] 
+table_reference_list ::=  table_reference [ { COMMA? table_reference }* ] 
 
 table_reference ::= table_primary [joined_table] | joined_table
 
 table_primary ::= table_name [ [ AS ] correlation_name ]
 
-table_name ::= identifier [ exclamation_mark ]
+table_name ::= IDENTIFIER [ EXCLAMATION_MARK ]
 {pin=1}
-correlation_name ::= identifier
+correlation_name ::= IDENTIFIER
 
 // 7.7 <joined table> (p312)
 // Specify a table derived from a Cartesian product, inner or outer join, or union join.
@@ -150,15 +151,11 @@ join_type ::= LEFT
 
 table_subquery ::= subquery
 
-subquery ::= '(' left_double_brace query_specification right_double_brace [(UNION ALL left_double_brace query_specification right_double_brace)*]  ')' [ [ AS ] correlation_name ]
+subquery ::= 
+LEFT_PAREN LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE [(UNION ALL LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE)*]  RIGHT_PAREN [ [ AS ] correlation_name ]
 
-//<where clause>. Specify a table derived by the application of a <search condition> to the result of the preceding
-//<from clause>.
 
 where_clause ::= WHERE search_condition
-
-//Specify a condition that is True , False , or Unknown , depending on the value of a <boolean value
-//expression>. <search condition> 
 
 search_condition ::= boolean_value_expression
 
@@ -179,16 +176,14 @@ boolean_primary ::= boolean_predicand | predicate
 /*
 boolean_predicand ::= parenthesized_boolean_value_expression
 
-parenthesized_boolean_value_expression ::= left_paren boolean_value_expression left_paren
+parenthesized_boolean_value_expression ::= LEFT_PAREN boolean_value_expression LEFT_PAREN
 
 nonparenthesized_value_expression_primary ::= id
 */
 
-boolean_predicand ::=
-		parenthesized_boolean_value_expression
-	|	nonparenthesized_value_expression_primary
+boolean_predicand ::= parenthesized_boolean_value_expression | nonparenthesized_value_expression_primary
 
-private parenthesized_boolean_value_expression ::= '(' boolean_value_expression ')'
+private parenthesized_boolean_value_expression ::= LEFT_PAREN boolean_value_expression RIGHT_PAREN
 
 private nonparenthesized_value_expression_primary ::= column_reference
 //Predicates
@@ -208,12 +203,12 @@ exists_predicate ::= EXISTS table_subquery
 private comparison_predicate ::= row_value_predicand comp_op row_value_predicand
 
 comp_op ::=
-		equals_operator
-	|	greater_than_operator
-	|	not_equals_operator
-	|	less_than_operator
-	|	less_than_or_equals_operator
-	|	greater_than_or_equals_operator
+		EQUALS_OPERATOR
+	|	GREATER_THAN_OPERATOR
+	|	NOT_EQUALS_OPERATOR
+	|	LESS_THAN_OPERATOR
+	|	LESS_THAN_OR_EQUALS_OPERATOR
+	|	GREATER_THAN_OR_EQUALS_OPERATOR
 
 
 // Specify a range comparison. <between predicate>
@@ -227,43 +222,39 @@ like_predicate ::= character_like_predicate
 
 character_like_predicate ::= row_value_predicand [ NOT ] LIKE (character_pattern | value_expression)
 
-character_pattern ::=  string | string_value_function
+character_pattern ::=  STRING | string_value_function
 
 string_value_expression ::=  general_literal
 
 general_literal ::= character_string_literal
 
-character_string_literal ::= string 
+character_string_literal ::= STRING 
 
 string_value_function ::= character_value_function 
 
 character_value_function ::= character_substring_function
 
 character_substring_function ::=
-        CONCAT '(' string_value_expression comma  (character_substring_function | string_value_expression) ')'
+        CONCAT LEFT_PAREN string_value_expression COMMA  (character_substring_function | string_value_expression) RIGHT_PAREN
 
-value_expression ::=
- number 
-| (question_mark? column_reference) 
-| left_brace column_reference (left_bracket lang right_bracket)? colon? column_reference? right_brace
+value_expression ::=  NUMBER 
+                    | QUESTION_MARK? column_reference 
+                    | LEFT_BRACE column_reference (LEFT_BRACKET lang RIGHT_BRACKET)? COLON? column_reference? RIGHT_BRACE
 
-lang ::= identifier
+lang ::= IDENTIFIER
 
-private identifier_chain ::= identifier [ { (dot|colon) identifier }* ]
+private identifier_chain ::= IDENTIFIER [ { (DOT|COLON) IDENTIFIER }* ]
 
 column_reference ::= identifier_chain
 
 group_by_clause ::= GROUP BY [ set_quantifier ] grouping_element_list
 
-grouping_element_list ::= grouping_element [ { comma grouping_element }* ]
+grouping_element_list ::= grouping_element [ { COMMA grouping_element }* ]
 
-grouping_element ::=
-		ordinary_grouping_set
+grouping_element ::= ordinary_grouping_set
 
-ordinary_grouping_set ::=
-		grouping_column_reference
-	|	'(' grouping_column_reference_list ')'
+ordinary_grouping_set ::= grouping_column_reference | LEFT_PAREN grouping_column_reference_list RIGHT_PAREN
 
 grouping_column_reference ::= value_expression
 
-grouping_column_reference_list ::= grouping_column_reference [ { comma grouping_column_reference }* ]
+grouping_column_reference_list ::= grouping_column_reference [ { COMMA grouping_column_reference }* ]
