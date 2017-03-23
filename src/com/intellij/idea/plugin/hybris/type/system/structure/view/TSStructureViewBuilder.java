@@ -18,8 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.type.system.structure.view;
 
+import com.intellij.ide.structureView.StructureView;
 import com.intellij.ide.structureView.StructureViewModel;
+import com.intellij.ide.structureView.newStructureView.StructureViewComponent;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.Function;
 import com.intellij.util.xml.DomElement;
@@ -45,5 +49,15 @@ public class TSStructureViewBuilder extends DomStructureViewBuilder {
     @Override
     public StructureViewModel createStructureViewModel(@Nullable final Editor editor) {
         return new TSStructureViewTreeModel(myFile, myDescriptor, editor);
+    }
+
+    @Override
+    @NotNull
+    public StructureView createStructureView(final FileEditor fileEditor, @NotNull final Project project) {
+        final StructureView structureView = super.createStructureView(fileEditor, project);
+        if (structureView instanceof StructureViewComponent) {
+            ((StructureViewComponent)structureView).getTree().setRootVisible(false);
+        }
+        return structureView;
     }
 }
