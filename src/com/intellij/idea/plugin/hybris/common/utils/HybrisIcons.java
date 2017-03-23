@@ -39,7 +39,7 @@ public interface HybrisIcons {
     Icon JOIN = IconLoader.getIcon("/icons/Join-16.png");
     Icon SCRIPT = IconLoader.getIcon("/icons/Script-16.png");
     Icon TYPE_SYSTEM = IconLoader.getIcon("/icons/type-system.png");
-
+    Icon LOCALIZED = IconLoader.getIcon("/icons/localized.gif");
 
     Icon MACROS = IconLoader.getIcon("/icons/macros.png");
 }

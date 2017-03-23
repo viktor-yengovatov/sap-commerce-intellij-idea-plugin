@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
  */
-public class TSStructureViewTreeModel extends DomStructureViewTreeModel implements StructureViewModel.ElementInfoProvider {
+public class TSStructureViewTreeModel extends DomStructureViewTreeModel implements StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
     private final DomElementNavigationProvider myNavigationProvider;
     private final Function<DomElement, DomService.StructureViewMode> myDescriptor;
 
@@ -65,5 +65,15 @@ public class TSStructureViewTreeModel extends DomStructureViewTreeModel implemen
     @Override
     public boolean isAlwaysLeaf(final StructureViewTreeElement element) {
         return false;
+    }
+
+    @Override
+    public boolean isAutoExpand(@NotNull final StructureViewTreeElement element) {
+        return false;
+    }
+
+    @Override
+    public boolean isSmartExpand() {
+        return true;
     }
 }
