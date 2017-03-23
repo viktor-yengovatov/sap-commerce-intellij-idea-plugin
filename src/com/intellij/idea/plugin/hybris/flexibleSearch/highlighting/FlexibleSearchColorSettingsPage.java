@@ -21,6 +21,7 @@ public class FlexibleSearchColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
         new AttributesDescriptor("Comment", FS_COMMENT),
         new AttributesDescriptor("Keywords", FS_KEYWORD),
+        new AttributesDescriptor("Column", FS_COLUMN),
         new AttributesDescriptor("Comma", FS_SYMBOL),
         new AttributesDescriptor("Number", FS_NUMBER),
         new AttributesDescriptor("Braces", FS_BRACES),
@@ -32,7 +33,7 @@ public class FlexibleSearchColorSettingsPage implements ColorSettingsPage {
     @Nullable
     @Override
     public Icon getIcon() {
-        return HybrisIcons.SCRIPT;
+        return HybrisIcons.FS_FILE;
     }
 
     @NotNull

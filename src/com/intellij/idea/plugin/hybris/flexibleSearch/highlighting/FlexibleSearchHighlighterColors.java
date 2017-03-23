@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACKETS;
+import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_FIELD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.LINE_COMMENT;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.NUMBER;
@@ -26,6 +27,8 @@ public class FlexibleSearchHighlighterColors {
     
     public static final TextAttributesKey FS_SYMBOL = key("COMMA", KEYWORD);
     public static final TextAttributesKey FS_NUMBER = key("NUMBER", NUMBER);
+    
+    public static final TextAttributesKey FS_COLUMN = key("COLUMN", INSTANCE_FIELD);
     
     public static final TextAttributesKey FS_COMMENT = key("COMMENT", LINE_COMMENT);
     

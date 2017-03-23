@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_BRACES;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_BRACKETS;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_COLUMN;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_COMMENT;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_KEYWORD;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_NUMBER;
@@ -44,12 +45,18 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
         FlexibleSearchTypes.COMMA
     );
 
+    private static final TokenSet COLUMN_TOKEN_SET = TokenSet.create(
+        FlexibleSearchTypes.COLUMN_REFERENCE
+    );
+
     private static final TokenSet KEYWORD_TOKEN_SET = TokenSet.create(
         FlexibleSearchTypes.SELECT,
         FlexibleSearchTypes.FROM,
         FlexibleSearchTypes.WHERE,
         FlexibleSearchTypes.GROUP,
         FlexibleSearchTypes.AS,
+        FlexibleSearchTypes.ALL,
+        FlexibleSearchTypes.QUESTION_MARK,
         FlexibleSearchTypes.IS,
         FlexibleSearchTypes.NULL,
         FlexibleSearchTypes.LIKE,
@@ -74,6 +81,8 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey[] NUMBER_KEYS = pack(FS_NUMBER);
 
+    public static final TextAttributesKey[] COLUMN_KEYS = pack(FS_COLUMN);
+    
     public static final TextAttributesKey[] COMMENT_KEYS = pack(FS_COMMENT);
 
     public static final TextAttributesKey[] BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER);
@@ -95,6 +104,8 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
             return STRING_KEYS;
         } else if (SYMBOL_TOKEN_SET.contains(tokenType)) {
             return SYMBOL_KEYS;
+        } else if (COLUMN_TOKEN_SET.contains(tokenType)) {
+            return COLUMN_KEYS;
         } else if (BRACES_TOKEN_SET.contains(tokenType)) {
             return BRACES_KEYS;
         } else if (BRACKETS_TOKEN_SET.contains(tokenType)) {

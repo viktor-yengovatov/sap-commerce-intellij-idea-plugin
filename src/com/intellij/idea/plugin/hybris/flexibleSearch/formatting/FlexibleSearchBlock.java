@@ -74,6 +74,14 @@ public class FlexibleSearchBlock extends AbstractBlock {
         return blocks;
     }
 
+    @Nullable
+    @Override
+    public Alignment getAlignment() {
+        if (this.getNode().getElementType() == FlexibleSearchTypes.QUERY_SPECIFICATION) {
+            Alignment.createAlignment(true, Alignment.Anchor.LEFT);
+        }
+        return super.getAlignment();
+    }
 
     @Override
     public Indent getIndent() {
