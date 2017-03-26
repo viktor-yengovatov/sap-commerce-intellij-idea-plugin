@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.structure.view;
 
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.ide.structureView.xml.XmlStructureViewBuilderProvider;
+import com.intellij.idea.plugin.hybris.type.system.model.Attributes;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomService;
@@ -37,6 +38,11 @@ public class TSXmlStructureViewBuilderProvider implements XmlStructureViewBuilde
         if (!TypeSystemUtils.isTypeSystemXmlFile(xmlFile)) {
             return null;
         }
-        return new TSStructureViewBuilder(xmlFile, (dom) -> DomService.StructureViewMode.SHOW);
+        return new TSStructureViewBuilder(xmlFile, (dom) -> {
+            if (dom instanceof Attributes) {
+                return DomService.StructureViewMode.SHOW_CHILDREN;
+            }
+            return DomService.StructureViewMode.SHOW;
+        });
     }
 }

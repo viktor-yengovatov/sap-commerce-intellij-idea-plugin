@@ -19,29 +19,42 @@
 package com.intellij.idea.plugin.hybris.type.system.structure.view;
 
 import com.intellij.ide.structureView.StructureViewTreeElement;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.ColumnType;
 import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment;
+import com.intellij.idea.plugin.hybris.type.system.model.Description;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.MapType;
+import com.intellij.idea.plugin.hybris.type.system.model.Modifiers;
 import com.intellij.idea.plugin.hybris.type.system.model.Persistence;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.idea.plugin.hybris.type.system.model.TypeGroup;
 import com.intellij.idea.plugin.hybris.type.system.model.Value;
+import com.intellij.psi.xml.XmlElement;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.psi.xml.XmlTagValue;
 import com.intellij.util.Function;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomElementNavigationProvider;
 import com.intellij.util.xml.DomService;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.structure.DomStructureTreeElement;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.List;
+
+import static com.intellij.util.containers.ContainerUtilRt.newArrayList;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
@@ -198,13 +211,129 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
     @Nullable
     public String getLocationString() {
         final DomElement dom = getElement();
+        final String attrValue = localizeAttribute(dom);
+        if (attrValue != null) {
+            return attrValue;
+        }
+        final String itemTypeValue = localizeItemType(dom);
+        if (itemTypeValue != null) {
+            return itemTypeValue;
+        }
+        final String modifiersValue = localizeModifiers(dom);
+        if (modifiersValue != null) {
+            return modifiersValue;
+        }
+        final String descriptionValue = localizeDescription(dom);
+        if (descriptionValue != null) {
+            return descriptionValue;
+        }
         final String xmlElementName = dom.getXmlElementName();
         if (xmlElementName == null) {
             return null;
         }
+
         if (xmlElementName.equalsIgnoreCase(getPresentableText())) {
             return null;
         }
         return xmlElementName;
     }
+
+    private String localizeDescription(final DomElement dom) {
+        if (dom instanceof Description) {
+            final XmlElement xmlElement = dom.getXmlElement();
+            if (xmlElement instanceof XmlTag) {
+                final XmlTagValue value = ((XmlTag) xmlElement).getValue();
+                if (value != null) {
+                    return value.getTrimmedText();
+                }
+            }
+        }
+        return null;
+    }
+
+    private String localizeModifiers(final DomElement dom) {
+        if (dom instanceof Modifiers) {
+            final Modifiers modifiers = (Modifiers)dom;
+            final List<String> modList = newArrayList();
+            resolveModifier(modifiers.getDoNotOptimize(), "doNotOptimize", modList);
+            resolveModifier(modifiers.getEncrypted(), "encrypted", modList);
+            resolveModifier(modifiers.getInitial(), "initial", modList);
+            resolveModifier(modifiers.getOptional(), "optional", modList);
+            resolveModifier(modifiers.getPartOf(), "partOf", modList);
+            resolveModifier(modifiers.getPrivate(), "private", modList);
+            resolveModifier(modifiers.getRead(), "read", modList);
+            resolveModifier(modifiers.getRemovable(), "removable", modList);
+            resolveModifier(modifiers.getSearch(), "search", modList);
+            resolveModifier(modifiers.getUnique(), "unique", modList);
+            resolveModifier(modifiers.getWrite(), "write", modList);
+            if (!modList.isEmpty()) {
+                return StringUtils.join(modList, ", ");
+            }
+        }
+        return null;
+    }
+
+    private void resolveModifier(
+        final GenericAttributeValue<Boolean> attribute,
+        final String methodName,
+        final List<String> resultList
+    ) {
+        if (attribute == null) {
+            return;
+        }
+        final Boolean value = BooleanUtils.toBooleanObject(attribute.getStringValue());
+        if (value == null) {
+            return;
+        }
+        if (value) {
+            resultList.add(methodName);
+        } else {
+            resultList.add(methodName+"(false)");
+        }
+
+    }
+
+    private String localizeItemType(final DomElement dom) {
+        if (dom instanceof ItemType) {
+            ItemType itemType = (ItemType)dom;
+            String value = resolveValue(itemType.getExtends());
+            if (value == null) {
+                value = "GenericItem";
+            }
+            return "("+value+")";
+        }
+        return null;
+    }
+
+    private String localizeAttribute(final DomElement dom) {
+        if (dom instanceof Attribute) {
+            final Attribute attribute = (Attribute) dom;
+            String value = resolveValue(attribute.getType());
+            if (value == null) {
+                return null;
+            }
+            if (value.startsWith("localized:")) {
+                value = value.substring("localized:".length());
+            }
+            if (value.startsWith("java.lang.")) {
+                value = value.substring("java.lang.".length());
+            }
+            return value;
+        }
+        return null;
+    }
+
+    @Override
+    @Nullable
+    public Icon getIcon(boolean open) {
+        final DomElement dom = getElement();
+        if (dom instanceof Attribute) {
+            final String value = resolveValue(((Attribute)dom).getType());
+            if (StringUtils.startsWith(value, "localized:")) {
+                return HybrisIcons.LOCALIZED;
+            }
+        }
+        return null;
+    }
+
 }
