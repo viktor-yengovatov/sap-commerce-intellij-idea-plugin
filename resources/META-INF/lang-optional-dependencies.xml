@@ -226,6 +226,12 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
+        <action id="FlexibleSearch.NewFlexibleSearchFile" 
+                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
+                text="FlexibleSearch File" description="Create new FlexibleSearch file">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+
         <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true" icon="/icons/hybrisIcon.png">
             <action id="ImpexTableFormatter.Format"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAction"
