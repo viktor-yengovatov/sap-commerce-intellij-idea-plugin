@@ -216,7 +216,7 @@ public interface ItemType extends DomElement {
      */
     @NotNull
     @SubTag("description")
-    GenericDomValue<String> getDescription();
+    Description getDescription();
 
 
     /**

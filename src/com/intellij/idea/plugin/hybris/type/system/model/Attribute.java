@@ -170,7 +170,7 @@ public interface Attribute extends DomElement {
      */
     @NotNull
     @SubTag("description")
-    GenericDomValue<String> getDescription();
+    Description getDescription();
 
 
     /**
