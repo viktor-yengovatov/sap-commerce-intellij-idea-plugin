@@ -20,34 +20,10 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywords;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchQuerySpecification;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableReference;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes;
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.constants.ImpexKeywords;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.patterns.PsiElementPattern;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
@@ -77,7 +53,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             psiElement()
                 .inside(FlexibleSearchTableName.class)
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            ImpexHeaderItemTypeCodeCompletionProvider.getInstance()
+            ItemTypeCodeCompletionProvider.getInstance()
         );
 
 
