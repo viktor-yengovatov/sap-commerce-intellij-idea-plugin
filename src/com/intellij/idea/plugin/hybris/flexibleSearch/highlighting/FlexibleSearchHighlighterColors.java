@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.ide.highlighter.JavaHighlightingColors.CLASS_NAME_ATTRIBUTES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACKETS;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_FIELD;
@@ -13,7 +14,7 @@ import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.NUMBE
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.PARENTHESES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STRING;
 
-public class FlexibleSearchHighlighterColors {
+public final class FlexibleSearchHighlighterColors {
 
     private FlexibleSearchHighlighterColors() {
     }
@@ -29,6 +30,7 @@ public class FlexibleSearchHighlighterColors {
     public static final TextAttributesKey FS_NUMBER = key("NUMBER", NUMBER);
     
     public static final TextAttributesKey FS_COLUMN = key("COLUMN", INSTANCE_FIELD);
+    public static final TextAttributesKey FS_TABLE = key("TABLE NAME", CLASS_NAME_ATTRIBUTES);
     
     public static final TextAttributesKey FS_COMMENT = key("COMMENT", LINE_COMMENT);
     

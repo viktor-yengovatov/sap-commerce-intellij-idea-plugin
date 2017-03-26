@@ -28,8 +28,8 @@ public class FlexibleSearchTableNameImpl extends ASTWrapperPsiElement implements
 
   @Override
   @NotNull
-  public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
+  public PsiElement getTableNameIdentifier() {
+    return findNotNullChildByType(TABLE_NAME_IDENTIFIER);
   }
 
 }

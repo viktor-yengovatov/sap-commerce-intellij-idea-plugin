@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchTableName extends PsiElement {
 
   @NotNull
-  PsiElement getIdentifier();
+  PsiElement getTableNameIdentifier();
 
 }

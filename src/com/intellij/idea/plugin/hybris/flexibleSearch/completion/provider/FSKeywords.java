@@ -48,9 +48,7 @@ public final class FSKeywords {
             "ASC",
             "UNION",
             "NOT",
-            "EXISTS",
-            "COMPUTATIONAL_OPERATION"
-
+            "EXISTS"
         );
     }
 

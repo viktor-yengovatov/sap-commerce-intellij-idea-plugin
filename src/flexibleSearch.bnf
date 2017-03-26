@@ -65,6 +65,8 @@
 
         SPACE                           = 'regexp:\s+'
         IDENTIFIER                      = "regexp:([:jletter:] [:jletterdigit:]*)"
+        COLUMN_REFERENCE_IDENTIFIER     = "regexp:([:jletter:] [:jletterdigit:]*)"
+        TABLE_NAME_IDENTIFIER           = "regexp:([:jletter:] [:jletterdigit:]*)"
         STRING                          = "regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
         NUMBER                          = "regexp:[:jdigit:]*"
   ]
@@ -133,7 +135,7 @@ table_reference ::= table_primary [joined_table] | joined_table
 
 table_primary ::= table_name [ [ AS ] correlation_name ]
 
-table_name ::= IDENTIFIER [ EXCLAMATION_MARK ]
+table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
 {pin=1}
 correlation_name ::= IDENTIFIER
 
@@ -152,7 +154,7 @@ join_type ::= LEFT
 table_subquery ::= subquery
 
 subquery ::= 
-LEFT_PAREN LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE [(UNION ALL LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE)*]  RIGHT_PAREN [ [ AS ] correlation_name ]
+LEFT_PAREN? LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE [(UNION ALL subquery)*]  RIGHT_PAREN? [ [ AS ] correlation_name ]
 
 
 where_clause ::= WHERE search_condition
@@ -243,7 +245,7 @@ value_expression ::=  NUMBER
 
 lang ::= IDENTIFIER
 
-private identifier_chain ::= IDENTIFIER [ { (DOT|COLON) IDENTIFIER }* ]
+private identifier_chain ::= (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ { (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER)  }* ]
 
 column_reference ::= identifier_chain
 

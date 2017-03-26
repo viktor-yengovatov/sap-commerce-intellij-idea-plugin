@@ -80,6 +80,7 @@ public interface FlexibleSearchTypes {
   IElementType BETWEEN = new FlexibleSearchTokenType("BETWEEN");
   IElementType BY = new FlexibleSearchTokenType("BY");
   IElementType COLON = new FlexibleSearchTokenType(":");
+  IElementType COLUMN_REFERENCE_IDENTIFIER = new FlexibleSearchTokenType("COLUMN_REFERENCE_IDENTIFIER");
   IElementType COMMA = new FlexibleSearchTokenType(",");
   IElementType CONCAT = new FlexibleSearchTokenType("CONCAT");
   IElementType COUNT = new FlexibleSearchTokenType("COUNT");
@@ -131,6 +132,7 @@ public interface FlexibleSearchTypes {
   IElementType SOME = new FlexibleSearchTokenType("SOME");
   IElementType STRING = new FlexibleSearchTokenType("STRING");
   IElementType SUM = new FlexibleSearchTokenType("SUM");
+  IElementType TABLE_NAME_IDENTIFIER = new FlexibleSearchTokenType("TABLE_NAME_IDENTIFIER");
   IElementType TRUE = new FlexibleSearchTokenType("TRUE");
   IElementType UNDERSCORE = new FlexibleSearchTokenType("_");
   IElementType UNION = new FlexibleSearchTokenType("UNION");

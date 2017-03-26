@@ -26,6 +26,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywords;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchQuerySpecification;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableReference;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
@@ -47,20 +50,34 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static com.intellij.util.containers.ContainerUtil.newArrayList;
+import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 public class FlexibleSearchCompletionContributor extends CompletionContributor {
 
     private static final Logger LOG = Logger.getInstance(FlexibleSearchCompletionContributor.class);
 
     public FlexibleSearchCompletionContributor() {
-        // keywords
+//        // keywords
+//        extend(
+//            CompletionType.BASIC,
+//            psiElement()
+//                .withElementType(TokenSet.create(
+//                    FlexibleSearchTypes.QUERY_SPECIFICATION,
+//                    FlexibleSearchTypes.SET_QUANTIFIER))
+//                .withLanguage(FlexibleSearchLanguage.getInstance()), 
+//            new FSKeywordCompletionProvider(FSKeywords.keywords(), (keyword) ->
+//                LookupElementBuilder.create(keyword)
+//                                    .withCaseSensitivity(false)
+//                                    .withIcon(AllIcons.Nodes.Function))
+//        );
+
         extend(
             CompletionType.BASIC,
-            psiElement().withLanguage(FlexibleSearchLanguage.getInstance()), 
-            new FSKeywordCompletionProvider(FSKeywords.keywords(), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .withCaseSensitivity(false)
-                                    .withIcon(AllIcons.Nodes.Function))
+            psiElement()
+                .inside(FlexibleSearchTableName.class)
+                .withLanguage(FlexibleSearchLanguage.getInstance()),
+            ImpexHeaderItemTypeCodeCompletionProvider.getInstance()
         );
 
 

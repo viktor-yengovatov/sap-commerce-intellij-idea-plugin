@@ -34,8 +34,26 @@ public class FlexibleSearchSubqueryImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public List<FlexibleSearchQuerySpecification> getQuerySpecificationList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchQuerySpecification.class);
+  public FlexibleSearchQuerySpecification getQuerySpecification() {
+    return findNotNullChildByClass(FlexibleSearchQuerySpecification.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FlexibleSearchSubquery> getSubqueryList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchSubquery.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getLeftDoubleBrace() {
+    return findNotNullChildByType(LEFT_DOUBLE_BRACE);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getRightDoubleBrace() {
+    return findNotNullChildByType(RIGHT_DOUBLE_BRACE);
   }
 
 }

@@ -21,6 +21,7 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.Flexib
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_PARENTHESES;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_STRING;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_SYMBOL;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_TABLE;
 
 public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
 
@@ -46,7 +47,11 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
     );
 
     private static final TokenSet COLUMN_TOKEN_SET = TokenSet.create(
-        FlexibleSearchTypes.COLUMN_REFERENCE
+        FlexibleSearchTypes.COLUMN_REFERENCE_IDENTIFIER
+    );
+
+    private static final TokenSet TABLE_NAME_TOKEN_SET = TokenSet.create(
+        FlexibleSearchTypes.TABLE_NAME_IDENTIFIER
     );
 
     private static final TokenSet KEYWORD_TOKEN_SET = TokenSet.create(
@@ -82,6 +87,7 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey[] NUMBER_KEYS = pack(FS_NUMBER);
 
     public static final TextAttributesKey[] COLUMN_KEYS = pack(FS_COLUMN);
+    public static final TextAttributesKey[] TABLE_KEYS = pack(FS_TABLE);
     
     public static final TextAttributesKey[] COMMENT_KEYS = pack(FS_COMMENT);
 
@@ -106,6 +112,8 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
             return SYMBOL_KEYS;
         } else if (COLUMN_TOKEN_SET.contains(tokenType)) {
             return COLUMN_KEYS;
+        } else if (TABLE_NAME_TOKEN_SET.contains(tokenType)) {
+            return TABLE_KEYS;
         } else if (BRACES_TOKEN_SET.contains(tokenType)) {
             return BRACES_KEYS;
         } else if (BRACKETS_TOKEN_SET.contains(tokenType)) {

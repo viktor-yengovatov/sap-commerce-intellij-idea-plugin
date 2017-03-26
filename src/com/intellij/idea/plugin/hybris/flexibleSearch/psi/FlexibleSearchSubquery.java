@@ -11,6 +11,15 @@ public interface FlexibleSearchSubquery extends PsiElement {
   FlexibleSearchCorrelationName getCorrelationName();
 
   @NotNull
-  List<FlexibleSearchQuerySpecification> getQuerySpecificationList();
+  FlexibleSearchQuerySpecification getQuerySpecification();
+
+  @NotNull
+  List<FlexibleSearchSubquery> getSubqueryList();
+
+  @NotNull
+  PsiElement getLeftDoubleBrace();
+
+  @NotNull
+  PsiElement getRightDoubleBrace();
 
 }

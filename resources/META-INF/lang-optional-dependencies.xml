@@ -47,9 +47,11 @@
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.type.system.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
         <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
+        
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
 
         <!-- ####################################################################################################### -->
-        <!--                                                   Impex                                                 -->
+        <!--                                          Flexible Search                                                -->
         <!-- ####################################################################################################### -->
 
         <!-- Core elements -->
@@ -74,7 +76,15 @@
 
         <lang.formatter language="FlexibleSearch"
                         implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FlexibleSearchFormattingModelBuilder"/>
+        
+        <lang.braceMatcher language="FlexibleSearch" 
+                           implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
 
+        <!-- ####################################################################################################### -->
+        <!--                                                   Impex                                                 -->
+        <!-- ####################################################################################################### -->
+
+        <!-- Core elements -->
 
         <!-- Support Impex Language-->
         <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
