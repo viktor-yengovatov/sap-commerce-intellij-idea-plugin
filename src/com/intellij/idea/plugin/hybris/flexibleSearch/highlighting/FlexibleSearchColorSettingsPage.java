@@ -27,7 +27,7 @@ public class FlexibleSearchColorSettingsPage implements ColorSettingsPage {
         new AttributesDescriptor("Braces", FS_BRACES),
         new AttributesDescriptor("Brackets", FS_BRACKETS),
         new AttributesDescriptor("Parentheses", FS_PARENTHESES),
-        new AttributesDescriptor("Bac character", HighlighterColors.BAD_CHARACTER)
+        new AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER)
     };
 
     @Nullable
