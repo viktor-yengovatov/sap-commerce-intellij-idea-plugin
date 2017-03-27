@@ -39,7 +39,6 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -51,7 +50,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -221,7 +223,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         try {
             this.scanDirectoryForHybrisModules(rootDirectory, progressListenerProcessor, errorsProcessor);
             this.processLocalExtensions();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             LOG.warn(e);
 
             this.rootDirectory = null;
@@ -422,7 +424,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected void scanDirectoryForHybrisModules(@NotNull final File rootDirectory,
                                                  @Nullable final TaskProgressProcessor<File> progressListenerProcessor,
                                                  @Nullable final TaskProgressProcessor<List<File>> errorsProcessor
-    ) throws InterruptedException {
+    ) throws InterruptedException, IOException {
         Validate.notNull(rootDirectory);
 
         this.foundModules.clear();
@@ -476,13 +478,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private Set<File> processDirectoriesByTypePriority(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
         @NotNull final TaskProgressProcessor<File> progressListenerProcessor
-    ) throws InterruptedException {
+    ) throws InterruptedException, IOException {
         final Set<File> moduleRootDirectories = moduleRootMap.get(HYBRIS);
 
         LOG.info("Scanning for higher priority modules");
         for (final File nonHybrisDir: moduleRootMap.get(NON_HYBRIS)) {
             final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
-            this.scanSubrirectories(nonHybrisModuleRootMap, nonHybrisDir, progressListenerProcessor);
+            this.scanSubrirectories(nonHybrisModuleRootMap, nonHybrisDir.toPath(), progressListenerProcessor);
             final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
             if (hybrisModuleSet.isEmpty()) {
                 LOG.info("Confirmed module "+nonHybrisDir);
@@ -524,7 +526,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
         @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
-    ) throws InterruptedException {
+    ) throws InterruptedException, IOException {
         Validate.notNull(moduleRootMap);
         Validate.notNull(rootProjectDirectory);
 
@@ -558,26 +560,35 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
 
-        scanSubrirectories(moduleRootMap, rootProjectDirectory, progressListenerProcessor);
+        scanSubrirectories(moduleRootMap, rootProjectDirectory.toPath(), progressListenerProcessor);
 
     }
 
     private void scanSubrirectories(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
-        @NotNull final File rootProjectDirectory,
+        @NotNull final Path rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
-    ) throws InterruptedException {
-        if (rootProjectDirectory.isDirectory()) {
-            final File[] files = rootProjectDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-
-            if (null != files) {
-                for (File file : files) {
-                    if (!file.getPath().endsWith(HybrisConstants.MEDIA_DIRECTORY) &&
-                        !file.getPath().endsWith(HybrisConstants.TEMP_DIRECTORY))
-                    {
-                        this.findModuleRoots(moduleRootMap, file, progressListenerProcessor);
-                    }
-                }
+    ) throws InterruptedException, IOException {
+        if (!Files.isDirectory(rootProjectDirectory)) {
+            return;
+        }
+        final DirectoryStream<Path> files = Files.newDirectoryStream(rootProjectDirectory, file-> {
+            if (file == null) {
+                return false;
+            }
+            if (!Files.isDirectory(file)) {
+                return false;
+            }
+            if (file.toString().endsWith(HybrisConstants.MEDIA_DIRECTORY) ||
+                file.toString().endsWith(HybrisConstants.TEMP_DIRECTORY) ||
+                file.toString().endsWith(HybrisConstants.IDEA_DIRECTORY)) {
+                return false;
+            }
+            return true;
+        });
+        if (files != null) {
+            for (Path file : files) {
+                this.findModuleRoots(moduleRootMap, file.toFile(), progressListenerProcessor);
             }
         }
     }
