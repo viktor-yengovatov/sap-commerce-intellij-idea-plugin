@@ -73,7 +73,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
         new AttributesDescriptor("Comma", COMMA),
         new AttributesDescriptor("Alternative pattern", ALTERNATIVE_PATTERN),
         new AttributesDescriptor("Document id", DOCUMENT_ID),
-        new AttributesDescriptor("Bac character", HighlighterColors.BAD_CHARACTER)
+        new AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER)
     };
 
     @Nullable

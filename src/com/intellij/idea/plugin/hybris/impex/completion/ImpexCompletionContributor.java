@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider;
+import com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordCompletionProvider;
@@ -98,7 +98,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
                 .withElementType(ImpexTypes.HEADER_TYPE),
-            ImpexHeaderItemTypeCodeCompletionProvider.getInstance()
+            ItemTypeCodeCompletionProvider.getInstance()
         );
 
         // case: item's attribute

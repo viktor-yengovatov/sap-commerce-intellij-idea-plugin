@@ -47,14 +47,47 @@
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.type.system.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
         <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
+        
+
+        <!-- ####################################################################################################### -->
+        <!--                                          Flexible Search                                                -->
+        <!-- ####################################################################################################### -->
+
+        <!-- Core elements -->
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
+        
+        <!-- Support FlexibleSearch Language-->
+        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchTypeFactory"/>
+
+        <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
+
+        <lang.syntaxHighlighterFactory key="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
+
+        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
+
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
+
+        <lang.commenter language="FlexibleSearch"
+                        implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.commenter.FlexibleSearchCommenter"/>
+
+        <completion.contributor language="FlexibleSearch"
+                                implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
+
+        <lang.formatter language="FlexibleSearch"
+                        implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FlexibleSearchFormattingModelBuilder"/>
+        
+        <lang.braceMatcher language="FlexibleSearch" 
+                           implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->
         <!-- ####################################################################################################### -->
 
         <!-- Core elements -->
-        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
 
+        <!-- Support Impex Language-->
+        <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.impex.file.ImpexFileTypeFactory"/>
         <lang.parserDefinition language="Impex"
                                implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
 
@@ -144,8 +177,8 @@
             serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"/>
 
         <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider"
-            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeCodeCompletionProvider"/>
+            serviceInterface="com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider"/>
 
         <applicationService
             serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"
@@ -190,6 +223,12 @@
         </action>
         <action id="Impex.NewImpexFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
                 text="Impex File" description="Create new Impex file">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+
+        <action id="FlexibleSearch.NewFlexibleSearchFile" 
+                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
+                text="FlexibleSearch File" description="Create new FlexibleSearch file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
