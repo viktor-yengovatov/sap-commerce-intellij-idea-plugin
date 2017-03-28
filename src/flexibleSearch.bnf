@@ -72,7 +72,7 @@
   ]
 }
 
-flexibleSearchFile ::= statement *
+flexibleSearchFile ::= statement*
 
 private statement ::= !<<eof>> (query_specification empty_statement?)* empty_statement?
 {recoverWhile = expressionRecoverWhile }
@@ -84,6 +84,7 @@ private empty_statement ::= SEMICOLON | <<eof>>
 // Specify a table derived from the result of a <table expression>.
 
 query_specification ::= SELECT [ set_quantifier ] select_list table_expression
+{pin = 1}
 
 select_list ::= ASTERISK | select_sublist [ ( COMMA select_sublist )* ]
 
@@ -128,6 +129,7 @@ null_ordering ::= NULLS FIRST | NULLS LAST
 
 //<from clause> ::= FROM <table reference list>
 from_clause ::= FROM (LEFT_BRACE table_reference_list RIGHT_BRACE | subquery )
+{pin = 1}
 
 table_reference_list ::=  table_reference [ { COMMA? table_reference }* ] 
 
@@ -148,7 +150,7 @@ join_specification ::= join_condition
 
 join_condition ::= ON search_condition
 
-join_type ::= LEFT
+join_type ::= LEFT |
 
 
 table_subquery ::= subquery
@@ -158,6 +160,7 @@ LEFT_PAREN? LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE [(UNION ALL
 
 
 where_clause ::= WHERE search_condition
+{pin = 1}
 
 search_condition ::= boolean_value_expression
 

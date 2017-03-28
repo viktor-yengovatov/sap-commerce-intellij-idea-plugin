@@ -7,13 +7,13 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchQuerySpecification extends PsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchSelectList getSelectList();
 
   @Nullable
   FlexibleSearchSetQuantifier getSetQuantifier();
 
-  @NotNull
+  @Nullable
   FlexibleSearchTableExpression getTableExpression();
 
 }

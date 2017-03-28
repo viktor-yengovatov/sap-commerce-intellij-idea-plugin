@@ -67,7 +67,6 @@ public class FlexibleSearchBlock extends AbstractBlock {
                 );
 
                 blocks.add(block);
-                
             }
             child = child.getTreeNext();
         }
@@ -78,17 +77,19 @@ public class FlexibleSearchBlock extends AbstractBlock {
     @Override
     public Alignment getAlignment() {
         if (this.getNode().getElementType() == FlexibleSearchTypes.QUERY_SPECIFICATION) {
-            Alignment.createAlignment(true, Alignment.Anchor.LEFT);
+            return null;
         }
         return super.getAlignment();
     }
 
     @Override
     public Indent getIndent() {
-        if (this.getNode().getElementType() == FlexibleSearchTypes.LEFT_DOUBLE_BRACE){
+        if (this.getNode().getElementType() == FlexibleSearchTypes.LEFT_DOUBLE_BRACE) {
             return Indent.getNormalIndent();
+        } else if (this.getNode().getElementType() == FlexibleSearchTypes.QUERY_SPECIFICATION) {
+            return Indent.getNoneIndent();
         }
-        return Indent.getSmartIndent(Indent.Type.NONE);
+        return Indent.getNoneIndent();
     }
 
     @Nullable
