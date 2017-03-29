@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.references.TypeNameMixin;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchTableNameImpl extends ASTWrapperPsiElement implements FlexibleSearchTableName {
+public class FlexibleSearchTableNameImpl extends TypeNameMixin implements FlexibleSearchTableName {
 
   public FlexibleSearchTableNameImpl(ASTNode node) {
     super(node);

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.psi.references;
+package com.intellij.idea.plugin.hybris.psi.references;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-abstract class TypeSystemReferenceBase<PSI extends PsiElement> extends PsiReferenceBase.Poly<PSI> {
+public abstract class TypeSystemReferenceBase<PSI extends PsiElement> extends PsiReferenceBase.Poly<PSI> {
 
     protected static final Object[] NO_VARIANTS = new Object[0];
 

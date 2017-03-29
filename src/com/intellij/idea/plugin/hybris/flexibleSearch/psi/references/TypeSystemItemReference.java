@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,9 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.psi.references;
+package com.intellij.idea.plugin.hybris.flexibleSearch.psi.references;
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName;
+
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
@@ -32,12 +33,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeName> {
 
-    public TypeSystemItemReference(@NotNull final ImpexHeaderTypeName owner) {
+class TypeSystemItemReference extends TypeSystemReferenceBase<FlexibleSearchTableName> {
+
+    public TypeSystemItemReference(@NotNull final FlexibleSearchTableName owner) {
         super(owner);
     }
 
