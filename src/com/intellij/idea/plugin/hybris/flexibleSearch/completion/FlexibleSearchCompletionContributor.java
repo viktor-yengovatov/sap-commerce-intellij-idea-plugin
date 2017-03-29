@@ -26,8 +26,9 @@ import com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletio
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywords;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchFromClause;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderByClause;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSetQuantifier;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableExpression;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchWhereClause;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.tree.TokenSet;
@@ -47,8 +48,9 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             psiElement()
                 .withLanguage(FlexibleSearchLanguage.getInstance())
-                .andNot(psiElement().inside(FlexibleSearchTableExpression.class)
-                                    .andOr(psiElement().inside(FlexibleSearchWhereClause.class))),
+                .andNot(psiElement().inside(FlexibleSearchFromClause.class))
+                .andNot(psiElement().inside(FlexibleSearchWhereClause.class))
+                /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
             new FSKeywordCompletionProvider(FSKeywords.topLevelKeywords(), (keyword) ->
                 LookupElementBuilder.create(keyword)
                                     .withCaseSensitivity(false)
@@ -79,7 +81,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             psiElement()
                 .inside(FlexibleSearchSetQuantifier.class)
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            new FSKeywordCompletionProvider(newHashSet("DISTINCT"), (keyword) ->
+            new FSKeywordCompletionProvider(newHashSet("DISTINCT", "COUNT"), (keyword) ->
                 LookupElementBuilder.create(keyword)
                                     .withCaseSensitivity(false)
                                     .withIcon(AllIcons.Nodes.Method))
@@ -91,6 +93,30 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
                 .inside(psiElement(SELECT_LIST))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
             new FSKeywordCompletionProvider(newHashSet("*"), (keyword) ->
+                LookupElementBuilder.create(keyword)
+                                    .bold()
+                                    .withCaseSensitivity(false)
+                                    .withIcon(AllIcons.Nodes.Static))
+        );
+
+        extend(
+            CompletionType.BASIC,
+            psiElement()
+                .inside(psiElement(FlexibleSearchFromClause.class))
+                .withLanguage(FlexibleSearchLanguage.getInstance()),
+            new FSKeywordCompletionProvider(FSKeywords.joinKeywords(), (keyword) ->
+                LookupElementBuilder.create(keyword)
+                                    .bold()
+                                    .withCaseSensitivity(false)
+                                    .withIcon(AllIcons.Nodes.Static))
+        );
+
+        extend(
+            CompletionType.BASIC,
+            psiElement()
+                .inside(psiElement(FlexibleSearchOrderByClause.class))
+                .withLanguage(FlexibleSearchLanguage.getInstance()),
+            new FSKeywordCompletionProvider(FSKeywords.orderKeywords(), (keyword) ->
                 LookupElementBuilder.create(keyword)
                                     .bold()
                                     .withCaseSensitivity(false)

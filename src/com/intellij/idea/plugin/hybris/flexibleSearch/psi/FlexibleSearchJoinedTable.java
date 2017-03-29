@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchJoinedTable extends PsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchJoinSpecification getJoinSpecification();
 
   @Nullable
@@ -19,7 +19,7 @@ public interface FlexibleSearchJoinedTable extends PsiElement {
   @Nullable
   FlexibleSearchTablePrimary getTablePrimary();
 
-  @NotNull
+  @Nullable
   FlexibleSearchTableReference getTableReference();
 
 }

@@ -34,7 +34,24 @@ public final class FSKeywords {
         return ContainerUtil.newHashSet(
             "SELECT",
             "FROM",
-            "WHERE"
+            "WHERE",
+            "ORDER"
+        );
+    }
+
+    public static Set<String> joinKeywords() {
+        return ContainerUtil.newHashSet(
+            "LEFT",
+            "JOIN",
+            "ON"
+        );
+    }
+
+    public static Set<String> orderKeywords() {
+        return ContainerUtil.newHashSet(
+            "BY",
+            "ASC",
+            "DESC"
         );
     }
 

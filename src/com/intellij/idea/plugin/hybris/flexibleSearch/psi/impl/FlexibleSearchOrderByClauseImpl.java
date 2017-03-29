@@ -27,9 +27,9 @@ public class FlexibleSearchOrderByClauseImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchSortSpecificationList getSortSpecificationList() {
-    return findNotNullChildByClass(FlexibleSearchSortSpecificationList.class);
+    return findChildByClass(FlexibleSearchSortSpecificationList.class);
   }
 
 }

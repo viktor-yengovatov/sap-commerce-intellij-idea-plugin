@@ -979,12 +979,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean join_condition(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_condition")) return false;
     if (!nextTokenIs(b, ON)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, JOIN_CONDITION, null);
     r = consumeToken(b, ON);
+    p = r; // pin = 1
     r = r && search_condition(b, l + 1);
-    exit_section_(b, m, JOIN_CONDITION, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1015,15 +1016,16 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // [(table_primary [joined_table] | joined_table)] [ join_type ] JOIN table_reference join_specification
   public static boolean joined_table(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "joined_table")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, JOINED_TABLE, "<joined table>");
     r = joined_table_0(b, l + 1);
     r = r && joined_table_1(b, l + 1);
     r = r && consumeToken(b, JOIN);
-    r = r && table_reference(b, l + 1);
-    r = r && join_specification(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    p = r; // pin = 3
+    r = r && report_error_(b, table_reference(b, l + 1));
+    r = p && join_specification(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // [(table_primary [joined_table] | joined_table)]
@@ -1133,16 +1135,39 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // !( SEMICOLON | query_specification | RIGHT_DOUBLE_BRACE)
+  static boolean orderByClauseRecoverWhile(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "orderByClauseRecoverWhile")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !orderByClauseRecoverWhile_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // SEMICOLON | query_specification | RIGHT_DOUBLE_BRACE
+  private static boolean orderByClauseRecoverWhile_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "orderByClauseRecoverWhile_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, SEMICOLON);
+    if (!r) r = query_specification(b, l + 1);
+    if (!r) r = consumeToken(b, RIGHT_DOUBLE_BRACE);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // ORDER BY sort_specification_list
   public static boolean order_by_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "order_by_clause")) return false;
-    if (!nextTokenIs(b, ORDER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, ORDER, BY);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ORDER_BY_CLAUSE, "<order by clause>");
+    r = consumeTokens(b, 1, ORDER, BY);
+    p = r; // pin = 1
     r = r && sort_specification_list(b, l + 1);
-    exit_section_(b, m, ORDER_BY_CLAUSE, r);
-    return r;
+    exit_section_(b, l, m, r, p, orderByClauseRecoverWhile_parser_);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1930,18 +1955,22 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean where_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "where_clause")) return false;
     if (!nextTokenIs(b, WHERE)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, WHERE_CLAUSE, null);
+    boolean r;
+    Marker m = enter_section_(b);
     r = consumeToken(b, WHERE);
-    p = r; // pin = 1
     r = r && search_condition(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    exit_section_(b, m, WHERE_CLAUSE, r);
+    return r;
   }
 
   final static Parser expressionRecoverWhile_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return expressionRecoverWhile(b, l + 1);
+    }
+  };
+  final static Parser orderByClauseRecoverWhile_parser_ = new Parser() {
+    public boolean parse(PsiBuilder b, int l) {
+      return orderByClauseRecoverWhile(b, l + 1);
     }
   };
 }

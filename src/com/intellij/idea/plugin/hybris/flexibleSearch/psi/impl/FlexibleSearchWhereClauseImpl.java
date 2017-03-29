@@ -27,9 +27,9 @@ public class FlexibleSearchWhereClauseImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  @Nullable
+  @NotNull
   public FlexibleSearchSearchCondition getSearchCondition() {
-    return findChildByClass(FlexibleSearchSearchCondition.class);
+    return findNotNullChildByClass(FlexibleSearchSearchCondition.class);
   }
 
 }
