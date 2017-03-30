@@ -256,7 +256,7 @@ value_expression ::=  NUMBER
 
 lang ::= IDENTIFIER
 
-private identifier_chain ::= (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ { (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER)  }* ]
+private identifier_chain ::= (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ { (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER)  }* ]
 
 column_reference ::= identifier_chain
 

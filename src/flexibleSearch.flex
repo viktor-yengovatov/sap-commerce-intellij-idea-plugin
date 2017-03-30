@@ -272,6 +272,8 @@ EOL                             = \n|\r\n
 
     {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
     {QUESTION_MARK}                        { return QUESTION_MARK; }
+    
+    {IDENTIFIER}{DOT}|{IDENTIFIER}{COLON}  { yypushback(1); yybegin(COLUMN_IDENTIFIER); return TABLE_NAME_IDENTIFIER; }
 
     {IDENTIFIER}                           { yybegin(popState()); return TABLE_NAME_IDENTIFIER; }
 }
@@ -344,6 +346,7 @@ EOL                             = \n|\r\n
 <COLUMN_IDENTIFIER> {
     "AS"                                   { yybegin(CORRELATION_NAME); pushState(COLUMN_IDENTIFIER); return AS; }
 
+    {IDENTIFIER}{DOT}|{IDENTIFIER}{COLON}  { yypushback(yylength()); yybegin(TABLE_IDENTIFIER); }
     {DOT}                                  { return DOT; }
     {COMMA}                                { return COMMA; }
     {ASTERISK}                             { return ASTERISK; }

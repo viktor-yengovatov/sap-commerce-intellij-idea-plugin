@@ -498,7 +498,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // identifier_chain
   public static boolean column_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_reference")) return false;
-    if (!nextTokenIs(b, "<column reference>", COLUMN_REFERENCE_IDENTIFIER, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COLUMN_REFERENCE, "<column reference>");
     r = identifier_chain(b, l + 1);
@@ -899,10 +898,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ { (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER)  }* ]
+  // (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ { (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER)  }* ]
   static boolean identifier_chain(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier_chain")) return false;
-    if (!nextTokenIs(b, "", COLUMN_REFERENCE_IDENTIFIER, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = identifier_chain_0(b, l + 1);
@@ -911,12 +909,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER
+  // IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER
   private static boolean identifier_chain_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier_chain_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, TABLE_NAME_IDENTIFIER);
     if (!r) r = consumeToken(b, COLUMN_REFERENCE_IDENTIFIER);
     exit_section_(b, m, null, r);
     return r;
