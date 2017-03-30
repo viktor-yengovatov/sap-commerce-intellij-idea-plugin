@@ -31,7 +31,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
-import com.intellij.lang.ant.config.AntConfiguration;
 import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.lang.ant.config.AntNoFileException;
 import com.intellij.lang.ant.config.execution.AntRunConfiguration;
@@ -42,6 +41,7 @@ import com.intellij.lang.ant.config.impl.AntClasspathEntry;
 import com.intellij.lang.ant.config.impl.AntInstallation;
 import com.intellij.lang.ant.config.impl.BuildFileProperty;
 import com.intellij.lang.ant.config.impl.ExecuteCompositeTargetEvent;
+import com.intellij.lang.ant.config.impl.GlobalAntConfiguration;
 import com.intellij.lang.ant.config.impl.SinglePathEntry;
 import com.intellij.lang.ant.config.impl.TargetFilter;
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
@@ -106,6 +106,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         customHybrisModuleDescriptorList.forEach(
             e -> registerAntInstallation(platformDir, e.getRootDirectory(), desirableCustomTargets)
         );
+        saveAntInstallation(antInstallation);
         removeMake(project);
         createMetaTargets(buildFile);
 
@@ -272,6 +273,15 @@ public class DefaultAntConfigurator implements AntConfigurator {
         } catch (AntInstallation.ConfigurationException e) {
             return;
         }
+    }
+
+    private void saveAntInstallation(final AntInstallation antInstallation) {
+        final GlobalAntConfiguration globalAntConfiguration = GlobalAntConfiguration.getInstance();
+        if (globalAntConfiguration == null) {
+            return;
+        }
+        globalAntConfiguration.removeConfiguration(globalAntConfiguration.getConfiguredAnts().get(antInstallation.getReference()));
+        globalAntConfiguration.addConfiguration(antInstallation);
     }
 
     private void removeMake(final Project project) {
