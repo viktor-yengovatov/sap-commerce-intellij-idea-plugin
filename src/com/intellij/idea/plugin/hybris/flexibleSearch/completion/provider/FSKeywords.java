@@ -35,7 +35,16 @@ public final class FSKeywords {
             "SELECT",
             "FROM",
             "WHERE",
-            "ORDER"
+            "ORDER",
+
+            // Temporarily place this
+            "LEFT",
+            "JOIN",
+            "ON",
+
+            "BY",
+            "ASC",
+            "DESC"
         );
     }
 

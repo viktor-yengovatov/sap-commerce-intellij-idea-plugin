@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywords;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchFromClause;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderByClause;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSetQuantifier;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchWhereClause;
 import com.intellij.openapi.diagnostic.Logger;
@@ -99,29 +98,29 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
                                     .withIcon(AllIcons.Nodes.Static))
         );
 
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .inside(psiElement(FlexibleSearchFromClause.class))
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            new FSKeywordCompletionProvider(FSKeywords.joinKeywords(), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .bold()
-                                    .withCaseSensitivity(false)
-                                    .withIcon(AllIcons.Nodes.Static))
-        );
-
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .inside(psiElement(FlexibleSearchOrderByClause.class))
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            new FSKeywordCompletionProvider(FSKeywords.orderKeywords(), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .bold()
-                                    .withCaseSensitivity(false)
-                                    .withIcon(AllIcons.Nodes.Static))
-        );
-
+//        extend(
+//            CompletionType.BASIC,
+//            psiElement()
+//                .inside(psiElement(FlexibleSearchFromClause.class))
+//                .withLanguage(FlexibleSearchLanguage.getInstance()),
+//            new FSKeywordCompletionProvider(FSKeywords.joinKeywords(), (keyword) ->
+//                LookupElementBuilder.create(keyword)
+//                                    .bold()
+//                                    .withCaseSensitivity(false)
+//                                    .withIcon(AllIcons.Nodes.Static))
+//        );
+//
+//        extend(
+//            CompletionType.BASIC,
+//            psiElement()
+//                .inside(psiElement(FlexibleSearchOrderByClause.class))
+//                .withLanguage(FlexibleSearchLanguage.getInstance()),
+//            new FSKeywordCompletionProvider(FSKeywords.orderKeywords(), (keyword) ->
+//                LookupElementBuilder.create(keyword)
+//                                    .bold()
+//                                    .withCaseSensitivity(false)
+//                                    .withIcon(AllIcons.Nodes.Static))
+//        );
+//
     }
 }
