@@ -238,6 +238,7 @@
                     text="Format Impex"
                     icon="/icons/hybrisIcon.png"
                     description="Format Impex to table">
+                <keyboard-shortcut first-keystroke="control alt f" keymap="$default"/>
             </action>
             <!-- This feature not ready for production. Temporary disabled.  -->
             <!--<action id="ImpexTableFormatter.FormatAllTables"-->
@@ -255,6 +256,7 @@
                     text="Select Impex"
                     icon="/icons/hybrisIcon.png"
                     description="Select Impex">
+                <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
             </action>
 
             <add-to-group group-id="CodeMenu" anchor="last"/>
