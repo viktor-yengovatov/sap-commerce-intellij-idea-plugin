@@ -26,4 +26,10 @@ public class FlexibleSearchColumnReferenceImpl extends ASTWrapperPsiElement impl
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getTableNameIdentifier() {
+    return findChildByType(TABLE_NAME_IDENTIFIER);
+  }
+
 }

@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
+import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;

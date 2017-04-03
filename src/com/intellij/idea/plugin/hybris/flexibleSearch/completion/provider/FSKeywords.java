@@ -30,25 +30,37 @@ public final class FSKeywords {
     /**
      * @return set of keywords.
      */
-    public static Set<String> keywords() {
+    public static Set<String> topLevelKeywords() {
         return ContainerUtil.newHashSet(
             "SELECT",
             "FROM",
             "WHERE",
-            "GROUP",
-            "AS",
-            "IS",
-            "NULL",
-            "LIKE",
-            "AND",
-            "OR",
             "ORDER",
+
+            // Temporarily place this
+            "LEFT",
+            "JOIN",
+            "ON",
+
             "BY",
-            "DESC",
             "ASC",
-            "UNION",
-            "NOT",
-            "EXISTS"
+            "DESC"
+        );
+    }
+
+    public static Set<String> joinKeywords() {
+        return ContainerUtil.newHashSet(
+            "LEFT",
+            "JOIN",
+            "ON"
+        );
+    }
+
+    public static Set<String> orderKeywords() {
+        return ContainerUtil.newHashSet(
+            "BY",
+            "ASC",
+            "DESC"
         );
     }
 

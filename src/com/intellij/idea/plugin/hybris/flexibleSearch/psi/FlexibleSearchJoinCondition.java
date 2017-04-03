@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchJoinCondition extends PsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchSearchCondition getSearchCondition();
 
 }

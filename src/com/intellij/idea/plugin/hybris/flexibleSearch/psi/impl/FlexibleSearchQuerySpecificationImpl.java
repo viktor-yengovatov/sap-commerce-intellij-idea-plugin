@@ -27,9 +27,9 @@ public class FlexibleSearchQuerySpecificationImpl extends ASTWrapperPsiElement i
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchSelectList getSelectList() {
-    return findNotNullChildByClass(FlexibleSearchSelectList.class);
+    return findChildByClass(FlexibleSearchSelectList.class);
   }
 
   @Override
@@ -39,9 +39,9 @@ public class FlexibleSearchQuerySpecificationImpl extends ASTWrapperPsiElement i
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchTableExpression getTableExpression() {
-    return findNotNullChildByClass(FlexibleSearchTableExpression.class);
+    return findChildByClass(FlexibleSearchTableExpression.class);
   }
 
 }

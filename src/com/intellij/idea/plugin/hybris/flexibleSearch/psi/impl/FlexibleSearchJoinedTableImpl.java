@@ -27,9 +27,9 @@ public class FlexibleSearchJoinedTableImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchJoinSpecification getJoinSpecification() {
-    return findNotNullChildByClass(FlexibleSearchJoinSpecification.class);
+    return findChildByClass(FlexibleSearchJoinSpecification.class);
   }
 
   @Override
@@ -51,9 +51,9 @@ public class FlexibleSearchJoinedTableImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchTableReference getTableReference() {
-    return findNotNullChildByClass(FlexibleSearchTableReference.class);
+    return findChildByClass(FlexibleSearchTableReference.class);
   }
 
 }

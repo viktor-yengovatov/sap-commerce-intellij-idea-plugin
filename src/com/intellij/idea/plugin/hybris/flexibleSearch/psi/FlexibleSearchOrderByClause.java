@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchOrderByClause extends PsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchSortSpecificationList getSortSpecificationList();
 
 }

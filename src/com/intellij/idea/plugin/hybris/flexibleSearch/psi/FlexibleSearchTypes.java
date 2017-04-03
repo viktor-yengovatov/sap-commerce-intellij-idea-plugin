@@ -100,7 +100,9 @@ public interface FlexibleSearchTypes {
   IElementType IDENTIFIER = new FlexibleSearchTokenType("IDENTIFIER");
   IElementType IS = new FlexibleSearchTokenType("IS");
   IElementType JOIN = new FlexibleSearchTokenType("JOIN");
+  IElementType JOIN_TYPE_1_0 = new FlexibleSearchTokenType("join_type_1_0");
   IElementType LAST = new FlexibleSearchTokenType("LAST");
+  IElementType LEFT = new FlexibleSearchTokenType("LEFT");
   IElementType LEFT_BRACE = new FlexibleSearchTokenType("{");
   IElementType LEFT_BRACKET = new FlexibleSearchTokenType("[");
   IElementType LEFT_DOUBLE_BRACE = new FlexibleSearchTokenType("LEFT_DOUBLE_BRACE");

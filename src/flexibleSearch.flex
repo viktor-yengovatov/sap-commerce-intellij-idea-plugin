@@ -34,6 +34,24 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParse
 /* We're scanning text. */
 %unicode
 
+%{
+    private int myPrevState = YYINITIAL;
+    
+    public int yyprevstate() {
+        return myPrevState;
+    }
+    
+    private int popState() {
+        final int prev = myPrevState;
+        myPrevState = YYINITIAL;
+        return prev;
+    }
+    
+    protected void pushState(int state){
+        myPrevState = state;
+    }
+
+%}
 
 %function advance
 %type IElementType
@@ -91,18 +109,21 @@ EOL                             = \n|\r\n
 
 %state SELECT_EXP 
 %state FROM_EXP 
+%state TABLE_IDENTIFIER 
+%state COLUMN_IDENTIFIER 
 %state WHERE_EXP
+%state ON_EXP
 %state CORRELATION_NAME 
+%state SUB_QUERY 
 
 %%
 
 <YYINITIAL> {
     {INTEGER}                              { return NUMBER; }
     {COMMENT}                              { return COMMENT; }
-    {WHITE_SPACE}                          { return WHITE_SPACE; }
 
     /* keywords */
-    "SELECT"                               { yybegin(SELECT_EXP); return SELECT; }
+    "SELECT"                               { yybegin(SELECT_EXP); pushState(YYINITIAL); return SELECT; }
     "AS"                                   { yybegin(CORRELATION_NAME);return AS; }
     "DISTINCT"                             { return DISTINCT; }
     "ALL"                                  { return ALL; }
@@ -149,6 +170,148 @@ EOL                             = \n|\r\n
     {DOT}                                  { return DOT; }
     {COMMA}                                { return COMMA; }
     {ASTERISK}                             { return ASTERISK; }
+    {COLON}                                { return COLON; }
+    {SEMICOLON}                            { return SEMICOLON; }
+     
+    
+    
+    {STRING_LITERAL}                       { return STRING; }
+    {IDENTIFIER}                           { return IDENTIFIER; }
+}
+
+
+<SELECT_EXP> {
+    {INTEGER}                              { return NUMBER; }
+    {COMMENT}                              { return COMMENT; }
+
+    
+    {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); pushState(SELECT_EXP); return LEFT_BRACE; }
+    {RIGHT_BRACE}                          { return RIGHT_BRACE; }
+
+    {LEFT_PAREN}                           { return LEFT_PAREN; }
+    {RIGHT_PAREN}                          { return RIGHT_PAREN; }
+    {DOT}                                  { return DOT; }
+    {COMMA}                                { return COMMA; }
+    {ASTERISK}                             { return ASTERISK; }
+    {COLON}                                { return COLON; }
+    {SEMICOLON}                            { return SEMICOLON; }
+
+    /* keywords */
+    "SELECT"                               { return SELECT; }
+    "AS"                                   { yybegin(CORRELATION_NAME); pushState(SELECT_EXP); return AS; }
+    "DISTINCT"                             { return DISTINCT; }
+    "ALL"                                  { return ALL; }
+    "COUNT"                                { return COUNT; }
+    "CONCAT"                               { return CONCAT; }
+    "AVG"                                  { return AVG; }
+    "MAX"                                  { return MAX; }
+    "MIN"                                  { return MIN; }
+    "SUM"                                  { return SUM; }
+    "EVERY"                                { return EVERY; }
+    "ANY"                                  { return ANY; }
+    "SOME"                                 { return SOME; }
+    "BY"                                   { return BY; }
+    "FROM"                                 { yybegin(FROM_EXP); pushState(SELECT_EXP); return FROM; }
+    "IS"                                   { return IS; }
+    "CONCAT"                               { return CONCAT; }
+    
+    {STRING_LITERAL}                       { return STRING; }
+    {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
+}
+
+<FROM_EXP> {
+    {INTEGER}                              { return NUMBER; }
+    {COMMENT}                              { return COMMENT; }
+
+    {LEFT_BRACE}                           { yybegin(TABLE_IDENTIFIER); pushState(FROM_EXP); return LEFT_BRACE; }
+    {RIGHT_BRACE}                          { return RIGHT_BRACE; }
+    {LEFT_DOUBLE_BRACE}                    { yybegin(SUB_QUERY); pushState(FROM_EXP); return LEFT_DOUBLE_BRACE; }
+    {RIGHT_DOUBLE_BRACE}                   { return RIGHT_DOUBLE_BRACE; }
+    {LEFT_PAREN}                           { return LEFT_PAREN; }
+    {RIGHT_PAREN}                          { return RIGHT_PAREN; }
+    {DOT}                                  { return DOT; }
+    {COMMA}                                { return COMMA; }
+    {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
+    {QUESTION_MARK}                        { return QUESTION_MARK; }
+    {COLON}                                { return COLON; }
+    {SEMICOLON}                            { return SEMICOLON; }
+
+
+    /* keywords */
+    "SELECT"                               { yybegin(SELECT_EXP); pushState(FROM_EXP); return SELECT; }
+    "AS"                                   { yybegin(CORRELATION_NAME); pushState(FROM_EXP); return AS; }
+    "ALL"                                  { return ALL; }
+    "JOIN"                                 { yybegin(TABLE_IDENTIFIER); pushState(FROM_EXP); return JOIN; }
+    "ON"                                   { yybegin(ON_EXP); pushState(FROM_EXP); return ON; }
+    "LEFT"                                 { return LEFT; }
+    "ON"                                   { return ON; }
+    "UNION"                                { return UNION; }
+    "WHERE"                                { yybegin(WHERE_EXP); pushState(FROM_EXP); return WHERE; }
+    "AND"                                  { return AND; }
+    "OR"                                   { return OR; }
+    "NOT"                                  { return NOT; }
+    "IS"                                   { return IS; }
+    "TRUE"                                 { return TRUE; }
+    "FALSE"                                { return FALSE; }
+    "NULL"                                 { return NULL; }
+    "EXISTS"                               { return EXISTS; }
+    "BETWEEN"                              { return BETWEEN; }
+    "LIKE"                                 { return LIKE; }
+    "CONCAT"                               { return CONCAT; }
+    "GROUP"                                { return GROUP; }  
+     
+    
+    {STRING_LITERAL}                       { return STRING; }
+    {IDENTIFIER}                           { return IDENTIFIER; }
+}
+
+<TABLE_IDENTIFIER> {
+    "AS"                                   { yybegin(CORRELATION_NAME); pushState(TABLE_IDENTIFIER); return AS; }
+    
+    {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
+
+    {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
+    {QUESTION_MARK}                        { return QUESTION_MARK; }
+    
+    {IDENTIFIER}{DOT}|{IDENTIFIER}{COLON}  { yypushback(1); yybegin(COLUMN_IDENTIFIER); return TABLE_NAME_IDENTIFIER; }
+
+    {IDENTIFIER}                           { yybegin(popState()); return TABLE_NAME_IDENTIFIER; }
+}
+
+<WHERE_EXP> {
+    {INTEGER}                              { return NUMBER; }
+    {COMMENT}                              { return COMMENT; }
+
+    /* keywords */
+    "SELECT"                               { yybegin(SELECT_EXP); pushState(WHERE_EXP); return SELECT; }
+    "ORDER"                                { return ORDER; }
+    "BY"                                   { return BY; }
+    "ASC"                                  { return ASC; }
+    "DESC"                                 { return DESC; }
+    "FIRST"                                { return FIRST; }
+    "LAST"                                 { return LAST; }
+    "AND"                                  { return AND; }
+    "OR"                                   { return OR; }
+    "NOT"                                  { return NOT; }
+    "IS"                                   { return IS; }
+    "TRUE"                                 { return TRUE; }
+    "FALSE"                                { return FALSE; }
+    "NULL"                                 { return NULL; }
+    "EXISTS"                               { return EXISTS; }
+    "BETWEEN"                              { return BETWEEN; }
+    "LIKE"                                 { return LIKE; }
+    "CONCAT"                               { return CONCAT; }
+    "GROUP"                                { return GROUP; }  
+
+    
+    {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); pushState(WHERE_EXP); return LEFT_BRACE; }
+    {RIGHT_BRACE}                          { return RIGHT_BRACE; }
+    {LEFT_DOUBLE_BRACE}                    { return LEFT_DOUBLE_BRACE; }
+    {RIGHT_DOUBLE_BRACE}                   { yybegin(popState()); return RIGHT_DOUBLE_BRACE; }
+    {LEFT_PAREN}                           { return LEFT_PAREN; }
+    {RIGHT_PAREN}                          { return RIGHT_PAREN; }
+    {DOT}                                  { return DOT; }
+    {COMMA}                                { return COMMA; }
     {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
     {QUESTION_MARK}                        { return QUESTION_MARK; }
     {COLON}                                { return COLON; }
@@ -161,169 +324,52 @@ EOL                             = \n|\r\n
     {LESS_THAN_OPERATOR}                   { return LESS_THAN_OPERATOR; }
     {GREATER_THAN_OPERATOR}                { return GREATER_THAN_OPERATOR; }
     {NON_EQUAL_OPERATOR}                   { return NOT_EQUALS_OPERATOR; }
-    
-    
-    {STRING_LITERAL}                       { return STRING; }
-    {IDENTIFIER}                           { return IDENTIFIER; }
-}
 
-
-<SELECT_EXP> {
-    {INTEGER}                              { return NUMBER; }
-    {COMMENT}                              { return COMMENT; }
-    {WHITE_SPACE}                          { return WHITE_SPACE; }
-
-    
-    {LEFT_BRACE}                           { return LEFT_BRACE; }
-    {RIGHT_BRACE}                          { return RIGHT_BRACE; }
-    {LEFT_DOUBLE_BRACE}                    { return LEFT_DOUBLE_BRACE; }
-    {RIGHT_DOUBLE_BRACE}                   { return RIGHT_DOUBLE_BRACE; }
-    {LEFT_PAREN}                           { return LEFT_PAREN; }
-    {RIGHT_PAREN}                          { return RIGHT_PAREN; }
-    {DOT}                                  { return DOT; }
-    {COMMA}                                { return COMMA; }
-    {ASTERISK}                             { return ASTERISK; }
-    {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
-    {QUESTION_MARK}                        { return QUESTION_MARK; }
-    {COLON}                                { return COLON; }
-    {SEMICOLON}                            { return SEMICOLON; }
-
-    /* keywords */
-    "SELECT"                               { return SELECT; }
-    "AS"                                   { yybegin(CORRELATION_NAME);return AS; }
-    "DISTINCT"                             { return DISTINCT; }
-    "ALL"                                  { return ALL; }
-    "COUNT"                                { return COUNT; }
-    "CONCAT"                               { return CONCAT; }
-    "AVG"                                  { return AVG; }
-    "MAX"                                  { return MAX; }
-    "MIN"                                  { return MIN; }
-    "SUM"                                  { return SUM; }
-    "EVERY"                                { return EVERY; }
-    "ANY"                                  { return ANY; }
-    "SOME"                                 { return SOME; }
-    "BY"                                   { return BY; }
-    "FROM"                                 { yybegin(FROM_EXP); return FROM; }
-    "IS"                                   { return IS; }
-    "CONCAT"                               { return CONCAT; }
     
     {STRING_LITERAL}                       { return STRING; }
     {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
 }
 
-<FROM_EXP> {
+<ON_EXP> {
     {INTEGER}                              { return NUMBER; }
     {COMMENT}                              { return COMMENT; }
-    {WHITE_SPACE}                          { return WHITE_SPACE; }
-
-    {LEFT_BRACE}                           { return LEFT_BRACE; }
-    {RIGHT_BRACE}                          { return RIGHT_BRACE; }
-    {LEFT_DOUBLE_BRACE}                    { return LEFT_DOUBLE_BRACE; }
-    {RIGHT_DOUBLE_BRACE}                   { return RIGHT_DOUBLE_BRACE; }
-    {LEFT_PAREN}                           { return LEFT_PAREN; }
-    {RIGHT_PAREN}                          { return RIGHT_PAREN; }
-    {DOT}                                  { return DOT; }
-    {COMMA}                                { return COMMA; }
-    {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
-    {QUESTION_MARK}                        { return QUESTION_MARK; }
-    {COLON}                                { return COLON; }
-    {SEMICOLON}                            { return SEMICOLON; }
-
-
-    /* keywords */
-    "SELECT"                               { yybegin(SELECT_EXP); return SELECT; }
-    "AS"                                   { yybegin(CORRELATION_NAME); return AS; }
-    "ALL"                                  { return ALL; }
-    "FROM"                                 { yybegin(FROM_EXP); return FROM; }
-    "JOIN"                                 { return JOIN; }
-    "ON"                                   { return ON; }
-    "UNION"                                { return UNION; }
-    "WHERE"                                { yybegin(YYINITIAL); return WHERE; }
-    "AND"                                  { return AND; }
-    "OR"                                   { return OR; }
-    "NOT"                                  { return NOT; }
-    "IS"                                   { return IS; }
-    "TRUE"                                 { return TRUE; }
-    "FALSE"                                { return FALSE; }
-    "NULL"                                 { return NULL; }
-    "EXISTS"                               { return EXISTS; }
-    "BETWEEN"                              { return BETWEEN; }
-    "LIKE"                                 { return LIKE; }
-    "CONCAT"                               { return CONCAT; }
-    "GROUP"                                { return GROUP; }  
-     
     
-    {STRING_LITERAL}                       { return STRING; }
-    {IDENTIFIER}                           { return TABLE_NAME_IDENTIFIER; }
+    {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); pushState(ON_EXP); return LEFT_BRACE; }
+    {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
+     
+    /* operators */
+    {EQUALS_OPERATOR}                      { return EQUALS_OPERATOR; }
+    
+    {IDENTIFIER}                           { return IDENTIFIER; }
 }
 
-<WHERE_EXP> {
-    {INTEGER}                              { return NUMBER; }
-    {COMMENT}                              { return COMMENT; }
-    {WHITE_SPACE}                          { return WHITE_SPACE; }
+<COLUMN_IDENTIFIER> {
+    "AS"                                   { yybegin(CORRELATION_NAME); pushState(COLUMN_IDENTIFIER); return AS; }
 
-    /* keywords */
-    "SELECT"                               { yybegin(SELECT_EXP); return SELECT; }
-    "AS"                                   { yybegin(CORRELATION_NAME);return AS; }
-    "DISTINCT"                             { return DISTINCT; }
-    "ALL"                                  { return ALL; }
-    "COUNT"                                { return COUNT; }
-    "CONCAT"                               { return CONCAT; }
-    "AVG"                                  { return AVG; }
-    "MAX"                                  { return MAX; }
-    "MIN"                                  { return MIN; }
-    "SUM"                                  { return SUM; }
-    "EVERY"                                { return EVERY; }
-    "ANY"                                  { return ANY; }
-    "SOME"                                 { return SOME; }
-    "ORDER"                                { return ORDER; }
-    "BY"                                   { return BY; }
-    "ASC"                                  { return ASC; }
-    "DESC"                                 { return DESC; }
-    "FIRST"                                { return FIRST; }
-    "LAST"                                 { return LAST; }
-    "FROM"                                 { yybegin(FROM_EXP); return FROM; }
-    "JOIN"                                 { return JOIN; }
-    "ON"                                   { return ON; }
-    "UNION"                                { return UNION; }
-    "WHERE"                                { yybegin(WHERE_EXP); return WHERE; }
-    "AND"                                  { return AND; }
-    "OR"                                   { return OR; }
-    "NOT"                                  { return NOT; }
-    "IS"                                   { return IS; }
-    "TRUE"                                 { return TRUE; }
-    "FALSE"                                { return FALSE; }
-    "NULL"                                 { return NULL; }
-    "EXISTS"                               { return EXISTS; }
-    "BETWEEN"                              { return BETWEEN; }
-    "LIKE"                                 { return LIKE; }
-    "CONCAT"                               { return CONCAT; }
-    "GROUP"                                { return GROUP; }  
-
-    
-    {LEFT_BRACE}                           { return LEFT_BRACE; }
-    {RIGHT_BRACE}                          { return RIGHT_BRACE; }
-    {LEFT_DOUBLE_BRACE}                    { return LEFT_DOUBLE_BRACE; }
-    {RIGHT_DOUBLE_BRACE}                   { return RIGHT_DOUBLE_BRACE; }
-    {LEFT_PAREN}                           { return LEFT_PAREN; }
-    {RIGHT_PAREN}                          { return RIGHT_PAREN; }
+    {IDENTIFIER}{DOT}|{IDENTIFIER}{COLON}  { yypushback(yylength()); yybegin(TABLE_IDENTIFIER); }
     {DOT}                                  { return DOT; }
     {COMMA}                                { return COMMA; }
-    {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
-    {QUESTION_MARK}                        { return QUESTION_MARK; }
+    {ASTERISK}                             { return ASTERISK; }
     {COLON}                                { return COLON; }
     {SEMICOLON}                            { return SEMICOLON; }
-     
+
+    {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
     
-    {STRING_LITERAL}                       { return STRING; }
-    {IDENTIFIER}                           { return IDENTIFIER; }
+    {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
+}
+
+<SUB_QUERY> {
+    "SELECT"                               { yybegin(SELECT_EXP); pushState(SUB_QUERY); return SELECT; }
+    
+    {RIGHT_DOUBLE_BRACE}                   { yybegin(FROM_EXP); return RIGHT_DOUBLE_BRACE; }
 }
 
 <CORRELATION_NAME> {
     "AS"                                   { return AS; }
     
-    {WHITE_SPACE}                          { return WHITE_SPACE; }
-    
-    {IDENTIFIER}                           { yybegin(YYINITIAL); return IDENTIFIER; }
+    {IDENTIFIER}                           { yybegin(popState()); return IDENTIFIER; }
 }
+{COMMENT}                              { return COMMENT; }
+{WHITE_SPACE}                          { return WHITE_SPACE; }
+
 [^] { return TokenType.BAD_CHARACTER; }
