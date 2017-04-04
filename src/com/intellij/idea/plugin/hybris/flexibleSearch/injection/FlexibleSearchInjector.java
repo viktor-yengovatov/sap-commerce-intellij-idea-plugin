@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.injection;
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.lang.Language;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.InjectedLanguagePlaces;
 import com.intellij.psi.LanguageInjector;
@@ -34,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 public class FlexibleSearchInjector implements LanguageInjector {
+
+    private static final Logger LOG = Logger.getInstance(FlexibleSearchInjector.class);
 
     @Override
     public void getLanguagesToInject(
@@ -61,7 +64,7 @@ public class FlexibleSearchInjector implements LanguageInjector {
                                     null
                                 );
                             } catch (Throwable e) {
-                                throw new RuntimeException(e);
+                                LOG.error(e);
                             }
                         }
                     }
