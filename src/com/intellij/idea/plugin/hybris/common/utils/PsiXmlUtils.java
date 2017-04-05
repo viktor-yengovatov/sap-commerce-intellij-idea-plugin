@@ -52,7 +52,8 @@ public class PsiXmlUtils {
                     )
             ).inside(
                 insideTagPattern(tagName)
-            ).inFile(getXmlFilePattern(fileName));
+            ).inFile(XmlPatterns.psiFile()
+                                .withName(XmlPatterns.string().endsWith(fileName + ".xml")));
     }
 
     public static PsiFilePattern.Capture<PsiFile> getXmlFilePattern(@Nullable String fileName) {
