@@ -80,6 +80,8 @@
         <lang.braceMatcher language="FlexibleSearch" 
                            implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
 
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector" />
+
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->
         <!-- ####################################################################################################### -->
