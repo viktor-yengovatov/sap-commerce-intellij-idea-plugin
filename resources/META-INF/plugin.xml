@@ -18,7 +18,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<idea-plugin version="2">
+<idea-plugin>
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
@@ -169,7 +169,7 @@
     </change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="163.9166"/>
+    <idea-version since-build="2016.3"/>
 
     <extensions defaultExtensionNs="com.intellij">
 
