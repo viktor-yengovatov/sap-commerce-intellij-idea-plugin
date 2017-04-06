@@ -22,11 +22,12 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
 /**
  * Created 8:40 PM 13 February 2016.
@@ -43,7 +44,7 @@ public abstract class AbstractFacetConfigurator implements FacetConfigurator {
                           @NotNull final ModifiableModelsProvider modifiableModelsProvider) {
 
 
-        ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
+        invokeAndWaitIfNeeded((Runnable) () -> ApplicationManager.getApplication().runWriteAction(
             () -> {
                 configureInner(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
                 modifiableModelsProvider.commitFacetModifiableModel(javaModule, modifiableFacetModel);

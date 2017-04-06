@@ -53,7 +53,7 @@ public class ImportImpexAction extends AnAction {
     @Override
     public void update(final AnActionEvent e) {
         super.update(e);
-        final VirtualFile file = e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE);
+        final VirtualFile file = (VirtualFile) e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE.getName());
         final boolean enabled = file != null && file.getName().endsWith(".impex");
         e.getPresentation().setEnabledAndVisible(enabled);
     }

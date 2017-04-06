@@ -18,6 +18,8 @@
 
 package com.intellij.rt.ant.execution;
 
+import com.intellij.rt.execution.junit.segments.PacketWriter;
+import com.intellij.rt.execution.junit.segments.SegmentedOutputStream;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;

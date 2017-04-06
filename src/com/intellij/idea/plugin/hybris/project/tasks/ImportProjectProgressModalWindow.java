@@ -54,7 +54,6 @@ import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
@@ -96,6 +95,7 @@ import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
 import static com.intellij.util.containers.ContainerUtil.newHashSet;
+import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
 /**
  * Created by Martin Zdarsky-Jones on 2/11/16.
@@ -223,9 +223,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.sdk"));
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
-            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
-                () -> modifiableRootModel.inheritSdk()));
-
+            invokeAndWaitIfNeeded(
+                    (Runnable) () -> {
+                        try {
+                            token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
+                            modifiableRootModel.inheritSdk();
+                        } finally {
+                            token.finish();
+                        }
+                    }
+            );
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.libs"));
             libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.content"));
@@ -238,9 +245,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.save"));
 
-            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
-                // [MG] modifiableRootModel::commit should work as well here
-                () -> modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel)));
+            invokeAndWaitIfNeeded(
+                    (Runnable) () -> {
+                        try {
+                            token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
+                            modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel);
+                        } finally {
+                            token.finish();
+                        }
+                    }
+            );
 
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.facet"));
             for (FacetConfigurator facetConfigurator : facetConfigurators) {
@@ -255,7 +269,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.save"));
         indicator.setText2("");
         if (!isUpdate) {
-            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(rootProjectModifiableModel::commit));
+            invokeAndWaitIfNeeded(
+                    (Runnable) () -> {
+                        try {
+                            token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
+                            rootProjectModifiableModel.commit();
+                        } finally {
+                            token.finish();
+                        }
+                    }
+            );
         }
 
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.dependencies"));

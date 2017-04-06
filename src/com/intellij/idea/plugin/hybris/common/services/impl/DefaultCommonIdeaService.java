@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.EditorBundle;
 import com.intellij.openapi.module.Module;
@@ -150,11 +149,7 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     }
 
     private VersionSpecificService createVersionSpecificService() {
-        final int baselineVersion = ApplicationInfo.getInstance().getBuild().getBaselineVersion();
-        if (baselineVersion <= CommonIdeaService.IDEA_15x_BASELINE_VERSION) {
-            return new Idea15xVersionService();
-        }
-        return new LatestVersionService();
+        return new Idea15xVersionService();
     }
 
     private boolean matchAllModuleNames(

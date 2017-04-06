@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
@@ -44,6 +43,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
+import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
+
 /**
  * Created 11:45 PM 24 June 2015.
  *
@@ -59,8 +60,13 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final HybrisModuleDescriptor moduleDescriptor
     ) {
-        ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
-            () -> configureInner(modifiableRootModel, moduleDescriptor)));
+        invokeAndWaitIfNeeded(
+                (Runnable) () ->
+                        ApplicationManager.getApplication().runWriteAction(() -> configureInner(
+                                modifiableRootModel,
+                                moduleDescriptor
+                        ))
+        );
     }
 
     protected void configureInner(

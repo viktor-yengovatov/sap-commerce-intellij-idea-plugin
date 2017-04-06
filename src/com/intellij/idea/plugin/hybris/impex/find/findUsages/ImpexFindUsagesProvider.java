@@ -26,9 +26,12 @@ import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
 
 import static com.intellij.psi.tree.TokenSet.create;
 import static com.intellij.psi.tree.TokenSet.orSet;
@@ -49,8 +52,24 @@ public class ImpexFindUsagesProvider implements FindUsagesProvider {
                 create(ImpexTypes.MACRO_USAGE)
             ),
             create(ImpexTypes.COMMENT),
-            TokenSet.ANY
+            getTokenSetAny()
         );
+    }
+
+    private TokenSet getTokenSetAny() {
+        final TokenSet[] any = Arrays.stream(ImpexTypes.class.getDeclaredFields())
+                                     .filter(field -> field.getType().equals(IElementType.class))
+                                     .map(field -> {
+                                         try {
+                                             return (IElementType) field.get(null);
+                                         } catch (IllegalAccessException e) {
+                                             return null;
+                                         }
+                                     })
+                                     .filter(element -> element instanceof IElementType)
+                                     .map(element -> create(element))
+                                     .toArray(TokenSet[]::new);
+        return orSet(any);
     }
 
     @Override
