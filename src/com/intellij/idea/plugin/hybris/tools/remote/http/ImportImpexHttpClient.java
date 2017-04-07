@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.http;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -32,6 +33,7 @@ import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.tools.remote.http.ImpexHttpResult.ImpexHttpResultBuilder.createResult;
 import static java.util.Arrays.asList;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.jsoup.Jsoup.parse;
 
 /**
@@ -41,18 +43,19 @@ public class ImportImpexHttpClient {
 
     private HybrisHttpClient hybrisHttpClient = HybrisHttpClient.INSTANCE;
 
-    public ImpexHttpResult importImpex(final String content) {
+    public @NotNull ImpexHttpResult importImpex(final String content) {
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptContent", content),
             new BasicNameValuePair("validationEnum", "IMPORT_STRICT"),
             new BasicNameValuePair("encoding", "UTF-8"),
             new BasicNameValuePair("maxThreads", "4")
         );
+        ImpexHttpResult.ImpexHttpResultBuilder resultBuilder = createResult();
+        final String actionUrl = hybrisHttpClient.getHostUrl() + "/console/impex/import";
+        final String sessionId = hybrisHttpClient.getSessionId();
         try {
-            final String actionUrl = hybrisHttpClient.getHostUrl() + "/console/impex/import";
-            final String sessionId = hybrisHttpClient.getSessionId();
             final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
-
+            resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
             
             final Element impexResultStatus = document.getElementById("impexResult");
@@ -69,9 +72,9 @@ public class ImportImpexHttpClient {
                     return createResult().output(dataResult).build();
                 }
             }
-            return null;
+            return resultBuilder.errorMessage("No data in response").build();
         } catch (final IOException | NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            throw new RuntimeException(e);
+            return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(SC_BAD_REQUEST).build();
         }
     }
 

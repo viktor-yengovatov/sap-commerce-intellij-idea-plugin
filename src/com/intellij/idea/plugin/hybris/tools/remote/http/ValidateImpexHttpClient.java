@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.http;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.HttpStatusException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -33,7 +34,7 @@ import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.tools.remote.http.ImpexHttpResult.ImpexHttpResultBuilder.createResult;
 import static java.util.Arrays.asList;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.jsoup.Jsoup.parse;
 
 /**
@@ -43,7 +44,7 @@ public class ValidateImpexHttpClient {
 
     private HybrisHttpClient hybrisHttpClient = HybrisHttpClient.INSTANCE;
 
-    public ImpexHttpResult validateImpex(final String content) {
+    public @NotNull ImpexHttpResult validateImpex(final String content) {
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptContent", content),
             new BasicNameValuePair("validationEnum", "IMPORT_STRICT"),
@@ -52,9 +53,10 @@ public class ValidateImpexHttpClient {
         );
         final String actionUrl = hybrisHttpClient.getHostUrl() + "/console/impex/import/validate";
         final String sessionId = hybrisHttpClient.getSessionId();
+        ImpexHttpResult.ImpexHttpResultBuilder resultBuilder = createResult();
         try {
             final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
-       
+            resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
             final Element impexResultStatus = document.getElementById("validationResultMsg");
             
@@ -63,20 +65,18 @@ public class ValidateImpexHttpClient {
             if (hasDataLevelAttr && hasDataResultAttr) {
                 if ("error".equals(impexResultStatus.attr("data-level"))) {
                     final String dataResult = impexResultStatus.attr("data-result");
-                    return createResult().errorMessage(dataResult).build();
+                    return resultBuilder.errorMessage(dataResult).build();
                 } else {
                     final String dataResult = impexResultStatus.attr("data-result");
-                    return createResult().output(dataResult).build();
+                    return resultBuilder.output(dataResult).build();
                 }
             }
+            return resultBuilder.errorMessage("No data in response").build();
         } catch (HttpStatusException e) {
-            if (e.getStatusCode() == SC_NOT_FOUND) {
-                return createResult().errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(e.getStatusCode()).build();
-            } 
+            return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(e.getStatusCode()).build();
         } catch (final IOException | NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            throw new RuntimeException(e);
+            return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(SC_BAD_REQUEST).build();
         }
-        return null;
     }
 
 }
