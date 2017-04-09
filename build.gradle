@@ -65,7 +65,7 @@ intellij {
     //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
     version '15.0'
     downloadSources true
-    updateSinceUntilBuild true
+    updateSinceUntilBuild false
 
     sandboxDirectory "$buildDir/idea-sandbox"
 
