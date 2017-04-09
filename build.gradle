@@ -71,4 +71,9 @@ intellij {
 
     pluginName 'ccom.intellij.idea.plugin.hybris.impex'
     plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
+
+}
+patchPluginXml {
+    sinceBuild '143'
+    untilBuild '162.*'
 }
