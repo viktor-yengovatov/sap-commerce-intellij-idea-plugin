@@ -101,7 +101,7 @@ public class HybrisApplicationSettings {
     private String hybrisInstancePassword = "nimda";
 
     @PropertyName("hybrisHostUrl")
-    private String hybrisHostUrl = "https://localhost:9001";
+    private String hybrisHostUrl = "https://localhost:9002";
 
 
     public HybrisApplicationSettings() {
@@ -139,12 +139,12 @@ public class HybrisApplicationSettings {
         this.junkDirectoryList = junkDirectoryList;
     }
 
-    public void setGroupModules(final boolean groupModules) {
-        this.groupModules = groupModules;
-    }
-
     public boolean isGroupModules() {
         return groupModules;
+    }
+
+    public void setGroupModules(final boolean groupModules) {
+        this.groupModules = groupModules;
     }
 
     public String getGroupHybris() {
@@ -253,6 +253,27 @@ public class HybrisApplicationSettings {
     }
 
     @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(foldingEnabled)
+            .append(useSmartFolding)
+            .append(limitedSpringConfig)
+            .append(groupModules)
+            .append(junkDirectoryList)
+            .append(groupHybris)
+            .append(groupOtherHybris)
+            .append(groupCustom)
+            .append(groupOtherCustom)
+            .append(groupNonHybris)
+            .append(groupPlatform)
+            .append(hideEmptyMiddleFolders)
+            .append(defaultPlatformInReadOnly)
+            .append(createBackwardCyclicDependenciesForAddOns)
+            .append(usedActions)
+            .toHashCode();
+    }
+
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -281,27 +302,6 @@ public class HybrisApplicationSettings {
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .append(usedActions, other.usedActions)
             .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-            .append(foldingEnabled)
-            .append(useSmartFolding)
-            .append(limitedSpringConfig)
-            .append(groupModules)
-            .append(junkDirectoryList)
-            .append(groupHybris)
-            .append(groupOtherHybris)
-            .append(groupCustom)
-            .append(groupOtherCustom)
-            .append(groupNonHybris)
-            .append(groupPlatform)
-            .append(hideEmptyMiddleFolders)
-            .append(defaultPlatformInReadOnly)
-            .append(createBackwardCyclicDependenciesForAddOns)
-            .append(usedActions)
-            .toHashCode();
     }
 
     @Override

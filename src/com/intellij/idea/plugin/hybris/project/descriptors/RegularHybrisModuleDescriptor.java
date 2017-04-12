@@ -126,6 +126,19 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         return null;
     }
 
+    @Nullable
+    @Override
+    public File getWebRoot() {
+
+        final File webRoot = new File(this.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
+
+        if (webRoot.exists()) {
+            return webRoot;
+        }
+
+        return null;
+    }
+
     @Override
     @NotNull
     public String getName() {
@@ -279,6 +292,13 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                 ),
                 false, false
             ));
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(
+                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
+                    HybrisConstants.BACKOFFICE_WEB_INF_CLASSES
+                ),
+                false, true
+            ));
         }
 
         if (this.isAddOn()) {
@@ -317,18 +337,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         return isInLocalExtensions();
     }
 
-    @Nullable
-    @Override
-    public File getWebRoot() {
 
-        final File webRoot = new File(this.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
-
-        if (webRoot.exists()) {
-            return webRoot;
-        }
-
-        return null;
-    }
 
     protected Set<String> getDefaultRequiredExtensionNames() {
         return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));

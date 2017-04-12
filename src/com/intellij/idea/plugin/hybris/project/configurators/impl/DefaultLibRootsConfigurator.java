@@ -32,7 +32,6 @@ import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.vfs.JarFileSystem;
@@ -89,7 +88,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         if (moduleDescriptor instanceof CoreHybrisModuleDescriptor) {
-            addLibsToModule(modifiableRootModel, HybrisConstants.PLATFORM_LIBRARY_GROUP);
+            addLibsToModule(modifiableRootModel, HybrisConstants.PLATFORM_LIBRARY_GROUP, true);
         }
 
         if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
@@ -97,11 +96,15 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             if (hybrisModuleDescriptor.hasBackofficeModule()) {
                 final File backofficeJarDirectory = new File(hybrisModuleDescriptor.getRootDirectory(), HybrisConstants.BACKOFFICE_JAR_DIRECTORY);
                 if (backofficeJarDirectory.exists()) {
-                    hybrisModuleDescriptor.createBackofficeLib(modifiableModelsProvider, backofficeJarDirectory);
+                    hybrisModuleDescriptor.createGlobalLibrary(
+                        modifiableModelsProvider,
+                        backofficeJarDirectory,
+                        HybrisConstants.BACKOFFICE_LIBRARY_GROUP
+                    );
                 }
             }
             if (moduleDescriptor.getName().equals(HybrisConstants.BACK_OFFICE_EXTENSION_NAME)) {
-                addLibsToModule(modifiableRootModel, HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
+                addLibsToModule(modifiableRootModel, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true);
             }
         }
     }
@@ -194,20 +197,26 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
     protected void addLibsToModule(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final String libraryName
+        @NotNull final String libraryName,
+        @NotNull final boolean export
     ) {
         Validate.notNull(modifiableRootModel);
 
-        final LibraryTable projectLibraryTable = ProjectLibraryTable.getInstance(modifiableRootModel.getProject());
-        Library libsGroup = projectLibraryTable.getLibraryByName(libraryName);
+        final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
+            .getLibraryTableModifiableModel(modifiableRootModel.getProject());
+
+        Library libsGroup = libraryTableModifiableModel.getLibraryByName(libraryName);
 
         if (null == libsGroup) {
-            libsGroup = projectLibraryTable.createLibrary(libraryName);
+            libsGroup = libraryTableModifiableModel.createLibrary(libraryName);
+            libraryTableModifiableModel.commit();
         }
 
         modifiableRootModel.addLibraryEntry(libsGroup);
 
-        setLibraryEntryExported(modifiableRootModel, libsGroup);
+        if (export) {
+            setLibraryEntryExported(modifiableRootModel, libsGroup);
+        }
     }
 
     protected void setLibraryEntryExported(
