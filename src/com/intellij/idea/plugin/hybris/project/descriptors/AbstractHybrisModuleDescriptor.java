@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -189,6 +190,16 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public boolean isAddOn() {
         return new File(this.getRootDirectory(), HybrisConstants.ACCELERATOR_ADDON_DIRECTORY).isDirectory();
+    }
+
+    @Override
+    public boolean hasServerJar() {
+       final File binDir = new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY);
+       if (!binDir.isDirectory()) {
+           return false;
+       }
+       final File[] serverJars = binDir.listFiles((dir, name) -> name.equals("server.jar"));
+       return serverJars.length > 0;
     }
 
     @Override

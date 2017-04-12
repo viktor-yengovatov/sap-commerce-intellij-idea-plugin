@@ -82,4 +82,6 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     DescriptorType getDescriptorType();
 
+    boolean hasServerJar();
+
 }

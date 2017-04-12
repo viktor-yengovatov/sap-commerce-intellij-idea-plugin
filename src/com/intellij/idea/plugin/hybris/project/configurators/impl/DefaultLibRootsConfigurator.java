@@ -73,6 +73,9 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
         for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
+            if (!javaLibraryDescriptor.isValid()) {
+                continue;
+            }
             if (javaLibraryDescriptor.isDirectoryWithClasses()) {
                 this.addClassesToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
             } else {

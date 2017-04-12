@@ -40,25 +40,6 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     private final boolean isExported;
     private final boolean isDirectoryWithClasses;
 
-    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile) {
-        Validate.notNull(libraryFile);
-
-        this.libraryFile = libraryFile;
-        this.sourcesFile = null;
-        this.isExported = false;
-        this.isDirectoryWithClasses = false;
-    }
-
-    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile, @NotNull final File sourcesFile) {
-        Validate.notNull(libraryFile);
-        Validate.notNull(sourcesFile);
-
-        this.libraryFile = libraryFile;
-        this.sourcesFile = sourcesFile;
-        this.isExported = false;
-        this.isDirectoryWithClasses = false;
-    }
-
     public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
                                         final boolean isExported) {
         Validate.notNull(libraryFile);
@@ -125,6 +106,14 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     @Override
     public boolean isDirectoryWithClasses() {
         return isDirectoryWithClasses;
+    }
+
+    @Override
+    public boolean isValid() {
+        if (libraryFile == null) {
+            return false;
+        }
+        return libraryFile.exists();
     }
 
     @Override

@@ -39,4 +39,6 @@ public interface JavaLibraryDescriptor extends Comparable<JavaLibraryDescriptor>
     boolean isExported();
 
     boolean isDirectoryWithClasses();
+
+    boolean isValid();
 }
