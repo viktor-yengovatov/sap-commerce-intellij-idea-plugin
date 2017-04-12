@@ -16,7 +16,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<idea-plugin version="2">
+<idea-plugin>
 
     <extensionPoints>
         <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
@@ -38,8 +38,13 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultCompilerOutputPathsConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.HybrisContentRootConfigurator"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator"
+            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator"/>
+
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator"
+            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultGroupModuleConfigurator"/>

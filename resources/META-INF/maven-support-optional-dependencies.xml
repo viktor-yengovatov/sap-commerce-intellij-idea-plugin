@@ -19,7 +19,7 @@
 <!--
    Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 13/11/16.
 -->
-<idea-plugin version="2">
+<idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
 

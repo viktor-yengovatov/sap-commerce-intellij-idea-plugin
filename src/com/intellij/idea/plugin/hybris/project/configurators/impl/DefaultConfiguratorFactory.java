@@ -107,8 +107,14 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @NotNull
     @Override
-    public ContentRootConfigurator getContentRootConfigurator() {
-        return ServiceManager.getService(ContentRootConfigurator.class);
+    public ContentRootConfigurator getRegularContentRootConfigurator() {
+        return ServiceManager.getService(RegularContentRootConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public ContentRootConfigurator getReadOnlyContentRootConfigurator() {
+        return ServiceManager.getService(ReadOnlyContentRootConfigurator.class);
     }
 
     @NotNull

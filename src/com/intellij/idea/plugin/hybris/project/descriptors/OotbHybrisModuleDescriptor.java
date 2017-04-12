@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.OrderRootType;
@@ -48,17 +47,17 @@ public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
         return DescriptorType.OOTB;
     }
 
-    public Library createBackofficeLib(
+    public Library createGlobalLibrary(
         @NotNull final ModifiableModelsProvider modifiableModelsProvider,
-        @NotNull final File libraryDirRoot
+        @NotNull final File libraryDirRoot,
+        @NotNull final String libraryName
     ) {
-
         final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
             .getLibraryTableModifiableModel(getRootProjectDescriptor().getProject());
 
-        Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
+        Library library = libraryTableModifiableModel.getLibraryByName(libraryName);
         if (null == library) {
-            library = libraryTableModifiableModel.createLibrary(HybrisConstants.BACKOFFICE_LIBRARY_GROUP);
+            library = libraryTableModifiableModel.createLibrary(libraryName);
             libraryTableModifiableModel.commit();
         }
 

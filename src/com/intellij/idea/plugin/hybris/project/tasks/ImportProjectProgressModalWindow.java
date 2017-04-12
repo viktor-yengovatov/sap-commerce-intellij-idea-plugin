@@ -91,6 +91,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
@@ -146,7 +147,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
         final List<FacetConfigurator> facetConfigurators = configuratorFactory.getFacetConfigurators();
-        final ContentRootConfigurator contentRootConfigurator = configuratorFactory.getContentRootConfigurator();
+        final ContentRootConfigurator regularContentRootConfigurator = configuratorFactory.getRegularContentRootConfigurator();
+        final ContentRootConfigurator readOnlyContentRootConfigurator = configuratorFactory.getReadOnlyContentRootConfigurator();
         final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = configuratorFactory.getCompilerOutputPathsConfigurator();
         final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
         final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
@@ -236,7 +238,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.libs"));
             libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.content"));
-            contentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            if (shouldBeTreatedAsReadOnly(moduleDescriptor)) {
+                readOnlyContentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            } else {
+                regularContentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            }
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.outputpath"));
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.javadoc"));
@@ -291,24 +297,33 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.finishing"));
     }
 
-    private void disableWrapOnType(final Language impexLanguage) {
-        final CodeStyleScheme currentScheme = CodeStyleSchemes.getInstance().getCurrentScheme();
-        final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
-        if (impexLanguage != null) {
-            CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
-            if (langSettings != null) {
-                langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
-            }
-        }
+    protected void initializeHybrisProjectSettings(@NotNull final Project project) {
+        Validate.notNull(project);
+
+        final @NotNull HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+                                                                                                   .getState();
+        hybrisProjectSettings.setHybrisProject(true);
+        final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
+        hybrisProjectSettings.setImportedByVersion(version);
     }
 
-    private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
-        final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
-        final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
-        if (facetType != null) {
-            final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
-            if (frameworkType != null) {
-                configuration.addExcludedFramework(frameworkType);
+    private void selectSdk(@NotNull final Project project) {
+        Validate.notNull(project);
+
+        final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
+
+        final Sdk projectSdk = projectRootManager.getProjectSdk();
+
+        if (null == projectSdk) {
+            return;
+        }
+
+        if (StringUtils.isNotBlank(projectSdk.getVersionString())) {
+            final JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(projectSdk.getVersionString());
+            final LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
+
+            if (sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
+                languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
             }
         }
     }
@@ -353,35 +368,38 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
     }
 
-
-    private void selectSdk(@NotNull final Project project) {
-        Validate.notNull(project);
-
-        final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
-
-        final Sdk projectSdk = projectRootManager.getProjectSdk();
-
-        if (null == projectSdk) {
-            return;
-        }
-
-        if (StringUtils.isNotBlank(projectSdk.getVersionString())) {
-            final JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(projectSdk.getVersionString());
-            final LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
-
-            if (sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
-                languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
+    private void disableWrapOnType(final Language impexLanguage) {
+        final CodeStyleScheme currentScheme = CodeStyleSchemes.getInstance().getCurrentScheme();
+        final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
+        if (impexLanguage != null) {
+            CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
+            if (langSettings != null) {
+                langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
             }
         }
     }
 
-    protected void initializeHybrisProjectSettings(@NotNull final Project project) {
-        Validate.notNull(project);
+    private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
+        final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
+        final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
+        if (facetType != null) {
+            final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
+            if (frameworkType != null) {
+                configuration.addExcludedFramework(frameworkType);
+            }
+        }
+    }
 
-        final @NotNull HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                          .getState();
-        hybrisProjectSettings.setHybrisProject(true);
-        final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
-        hybrisProjectSettings.setImportedByVersion(version);
+    private boolean shouldBeTreatedAsReadOnly(final HybrisModuleDescriptor moduleDescriptor) {
+        if (!moduleDescriptor.hasServerJar() || moduleDescriptor.getName().equals("hmc")) {
+            return false;
+        }
+        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
+            return false;
+        }
+        if (moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+            return true;
+        }
+        return false;
     }
 }
