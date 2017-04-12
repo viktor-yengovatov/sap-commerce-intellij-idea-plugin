@@ -36,6 +36,8 @@ public interface HybrisConstants {
     String PLATFORM_OOTB_MODULE_PREFIX = separatorsToSystem("bin/ext-");
     String HYBRIS_OOTB_MODULE_PREFIX = separatorsToSystem("hybris/")+PLATFORM_OOTB_MODULE_PREFIX;
     String MEDIA_DIRECTORY = separatorsToSystem("/data/media");
+    String SVN_DIRECTORY = separatorsToSystem("/.svn");
+    String GIT_DIRECTORY = separatorsToSystem("/.git");
     String TEMP_DIRECTORY = separatorsToSystem("/temp");
     String IDEA_DIRECTORY = separatorsToSystem("/.idea");
     String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = separatorsToSystem("bin/custom");
