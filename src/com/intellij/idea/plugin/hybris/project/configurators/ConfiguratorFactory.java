@@ -42,7 +42,10 @@ public interface ConfiguratorFactory {
     CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator();
 
     @NotNull
-    ContentRootConfigurator getContentRootConfigurator();
+    ContentRootConfigurator getRegularContentRootConfigurator();
+
+    @NotNull
+    ContentRootConfigurator getReadOnlyContentRootConfigurator();
 
     @NotNull
     LibRootsConfigurator getLibRootsConfigurator();

@@ -49,6 +49,7 @@ public interface HybrisConstants {
     String HMC_EXTENSION_NAME = "hmc";
     String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     String CONFIG_EXTENSION_NAME = "config";
+    String ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME = "acceleratorstorefrontcommons";
     String CONFIG_RELATIVE_PATH = separatorsToSystem("/../../" + CONFIG_EXTENSION_NAME);
     String LIB_DIRECTORY = "lib";
     String BIN_DIRECTORY = "bin";
@@ -96,7 +97,7 @@ public interface HybrisConstants {
     String WEBINF_LIB_DIRECTORY = separatorsToSystem("webroot/WEB-INF/lib");
     String WEB_WEBINF_LIB_DIRECTORY = separatorsToSystem(WEB_MODULE_DIRECTORY + '/' + WEBINF_LIB_DIRECTORY);
     String COMMONWEB_WEBINF_LIB_DIRECTORY = separatorsToSystem(COMMON_WEB_MODULE_DIRECTORY + '/' + WEBINF_LIB_DIRECTORY);
-    String WEB_INF_CLASSES_DIRECTORY = separatorsToSystem("web/webroot/WEB-INF/classes");
+    String WEB_INF_CLASSES_DIRECTORY = separatorsToSystem(WEB_MODULE_DIRECTORY + '/' + "webroot/WEB-INF/classes");
     String WEB_SRC_DIRECTORY = separatorsToSystem("web/src");
     String HMC_LIB_DIRECTORY = separatorsToSystem("hmc/bin");
     String BACKOFFICE_LIB_DIRECTORY = separatorsToSystem("backoffice/bin");
@@ -129,11 +130,11 @@ public interface HybrisConstants {
 
     String HMC_WEB_INF_CLASSES = separatorsToSystem("/bin/ext-platform-optional/hmc/web/webroot/WEB-INF/classes");
     String BACKOFFICE_WEB_INF_LIB = separatorsToSystem("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");
+    String BACKOFFICE_WEB_INF_CLASSES = separatorsToSystem("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes");
 
     String DESCRIPTOR_TYPE = "descriptorType";
     String READ_ONLY = "importedAsReadOnly";
 
-    int MAX_EXISTING_MODULE_NAMES = 20;
     String DEBUG_PORT = "8000";
     String TOMCAT_JAVA_DEBUG_OPTIONS = "tomcat.debugjavaoptions";
     String X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport=";
