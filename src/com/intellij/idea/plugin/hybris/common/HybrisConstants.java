@@ -49,6 +49,7 @@ public interface HybrisConstants {
     String HMC_EXTENSION_NAME = "hmc";
     String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     String CONFIG_EXTENSION_NAME = "config";
+    String ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME = "acceleratorstorefrontcommons";
     String CONFIG_RELATIVE_PATH = separatorsToSystem("/../../" + CONFIG_EXTENSION_NAME);
     String LIB_DIRECTORY = "lib";
     String BIN_DIRECTORY = "bin";
