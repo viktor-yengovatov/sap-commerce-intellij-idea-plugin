@@ -35,9 +35,22 @@ public interface HybrisConstants {
     String PLATFORM_EXT_MODULE_PREFIX = separatorsToSystem("bin/platform/ext/");
     String PLATFORM_OOTB_MODULE_PREFIX = separatorsToSystem("bin/ext-");
     String HYBRIS_OOTB_MODULE_PREFIX = separatorsToSystem("hybris/")+PLATFORM_OOTB_MODULE_PREFIX;
-    String MEDIA_DIRECTORY = separatorsToSystem("/data/media");
-    String TEMP_DIRECTORY = separatorsToSystem("/temp");
-    String IDEA_DIRECTORY = separatorsToSystem("/.idea");
+
+    String EXCLUDE_TMP_DIRECTORY = separatorsToSystem("/platform/tmp");
+    String EXCLUDE_TCSERVER_DIRECTORY = separatorsToSystem("/platform/tcServer");
+    String EXCLUDE_TOMCAT_DIRECTORY = separatorsToSystem("/platform/tomcat");
+    String EXCLUDE_LIB_DIRECTORY = separatorsToSystem("/platform/lib");
+    String EXCLUDE_RESOURCES_DIRECTORY = separatorsToSystem("/platform/resources");
+    String EXCLUDE_ECLIPSEBIN_DIRECTORY = separatorsToSystem("/platform/eclipsebin");
+    String EXCLUDE_BOOTSTRAP_DIRECTORY = separatorsToSystem("/platform/bootstrap");
+    String EXCLUDE_ANT_DIRECTORY = separatorsToSystem("/platform/apache-ant-");
+    String EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = separatorsToSystem("/idea-module-files");
+    String EXCLUDE_LOG_DIRECTORY = separatorsToSystem("/log");
+    String EXCLUDE_DATA_DIRECTORY = separatorsToSystem("/data");
+    String EXCLUDE_SVN_DIRECTORY = separatorsToSystem("/.svn");
+    String EXCLUDE_GIT_DIRECTORY = separatorsToSystem("/.git");
+    String EXCLUDE_TEMP_DIRECTORY = separatorsToSystem("/temp");
+    String EXCLUDE_IDEA_DIRECTORY = separatorsToSystem("/.idea");
     String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = separatorsToSystem("bin/custom");
     String EXTENSIONS_XML = "extensions.xml";
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
