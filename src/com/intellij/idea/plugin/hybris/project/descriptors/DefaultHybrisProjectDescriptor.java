@@ -127,23 +127,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         configHybrisModuleDescriptor.setPreselected(true);
     }
 
-    @Override
-    public void setProject(@Nullable final Project project) {
-        if (project == null) {
-            return;
-        }
-        // the project may not be hybris based project.
-        final HybrisProjectSettingsComponent hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project);
-        if (hybrisProjectSettings == null) {
-            return;
-        }
-        if (hybrisProjectSettings.getState() != null) {
-            if (hybrisProjectSettings.getState().isHybrisProject()) {
-                setHybrisProject(project);
-            }
-        }
-    }
-
     @Nullable
     private ConfigHybrisModuleDescriptor findConfigDir() {
         final List<ConfigHybrisModuleDescriptor> foundConfigModules = new ArrayList<ConfigHybrisModuleDescriptor>();
@@ -178,11 +161,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         return null;
     }
 
-    @Override
-    public void setHybrisProject(@Nullable final Project project) {
-        this.project = project;
-    }
-
     private void processHybrisConfig(@NotNull final Hybrisconfig hybrisconfig) {
         final List<ExtensionType> extensionTypeList = hybrisconfig.getExtensions().getExtension();
         for (ExtensionType extensionType: extensionTypeList) {
@@ -201,12 +179,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 explicitlyDefinedModules.add(StringUtils.lowerCase(dir.substring(index + 1)));
             }
         }
-    }
-
-    @Nullable
-    @Override
-    public Project getProject() {
-        return this.project;
     }
 
     @Nullable
@@ -235,12 +207,21 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         return null;
-    }
-
-    @NotNull
-    @Override
-    public List<HybrisModuleDescriptor> getFoundModules() {
-        return Collections.unmodifiableList(this.foundModules);
+    }    @Override
+    public void setProject(@Nullable final Project project) {
+        if (project == null) {
+            return;
+        }
+        // the project may not be hybris based project.
+        final HybrisProjectSettingsComponent hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project);
+        if (hybrisProjectSettings == null) {
+            return;
+        }
+        if (hybrisProjectSettings.getState() != null) {
+            if (hybrisProjectSettings.getState().isHybrisProject()) {
+                setHybrisProject(project);
+            }
+        }
     }
 
     protected void scanDirectoryForHybrisModules(@NotNull final File rootDirectory,
@@ -296,12 +277,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.foundModules.addAll(moduleDescriptors);
     }
 
-    @NotNull
-    @Override
-    public List<HybrisModuleDescriptor> getModulesChosenForImport() {
-        return this.modulesChosenForImport;
-    }
-
     // scan through eclipse module for hybris custom mudules in its subdirectories
     private Set<File> processDirectoriesByTypePriority(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
@@ -325,39 +300,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         return moduleRootDirectories;
     }
 
-    @Override
-    public void setModulesChosenForImport(@NotNull final List<HybrisModuleDescriptor> moduleDescriptors) {
-        Validate.notNull(moduleDescriptors);
-
-        this.modulesChosenForImport.clear();
-        this.modulesChosenForImport.addAll(moduleDescriptors);
-    }
-
     private Map<DIRECTORY_TYPE,Set<File>> newModuleRootMap() {
         final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = new HashMap<>();
         moduleRootMap.put(HYBRIS, new HashSet<>());
         moduleRootMap.put(NON_HYBRIS, new HashSet<>());
         return moduleRootMap;
-    }
-
-    @NotNull
-    @Override
-    public Set<HybrisModuleDescriptor> getAlreadyOpenedModules() {
-        if (null == getProject()) {
-            return Collections.emptySet();
-        }
-
-        this.lock.lock();
-
-        try {
-            if (this.alreadyOpenedModules.isEmpty()) {
-                this.alreadyOpenedModules.addAll(this.getAlreadyOpenedModules(getProject()));
-            }
-        } finally {
-            this.lock.unlock();
-        }
-
-        return Collections.unmodifiableSet(this.alreadyOpenedModules);
     }
 
     private void addRootModule(
@@ -375,12 +322,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
             pathsFailedToImport.add(rootDirectory);
         }
-    }
-
-    @Nullable
-    @Override
-    public File getRootDirectory() {
-        return this.rootDirectory;
+    }    @Override
+    public void setHybrisProject(@Nullable final Project project) {
+        this.project = project;
     }
 
     @NotNull
@@ -426,16 +370,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     }
 
-    @Override
-    public void clear() {
-        this.rootDirectory = null;
-        this.hybrisDistributionDirectory = null;
-        this.externalExtensionsDirectory = null;
-        this.foundModules.clear();
-        this.modulesChosenForImport.clear();
-        this.explicitlyDefinedModules.clear();
-    }
-
     private void scanSubrirectories(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
         @NotNull final Path rootProjectDirectory,
@@ -451,9 +385,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (!Files.isDirectory(file)) {
                 return false;
             }
-            if (file.toString().endsWith(HybrisConstants.MEDIA_DIRECTORY) ||
-                file.toString().endsWith(HybrisConstants.TEMP_DIRECTORY) ||
-                file.toString().endsWith(HybrisConstants.IDEA_DIRECTORY)) {
+            if (isDirectoryExcluded(file)) {
                 return false;
             }
             return true;
@@ -465,10 +397,27 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
     }
 
-    @Nullable
-    @Override
-    public File getModulesFilesDirectory() {
-        return this.modulesFilesDirectory;
+    private boolean isDirectoryExcluded(final Path file) {
+        if (file.toString().endsWith(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_DATA_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_MODULE_FILES_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_LIB_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_LOG_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_RESOURCES_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_SVN_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_TOMCAT_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_TMP_DIRECTORY)) {
+            return true;
+        }
+        if (file.toString().contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY)) {
+            return true;
+        }
+        return false;
     }
 
     protected void buildDependencies(@NotNull final Iterable<HybrisModuleDescriptor> moduleDescriptors) {
@@ -477,10 +426,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
 
             final Set<String> requiredExtensionNames = moduleDescriptor.getRequiredExtensionNames();
-
-            if (moduleDescriptor.isAddOn()) {
-                requiredExtensionNames.add(HybrisConstants.ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME);
-            }
 
             if (isEmpty(requiredExtensionNames)) {
                 continue;
@@ -514,11 +459,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
             moduleDescriptor.setDependenciesTree(dependencies);
         }
-    }
-
+    }    @Nullable
     @Override
-    public void setModulesFilesDirectory(@Nullable final File modulesFilesDirectory) {
-        this.modulesFilesDirectory = modulesFilesDirectory;
+    public Project getProject() {
+        return this.project;
     }
 
     protected void processAddOnBackwardDependencies(
@@ -539,12 +483,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
     }
 
-    @Nullable
-    @Override
-    public File getSourceCodeZip() {
-        return sourceCodeZip;
-    }
-
     @NotNull
     protected Iterable<HybrisModuleDescriptor> findHybrisModuleDescriptorsByName(
         @NotNull final Iterable<HybrisModuleDescriptor> moduleDescriptors,
@@ -558,12 +496,104 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         ));
     }
 
+    protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}
+
+
+
+    @NotNull
+    @Override
+    public List<HybrisModuleDescriptor> getFoundModules() {
+        return Collections.unmodifiableList(this.foundModules);
+    }
+
+
+
+
+
+    @NotNull
+    @Override
+    public List<HybrisModuleDescriptor> getModulesChosenForImport() {
+        return this.modulesChosenForImport;
+    }
+
+
+    @Override
+    public void setModulesChosenForImport(@NotNull final List<HybrisModuleDescriptor> moduleDescriptors) {
+        Validate.notNull(moduleDescriptors);
+
+        this.modulesChosenForImport.clear();
+        this.modulesChosenForImport.addAll(moduleDescriptors);
+    }
+
+
+
+
+
+    @NotNull
+    @Override
+    public Set<HybrisModuleDescriptor> getAlreadyOpenedModules() {
+        if (null == getProject()) {
+            return Collections.emptySet();
+        }
+
+        this.lock.lock();
+
+        try {
+            if (this.alreadyOpenedModules.isEmpty()) {
+                this.alreadyOpenedModules.addAll(this.getAlreadyOpenedModules(getProject()));
+            }
+        } finally {
+            this.lock.unlock();
+        }
+
+        return Collections.unmodifiableSet(this.alreadyOpenedModules);
+    }
+
+
+    @Nullable
+    @Override
+    public File getRootDirectory() {
+        return this.rootDirectory;
+    }
+
+
+    @Override
+    public void clear() {
+        this.rootDirectory = null;
+        this.hybrisDistributionDirectory = null;
+        this.externalExtensionsDirectory = null;
+        this.foundModules.clear();
+        this.modulesChosenForImport.clear();
+        this.explicitlyDefinedModules.clear();
+    }
+
+
+    @Nullable
+    @Override
+    public File getModulesFilesDirectory() {
+        return this.modulesFilesDirectory;
+    }
+
+
+    @Override
+    public void setModulesFilesDirectory(@Nullable final File modulesFilesDirectory) {
+        this.modulesFilesDirectory = modulesFilesDirectory;
+    }
+
+
+    @Nullable
+    @Override
+    public File getSourceCodeZip() {
+        return sourceCodeZip;
+    }
+
+
+
     @Override
     public void setSourceCodeZip(@Nullable final File sourceCodeZip) {
         this.sourceCodeZip = sourceCodeZip;
     }
 
-    protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}
 
     @Override
     public void setRootDirectoryAndScanForModules(
