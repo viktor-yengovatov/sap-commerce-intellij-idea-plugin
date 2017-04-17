@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>6.2</version>
+    <version>6.2.0-143-162.*</version>
 
     <depends>com.intellij.modules.lang</depends>
 
