@@ -22,7 +22,7 @@ import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.idea.plugin.hybris.tools.remote.http.ImpexHttpResult;
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 
@@ -40,7 +40,7 @@ public abstract class ExecuteConsole {
         consoleViewList = newArrayList();
     }
 
-    public abstract void show(ImpexHttpResult httpResult, Project project);
+    public abstract void show(HybrisHttpResult httpResult, Project project);
 
     public abstract void initConsoleWindow(Project project);
 

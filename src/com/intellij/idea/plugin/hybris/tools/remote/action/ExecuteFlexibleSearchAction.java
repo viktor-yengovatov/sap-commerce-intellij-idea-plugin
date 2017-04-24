@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.ExecuteHybrisConsole;
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImportImpexHttpClient;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -32,17 +32,17 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-public class ImportImpexAction extends AnAction {
+public class ExecuteFlexibleSearchAction extends AnAction {
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
         final Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
         if (editor != null) {
             final SelectionModel selectionModel = editor.getSelectionModel();
-            final ImportImpexHttpClient client = new ImportImpexHttpClient();
+            final FlexibleSearchHttpClient client = new FlexibleSearchHttpClient();
             final String selectedText = selectionModel.getSelectedText();
             if (StringUtils.isNotEmpty(selectedText)) {
-                final HybrisHttpResult hybrisHttpResult = client.importImpex(selectedText);
+                final HybrisHttpResult hybrisHttpResult = client.execute(selectedText);
 
                 ExecuteHybrisConsole.getInstance().show(hybrisHttpResult, e.getProject());
             }
@@ -54,7 +54,7 @@ public class ImportImpexAction extends AnAction {
     public void update(final AnActionEvent e) {
         super.update(e);
         final VirtualFile file = e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE);
-        final boolean enabled = file != null && file.getName().endsWith(".impex");
+        final boolean enabled = file != null && file.getName().endsWith(".fxs");
         e.getPresentation().setEnabledAndVisible(enabled);
     }
 }

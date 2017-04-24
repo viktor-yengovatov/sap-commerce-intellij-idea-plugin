@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http;
+package com.intellij.idea.plugin.hybris.tools.remote.http.impex;
 
 import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -24,7 +24,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 /**
  * Created by alexander on 07.03.17.
  */
-public class ImpexHttpResult {
+public class HybrisHttpResult {
 
     private boolean hasError;
     private String errorMessage;
@@ -34,7 +34,7 @@ public class ImpexHttpResult {
     private int statusCode;
 
 
-    private ImpexHttpResult() {
+    private HybrisHttpResult() {
     }
 
     public int getStatusCode() {
@@ -57,7 +57,7 @@ public class ImpexHttpResult {
         return output;
     }
 
-    static public class ImpexHttpResultBuilder {
+    static public class HybrisHttpResultBuilder {
 
         private boolean hasError = false;
         private String errorMessage;
@@ -66,14 +66,14 @@ public class ImpexHttpResult {
         private String output;
         private int statusCode = SC_OK;
 
-        private ImpexHttpResultBuilder() {
+        private HybrisHttpResultBuilder() {
         }
 
-        public static ImpexHttpResultBuilder createResult() {
-            return new ImpexHttpResultBuilder();
+        public static HybrisHttpResultBuilder createResult() {
+            return new HybrisHttpResultBuilder();
         }
 
-        public ImpexHttpResultBuilder errorMessage(final String errorMessage) {
+        public HybrisHttpResultBuilder errorMessage(final String errorMessage) {
             if (isNotEmpty(errorMessage)) {
                 this.errorMessage = errorMessage;
                 this.hasError = true;
@@ -81,7 +81,7 @@ public class ImpexHttpResult {
             return this;
         }
 
-        public ImpexHttpResultBuilder detailMessage(final String detailMessage) {
+        public HybrisHttpResultBuilder detailMessage(final String detailMessage) {
             if (isNotEmpty(detailMessage)) {
                 this.detailMessage = detailMessage;
                 this.hasError = true;
@@ -89,19 +89,19 @@ public class ImpexHttpResult {
             return this;
         }
 
-        public ImpexHttpResultBuilder output(final String output) {
+        public HybrisHttpResultBuilder output(final String output) {
             this.output = output;
             return this;
         }
 
-        public ImpexHttpResultBuilder httpCode(final int statusCode) {
+        public HybrisHttpResultBuilder httpCode(final int statusCode) {
             this.statusCode = statusCode;
             return this;
         }
 
 
-        public ImpexHttpResult build() {
-            final ImpexHttpResult httpResult = new ImpexHttpResult();
+        public HybrisHttpResult build() {
+            final HybrisHttpResult httpResult = new HybrisHttpResult();
             httpResult.hasError = this.hasError;
             httpResult.errorMessage = this.errorMessage;
             httpResult.detailMessage = this.detailMessage;
