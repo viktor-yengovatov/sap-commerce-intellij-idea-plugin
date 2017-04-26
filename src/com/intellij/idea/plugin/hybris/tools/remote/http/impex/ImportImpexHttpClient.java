@@ -16,8 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http;
+package com.intellij.idea.plugin.hybris.tools.remote.http.impex;
 
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpClient;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -31,7 +32,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.tools.remote.http.ImpexHttpResult.ImpexHttpResultBuilder.createResult;
 import static java.util.Arrays.asList;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.jsoup.Jsoup.parse;
@@ -43,14 +43,15 @@ public class ImportImpexHttpClient {
 
     private HybrisHttpClient hybrisHttpClient = HybrisHttpClient.INSTANCE;
 
-    public @NotNull ImpexHttpResult importImpex(final String content) {
+    public @NotNull
+    HybrisHttpResult importImpex(final String content) {
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptContent", content),
             new BasicNameValuePair("validationEnum", "IMPORT_STRICT"),
             new BasicNameValuePair("encoding", "UTF-8"),
             new BasicNameValuePair("maxThreads", "4")
         );
-        ImpexHttpResult.ImpexHttpResultBuilder resultBuilder = createResult();
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
         final String actionUrl = hybrisHttpClient.getHostUrl() + "/console/impex/import";
         final String sessionId = hybrisHttpClient.getSessionId();
         try {
@@ -66,10 +67,10 @@ public class ImportImpexHttpClient {
                 if ("error".equals(impexResultStatus.attr("data-level"))) {
                     final String dataResult = impexResultStatus.attr("data-result");
                     final Element detailMessage = document.getElementsByClass("impexResult").first().children().first();
-                    return createResult().errorMessage(dataResult).detailMessage(detailMessage.text()).build();
+                    return HybrisHttpResult.HybrisHttpResultBuilder.createResult().errorMessage(dataResult).detailMessage(detailMessage.text()).build();
                 } else {
                     final String dataResult = impexResultStatus.attr("data-result");
-                    return createResult().output(dataResult).build();
+                    return HybrisHttpResult.HybrisHttpResultBuilder.createResult().output(dataResult).build();
                 }
             }
             return resultBuilder.errorMessage("No data in response").build();

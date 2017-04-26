@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.idea.plugin.hybris.tools.remote.http.ImpexHttpResult;
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
@@ -37,27 +37,27 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
 
-public class ExecuteImpexConsole extends ExecuteConsole {
+public class ExecuteHybrisConsole extends ExecuteConsole {
 
-    private static final String[] CONSOLE_NAMES = new String[]{"Impex Import/Validation Message", "Error"};
-    private static final String[] CONSOLE_DESCRIPTIONS = new String[]{"Impex Message Result", "Impex message errors"};
+    private static final String[] CONSOLE_NAMES = new String[]{"Hybris output console", "Error"};
+    private static final String[] CONSOLE_DESCRIPTIONS = new String[]{"Hybris Message Result", "Hybris message errors"};
     private static final int FADEOUT_TIME = 5500;
 
     //    private ConsoleView executionStatisticsConsole;
     private ConsoleView searchResultConsole;
     private ConsoleView errorConsoleView;
 
-    private static ExecuteImpexConsole ourInstance = new ExecuteImpexConsole();
+    private static ExecuteHybrisConsole ourInstance = new ExecuteHybrisConsole();
 
-    public static ExecuteImpexConsole getInstance() {
+    public static ExecuteHybrisConsole getInstance() {
         return ourInstance;
     }
 
-    private ExecuteImpexConsole() {
+    private ExecuteHybrisConsole() {
     }
 
     @Override
-    public void show(final ImpexHttpResult httpResult, final Project project) {
+    public void show(final HybrisHttpResult httpResult, final Project project) {
         initConsoleWindow(project);
         startSendRequestAnimationInAllConsoles();
 
@@ -114,7 +114,7 @@ public class ExecuteImpexConsole extends ExecuteConsole {
         );
     }
 
-    private void handleBadRequest(final ImpexHttpResult httpResult, final Project project) {
+    private void handleBadRequest(final HybrisHttpResult httpResult, final Project project) {
         if (httpResult.getStatusCode() != SC_OK) {
             final StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
 

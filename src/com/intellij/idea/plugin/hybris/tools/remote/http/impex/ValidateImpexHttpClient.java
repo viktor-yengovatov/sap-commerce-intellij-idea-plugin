@@ -16,8 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http;
+package com.intellij.idea.plugin.hybris.tools.remote.http.impex;
 
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpClient;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,7 +33,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.tools.remote.http.ImpexHttpResult.ImpexHttpResultBuilder.createResult;
 import static java.util.Arrays.asList;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.jsoup.Jsoup.parse;
@@ -44,7 +44,8 @@ public class ValidateImpexHttpClient {
 
     private HybrisHttpClient hybrisHttpClient = HybrisHttpClient.INSTANCE;
 
-    public @NotNull ImpexHttpResult validateImpex(final String content) {
+    public @NotNull
+    HybrisHttpResult validateImpex(final String content) {
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptContent", content),
             new BasicNameValuePair("validationEnum", "IMPORT_STRICT"),
@@ -53,7 +54,7 @@ public class ValidateImpexHttpClient {
         );
         final String actionUrl = hybrisHttpClient.getHostUrl() + "/console/impex/import/validate";
         final String sessionId = hybrisHttpClient.getSessionId();
-        ImpexHttpResult.ImpexHttpResultBuilder resultBuilder = createResult();
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
         try {
             final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());

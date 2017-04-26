@@ -30,6 +30,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
 import org.jsoup.HttpStatusException;
@@ -59,7 +60,7 @@ public enum HybrisHttpClient {
     INSTANCE;
 
     private static final String USER_AGENT = "Mozilla/5.0";
-    
+
     private HybrisApplicationSettingsComponent settingsComponent = HybrisApplicationSettingsComponent.getInstance();
     private String sessionId;
 
@@ -120,7 +121,7 @@ public enum HybrisHttpClient {
                 ),
                 new BasicNameValuePair("_csrf", csrfToken)
             );
-        
+
         final HttpResponse response;
         try {
             response = post(getHostUrl() + "/j_spring_security_check", sessionId, params);
@@ -190,9 +191,10 @@ public enum HybrisHttpClient {
                                                                 KeyStoreException,
                                                                 NoSuchAlgorithmException,
                                                                 KeyManagementException {
-        final SSLContext sslcontext = org.apache.http.ssl.SSLContexts.custom()
-                                                                     .loadTrustMaterial(null, (chain, authType) -> true)
-                                                                     .build();
+        final SSLContext sslcontext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(
+            null,
+            (chain, authType) -> true
+        ).build();
 
         final SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
             sslcontext, ALLOW_ALL_HOSTNAME_VERIFIER
@@ -211,12 +213,14 @@ public enum HybrisHttpClient {
     }
 
 
-    private String getCSRFToken(final String sessionId) throws IOException {
+    private String getCSRFToken(@Nullable  final String sessionId) throws IOException {
         //<meta name="_csrf" content="c1dee1f7-8c79-43b1-8f3f-767662abc87a" />
-        final Document doc = Jsoup.connect(getHostUrl()).cookie("JSESSIONID", sessionId).get();
-        final Elements csrfMetaElt = doc.select("meta[name=_csrf]");
-        return csrfMetaElt.attr("content");
-
+        if (sessionId != null) {
+            final Document doc = Jsoup.connect(getHostUrl()).cookie("JSESSIONID", sessionId).get();
+            final Elements csrfMetaElt = doc.select("meta[name=_csrf]");
+            return csrfMetaElt.attr("content");
+        }
+        return null;
     }
 
     private String getValidSessionId() {
