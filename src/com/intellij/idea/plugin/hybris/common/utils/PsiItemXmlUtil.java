@@ -61,30 +61,33 @@ public final class PsiItemXmlUtil {
                 final DomManager manager = DomManager.getDomManager(project);
                 final DomFileElement<DomElement> domFile = manager.getFileElement(xmlFile);
                 assert domFile != null;
-                final Items root = (Items) domFile.getRootElement();
+                final DomElement domRootElement = domFile.getRootElement();
+                if (domRootElement instanceof Items) {
+                    final Items root = (Items) domRootElement;
 
-                if (ITEM_TYPE_TAG_NAME.equals(tagName)) {
-                    final ItemTypes sourceItems = root.getItemTypes();
-                    final List<ItemType> itemTypes = sourceItems.getItemTypes();
-                    final Stream<ItemType> streamItemTypes = itemTypes.stream();
-                    final Stream<ItemType> streamItemGroups =
-                        sourceItems.getTypeGroups()
-                                   .parallelStream()
-                                   .flatMap(typeGroup -> typeGroup.getItemTypes().stream())
-                                   .collect(Collectors.toList()).stream();
-                    result.addAll(Stream.concat(streamItemTypes, streamItemGroups)
-                                        .filter(itemType ->
-                                                    searchName.equals(itemType.getCode().getValue()))
-                                        .map(DomElement::getXmlElement)
-                                        .collect(Collectors.toList()));
-                } else if (ENUM_TYPE_TAG_NAME.equals(tagName)) {
-                    final EnumTypes sourceItems = root.getEnumTypes();
-                    final List<EnumType> enumTypes = sourceItems.getEnumTypes();
-                    result.addAll(enumTypes.stream()
-                                           .filter(itemType ->
-                                                       searchName.equals(itemType.getCode().getValue()))
-                                           .map(DomElement::getXmlElement)
-                                           .collect(Collectors.toList()));
+                    if (ITEM_TYPE_TAG_NAME.equals(tagName)) {
+                        final ItemTypes sourceItems = root.getItemTypes();
+                        final List<ItemType> itemTypes = sourceItems.getItemTypes();
+                        final Stream<ItemType> streamItemTypes = itemTypes.stream();
+                        final Stream<ItemType> streamItemGroups =
+                            sourceItems.getTypeGroups()
+                                       .parallelStream()
+                                       .flatMap(typeGroup -> typeGroup.getItemTypes().stream())
+                                       .collect(Collectors.toList()).stream();
+                        result.addAll(Stream.concat(streamItemTypes, streamItemGroups)
+                                            .filter(itemType ->
+                                                        searchName.equals(itemType.getCode().getValue()))
+                                            .map(DomElement::getXmlElement)
+                                            .collect(Collectors.toList()));
+                    } else if (ENUM_TYPE_TAG_NAME.equals(tagName)) {
+                        final EnumTypes sourceItems = root.getEnumTypes();
+                        final List<EnumType> enumTypes = sourceItems.getEnumTypes();
+                        result.addAll(enumTypes.stream()
+                                               .filter(itemType ->
+                                                           searchName.equals(itemType.getCode().getValue()))
+                                               .map(DomElement::getXmlElement)
+                                               .collect(Collectors.toList()));
+                    }
                 }
             }
         }
