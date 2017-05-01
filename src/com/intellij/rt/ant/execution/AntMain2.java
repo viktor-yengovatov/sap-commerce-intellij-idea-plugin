@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by Martin Zdarsky-Jones on 24/10/16.
  *
- * It's the same class like Intellij version but uses HybrisParsingAntLogger instead
+ * It's the same class like Intellij version but uses HybrisAnsiAntLogger instead
  */
 public class AntMain2 {
     public static void main(String[] args) throws
@@ -39,7 +39,7 @@ public class AntMain2 {
 
         for (int index=0; index<args.length; index++) {
             if (IdeaAntLogger2.class.getName().equals(args[index])) {
-                args[index]=HybrisParsingAntLogger.class.getName();
+                args[index]=HybrisAnsiAntLogger.class.getName();
             }
         }
 
