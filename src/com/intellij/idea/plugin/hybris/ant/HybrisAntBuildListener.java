@@ -18,30 +18,43 @@
 
 package com.intellij.idea.plugin.hybris.ant;
 
+import com.intellij.ide.DataManager;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
+import com.intellij.lang.ant.config.AntBuildFileBase;
 import com.intellij.lang.ant.config.AntBuildListener;
+import com.intellij.lang.ant.config.AntConfigurationBase;
+import com.intellij.lang.ant.config.execution.ExecutionHandler;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.ex.WindowManagerEx;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODULE_PREFIX;
 
 /**
  * Created by Martin Zdarsky-Jones on 15/2/17.
@@ -56,6 +69,9 @@ import java.util.Map;
  */
 public class HybrisAntBuildListener implements AntBuildListener {
 
+    public static final Key<STATES> STATE = new Key("hybrisAntStateMachine");
+    public static final String[] antCleanAll = new String[]{"clean","all"};
+
     /**
      * Injecting our listener implementation into ant integration interface.
      */
@@ -66,6 +82,16 @@ public class HybrisAntBuildListener implements AntBuildListener {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    static void setFinalStatic(Field field, Object newValue) throws NoSuchFieldException, IllegalAccessException {
+        field.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+        field.set(null, newValue);
     }
 
     /**
@@ -79,19 +105,8 @@ public class HybrisAntBuildListener implements AntBuildListener {
         final Map<Project, AntGenResult> resultMap = new HashMap<>();
         findAntResult(resultMap);
         collectStatistics();
-
-        if (resultMap.isEmpty()) {
-            return;
-        }
-        final Project project = resultMap.keySet().iterator().next();
-        final AntGenResult antGenResult = resultMap.get(project);
-        modifyLocalExtensions(project, antGenResult);
-        ProjectRefreshAction.triggerAction();
-    }
-
-    private void collectStatistics() {
-        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
-        statsCollector.collectStat(StatsCollector.ACTIONS.ANT);
+        processNewExtensions(resultMap);
+        triggerNextAction();
     }
 
     private void findAntResult(final Map<Project, AntGenResult> resultMap) {
@@ -116,6 +131,40 @@ public class HybrisAntBuildListener implements AntBuildListener {
                 file.delete();
                 resultMap.put(project, result);
                 return;
+            }
+        }
+    }
+
+    private void collectStatistics() {
+        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
+        statsCollector.collectStat(StatsCollector.ACTIONS.ANT);
+    }
+
+    private void processNewExtensions(final Map<Project, AntGenResult> resultMap) {
+        if (resultMap.isEmpty()) {
+            return;
+        }
+        final Project project = resultMap.keySet().iterator().next();
+        final AntGenResult antGenResult = resultMap.get(project);
+        modifyLocalExtensions(project, antGenResult);
+        project.putUserData(STATE, STATES.CLEAN_ALL_NEEDED);
+    }
+
+    private void triggerNextAction() {
+        for (Project project: ProjectManager.getInstance().getOpenProjects()) {
+            final STATES state = project.getUserData(STATE);
+            if (state == null) {
+                continue;
+            }
+            switch (state) {
+                case CLEAN_ALL_NEEDED:
+                    project.putUserData(STATE, STATES.REFRESH_NEEDED);
+                    triggerCleanAll(project);
+                    return;
+                case REFRESH_NEEDED:
+                    project.putUserData(STATE, null);
+                    ProjectRefreshAction.triggerAction(getDataContext(project));
+                    return;
             }
         }
     }
@@ -163,13 +212,24 @@ public class HybrisAntBuildListener implements AntBuildListener {
         }.execute();
     }
 
-    static void setFinalStatic(Field field, Object newValue) throws NoSuchFieldException, IllegalAccessException {
-        field.setAccessible(true);
-
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-        field.set(null, newValue);
+    private void triggerCleanAll(final Project project) {
+        final HybrisProjectSettings yProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final File platformDir = new File(project.getBasePath() + "/" +
+                                   yProjectSettings.getHybrisDirectory() + PLATFORM_MODULE_PREFIX);
+        final VirtualFile vfPlatformDir = VfsUtil.findFileByIoFile(platformDir, true);
+        final VirtualFile vfBuildFile = VfsUtil.findRelativeFile(vfPlatformDir, HybrisConstants.ANT_BUILD_XML);
+        final PsiFile psiBuildFile = PsiManager.getInstance(project).findFile(vfBuildFile);
+        final AntConfigurationBase antConfiguration = AntConfigurationBase.getInstance(project);
+        final AntBuildFileBase antBuildFile = antConfiguration.getAntBuildFile(psiBuildFile);
+        ExecutionHandler.runBuild(antBuildFile, antCleanAll, null, getDataContext(project), Collections.emptyList(), AntBuildListener.NULL);
     }
+
+    private DataContext getDataContext(final Project project) {
+        final WindowManagerEx windowManager = WindowManagerEx.getInstanceEx();
+        final Component focusedComponent = windowManager.getFocusedComponent(project);
+        final DataContext dataContext = DataManager.getInstance().getDataContext(focusedComponent);
+        return dataContext;
+    }
+
+    public enum STATES {CLEAN_ALL_NEEDED, REFRESH_NEEDED}
 }

@@ -61,17 +61,17 @@ import java.util.List;
 public class ProjectRefreshAction extends ImportModuleAction {
     final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
 
-    @Override
-    public void update(AnActionEvent event) {
-        final Project project = event.getData(PlatformDataKeys.PROJECT);
-        final Presentation presentation = event.getPresentation();
-        if (project == null) {
-            presentation.setVisible(false);
-            return;
-        }
-        presentation.setIcon(HybrisIcons.HYBRIS_ICON);
-        final boolean visible = commonIdeaService.isHybrisProject(project);
-        presentation.setVisible(visible);
+    public static void triggerAction() {
+        final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
+        triggerAction(dataContext);
+    }
+
+    public static void triggerAction(final DataContext dataContext) {
+        ApplicationManager.getApplication().invokeLater(() -> {
+            final AnAction action = new ProjectRefreshAction();
+            final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(action, null, ActionPlaces.UNKNOWN, dataContext);
+            action.actionPerformed(actionEvent);
+        }, ModalityState.NON_MODAL);
     }
 
     @Override
@@ -87,6 +87,19 @@ public class ProjectRefreshAction extends ImportModuleAction {
         }
     }
 
+    @Override
+    public void update(AnActionEvent event) {
+        final Project project = event.getData(PlatformDataKeys.PROJECT);
+        final Presentation presentation = event.getPresentation();
+        if (project == null) {
+            presentation.setVisible(false);
+            return;
+        }
+        presentation.setIcon(HybrisIcons.HYBRIS_ICON);
+        final boolean visible = commonIdeaService.isHybrisProject(project);
+        presentation.setVisible(visible);
+    }
+
     private void collectStatistics() {
         final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
         statsCollector.collectStat(StatsCollector.ACTIONS.REFRESH_PROJECT);
@@ -95,20 +108,6 @@ public class ProjectRefreshAction extends ImportModuleAction {
     public List<Module> doReImport(final Project project) throws ConfigurationException {
         final AddModuleWizard wizard = getWizard(project);
         return createFromWizard(null, wizard);
-    }
-
-    @Override
-    public boolean displayTextInToolbar() {
-        return true;
-    }
-
-    public static void triggerAction() {
-        ApplicationManager.getApplication().invokeLater(() -> {
-            final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
-            final AnAction action = new ProjectRefreshAction();
-            final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(action, null, ActionPlaces.UNKNOWN, dataContext);
-            action.actionPerformed(actionEvent);
-        }, ModalityState.NON_MODAL);
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {
@@ -146,5 +145,10 @@ public class ProjectRefreshAction extends ImportModuleAction {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean displayTextInToolbar() {
+        return true;
     }
 }
