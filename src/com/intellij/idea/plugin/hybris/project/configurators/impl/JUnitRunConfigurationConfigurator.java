@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.execution.RunManagerEx;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
@@ -51,7 +52,10 @@ public class JUnitRunConfigurationConfigurator implements RunConfigurationConfig
         configureJUnitTemplateOnly(runManager, hybrisProjectDescriptor);
     }
 
-    private void configureJUnitTemplateOnly(final RunManagerImpl runManager, final HybrisProjectDescriptor hybrisProjectDescriptor) {
+    private void configureJUnitTemplateOnly(
+        final RunManagerEx runManager,
+        final HybrisProjectDescriptor hybrisProjectDescriptor
+    ) {
         final String platformRootDirectoryPath = getPlatformRootDirectoryPath(hybrisProjectDescriptor);
         if (platformRootDirectoryPath == null) {
             return;
