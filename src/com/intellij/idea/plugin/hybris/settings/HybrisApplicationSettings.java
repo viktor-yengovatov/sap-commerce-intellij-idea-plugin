@@ -103,6 +103,9 @@ public class HybrisApplicationSettings {
     @PropertyName("hybrisHostUrl")
     private String hybrisHostUrl = "https://localhost:9002";
 
+    @PropertyName("followSymlink")
+    private boolean followSymlink = true;
+
 
     public HybrisApplicationSettings() {
     }
@@ -252,6 +255,14 @@ public class HybrisApplicationSettings {
         this.hybrisHostUrl = hybrisHostUrl;
     }
 
+    public boolean isFollowSymlink() {
+        return followSymlink;
+    }
+
+    public void setFollowSymlink(final boolean followSymlink) {
+        this.followSymlink = followSymlink;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -270,6 +281,7 @@ public class HybrisApplicationSettings {
             .append(defaultPlatformInReadOnly)
             .append(createBackwardCyclicDependenciesForAddOns)
             .append(usedActions)
+            .append(followSymlink)
             .toHashCode();
     }
 
@@ -301,6 +313,7 @@ public class HybrisApplicationSettings {
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .append(usedActions, other.usedActions)
+            .append(followSymlink, other.followSymlink)
             .isEquals();
     }
 
@@ -322,6 +335,7 @@ public class HybrisApplicationSettings {
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
         sb.append(", createBackwardCyclicDependenciesForAddOns='").append(createBackwardCyclicDependenciesForAddOns).append('\'');
         sb.append(", usedActions='").append(usedActions).append('\'');
+        sb.append(", followSymlink='").append(followSymlink).append('\'');
         sb.append('}');
         return sb.toString();
     }
