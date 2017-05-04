@@ -63,6 +63,7 @@ public class HybrisApplicationSettingsForm {
     private JTextField hybrisInstancePasswordTextField;
     private JTextField hybrisHostUrlTextField;
     private JLabel hybrisRemoteControlLabel;
+    private JCheckBox followSymlink;
 
     private JunkListPanel junkListPanel;
 
@@ -84,6 +85,7 @@ public class HybrisApplicationSettingsForm {
         hybrisInstanceUsernameTextField.setText(data.getHybrisInstanceUsername());
         hybrisInstancePasswordTextField.setText(data.getHybrisInstancePassword());
         hybrisHostUrlTextField.setText(data.getHybrisHostUrl());
+        followSymlink.setSelected(data.isFollowSymlink());
     }
 
     public void getData(final HybrisApplicationSettings data) {
@@ -105,6 +107,7 @@ public class HybrisApplicationSettingsForm {
         data.setHybrisInstanceUsername(hybrisInstanceUsernameTextField.getText());
         data.setHybrisInstancePassword(hybrisInstancePasswordTextField.getText());
         data.setHybrisHostUrl(hybrisHostUrlTextField.getText());
+        data.setFollowSymlink(followSymlink.isSelected());
         
     }
 
@@ -158,6 +161,9 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (createBackwardCyclicDependenciesForAddOns.isSelected() != data.isCreateBackwardCyclicDependenciesForAddOns()) {
+            return true;
+        }
+        if (followSymlink.isSelected() != data.isFollowSymlink()) {
             return true;
         }
         return false;
