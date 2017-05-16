@@ -30,6 +30,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFacetConfiguration;
 import com.intellij.spring.facet.SpringFileSet;
+import com.intellij.spring.facet.beans.CustomSetting;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,6 +78,10 @@ public class SpringFacetConfigurator extends AbstractFacetConfigurator {
             if (null != vf) {
                 springFileSet.addFile(vf);
             }
+        }
+        final CustomSetting setting = springFacet.findSetting(CustomSetting.PROCESS_EXPLICITLY_ANNOTATED);
+        if (setting instanceof CustomSetting.BOOLEAN) {
+            ((CustomSetting.BOOLEAN) setting).setBooleanValue(false);
         }
     }
 }
