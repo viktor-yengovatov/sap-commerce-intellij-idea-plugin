@@ -19,12 +19,10 @@
 package com.intellij.idea.plugin.hybris.common.services.impl;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.EditorBundle;
 import com.intellij.openapi.module.Module;
@@ -48,13 +46,11 @@ import java.util.stream.Collectors;
 public class DefaultCommonIdeaService implements CommonIdeaService {
 
     protected final CommandProcessor commandProcessor;
-    protected final VersionSpecificService versionSpecificService;
 
     public DefaultCommonIdeaService(@NotNull final CommandProcessor commandProcessor) {
         Validate.notNull(commandProcessor);
 
         this.commandProcessor = commandProcessor;
-        this.versionSpecificService = createVersionSpecificService();
     }
 
     @Override
@@ -135,11 +131,6 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     }
 
     @Override
-    public VersionSpecificService getVersionSpecificService() {
-        return versionSpecificService;
-    }
-
-    @Override
     public PlatformHybrisModuleDescriptor getPlatformDescriptor(final HybrisProjectDescriptor hybrisProjectDescriptor) {
         return (PlatformHybrisModuleDescriptor) hybrisProjectDescriptor
             .getFoundModules()
@@ -147,14 +138,6 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
             .filter(e->e instanceof PlatformHybrisModuleDescriptor)
             .findAny()
             .orElse(null);
-    }
-
-    private VersionSpecificService createVersionSpecificService() {
-        final int baselineVersion = ApplicationInfo.getInstance().getBuild().getBaselineVersion();
-        if (baselineVersion <= CommonIdeaService.IDEA_15x_BASELINE_VERSION) {
-            return new Idea15xVersionService();
-        }
-        return new LatestVersionService();
     }
 
     private boolean matchAllModuleNames(
