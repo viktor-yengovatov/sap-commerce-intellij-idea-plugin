@@ -31,8 +31,10 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerAdapter;
 import com.intellij.openapi.project.ProjectManagerListener;
+import com.intellij.spring.settings.SpringGeneralSettings;
 
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.ANT_SUPPORT_PLUGIN_ID;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
 
 /**
@@ -47,6 +49,18 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
             showNotification(project);
         }
         registerAntListener(project);
+        resetSpringGeneralSettings(project);
+    }
+
+    private void resetSpringGeneralSettings(final Project project) {
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        if (commonIdeaService.isHybrisProject(project)) {
+            if (isPluginActive(SPRING_PLUGIN_ID)) {
+                SpringGeneralSettings springGeneralSettings = SpringGeneralSettings.getInstance(project);
+                springGeneralSettings.setShowMultipleContextsPanel(false);
+                springGeneralSettings.setShowProfilesPanel(false);
+            }
+        }
     }
 
     private void registerAntListener(final Project project) {
