@@ -1,4 +1,6 @@
 buildscript {
+    ext.kotlin_version = '1.1.2'
+    
     repositories {
         maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -6,6 +8,7 @@ buildscript {
     }//noinspection GroovyAssignabilityCheck
     dependencies {
         classpath "org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.0-SNAPSHOT"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -37,8 +40,12 @@ allprojects {
 
 apply plugin: 'idea'
 apply plugin: 'java'
+apply plugin: "kotlin"
+
 //noinspection GroovyAssignabilityCheck
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    
     compile 'commons-codec:commons-codec:1.10'
     compile 'commons-io:commons-io:2.5'
     compile 'com.google.guava:guava:19.0'
