@@ -50,7 +50,5 @@ public interface CommonIdeaService {
 
     boolean isPotentiallyHybrisProject(@NotNull Project project);
 
-    VersionSpecificService getVersionSpecificService();
-
     PlatformHybrisModuleDescriptor getPlatformDescriptor(HybrisProjectDescriptor hybrisProjectDescriptor);
 }

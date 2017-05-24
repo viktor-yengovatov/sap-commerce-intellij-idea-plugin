@@ -20,19 +20,23 @@ package com.intellij.idea.plugin.hybris.project.components;
 
 import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.common.services.VersionSpecificService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationDisplayType;
+import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerAdapter;
 import com.intellij.openapi.project.ProjectManagerListener;
+import com.intellij.spring.settings.SpringGeneralSettings;
 
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.ANT_SUPPORT_PLUGIN_ID;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
 
 /**
@@ -47,6 +51,18 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
             showNotification(project);
         }
         registerAntListener(project);
+        resetSpringGeneralSettings(project);
+    }
+
+    private void resetSpringGeneralSettings(final Project project) {
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        if (commonIdeaService.isHybrisProject(project)) {
+            if (isPluginActive(SPRING_PLUGIN_ID)) {
+                SpringGeneralSettings springGeneralSettings = SpringGeneralSettings.getInstance(project);
+                springGeneralSettings.setShowMultipleContextsPanel(false);
+                springGeneralSettings.setShowProfilesPanel(false);
+            }
+        }
     }
 
     private void registerAntListener(final Project project) {
@@ -74,15 +90,19 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
     }
 
     private void showNotification(final Project project) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        final VersionSpecificService versionSpecificService = commonIdeaService.getVersionSpecificService();
-
-        final Notification notification = versionSpecificService.createNotification(
+        final NotificationGroup notificationGroup = new NotificationGroup(
             "[y] project",
+            NotificationDisplayType.BALLOON,
+            true,
+            null,
+            HybrisIcons.HYBRIS_ICON
+        );
+
+        final Notification notification = notificationGroup.createNotification(
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.title"),
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.text"),
             NotificationType.INFORMATION,
-            HybrisIcons.HYBRIS_ICON
+            (myNotification, myHyperlinkEvent) -> ProjectRefreshAction.triggerAction()
         );
         notification.setImportant(true);
         Notifications.Bus.notify(notification, project);

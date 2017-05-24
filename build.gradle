@@ -70,7 +70,7 @@ apply plugin: 'org.jetbrains.intellij'
 intellij {
     type 'IU'
     //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
-    version '163.12024.16'
+    version '172.2103.15'
     downloadSources true
     updateSinceUntilBuild false
 
@@ -80,5 +80,5 @@ intellij {
     plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
 }
 patchPluginXml {
-    sinceBuild '163'
+    sinceBuild '172'
 }
