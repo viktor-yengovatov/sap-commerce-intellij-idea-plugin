@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.2'
+    ext.kotlin_version = '1.1.2-2'
     
     repositories {
         maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
@@ -70,7 +70,7 @@ apply plugin: 'org.jetbrains.intellij'
 intellij {
     type 'IU'
     //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
-    version '172.2103.15'
+    version '172.2465.6'
     downloadSources true
     updateSinceUntilBuild false
 
