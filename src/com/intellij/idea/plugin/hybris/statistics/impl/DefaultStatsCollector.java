@@ -39,6 +39,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.ZonedDateTime;
@@ -96,12 +98,29 @@ public class DefaultStatsCollector implements StatsCollector {
         final String registeredTo = getRegisteredTo();
         if (null != registeredTo) {
             urlParameters.add(new BasicNameValuePair("registered_to", DigestUtils.sha512Hex(registeredTo)));
+            if (acceptedSendingStatistics()) {
+                urlParameters.add(new BasicNameValuePair("registered_to_plain", registeredTo));
+            }
         }
 
         final String computerName = getComputerName();
         if (null != computerName) {
             urlParameters.add(new BasicNameValuePair("computer_name", DigestUtils.sha512Hex(computerName)));
+            if (acceptedSendingStatistics()) {
+                urlParameters.add(new BasicNameValuePair("computer_name_plain", computerName));
+            }
         }
+
+        String loginName = getLoginName();
+        if (null != loginName) {
+            urlParameters.add(new BasicNameValuePair("login_name", DigestUtils.sha512Hex(loginName)));
+            if (acceptedSendingStatistics()) {
+                urlParameters.add(new BasicNameValuePair("login_name_plain", loginName));
+            }
+        }
+        String osName = System.getProperty("os.name").toLowerCase();
+        urlParameters.add(new BasicNameValuePair("os", osName));
+
 
         urlParameters.add(new BasicNameValuePair("plugin_version", getPluginVersion()));
         urlParameters.add(new BasicNameValuePair("request_date", getCurrentDateTimeWithTimeZone()));
@@ -111,6 +130,10 @@ public class DefaultStatsCollector implements StatsCollector {
         }
         post.setEntity(new UrlEncodedFormEntity(urlParameters, UTF_8));
         return post;
+    }
+
+    private boolean acceptedSendingStatistics() {
+        return true;
     }
 
     private String getCurrentDateTimeWithTimeZone() {
@@ -164,5 +187,35 @@ public class DefaultStatsCollector implements StatsCollector {
         }
 
         return null;
+    }
+
+    private String getLoginName() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String className = null;
+        String methodName = "getUsername";
+
+        if (osName.contains("windows")) {
+            className = "com.sun.security.auth.module.NTSystem";
+            methodName = "getName";
+        } else if (osName.contains("linux")) {
+            className = "com.sun.security.auth.module.UnixSystem";
+        } else if (osName.contains("solaris") || osName.contains("sunos")) {
+            className = "com.sun.security.auth.module.SolarisSystem";
+        }
+
+        if (className != null) {
+            try {
+                Class<?> c = Class.forName(className);
+                Method method = c.getDeclaredMethod(methodName);
+                Object o = c.newInstance();
+                return (String) method.invoke(o);
+            } catch (ClassNotFoundException | NoSuchMethodException |
+                IllegalAccessException | InstantiationException |
+                InvocationTargetException e) {
+                // no-op
+            }
+        }
+
+        return System.getProperty("user.name");
     }
 }

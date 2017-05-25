@@ -106,6 +106,9 @@ public class HybrisApplicationSettings {
     @PropertyName("followSymlink")
     private boolean followSymlink = true;
 
+    @PropertyName("allowedSendingPlainStatistics")
+    private boolean allowedSendingPlainStatistics = false;
+
 
     public HybrisApplicationSettings() {
     }
@@ -263,6 +266,14 @@ public class HybrisApplicationSettings {
         this.followSymlink = followSymlink;
     }
 
+    public boolean isAllowedSendingPlainStatistics() {
+        return allowedSendingPlainStatistics;
+    }
+
+    public void setAllowedSendingPlainStatistics(final boolean allowedSendingPlainStatistics) {
+        this.allowedSendingPlainStatistics = allowedSendingPlainStatistics;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -282,6 +293,7 @@ public class HybrisApplicationSettings {
             .append(createBackwardCyclicDependenciesForAddOns)
             .append(usedActions)
             .append(followSymlink)
+            .append(allowedSendingPlainStatistics)
             .toHashCode();
     }
 
@@ -314,6 +326,7 @@ public class HybrisApplicationSettings {
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .append(usedActions, other.usedActions)
             .append(followSymlink, other.followSymlink)
+            .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
             .isEquals();
     }
 
@@ -336,6 +349,7 @@ public class HybrisApplicationSettings {
         sb.append(", createBackwardCyclicDependenciesForAddOns='").append(createBackwardCyclicDependenciesForAddOns).append('\'');
         sb.append(", usedActions='").append(usedActions).append('\'');
         sb.append(", followSymlink='").append(followSymlink).append('\'');
+        sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
         sb.append('}');
         return sb.toString();
     }

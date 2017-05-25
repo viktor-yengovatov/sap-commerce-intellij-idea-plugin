@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
+import com.intellij.idea.plugin.hybris.project.wizard.PermissionToSendStatisticsDialog;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
@@ -34,6 +36,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerAdapter;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.spring.settings.SpringGeneralSettings;
+
+import java.awt.*;
 
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.ANT_SUPPORT_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
@@ -52,6 +56,16 @@ public class HybrisProjectManagerListener extends ProjectManagerAdapter implemen
         }
         registerAntListener(project);
         resetSpringGeneralSettings(project);
+        popupPermissionToSendStatistics(project);
+    }
+
+    private void popupPermissionToSendStatistics(final Project project) {
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        if (commonIdeaService.isHybrisProject(project)) {
+            if (!HybrisApplicationSettingsComponent.getInstance().getState().isAllowedSendingPlainStatistics()) {
+                EventQueue.invokeLater(() -> new PermissionToSendStatisticsDialog(project).show());
+            }
+        }
     }
 
     private void resetSpringGeneralSettings(final Project project) {
