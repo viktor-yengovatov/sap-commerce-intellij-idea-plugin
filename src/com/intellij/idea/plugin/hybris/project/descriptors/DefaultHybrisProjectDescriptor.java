@@ -50,6 +50,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -60,6 +61,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -68,6 +70,7 @@ import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.empty
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
 /**
  * Created 3:55 PM 13 June 2015.
@@ -139,18 +142,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 platformHybrisModuleDescriptor = (PlatformHybrisModuleDescriptor) moduleDescriptor;
             }
         }
-        if (foundConfigModules.isEmpty()) {
-            return null;
-        }
-        if (foundConfigModules.size() == 1) {
-            return foundConfigModules.get(0);
-        }
         if (platformHybrisModuleDescriptor == null) {
+            if (foundConfigModules.size() == 1) {
+                return foundConfigModules.get(0);
+            }
             return null;
         }
-        final File platformDir = platformHybrisModuleDescriptor.getRootDirectory();
-        final File expectedConfigDir = new File(platformDir + HybrisConstants.CONFIG_RELATIVE_PATH);
-        if (!expectedConfigDir.isDirectory()) {
+        final File expectedConfigDir = getExpectedConfigDir(platformHybrisModuleDescriptor);
+        if (expectedConfigDir == null || !expectedConfigDir.isDirectory()) {
+            if (foundConfigModules.size() == 1) {
+                return foundConfigModules.get(0);
+            }
             return null;
         }
         for (ConfigHybrisModuleDescriptor configHybrisModuleDescriptor: foundConfigModules) {
@@ -158,7 +160,54 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 return configHybrisModuleDescriptor;
             }
         }
+        final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
+
+        if (hybrisProjectService.isConfigModule(expectedConfigDir)) {
+            try {
+                final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor = new ConfigHybrisModuleDescriptor(expectedConfigDir, platformHybrisModuleDescriptor.getRootProjectDescriptor());
+                LOG.info("Creating Overriden Config module in local.properties for " + expectedConfigDir.getAbsolutePath());
+                foundModules.add(configHybrisModuleDescriptor);
+                return configHybrisModuleDescriptor;
+            } catch (HybrisConfigurationException e) {
+                // no-op
+            }
+        }
         return null;
+    }
+
+    private File getExpectedConfigDir(final PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor) {
+        final File platformDir = platformHybrisModuleDescriptor.getRootDirectory();
+        final File expectedConfigDir = new File(platformDir + HybrisConstants.CONFIG_RELATIVE_PATH);
+        if (!expectedConfigDir.isDirectory()) {
+            return null;
+        }
+        final File propertiesFile = new File(expectedConfigDir, HybrisConstants.LOCAL_PROPERTIES);
+        if (!propertiesFile.exists()) {
+            return expectedConfigDir;
+        }
+
+        final Properties properties = new Properties();
+        try {
+            final FileReader fr = new FileReader(propertiesFile);
+            properties.load(fr);
+        } catch (IOException e) {
+            return expectedConfigDir;
+        }
+
+        String hybrisConfig = (String) properties.get(HybrisConstants.HYBRIS_CONFIG_DIR_KEY);
+        if (hybrisConfig == null) {
+            return expectedConfigDir;
+        }
+
+        hybrisConfig = hybrisConfig.replace(HybrisConstants.PLATFORM_HOME_PLACEHOLDER, platformHybrisModuleDescriptor.getRootDirectory().getPath());
+        hybrisConfig = separatorsToSystem(hybrisConfig);
+
+        final File hybrisConfigDir = new File(hybrisConfig);
+        if (hybrisConfigDir.isDirectory()) {
+            return hybrisConfigDir;
+        }
+
+        return expectedConfigDir;
     }
 
     private void processHybrisConfig(@NotNull final Hybrisconfig hybrisconfig) {

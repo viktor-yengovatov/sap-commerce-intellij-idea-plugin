@@ -49,8 +49,8 @@ public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
     private static final int ERROR_COLOR = FOREGROUND_RED;
     private static final int WARN_COLOR = FOREGROUND_YELLOW;
     private static final int INFO_COLOR = FOREGROUND_GREEN;
-    private static final int DEBUG_COLOR = FOREGROUND_CYAN;
-    private static final int TRACE_COLOR = FOREGROUND_BLUE;
+    private static final int VERBOSE_COLOR = FOREGROUND_CYAN;
+    private static final int DEBUG_COLOR = FOREGROUND_BLUE;
 
 
     @Override
@@ -132,10 +132,10 @@ public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
                     return MSG_WARN;
                 case INFO_COLOR:
                     return MSG_INFO;
+                case VERBOSE_COLOR:
+                    return MSG_VERBOSE;
                 case DEBUG_COLOR:
                     return MSG_DEBUG;
-                case TRACE_COLOR:
-                    return MSG_VERBOSE;
             }
         } catch (NumberFormatException nfe) {}
         return MSG_INFO;

@@ -73,6 +73,8 @@ public interface HybrisConstants {
     String APPLICATION_CONTEXT_SPRING_FILES = "application-context";
     String ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs";
     String GLOBAL_CONTEXT_SPRING_FILES = "global-context";
+    String HYBRIS_CONFIG_DIR_KEY = "HYBRIS_CONFIG_DIR";
+    String PLATFORM_HOME_PLACEHOLDER = "${platformhome}";
     String BUILD_NUMBER_FILE_PATH = separatorsToSystem("/bin/platform/build.number");
     String HYBRIS_API_VERSION_KEY = "version.api";
     String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/%s/commercesuite";
