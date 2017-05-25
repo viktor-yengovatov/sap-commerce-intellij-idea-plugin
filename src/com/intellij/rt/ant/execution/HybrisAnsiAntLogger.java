@@ -18,7 +18,6 @@
 
 package com.intellij.rt.ant.execution;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildEvent;
 
 /**
@@ -65,24 +64,57 @@ public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
         if (message == null) {
             return;
         }
-        if (!message.contains(PREFIX)) {
-            return;
-        }
         message = message.replace(END_COLOR,"");
-        message = StringUtils.strip(message, "\b ");
+        message = removeLeadingChars(message, "\b ");
+        Integer priorityOverride = getPriorityOverride(message);
         if (!message.startsWith(PREFIX)) {
-            event.setMessage(message, event.getPriority());
+            event.setMessage(message, getPriority(event.getPriority(), priorityOverride));
             return;
         }
         int mIndex = message.indexOf(SUFFIX);
         if (mIndex < 0) {
-            event.setMessage(message, event.getPriority());
+            event.setMessage(message, getPriority(event.getPriority(), priorityOverride));
             return;
         }
         String attribute = message.substring(PREFIX.length(), mIndex);
         int priority = getPriority(attribute);
         message = message.substring(mIndex+1);
-        event.setMessage(message, priority);
+        event.setMessage(message, getPriority(priority, priorityOverride));
+    }
+
+    private int getPriority(int priority, Integer priorityOverride) {
+        if (priorityOverride != null) {
+            return priorityOverride;
+        }
+        return priority;
+    }
+
+    private String removeLeadingChars(String message, String whiteSpace) {
+        if (message == null) {
+            return message;
+        }
+        for (int index = 0; index < message.length(); index++) {
+            if (whiteSpace.indexOf(message.charAt(index)) == -1) {
+                return message.substring(index);
+            }
+        }
+        return "";
+    }
+
+    private Integer getPriorityOverride(String message) {
+        if (message == null) {
+            return null;
+        }
+        if (message.startsWith("Exception")) {
+            return MSG_ERR;
+        }
+        if (message.startsWith("\tat ")) {
+            return MSG_ERR;
+        }
+        if (message.startsWith("Caused by")) {
+            return MSG_ERR;
+        }
+        return null;
     }
 
     private int getPriority(final String attribute) {

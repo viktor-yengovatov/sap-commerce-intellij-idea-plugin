@@ -176,6 +176,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
     ) {
         AntBuildFileImpl.ADDITIONAL_CLASSPATH.set(editPropertyContainer, classPaths);
         AntBuildFileImpl.TREE_VIEW.set(editPropertyContainer, true);
+        AntBuildFileImpl.TREE_VIEW_ANSI_COLOR.set(editPropertyContainer, true);
+        AntBuildFileImpl.TREE_VIEW_COLLAPSE_TARGETS.set(editPropertyContainer, false);
         AntBuildFileImpl.ANT_INSTALLATION.set(editPropertyContainer, antInstallation);
         AntBuildFileImpl.ANT_REFERENCE.set(editPropertyContainer, antInstallation.getReference());
         AntBuildFileImpl.RUN_WITH_ANT.set(editPropertyContainer, antInstallation);
