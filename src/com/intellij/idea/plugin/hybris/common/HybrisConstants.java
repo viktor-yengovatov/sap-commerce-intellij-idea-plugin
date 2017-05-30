@@ -34,7 +34,7 @@ public interface HybrisConstants {
     String HYBRIS_SERVER_SHELL_SCRIPT_NAME = separatorsToSystem("bin/platform/hybrisserver.sh");
     String PLATFORM_EXT_MODULE_PREFIX = separatorsToSystem("bin/platform/ext/");
     String PLATFORM_OOTB_MODULE_PREFIX = separatorsToSystem("bin/ext-");
-    String HYBRIS_OOTB_MODULE_PREFIX = separatorsToSystem("hybris/") + PLATFORM_OOTB_MODULE_PREFIX;
+    String HYBRIS_OOTB_MODULE_PREFIX = separatorsToSystem("hybris/")+PLATFORM_OOTB_MODULE_PREFIX;
 
     String EXCLUDE_TMP_DIRECTORY = separatorsToSystem("/platform/tmp");
     String EXCLUDE_TCSERVER_DIRECTORY = separatorsToSystem("/platform/tcServer");
@@ -69,7 +69,7 @@ public interface HybrisConstants {
     String RESOURCES_DIRECTORY = "resources";
     String LOCAL_PROPERTIES = "local.properties";
     String PROJECT_PROPERTIES = "project.properties";
-    String ADVANCED_PROPERTIES = separatorsToSystem(RESOURCES_DIRECTORY + "/advanced.properties");
+    String ADVANCED_PROPERTIES = separatorsToSystem(RESOURCES_DIRECTORY+"/advanced.properties");
     String APPLICATION_CONTEXT_SPRING_FILES = "application-context";
     String ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs";
     String GLOBAL_CONTEXT_SPRING_FILES = "global-context";

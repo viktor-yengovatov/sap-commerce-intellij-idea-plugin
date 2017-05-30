@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.components.ServiceManager;
@@ -36,8 +36,8 @@ import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,15 +75,13 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         super(context);
 
         this.storeModuleFilesInChooser.addBrowseFolderListener(
-            HybrisI18NBundleUtils.message(
-                "hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"),
+            HybrisI18NBundleUtils.message("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"),
             "",
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
 
         this.storeModuleFilesInCheckBox.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(final ActionEvent e) {
                 storeModuleFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected());
@@ -91,7 +89,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         });
 
         this.storeModuleFilesInLabel.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(final MouseEvent e) {
                 storeModuleFilesInCheckBox.doClick();
@@ -101,7 +98,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         this.sourceCodeZipFilesInChooser.setVisible(false);
 
         this.sourceCodeCheckBox.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(final ActionEvent e) {
                 sourceCodeZipFilesInChooser.setVisible(((JCheckBox) e.getSource()).isSelected());
@@ -109,7 +105,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         });
 
         this.sourceCodeLabel.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(final MouseEvent e) {
                 sourceCodeCheckBox.doClick();
@@ -117,7 +112,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         });
 
         this.importOotbModulesInReadOnlyModeLabel.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(final MouseEvent e) {
                 importOotbModulesInReadOnlyModeCheckBox.doClick();
@@ -127,7 +121,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         this.directoryOverridePanel.setVisible(false);
 
         this.directoryOverrideCheckBox.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(final ActionEvent e) {
                 directoryOverridePanel.setVisible(((JCheckBox) e.getSource()).isSelected());
@@ -135,7 +128,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         });
 
         this.directoryOverrideLabel.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(final MouseEvent e) {
                 directoryOverrideCheckBox.doClick();
@@ -195,9 +187,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
 
         this.getContext().getHybrisProjectDescriptor().setExternalExtensionsDirectory(
-            directoryOverrideCheckBox.isSelected()
-                ? new File(this.externalExtensionsDirectoryFilesInChooser.getText())
-                : null
+            directoryOverrideCheckBox.isSelected() ? new File(this.externalExtensionsDirectoryFilesInChooser.getText()) : null
         );
 
         this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
@@ -232,12 +222,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
             ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
                 new File(this.getBuilder().getFileToImport()), parameter -> {
-                hybrisDistributionDirectoryFilesInChooser.setText(parameter);
+                    hybrisDistributionDirectoryFilesInChooser.setText(parameter);
 
-                if (StringUtils.isBlank(sourceCodeZipFilesInChooser.getText())) {
-                    sourceCodeZipFilesInChooser.setText(hybrisDistributionDirectoryFilesInChooser.getText());
+                    if (StringUtils.isBlank(sourceCodeZipFilesInChooser.getText())) {
+                        sourceCodeZipFilesInChooser.setText(hybrisDistributionDirectoryFilesInChooser.getText());
+                    }
                 }
-            }
             ));
         }
 
@@ -283,8 +273,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         if (directoryOverrideCheckBox.isSelected()) {
             if (!new File(this.externalExtensionsDirectoryFilesInChooser.getText()).isDirectory()) {
                 throw new ConfigurationException(
-                    HybrisI18NBundleUtils.message(
-                        "hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
+                    HybrisI18NBundleUtils.message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
             }
         }
 
@@ -296,16 +285,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         if (!new File(this.hybrisDistributionDirectoryFilesInChooser.getText()).isDirectory()) {
             throw new ConfigurationException(
-                HybrisI18NBundleUtils.message(
-                    "hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"));
+                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"));
         }
 
         final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(VirtualFileSystemService.class);
 
-        if (virtualFileSystemService.pathDoesNotContainAnother(
-            this.getBuilder().getFileToImport(),
-            this.hybrisDistributionDirectoryFilesInChooser.getText()
-        )) {
+        if (virtualFileSystemService.pathDoesNotContainAnother(this.getBuilder().getFileToImport(), this.hybrisDistributionDirectoryFilesInChooser.getText())) {
             throw new ConfigurationException(
                 HybrisI18NBundleUtils.message(
                     "hybris.import.wizard.validation.hybris.distribution.directory.is.outside.of.project.root.directory",
@@ -371,17 +356,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             );
         } else {
             hybrisProjectDescriptor.setModulesFilesDirectory(
-                new File(
-                    this.getBuilder().getFileToImport(),
-                    HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
-                )
+                new File(this.getBuilder().getFileToImport(), HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES)
             );
         }
 
         ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
             new File(this.getBuilder().getFileToImport()), parameter -> {
-            hybrisProjectDescriptor.setHybrisDistributionDirectory(new File(parameter));
-        }
+                hybrisProjectDescriptor.setHybrisDistributionDirectory(new File(parameter));
+            }
         ));
 
         final String defaultJavadocUrl = getDefaultJavadocUrl(this.getBuilder().getFileToImport());

@@ -57,7 +57,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
             .map(e -> e.getRootDirectory())
             .map(e -> e.getPath())
             .collect(Collectors.toList());
-        eclipseImportBuilder.getParameters().converterOptions.commonModulesDirectory =
+        eclipseImportBuilder.getParameters().converterOptions.commonModulesDirectory=
             hybrisProjectDescriptor.getModulesFilesDirectory().getPath();
         eclipseImportBuilder.setList(projectList);
         invokeAndWaitIfNeeded((Runnable) () -> {
@@ -74,7 +74,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
     ) {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
-        for (Module module : eclipseModules) {
+        for (Module module: eclipseModules) {
             modifiableModuleModel.setModuleGroupPath(module, eclipseGroup);
         }
         AccessToken token = null;

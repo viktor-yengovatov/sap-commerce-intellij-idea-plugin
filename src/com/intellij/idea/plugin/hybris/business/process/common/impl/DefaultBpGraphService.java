@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.business.process.common.impl;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Action;
+import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Choice;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.End;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Join;
@@ -31,7 +32,6 @@ import com.intellij.idea.plugin.hybris.business.process.jaxb.Split;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.TargetNode;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Transition;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Wait;
-import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.components.ServiceManager;
@@ -76,11 +76,9 @@ public class DefaultBpGraphService implements BpGraphService {
         return nodesMap.get(process.getStart());
     }
 
-    protected void populateNodesTransitions(
-        @NotNull final VirtualFile virtualFile,
-        @NotNull final Process process,
-        @NotNull final Map<String, BpGraphNode> nodesMap
-    ) {
+    protected void populateNodesTransitions(@NotNull final VirtualFile virtualFile,
+                                            @NotNull final Process process,
+                                            @NotNull final Map<String, BpGraphNode> nodesMap) {
         Validate.notNull(virtualFile);
         Validate.notNull(process);
         Validate.notNull(nodesMap);
@@ -129,8 +127,7 @@ public class DefaultBpGraphService implements BpGraphService {
             if (null != wait.getTimeout()) {
 
                 transitionsIds.put(
-                    HybrisI18NBundleUtils.message("hybris.business.process.timeout") + '\n' + wait.getTimeout()
-                                                                                                  .getDelay(),
+                    HybrisI18NBundleUtils.message("hybris.business.process.timeout") + '\n' + wait.getTimeout().getDelay(),
                     wait.getTimeout().getThen()
                 );
             }
@@ -160,10 +157,8 @@ public class DefaultBpGraphService implements BpGraphService {
     }
 
     @NotNull
-    protected Map<String, BpGraphNode> buildNodesMap(
-        @NotNull final VirtualFile virtualFile,
-        @NotNull final Process process
-    ) {
+    protected Map<String, BpGraphNode> buildNodesMap(@NotNull final VirtualFile virtualFile,
+                                                     @NotNull final Process process) {
         Validate.notNull(virtualFile);
         Validate.notNull(process);
 

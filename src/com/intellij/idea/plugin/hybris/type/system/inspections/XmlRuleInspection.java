@@ -50,8 +50,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RULESET_XML;
 import static com.intellij.openapi.util.io.FileUtil.normalize;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RULESET_XML;
 
 public class XmlRuleInspection extends LocalInspectionTool {
 
@@ -98,7 +98,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
         }
 
         final Module module = ModuleUtilCore.findModuleForPsiElement(file);
-
+        
         if (null == module) {
             return false;
         }

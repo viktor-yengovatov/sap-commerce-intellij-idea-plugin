@@ -46,7 +46,7 @@ public class ImpexStructureViewBuilder extends TemplateLanguageStructureViewBuil
     protected StructureViewDescriptor createMainView(
         final FileEditor fileEditor, final PsiFile mainFile
     ) {
-        final Editor editor = fileEditor instanceof TextEditor ? ((TextEditor) fileEditor).getEditor() : null;
+        final Editor editor = fileEditor instanceof TextEditor ? ((TextEditor)fileEditor).getEditor() : null;
         StructureViewModel model = new ImpexStructureViewModel(editor, psiFile);
         StructureView view = new ImpexStructureViewComponent(fileEditor, model, psiFile.getProject());
         StructureViewDescriptor descriptor = new StructureViewDescriptor(psiFile.getName(), view, null);

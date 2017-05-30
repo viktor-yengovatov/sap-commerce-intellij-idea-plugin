@@ -30,9 +30,8 @@ import java.util.Set;
  */
 public class CoreHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
 
-    public CoreHybrisModuleDescriptor(
-        @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public CoreHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                      @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
 
         super(moduleRootDirectory, rootProjectDescriptor);

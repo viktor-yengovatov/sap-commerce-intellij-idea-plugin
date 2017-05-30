@@ -1,17 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.*;
-
 import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchBooleanTerm extends PsiElement {
 
-    @NotNull
-    FlexibleSearchBooleanFactor getBooleanFactor();
+  @NotNull
+  FlexibleSearchBooleanFactor getBooleanFactor();
 
-    @NotNull
-    List<FlexibleSearchBooleanTerm> getBooleanTermList();
+  @NotNull
+  List<FlexibleSearchBooleanTerm> getBooleanTermList();
 
 }

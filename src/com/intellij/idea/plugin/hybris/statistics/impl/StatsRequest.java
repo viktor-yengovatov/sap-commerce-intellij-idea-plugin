@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 28/2/17.
  */
 public class StatsRequest implements Callable<StatsResponse> {
-
     private final HttpPost post;
     private final HttpClient client;
 

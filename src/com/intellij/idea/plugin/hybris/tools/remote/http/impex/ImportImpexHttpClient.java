@@ -58,19 +58,16 @@ public class ImportImpexHttpClient {
             final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
-
+            
             final Element impexResultStatus = document.getElementById("impexResult");
-
+            
             final boolean hasDataLevelAttr = impexResultStatus.hasAttr("data-level");
             final boolean hasDataResultAttr = impexResultStatus.hasAttr("data-result");
             if (hasDataLevelAttr && hasDataResultAttr) {
                 if ("error".equals(impexResultStatus.attr("data-level"))) {
                     final String dataResult = impexResultStatus.attr("data-result");
                     final Element detailMessage = document.getElementsByClass("impexResult").first().children().first();
-                    return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
-                                                                   .errorMessage(dataResult)
-                                                                   .detailMessage(detailMessage.text())
-                                                                   .build();
+                    return HybrisHttpResult.HybrisHttpResultBuilder.createResult().errorMessage(dataResult).detailMessage(detailMessage.text()).build();
                 } else {
                     final String dataResult = impexResultStatus.attr("data-result");
                     return HybrisHttpResult.HybrisHttpResultBuilder.createResult().output(dataResult).build();

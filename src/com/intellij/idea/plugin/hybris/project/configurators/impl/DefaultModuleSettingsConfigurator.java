@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.BooleanModifierValue;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType;
@@ -35,8 +36,7 @@ public class DefaultModuleSettingsConfigurator implements ModuleSettingsConfigur
         final DescriptorType descriptorType = moduleDescriptor.getDescriptorType();
         javaModule.setOption(HybrisConstants.DESCRIPTOR_TYPE, descriptorType.name());
 
-        final boolean hasReadOnlySettings = moduleDescriptor.getRootProjectDescriptor()
-                                                            .isImportOotbModulesInReadOnlyMode();
+        final boolean hasReadOnlySettings = moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();
         final boolean isReadOnlyType = descriptorType == DescriptorType.OOTB ||
                                        descriptorType == DescriptorType.PLATFORM ||
                                        descriptorType == DescriptorType.EXT;

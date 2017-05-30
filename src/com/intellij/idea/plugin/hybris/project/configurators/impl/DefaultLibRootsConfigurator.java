@@ -83,7 +83,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor) moduleDescriptor;
+            final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor)moduleDescriptor;
             hybrisModuleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider);
         }
 
@@ -92,12 +92,9 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
-            final OotbHybrisModuleDescriptor hybrisModuleDescriptor = (OotbHybrisModuleDescriptor) moduleDescriptor;
+            final OotbHybrisModuleDescriptor hybrisModuleDescriptor = (OotbHybrisModuleDescriptor)moduleDescriptor;
             if (hybrisModuleDescriptor.hasBackofficeModule()) {
-                final File backofficeJarDirectory = new File(
-                    hybrisModuleDescriptor.getRootDirectory(),
-                    HybrisConstants.BACKOFFICE_JAR_DIRECTORY
-                );
+                final File backofficeJarDirectory = new File(hybrisModuleDescriptor.getRootDirectory(), HybrisConstants.BACKOFFICE_JAR_DIRECTORY);
                 if (backofficeJarDirectory.exists()) {
                     hybrisModuleDescriptor.createGlobalLibrary(
                         modifiableModelsProvider,

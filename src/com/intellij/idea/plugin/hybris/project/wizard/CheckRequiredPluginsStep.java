@@ -50,11 +50,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private final Set<PluginId> notInstalledPlugins;
     private final Set<PluginId> notEnabledPlugins;
 
-    private final List<String> ULTIMATE_EDITION_ONLY = Arrays.asList(
-        "com.intellij.spring",
-        "com.intellij.javaee",
-        "com.intellij.diagram"
-    );
+    private final List<String> ULTIMATE_EDITION_ONLY = Arrays.asList("com.intellij.spring", "com.intellij.javaee", "com.intellij.diagram");
     private final String EXCLUDED_ID_PREFIX = "com.intellij.modules";
 
 
@@ -89,7 +85,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private void checkDependentPlugins() {
         final IdeaPluginDescriptor hybrisPlugin = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
         final PluginId[] dependentPluginIds = hybrisPlugin.getOptionalDependentPluginIds();
-        Arrays.stream(dependentPluginIds).forEach(id -> {
+        Arrays.stream(dependentPluginIds).forEach(id->{
             if (id.getIdString().startsWith(EXCLUDED_ID_PREFIX)) {
                 return;
             }
@@ -108,10 +104,10 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private void fillInGUI() {
         final DefaultListModel notInstalledModel = (DefaultListModel) notInstalledList.getModel();
         notInstalledModel.clear();
-        notInstalledPlugins.stream().forEach(id -> notInstalledModel.addElement(id));
+        notInstalledPlugins.stream().forEach(id->notInstalledModel.addElement(id));
         final DefaultListModel notEnabledModel = (DefaultListModel) notEnabledList.getModel();
         notEnabledModel.clear();
-        notEnabledPlugins.stream().forEach(id -> {
+        notEnabledPlugins.stream().forEach(id->{
             final IdeaPluginDescriptor plugin = PluginManager.getPlugin(id);
             notEnabledModel.addElement(plugin.getName());
         });
@@ -124,7 +120,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
         if (PlatformUtils.isIdeaUltimate()) {
             return !notInstalledPlugins.isEmpty();
         }
-        for (PluginId pluginId : notInstalledPlugins) {
+        for (PluginId pluginId: notInstalledPlugins) {
             if (!ULTIMATE_EDITION_ONLY.contains(pluginId)) {
                 return true;
             }
@@ -136,11 +132,11 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
         notInstalledList = new JList(new DefaultListModel());
         notEnabledList = new JList(new DefaultListModel());
         enableButton = new JButton();
-        enableButton.addActionListener(e -> enablePlugins());
+        enableButton.addActionListener(e->enablePlugins());
     }
 
     private void enablePlugins() {
-        notEnabledPlugins.stream().forEach(id -> {
+        notEnabledPlugins.stream().forEach(id->{
             PluginManager.enablePlugin(id.getIdString());
         });
         final ApplicationEx app = (ApplicationEx) ApplicationManager.getApplication();

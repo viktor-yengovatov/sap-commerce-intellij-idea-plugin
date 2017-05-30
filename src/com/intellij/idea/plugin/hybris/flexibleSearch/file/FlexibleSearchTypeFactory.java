@@ -8,10 +8,7 @@ public class FlexibleSearchTypeFactory extends FileTypeFactory {
 
     @Override
     public void createFileTypes(@NotNull final FileTypeConsumer consumer) {
-        consumer.consume(
-            FlexibleSearchFileType.getInstance(),
-            FlexibleSearchFileType.getInstance().getDefaultExtension()
-        );
+        consumer.consume(FlexibleSearchFileType.getInstance(), FlexibleSearchFileType.getInstance().getDefaultExtension());
     }
 
 }

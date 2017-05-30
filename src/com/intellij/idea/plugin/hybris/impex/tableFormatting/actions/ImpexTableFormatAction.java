@@ -9,7 +9,6 @@ public class ImpexTableFormatAction extends AbstractImpexTableFormatAction {
 
     public ImpexTableFormatAction() {
         super(new ImpexTableActionHandler() {
-
             @Override
             protected Runnable action(Editor editor) {
                 return new FormatTableOperation(new ImpexTableEditor(editor));

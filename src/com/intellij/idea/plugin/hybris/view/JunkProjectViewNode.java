@@ -39,11 +39,9 @@ import java.util.List;
  */
 public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode>> {
 
-    public JunkProjectViewNode(
-        final Project project,
-        final List<AbstractTreeNode> children,
-        final ViewSettings settings
-    ) {
+    public JunkProjectViewNode(final Project project,
+                               final List<AbstractTreeNode> children,
+                               final ViewSettings settings) {
         super(project, children, settings);
     }
 
@@ -59,7 +57,7 @@ public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode>>
             if (abstractTreeNode instanceof ProjectViewNode) {
                 final ProjectViewNode projectViewNode = (ProjectViewNode) abstractTreeNode;
 
-                if (null == projectViewNode.getVirtualFile()) {
+                if (null == projectViewNode.getVirtualFile()){
                     continue;
                 }
 

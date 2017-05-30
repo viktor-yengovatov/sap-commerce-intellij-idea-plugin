@@ -31,10 +31,7 @@ import org.jetbrains.annotations.NotNull;
 public class DefaultJavadocModuleConfigurator implements JavadocModuleConfigurator {
 
     @Override
-    public void configure(
-        @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
-    ) {
+    public void configure(@NotNull final ModifiableRootModel modifiableRootModel, @NotNull final HybrisModuleDescriptor moduleDescriptor) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);
 

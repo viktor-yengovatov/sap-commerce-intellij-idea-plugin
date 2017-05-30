@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isMacroNameDeclaration;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isMacroUsage;
+import static java.util.Arrays.stream;
 
 /**
  * Searcher class for search psi reference among impex's file.

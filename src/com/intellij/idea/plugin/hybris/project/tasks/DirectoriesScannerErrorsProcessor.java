@@ -36,7 +36,6 @@ public class DirectoriesScannerErrorsProcessor implements TaskProgressProcessor<
     public boolean shouldContinue(final List<File> t) {
         if (!t.isEmpty()) {
             ApplicationManager.getApplication().invokeLater(new Runnable() {
-
                 @Override
                 public void run() {
                     Messages.showErrorDialog(

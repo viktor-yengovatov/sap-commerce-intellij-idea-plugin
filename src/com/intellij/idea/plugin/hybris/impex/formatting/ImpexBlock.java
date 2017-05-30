@@ -45,12 +45,10 @@ public class ImpexBlock extends AbstractBlock {
 
     private final SpacingBuilder spacingBuilder;
 
-    protected ImpexBlock(
-        @NotNull final ASTNode node,
-        @Nullable final Wrap wrap,
-        @Nullable final Alignment alignment,
-        @NotNull final SpacingBuilder spacingBuilder
-    ) {
+    protected ImpexBlock(@NotNull final ASTNode node,
+                         @Nullable final Wrap wrap,
+                         @Nullable final Alignment alignment,
+                         @NotNull final SpacingBuilder spacingBuilder) {
 
         super(node, wrap, alignment);
 
@@ -75,15 +73,14 @@ public class ImpexBlock extends AbstractBlock {
 
             alignmentStrategy.processNode(currentNode);
 
-            if (isNotWhitespaceOrNewLine(currentNode)
+            if (isNotWhitespaceOrNewLine(currentNode) 
                 && !isCurrentNodeHasParentValue(currentNode)) {
 
                 final Block block = new ImpexBlock(
-                    currentNode,
-                    null,
-                    alignmentStrategy.getAlignment(currentNode),
-                    spacingBuilder
-                );
+                        currentNode,
+                        null,
+                        alignmentStrategy.getAlignment(currentNode),
+                        spacingBuilder);
 
                 blocks.add(block);
             }
@@ -100,8 +97,7 @@ public class ImpexBlock extends AbstractBlock {
     }
 
     private boolean isEndOfValueLine(final ASTNode currentNode) {
-        return null == currentNode.getTreeNext() && ImpexTypes.VALUE_LINE == currentNode.getTreeParent()
-                                                                                        .getElementType();
+        return null == currentNode.getTreeNext() && ImpexTypes.VALUE_LINE == currentNode.getTreeParent().getElementType();
     }
 
     private AlignmentStrategy getAlignmentStrategy() {

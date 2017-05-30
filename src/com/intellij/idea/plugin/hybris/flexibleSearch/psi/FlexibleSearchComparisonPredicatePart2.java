@@ -1,15 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import com.intellij.psi.PsiElement;
+import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchComparisonPredicatePart2 extends PsiElement {
 
-    @NotNull
-    FlexibleSearchCompOp getCompOp();
+  @NotNull
+  FlexibleSearchCompOp getCompOp();
 
-    @NotNull
-    FlexibleSearchRowValuePredicand getRowValuePredicand();
+  @NotNull
+  FlexibleSearchRowValuePredicand getRowValuePredicand();
 
 }

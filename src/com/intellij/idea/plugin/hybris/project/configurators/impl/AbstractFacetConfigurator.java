@@ -36,13 +36,11 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractFacetConfigurator implements FacetConfigurator {
 
     @Override
-    public void configure(
-        @NotNull final ModifiableFacetModel modifiableFacetModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final Module javaModule,
-        @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final ModifiableModelsProvider modifiableModelsProvider
-    ) {
+    public void configure(@NotNull final ModifiableFacetModel modifiableFacetModel,
+                          @NotNull final HybrisModuleDescriptor moduleDescriptor,
+                          @NotNull final Module javaModule,
+                          @NotNull final ModifiableRootModel modifiableRootModel,
+                          @NotNull final ModifiableModelsProvider modifiableModelsProvider) {
 
 
         ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
@@ -52,10 +50,8 @@ public abstract class AbstractFacetConfigurator implements FacetConfigurator {
             }));
     }
 
-    protected abstract void configureInner(
-        @NotNull ModifiableFacetModel modifiableFacetModel,
-        @NotNull HybrisModuleDescriptor moduleDescriptor,
-        @NotNull Module javaModule,
-        @NotNull ModifiableRootModel modifiableRootModel
-    );
+    protected abstract void configureInner(@NotNull ModifiableFacetModel modifiableFacetModel,
+                                           @NotNull HybrisModuleDescriptor moduleDescriptor,
+                                           @NotNull Module javaModule,
+                                           @NotNull ModifiableRootModel modifiableRootModel);
 }

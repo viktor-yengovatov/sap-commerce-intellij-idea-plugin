@@ -73,20 +73,12 @@ import static java.util.Arrays.asList;
  */
 public class DefaultAntConfigurator implements AntConfigurator {
 
-    public final List<String> desirablePlatformTargets = new ArrayList<>(asList(
-        "clean",
-        "customize",
-        "all",
-        "deployment",
-        "build",
-        "extgen",
-        "modulegen"
-    ));
+    public final List<String> desirablePlatformTargets = new ArrayList<>(asList("clean", "customize", "all", "deployment", "build", "extgen", "modulegen"));
     public final List<String> desirableCustomTargets = new ArrayList<>(asList("build"));
     public final String[][] metaTargets = new String[][]{
-        {"clean", "all"},
-        {"clean", "customize", "all", "initialize"},
-        {"clean", "customize", "all", "production"}
+        {"clean","all"},
+        {"clean","customize","all","initialize"},
+        {"clean","customize","all","production"}
     };
 
     private PlatformHybrisModuleDescriptor platformDescriptor;
@@ -124,7 +116,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
     }
 
     private void createMetaTargets(final AntBuildFileBase buildFile) {
-        Arrays.stream(metaTargets).forEach(meta -> {
+        Arrays.stream(metaTargets).forEach(meta->{
             final ExecuteCompositeTargetEvent event = new ExecuteCompositeTargetEvent(meta);
             if (antConfiguration.getTargetForEvent(event) == null) {
                 antConfiguration.setTargetForEvent(buildFile, event.getMetaTargetName(), event);
@@ -136,7 +128,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         platformDescriptor = null;
         extHybrisModuleDescriptorList = new ArrayList<>();
         customHybrisModuleDescriptorList = new ArrayList<>();
-        for (HybrisModuleDescriptor descriptor : allModules) {
+        for (HybrisModuleDescriptor descriptor: allModules) {
             if (descriptor instanceof PlatformHybrisModuleDescriptor) {
                 platformDescriptor = (PlatformHybrisModuleDescriptor) descriptor;
             }
@@ -154,8 +146,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
         final List<String> desirableTargets
     ) {
         return Arrays.stream(antConfiguration.getModel(antBuildFile).getTargets())
-                     .map(e -> TargetFilter.fromTarget(e))
-                     .peek(e -> e.setVisible(desirableTargets.contains(e.getTargetName())))
+                     .map(e->TargetFilter.fromTarget(e))
+                     .peek(e->e.setVisible(desirableTargets.contains(e.getTargetName())))
                      .collect(Collectors.toList());
     }
 
@@ -207,7 +199,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
         final BuildFileProperty antOptsProperty = new BuildFileProperty();
         antOptsProperty.setPropertyName(HybrisConstants.ANT_OPTS);
-        antOptsProperty.setPropertyValue(HybrisConstants.ANT_XMX + HybrisConstants.ANT_HEAP_SIZE_MB + " " + HybrisConstants.ANT_ENCODING);
+        antOptsProperty.setPropertyValue(HybrisConstants.ANT_XMX+HybrisConstants.ANT_HEAP_SIZE_MB+" "+HybrisConstants.ANT_ENCODING);
 
         final List<BuildFileProperty> buildFileProperties = new ArrayList<>();
         buildFileProperties.add(platformHomeProperty);
@@ -227,14 +219,14 @@ public class DefaultAntConfigurator implements AntConfigurator {
         );
         classPaths.add(new SinglePathEntry(entry));
         //end of hack
-        final File libDir = new File(platformDir, HybrisConstants.ANT_LIB_DIR);
+        final File libDir = new File (platformDir, HybrisConstants.ANT_LIB_DIR);
         classPaths.add(new AllJarsUnderDirEntry(libDir));
-        final File platformLibDir = new File(platformDir, HybrisConstants.LIB_DIRECTORY);
+        final File platformLibDir = new File (platformDir, HybrisConstants.LIB_DIRECTORY);
         classPaths.add(new AllJarsUnderDirEntry(platformLibDir));
         classPaths.addAll(
             extHybrisModuleDescriptorList
                 .parallelStream()
-                .map(e -> new AllJarsUnderDirEntry(new File(e.getRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
+                .map(e->new AllJarsUnderDirEntry(new File (e.getRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
                 .collect(Collectors.toList())
         );
     }
@@ -258,7 +250,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         }
 
         if (antBuildFile instanceof AntBuildFileBase) {
-            return (AntBuildFileBase) antBuildFile;
+            return (AntBuildFileBase)antBuildFile;
         }
         return null;
     }
@@ -290,8 +282,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         if (globalAntConfiguration == null) {
             return;
         }
-        globalAntConfiguration.removeConfiguration(globalAntConfiguration.getConfiguredAnts()
-                                                                         .get(antInstallation.getReference()));
+        globalAntConfiguration.removeConfiguration(globalAntConfiguration.getConfiguredAnts().get(antInstallation.getReference()));
         globalAntConfiguration.addConfiguration(antInstallation);
     }
 
@@ -300,11 +291,10 @@ public class DefaultAntConfigurator implements AntConfigurator {
         if (runManager == null) {
             return;
         }
-        final AntRunConfigurationType antRunConfigurationType = ConfigurationTypeUtil.findConfigurationType(
-            AntRunConfigurationType.class);
+        final AntRunConfigurationType antRunConfigurationType = ConfigurationTypeUtil.findConfigurationType(AntRunConfigurationType.class);
         final ConfigurationFactory configurationFactory = antRunConfigurationType.getConfigurationFactories()[0];
         final RunnerAndConfigurationSettings template = runManager.getConfigurationTemplate(configurationFactory);
         final AntRunConfiguration runConfiguration = (AntRunConfiguration) template.getConfiguration();
-        runManager.setBeforeRunTasks(runConfiguration, Collections.<BeforeRunTask>emptyList(), false);
+        runManager.setBeforeRunTasks(runConfiguration, Collections.<BeforeRunTask> emptyList(), false);
     }
 }

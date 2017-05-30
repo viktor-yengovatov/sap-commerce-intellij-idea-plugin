@@ -78,11 +78,7 @@ public final class ImpexTableFormatter {
         return sb;
     }
 
-    private static void writeValueLine(
-        final int[] maxColumnWidth,
-        final StringBuilder sb,
-        final PsiElement currentValueLine
-    ) {
+    private static void writeValueLine(final int[] maxColumnWidth, final StringBuilder sb, final PsiElement currentValueLine) {
         if (isImpexValueGroup(currentValueLine.getFirstChild())) {
             sb.append(StringUtils.rightPad("", maxColumnWidth[0] + 1));
         } else {
@@ -104,10 +100,7 @@ public final class ImpexTableFormatter {
                 sb
                     .append(';')
                     .append(' ')
-                    .append(StringUtils.rightPad(
-                        element.getLastChild().getText().trim(),
-                        maxColumnWidth[min(i, length)]
-                    ));
+                    .append(StringUtils.rightPad(element.getLastChild().getText().trim(), maxColumnWidth[min(i, length)]));
             }
             i++;
         }

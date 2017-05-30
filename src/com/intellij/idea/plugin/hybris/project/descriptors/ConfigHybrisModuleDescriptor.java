@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -36,9 +36,8 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
 
     private boolean preselected;
 
-    public ConfigHybrisModuleDescriptor(
-        @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public ConfigHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
+                                        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
         super(moduleRootDirectory, rootProjectDescriptor);
     }

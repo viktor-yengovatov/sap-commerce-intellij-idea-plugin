@@ -71,12 +71,10 @@ public class DefaultBpDiagramProvider extends BpDiagramProvider {
     }
 
     @Override
-    public DiagramDataModel<BpGraphNode> createDataModel(
-        @NotNull final Project project,
-        @Nullable final BpGraphNode t,
-        @Nullable final VirtualFile virtualFile,
-        final DiagramPresentationModel diagramPresentationModel
-    ) {
+    public DiagramDataModel<BpGraphNode> createDataModel(@NotNull final Project project,
+                                                         @Nullable final BpGraphNode t,
+                                                         @Nullable final VirtualFile virtualFile,
+                                                         final DiagramPresentationModel diagramPresentationModel) {
         final BpDiagramDataModel bpDiagramDataModel = new BpDiagramDataModel(project, t);
 
         bpDiagramDataModel.refreshDataModel();

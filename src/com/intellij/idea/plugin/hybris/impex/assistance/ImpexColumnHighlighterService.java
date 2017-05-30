@@ -23,6 +23,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * 
+ *
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */
 public interface ImpexColumnHighlighterService {

@@ -92,10 +92,9 @@ public class DefaultVirtualFileSystemService implements VirtualFileSystemService
 
     @Override
     @Nullable
-    public File findFileByNameInDirectory(
-        @NotNull final File directory,
-        @NotNull final String fileName,
-        @Nullable final TaskProgressProcessor<File> progressListenerProcessor
+    public File findFileByNameInDirectory(@NotNull final File directory,
+                                          @NotNull final String fileName,
+                                          @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException {
         Validate.notNull(directory);
         Validate.isTrue(directory.isDirectory());

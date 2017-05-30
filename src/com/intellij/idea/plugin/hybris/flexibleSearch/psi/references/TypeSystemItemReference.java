@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.references;
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName;
+
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;

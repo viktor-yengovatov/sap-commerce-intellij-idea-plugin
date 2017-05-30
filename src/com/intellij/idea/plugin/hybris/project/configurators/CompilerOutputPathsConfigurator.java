@@ -29,8 +29,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface CompilerOutputPathsConfigurator {
 
-    void configure(
-        @NotNull ModifiableRootModel modifiableRootModel,
-        @NotNull HybrisModuleDescriptor moduleDescriptor
-    );
+    void configure(@NotNull ModifiableRootModel modifiableRootModel,
+                   @NotNull HybrisModuleDescriptor moduleDescriptor);
 }

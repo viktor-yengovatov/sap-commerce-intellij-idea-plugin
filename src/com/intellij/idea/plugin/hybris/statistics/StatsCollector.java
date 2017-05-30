@@ -22,10 +22,9 @@ package com.intellij.idea.plugin.hybris.statistics;
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 28/2/17.
  */
 public interface StatsCollector {
-
     void collectStat(ACTIONS action, String parameters);
 
-    enum ACTIONS {IMPORT_PROJECT, REFRESH_PROJECT, OPEN_PROJECT, ANT, OPEN_POTENTIAL_PROJECT, BUSINESS_DIAGRAM, IMPEX_TABLE_FORMAT}
+    enum ACTIONS {IMPORT_PROJECT, REFRESH_PROJECT, OPEN_PROJECT, ANT, OPEN_POTENTIAL_PROJECT, BUSINESS_DIAGRAM , IMPEX_TABLE_FORMAT}
 
     void collectStat(ACTIONS action);
 }

@@ -30,9 +30,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface LibRootsConfigurator {
 
-    void configure(
-        @NotNull ModifiableRootModel modifiableRootModel,
-        @NotNull HybrisModuleDescriptor moduleDescriptor
-    );
+    void configure(@NotNull ModifiableRootModel modifiableRootModel,
+                   @NotNull HybrisModuleDescriptor moduleDescriptor);
 
 }

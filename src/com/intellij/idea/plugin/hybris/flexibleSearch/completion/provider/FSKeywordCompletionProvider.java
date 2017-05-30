@@ -36,10 +36,8 @@ public class FSKeywordCompletionProvider extends CompletionProvider<CompletionPa
     @NotNull
     private final Function<String, LookupElement> func;
 
-    public FSKeywordCompletionProvider(
-        @NotNull final Set<String> keywords,
-        @NotNull final Function<String, LookupElement> func
-    ) {
+    public FSKeywordCompletionProvider(@NotNull final Set<String> keywords,
+                                       @NotNull final Function<String, LookupElement> func) {
         this.keywords = keywords;
         this.func = func;
     }

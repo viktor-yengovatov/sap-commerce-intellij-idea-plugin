@@ -64,12 +64,13 @@ public class InformationStep extends ProjectImportWizardStep {
     private void createUIComponents() {
         jiraEditorPane = new JEditorPane();
         jiraEditorPane.setEditorKit(new HTMLEditorKit());
-        jiraEditorPane.addHyperlinkListener(e -> {
+        jiraEditorPane.addHyperlinkListener(e->{
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 if (Desktop.isDesktopSupported()) {
                     try {
                         Desktop.getDesktop().browse(e.getURL().toURI());
-                    } catch (IOException | URISyntaxException e1) {
+                    }
+                    catch (IOException | URISyntaxException e1) {
                         e1.printStackTrace();
                     }
                 }

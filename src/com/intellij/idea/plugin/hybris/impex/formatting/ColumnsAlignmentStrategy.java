@@ -90,17 +90,14 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
     @Contract(pure = true)
     private boolean isNewLine(@Nullable final ASTNode currentNode) {
         return null != currentNode
-               && ImpexTypes.VALUE_GROUP == currentNode.getElementType()
-               && isStartOfValueLine(currentNode);
+                && ImpexTypes.VALUE_GROUP == currentNode.getElementType()
+                && isStartOfValueLine(currentNode);
     }
 
     @Contract(pure = true)
     private boolean isStartOfValueLine(@Nullable final ASTNode currentNode) {
         return null != currentNode
-               && PsiTreeUtil.findChildOfType(
-            currentNode.getTreeParent().getPsi(),
-            ImpexValueGroup.class
-        ) == currentNode.getPsi();
+                && PsiTreeUtil.findChildOfType(currentNode.getTreeParent().getPsi(), ImpexValueGroup.class) == currentNode.getPsi();
     }
 
     @Contract(pure = true)

@@ -1,15 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import com.intellij.psi.PsiElement;
+import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchBooleanPrimary extends PsiElement {
 
-    @Nullable
-    FlexibleSearchBooleanPredicand getBooleanPredicand();
+  @Nullable
+  FlexibleSearchBooleanPredicand getBooleanPredicand();
 
-    @Nullable
-    FlexibleSearchPredicate getPredicate();
+  @Nullable
+  FlexibleSearchPredicate getPredicate();
 
 }

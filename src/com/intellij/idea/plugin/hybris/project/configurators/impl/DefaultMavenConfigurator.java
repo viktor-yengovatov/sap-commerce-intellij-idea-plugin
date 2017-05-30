@@ -74,7 +74,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         }
 
         List<MavenProject> selectedProjects = new ArrayList<>();
-        for (MavenProject mavenProject : mavenProjectBuilder.getList()) {
+        for (MavenProject mavenProject: mavenProjectBuilder.getList()) {
             final Optional<MavenModuleDescriptor> isPresent = mavenModules
                 .stream()
                 .filter(e -> e.getRootDirectory().getAbsolutePath().equals(mavenProject.getDirectory()))
@@ -103,11 +103,11 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         final List<Module> newRootModules = newModules
             .stream()
             .filter(e ->
-                        mavenModules
-                            .stream()
-                            .filter(m -> m.getName().equals(e.getName()))
-                            .findAny()
-                            .isPresent()
+                mavenModules
+                    .stream()
+                    .filter(m->m.getName().equals(e.getName()))
+                    .findAny()
+                    .isPresent()
             )
             .collect(Collectors.toList());
 
@@ -124,7 +124,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
     ) {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
-        for (Module module : mavenModules) {
+        for (Module module: mavenModules) {
             final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
             modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(rootGroup, groupPath));
         }

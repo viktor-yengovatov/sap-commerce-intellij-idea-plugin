@@ -31,13 +31,14 @@ import java.util.Stack;
 
 /**
  * Created by Martin Zdarsky-Jones on 24/10/16.
- * <p>
+ *
  * It's the same class like Intellij's IdeaAntLogger2 class but it fixes
  * https://youtrack.jetbrains.com/issue/IDEA-162949
  * Task started and finished are not logged anymore
- * <p>
+ *
  * https://youtrack.jetbrains.com/issue/IDEA-141243
  * exceptions "macro not found" is not logged either
+ *
  */
 public class HybrisIdeaAntLogger extends DefaultLogger {
 
@@ -67,9 +68,7 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
     private final HybrisIdeaAntLogger.Priority myTargetPriority = new HybrisIdeaAntLogger.StatePriority(Project.MSG_INFO);
     private final HybrisIdeaAntLogger.Priority myTaskPriority = new HybrisIdeaAntLogger.StatePriority(Project.MSG_VERBOSE);
     private final HybrisIdeaAntLogger.Priority myAlwaysSend = new HybrisIdeaAntLogger.Priority() {
-
-        public void setPriority(int level) {
-        }
+        public void setPriority(int level) {}
 
         protected boolean shouldSend(int priority) {
             return true;
@@ -110,7 +109,7 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
         if (Thread.currentThread() == mainThread) {
             callingTasks.push(event.getTask().getTaskName());
         }
-        myTaskPriority.sendMessage(TASK, event.getPriority(), event.getTask().getTaskName() + ":");
+        myTaskPriority.sendMessage(TASK, event.getPriority(), event.getTask().getTaskName()+":");
     }
 
     public synchronized void taskFinished(BuildEvent event) {
@@ -139,7 +138,8 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
 
         if (priority == Project.MSG_ERR) {
             myMessagePriority.sendMessage(ERROR, priority, message);
-        } else {
+        }
+        else {
             myMessagePriority.sendMessage(MESSAGE, priority, message);
         }
     }
@@ -151,7 +151,8 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
                 final Field field = task.getClass().getDeclaredField("failonerror");
                 field.setAccessible(true);
                 return !Boolean.FALSE.equals(field.get(task));
-            } catch (Exception ignored) {
+            }
+            catch (Exception ignored) {
             }
         }
         return true; // default value
@@ -164,11 +165,7 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
                 myAlwaysSend.sendMessage(EXCEPTION, event.getPriority(), exception);
                 return true;
             }
-            myMessagePriority.sendMessage(
-                MESSAGE,
-                isInTryCatch() ? Project.MSG_VERBOSE : Project.MSG_WARN,
-                exception.getMessage()
-            );
+            myMessagePriority.sendMessage(MESSAGE, isInTryCatch() ? Project.MSG_VERBOSE : Project.MSG_WARN, exception.getMessage());
         }
         return false;
     }
@@ -199,7 +196,6 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
     }
 
     private abstract class Priority {
-
         protected void peformSendMessage(char id, int priority, String text) {
             PacketWriter packet = createPacket(id, priority);
             packet.appendChar(MESSAGE_CONTENT);
@@ -233,12 +229,10 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
         }
 
         public abstract void setPriority(int level);
-
         protected abstract boolean shouldSend(int priority);
     }
 
     private class MessagePriority extends HybrisIdeaAntLogger.Priority {
-
         private int myPriority = Project.MSG_ERR;
 
         public void setPriority(int level) {
@@ -251,7 +245,6 @@ public class HybrisIdeaAntLogger extends DefaultLogger {
     }
 
     private class StatePriority extends HybrisIdeaAntLogger.Priority {
-
         private boolean myEnabled = true;
         private final int myMinLevel;
 

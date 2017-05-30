@@ -41,6 +41,7 @@ public class AtomicTypeConverter extends TypeSystemConverterBase<AtomicType> {
     }
 
 
+    
     @Override
     protected AtomicType searchForName(
         @NotNull final String name, @NotNull final ConvertContext context, @NotNull final TSMetaModel meta

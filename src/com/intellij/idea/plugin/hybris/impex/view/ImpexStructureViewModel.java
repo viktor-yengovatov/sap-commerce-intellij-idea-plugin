@@ -28,8 +28,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 7/3/17.
  */
-public class ImpexStructureViewModel extends TextEditorBasedStructureViewModel
-    implements StructureViewModel.ElementInfoProvider {
+public class ImpexStructureViewModel extends TextEditorBasedStructureViewModel implements StructureViewModel.ElementInfoProvider {
 
     protected ImpexStructureViewModel(final Editor editor, final ImpexFile file) {
         super(editor, file);
@@ -38,7 +37,7 @@ public class ImpexStructureViewModel extends TextEditorBasedStructureViewModel
     @NotNull
     @Override
     public StructureViewTreeElement getRoot() {
-        return new ImpexRootTreeElement((ImpexFile) getPsiFile());
+        return new ImpexRootTreeElement((ImpexFile)getPsiFile());
     }
 
     @Override

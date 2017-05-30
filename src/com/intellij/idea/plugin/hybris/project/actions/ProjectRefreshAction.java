@@ -59,7 +59,6 @@ import java.util.List;
  * Created by Martin Zdarsky-Jones on 8/2/17.
  */
 public class ProjectRefreshAction extends ImportModuleAction {
-
     final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
 
     public static void triggerAction() {
@@ -70,12 +69,7 @@ public class ProjectRefreshAction extends ImportModuleAction {
     public static void triggerAction(final DataContext dataContext) {
         ApplicationManager.getApplication().invokeLater(() -> {
             final AnAction action = new ProjectRefreshAction();
-            final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(
-                action,
-                null,
-                ActionPlaces.UNKNOWN,
-                dataContext
-            );
+            final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(action, null, ActionPlaces.UNKNOWN, dataContext);
             action.actionPerformed(actionEvent);
         }, ModalityState.NON_MODAL);
     }
@@ -86,10 +80,9 @@ public class ProjectRefreshAction extends ImportModuleAction {
             collectStatistics();
             doReImport(getEventProject(anActionEvent));
         } catch (ConfigurationException e) {
-            Messages.showErrorDialog(
-                anActionEvent.getProject(),
-                e.getMessage(),
-                HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
+            Messages.showErrorDialog(anActionEvent.getProject(),
+                                     e.getMessage(),
+                                     HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
             );
         }
     }
@@ -128,9 +121,8 @@ public class ProjectRefreshAction extends ImportModuleAction {
         ProjectManagerEx.getInstanceEx().closeAndDispose(project);
 
         final AddModuleWizard wizard = new AddModuleWizard(null, basePath, provider) {
-
             protected void init() {
-                // non GUI mode
+              // non GUI mode
             }
         };
         final WizardContext wizardContext = wizard.getWizardContext();
@@ -138,7 +130,7 @@ public class ProjectRefreshAction extends ImportModuleAction {
         wizardContext.setProjectName(projectName);
         wizardContext.setCompilerOutputDirectory(compilerOutputUrl);
         final StepSequence stepSequence = wizard.getSequence();
-        for (ModuleWizardStep step : stepSequence.getAllSteps()) {
+        for (ModuleWizardStep step: stepSequence.getAllSteps()) {
             if (step instanceof NonGuiSupport) {
                 ((NonGuiSupport) step).nonGuiModeImport(settings);
             }
@@ -149,7 +141,7 @@ public class ProjectRefreshAction extends ImportModuleAction {
     private HybrisProjectImportProvider getHybrisProjectImportProvider() {
         for (ProjectImportProvider provider : Extensions.getExtensions(ProjectImportProvider.PROJECT_IMPORT_PROVIDER)) {
             if (provider instanceof HybrisProjectImportProvider) {
-                return (HybrisProjectImportProvider) provider;
+                return (HybrisProjectImportProvider)provider;
             }
         }
         return null;

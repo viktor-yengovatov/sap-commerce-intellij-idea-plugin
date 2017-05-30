@@ -32,8 +32,6 @@ public interface SpringConfigurator {
 
     void findSpringConfiguration(@NotNull List<HybrisModuleDescriptor> modulesChosenForImport);
 
-    void configureDependencies(
-        @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull ModifiableModuleModel rootProjectModifiableModuleModel
-    );
+    void configureDependencies(@NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
+                               @NotNull ModifiableModuleModel rootProjectModifiableModuleModel);
 }

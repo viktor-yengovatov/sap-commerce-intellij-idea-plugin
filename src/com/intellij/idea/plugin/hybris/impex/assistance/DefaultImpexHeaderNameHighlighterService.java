@@ -81,10 +81,8 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     }
 
     @Contract(pure = false)
-    protected void highlightArea(
-        @NotNull final Editor editor,
-        @NotNull final PsiElement impexFullHeaderParameter
-    ) {
+    protected void highlightArea(@NotNull final Editor editor,
+                                 @NotNull final PsiElement impexFullHeaderParameter) {
         Validate.notNull(editor);
         Validate.notNull(impexFullHeaderParameter);
 
@@ -93,7 +91,6 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
         }
 
         ApplicationManager.getApplication().invokeLater(new Runnable() {
-
             @Override
             public void run() {
                 final PsiElement currentHighlightedElement = highlightedBlocks.remove(editor);
@@ -116,7 +113,6 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
 
             if (null != impexFullHeaderParameter) {
                 ApplicationManager.getApplication().invokeLater(new Runnable() {
-
                     @Override
                     public void run() {
                         modifyHighlightedArea(editor, impexFullHeaderParameter, true);
@@ -127,21 +123,17 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
     }
 
     @Contract(pure = true)
-    protected boolean isAlreadyHighlighted(
-        @NotNull final Editor editor,
-        @Nullable final PsiElement impexFullHeaderParameter
-    ) {
+    protected boolean isAlreadyHighlighted(@NotNull final Editor editor,
+                                           @Nullable final PsiElement impexFullHeaderParameter) {
         Validate.notNull(editor);
 
         return this.highlightedBlocks.get(editor) == impexFullHeaderParameter;
     }
 
     @Contract(pure = false)
-    protected void modifyHighlightedArea(
-        @NotNull final Editor editor,
-        @NotNull final PsiElement impexFullHeaderParameter,
-        final boolean clear
-    ) {
+    protected void modifyHighlightedArea(@NotNull final Editor editor,
+                                         @NotNull final PsiElement impexFullHeaderParameter,
+                                         final boolean clear) {
         Validate.notNull(editor);
         Validate.notNull(impexFullHeaderParameter);
 
@@ -159,11 +151,11 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
         ranges.add(impexFullHeaderParameter.getTextRange());
 
         HighlightUsagesHandler.highlightRanges(
-            HighlightManager.getInstance(editor.getProject()),
-            editor,
-            EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
-            clear,
-            ranges
+                HighlightManager.getInstance(editor.getProject()),
+                editor,
+                EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
+                clear,
+                ranges
         );
     }
 

@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.type.system.model;
 
 import com.intellij.idea.plugin.hybris.type.system.file.CompositeConverter;
+import com.intellij.idea.plugin.hybris.type.system.file.ItemTypeConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;

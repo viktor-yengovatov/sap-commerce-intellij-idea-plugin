@@ -32,42 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Map;
 
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ALTERNATIVE_PATTERN;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ASSIGN_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ATTRIBUTE_NAME;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ATTRIBUTE_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ATTRIBUTE_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BEAN_SHELL_BODY;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BEAN_SHELL_MARKER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BOOLEAN;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMA;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMENT_BODY;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMENT_MARKER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_PATH_DELIMITER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DIGIT;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DOCUMENT_ID;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DOUBLE_STRING;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_VALUE_IGNORE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_VALUE_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_INSERT;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_INSERT_UPDATE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_REMOVE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_UPDATE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_PARAMETER_NAME;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_TYPE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_NAME_DECLARATION;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_USAGE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PARAMETERS_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ROUND_BRACKETS;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SINGLE_STRING;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SQUARE_BRACKETS;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.VALUE_SUBTYPE;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.*;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
 

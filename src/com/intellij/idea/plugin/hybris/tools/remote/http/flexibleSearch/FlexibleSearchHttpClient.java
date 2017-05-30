@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpClient;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
 import org.apache.commons.lang3.CharEncoding;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
@@ -85,13 +86,13 @@ public class FlexibleSearchHttpClient {
                                                                .detailMessage(json.get("exception").toString()).build();
             } else {
                 TableBuilder tableBuilder = new TableBuilder();
-
+                
                 final List<String> headers = (List<String>) json.get("headers");
                 final List<List<String>> resultList = (List<List<String>>) json.get("resultList");
-
+                
                 tableBuilder.addRow(headers.toArray(new String[]{}));
                 resultList.forEach(row -> tableBuilder.addRow(row.toArray(new String[]{})));
-
+                
                 return resultBuilder.output(tableBuilder.toString()).build();
             }
         } catch (final IOException | NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {

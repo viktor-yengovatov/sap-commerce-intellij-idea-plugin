@@ -36,14 +36,10 @@ import org.jetbrains.annotations.Nullable;
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
  */
 public class TSStructureViewBuilder extends DomStructureViewBuilder {
-
     private final Function<DomElement, DomService.StructureViewMode> myDescriptor;
     private final XmlFile myFile;
 
-    public TSStructureViewBuilder(
-        final XmlFile file,
-        final Function<DomElement, DomService.StructureViewMode> descriptor
-    ) {
+    public TSStructureViewBuilder(final XmlFile file, final Function<DomElement,DomService.StructureViewMode> descriptor) {
         super(file, descriptor);
         myFile = file;
         myDescriptor = descriptor;
@@ -60,7 +56,7 @@ public class TSStructureViewBuilder extends DomStructureViewBuilder {
     public StructureView createStructureView(final FileEditor fileEditor, @NotNull final Project project) {
         final StructureView structureView = super.createStructureView(fileEditor, project);
         if (structureView instanceof StructureViewComponent) {
-            ((StructureViewComponent) structureView).getTree().setRootVisible(false);
+            ((StructureViewComponent)structureView).getTree().setRootVisible(false);
         }
         return structureView;
     }

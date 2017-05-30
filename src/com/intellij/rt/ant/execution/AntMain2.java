@@ -24,11 +24,10 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by Martin Zdarsky-Jones on 24/10/16.
- * <p>
+ *
  * It's the same class like Intellij version but uses HybrisAnsiAntLogger instead
  */
 public class AntMain2 {
-
     public static void main(String[] args) throws
                                            ClassNotFoundException,
                                            NoSuchMethodException,
@@ -38,9 +37,9 @@ public class AntMain2 {
                                            UnsupportedEncodingException {
         HybrisIdeaAntLogger.guardStreams();
 
-        for (int index = 0; index < args.length; index++) {
+        for (int index=0; index<args.length; index++) {
             if (IdeaAntLogger2.class.getName().equals(args[index])) {
-                args[index] = HybrisAnsiAntLogger.class.getName();
+                args[index]=HybrisAnsiAntLogger.class.getName();
             }
         }
 
@@ -51,7 +50,8 @@ public class AntMain2 {
             //noinspection HardCodedStringLiteral
             antMain.getMethod("main", new Class[]{args.getClass()}).invoke(null, new Object[]{args});
             return;
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             // ignore
         }
 

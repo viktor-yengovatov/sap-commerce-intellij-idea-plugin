@@ -42,10 +42,7 @@ import java.util.Collections;
 public class JUnitRunConfigurationConfigurator implements RunConfigurationConfigurator {
 
     @Override
-    public void configure(
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final Project project
-    ) {
+    public void configure(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final Project project) {
 
         final RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
         if (runManager == null) {
@@ -63,8 +60,7 @@ public class JUnitRunConfigurationConfigurator implements RunConfigurationConfig
         if (platformRootDirectoryPath == null) {
             return;
         }
-        final JUnitConfigurationType configurationType = ConfigurationTypeUtil.findConfigurationType(
-            JUnitConfigurationType.class);
+        final JUnitConfigurationType configurationType = ConfigurationTypeUtil.findConfigurationType(JUnitConfigurationType.class);
         final ConfigurationFactory configurationFactory = configurationType.getConfigurationFactories()[0];
         final RunnerAndConfigurationSettings template = runManager.getConfigurationTemplate(configurationFactory);
         final JUnitConfiguration runConfiguration = (JUnitConfiguration) template.getConfiguration();

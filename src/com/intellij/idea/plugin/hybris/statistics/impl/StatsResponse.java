@@ -24,7 +24,6 @@ import org.apache.http.HttpResponse;
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 28/2/17.
  */
 public class StatsResponse {
-
     private HttpResponse response;
 
     public StatsResponse(HttpResponse response) {
