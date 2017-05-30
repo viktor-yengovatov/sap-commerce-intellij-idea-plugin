@@ -18,8 +18,10 @@ public class ImpexKeywordCompletionProvider extends CompletionProvider<Completio
     @NotNull
     private final Function<String, LookupElement> func;
 
-    public ImpexKeywordCompletionProvider(@NotNull final Set<String> keywords, 
-                                          @NotNull final Function<String, LookupElement> func) {
+    public ImpexKeywordCompletionProvider(
+        @NotNull final Set<String> keywords,
+        @NotNull final Function<String, LookupElement> func
+    ) {
         this.keywords = keywords;
         this.func = func;
     }

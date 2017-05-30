@@ -31,16 +31,18 @@ import java.util.Map;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 14/08/15.
- *
+ * <p>
  * This class is created due to a Idea bug IDEA-143901
  * https://youtrack.jetbrains.com/issue/IDEA-143901
  */
 public class NoInheritanceSpringConfigurator extends DefaultSpringConfigurator {
 
     @Override
-    protected void configureFacetDependencies(@NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                              @NotNull final Map<String, Module> moduleMap,
-                                              @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap) {
+    protected void configureFacetDependencies(
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final Map<String, Module> moduleMap,
+        @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap
+    ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(moduleMap);
         Validate.notNull(modifiableFacetModelMap);
@@ -52,7 +54,10 @@ public class NoInheritanceSpringConfigurator extends DefaultSpringConfigurator {
 
         if (moduleDescriptor.isPreselected() || !isLimitedSpringConfig()) {
             for (HybrisModuleDescriptor parentModuleDescriptor : moduleDescriptor.getDependenciesPlainList()) {
-                final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, parentModuleDescriptor.getName());
+                final SpringFileSet parentFileSet = getSpringFileSet(
+                    modifiableFacetModelMap,
+                    parentModuleDescriptor.getName()
+                );
                 if (parentFileSet == null) {
                     continue;
                 }

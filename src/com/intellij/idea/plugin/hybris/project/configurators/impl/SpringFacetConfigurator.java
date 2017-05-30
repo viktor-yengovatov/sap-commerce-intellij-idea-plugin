@@ -41,10 +41,12 @@ import java.io.File;
  */
 public class SpringFacetConfigurator extends AbstractFacetConfigurator {
 
-    protected void configureInner(@NotNull final ModifiableFacetModel modifiableFacetModel,
-                                  @NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                  @NotNull final Module javaModule,
-                                  @NotNull final ModifiableRootModel modifiableRootModel) {
+    protected void configureInner(
+        @NotNull final ModifiableFacetModel modifiableFacetModel,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final Module javaModule,
+        @NotNull final ModifiableRootModel modifiableRootModel
+    ) {
         Validate.notNull(javaModule);
         Validate.notNull(modifiableFacetModel);
         Validate.notNull(moduleDescriptor);

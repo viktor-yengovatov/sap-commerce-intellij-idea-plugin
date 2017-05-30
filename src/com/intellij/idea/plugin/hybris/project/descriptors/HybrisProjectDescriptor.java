@@ -67,9 +67,11 @@ public interface HybrisProjectDescriptor {
 
     void setSourceCodeZip(@Nullable File sourceCodeZip);
 
-    void setRootDirectoryAndScanForModules(@NotNull File rootDirectory,
-                                           @Nullable TaskProgressProcessor<File> progressListenerProcessor,
-                                           @Nullable TaskProgressProcessor<List<File>> errorsProcessor);
+    void setRootDirectoryAndScanForModules(
+        @NotNull File rootDirectory,
+        @Nullable TaskProgressProcessor<File> progressListenerProcessor,
+        @Nullable TaskProgressProcessor<List<File>> errorsProcessor
+    );
 
     boolean isOpenProjectSettingsAfterImport();
 

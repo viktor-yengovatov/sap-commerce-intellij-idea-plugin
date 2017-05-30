@@ -25,6 +25,7 @@ import java.util.HashSet;
  * Created by Martin Zdarsky-Jones on 16/2/17.
  */
 public class AntGenResult implements Serializable {
+
     private static final long serialVersionUID = 45234594386590854L;
 
     private final String platformDir;

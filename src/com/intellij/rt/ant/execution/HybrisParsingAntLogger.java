@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 /**
  * Created by Martin Zdarsky-Jones on 17/2/17.
- *
+ * <p>
  * Logger parses output messages for known patterns and tried to detect added or removed extensions.
  * That can happen for targets extgen and modulegen.
  * If there is a need to change localextensions tyhis logger will serialize the result to hard drive to be picked up by IDEA JVM
@@ -36,6 +36,7 @@ import java.util.Arrays;
 public class HybrisParsingAntLogger extends HybrisIdeaAntLogger {
 
     private enum HYBRIS_MODE {NONE, ADD, REMOVE}
+
     private static final String HYBRIS_PLATFORM_DIR = "hybris Platform directory";
     private static final String HYBRIS_ADD = "Add your extension to your";
     private static final String HYBRIS_REMOVE = "Remove the following extensions from your";
@@ -62,7 +63,7 @@ public class HybrisParsingAntLogger extends HybrisIdeaAntLogger {
 
     private void processHybrisMessage(final String message) {
         if (message.contains(HYBRIS_PLATFORM_DIR)) {
-            final String platformDir = message.substring(message.indexOf(":")+1).trim();
+            final String platformDir = message.substring(message.indexOf(":") + 1).trim();
             result = new AntGenResult(platformDir);
             return;
         }
@@ -110,7 +111,7 @@ public class HybrisParsingAntLogger extends HybrisIdeaAntLogger {
     private void addExtension(final String message) {
         int index = message.indexOf("<extension dir=");
         if (index >= 0) {
-            result.getExtensionsToAdd().add(message.substring(message.indexOf("\"")+1, message.lastIndexOf("\"")));
+            result.getExtensionsToAdd().add(message.substring(message.indexOf("\"") + 1, message.lastIndexOf("\"")));
         }
     }
 
@@ -120,7 +121,7 @@ public class HybrisParsingAntLogger extends HybrisIdeaAntLogger {
             return;
         }
         final String[] extensions = commaSeparated.split(",");
-        Arrays.stream(extensions).forEach(e->result.getExtensionsToRemove().add(e));
+        Arrays.stream(extensions).forEach(e -> result.getExtensionsToRemove().add(e));
     }
 
 }

@@ -21,19 +21,19 @@ public final class FlexibleSearchHighlighterColors {
 
     public static final TextAttributesKey FS_KEYWORD = key("KEYWORD", KEYWORD);
     public static final TextAttributesKey FS_STRING = key("STRING", STRING);
-    
+
     public static final TextAttributesKey FS_BRACES = key("BRACES", BRACES);
     public static final TextAttributesKey FS_PARENTHESES = key("PARENTHESES", PARENTHESES);
     public static final TextAttributesKey FS_BRACKETS = key("BRACKETS", BRACKETS);
-    
+
     public static final TextAttributesKey FS_SYMBOL = key("COMMA", KEYWORD);
     public static final TextAttributesKey FS_NUMBER = key("NUMBER", NUMBER);
-    
+
     public static final TextAttributesKey FS_COLUMN = key("COLUMN", INSTANCE_FIELD);
     public static final TextAttributesKey FS_TABLE = key("TABLE NAME", CLASS_NAME_ATTRIBUTES);
-    
+
     public static final TextAttributesKey FS_COMMENT = key("COMMENT", LINE_COMMENT);
-    
+
     private static TextAttributesKey key(
         @NonNls @NotNull final String externalName,
         final TextAttributesKey fallbackAttributeKey

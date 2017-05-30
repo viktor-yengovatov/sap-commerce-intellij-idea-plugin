@@ -36,7 +36,6 @@ import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,7 +65,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final Map<String, HybrisModuleDescriptor> moduleDescriptorMap = new HashMap<String, HybrisModuleDescriptor>();
         File localProperties = null;
         File advancedProperties = null;
-        for (HybrisModuleDescriptor moduleDescriptor: modulesChosenForImport) {
+        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
             moduleDescriptorMap.put(moduleDescriptor.getName(), moduleDescriptor);
             if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
                 final ConfigHybrisModuleDescriptor configModule = (ConfigHybrisModuleDescriptor) moduleDescriptor;
@@ -77,7 +76,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                 advancedProperties = new File(platformModule.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
             }
         }
-        for (HybrisModuleDescriptor moduleDescriptor: modulesChosenForImport) {
+        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
             processHybrisModule(moduleDescriptorMap, moduleDescriptor);
             if (moduleDescriptor instanceof CoreHybrisModuleDescriptor) {
                 if (advancedProperties != null) {
@@ -91,8 +90,10 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     @Override
-    public void configureDependencies(final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-                                      final @NotNull ModifiableModuleModel rootProjectModifiableModuleModel) {
+    public void configureDependencies(
+        final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
+        final @NotNull ModifiableModuleModel rootProjectModifiableModuleModel
+    ) {
         Validate.notNull(hybrisProjectDescriptor);
         Validate.notNull(rootProjectModifiableModuleModel);
 
@@ -111,9 +112,11 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
     }
 
-    protected void configureFacetDependencies(@NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                            @NotNull final Map<String, Module> moduleMap,
-                                            @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap) {
+    protected void configureFacetDependencies(
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final Map<String, Module> moduleMap,
+        @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap
+    ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(moduleMap);
         Validate.notNull(modifiableFacetModelMap);
@@ -133,8 +136,10 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         commitFacetModel(moduleDescriptor, moduleMap, modifiableFacetModelMap);
     }
 
-    protected SpringFileSet getSpringFileSet(@NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap,
-                                             @NotNull final String moduleName) {
+    protected SpringFileSet getSpringFileSet(
+        @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap,
+        @NotNull final String moduleName
+    ) {
         Validate.notNull(moduleName);
         Validate.notNull(modifiableFacetModelMap);
 
@@ -149,9 +154,11 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         return springFacet.getFileSets().iterator().next();
     }
 
-    protected void commitFacetModel(@NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                    @NotNull final Map<String, Module> moduleMap,
-                                    @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap) {
+    protected void commitFacetModel(
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final Map<String, Module> moduleMap,
+        @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap
+    ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(moduleMap);
         Validate.notNull(modifiableFacetModelMap);
@@ -190,10 +197,10 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             return;
         }
 
-        final File resourcesDir = new File (moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+        final File resourcesDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
 
-        for (String key: projectProperties.stringPropertyNames()) {
-            if (   key.endsWith(HybrisConstants.APPLICATION_CONTEXT_SPRING_FILES)
+        for (String key : projectProperties.stringPropertyNames()) {
+            if (key.endsWith(HybrisConstants.APPLICATION_CONTEXT_SPRING_FILES)
                 || key.endsWith(HybrisConstants.ADDITIONAL_WEB_SPRING_CONFIG_FILES)
                 || key.endsWith(HybrisConstants.GLOBAL_CONTEXT_SPRING_FILES)) {
                 final String moduleName = key.substring(0, key.indexOf('.'));
@@ -204,7 +211,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                     if (rawFile == null) {
                         continue;
                     }
-                    for (String file: rawFile.split(",")) {
+                    for (String file : rawFile.split(",")) {
                         final File springFile;
                         if (file.startsWith("classpath:")) {
                             springFile = new File(resourcesDir, file.substring("classpath:".length(), file.length()));

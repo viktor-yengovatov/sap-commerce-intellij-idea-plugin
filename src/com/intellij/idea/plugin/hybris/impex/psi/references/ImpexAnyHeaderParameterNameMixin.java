@@ -51,7 +51,7 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
         if (ImpexTypes.MACRO_USAGE.equals(leafType)) {
             return new PsiReference[]{new ImpexMacrosReferenceBase(this)};
         }
-        
+
         //optimisation: dont even try for macro's and documents
         if (!ImpexTypes.HEADER_PARAMETER_NAME.equals(leafType)) {
             return PsiReference.EMPTY_ARRAY;

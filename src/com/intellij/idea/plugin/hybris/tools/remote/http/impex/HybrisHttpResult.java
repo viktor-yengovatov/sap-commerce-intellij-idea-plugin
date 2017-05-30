@@ -29,7 +29,7 @@ public class HybrisHttpResult {
     private boolean hasError;
     private String errorMessage;
     private String detailMessage;
-    
+
     private String output;
     private int statusCode;
 
@@ -106,8 +106,8 @@ public class HybrisHttpResult {
             httpResult.errorMessage = this.errorMessage;
             httpResult.detailMessage = this.detailMessage;
             httpResult.output = this.output;
-            httpResult.statusCode =  this.statusCode;
-            
+            httpResult.statusCode = this.statusCode;
+
             return httpResult;
         }
 

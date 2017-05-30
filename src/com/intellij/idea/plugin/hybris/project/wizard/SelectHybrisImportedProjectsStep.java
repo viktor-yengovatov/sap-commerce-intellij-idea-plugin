@@ -21,12 +21,11 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
@@ -38,13 +37,20 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
-public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> implements NonGuiSupport {
+public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor>
+    implements NonGuiSupport {
+
     final static int COLUMN_WIDTH = 300;
 
     public SelectHybrisImportedProjectsStep(final WizardContext context) {
@@ -72,7 +78,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     @Override
     public void updateStep() {
         super.updateStep();
-        for (int index=0; index<fileChooser.getElementCount(); index++){
+        for (int index = 0; index < fileChooser.getElementCount(); index++) {
             final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
             if (hybrisModuleDescriptor.isPreselected()) {
                 fileChooser.setElementMarked(hybrisModuleDescriptor, true);
@@ -208,7 +214,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         final int spaceWidth = fm.charWidth(' ');
         final int spaceCount = (COLUMN_WIDTH - currentWidth) / spaceWidth;
 
-        for (int index=0; index<spaceCount; index++) {
+        for (int index = 0; index < spaceCount; index++) {
             builder.append(' ');
         }
 

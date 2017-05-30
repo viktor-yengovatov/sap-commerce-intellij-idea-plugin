@@ -44,14 +44,18 @@ public abstract class ExecuteConsole {
 
     public abstract void initConsoleWindow(Project project);
 
-    public void updateConsoleWindow(final String text, final ConsoleViewContentType type, final ConsoleView currentConsole) {
+    public void updateConsoleWindow(
+        final String text,
+        final ConsoleViewContentType type,
+        final ConsoleView currentConsole
+    ) {
         currentConsole.print(text, type);
     }
 
     public void updateConsoleWindow(final String text, final ConsoleViewContentType type) {
         consoleViewList.get(0).print(text, type);
     }
-    
+
     protected void startSendRequestAnimationInAllConsoles() {
         processComplete = false;
         clearAllConsoles();

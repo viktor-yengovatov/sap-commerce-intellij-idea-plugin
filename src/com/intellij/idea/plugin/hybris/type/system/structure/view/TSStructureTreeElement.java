@@ -60,6 +60,7 @@ import static com.intellij.util.containers.ContainerUtilRt.newArrayList;
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
  */
 public class TSStructureTreeElement extends DomStructureTreeElement {
+
     private final Function<DomElement, DomService.StructureViewMode> myDescriptor;
     private final DomElementNavigationProvider myNavigationProvider;
 
@@ -253,7 +254,7 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
 
     private String localizeModifiers(final DomElement dom) {
         if (dom instanceof Modifiers) {
-            final Modifiers modifiers = (Modifiers)dom;
+            final Modifiers modifiers = (Modifiers) dom;
             final List<String> modList = newArrayList();
             resolveModifier(modifiers.getDoNotOptimize(), "doNotOptimize", modList);
             resolveModifier(modifiers.getEncrypted(), "encrypted", modList);
@@ -288,19 +289,19 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
         if (value) {
             resultList.add(methodName);
         } else {
-            resultList.add(methodName+"(false)");
+            resultList.add(methodName + "(false)");
         }
 
     }
 
     private String localizeItemType(final DomElement dom) {
         if (dom instanceof ItemType) {
-            ItemType itemType = (ItemType)dom;
+            ItemType itemType = (ItemType) dom;
             String value = resolveValue(itemType.getExtends());
             if (value == null) {
                 value = "GenericItem";
             }
-            return "("+value+")";
+            return "(" + value + ")";
         }
         return null;
     }
@@ -328,7 +329,7 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
     public Icon getIcon(boolean open) {
         final DomElement dom = getElement();
         if (dom instanceof Attribute) {
-            final String value = resolveValue(((Attribute)dom).getType());
+            final String value = resolveValue(((Attribute) dom).getType());
             if (StringUtils.startsWith(value, "localized:")) {
                 return HybrisIcons.LOCALIZED;
             }

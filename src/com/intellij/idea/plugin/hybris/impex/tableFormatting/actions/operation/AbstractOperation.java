@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.findSiblingByPredicate;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getNextSiblingOfAnyType;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLastElement;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexValueLine;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLastElement;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 import static com.intellij.psi.util.PsiTreeUtil.getNextSiblingOfType;
@@ -121,7 +121,7 @@ public abstract class AbstractOperation implements Runnable {
                 ImpexHeaderLine.class,
                 ImpexRootMacroUsage.class
             );
-            
+
             if (nextSiblingOfAnyType != null) {
                 lastValueLine = nextSiblingOfAnyType.getPrevSibling();
             } else {
@@ -130,7 +130,7 @@ public abstract class AbstractOperation implements Runnable {
                     (sibling) -> (isImpexValueLine(sibling) || isLineBreak(sibling)) && isLastElement(sibling)
                 );
             }
-            
+
             if (lastValueLine == null) {
                 lastValueLine = valueLineAt;
             }

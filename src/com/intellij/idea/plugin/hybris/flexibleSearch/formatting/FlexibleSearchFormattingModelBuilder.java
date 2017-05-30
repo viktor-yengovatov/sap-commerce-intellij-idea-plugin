@@ -31,7 +31,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
@@ -74,14 +73,14 @@ public class FlexibleSearchFormattingModelBuilder implements FormattingModelBuil
 
             .after(FlexibleSearchTypes.RIGHT_BRACE)
             .spaceIf(true)
-            
+
             .before(FlexibleSearchTypes.LEFT_PAREN)
             .spaceIf(true)
 
             .after(FlexibleSearchTypes.RIGHT_PAREN)
             .spaceIf(true)
 
-            .around(TokenSet.create(FlexibleSearchTypes.WHERE,FlexibleSearchTypes.WHERE_CLAUSE))
+            .around(TokenSet.create(FlexibleSearchTypes.WHERE, FlexibleSearchTypes.WHERE_CLAUSE))
             .spaceIf(true)
             ;
     }

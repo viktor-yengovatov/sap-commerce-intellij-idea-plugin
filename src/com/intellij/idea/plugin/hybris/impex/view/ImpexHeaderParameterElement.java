@@ -32,7 +32,8 @@ import java.util.Collections;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 7/3/17.
  */
-public class ImpexHeaderParameterElement extends PsiTreeElementBase<ImpexFullHeaderParameter> implements ItemPresentation {
+public class ImpexHeaderParameterElement extends PsiTreeElementBase<ImpexFullHeaderParameter>
+    implements ItemPresentation {
 
     protected ImpexHeaderParameterElement(final ImpexFullHeaderParameter psiElement) {
         super(psiElement);

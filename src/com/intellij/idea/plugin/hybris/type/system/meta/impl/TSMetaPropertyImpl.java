@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

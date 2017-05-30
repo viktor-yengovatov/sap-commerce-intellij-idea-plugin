@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.business.process.diagram.impl;
 
 import com.intellij.diagram.AbstractDiagramElementManager;
 import com.intellij.diagram.presentation.DiagramState;
-import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElementManager;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
+import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElementManager;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -44,7 +44,8 @@ import javax.xml.bind.UnmarshalException;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<BpGraphNode> implements BpDiagramElementManager {
+public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<BpGraphNode>
+    implements BpDiagramElementManager {
 
     private static final Logger LOG = Logger.getInstance(BpDiagramElementManagerIml.class);
 
@@ -70,7 +71,7 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
         final PsiFile psiFile = CommonDataKeys.PSI_FILE.getData(dataContext);
 
         if (!(psiFile instanceof XmlFile) ||
-                psiFile instanceof HtmlFileImpl) { // but psiFile must not be html. 
+            psiFile instanceof HtmlFileImpl) { // but psiFile must not be html.
             return null;
         }
 

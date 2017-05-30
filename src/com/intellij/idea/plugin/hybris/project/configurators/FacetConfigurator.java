@@ -30,10 +30,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface FacetConfigurator {
 
-    void configure(@NotNull ModifiableFacetModel modifiableFacetModel,
-                   @NotNull HybrisModuleDescriptor moduleDescriptor,
-                   @NotNull Module javaModule,
-                   @NotNull ModifiableRootModel modifiableRootModel,
-                   @NotNull ModifiableModelsProvider modifiableModelsProvider);
+    void configure(
+        @NotNull ModifiableFacetModel modifiableFacetModel,
+        @NotNull HybrisModuleDescriptor moduleDescriptor,
+        @NotNull Module javaModule,
+        @NotNull ModifiableRootModel modifiableRootModel,
+        @NotNull ModifiableModelsProvider modifiableModelsProvider
+    );
 
 }

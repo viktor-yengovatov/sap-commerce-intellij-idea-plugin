@@ -44,8 +44,8 @@ public class ImpexRootTreeElement extends PsiTreeElementBase<ImpexFile> implemen
     @Override
     public Collection<StructureViewTreeElement> getChildrenBase() {
         return Arrays.stream(getElement().getChildren())
-                     .filter(e->e instanceof ImpexHeaderLine)
-                     .map(e->new ImpexHeaderTreeElement((ImpexHeaderLine) e))
+                     .filter(e -> e instanceof ImpexHeaderLine)
+                     .map(e -> new ImpexHeaderTreeElement((ImpexHeaderLine) e))
                      .collect(Collectors.toList());
     }
 

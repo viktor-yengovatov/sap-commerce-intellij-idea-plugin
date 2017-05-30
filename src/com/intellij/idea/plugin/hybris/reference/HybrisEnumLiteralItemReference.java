@@ -2,7 +2,6 @@ package com.intellij.idea.plugin.hybris.reference;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiField;
@@ -15,7 +14,6 @@ import com.intellij.psi.search.PsiShortNamesCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,10 +47,10 @@ public class HybrisEnumLiteralItemReference extends PsiReferenceBase<PsiElement>
         );
 
         final Set<PsiField> enumFields = stream(javaEnumLiteralFields)
-                                            .filter(literal -> literal.getParent() != null)
-                                            .filter(literal -> literal.getParent() instanceof ClsClassImpl)
-                                            .filter(literal -> ((ClsClassImpl) literal.getParent()).isEnum())
-                                            .collect(Collectors.toSet());
+            .filter(literal -> literal.getParent() != null)
+            .filter(literal -> literal.getParent() instanceof ClsClassImpl)
+            .filter(literal -> ((ClsClassImpl) literal.getParent()).isEnum())
+            .collect(Collectors.toSet());
 
         return PsiElementResolveResult.createResults(enumFields);
     }

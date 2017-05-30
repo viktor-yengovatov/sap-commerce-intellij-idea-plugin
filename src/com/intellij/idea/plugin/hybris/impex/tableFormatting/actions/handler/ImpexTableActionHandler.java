@@ -15,6 +15,7 @@ import static com.intellij.idea.plugin.hybris.statistics.StatsCollector.ACTIONS.
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */
 public abstract class ImpexTableActionHandler extends EditorActionHandler {
+
     final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
 
     @Override

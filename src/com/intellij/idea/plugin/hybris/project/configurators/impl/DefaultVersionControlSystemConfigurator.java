@@ -40,7 +40,7 @@ public class DefaultVersionControlSystemConfigurator implements VersionControlSy
     public void configure(@NotNull Project project) {
         final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(project);
         final Collection<VcsRoot> detectedRoots = ServiceManager.getService(project, VcsRootDetector.class).detect();
-        final ArrayList<VcsDirectoryMapping> directoryMappings =  detectedRoots
+        final ArrayList<VcsDirectoryMapping> directoryMappings = detectedRoots
             .stream()
             .map(root -> new VcsDirectoryMapping(root.getPath().getPath(), root.getVcs().getName()))
             .collect(Collectors.toCollection(ArrayList::new));

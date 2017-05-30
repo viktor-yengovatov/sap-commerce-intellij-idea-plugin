@@ -135,7 +135,7 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         return (PlatformHybrisModuleDescriptor) hybrisProjectDescriptor
             .getFoundModules()
             .stream()
-            .filter(e->e instanceof PlatformHybrisModuleDescriptor)
+            .filter(e -> e instanceof PlatformHybrisModuleDescriptor)
             .findAny()
             .orElse(null);
     }

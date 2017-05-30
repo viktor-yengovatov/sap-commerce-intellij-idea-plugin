@@ -1,25 +1,24 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Nullable;
 
 public interface FlexibleSearchJoinedTable extends PsiElement {
 
-  @Nullable
-  FlexibleSearchJoinSpecification getJoinSpecification();
+    @Nullable
+    FlexibleSearchJoinSpecification getJoinSpecification();
 
-  @Nullable
-  FlexibleSearchJoinType getJoinType();
+    @Nullable
+    FlexibleSearchJoinType getJoinType();
 
-  @Nullable
-  FlexibleSearchJoinedTable getJoinedTable();
+    @Nullable
+    FlexibleSearchJoinedTable getJoinedTable();
 
-  @Nullable
-  FlexibleSearchTablePrimary getTablePrimary();
+    @Nullable
+    FlexibleSearchTablePrimary getTablePrimary();
 
-  @Nullable
-  FlexibleSearchTableReference getTableReference();
+    @Nullable
+    FlexibleSearchTableReference getTableReference();
 
 }

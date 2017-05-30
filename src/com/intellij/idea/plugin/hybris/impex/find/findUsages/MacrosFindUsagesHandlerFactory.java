@@ -44,6 +44,7 @@ public class MacrosFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
     ) {
         if (canFindUsages(element)) {
             return new FindUsagesHandler(element) {
+
             };
         }
         return null;

@@ -32,7 +32,10 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
         if (element instanceof PsiClass) {
             final PsiClass psiClass = (PsiClass) element;
             if ((psiClass.getName() != null && psiClass.getName().endsWith("Model") ||
-                (psiClass.getSuperClass() != null && psiClass.getSuperClass().getName() != null && psiClass.getSuperClass().getName().startsWith("Generated")))) {
+                 (psiClass.getSuperClass() != null && psiClass.getSuperClass()
+                                                              .getName() != null && psiClass.getSuperClass()
+                                                                                            .getName()
+                                                                                            .startsWith("Generated")))) {
 
                 final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
                 if (!list.isEmpty()) {
@@ -43,7 +46,7 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
                                                       .anyMatch(psiClassType -> "HybrisEnumValue".equals(psiClassType.getClassName()));
                 if (anyMatch) {
                     final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
-                    
+
                     if (!list.isEmpty()) {
                         createTargetsWithGutterIcon(result, psiClass, list);
                     }

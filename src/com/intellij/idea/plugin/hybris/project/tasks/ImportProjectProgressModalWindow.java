@@ -141,8 +141,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor
             .getModulesChosenForImport()
             .stream()
-            .filter(e->!(e instanceof MavenModuleDescriptor))
-            .filter(e->!(e instanceof EclipseModuleDescriptor))
+            .filter(e -> !(e instanceof MavenModuleDescriptor))
+            .filter(e -> !(e instanceof EclipseModuleDescriptor))
             .collect(Collectors.toList());
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
@@ -261,7 +261,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.save"));
         indicator.setText2("");
         if (!isUpdate) {
-            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(rootProjectModifiableModel::commit));
+            ApplicationManager.getApplication()
+                              .invokeAndWait(() -> WriteAction.run(rootProjectModifiableModel::commit));
         }
 
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.dependencies"));
@@ -340,8 +341,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
         final Set<String> completeSetOfHybrisModules = newHashSet();
         hybrisProjectDescriptor.getFoundModules().stream()
-                               .filter(e->e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
-                               .forEach(e-> completeSetOfHybrisModules.add(e.getName()));
+                               .filter(e -> e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
+                               .forEach(e -> completeSetOfHybrisModules.add(e.getName()));
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
     }
 

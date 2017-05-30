@@ -84,7 +84,7 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
         return myMetaModel;
     }
 
-    
+
     void createProperty(final @NotNull Attribute domAttribute) {
         final TSMetaPropertyImpl result = new TSMetaPropertyImpl(this, domAttribute);
         if (result.getName() != null) {
