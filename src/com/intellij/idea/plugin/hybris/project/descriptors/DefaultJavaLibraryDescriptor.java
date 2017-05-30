@@ -40,8 +40,10 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     private final boolean isExported;
     private final boolean isDirectoryWithClasses;
 
-    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
-                                        final boolean isExported) {
+    public DefaultJavaLibraryDescriptor(
+        @NotNull final File libraryFile,
+        final boolean isExported
+    ) {
         Validate.notNull(libraryFile);
 
         this.libraryFile = libraryFile;
@@ -50,9 +52,11 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isDirectoryWithClasses = false;
     }
 
-    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
-                                        @NotNull final File sourcesFile,
-                                        final boolean isExported) {
+    public DefaultJavaLibraryDescriptor(
+        @NotNull final File libraryFile,
+        @NotNull final File sourcesFile,
+        final boolean isExported
+    ) {
         Validate.notNull(libraryFile);
         Validate.notNull(sourcesFile);
 
@@ -62,9 +66,11 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isDirectoryWithClasses = false;
     }
 
-    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
-                                        final boolean isExported,
-                                        final boolean isDirectoryWithClasses) {
+    public DefaultJavaLibraryDescriptor(
+        @NotNull final File libraryFile,
+        final boolean isExported,
+        final boolean isDirectoryWithClasses
+    ) {
         Validate.notNull(libraryFile);
 
         this.libraryFile = libraryFile;
@@ -73,10 +79,12 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isDirectoryWithClasses = isDirectoryWithClasses;
     }
 
-    public DefaultJavaLibraryDescriptor(@NotNull final File libraryFile,
-                                        @NotNull final File sourcesFile,
-                                        final boolean isExported,
-                                        final boolean isDirectoryWithClasses) {
+    public DefaultJavaLibraryDescriptor(
+        @NotNull final File libraryFile,
+        @NotNull final File sourcesFile,
+        final boolean isExported,
+        final boolean isDirectoryWithClasses
+    ) {
         Validate.notNull(libraryFile);
         Validate.notNull(sourcesFile);
 

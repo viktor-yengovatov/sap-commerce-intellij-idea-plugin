@@ -8,4 +8,5 @@ import com.intellij.lang.parser.GeneratedParserUtilBase;
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public class FlexibleSearchParserUtils extends GeneratedParserUtilBase {
+
 }

@@ -68,8 +68,9 @@ public class ImpexFoldingLinesFilter implements PsiElementFilter {
 
     /**
      * Optimized method.
-     * 
+     *
      * @param element
+     *
      * @return
      */
     @Contract(pure = true)

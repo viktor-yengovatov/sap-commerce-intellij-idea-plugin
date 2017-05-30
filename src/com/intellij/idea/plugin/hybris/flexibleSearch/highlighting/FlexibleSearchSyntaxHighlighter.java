@@ -92,7 +92,7 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey[] COLUMN_KEYS = pack(FS_COLUMN);
     public static final TextAttributesKey[] TABLE_KEYS = pack(FS_TABLE);
-    
+
     public static final TextAttributesKey[] COMMENT_KEYS = pack(FS_COMMENT);
 
     public static final TextAttributesKey[] BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER);

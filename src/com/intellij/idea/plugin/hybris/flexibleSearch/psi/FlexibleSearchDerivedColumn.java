@@ -1,16 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.*;
 
 public interface FlexibleSearchDerivedColumn extends PsiElement {
 
-  @Nullable
-  FlexibleSearchCorrelationName getCorrelationName();
+    @Nullable
+    FlexibleSearchCorrelationName getCorrelationName();
 
-  @NotNull
-  FlexibleSearchValueExpression getValueExpression();
+    @NotNull
+    FlexibleSearchValueExpression getValueExpression();
 
 }

@@ -69,9 +69,11 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     @Override
     @NotNull
-    public Collection<AbstractTreeNode> modify(@NotNull final AbstractTreeNode parent,
-                                               @NotNull final Collection<AbstractTreeNode> children,
-                                               final ViewSettings settings) {
+    public Collection<AbstractTreeNode> modify(
+        @NotNull final AbstractTreeNode parent,
+        @NotNull final Collection<AbstractTreeNode> children,
+        final ViewSettings settings
+    ) {
         Validate.notNull(parent);
         Validate.notNull(children);
 
@@ -130,8 +132,10 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     @NotNull
-    protected Collection<AbstractTreeNode> processJunkFiles(@NotNull final Collection<AbstractTreeNode> children,
-                                                            @Nullable final ViewSettings settings) {
+    protected Collection<AbstractTreeNode> processJunkFiles(
+        @NotNull final Collection<AbstractTreeNode> children,
+        @Nullable final ViewSettings settings
+    ) {
         Validate.notNull(children);
 
         final List<String> junkFileNames = this.getJunkFileNames();
@@ -252,10 +256,12 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return parent;
     }
 
-    private void appendParentNameToOnlyChildName(@NotNull final PsiDirectoryNode parentPsiDirectoryNode,
-                                                 @NotNull final VirtualFile parentVirtualFile,
-                                                 @NotNull final PsiDirectoryNode onlyChildPsiDirectoryNode,
-                                                 @NotNull final VirtualFile onlyChildVirtualFile) {
+    private void appendParentNameToOnlyChildName(
+        @NotNull final PsiDirectoryNode parentPsiDirectoryNode,
+        @NotNull final VirtualFile parentVirtualFile,
+        @NotNull final PsiDirectoryNode onlyChildPsiDirectoryNode,
+        @NotNull final VirtualFile onlyChildVirtualFile
+    ) {
         Validate.notNull(parentPsiDirectoryNode);
         Validate.notNull(parentVirtualFile);
         Validate.notNull(onlyChildPsiDirectoryNode);

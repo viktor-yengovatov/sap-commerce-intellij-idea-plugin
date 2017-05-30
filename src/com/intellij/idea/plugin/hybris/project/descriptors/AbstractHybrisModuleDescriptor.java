@@ -29,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,8 +52,9 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     private boolean inLocalExtensions;
 
-    public AbstractHybrisModuleDescriptor(@NotNull final File moduleRootDirectory,
-                                          @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+    public AbstractHybrisModuleDescriptor(
+        @NotNull final File moduleRootDirectory,
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
         Validate.notNull(moduleRootDirectory);
         Validate.notNull(rootProjectDescriptor);
@@ -194,12 +194,12 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @Override
     public boolean hasServerJar() {
-       final File binDir = new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY);
-       if (!binDir.isDirectory()) {
-           return false;
-       }
-       final File[] serverJars = binDir.listFiles((dir, name) -> name.equals("server.jar"));
-       return serverJars.length > 0;
+        final File binDir = new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY);
+        if (!binDir.isDirectory()) {
+            return false;
+        }
+        final File[] serverJars = binDir.listFiles((dir, name) -> name.equals("server.jar"));
+        return serverJars.length > 0;
     }
 
     @Override

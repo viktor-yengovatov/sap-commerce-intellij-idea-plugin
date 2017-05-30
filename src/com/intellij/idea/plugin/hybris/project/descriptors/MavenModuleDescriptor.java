@@ -22,8 +22,6 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Martin Zdarsky-Jones on 10/11/16.

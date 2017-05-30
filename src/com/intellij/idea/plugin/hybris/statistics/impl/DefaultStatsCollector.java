@@ -57,6 +57,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 28/2/17.
  */
 public class DefaultStatsCollector implements StatsCollector {
+
     private final ExecutorService executor;
     private final HttpClient client;
 
@@ -76,7 +77,7 @@ public class DefaultStatsCollector implements StatsCollector {
         try {
             final HttpPost post = buildRequest(action.name(), parameters);
             sendRequest(post);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // we don't care
         }
     }
@@ -170,8 +171,9 @@ public class DefaultStatsCollector implements StatsCollector {
     private String getComputerName() {
         try {
             final String result = InetAddress.getLocalHost().getHostName();
-            if (StringUtils.isNotEmpty(result))
+            if (StringUtils.isNotEmpty(result)) {
                 return result.trim();
+            }
         } catch (UnknownHostException e) {
             // failed;  try alternate means.
         }

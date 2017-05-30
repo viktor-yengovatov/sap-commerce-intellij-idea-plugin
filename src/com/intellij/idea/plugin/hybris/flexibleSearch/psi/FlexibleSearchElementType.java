@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class FlexibleSearchElementType extends IElementType {
+
     public FlexibleSearchElementType(@NotNull @NonNls final String debugName) {
         super(debugName, FlexibleSearchLanguage.getInstance());
     }

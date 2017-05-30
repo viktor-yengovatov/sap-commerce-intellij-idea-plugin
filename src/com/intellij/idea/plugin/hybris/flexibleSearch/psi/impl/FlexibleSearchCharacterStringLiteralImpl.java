@@ -1,35 +1,39 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchCharacterStringLiteral;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import org.jetbrains.annotations.*;
 
-public class FlexibleSearchCharacterStringLiteralImpl extends ASTWrapperPsiElement implements FlexibleSearchCharacterStringLiteral {
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.STRING;
 
-  public FlexibleSearchCharacterStringLiteralImpl(ASTNode node) {
-    super(node);
-  }
+public class FlexibleSearchCharacterStringLiteralImpl extends ASTWrapperPsiElement
+    implements FlexibleSearchCharacterStringLiteral {
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitCharacterStringLiteral(this);
-  }
+    public FlexibleSearchCharacterStringLiteralImpl(ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    public void accept(@NotNull FlexibleSearchVisitor visitor) {
+        visitor.visitCharacterStringLiteral(this);
+    }
 
-  @Override
-  @NotNull
-  public PsiElement getString() {
-    return findNotNullChildByType(STRING);
-  }
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) {
+            accept((FlexibleSearchVisitor) visitor);
+        } else {
+            super.accept(visitor);
+        }
+    }
+
+    @Override
+    @NotNull
+    public PsiElement getString() {
+        return findNotNullChildByType(STRING);
+    }
 
 }

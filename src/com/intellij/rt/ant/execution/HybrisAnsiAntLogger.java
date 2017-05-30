@@ -22,7 +22,7 @@ import org.apache.tools.ant.BuildEvent;
 
 /**
  * Created by  Martin Zdarsky-Jones <martin.zdarsky@hybris.com> on 30/4/17.
- *
+ * <p>
  * Strips ANSI encoding from hybris output and assigns correct message priority.
  */
 public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
@@ -64,7 +64,7 @@ public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
         if (message == null) {
             return;
         }
-        message = message.replace(END_COLOR,"");
+        message = message.replace(END_COLOR, "");
         message = removeLeadingChars(message, "\b ");
         Integer priorityOverride = getPriorityOverride(message);
         if (!message.startsWith(PREFIX)) {
@@ -78,7 +78,7 @@ public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
         }
         String attribute = message.substring(PREFIX.length(), mIndex);
         int priority = getPriority(attribute);
-        message = message.substring(mIndex+1);
+        message = message.substring(mIndex + 1);
         event.setMessage(message, getPriority(priority, priorityOverride));
     }
 
@@ -137,7 +137,8 @@ public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
                 case DEBUG_COLOR:
                     return MSG_DEBUG;
             }
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException nfe) {
+        }
         return MSG_INFO;
     }
 

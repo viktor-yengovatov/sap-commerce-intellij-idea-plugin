@@ -346,7 +346,9 @@ public class HybrisApplicationSettings {
         sb.append(", groupPlatform='").append(groupPlatform).append('\'');
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
-        sb.append(", createBackwardCyclicDependenciesForAddOns='").append(createBackwardCyclicDependenciesForAddOns).append('\'');
+        sb.append(", createBackwardCyclicDependenciesForAddOns='")
+          .append(createBackwardCyclicDependenciesForAddOns)
+          .append('\'');
         sb.append(", usedActions='").append(usedActions).append('\'');
         sb.append(", followSymlink='").append(followSymlink).append('\'');
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');

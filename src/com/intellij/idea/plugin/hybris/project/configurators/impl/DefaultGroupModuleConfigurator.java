@@ -62,7 +62,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return;
         }
         requiredHybrisModuleDescriptorList = new HashSet<>();
-        for (HybrisModuleDescriptor hybrisModuleDescriptor: modulesChosenForImport) {
+        for (HybrisModuleDescriptor hybrisModuleDescriptor : modulesChosenForImport) {
             if (hybrisModuleDescriptor.isPreselected()) {
                 requiredHybrisModuleDescriptorList.add(hybrisModuleDescriptor);
                 requiredHybrisModuleDescriptorList.addAll(hybrisModuleDescriptor.getDependenciesPlainList());
@@ -71,9 +71,11 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     @Override
-    public void configure(@NotNull final ModifiableModuleModel modifiableModuleModel,
-                          @NotNull final Module module,
-                          @NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    public void configure(
+        @NotNull final ModifiableModuleModel modifiableModuleModel,
+        @NotNull final Module module,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor
+    ) {
         if (!groupModules) {
             return;
         }
@@ -117,7 +119,8 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     private void readSettings() {
-        final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance()
+                                                                                                      .getState();
         groupModules = hybrisApplicationSettings.isGroupModules();
         groupCustom = toIdeaGroup(hybrisApplicationSettings.getGroupCustom());
         groupNonHybris = toIdeaGroup(hybrisApplicationSettings.getGroupNonHybris());

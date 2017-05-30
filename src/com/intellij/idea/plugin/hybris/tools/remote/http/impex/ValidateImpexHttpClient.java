@@ -60,7 +60,7 @@ public class ValidateImpexHttpClient {
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
             final Element impexResultStatus = document.getElementById("validationResultMsg");
-            
+
             final boolean hasDataLevelAttr = impexResultStatus.hasAttr("data-level");
             final boolean hasDataResultAttr = impexResultStatus.hasAttr("data-result");
             if (hasDataLevelAttr && hasDataResultAttr) {

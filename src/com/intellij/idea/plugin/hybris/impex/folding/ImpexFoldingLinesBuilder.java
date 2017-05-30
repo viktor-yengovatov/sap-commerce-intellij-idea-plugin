@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -42,16 +41,13 @@ import java.util.Objects;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getPrevNonWhitespaceElement;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexValueLine;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsUserRightsMacros;
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
- * 
- *
- * @author 
+ * @author
  */
 public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
 
@@ -78,7 +74,7 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
         final List<PsiElement> foldingBlocks = foldingLines(root);
 
         PsiElement startGroupElement = foldingBlocks.isEmpty() ? null : foldingBlocks.get(0);
-        
+
         final List<FoldingDescriptor> descriptors = newArrayList();
          /* Avoid spawning a lot of unnecessary objects for each line break. */
         boolean groupIsNotFresh = false;
@@ -99,7 +95,7 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
                 if (nextElementIsHeaderLine(element)
                     || nextElementIsUserRightsMacros(element)
                     || nextIdx == size) {
-                    if (countLinesOnGroup >  1) {
+                    if (countLinesOnGroup > 1) {
                         descriptors.add(new ImpexFoldingDescriptor(
                             startGroupElement,
                             startGroupElement.getStartOffsetInParent(),

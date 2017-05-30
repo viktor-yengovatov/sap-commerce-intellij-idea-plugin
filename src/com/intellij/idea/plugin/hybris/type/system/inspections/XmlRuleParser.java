@@ -122,7 +122,11 @@ public class XmlRuleParser {
         private String mySelectionXPath;
         private String myTestXPath;
 
-        public XmlRuleImpl(@NotNull final String id, @NotNull final Priority priority, @NotNull final String description) {
+        public XmlRuleImpl(
+            @NotNull final String id,
+            @NotNull final Priority priority,
+            @NotNull final String description
+        ) {
             this.myId = id;
             this.myPriority = priority;
             this.myDescription = description;
@@ -183,7 +187,11 @@ public class XmlRuleParser {
             return isValid;
         }
 
-        private boolean validateNotNull(@NotNull final String problem, @Nullable final String subj, @NotNull final Logger logger) {
+        private boolean validateNotNull(
+            @NotNull final String problem,
+            @Nullable final String subj,
+            @NotNull final Logger logger
+        ) {
             boolean isValid = true;
             if (subj == null || subj.isEmpty()) {
                 logger.warn(problem + ": " + this);

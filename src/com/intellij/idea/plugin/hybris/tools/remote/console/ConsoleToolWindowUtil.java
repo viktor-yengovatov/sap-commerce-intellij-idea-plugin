@@ -49,11 +49,11 @@ public class ConsoleToolWindowUtil {
 
     public void showConsoleToolWindow(final Project project, final ConsoleView... consoles) {
         Integer currentSelectedContentIndex = 0;
-        if(toolWindow == null) {
+        if (toolWindow == null) {
             createNewToolWindow(project);
-        } else if(!toolWindow.getTitle().equals("Hybris Console")) {
+        } else if (!toolWindow.getTitle().equals("Hybris Console")) {
             final ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow("Hybris Console");
-            if(window == null) {
+            if (window == null) {
                 createNewToolWindow(project);
             } else {
                 toolWindow = window;
@@ -94,7 +94,7 @@ public class ConsoleToolWindowUtil {
     private Integer getCurrentSelectedTab() {
         final Integer currentSelectedContentIndex;
         final Content currentSelectedContent = toolWindow.getContentManager().getSelectedContent();
-        if(currentSelectedContent == null) {
+        if (currentSelectedContent == null) {
             return 0;
         }
         currentSelectedContentIndex = toolWindow.getContentManager().getIndexOfContent(currentSelectedContent);
@@ -102,7 +102,11 @@ public class ConsoleToolWindowUtil {
     }
 
     private void createNewToolWindow(final Project project) {
-        toolWindow = ToolWindowManager.getInstance(project).registerToolWindow("Hybris Console", true, ToolWindowAnchor.BOTTOM);
+        toolWindow = ToolWindowManager.getInstance(project).registerToolWindow(
+            "Hybris Console",
+            true,
+            ToolWindowAnchor.BOTTOM
+        );
         toolWindow.setTitle("Hybris Console");
         toolWindow.setIcon(HybrisIcons.HYBRIS_ICON);
     }

@@ -342,7 +342,6 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     }
 
 
-
     protected Set<String> getDefaultRequiredExtensionNames() {
         return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
     }

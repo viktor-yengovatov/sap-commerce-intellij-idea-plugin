@@ -51,7 +51,8 @@ public class ExtensionsNameContributor extends CompletionContributor {
                     @NotNull final CompletionResultSet result
                 ) {
                     final HybrisProjectSettings hybrisProjectSettings
-                        = HybrisProjectSettingsComponent.getInstance(parameters.getOriginalFile().getProject()).getState();
+                        = HybrisProjectSettingsComponent.getInstance(parameters.getOriginalFile().getProject())
+                                                        .getState();
                     final Set<String> extensions = hybrisProjectSettings.getCompleteSetOfAvailableExtensionsInHybris();
 
                     extensions.forEach(name -> result.addElement(LookupElementBuilder.create(name)));

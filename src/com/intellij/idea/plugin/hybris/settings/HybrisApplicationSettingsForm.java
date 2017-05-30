@@ -103,12 +103,12 @@ public class HybrisApplicationSettingsForm {
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
         data.setCreateBackwardCyclicDependenciesForAddOns(createBackwardCyclicDependenciesForAddOns.isSelected());
-        
+
         data.setHybrisInstanceUsername(hybrisInstanceUsernameTextField.getText());
         data.setHybrisInstancePassword(hybrisInstancePasswordTextField.getText());
         data.setHybrisHostUrl(hybrisHostUrlTextField.getText());
         data.setFollowSymlink(followSymlink.isSelected());
-        
+
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -127,28 +127,28 @@ public class HybrisApplicationSettingsForm {
         if (groupModulesCheckBox.isSelected() != data.isGroupModules()) {
             return true;
         }
-        if (!StringUtil.equals(groupCustomTextField.getText(),data.getGroupCustom())) {
+        if (!StringUtil.equals(groupCustomTextField.getText(), data.getGroupCustom())) {
             return true;
         }
-        if (!StringUtil.equals(groupCustomUnusedTextField.getText(),data.getGroupOtherCustom())) {
+        if (!StringUtil.equals(groupCustomUnusedTextField.getText(), data.getGroupOtherCustom())) {
             return true;
         }
-        if (!StringUtil.equals(groupHybrisTextField.getText(),data.getGroupHybris())) {
+        if (!StringUtil.equals(groupHybrisTextField.getText(), data.getGroupHybris())) {
             return true;
         }
-        if (!StringUtil.equals(groupHybrisUnusedTextField.getText(),data.getGroupOtherHybris())) {
+        if (!StringUtil.equals(groupHybrisUnusedTextField.getText(), data.getGroupOtherHybris())) {
             return true;
         }
-        if (!StringUtil.equals(groupPlatformTextField.getText(),data.getGroupPlatform())) {
+        if (!StringUtil.equals(groupPlatformTextField.getText(), data.getGroupPlatform())) {
             return true;
         }
-        if (!StringUtil.equals(hybrisHostUrlTextField.getText(),data.getHybrisHostUrl())) {
+        if (!StringUtil.equals(hybrisHostUrlTextField.getText(), data.getHybrisHostUrl())) {
             return true;
         }
-        if (!StringUtil.equals(hybrisInstancePasswordTextField.getText(),data.getHybrisInstancePassword())) {
+        if (!StringUtil.equals(hybrisInstancePasswordTextField.getText(), data.getHybrisInstancePassword())) {
             return true;
         }
-        if (!StringUtil.equals(hybrisInstanceUsernameTextField.getText(),data.getHybrisInstanceUsername())) {
+        if (!StringUtil.equals(hybrisInstanceUsernameTextField.getText(), data.getHybrisInstanceUsername())) {
             return true;
         }
         if (!StringUtil.equals(groupNonHybrisTextField.getText(), data.getGroupNonHybris())) {
@@ -179,16 +179,20 @@ public class HybrisApplicationSettingsForm {
         limitedSpringConfigCheckBox = new JCheckBox();
         limitedSpringConfigCheckBox.setVisible(boxVisible);
         impexLabel = new JBLabel();
-        impexLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.impex.title"), false));
+        impexLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
+            "hybris.import.settings.impex.title"), false));
         hybrisRemoteControlLabel = new JBLabel();
-        hybrisRemoteControlLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.tools.remote.title"), false));
+        hybrisRemoteControlLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
+            "hybris.import.settings.tools.remote.title"), false));
         projectImportLabel = new JBLabel();
-        projectImportLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.import.settings.project.title")));
+        projectImportLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
+            "hybris.import.settings.project.title")));
         junkListPanel = new JunkListPanel("hybris.import.settings.junk.directory.name", new ArrayList<String>());
         junkDirectoriesPanel = junkListPanel;
 
         projectTreeViewSettingsLabel = new JBLabel();
-        projectTreeViewSettingsLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message("hybris.project.view.tree.settings")));
+        projectTreeViewSettingsLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
+            "hybris.project.view.tree.settings")));
     }
 
     public void createComponent() {
@@ -212,7 +216,7 @@ public class HybrisApplicationSettingsForm {
 
         public void setJunkDirectoryList(@Nullable java.util.List<String> itemList) {
             myListModel.clear();
-            for (String itemToAdd: itemList) {
+            for (String itemToAdd : itemList) {
                 super.addElement(itemToAdd);
             }
         }
@@ -220,40 +224,61 @@ public class HybrisApplicationSettingsForm {
         @Nullable
         @Override
         protected String findItemToAdd() {
-            return showEditDialog("", "hybris.import.settings.junk.directory.popup.add.title", "hybris.import.settings.junk.directory.popup.add.text");
+            return showEditDialog(
+                "",
+                "hybris.import.settings.junk.directory.popup.add.title",
+                "hybris.import.settings.junk.directory.popup.add.text"
+            );
         }
 
         @Nullable
         @Override
         protected String editSelectedItem(@NotNull final String item) {
-            return showEditDialog(item, "hybris.import.settings.junk.directory.popup.edit.title", "hybris.import.settings.junk.directory.popup.edit.text");
+            return showEditDialog(
+                item,
+                "hybris.import.settings.junk.directory.popup.edit.title",
+                "hybris.import.settings.junk.directory.popup.edit.text"
+            );
         }
 
         @Nullable
-        private String showEditDialog(@NotNull final String initialValue, @NotNull final String title, @NotNull final String message) {
-            return Messages.showInputDialog(this, HybrisI18NBundleUtils.message(message), HybrisI18NBundleUtils.message(title), Messages.getQuestionIcon(), initialValue, new InputValidatorEx() {
-                @Override
-                public boolean checkInput(@NotNull String inputString) {
-                    return !StringUtil.isEmpty(inputString);
-                }
+        private String showEditDialog(
+            @NotNull final String initialValue,
+            @NotNull final String title,
+            @NotNull final String message
+        ) {
+            return Messages.showInputDialog(
+                this,
+                HybrisI18NBundleUtils.message(message),
+                HybrisI18NBundleUtils.message(title),
+                Messages.getQuestionIcon(),
+                initialValue,
+                new InputValidatorEx() {
 
-                @Override
-                public boolean canClose(@NotNull String inputString) {
-                    return !StringUtil.isEmpty(inputString) && (!myListModel.contains(inputString) || initialValue.equals(inputString));
-                }
+                    @Override
+                    public boolean checkInput(@NotNull String inputString) {
+                        return !StringUtil.isEmpty(inputString);
+                    }
 
-                @Nullable
-                @Override
-                public String getErrorText(@NotNull String inputString) {
-                    if (!checkInput(inputString)) {
-                        return "directory name string cannot be empty";
+                    @Override
+                    public boolean canClose(@NotNull String inputString) {
+                        return !StringUtil.isEmpty(inputString) && (!myListModel.contains(inputString) || initialValue.equals(
+                            inputString));
                     }
-                    if (!canClose(inputString)) {
-                        return "duplicities are not allowed (nor make any sense)";
+
+                    @Nullable
+                    @Override
+                    public String getErrorText(@NotNull String inputString) {
+                        if (!checkInput(inputString)) {
+                            return "directory name string cannot be empty";
+                        }
+                        if (!canClose(inputString)) {
+                            return "duplicities are not allowed (nor make any sense)";
+                        }
+                        return null;
                     }
-                    return null;
                 }
-            });
+            );
         }
 
         @NotNull

@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ModulesDependenciesConfigurator {
 
-    void configure(@NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-                   @NotNull ModifiableModuleModel rootProjectModifiableModuleModel);
+    void configure(
+        @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull ModifiableModuleModel rootProjectModifiableModuleModel
+    );
 }

@@ -1,41 +1,46 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchCharacterSubstringFunction;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchStringValueExpression;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import org.jetbrains.annotations.*;
 
-public class FlexibleSearchCharacterSubstringFunctionImpl extends ASTWrapperPsiElement implements FlexibleSearchCharacterSubstringFunction {
+import java.util.List;
 
-  public FlexibleSearchCharacterSubstringFunctionImpl(ASTNode node) {
-    super(node);
-  }
+public class FlexibleSearchCharacterSubstringFunctionImpl extends ASTWrapperPsiElement
+    implements FlexibleSearchCharacterSubstringFunction {
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitCharacterSubstringFunction(this);
-  }
+    public FlexibleSearchCharacterSubstringFunctionImpl(ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    public void accept(@NotNull FlexibleSearchVisitor visitor) {
+        visitor.visitCharacterSubstringFunction(this);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchCharacterSubstringFunction getCharacterSubstringFunction() {
-    return findChildByClass(FlexibleSearchCharacterSubstringFunction.class);
-  }
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) {
+            accept((FlexibleSearchVisitor) visitor);
+        } else {
+            super.accept(visitor);
+        }
+    }
 
-  @Override
-  @NotNull
-  public List<FlexibleSearchStringValueExpression> getStringValueExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchStringValueExpression.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchCharacterSubstringFunction getCharacterSubstringFunction() {
+        return findChildByClass(FlexibleSearchCharacterSubstringFunction.class);
+    }
+
+    @Override
+    @NotNull
+    public List<FlexibleSearchStringValueExpression> getStringValueExpressionList() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchStringValueExpression.class);
+    }
 
 }

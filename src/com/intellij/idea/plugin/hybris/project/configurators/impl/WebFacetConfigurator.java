@@ -47,10 +47,12 @@ import java.io.File;
 public class WebFacetConfigurator extends AbstractFacetConfigurator {
 
     @Override
-    protected void configureInner(@NotNull final ModifiableFacetModel modifiableFacetModel,
-                                  @NotNull final HybrisModuleDescriptor moduleDescriptor,
-                                  @NotNull final Module javaModule,
-                                  @NotNull final ModifiableRootModel modifiableRootModel) {
+    protected void configureInner(
+        @NotNull final ModifiableFacetModel modifiableFacetModel,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final Module javaModule,
+        @NotNull final ModifiableRootModel modifiableRootModel
+    ) {
         Validate.notNull(javaModule);
         Validate.notNull(modifiableFacetModel);
         Validate.notNull(moduleDescriptor);
@@ -90,8 +92,10 @@ public class WebFacetConfigurator extends AbstractFacetConfigurator {
         this.setupFacetDeploymentDescriptor(webFacet, moduleDescriptor);
     }
 
-    protected void setupFacetDeploymentDescriptor(@NotNull final WebFacet webFacet,
-                                                  @NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    protected void setupFacetDeploymentDescriptor(
+        @NotNull final WebFacet webFacet,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor
+    ) {
         Validate.notNull(webFacet);
         Validate.notNull(moduleDescriptor);
 

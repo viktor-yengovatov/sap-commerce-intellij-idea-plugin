@@ -84,7 +84,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
                 groupIsNotFresh = true;
             }
         }
-        
+
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 

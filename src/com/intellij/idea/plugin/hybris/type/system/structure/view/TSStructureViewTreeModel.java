@@ -37,13 +37,26 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
  */
-public class TSStructureViewTreeModel extends DomStructureViewTreeModel implements StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
+public class TSStructureViewTreeModel extends DomStructureViewTreeModel
+    implements StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
+
     private final DomElementNavigationProvider myNavigationProvider;
     private final Function<DomElement, DomService.StructureViewMode> myDescriptor;
 
-    public TSStructureViewTreeModel(@NotNull XmlFile file, @NotNull Function<DomElement, DomService.StructureViewMode> descriptor, @Nullable Editor editor) {
-        super(file, DomElementsNavigationManager.getManager(file.getProject()).getDomElementsNavigateProvider(DomElementsNavigationManager.DEFAULT_PROVIDER_NAME), descriptor, editor);
-        myNavigationProvider = DomElementsNavigationManager.getManager(file.getProject()).getDomElementsNavigateProvider(DomElementsNavigationManager.DEFAULT_PROVIDER_NAME);
+    public TSStructureViewTreeModel(
+        @NotNull XmlFile file,
+        @NotNull Function<DomElement, DomService.StructureViewMode> descriptor,
+        @Nullable Editor editor
+    ) {
+        super(
+            file,
+            DomElementsNavigationManager.getManager(file.getProject())
+                                        .getDomElementsNavigateProvider(DomElementsNavigationManager.DEFAULT_PROVIDER_NAME),
+            descriptor,
+            editor
+        );
+        myNavigationProvider = DomElementsNavigationManager.getManager(file.getProject())
+                                                           .getDomElementsNavigateProvider(DomElementsNavigationManager.DEFAULT_PROVIDER_NAME);
         myDescriptor = descriptor;
     }
 
@@ -51,10 +64,17 @@ public class TSStructureViewTreeModel extends DomStructureViewTreeModel implemen
     @NotNull
     public StructureViewTreeElement getRoot() {
         XmlFile myFile = getPsiFile();
-        final DomFileElement<DomElement> fileElement = DomManager.getDomManager(myFile.getProject()).getFileElement(myFile, DomElement.class);
-        return fileElement == null?
+        final DomFileElement<DomElement> fileElement = DomManager.getDomManager(myFile.getProject()).getFileElement(
+            myFile,
+            DomElement.class
+        );
+        return fileElement == null ?
             new XmlFileTreeElement(myFile) :
-            new TSStructureTreeElement(fileElement.getRootElement().createStableCopy(), myDescriptor, myNavigationProvider);
+            new TSStructureTreeElement(
+                fileElement.getRootElement().createStableCopy(),
+                myDescriptor,
+                myNavigationProvider
+            );
     }
 
     @Override

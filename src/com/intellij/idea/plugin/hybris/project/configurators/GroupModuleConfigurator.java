@@ -33,9 +33,11 @@ public interface GroupModuleConfigurator {
 
     void findDependencyModules(@NotNull List<HybrisModuleDescriptor> modulesChosenForImport);
 
-    void configure(@NotNull final ModifiableModuleModel modifiableModuleModel,
-                   @NotNull final Module module,
-                   @NotNull final HybrisModuleDescriptor moduleDescriptor);
+    void configure(
+        @NotNull final ModifiableModuleModel modifiableModuleModel,
+        @NotNull final Module module,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor
+    );
 
     @Nullable
     String[] getGroupName(@NotNull HybrisModuleDescriptor moduleDescriptor);
