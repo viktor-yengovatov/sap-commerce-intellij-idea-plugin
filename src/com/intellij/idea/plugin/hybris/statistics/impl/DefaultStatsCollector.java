@@ -45,10 +45,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -60,6 +63,7 @@ public class DefaultStatsCollector implements StatsCollector {
 
     private final ExecutorService executor;
     private final HttpClient client;
+    private final Map<ACTIONS, Long> cache = new HashMap<>();
 
     public DefaultStatsCollector() {
         executor = Executors.newFixedThreadPool(1);
@@ -74,12 +78,24 @@ public class DefaultStatsCollector implements StatsCollector {
     @Override
     public void collectStat(final ACTIONS action, final String parameters) {
         addInternalFlag(action);
-        try {
-            final HttpPost post = buildRequest(action.name(), parameters);
-            sendRequest(post);
-        } catch (Throwable e) {
-            // we don't care
+        if (shouldPostStat(action)) {
+            cache.put(action, System.currentTimeMillis());
+            try {
+                final HttpPost post = buildRequest(action.name(), parameters);
+                sendRequest(post);
+            } catch (Throwable e) {
+                // we don't care
+            }
         }
+    }
+
+    private boolean shouldPostStat(final ACTIONS action) {
+        Long sendTime = cache.get(action);
+        if (sendTime == null) {
+            return true;
+        }
+        long diff = System.currentTimeMillis() - sendTime;
+        return diff > TimeUnit.HOURS.toMillis(12);
     }
 
     private void addInternalFlag(final ACTIONS action) {
