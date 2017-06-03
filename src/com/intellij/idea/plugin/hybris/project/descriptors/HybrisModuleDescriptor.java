@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,5 +85,17 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     DescriptorType getDescriptorType();
 
     boolean hasServerJar();
+
+    @Nullable
+    static DescriptorType getDescriptorType(@NotNull final Module module) {
+        final String descriptorTypeName = module.getOptionValue(HybrisConstants.DESCRIPTOR_TYPE);
+        try {
+            return descriptorTypeName == null
+                ? null
+                : HybrisModuleDescriptor.DescriptorType.valueOf(descriptorTypeName);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 
 }

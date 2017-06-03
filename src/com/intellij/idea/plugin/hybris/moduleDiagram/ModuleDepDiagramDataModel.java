@@ -1,0 +1,197 @@
+package com.intellij.idea.plugin.hybris.moduleDiagram;
+
+import com.intellij.diagram.DiagramDataModel;
+import com.intellij.diagram.DiagramEdge;
+import com.intellij.diagram.DiagramNode;
+import com.intellij.diagram.DiagramProvider;
+import com.intellij.diagram.VisibilityLevel;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.util.ModificationTracker;
+import com.intellij.uml.project.ModuleItem;
+import com.intellij.uml.project.ModulesUmlEdge;
+import com.intellij.uml.project.ModulesUmlNode;
+import com.intellij.uml.project.ModulesUmlProvider;
+import com.intellij.uml.project.UmlModulesRelationshipHelper;
+import com.intellij.util.containers.ContainerUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * @author Eugene.Kudelevsky
+ */
+@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
+public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagramItem> {
+
+    @NotNull
+    private Set<ModuleDepDiagramNode> myNodes = ContainerUtil.newHashSet();
+    @NotNull
+    private Set<ModuleDepDiagramEdge> myEdges = ContainerUtil.newHashSet();
+
+    public ModuleDepDiagramDataModel(final Project project, final DiagramProvider<ModuleDepDiagramItem> provider) {
+        super(project, provider);
+    }
+
+    @NotNull
+    @Override
+    public Collection<? extends DiagramNode<ModuleDepDiagramItem>> getNodes() {
+        return new ArrayList<>(myNodes);
+    }
+
+    @NotNull
+    @Override
+    public Collection<? extends DiagramEdge<ModuleDepDiagramItem>> getEdges() {
+        return new ArrayList<>(myEdges);
+    }
+
+    @NotNull
+    @Override
+    public String getNodeName(final DiagramNode<ModuleDepDiagramItem> node) {
+        return node.getIdentifyingElement().getName();
+    }
+
+    @Nullable
+    @Override
+    public DiagramNode<ModuleDepDiagramItem> addElement(final ModuleDepDiagramItem moduleItem) {
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void refreshDataModel() {
+        new MyRefresher().refresh();
+    }
+
+    @NotNull
+    @Override
+    public ModificationTracker getModificationTracker() {
+        //noinspection ReturnOfThis
+        return this;
+    }
+
+    @Override
+    public void dispose() {
+    }
+
+    private class MyRefresher {
+
+        private final ModuleManager myModuleManager = ModuleManager.getInstance(getProject());
+
+        public void refresh() {
+            myNodes.clear();
+            myEdges.clear();
+
+            final List<ModuleItem> items = getModulesToShow()
+                .stream()
+                .map(ModuleItem::new)
+                .collect(Collectors.toList());
+
+            final ModulesUmlProvider modulesUmlProvider = new ModulesUmlProvider();
+
+            final Map<ModuleItem, ModulesUmlNode> item2Node = items.stream().collect(Collectors.toMap(
+                Function.identity(), item -> new ModulesUmlNode(item, modulesUmlProvider)));
+
+            final List<ModulesUmlEdge> edges = UmlModulesRelationshipHelper.generateEdges(
+                item2Node, getProject(), false);
+
+            myNodes.addAll(createAdaptedNodes(items));
+            myEdges.addAll(createAdaptedEdges(edges));
+        }
+
+        @NotNull
+        private Collection<Module> getModulesToShow() {
+            final VisibilityLevel visibilityLevel = getVisibilityManager().getCurrentVisibilityLevel();
+            final Module[] allModules = myModuleManager.getModules();
+
+            if (ModuleDepDiagramVisibilityManager.LARGE.equals(visibilityLevel)) {
+                return Arrays
+                    .stream(allModules)
+                    .filter(module -> isCustomExtension(module) || isOotbOrPlatformExtension(module))
+                    .collect(Collectors.toList());
+            }
+            final List<Module> customExtModules = Arrays
+                .stream(allModules)
+                .filter(this::isCustomExtension)
+                .collect(Collectors.toList());
+
+            if (ModuleDepDiagramVisibilityManager.SMALL.equals(visibilityLevel)) {
+                return customExtModules;
+            }
+            final List<Module> dependencies = customExtModules
+                .stream()
+                .flatMap(module -> Arrays.stream(ModuleRootManager.getInstance(module).getDependencies()))
+                .filter(this::isOotbOrPlatformExtension)
+                .collect(Collectors.toList());
+
+            final List<Module> backwardDependencies = Arrays
+                .stream(allModules)
+                .filter(module -> Arrays
+                    .stream(ModuleRootManager.getInstance(module).getDependencies())
+                    .anyMatch(this::isCustomExtension))
+                .filter(this::isOotbOrPlatformExtension)
+                .collect(Collectors.toList());
+
+            final Set<Module> result = ContainerUtil.newHashSet();
+            result.addAll(customExtModules);
+            result.addAll(dependencies);
+            result.addAll(backwardDependencies);
+            return result;
+        }
+
+        private boolean isCustomExtension(@NotNull final Module module) {
+            return HybrisModuleDescriptor.getDescriptorType(module) == DescriptorType.CUSTOM;
+        }
+
+        private boolean isOotbOrPlatformExtension(@NotNull final Module module) {
+            final DescriptorType descriptorType = HybrisModuleDescriptor.getDescriptorType(module);
+            return descriptorType == DescriptorType.OOTB || descriptorType == DescriptorType.PLATFORM;
+        }
+
+        @SuppressWarnings("unchecked")
+        @NotNull
+        private List<ModuleDepDiagramEdge> createAdaptedEdges(@NotNull final Collection<ModulesUmlEdge> edges) {
+            final DiagramProvider provider = getBuilder().getProvider();
+
+            return edges
+                .stream()
+                .map(modulesUmlEdge -> {
+                    final Module from = modulesUmlEdge.getSource().getIdentifyingElement().getModule();
+                    final ModuleDepDiagramItem fromItem = new ModuleDepDiagramItem(from, isCustomExtension(from));
+
+                    final Module to = modulesUmlEdge.getTarget().getIdentifyingElement().getModule();
+                    final ModuleDepDiagramItem toItem = new ModuleDepDiagramItem(to, isCustomExtension(to));
+
+                    return new ModuleDepDiagramEdge(
+                        new ModuleDepDiagramNode(fromItem, provider),
+                        new ModuleDepDiagramNode(toItem, provider),
+                        modulesUmlEdge.getRelationship()
+                    );
+                }).collect(Collectors.toList());
+        }
+
+        @SuppressWarnings("unchecked")
+        @NotNull
+        private List<ModuleDepDiagramNode> createAdaptedNodes(@NotNull final Collection<ModuleItem> items) {
+            final DiagramProvider<ModuleDepDiagramItem> provider = getBuilder().getProvider();
+
+            return items.stream()
+                        .map(moduleItem -> new ModuleDepDiagramNode(
+                            new ModuleDepDiagramItem(moduleItem.getModule(), isCustomExtension(moduleItem.getModule())),
+                            provider
+                        )).collect(Collectors.toList());
+        }
+    }
+}

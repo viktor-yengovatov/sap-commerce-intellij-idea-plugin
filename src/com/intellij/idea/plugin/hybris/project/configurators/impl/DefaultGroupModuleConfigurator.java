@@ -29,13 +29,14 @@ import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 24/08/15.
@@ -130,10 +131,4 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         groupPlatform = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
     }
 
-    private String[] toIdeaGroup(final String group) {
-        if (group == null || group.trim().isEmpty()) {
-            return null;
-        }
-        return StringUtils.split(group, " ,.;>/\\");
-    }
 }
