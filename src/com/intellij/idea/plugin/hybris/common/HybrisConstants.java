@@ -164,4 +164,5 @@ public interface HybrisConstants {
     int ANT_HEAP_SIZE_MB = 512;
     int ANT_STACK_SIZE_MB = 128;
     String STATS_COLLECTOR_URL = "http://intellij.bcom.cz/hybrisintegration";
+    String Y_PREFIX = "[y]";
 }

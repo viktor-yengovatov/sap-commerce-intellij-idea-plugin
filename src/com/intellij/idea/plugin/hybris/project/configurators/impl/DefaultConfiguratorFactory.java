@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -181,6 +182,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public EclipseConfigurator getEclipseConfigurator() {
         return ServiceManager.getService(EclipseConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public SearchScopeConfigurator getSearchScopeConfigurator() {
+        return ServiceManager.getService(SearchScopeConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {

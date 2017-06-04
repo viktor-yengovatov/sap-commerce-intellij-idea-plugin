@@ -70,6 +70,10 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"/>
 
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator"
+            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSearchScopeConfigurator"/>
+
     </extensions>
 
 </idea-plugin>

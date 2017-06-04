@@ -79,4 +79,7 @@ public interface ConfiguratorFactory {
 
     @Nullable
     EclipseConfigurator getEclipseConfigurator();
+
+    @NotNull
+    SearchScopeConfigurator getSearchScopeConfigurator();
 }

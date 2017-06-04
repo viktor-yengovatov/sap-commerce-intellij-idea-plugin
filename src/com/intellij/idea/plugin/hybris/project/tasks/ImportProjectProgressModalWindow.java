@@ -39,6 +39,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurato
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
@@ -157,6 +158,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
         final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
         final RunConfigurationConfigurator debugRunConfigurationConfigurator = configuratorFactory.getDebugRunConfigurationConfigurator();
+        final SearchScopeConfigurator searchScopeConfigurator = configuratorFactory.getSearchScopeConfigurator();
 
         this.initializeHybrisProjectSettings(project);
         this.selectSdk(project);
@@ -272,6 +274,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(project);
+        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.search.scope"));
+        searchScopeConfigurator.configure(project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.finishing"));
     }
 
