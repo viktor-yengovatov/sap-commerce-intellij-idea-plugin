@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.util.containers.HashSet;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -354,5 +355,12 @@ public class HybrisApplicationSettings {
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    public static String[] toIdeaGroup(final String group) {
+        if (group == null || group.trim().isEmpty()) {
+            return null;
+        }
+        return StringUtils.split(group, " ,.;>/\\");
     }
 }

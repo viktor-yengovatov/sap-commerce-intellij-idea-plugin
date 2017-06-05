@@ -216,13 +216,14 @@
     </application-components>
 
     <actions>
+
         <action id="ImpexPlugin.IndexHybrisItemTypes"
                 class="com.intellij.idea.plugin.hybris.indexer.IndexItemTypesAction"
                 text="Index [y]-types"
-                icon="/icons/hybrisIcon.png"
                 description="Run index-recreation of [y]-types (only works after ItemModel was being created!)">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <add-to-group group-id="HybrisToolsActions"/>
         </action>
+
         <action id="Impex.NewImpexFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
                 text="Impex File" description="Create new Impex file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
@@ -300,6 +301,7 @@
                 text="Refresh Project" description="Re-imports the current hybris project with default values">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
+
     </actions>
 
 </idea-plugin>

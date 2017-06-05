@@ -23,6 +23,9 @@
         <diagram.Provider id="BusinessProcessDiagramProvider"
                           implementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.DefaultBpDiagramProvider"/>
 
+        <diagram.Provider id="HybrisModuleDependencies"
+                          implementation="com.intellij.idea.plugin.hybris.moduleDiagram.ModuleDepDiagramProvider"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.jaxb.services.impl.DefaultBpJaxbService"/>
 
@@ -42,5 +45,14 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.business.process.diagram.impl.BpDiagramColorManagerIml"/>
 
     </extensions>
+
+    <actions>
+        <action id="ShowModuleDependencyDiagram"
+                class="com.intellij.idea.plugin.hybris.moduleDiagram.ShowModuleDependencyDiagramAction"
+                text="Show Module Dependency Diagram"
+                icon="AllIcons.FileTypes.Diagram">
+            <add-to-group group-id="HybrisToolsActions"/>
+        </action>
+    </actions>
 
 </idea-plugin>
