@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.type.system.file.CompositeConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.NameValue;
 import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +50,7 @@ public interface CollectionType extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("code")
     @Required
+    @NameValue
     GenericAttributeValue<String> getCode();
 
 
