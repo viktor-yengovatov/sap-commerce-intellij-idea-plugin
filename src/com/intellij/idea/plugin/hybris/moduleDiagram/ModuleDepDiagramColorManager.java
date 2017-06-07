@@ -47,12 +47,16 @@ public class ModuleDepDiagramColorManager extends DiagramColorManagerBase {
     }
 
     @Override
-    public Color getEdgeColor(DiagramEdge edge) {
-        if (edge instanceof ModuleDepDiagramEdge) {
-            if (((ModuleDepDiagramEdge) edge).isCircular()) {
-                return INNER;
+    public Color getEdgeColor(DiagramEdge diagramEdge) {
+        if (diagramEdge instanceof ModuleDepDiagramEdge) {
+            ModuleDepDiagramEdge edge = (ModuleDepDiagramEdge) diagramEdge;
+            if (edge.isCircular()) {
+                int redFragment = 128 / edge.getNumberOfCircles();
+                int redDelta = redFragment * edge.getCircleNumber();
+                int red = 127 + redDelta;
+                return new Color(red, 0, 0);
             }
         }
-        return super.getEdgeColor(edge);
+        return super.getEdgeColor(diagramEdge);
     }
 }

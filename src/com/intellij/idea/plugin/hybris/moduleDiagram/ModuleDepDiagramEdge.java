@@ -27,7 +27,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ModuleDepDiagramEdge extends DiagramEdgeBase<ModuleDepDiagramItem> {
 
-    private int circularId = 0;
+    private int circleNumber = -1;
+    private int numberOfCircles = 0;
 
     public ModuleDepDiagramEdge(
         @NotNull final ModuleDepDiagramNode from,
@@ -38,14 +39,22 @@ public class ModuleDepDiagramEdge extends DiagramEdgeBase<ModuleDepDiagramItem> 
     }
 
     public boolean isCircular() {
-        return circularId > 0;
+        return circleNumber > -1;
     }
 
-    public int getCircularId() {
-        return circularId;
+    public int getCircleNumber() {
+        return circleNumber;
     }
 
-    public void setCircularId(final int circularId) {
-        this.circularId = circularId;
+    public void setCircleNumber(final int circleNumber) {
+        this.circleNumber = circleNumber;
+    }
+
+    public void setNumberOfCircles(final int numberOfCircles) {
+        this.numberOfCircles = numberOfCircles;
+    }
+
+    public int getNumberOfCircles() {
+        return numberOfCircles;
     }
 }

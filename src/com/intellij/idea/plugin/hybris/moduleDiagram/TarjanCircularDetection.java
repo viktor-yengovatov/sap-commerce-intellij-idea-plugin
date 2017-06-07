@@ -50,12 +50,15 @@ public class TarjanCircularDetection {
         final List<List<ModuleDepDiagramItem>> nodeSegments = computeTarjan();
         int segmentId = 0;
         for (List<ModuleDepDiagramItem> segment : nodeSegments) {
-            segmentId++;
             final int finalSegmentId = segmentId;
             myEdges.stream()
                    .filter(edge -> segment.contains(edge.getSource().getIdentifyingElement()))
                    .filter(edge -> segment.contains(edge.getTarget().getIdentifyingElement()))
-                   .forEach(edge -> edge.setCircularId(finalSegmentId));
+                   .forEach(edge -> {
+                       edge.setCircleNumber(finalSegmentId);
+                       edge.setNumberOfCircles(nodeSegments.size());
+                   });
+            segmentId++;
         }
     }
 
