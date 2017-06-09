@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,15 +31,9 @@ import java.util.List;
 public interface MavenConfigurator {
 
     void configure(
-        @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull Project project,
-        @NotNull List<MavenModuleDescriptor> mavenModules
-    );
-
-    void configurePostStartup(
-        @NotNull Project project,
-        @NotNull List<MavenModuleDescriptor> mavenModules,
-        @Nullable String[] rootGroup,
-        @NotNull Runnable runnable
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final Project project,
+        @NotNull final List<MavenModuleDescriptor> mavenModules,
+        @NotNull final ConfiguratorFactory configuratorFactory
     );
 }

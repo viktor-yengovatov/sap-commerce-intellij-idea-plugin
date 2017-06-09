@@ -416,16 +416,27 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
         if (hybrisProjectService.isConfigModule(rootProjectDirectory)) {
-//            hybrisProjectService.isMavenModule(rootProjectDirectory)) //IIP-210
             LOG.info("Detected config module " + rootProjectDirectory.getAbsolutePath());
             moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+            return;
+        }
+
+        if (hybrisProjectService.isMavenModule(rootProjectDirectory) && !FileUtil.filesEqual(
+            rootProjectDirectory,
+            rootDirectory
+        )) {
+            LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
+            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
             return;
         }
 
         if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
             LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
             moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
-        } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory)) {
+        } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
+            rootProjectDirectory,
+            rootDirectory
+        )) {
             LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
             moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
             return;
@@ -475,6 +486,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             file.toString().endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
+            file.toString().endsWith(HybrisConstants.EXCLUDE_MACOSX_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_MODULE_FILES_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_LIB_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_LOG_DIRECTORY) ||

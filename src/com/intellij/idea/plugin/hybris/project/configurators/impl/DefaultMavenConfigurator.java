@@ -18,22 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.messages.MessageBusConnection;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.model.MavenConstants;
 import org.jetbrains.idea.maven.model.MavenExplicitProfiles;
+import org.jetbrains.idea.maven.project.MavenImportListener;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.jetbrains.idea.maven.wizards.MavenProjectBuilder;
@@ -55,7 +58,8 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<MavenModuleDescriptor> mavenModules
+        @NotNull final List<MavenModuleDescriptor> mavenModules,
+        @NotNull final ConfiguratorFactory configuratorFactory
     ) {
         if (mavenModules.isEmpty()) {
             return;
@@ -85,36 +89,33 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         }
         mavenProjectBuilder.setList(selectedProjects);
         invokeAndWaitIfNeeded((Runnable) () -> mavenProjectBuilder.commit(project));
-    }
-
-
-    @Override
-    public void configurePostStartup(
-        @NotNull final Project project,
-        @NotNull final List<MavenModuleDescriptor> mavenModules,
-        @Nullable final String[] rootGroup,
-        @NotNull final Runnable runnable
-    ) {
-        final MavenProjectsManager projectManager = MavenProjectsManager.getInstance(project);
-        projectManager.scheduleImportAndResolve();
-        projectManager.waitForResolvingCompletion();
-        final List<Module> newModules = projectManager.importProjects();
-
-        final List<Module> newRootModules = newModules
-            .stream()
-            .filter(e ->
-                        mavenModules
-                            .stream()
-                            .filter(m -> m.getName().equals(e.getName()))
-                            .findAny()
-                            .isPresent()
-            )
-            .collect(Collectors.toList());
-
-        if (rootGroup != null && rootGroup.length > 0) {
-            moveMavenModulesToGroup(project, newRootModules, rootGroup);
-        }
-        runnable.run();
+        final MessageBusConnection messageBusConnection = project.getMessageBus().connect();
+        messageBusConnection.subscribe(MavenImportListener.TOPIC, (importedProjects, newModules) -> {
+            final List<MavenProject> importedProjectRoots = importedProjects
+                .stream()
+                .filter(e -> pomList
+                    .stream()
+                    .filter(pom -> pom.equals(e.getFile()))
+                    .findAny()
+                    .isPresent()
+                )
+                .collect(Collectors.toList());
+            final List<Module> newRootModules = newModules
+                .stream()
+                .filter(e -> importedProjectRoots
+                    .stream()
+                    .filter(i -> i.getName().equals(e.getName()))
+                    .findAny()
+                    .isPresent()
+                )
+                .collect(Collectors.toList());
+            final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator()
+                                                          .getGroupName(mavenModules.get(0));
+            if (rootGroup != null && rootGroup.length > 0) {
+                moveMavenModulesToGroup(project, newRootModules, rootGroup);
+            }
+        });
+        MavenProjectsManager.getInstance(project).importProjects();
     }
 
     private void moveMavenModulesToGroup(
@@ -122,20 +123,20 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         final List<Module> mavenModules,
         final String[] rootGroup
     ) {
-        final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
-
-        for (Module module : mavenModules) {
-            final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
-            modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(rootGroup, groupPath));
-        }
         AccessToken token = null;
+        final ModifiableModuleModel modifiableModuleModel;
         try {
-            token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
-            modifiableModuleModel.commit();
+            token = ApplicationManager.getApplication().acquireReadActionLock();
+            modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
+
+            for (Module module : mavenModules) {
+                final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
+                modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(rootGroup, groupPath));
+            }
         } finally {
             token.finish();
         }
-
+        ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(() -> modifiableModuleModel.commit()));
     }
 
 
