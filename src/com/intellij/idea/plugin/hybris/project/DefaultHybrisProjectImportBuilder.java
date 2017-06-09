@@ -198,7 +198,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             ).queue();
 
             if (mavenConfigurator != null && !mavenModules.isEmpty()) {
-                mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules);
+                mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules, configuratorFactory);
             }
         } catch (Exception e) {
             LOG.error("Can not import Maven modules due to an error.", e);
@@ -242,26 +242,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 LOG.error("Can not configure JUnit due to an error.", e);
             }
 
-            if ((null != mavenConfigurator) && !mavenModules.isEmpty()) {
-
-                try {
-                    final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
-                        mavenModules.get(0)
-                    );
-
-                    mavenConfigurator.configurePostStartup(
-                        project,
-                        mavenModules,
-                        rootGroup,
-                        this::triggerCacheInvalidation
-                    );
-                } catch (Exception e) {
-                    LOG.error("Can not configure Maven due to an error.", e);
-                    triggerCacheInvalidation();
-                }
-            } else {
-                triggerCacheInvalidation();
-            }
+            triggerCacheInvalidation();
         });
 
         return result;

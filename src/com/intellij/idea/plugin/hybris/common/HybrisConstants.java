@@ -51,6 +51,7 @@ public interface HybrisConstants {
     String EXCLUDE_GIT_DIRECTORY = separatorsToSystem("/.git");
     String EXCLUDE_TEMP_DIRECTORY = separatorsToSystem("/temp");
     String EXCLUDE_IDEA_DIRECTORY = separatorsToSystem("/.idea");
+    String EXCLUDE_MACOSX_DIRECTORY = separatorsToSystem("/__MACOSX");
     String CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = separatorsToSystem("bin/custom");
     String EXTENSIONS_XML = "extensions.xml";
     String NEW_IDEA_MODULE_FILE_EXTENSION = ".iml";
