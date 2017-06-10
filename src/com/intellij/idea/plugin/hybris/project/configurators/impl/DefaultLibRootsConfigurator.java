@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescr
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.roots.DependencyScope;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
@@ -72,7 +73,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
         for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
-            if (!javaLibraryDescriptor.isValid()) {
+            if (!javaLibraryDescriptor.isValid() && javaLibraryDescriptor.getScope() == DependencyScope.COMPILE) {
                 continue;
             }
             if (javaLibraryDescriptor.isDirectoryWithClasses()) {
@@ -159,6 +160,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         if (javaLibraryDescriptor.isExported()) {
             this.setLibraryEntryExported(modifiableRootModel, library);
         }
+        setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());
 
         libraryModifiableModel.commit();
     }
@@ -194,6 +196,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         if (javaLibraryDescriptor.isExported()) {
             this.setLibraryEntryExported(modifiableRootModel, library);
         }
+        setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());
 
         libraryModifiableModel.commit();
     }
@@ -232,6 +235,18 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final LibraryOrderEntry libraryOrderEntry = modifiableRootModel.findLibraryOrderEntry(library);
         if (null != libraryOrderEntry) {
             libraryOrderEntry.setExported(true);
+        }
+    }
+
+    protected void setLibraryEntryScope(
+        @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull final Library library,
+        @NotNull DependencyScope scope
+    ) {
+        final LibraryOrderEntry entry = modifiableRootModel.findLibraryOrderEntry(library);
+
+        if (entry != null) {
+            entry.setScope(scope);
         }
     }
 }
