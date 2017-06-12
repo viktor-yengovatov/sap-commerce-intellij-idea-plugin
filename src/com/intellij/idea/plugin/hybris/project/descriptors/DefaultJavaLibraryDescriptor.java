@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.openapi.roots.DependencyScope;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -39,6 +40,8 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     private final File sourcesFile;
     private final boolean isExported;
     private final boolean isDirectoryWithClasses;
+    @NotNull
+    private final DependencyScope scope;
 
     public DefaultJavaLibraryDescriptor(
         @NotNull final File libraryFile,
@@ -50,6 +53,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.sourcesFile = null;
         this.isExported = isExported;
         this.isDirectoryWithClasses = false;
+        this.scope = DependencyScope.COMPILE;
     }
 
     public DefaultJavaLibraryDescriptor(
@@ -64,6 +68,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.sourcesFile = sourcesFile;
         this.isExported = isExported;
         this.isDirectoryWithClasses = false;
+        this.scope = DependencyScope.COMPILE;
     }
 
     public DefaultJavaLibraryDescriptor(
@@ -77,6 +82,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.sourcesFile = null;
         this.isExported = isExported;
         this.isDirectoryWithClasses = isDirectoryWithClasses;
+        this.scope = DependencyScope.COMPILE;
     }
 
     public DefaultJavaLibraryDescriptor(
@@ -92,6 +98,23 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.sourcesFile = sourcesFile;
         this.isExported = isExported;
         this.isDirectoryWithClasses = isDirectoryWithClasses;
+        this.scope = DependencyScope.COMPILE;
+    }
+
+    public DefaultJavaLibraryDescriptor(
+        @NotNull final File libraryFile,
+        @Nullable final File sourcesFile,
+        final boolean isExported,
+        final boolean isDirectoryWithClasses,
+        @NotNull final DependencyScope scope
+    ) {
+        Validate.notNull(libraryFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = sourcesFile;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = isDirectoryWithClasses;
+        this.scope = scope;
     }
 
     @NotNull
@@ -114,6 +137,12 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     @Override
     public boolean isDirectoryWithClasses() {
         return isDirectoryWithClasses;
+    }
+
+    @Override
+    @NotNull
+    public DependencyScope getScope() {
+        return scope;
     }
 
     @Override

@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.openapi.roots.DependencyScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,4 +42,7 @@ public interface JavaLibraryDescriptor extends Comparable<JavaLibraryDescriptor>
     boolean isDirectoryWithClasses();
 
     boolean isValid();
+
+    @NotNull
+    DependencyScope getScope();
 }

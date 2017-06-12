@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.Requi
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.roots.DependencyScope;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +45,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_META_KEY_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType.CUSTOM;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
@@ -202,19 +207,21 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     }
 
     protected boolean doesBackofficeDirectoryExist() {
-        return new File(this.getRootDirectory(), HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY).isDirectory();
+        return new File(this.getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY).isDirectory();
     }
 
     @NotNull
     @Override
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
         final List<JavaLibraryDescriptor> libs = new ArrayList<>();
+        final DescriptorType descriptorType = getDescriptorType();
+        final boolean importOotbModulesInReadOnlyMode = getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();
 
-        if (this.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
+        if (importOotbModulesInReadOnlyMode) {
 
-            if (this.getDescriptorType() != CUSTOM) {
+            if (descriptorType != CUSTOM) {
                 libs.add(new DefaultJavaLibraryDescriptor(
-                    new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                    new File(this.getRootDirectory(), WEB_INF_CLASSES_DIRECTORY),
                     new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY),
                     false, true
                 ));
@@ -237,14 +244,57 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                 ));
             }
 
-        } else {
+        }
+        final File webSrcDir = new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY);
 
-            final File webSrcDir = new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY);
-            if (!webSrcDir.exists()) {
+        if (!webSrcDir.exists()) {
+            if (!importOotbModulesInReadOnlyMode) {
                 libs.add(new DefaultJavaLibraryDescriptor(
-                    new File(this.getRootDirectory(), HybrisConstants.WEB_INF_CLASSES_DIRECTORY), false, true
+                    new File(this.getRootDirectory(), WEB_INF_CLASSES_DIRECTORY), false, true
                 ));
             }
+        } else if (descriptorType == CUSTOM) {
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(getRootDirectory(), WEB_INF_CLASSES_DIRECTORY),
+                null,
+                true,
+                true,
+                DependencyScope.RUNTIME
+            ));
+
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(getRootDirectory(), HybrisConstants.WEB_MODULE_DIRECTORY + '/' + CLASSES_DIRECTORY),
+                null,
+                true,
+                true,
+                DependencyScope.RUNTIME
+            ));
+
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(getRootDirectory(), HybrisConstants.WEB_MODULE_DIRECTORY + '/' + TEST_CLASSES_DIRECTORY),
+                null,
+                true,
+                true,
+                DependencyScope.RUNTIME
+            ));
+        }
+
+        if (descriptorType == CUSTOM) {
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(getRootDirectory(), HybrisConstants.CLASSES_DIRECTORY),
+                null,
+                true,
+                true,
+                DependencyScope.RUNTIME
+            ));
+
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(getRootDirectory(), HybrisConstants.TEST_CLASSES_DIRECTORY),
+                null,
+                true,
+                true,
+                DependencyScope.RUNTIME
+            ));
         }
 
         libs.add(new DefaultJavaLibraryDescriptor(
@@ -286,6 +336,24 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                 ),
                 false, true
             ));
+
+            if (descriptorType == CUSTOM) {
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(getRootDirectory(), HMC_MODULE_DIRECTORY + '/' + CLASSES_DIRECTORY),
+                    null,
+                    true,
+                    true,
+                    DependencyScope.RUNTIME
+                ));
+
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(getRootDirectory(), HMC_MODULE_DIRECTORY + '/' + TEST_CLASSES_DIRECTORY),
+                    null,
+                    true,
+                    true,
+                    DependencyScope.RUNTIME
+                ));
+            }
         }
 
         if (this.hasBackofficeModule()) {
@@ -303,6 +371,24 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                 ),
                 false, true
             ));
+
+            if (descriptorType == CUSTOM) {
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY + '/' + CLASSES_DIRECTORY),
+                    null,
+                    true,
+                    true,
+                    DependencyScope.RUNTIME
+                ));
+
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY + '/' + TEST_CLASSES_DIRECTORY),
+                    null,
+                    true,
+                    true,
+                    DependencyScope.RUNTIME
+                ));
+            }
         }
 
         if (this.isAddOn()) {
