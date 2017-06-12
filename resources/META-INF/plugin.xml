@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>6.2</version>
+    <version>6.3</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -108,6 +108,8 @@
           <br/>
           - Michael Golubev
           <br/>
+          - Eugene Kudelevsky
+          <br/>
           - Markus Priegl
           <br/>
           - Sergei Aksenenko
@@ -123,48 +125,94 @@
         <h2> Task </h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-228'>IIP-228</a>] - Improve Structure View for items.xml
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-261'>IIP-261</a>] - Create module dependency chart
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-233'>IIP-233</a>] - Add default shortcuts for Impex Table Format and Select
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-262'>IIP-262</a>] - Enable Maven import in 2017.2
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-239'>IIP-239</a>] - Set since-build 2016.3 to support the older IDEA
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-263'>IIP-263</a>] - Ensure the setting &quot;clean
+                output directory&quot; is off upon opening a Hybris project
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-242'>IIP-242</a>] - Fix project import import in &quot;read-only&quot; mode for OOTB extensions for better HotSwap and JRebel suppport
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-236'>IIP-236</a>] - Add findUsage by code for
+                &quot;collectiontype&quot;
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-223'>IIP-223</a>] - Add basic support of FlexibleSearch
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-245'>IIP-245</a>] - Remove ANSI color coding from
+                ant console
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-230'>IIP-230</a>] - Add autocomplete keywords to FlexibleSearch
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-247'>IIP-247</a>] - When we trigger modulegen we
+                need to trigger ant clean all prior to refresh project
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-237'>IIP-237</a>] - Add support language injection for FlexibleSearch
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-249'>IIP-249</a>] - Reformat all source code to
+                ease up code reviews
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-226'>IIP-226</a>] - Path for idea module files isn&#39;t honored when refreshing project
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-250'>IIP-250</a>] - Disable explicitly annotated
+                Spring beans
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-251'>IIP-251</a>] - Disable Spring plugin
+                configuration panel
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-253'>IIP-253</a>] - Support ANSI color for Hybris
+                Ant tasks
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-254'>IIP-254</a>] - Ddd Kotlin lang support to
+                project
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-265'>IIP-265</a>] - Create RunConfiguration for
+                jUnit tests
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-268'>IIP-268</a>] - Detect circular dependencies
+                in module dependency chart
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-220'>IIP-220</a>] - Execute flexible search via
+                IntelliJ IDEA on remote instance Hybris
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-255'>IIP-255</a>] - Ask users for permission to
+                send statistics
             </li>
         </ul>
 
         <h2> Bug </h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-231'>IIP-231</a>] - NPE during Impex Remote Validattion
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-232'>IIP-232</a>] - Ant custom installation doesn&#39;t persist over idea restart
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-238'>IIP-238</a>] - Now working navigation from -items.xml to java classes
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-136'>IIP-136</a>] - Add an additional step to the
+                import dialog telling user that he\she should run &quot;ant clean all&quot;
             </li>
         </ul>
 
         <h2> New Feature Request </h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-40'>IIPS-40</a>] - Project import: .svn directory should not be scanned on project import
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-46'>IIPS-46</a>] - During &#39;Refresh project&#39;
+                pop up extension selection dialog
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-49'>IIPS-49</a>] - Allow overriding config folder
+                i.e. HYBRIS_CONFIG_DIR when importing
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-50'>IIPS-50</a>] - Auto-create custom search
+                scopes for Hybris projects to ease searching in a project
+            </li>
+        </ul>
+
+        <h2> Fault </h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-45'>IIPS-45</a>] - ClassCastException in
+                PsiItemXmlUtil: EnhancerByJetBrainsMainCglib cannot be cast to Items
             </li>
         </ul>
       ]]>
