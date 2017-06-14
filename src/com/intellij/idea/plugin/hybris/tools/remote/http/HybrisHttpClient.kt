@@ -75,7 +75,7 @@ object HybrisHttpClient {
         return currentSessionId
     }
 
-    fun getSessionId(): String = if (currentSessionId.isNotBlank()) currentSessionId else login()
+    fun sessionId(): String = if (currentSessionId.isNotBlank()) currentSessionId else login()
 
 
     @Throws(IOException::class, NoSuchAlgorithmException::class, KeyStoreException::class, KeyManagementException::class)

@@ -73,7 +73,7 @@ public class FlexibleSearchHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
         final String actionUrl = hybrisHttpClient.hostUrl() + "/console/flexsearch/execute";
         try {
-            final String sessionId = hybrisHttpClient.getSessionId();
+            final String sessionId = hybrisHttpClient.sessionId();
             final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
