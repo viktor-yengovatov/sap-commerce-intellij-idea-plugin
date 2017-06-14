@@ -71,9 +71,9 @@ public class FlexibleSearchHttpClient {
 //            new BasicNameValuePair("locale", localeISOCode)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
-        final String actionUrl = hybrisHttpClient.getHostUrl() + "/console/flexsearch/execute";
-        final String sessionId = hybrisHttpClient.getSessionId();
+        final String actionUrl = hybrisHttpClient.hostUrl() + "/console/flexsearch/execute";
         try {
+            final String sessionId = hybrisHttpClient.getSessionId();
             final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");

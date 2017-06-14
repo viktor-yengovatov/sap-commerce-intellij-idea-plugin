@@ -52,9 +52,9 @@ public class ImportImpexHttpClient {
             new BasicNameValuePair("maxThreads", "4")
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
-        final String actionUrl = hybrisHttpClient.getHostUrl() + "/console/impex/import";
-        final String sessionId = hybrisHttpClient.getSessionId();
+        final String actionUrl = hybrisHttpClient.hostUrl() + "/console/impex/import";
         try {
+            final String sessionId = hybrisHttpClient.getSessionId();
             final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
