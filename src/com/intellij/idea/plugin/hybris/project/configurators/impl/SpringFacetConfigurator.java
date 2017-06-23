@@ -27,6 +27,7 @@ import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.spring.contexts.model.LocalXmlModel;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFacetConfiguration;
 import com.intellij.spring.facet.SpringFileSet;
@@ -81,7 +82,7 @@ public class SpringFacetConfigurator extends AbstractFacetConfigurator {
                 springFileSet.addFile(vf);
             }
         }
-        final CustomSetting setting = springFacet.findSetting(CustomSetting.PROCESS_EXPLICITLY_ANNOTATED);
+        final CustomSetting setting = springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED);
         if (setting instanceof CustomSetting.BOOLEAN) {
             ((CustomSetting.BOOLEAN) setting).setBooleanValue(false);
         }
