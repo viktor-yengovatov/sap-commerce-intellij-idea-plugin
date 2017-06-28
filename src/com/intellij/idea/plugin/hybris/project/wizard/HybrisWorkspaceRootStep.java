@@ -70,6 +70,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JLabel sourceCodeLabel;
     private JLabel importOotbModulesInReadOnlyModeLabel;
     private JLabel externalExtensionsPresentLabel;
+    private JCheckBox circularDependencyCheckBox;
+    private JTextPane circularDependencyIsNeededTextPane;
+    private JLabel circularDependencyIsNeededLabel;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -142,6 +145,17 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             }
         });
 
+        this.circularDependencyIsNeededTextPane.setVisible(false);
+        this.circularDependencyCheckBox.addActionListener(e -> circularDependencyIsNeededTextPane.setVisible(((JCheckBox) e
+            .getSource()).isVisible()));
+        this.circularDependencyIsNeededLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                circularDependencyCheckBox.doClick();
+            }
+        });
+
         this.sourceCodeZipFilesInChooser.addBrowseFolderListener(
             HybrisI18NBundleUtils.message("hybris.import.label.select.hybris.src.file"),
             "",
@@ -198,6 +212,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             directoryOverrideCheckBox.isSelected()
                 ? new File(this.externalExtensionsDirectoryFilesInChooser.getText())
                 : null
+        );
+
+        this.getContext().getHybrisProjectDescriptor().setCreateBackwardCyclicDependenciesForAddOns(
+            this.circularDependencyCheckBox.isSelected()
         );
 
         this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
@@ -264,6 +282,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
                 this.javadocUrlTextField.setText(defaultJavadocUrl);
             }
         }
+
+        circularDependencyCheckBox.setSelected(false);
 
     }
 
@@ -354,6 +374,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         hybrisProjectDescriptor.setSourceCodeZip(toFile(settings.getSourceCodeZip()));
         hybrisProjectDescriptor.setExternalExtensionsDirectory(toFile(settings.getExternalExtensionsDirectory()));
+        hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.isCreateBackwardCyclicDependenciesForAddOns());
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
 
         if (hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode() == null) {

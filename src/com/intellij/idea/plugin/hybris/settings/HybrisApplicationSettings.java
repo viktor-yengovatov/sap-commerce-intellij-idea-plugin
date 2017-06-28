@@ -56,9 +56,6 @@ public class HybrisApplicationSettings {
     @PropertyName("useSmartFolding")
     private boolean useSmartFolding = true;
 
-    @PropertyName("limitedSpringConfig")
-    private boolean limitedSpringConfig = true;
-
     @PropertyName("groupModules")
     private boolean groupModules = true;
 
@@ -66,10 +63,10 @@ public class HybrisApplicationSettings {
     private List<String> junkDirectoryList = DEFAULT_JUNK_FILE_NAMES;
 
     @PropertyName("groupHybris")
-    private String groupHybris = "Hybris";
+    private String groupHybris = "Commerce";
 
     @PropertyName("groupOtherHybris")
-    private String groupOtherHybris = "Hybris/Unused";
+    private String groupOtherHybris = "Commerce/Unused";
 
     @PropertyName("groupCustom")
     private String groupCustom = "Custom";
@@ -88,9 +85,6 @@ public class HybrisApplicationSettings {
 
     @PropertyName("defaultPlatformInReadOnly")
     private boolean defaultPlatformInReadOnly = true;
-
-    @PropertyName("createBackwardCyclicDependenciesForAddOns")
-    private boolean createBackwardCyclicDependenciesForAddOns = false;
 
     @PropertyName("usedActions")
     private HashSet<StatsCollector.ACTIONS> usedActions = new HashSet<>();
@@ -128,14 +122,6 @@ public class HybrisApplicationSettings {
 
     public void setUseSmartFolding(final boolean foldingEnabled) {
         this.useSmartFolding = foldingEnabled;
-    }
-
-    public boolean isLimitedSpringConfig() {
-        return limitedSpringConfig;
-    }
-
-    public void setLimitedSpringConfig(final boolean limitedSpringConfig) {
-        this.limitedSpringConfig = limitedSpringConfig;
     }
 
     public List<String> getJunkDirectoryList() {
@@ -210,14 +196,6 @@ public class HybrisApplicationSettings {
         this.defaultPlatformInReadOnly = defaultPlatformInReadOnly;
     }
 
-    public boolean isCreateBackwardCyclicDependenciesForAddOns() {
-        return createBackwardCyclicDependenciesForAddOns;
-    }
-
-    public void setCreateBackwardCyclicDependenciesForAddOns(final boolean createBackwardCyclicDependenciesForAddOns) {
-        this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
-    }
-
     public String getGroupPlatform() {
         return groupPlatform;
     }
@@ -280,7 +258,6 @@ public class HybrisApplicationSettings {
         return new HashCodeBuilder(17, 37)
             .append(foldingEnabled)
             .append(useSmartFolding)
-            .append(limitedSpringConfig)
             .append(groupModules)
             .append(junkDirectoryList)
             .append(groupHybris)
@@ -291,7 +268,6 @@ public class HybrisApplicationSettings {
             .append(groupPlatform)
             .append(hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly)
-            .append(createBackwardCyclicDependenciesForAddOns)
             .append(usedActions)
             .append(followSymlink)
             .append(allowedSendingPlainStatistics)
@@ -313,7 +289,6 @@ public class HybrisApplicationSettings {
         return new EqualsBuilder()
             .append(foldingEnabled, other.foldingEnabled)
             .append(useSmartFolding, other.useSmartFolding)
-            .append(limitedSpringConfig, other.limitedSpringConfig)
             .append(groupModules, other.groupModules)
             .append(junkDirectoryList, other.junkDirectoryList)
             .append(groupHybris, other.groupHybris)
@@ -324,7 +299,6 @@ public class HybrisApplicationSettings {
             .append(groupPlatform, other.groupPlatform)
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
-            .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .append(usedActions, other.usedActions)
             .append(followSymlink, other.followSymlink)
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
@@ -336,7 +310,6 @@ public class HybrisApplicationSettings {
         final StringBuilder sb = new StringBuilder("HybrisApplicationSettings{");
         sb.append("foldingEnabled=").append(foldingEnabled);
         sb.append(", useSmartFolding=").append(useSmartFolding);
-        sb.append(", limitedSpringConfig=").append(limitedSpringConfig);
         sb.append(", groupModules=").append(groupModules);
         sb.append(", junkDirectoryList=").append(junkDirectoryList);
         sb.append(", groupHybris='").append(groupHybris).append('\'');
@@ -347,9 +320,6 @@ public class HybrisApplicationSettings {
         sb.append(", groupPlatform='").append(groupPlatform).append('\'');
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
-        sb.append(", createBackwardCyclicDependenciesForAddOns='")
-          .append(createBackwardCyclicDependenciesForAddOns)
-          .append('\'');
         sb.append(", usedActions='").append(usedActions).append('\'');
         sb.append(", followSymlink='").append(followSymlink).append('\'');
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');

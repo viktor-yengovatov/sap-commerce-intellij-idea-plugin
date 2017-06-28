@@ -40,6 +40,7 @@ public class HybrisProjectSettings {
     protected String externalExtensionsDirectory;
     protected String ideModulesFilesDirectory;
     protected boolean importOotbModulesInReadOnlyMode;
+    protected boolean createBackwardCyclicDependenciesForAddOns = false;
     protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
 
     public boolean isHybrisProject() {
@@ -114,6 +115,14 @@ public class HybrisProjectSettings {
         this.completeSetOfAvailableExtensionsInHybris = completeSetOfAvailableExtensionsInHybris;
     }
 
+    public boolean isCreateBackwardCyclicDependenciesForAddOns() {
+        return createBackwardCyclicDependenciesForAddOns;
+    }
+
+    public void setCreateBackwardCyclicDependenciesForAddOns(final boolean createBackwardCyclicDependenciesForAddOns) {
+        this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -126,6 +135,7 @@ public class HybrisProjectSettings {
             .append(ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris)
+            .append(createBackwardCyclicDependenciesForAddOns)
             .toHashCode();
     }
 
@@ -151,6 +161,7 @@ public class HybrisProjectSettings {
             .append(ideModulesFilesDirectory, other.ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
+            .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .isEquals();
     }
 
@@ -166,6 +177,7 @@ public class HybrisProjectSettings {
         sb.append("ideModulesFilesDirectory=").append(ideModulesFilesDirectory);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
         sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);
+        sb.append("createBackwardCyclicDependenciesForAddOns=").append(createBackwardCyclicDependenciesForAddOns);
         sb.append('}');
         return sb.toString();
     }

@@ -95,4 +95,8 @@ public interface HybrisProjectDescriptor {
     String getJavadocUrl();
 
     void setJavadocUrl(@Nullable String javadocUrl);
+
+    void setCreateBackwardCyclicDependenciesForAddOns(boolean selected);
+
+    boolean isCreateBackwardCyclicDependenciesForAddOn();
 }

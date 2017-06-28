@@ -24,8 +24,6 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.MetaType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.roots.DependencyScope;
 import org.apache.commons.lang3.StringUtils;
@@ -401,10 +399,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     protected void processAddOnBackwardDependencies(@NotNull final List<JavaLibraryDescriptor> libs) {
         Validate.notNull(libs);
 
-        final HybrisApplicationSettingsComponent applicationSettings = HybrisApplicationSettingsComponent.getInstance();
-        final HybrisApplicationSettings hybrisApplicationSettings = applicationSettings.getState();
-
-        if (!hybrisApplicationSettings.isCreateBackwardCyclicDependenciesForAddOns()) {
+        if (!getRootProjectDescriptor().isCreateBackwardCyclicDependenciesForAddOn()) {
             return;
         }
 

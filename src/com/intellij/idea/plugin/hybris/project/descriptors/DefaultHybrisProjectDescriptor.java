@@ -106,6 +106,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File externalExtensionsDirectory;
     @Nullable
     protected String javadocUrl;
+    protected boolean createBackwardCyclicDependenciesForAddOns;
 
     private void processLocalExtensions() {
         final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor = findConfigDir();
@@ -560,7 +561,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         Validate.notNull(addOn);
         Validate.notNull(addOnDependencies);
 
-        if (HybrisApplicationSettingsComponent.getInstance().getState().isCreateBackwardCyclicDependenciesForAddOns()) {
+        if (isCreateBackwardCyclicDependenciesForAddOn()) {
             for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
                 if (moduleDescriptor.getRequiredExtensionNames().contains(addOn.getName())) {
                     addOnDependencies.add(moduleDescriptor);
@@ -736,6 +737,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setJavadocUrl(@Nullable final String javadocUrl) {
         this.javadocUrl = javadocUrl;
+    }
+
+    @Override
+    public void setCreateBackwardCyclicDependenciesForAddOns(final boolean createBackwardCyclicDependenciesForAddOns) {
+        this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
+    }
+
+    @Override
+    public boolean isCreateBackwardCyclicDependenciesForAddOn() {
+        return createBackwardCyclicDependenciesForAddOns;
     }
 
     @NotNull

@@ -34,9 +34,6 @@ import java.util.Optional;
  */
 public interface CommonIdeaService {
 
-    int IDEA_2016_2_BASELINE_VERSION = 162;
-    int IDEA_15x_BASELINE_VERSION = 145;
-
     boolean isTypingActionInProgress();
 
     @NotNull

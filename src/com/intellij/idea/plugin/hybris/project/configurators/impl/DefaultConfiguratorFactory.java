@@ -36,19 +36,15 @@ import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
-import com.intellij.openapi.util.BuildNumber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.intellij.idea.plugin.hybris.common.services.CommonIdeaService.IDEA_2016_2_BASELINE_VERSION;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
@@ -77,16 +73,6 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public SpringConfigurator getSpringConfigurator() {
-        final BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();
-
-        if (buildNumber.getBaselineVersion() < IDEA_2016_2_BASELINE_VERSION) {
-            final SpringConfigurator springConfigurator = ServiceManager.getService(
-                NoInheritanceSpringConfigurator.class
-            );
-
-            return (null == springConfigurator) ? new DummySpringConfigurator() : springConfigurator;
-        }
-
         final SpringConfigurator springConfigurator = ServiceManager.getService(
             DefaultSpringConfigurator.class
         );

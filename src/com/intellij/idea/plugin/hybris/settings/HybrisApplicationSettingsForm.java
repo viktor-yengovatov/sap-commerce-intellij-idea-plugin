@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.ui.InputValidatorEx;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
@@ -43,7 +41,6 @@ public class HybrisApplicationSettingsForm {
 
     private JCheckBox enableFoldingCheckBox;
     private JCheckBox useSmartFoldingCheckBox;
-    private JCheckBox limitedSpringConfigCheckBox;
     private JPanel mainPanel;
     private JPanel junkDirectoriesPanel;
     private JLabel impexLabel;
@@ -58,7 +55,6 @@ public class HybrisApplicationSettingsForm {
     private JLabel projectTreeViewSettingsLabel;
     private JCheckBox defaultPlatformInReadOnly;
     private JTextField groupPlatformTextField;
-    private JCheckBox createBackwardCyclicDependenciesForAddOns;
     private JTextField hybrisInstanceUsernameTextField;
     private JTextField hybrisInstancePasswordTextField;
     private JTextField hybrisHostUrlTextField;
@@ -70,7 +66,6 @@ public class HybrisApplicationSettingsForm {
     public void setData(final HybrisApplicationSettings data) {
         enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
         useSmartFoldingCheckBox.setSelected(data.isUseSmartFolding());
-        limitedSpringConfigCheckBox.setSelected(data.isLimitedSpringConfig());
         junkListPanel.setJunkDirectoryList(data.getJunkDirectoryList());
         groupModulesCheckBox.setSelected(data.isGroupModules());
         groupCustomTextField.setText(data.getGroupCustom());
@@ -81,7 +76,6 @@ public class HybrisApplicationSettingsForm {
         groupPlatformTextField.setText(data.getGroupPlatform());
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
         defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
-        createBackwardCyclicDependenciesForAddOns.setSelected(data.isCreateBackwardCyclicDependenciesForAddOns());
         hybrisInstanceUsernameTextField.setText(data.getHybrisInstanceUsername());
         hybrisInstancePasswordTextField.setText(data.getHybrisInstancePassword());
         hybrisHostUrlTextField.setText(data.getHybrisHostUrl());
@@ -91,7 +85,6 @@ public class HybrisApplicationSettingsForm {
     public void getData(final HybrisApplicationSettings data) {
         data.setFoldingEnabled(enableFoldingCheckBox.isSelected());
         data.setUseSmartFolding(useSmartFoldingCheckBox.isSelected());
-        data.setLimitedSpringConfig(limitedSpringConfigCheckBox.isSelected());
         data.setJunkDirectoryList(junkListPanel.getJunkDirectoryList());
         data.setGroupModules(groupModulesCheckBox.isSelected());
         data.setGroupCustom(groupCustomTextField.getText());
@@ -102,8 +95,6 @@ public class HybrisApplicationSettingsForm {
         data.setGroupPlatform(groupPlatformTextField.getText());
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
-        data.setCreateBackwardCyclicDependenciesForAddOns(createBackwardCyclicDependenciesForAddOns.isSelected());
-
         data.setHybrisInstanceUsername(hybrisInstanceUsernameTextField.getText());
         data.setHybrisInstancePassword(hybrisInstancePasswordTextField.getText());
         data.setHybrisHostUrl(hybrisHostUrlTextField.getText());
@@ -116,9 +107,6 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (useSmartFoldingCheckBox.isSelected() != data.isUseSmartFolding()) {
-            return true;
-        }
-        if (limitedSpringConfigCheckBox.isSelected() != data.isLimitedSpringConfig()) {
             return true;
         }
         if (!junkListPanel.getJunkDirectoryList().equals(data.getJunkDirectoryList())) {
@@ -160,9 +148,6 @@ public class HybrisApplicationSettingsForm {
         if (defaultPlatformInReadOnly.isSelected() != data.isDefaultPlatformInReadOnly()) {
             return true;
         }
-        if (createBackwardCyclicDependenciesForAddOns.isSelected() != data.isCreateBackwardCyclicDependenciesForAddOns()) {
-            return true;
-        }
         if (followSymlink.isSelected() != data.isFollowSymlink()) {
             return true;
         }
@@ -174,10 +159,6 @@ public class HybrisApplicationSettingsForm {
     }
 
     private void createUIComponents() {
-        final int baselineVersion = ApplicationInfo.getInstance().getBuild().getBaselineVersion();
-        final boolean boxVisible = baselineVersion < CommonIdeaService.IDEA_2016_2_BASELINE_VERSION;
-        limitedSpringConfigCheckBox = new JCheckBox();
-        limitedSpringConfigCheckBox.setVisible(boxVisible);
         impexLabel = new JBLabel();
         impexLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
             "hybris.import.settings.impex.title"), false));
@@ -283,7 +264,7 @@ public class HybrisApplicationSettingsForm {
 
         @NotNull
         public java.util.List<String> getJunkDirectoryList() {
-            return (java.util.List<String>) Collections.list(myListModel.elements());
+            return Collections.list(myListModel.elements());
         }
     }
 }
