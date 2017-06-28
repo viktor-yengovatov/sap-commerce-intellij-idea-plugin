@@ -23,6 +23,7 @@ import com.intellij.projectImport.ProjectImportWizardStep;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
+import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.io.IOException;
@@ -34,14 +35,14 @@ import java.net.URISyntaxException;
 public class InformationStep extends ProjectImportWizardStep {
 
     private JPanel rootPanel;
-    private JTextPane informationTextPane;
-    private JTextPane cvsTextPane;
     private JLabel importLabel;
     private JLabel cvsLabel;
-    private JTextPane jrebelTextPane;
     private JLabel jrebelLabel;
     private JLabel jiraLabel;
     private JEditorPane jiraEditorPane;
+    private JEditorPane informationEditorPane;
+    private JEditorPane cvsEditorPane;
+    private JEditorPane jrebelEditorPane;
 
     public InformationStep(final WizardContext wizardContext) {
         super(wizardContext);
@@ -62,8 +63,20 @@ public class InformationStep extends ProjectImportWizardStep {
     }
 
     private void createUIComponents() {
+        final Font font = UIManager.getFont("Label.font");
+        final String bodyRule = "body { font-family: " + font.getFamily() + "; " + "font-size: " + font.getSize() + "pt; }";
+        informationEditorPane = new JEditorPane();
+        informationEditorPane.setEditorKit(new HTMLEditorKit());
+        ((HTMLDocument) informationEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
+        cvsEditorPane = new JEditorPane();
+        cvsEditorPane.setEditorKit(new HTMLEditorKit());
+        ((HTMLDocument) cvsEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
+        jrebelEditorPane = new JEditorPane();
+        jrebelEditorPane.setEditorKit(new HTMLEditorKit());
+        ((HTMLDocument) jrebelEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
         jiraEditorPane = new JEditorPane();
         jiraEditorPane.setEditorKit(new HTMLEditorKit());
+        ((HTMLDocument) jiraEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
         jiraEditorPane.addHyperlinkListener(e -> {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 if (Desktop.isDesktopSupported()) {
