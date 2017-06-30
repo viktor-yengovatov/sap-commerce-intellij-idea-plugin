@@ -228,9 +228,6 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"
                         serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.indexer.ItemTypesIndexService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.indexer.impl.DefaultItemTypesIndexService"/>
-
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"
                             serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
 

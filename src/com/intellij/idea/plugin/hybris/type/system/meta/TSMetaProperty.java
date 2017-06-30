@@ -33,4 +33,8 @@ public interface TSMetaProperty {
     @NotNull
     Attribute getDom();
 
+    boolean isDeprecated();
+
+    @Nullable
+    String getType();
 }
