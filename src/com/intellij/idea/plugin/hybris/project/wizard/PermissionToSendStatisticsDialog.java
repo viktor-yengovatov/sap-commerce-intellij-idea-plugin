@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -34,6 +36,7 @@ public class PermissionToSendStatisticsDialog extends DialogWrapper {
     private JCheckBox permissionToSendStatisticsCheckBox;
     private JTextPane permissionToSendStatisticsTextPane;
     private Project myProject;
+    private static final Logger LOG = Logger.getInstance(PermissionToSendStatisticsDialog.class);
 
     public PermissionToSendStatisticsDialog(@Nullable final Project project) {
         super(project, false, DialogWrapper.IdeModalityType.PROJECT);
@@ -59,7 +62,11 @@ public class PermissionToSendStatisticsDialog extends DialogWrapper {
     @Override
     public void doCancelAction() {
         super.doCancelAction();
-        ProjectManager.getInstance().closeProject(myProject);
+        ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
+            LOG.error("User chose to close the project.");
+            ProjectManager.getInstance().closeProject(myProject);
+        }));
+
     }
 
 }
