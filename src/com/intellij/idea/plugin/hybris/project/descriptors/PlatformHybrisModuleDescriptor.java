@@ -66,9 +66,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     public Set<String> getRequiredExtensionNames() {
         final File extDirectory = new File(this.getRootDirectory(), HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME);
 
-        final Set<String> platformDependencies = Sets.newHashSet(
-            HybrisConstants.CONFIG_EXTENSION_NAME
-        );
+        final Set<String> platformDependencies = Sets.newHashSet();
 
         if (extDirectory.isDirectory()) {
             final File[] files = extDirectory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);

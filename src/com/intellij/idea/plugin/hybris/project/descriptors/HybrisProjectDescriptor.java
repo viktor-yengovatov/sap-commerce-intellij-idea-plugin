@@ -92,6 +92,11 @@ public interface HybrisProjectDescriptor {
     void setExternalExtensionsDirectory(@Nullable File externalExtensionsDirectory);
 
     @Nullable
+    File getExternalConfigDirectory();
+
+    void setExternalConfigDirectory(@Nullable File configDir);
+
+    @Nullable
     String getJavadocUrl();
 
     void setJavadocUrl(@Nullable String javadocUrl);

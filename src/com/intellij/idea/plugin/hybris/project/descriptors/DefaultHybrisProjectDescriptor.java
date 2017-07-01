@@ -105,6 +105,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File externalExtensionsDirectory;
     @Nullable
+    protected File externalConfigDirectory;
+    @Nullable
     protected String javadocUrl;
     protected boolean createBackwardCyclicDependenciesForAddOns;
 
@@ -149,27 +151,35 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
             return null;
         }
-        final File expectedConfigDir = getExpectedConfigDir(platformHybrisModuleDescriptor);
-        if (expectedConfigDir == null || !expectedConfigDir.isDirectory()) {
-            if (foundConfigModules.size() == 1) {
-                return foundConfigModules.get(0);
+        final File configDir;
+        if (externalConfigDirectory != null) {
+            configDir = externalConfigDirectory;
+            if (!configDir.isDirectory()) {
+                return null;
             }
-            return null;
+        } else {
+            configDir = getExpectedConfigDir(platformHybrisModuleDescriptor);
+            if (configDir == null || !configDir.isDirectory()) {
+                if (foundConfigModules.size() == 1) {
+                    return foundConfigModules.get(0);
+                }
+                return null;
+            }
         }
         for (ConfigHybrisModuleDescriptor configHybrisModuleDescriptor : foundConfigModules) {
-            if (FileUtil.filesEqual(configHybrisModuleDescriptor.getRootDirectory(), expectedConfigDir)) {
+            if (FileUtil.filesEqual(configHybrisModuleDescriptor.getRootDirectory(), configDir)) {
                 return configHybrisModuleDescriptor;
             }
         }
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
-        if (hybrisProjectService.isConfigModule(expectedConfigDir)) {
+        if (hybrisProjectService.isConfigModule(configDir)) {
             try {
                 final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor = new ConfigHybrisModuleDescriptor(
-                    expectedConfigDir,
+                    configDir,
                     platformHybrisModuleDescriptor.getRootProjectDescriptor()
                 );
-                LOG.info("Creating Overriden Config module in local.properties for " + expectedConfigDir.getAbsolutePath());
+                LOG.info("Creating Overriden Config module in local.properties for " + configDir.getAbsolutePath());
                 foundModules.add(configHybrisModuleDescriptor);
                 return configHybrisModuleDescriptor;
             } catch (HybrisConfigurationException e) {
@@ -637,6 +647,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.rootDirectory = null;
         this.hybrisDistributionDirectory = null;
         this.externalExtensionsDirectory = null;
+        this.externalConfigDirectory = null;
         this.foundModules.clear();
         this.modulesChosenForImport.clear();
         this.explicitlyDefinedModules.clear();
@@ -726,6 +737,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setExternalExtensionsDirectory(@Nullable final File externalExtensionsDirectory) {
         this.externalExtensionsDirectory = externalExtensionsDirectory;
+    }
+
+    @Override
+    @Nullable
+    public File getExternalConfigDirectory() {
+        return externalConfigDirectory;
+    }
+
+    @Override
+    public void setExternalConfigDirectory(@Nullable final File externalConfigDirectory) {
+        this.externalConfigDirectory = externalConfigDirectory;
     }
 
     @Nullable
