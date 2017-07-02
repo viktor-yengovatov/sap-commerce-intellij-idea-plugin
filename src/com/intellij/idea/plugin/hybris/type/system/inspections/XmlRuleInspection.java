@@ -155,8 +155,10 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final NodeList selection = xPathService.computeNodeSet(rule.getSelectionXPath(), context.getDocument());
         for (int i = 0; i < selection.getLength(); i++) {
             final Node nextSelected = selection.item(i);
-            //noinspection BooleanVariableAlwaysNegated
-            final boolean passed = xPathService.computeBoolean(rule.getTestXPath(), nextSelected);
+            boolean passed = xPathService.computeBoolean(rule.getTestXPath(), nextSelected);
+            if (rule.isFailOnTestQuery()) {
+                passed = !passed;
+            }
             if (!passed) {
                 output.add(this.createProblem(context, nextSelected, rule));
             }

@@ -153,7 +153,6 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         return moduleNames.stream()
                           .parallel()
                           .filter(p -> p.matches(regex))
-                          .sequential()
                           .findAny()
                           .isPresent();
     }

@@ -106,6 +106,7 @@ public class XmlRuleParser {
             final XmlRuleImpl result = new XmlRuleImpl(id, priority, description);
 
             result.setSelectionXPath(attrs.getValue("selectionQuery"));
+            result.setFailOnTestQuery(attrs.getValue("failOnTestQuery"));
             result.setTestXPath(attrs.getValue("testQuery"));
             result.setNameXPath(attrs.getValue("nameQuery"));
 
@@ -121,6 +122,7 @@ public class XmlRuleParser {
         private String myNameXPath;
         private String mySelectionXPath;
         private String myTestXPath;
+        private boolean failOnTestQuery;
 
         public XmlRuleImpl(
             @NotNull final String id,
@@ -178,6 +180,14 @@ public class XmlRuleParser {
 
         public void setSelectionXPath(final String selectionXPath) {
             this.mySelectionXPath = selectionXPath;
+        }
+
+        public boolean isFailOnTestQuery() {
+            return failOnTestQuery;
+        }
+
+        public void setFailOnTestQuery(final String failOnTestQuery) {
+            this.failOnTestQuery = Boolean.parseBoolean(failOnTestQuery);
         }
 
         public boolean validate(final Logger logger) {
