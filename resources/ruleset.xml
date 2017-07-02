@@ -155,6 +155,14 @@
           nameQuery="../@code|./@qualifier"/>
 
     <rule type="XPATH"
+          id="UseOfUnoptimizedAttributesIsNotRecommended"
+          description="Use of unoptimized attributes is not recommended"
+          priority="L"
+          selectionQuery="//itemtype/attributes/attribute[modifiers[@dontOptimize = 'true']]"
+          testQuery="1 = 0 "
+          nameQuery="../../@code|./@qualifier"/>
+
+    <rule type="XPATH"
           id="TypeCodeReservedForCommonsExtension"
           description="Type codes of the following pattern: 132xx  are reserved for commons extension"
           priority="H"
