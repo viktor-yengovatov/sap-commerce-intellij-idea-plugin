@@ -33,6 +33,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
+import com.intellij.ui.JBColor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -164,6 +165,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         });
 
         this.circularDependencyIsNeededTextPane.setVisible(false);
+        this.circularDependencyIsNeededTextPane.setDisabledTextColor(JBColor.RED);
         this.circularDependencyCheckBox.addActionListener(e -> circularDependencyIsNeededTextPane.setVisible(((JCheckBox) e
             .getSource()).isVisible()));
         this.circularDependencyIsNeededLabel.addMouseListener(new MouseAdapter() {
