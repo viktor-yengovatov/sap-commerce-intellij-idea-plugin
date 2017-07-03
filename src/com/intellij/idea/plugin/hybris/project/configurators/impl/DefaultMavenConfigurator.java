@@ -104,7 +104,13 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                 .stream()
                 .filter(e -> importedProjectRoots
                     .stream()
-                    .filter(i -> i.getName().equals(e.getName()))
+                    .filter(i -> {
+                        final String name = i.getName();
+                        if (name != null) {
+                            return i.getName().equals(e.getName());
+                        }
+                        return i.getFinalName().startsWith(e.getName());
+                    })
                     .findAny()
                     .isPresent()
                 )
