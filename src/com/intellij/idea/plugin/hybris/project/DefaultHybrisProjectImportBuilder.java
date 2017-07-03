@@ -62,7 +62,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -293,7 +292,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         } else {
             alreadyExistingModuleFiles = getModulesChosenForImportFiles(modulesChosenForImport);
         }
-
         Collections.sort(alreadyExistingModuleFiles);
 
         try {
@@ -305,12 +303,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     private List<File> getAllImlFiles(final File dir) {
         final List<File> imlFiles = Arrays.stream(dir.listFiles(
-            e -> {
-                int dotIndex = e.getName().lastIndexOf('.');
-                return (dotIndex != -1) && e.getName()
-                                            .substring(dotIndex)
-                                            .equals(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
-            }
+            e -> e.getName().endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
         )).collect(Collectors.toList());
         return imlFiles;
     }
