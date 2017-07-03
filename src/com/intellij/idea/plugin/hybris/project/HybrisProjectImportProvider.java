@@ -22,7 +22,6 @@ import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.project.wizard.CheckCompilerClearDirectoryStep;
 import com.intellij.idea.plugin.hybris.project.wizard.CheckRequiredPluginsStep;
 import com.intellij.idea.plugin.hybris.project.wizard.HybrisWorkspaceRootStep;
 import com.intellij.idea.plugin.hybris.project.wizard.InformationStep;
@@ -64,7 +63,6 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
             new InformationStep(context),
             new HybrisWorkspaceRootStep(context),
             new SelectHybrisImportedProjectsStep(context),
-            new CheckCompilerClearDirectoryStep(context),
             stepFactory.createProjectJdkStep(context)
         };
     }

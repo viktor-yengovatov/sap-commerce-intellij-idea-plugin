@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.components;
 
-import com.intellij.compiler.CompilerWorkspaceConfiguration;
 import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
@@ -34,7 +33,6 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.spring.settings.SpringGeneralSettings;
 
@@ -56,16 +54,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
         }
         registerAntListener(project);
         resetSpringGeneralSettings(project);
-        ensureGlobalSettings(project);
         popupPermissionToSendStatistics(project);
-    }
-
-    private void ensureGlobalSettings(final Project project) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        if (commonIdeaService.isHybrisProject(project) || commonIdeaService.isPotentiallyHybrisProject(project)) {
-            final Project defaultProject = ProjectManager.getInstance().getDefaultProject();
-            CompilerWorkspaceConfiguration.getInstance(defaultProject).CLEAR_OUTPUT_DIRECTORY = false;
-        }
     }
 
     private void popupPermissionToSendStatistics(final Project project) {
