@@ -42,7 +42,7 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
     @Nullable
     @Override
     public String getElementTypeName() {
-        return getDom().getElementType().getValue();
+        return retrieveDom().getElementType().getValue();
     }
 
     @Nullable

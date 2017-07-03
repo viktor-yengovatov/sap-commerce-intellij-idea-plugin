@@ -45,7 +45,7 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<FlexibleSearchTabl
         final TSMetaModel meta = getTypeSystemMeta();
         final String lookingForName = getElement().getText();
         return Optional.ofNullable(meta.findMetaClassByName(lookingForName))
-                       .map(TSMetaClass::getAllDomsStream)
+                       .map(TSMetaClass::retrieveAllDomsStream)
                        .orElse(Stream.empty())
                        .map(ItemTypeResolveResult::new)
                        .toArray(ResolveResult[]::new);

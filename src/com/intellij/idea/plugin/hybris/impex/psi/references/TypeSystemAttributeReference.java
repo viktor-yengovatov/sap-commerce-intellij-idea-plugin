@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,13 +66,15 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         final List<ResolveResult> result = metaClass.get()
                                                     .findPropertiesByName(featureName, true)
                                                     .stream()
-                                                    .map(TSMetaProperty::getDom)
+                                                    .map(TSMetaProperty::retrieveDom)
+                                                    .filter(Objects::nonNull)
                                                     .map(AttributeResolveResult::new)
                                                     .collect(Collectors.toCollection(LinkedList::new));
 
         metaClass.get().findReferenceEndsByRole(featureName, true)
                  .stream()
-                 .map(TSMetaReference.ReferenceEnd::getDom)
+                 .map(TSMetaReference.ReferenceEnd::retrieveDom)
+                 .filter(Objects::nonNull)
                  .map(RelationElementResolveResult::new)
                  .collect(Collectors.toCollection(() -> result));
 

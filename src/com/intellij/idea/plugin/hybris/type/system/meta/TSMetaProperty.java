@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -30,8 +29,8 @@ public interface TSMetaProperty {
     @Nullable
     String getName();
 
-    @NotNull
-    Attribute getDom();
+    @Nullable
+    Attribute retrieveDom();
 
     boolean isDeprecated();
 

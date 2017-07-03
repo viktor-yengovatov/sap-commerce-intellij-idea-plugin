@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class AtomicTypeConverter extends TypeSystemConverterBase<AtomicType> {
         @NotNull final String name, @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
     ) {
         return Optional.ofNullable(meta.findMetaAtomicByName(name))
-                       .map(TSMetaAtomic::getDom)
+                       .map(TSMetaAtomic::retrieveDom)
                        .orElse(null);
     }
 
@@ -55,7 +56,8 @@ public class AtomicTypeConverter extends TypeSystemConverterBase<AtomicType> {
         @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
     ) {
         return meta.getMetaAtomicStream()
-                   .map(TSMetaAtomic::getDom)
+                   .map(TSMetaAtomic::retrieveDom)
+                   .filter(Objects::nonNull)
                    .collect(Collectors.toList());
     }
 

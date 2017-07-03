@@ -28,8 +28,11 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlAttributeValue;
+import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomManager;
@@ -37,6 +40,8 @@ import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,12 +96,23 @@ public class TypeSystemGutterAnnotator implements Annotator {
         }
     }
 
-    private static Collection<XmlAttributeValue> findAlternativeDoms(
-        @NotNull final ItemType source
-    ) {
-        final TSMetaModel metaModel = TSMetaModelAccess.getInstance(source).getTypeSystemMeta();
-        return Optional.ofNullable(metaModel.findMetaClassForDom(source))
-                       .map(TSMetaClass::getAllDomsStream)
+    private static Collection<XmlAttributeValue> findAlternativeDoms(@NotNull final ItemType source) {
+        final String code = source.getCode().getStringValue();
+
+        if (StringUtil.isEmpty(code)) {
+            return Collections.emptyList();
+        }
+        final XmlElement element = source.getXmlElement();
+        final PsiFile psiFile = element == null ? null : element.getContainingFile();
+
+        if (psiFile == null) {
+            return Collections.emptyList();
+        }
+        final TSMetaModel externalModel = TSMetaModelAccess.getInstance(psiFile.getProject()).
+            getExternalTypeSystemMeta(psiFile);
+
+        return Optional.ofNullable(externalModel.findMetaClassForDom(source))
+                       .map(TSMetaClass::retrieveAllDomsStream)
                        .orElse(Stream.empty())
                        .filter(dom -> !dom.equals(source))
                        .map(ItemType::getCode)
@@ -105,30 +121,35 @@ public class TypeSystemGutterAnnotator implements Annotator {
     }
 
     @NotNull
-    private static Optional<TSMetaClass> findFirstExtendingMetaClass(
-        @NotNull final ItemType source
-    ) {
-        return getExtendingMetaClassNamesStream(source)
-            .findAny();
+    private static Optional<TSMetaClass> findFirstExtendingMetaClass(@NotNull final ItemType source) {
+        return getExtendingMetaClassNamesStream(source).findAny();
     }
 
-    private static Collection<PsiElement> findAllExtendingXmlAttributes(
-        @NotNull final ItemType source
-    ) {
+    private static Collection<PsiElement> findAllExtendingXmlAttributes(@NotNull final ItemType source) {
         return getExtendingMetaClassNamesStream(source)
-            .flatMap(TSMetaClass::getAllDomsStream)
+            .flatMap(TSMetaClass::retrieveAllDomsStream)
             .map(ItemType::getCode)
             .map(GenericAttributeValue::getXmlAttributeValue)
-            .filter(psi -> psi != null)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
     @NotNull
-    private static Stream<TSMetaClass> getExtendingMetaClassNamesStream(
-        @NotNull final ItemType source
-    ) {
-        final TSMetaModel metaModel = TSMetaModelAccess.getInstance(source).getTypeSystemMeta();
+    private static Stream<TSMetaClass> getExtendingMetaClassNamesStream(@NotNull final ItemType source) {
+        final String code = source.getCode().getStringValue();
+
+        if (StringUtil.isEmpty(code)) {
+            return Stream.empty();
+        }
+        final XmlElement xmlElement = source.getXmlElement();
+        final PsiFile psiFile = xmlElement == null ? null : xmlElement.getContainingFile();
+
+        if (psiFile == null) {
+            return Stream.empty();
+        }
+        final TSMetaModel metaModel = TSMetaModelAccess.getInstance(psiFile.getProject()).getTypeSystemMeta(psiFile);
         final TSMetaClass sourceMeta = metaModel.findMetaClassForDom(source);
+
         if (sourceMeta == null) {
             return Stream.empty();
         }
