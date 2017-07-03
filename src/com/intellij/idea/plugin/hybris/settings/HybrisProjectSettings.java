@@ -43,6 +43,7 @@ public class HybrisProjectSettings {
     protected boolean importOotbModulesInReadOnlyMode;
     protected boolean createBackwardCyclicDependenciesForAddOns = false;
     protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
+    protected Set<String> unusedExtensions = newHashSet();
 
     public boolean isHybrisProject() {
         return hybrisProject;
@@ -132,6 +133,14 @@ public class HybrisProjectSettings {
         this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
     }
 
+    public Set<String> getUnusedExtensions() {
+        return unusedExtensions;
+    }
+
+    public void setUnusedExtensions(final Set<String> unusedExtensions) {
+        this.unusedExtensions = unusedExtensions;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -146,6 +155,7 @@ public class HybrisProjectSettings {
             .append(importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns)
+            .append(unusedExtensions)
             .toHashCode();
     }
 
@@ -173,6 +183,7 @@ public class HybrisProjectSettings {
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
+            .append(unusedExtensions, other.unusedExtensions)
             .isEquals();
     }
 
@@ -190,6 +201,7 @@ public class HybrisProjectSettings {
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
         sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);
         sb.append("createBackwardCyclicDependenciesForAddOns=").append(createBackwardCyclicDependenciesForAddOns);
+        sb.append("unusedExtensions=").append(unusedExtensions);
         sb.append('}');
         return sb.toString();
     }

@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
@@ -174,6 +175,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public SearchScopeConfigurator getSearchScopeConfigurator() {
         return ServiceManager.getService(SearchScopeConfigurator.class);
+    }
+
+    @NotNull
+    @Override
+    public LoadedConfigurator getLoadedConfigurator() {
+        return ServiceManager.getService(LoadedConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {

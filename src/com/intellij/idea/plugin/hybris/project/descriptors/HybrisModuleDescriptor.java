@@ -98,4 +98,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
         }
     }
 
+    void setMandatory(boolean mandatory);
+
+    boolean isMandatory();
 }

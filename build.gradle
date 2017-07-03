@@ -36,6 +36,24 @@ allprojects {
             java.srcDir 'tests'
         }
     }
+
+    // https://github.com/JetBrains/gradle-intellij-plugin
+    apply plugin: 'org.jetbrains.intellij'
+    intellij {
+        type 'IU'
+        //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
+        version '172.3198.6'
+        downloadSources true
+        updateSinceUntilBuild false
+
+        sandboxDirectory "$buildDir/idea-sandbox"
+
+        pluginName 'ccom.intellij.idea.plugin.hybris.impex'
+        plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
+    }
+    patchPluginXml {
+        sinceBuild '172'
+    }
 }
 
 apply plugin: 'idea'

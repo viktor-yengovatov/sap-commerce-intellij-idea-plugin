@@ -45,6 +45,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjectsStep.SELECTION_MODE.MANDATORY_EXTENSION;
+import static com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjectsStep.SELECTION_MODE.UNUSED_EXTENSION;
+
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
@@ -53,37 +56,45 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     final static int COLUMN_WIDTH = 300;
 
+    enum SELECTION_MODE {MANDATORY_EXTENSION, UNUSED_EXTENSION}
+
+    private SELECTION_MODE selectionMode = MANDATORY_EXTENSION;
+
     public SelectHybrisImportedProjectsStep(final WizardContext context) {
         super(context);
 
-        this.fileChooser.addElementsMarkListener(new ElementsChooser.ElementsMarkListener<HybrisModuleDescriptor>() {
+        this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<HybrisModuleDescriptor>) (element, isMarked) -> {
+            if (isMarked) {
+                for (HybrisModuleDescriptor moduleDescriptor : element.getDependenciesPlainList()) {
+                    if (fileChooser.isElementMarked(moduleDescriptor)) {
+                        continue;
+                    }
 
-            @Override
-            public void elementMarkChanged(final HybrisModuleDescriptor element, final boolean isMarked) {
-                if (isMarked) {
-                    for (HybrisModuleDescriptor moduleDescriptor : element.getDependenciesPlainList()) {
-                        if (fileChooser.isElementMarked(moduleDescriptor)) {
-                            continue;
-                        }
-
-                        fileChooser.setElementMarked(moduleDescriptor, true);
+                    fileChooser.setElementMarked(moduleDescriptor, true);
+                    if (selectionMode == MANDATORY_EXTENSION) {
+                        moduleDescriptor.setMandatory(true);
                     }
                 }
-
-                fileChooser.repaint();
             }
+
+            fileChooser.repaint();
         });
     }
 
     @Override
     public void updateStep() {
         super.updateStep();
+        selectionMode = MANDATORY_EXTENSION;
         for (int index = 0; index < fileChooser.getElementCount(); index++) {
             final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
             if (hybrisModuleDescriptor.isPreselected()) {
                 fileChooser.setElementMarked(hybrisModuleDescriptor, true);
+                if (selectionMode == MANDATORY_EXTENSION) {
+                    hybrisModuleDescriptor.setMandatory(true);
+                }
             }
         }
+        selectionMode = UNUSED_EXTENSION;
     }
 
     @Override
@@ -175,25 +186,49 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     @Override
     public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
         validateCommon();
+        selectionMode = MANDATORY_EXTENSION;
         final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
         for (HybrisModuleDescriptor hybrisModuleDescriptor : getContext().getList()) {
             if (hybrisModuleDescriptor.isPreselected()) {
                 moduleToImport.add(hybrisModuleDescriptor);
+                hybrisModuleDescriptor.setMandatory(true);
                 moduleToCheck.add(hybrisModuleDescriptor);
             }
         }
+        resolveDependency(moduleToImport, moduleToCheck);
+
+        selectionMode = UNUSED_EXTENSION;
+        final Set<String> unusedExtensionNameSet = settings.getUnusedExtensions();
+        getContext()
+            .getList()
+            .stream()
+            .filter(e -> unusedExtensionNameSet.contains(e.getName()))
+            .forEach(e -> {
+                moduleToImport.add(e);
+                moduleToCheck.add(e);
+            });
+        resolveDependency(moduleToImport, moduleToCheck);
+        this.getContext().setList(moduleToImport);
+    }
+
+    private void resolveDependency(
+        final List<HybrisModuleDescriptor> moduleToImport,
+        final Set<HybrisModuleDescriptor> moduleToCheck
+    ) {
         while (!moduleToCheck.isEmpty()) {
             final HybrisModuleDescriptor currentModule = moduleToCheck.iterator().next();
             for (HybrisModuleDescriptor moduleDescriptor : currentModule.getDependenciesPlainList()) {
                 if (!moduleToImport.contains(moduleDescriptor)) {
                     moduleToImport.add(moduleDescriptor);
+                    if (selectionMode == MANDATORY_EXTENSION) {
+                        moduleDescriptor.setMandatory(true);
+                    }
                     moduleToCheck.add(moduleDescriptor);
                 }
             }
             moduleToCheck.remove(currentModule);
         }
-        this.getContext().setList(moduleToImport);
     }
 
     /*

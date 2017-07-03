@@ -61,6 +61,8 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -178,7 +180,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
         final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
 
-        this.performProjectsCleanup(allModules);
+        this.performProjectsCleanup(hybrisProjectDescriptor);
         this.collectStatistics(hybrisProjectDescriptor);
 
         final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
@@ -282,20 +284,24 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
     }
 
-    protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
-        Validate.notNull(modulesChosenForImport);
+    protected void performProjectsCleanup(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
 
-        final List<File> alreadyExistingModuleFiles = new ArrayList<File>();
-        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
-            if (moduleDescriptor.getIdeaModuleFile().exists()) {
-                alreadyExistingModuleFiles.add(moduleDescriptor.getIdeaModuleFile());
-            }
+        final File dir = hybrisProjectDescriptor.getModulesFilesDirectory();
+        if (!dir.isDirectory()) {
+            return;
         }
+        final Collection<File> imlFiles = Arrays.stream(dir.listFiles(
+            e -> {
+                int dotIndex = e.getName().lastIndexOf('.');
+                return (dotIndex != -1) && e.getName()
+                                            .substring(dotIndex)
+                                            .equals(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
 
-        Collections.sort(alreadyExistingModuleFiles);
+            }
+        )).collect(Collectors.toList());
 
         try {
-            this.virtualFileSystemService.removeAllFiles(alreadyExistingModuleFiles);
+            this.virtualFileSystemService.removeAllFiles(imlFiles);
         } catch (IOException e) {
             LOG.error("Can not remove old module files.", e);
         }

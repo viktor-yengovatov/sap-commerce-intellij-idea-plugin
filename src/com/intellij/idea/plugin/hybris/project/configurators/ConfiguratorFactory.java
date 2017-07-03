@@ -82,4 +82,7 @@ public interface ConfiguratorFactory {
 
     @NotNull
     SearchScopeConfigurator getSearchScopeConfigurator();
+
+    @NotNull
+    LoadedConfigurator getLoadedConfigurator();
 }

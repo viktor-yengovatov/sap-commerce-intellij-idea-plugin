@@ -51,6 +51,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     protected Set<String> springFileSet = new HashSet<String>();
 
     private boolean inLocalExtensions;
+    private boolean mandatory;
 
     public AbstractHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
@@ -179,6 +180,16 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public void setInLocalExtensions(final boolean inLocalExtensions) {
         this.inLocalExtensions = inLocalExtensions;
+    }
+
+    @Override
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    @Override
+    public void setMandatory(final boolean mandatory) {
+        this.mandatory = mandatory;
     }
 
     @Nullable
