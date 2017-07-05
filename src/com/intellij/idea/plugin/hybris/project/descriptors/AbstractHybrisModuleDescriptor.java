@@ -51,7 +51,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     protected Set<String> springFileSet = new HashSet<String>();
 
     private boolean inLocalExtensions;
-    private boolean mandatory;
+    private IMPORT_STATUS importStatus = IMPORT_STATUS.UNLOADED;
 
     public AbstractHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
@@ -183,13 +183,13 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
-    public boolean isMandatory() {
-        return mandatory;
+    public IMPORT_STATUS getImportStatus() {
+        return importStatus;
     }
 
     @Override
-    public void setMandatory(final boolean mandatory) {
-        this.mandatory = mandatory;
+    public void setImportStatus(final IMPORT_STATUS importStatus) {
+        this.importStatus = importStatus;
     }
 
     @Nullable

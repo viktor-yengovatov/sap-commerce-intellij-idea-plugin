@@ -35,6 +35,8 @@ import java.util.Set;
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
 
     enum DescriptorType {CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM, ECLIPSE, MAVEN}
+    
+    enum IMPORT_STATUS {MANDATORY, UNUSED, UNLOADED}
 
     @NotNull
     String getName();
@@ -98,7 +100,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
         }
     }
 
-    void setMandatory(boolean mandatory);
+    void setImportStatus(IMPORT_STATUS importStatus);
 
-    boolean isMandatory();
+    IMPORT_STATUS getImportStatus();
 }

@@ -44,9 +44,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjectsStep.SELECTION_MODE.MANDATORY_EXTENSION;
-import static com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjectsStep.SELECTION_MODE.UNUSED_EXTENSION;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
+import static com.intellij.util.containers.ContainerUtil.newArrayList;
+import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
@@ -56,9 +60,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     final static int COLUMN_WIDTH = 300;
 
-    enum SELECTION_MODE {MANDATORY_EXTENSION, UNUSED_EXTENSION}
-
-    private SELECTION_MODE selectionMode = MANDATORY_EXTENSION;
+    private HybrisModuleDescriptor.IMPORT_STATUS selectionMode = MANDATORY;
 
     public SelectHybrisImportedProjectsStep(final WizardContext context) {
         super(context);
@@ -71,12 +73,11 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
                     }
 
                     fileChooser.setElementMarked(moduleDescriptor, true);
-                    if (selectionMode == MANDATORY_EXTENSION) {
-                        moduleDescriptor.setMandatory(true);
+                    if (selectionMode == MANDATORY) {
+                        moduleDescriptor.setImportStatus(MANDATORY);
                     }
                 }
             }
-
             fileChooser.repaint();
         });
     }
@@ -84,17 +85,15 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     @Override
     public void updateStep() {
         super.updateStep();
-        selectionMode = MANDATORY_EXTENSION;
+        selectionMode = MANDATORY;
         for (int index = 0; index < fileChooser.getElementCount(); index++) {
             final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
             if (hybrisModuleDescriptor.isPreselected()) {
                 fileChooser.setElementMarked(hybrisModuleDescriptor, true);
-                if (selectionMode == MANDATORY_EXTENSION) {
-                    hybrisModuleDescriptor.setMandatory(true);
-                }
+                hybrisModuleDescriptor.setImportStatus(MANDATORY);
             }
         }
-        selectionMode = UNUSED_EXTENSION;
+        selectionMode = UNUSED;
     }
 
     @Override
@@ -123,8 +122,8 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     @NotNull
     protected Set<HybrisModuleDescriptor> calculateSelectedModuleDuplicates() {
-        final Set<HybrisModuleDescriptor> duplicateModules = new HashSet<HybrisModuleDescriptor>();
-        final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<String, HybrisModuleDescriptor>();
+        final Set<HybrisModuleDescriptor> duplicateModules = newHashSet();
+        final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<>();
 
         for (HybrisModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 
@@ -162,9 +161,37 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         return true;
     }
 
+    public void onStepLeaving() {
+        super.onStepLeaving();
+        final List<HybrisModuleDescriptor> markedElements = newArrayList(this.fileChooser.getMarkedElements());
+        final List<HybrisModuleDescriptor> allElements = newArrayList(markedElements);
+        final Set<String> moduleDuplicateNames = allElements.stream()
+                                                             .map(e -> e.getName())
+                                                             .collect(Collectors.toSet());
+        for (int index = 0; index < this.fileChooser.getElementCount(); index++) {
+            final HybrisModuleDescriptor element = fileChooser.getElementAt(index);
+            if (markedElements.contains(element)) {
+                if (element.getImportStatus() != MANDATORY) {
+                    element.setImportStatus(UNUSED);
+                }
+            } else if (!moduleDuplicateNames.contains(element.getName())) {
+                moduleDuplicateNames.add(element.getName());
+                element.setImportStatus(UNLOADED);
+                allElements.add(element);
+            }
+        }
+
+        try {
+            this.getContext().setList(allElements);
+        } catch (ConfigurationException e) {
+            // no-op already validated
+        }
+    }
+
+
     private boolean validateCommon() throws ConfigurationException {
         final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
-        final Collection<String> moduleDuplicateNames = new ArrayList<String>(moduleDuplicates.size());
+        final Collection<String> moduleDuplicateNames = newHashSet(moduleDuplicates.size());
 
         for (HybrisModuleDescriptor moduleDuplicate : moduleDuplicates) {
             moduleDuplicateNames.add(this.getModuleNameAndPath(moduleDuplicate));
@@ -185,20 +212,19 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
 
     @Override
     public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
-        validateCommon();
-        selectionMode = MANDATORY_EXTENSION;
+        selectionMode = MANDATORY;
         final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
         for (HybrisModuleDescriptor hybrisModuleDescriptor : getContext().getList()) {
             if (hybrisModuleDescriptor.isPreselected()) {
                 moduleToImport.add(hybrisModuleDescriptor);
-                hybrisModuleDescriptor.setMandatory(true);
+                hybrisModuleDescriptor.setImportStatus(selectionMode);
                 moduleToCheck.add(hybrisModuleDescriptor);
             }
         }
         resolveDependency(moduleToImport, moduleToCheck);
 
-        selectionMode = UNUSED_EXTENSION;
+        selectionMode = UNUSED;
         final Set<String> unusedExtensionNameSet = settings.getUnusedExtensions();
         getContext()
             .getList()
@@ -206,10 +232,28 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
             .filter(e -> unusedExtensionNameSet.contains(e.getName()))
             .forEach(e -> {
                 moduleToImport.add(e);
+                e.setImportStatus(selectionMode);
                 moduleToCheck.add(e);
             });
         resolveDependency(moduleToImport, moduleToCheck);
-        this.getContext().setList(moduleToImport);
+
+        selectionMode = UNLOADED;
+        final Set<String> moduleDuplicateNames = moduleToImport.stream()
+                                                                .map(e -> e.getName())
+                                                                .collect(Collectors.toSet());
+        for (HybrisModuleDescriptor element : getContext().getList()) {
+            if (!moduleToImport.contains(element) && !moduleDuplicateNames.contains(element.getName())) {
+                moduleDuplicateNames.add(element.getName());
+                element.setImportStatus(selectionMode);
+                moduleToImport.add(element);
+            }
+        }
+
+        try {
+            this.getContext().setList(moduleToImport);
+        } catch (ConfigurationException e) {
+            // no-op already validated
+        }
     }
 
     private void resolveDependency(
@@ -221,9 +265,7 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
             for (HybrisModuleDescriptor moduleDescriptor : currentModule.getDependenciesPlainList()) {
                 if (!moduleToImport.contains(moduleDescriptor)) {
                     moduleToImport.add(moduleDescriptor);
-                    if (selectionMode == MANDATORY_EXTENSION) {
-                        moduleDescriptor.setMandatory(true);
-                    }
+                    moduleDescriptor.setImportStatus(selectionMode);
                     moduleToCheck.add(moduleDescriptor);
                 }
             }

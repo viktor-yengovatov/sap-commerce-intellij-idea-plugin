@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.util.containers.ContainerUtilRt.newHashSet;
-
 public class DefaultLoadedConfigurator implements LoadedConfigurator {
 
     @Override
@@ -41,17 +39,19 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
     ) {
         final List<String> unloadedModuleNames = allModules
             .stream()
-            .filter(e -> !e.isMandatory())
+            .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
             .map(e -> e.getName())
             .collect(Collectors.toList());
         ApplicationManager.getApplication().invokeAndWait(()
-                                                              -> ReadAction.run(()
-                                                                                    -> ModuleManager.getInstance(project)
-                                                                                                    .setUnloadedModules(
-                                                                                                        unloadedModuleNames)
+                                                              -> ReadAction.run(
+            () -> ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames)
                                                           )
         );
-        Set<String> unusedModuleNames = newHashSet(unloadedModuleNames);
+        final Set<String> unusedModuleNames = allModules
+            .stream()
+            .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNUSED)
+            .map(e -> e.getName())
+            .collect(Collectors.toSet());
         HybrisProjectSettingsComponent.getInstance(project).getState().setUnusedExtensions(unusedModuleNames);
     }
 }
