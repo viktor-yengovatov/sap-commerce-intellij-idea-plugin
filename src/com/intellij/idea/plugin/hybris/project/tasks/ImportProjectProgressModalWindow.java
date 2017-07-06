@@ -342,6 +342,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (configDir != null && configDir.exists()) {
             hybrisProjectSettings.setExternalConfigDirectory(configDir.getPath());
         }
+        final File dbDriversDir = hybrisProjectDescriptor.getExternalDbDriversDirectory();
+        if (dbDriversDir != null && dbDriversDir.exists()) {
+            hybrisProjectSettings.setExternalDbDriversDirectory(dbDriversDir.getPath());
+        }
         hybrisProjectSettings.setCreateBackwardCyclicDependenciesForAddOns(hybrisProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn());
         final File sourceZip = hybrisProjectDescriptor.getSourceCodeZip();
         if (sourceZip != null && sourceZip.exists()) {

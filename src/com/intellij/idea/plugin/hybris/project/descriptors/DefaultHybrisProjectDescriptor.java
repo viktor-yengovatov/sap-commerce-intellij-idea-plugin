@@ -107,6 +107,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File externalConfigDirectory;
     @Nullable
+    protected File externalDbDriversDirectory;
+    @Nullable
     protected String javadocUrl;
     protected boolean createBackwardCyclicDependenciesForAddOns;
 
@@ -648,6 +650,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.hybrisDistributionDirectory = null;
         this.externalExtensionsDirectory = null;
         this.externalConfigDirectory = null;
+        this.externalDbDriversDirectory = null;
         this.foundModules.clear();
         this.modulesChosenForImport.clear();
         this.explicitlyDefinedModules.clear();
@@ -748,6 +751,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setExternalConfigDirectory(@Nullable final File externalConfigDirectory) {
         this.externalConfigDirectory = externalConfigDirectory;
+    }
+
+    @Override
+    @Nullable
+    public File getExternalDbDriversDirectory() {
+        return externalDbDriversDirectory;
+    }
+
+    @Override
+    public void setExternalDbDriversDirectory(@Nullable final File externalDbDriversDirectory) {
+        this.externalDbDriversDirectory = externalDbDriversDirectory;
     }
 
     @Nullable

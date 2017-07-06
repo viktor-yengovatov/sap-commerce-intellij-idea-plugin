@@ -97,6 +97,11 @@ public interface HybrisProjectDescriptor {
     void setExternalConfigDirectory(@Nullable File configDir);
 
     @Nullable
+    File getExternalDbDriversDirectory();
+
+    void setExternalDbDriversDirectory(@Nullable File dbDriversDir);
+
+    @Nullable
     String getJavadocUrl();
 
     void setJavadocUrl(@Nullable String javadocUrl);

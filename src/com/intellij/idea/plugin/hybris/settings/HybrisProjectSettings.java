@@ -39,6 +39,7 @@ public class HybrisProjectSettings {
     protected String sourceCodeZip;
     protected String externalExtensionsDirectory;
     protected String externalConfigDirectory;
+    protected String externalDbDriversDirectory;
     protected String ideModulesFilesDirectory;
     protected boolean importOotbModulesInReadOnlyMode;
     protected boolean createBackwardCyclicDependenciesForAddOns = false;
@@ -101,6 +102,14 @@ public class HybrisProjectSettings {
         this.externalConfigDirectory = externalConfigDirectory;
     }
 
+    public String getExternalDbDriversDirectory() {
+        return externalDbDriversDirectory;
+    }
+
+    public void setExternalDbDriversDirectory(final String externalDbDriversDirectory) {
+        this.externalDbDriversDirectory = externalDbDriversDirectory;
+    }
+
     public String getIdeModulesFilesDirectory() {
         return ideModulesFilesDirectory;
     }
@@ -151,6 +160,7 @@ public class HybrisProjectSettings {
             .append(sourceCodeZip)
             .append(externalExtensionsDirectory)
             .append(externalConfigDirectory)
+            .append(externalDbDriversDirectory)
             .append(ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris)
@@ -179,6 +189,7 @@ public class HybrisProjectSettings {
             .append(sourceCodeZip, other.sourceCodeZip)
             .append(externalExtensionsDirectory, other.externalExtensionsDirectory)
             .append(externalConfigDirectory, other.externalConfigDirectory)
+            .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(ideModulesFilesDirectory, other.ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
             .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
@@ -197,6 +208,7 @@ public class HybrisProjectSettings {
         sb.append("sourceCodeZip=").append(sourceCodeZip);
         sb.append("externalExtensionsDirectory=").append(externalExtensionsDirectory);
         sb.append("externalConfigDirectory=").append(externalConfigDirectory);
+        sb.append("externalDbDriversDirectory=").append(externalDbDriversDirectory);
         sb.append("ideModulesFilesDirectory=").append(ideModulesFilesDirectory);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
         sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);

@@ -60,8 +60,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private TextFieldWithBrowseButton sourceCodeZipFilesInChooser;
     private JTextField projectNameTextField;
     private JCheckBox importOotbModulesInReadOnlyModeCheckBox;
-    private volatile TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
-    private volatile TextFieldWithBrowseButton externalExtensionsDirectoryFilesInChooser;
+    private TextFieldWithBrowseButton hybrisDistributionDirectoryFilesInChooser;
+    private TextFieldWithBrowseButton externalExtensionsDirectoryFilesInChooser;
     private JTextField javadocUrlTextField;
     private JCheckBox sourceCodeCheckBox;
     private JLabel storeModuleFilesInLabel;
@@ -77,7 +77,11 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox configOverrideCheckBox;
     private JLabel configOverrideLabel;
     private JPanel configOverridePanel;
-    private volatile TextFieldWithBrowseButton configOverrideFilesInChooser;
+    private TextFieldWithBrowseButton configOverrideFilesInChooser;
+    private JCheckBox dbDriversDirOverrideCheckBox;
+    private JPanel dbDriverDirOverridePanel;
+    private JLabel dbDriversDirOverrideLabel;
+    private TextFieldWithBrowseButton dbDriversDirOverrideFileChooser;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -134,13 +138,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.directoryOverridePanel.setVisible(false);
 
-        this.directoryOverrideCheckBox.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                directoryOverridePanel.setVisible(((JCheckBox) e.getSource()).isSelected());
-            }
-        });
+        this.directoryOverrideCheckBox.addActionListener(
+            e -> directoryOverridePanel.setVisible(((JCheckBox) e.getSource()).isSelected())
+        );
 
         this.directoryOverrideLabel.addMouseListener(new MouseAdapter() {
 
@@ -152,15 +152,28 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.configOverridePanel.setVisible(false);
 
-        this.configOverrideCheckBox.addActionListener(e ->
-                                                          configOverridePanel.setVisible(((JCheckBox) e.getSource()).isSelected())
+        this.configOverrideCheckBox.addActionListener(
+            e -> configOverridePanel.setVisible(((JCheckBox) e.getSource()).isSelected())
         );
 
         this.configOverrideLabel.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(final MouseEvent e) {
                 configOverrideCheckBox.doClick();
+            }
+        });
+
+        this.dbDriverDirOverridePanel.setVisible(false);
+
+        this.dbDriversDirOverrideCheckBox.addActionListener(
+            e -> dbDriverDirOverridePanel.setVisible(((JCheckBox) e.getSource()).isSelected())
+        );
+
+        this.dbDriversDirOverrideLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                dbDriversDirOverrideCheckBox.doClick();
             }
         });
 
@@ -199,6 +212,13 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.configOverrideFilesInChooser.addBrowseFolderListener(
             HybrisI18NBundleUtils.message("hybris.import.label.select.config.extensions.directory"),
+            "",
+            null,
+            FileChooserDescriptorFactory.createSingleFolderDescriptor()
+        );
+
+        this.dbDriversDirOverrideFileChooser.addBrowseFolderListener(
+            HybrisI18NBundleUtils.message("hybris.import.label.select.dbdriver.extensions.directory"),
             "",
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
@@ -244,6 +264,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         this.getContext().getHybrisProjectDescriptor().setExternalConfigDirectory(
             configOverrideCheckBox.isSelected()
                 ? new File(this.configOverrideFilesInChooser.getText())
+                : null
+        );
+
+        this.getContext().getHybrisProjectDescriptor().setExternalDbDriversDirectory(
+            dbDriversDirOverrideCheckBox.isSelected()
+                ? new File(this.dbDriversDirOverrideFileChooser.getText())
                 : null
         );
 
@@ -312,6 +338,15 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
                     ).getAbsolutePath()
                 );
             }
+
+            if (StringUtils.isBlank(this.dbDriversDirOverrideFileChooser.getText())) {
+                this.dbDriversDirOverrideFileChooser.setText(
+                    new File(
+                        this.hybrisDistributionDirectoryFilesInChooser.getText(),
+                        HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.PLATFORM_DB_DRIVER
+                    ).getAbsolutePath()
+                );
+            }
         }
 
         if (StringUtils.isBlank(this.sourceCodeZipFilesInChooser.getText())) {
@@ -354,6 +389,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
                 throw new ConfigurationException(
                     HybrisI18NBundleUtils.message(
                         "hybris.import.wizard.validation.config.directory.does.not.exist"));
+            }
+        }
+
+        if (dbDriversDirOverrideCheckBox.isSelected()) {
+            if (!new File(this.dbDriversDirOverrideFileChooser.getText()).isDirectory()) {
+                throw new ConfigurationException(
+                    HybrisI18NBundleUtils.message(
+                        "hybris.import.wizard.validation.dbdriver.directory.does.not.exist"));
             }
         }
 
@@ -424,6 +467,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setSourceCodeZip(toFile(settings.getSourceCodeZip()));
         hybrisProjectDescriptor.setExternalExtensionsDirectory(toFile(settings.getExternalExtensionsDirectory()));
         hybrisProjectDescriptor.setExternalConfigDirectory(toFile(settings.getExternalConfigDirectory()));
+        hybrisProjectDescriptor.setExternalDbDriversDirectory(toFile(settings.getExternalDbDriversDirectory()));
         hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.isCreateBackwardCyclicDependenciesForAddOns());
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
 

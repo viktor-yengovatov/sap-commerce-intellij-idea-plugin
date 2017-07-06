@@ -86,9 +86,17 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     public List<JavaLibraryDescriptor> getLibraryDescriptors() {
         return Collections.singletonList(
             new DefaultJavaLibraryDescriptor(
-                new File(this.getRootDirectory(), HybrisConstants.PLATFORM_DB_DRIVER), true, false
+                getDbDriversDirectory(), true, false
             )
         );
+    }
+
+    private File getDbDriversDirectory() {
+        final File dbDriversDirectory = getRootProjectDescriptor().getExternalDbDriversDirectory();
+        if (dbDriversDirectory != null) {
+            return dbDriversDirectory;
+        }
+        return new File(this.getRootDirectory(), HybrisConstants.PLATFORM_DB_DRIVER);
     }
 
     @Override
