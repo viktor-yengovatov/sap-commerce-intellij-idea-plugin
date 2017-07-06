@@ -49,6 +49,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
@@ -333,26 +335,32 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private void saveImportedSettings(final Project project) {
         final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                                           .getState();
+        final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         hybrisProjectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
         final File extDir = hybrisProjectDescriptor.getExternalExtensionsDirectory();
-        if (extDir != null && extDir.exists()) {
+        if (extDir != null && extDir.isDirectory()) {
             hybrisProjectSettings.setExternalExtensionsDirectory(extDir.getPath());
         }
         final File configDir = hybrisProjectDescriptor.getExternalConfigDirectory();
-        if (configDir != null && configDir.exists()) {
+        if (configDir != null && configDir.isDirectory()) {
             hybrisProjectSettings.setExternalConfigDirectory(configDir.getPath());
         }
         final File dbDriversDir = hybrisProjectDescriptor.getExternalDbDriversDirectory();
-        if (dbDriversDir != null && dbDriversDir.exists()) {
+        if (dbDriversDir != null && dbDriversDir.isDirectory()) {
             hybrisProjectSettings.setExternalDbDriversDirectory(dbDriversDir.getPath());
+            appSettings.setExternalDbDriversDirectory(dbDriversDir.getPath());
+        } else {
+            appSettings.setExternalDbDriversDirectory("");
         }
+
         hybrisProjectSettings.setCreateBackwardCyclicDependenciesForAddOns(hybrisProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn());
         final File sourceZip = hybrisProjectDescriptor.getSourceCodeZip();
-        if (sourceZip != null && sourceZip.exists()) {
+        if (sourceZip != null && sourceZip.isFile()) {
             hybrisProjectSettings.setSourceCodeZip(sourceZip.getPath());
+            appSettings.setSourceCodeDirectory(sourceZip.getParent());
         }
         final File modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
-        if (modulesFilesDirectory != null && modulesFilesDirectory.exists()) {
+        if (modulesFilesDirectory != null && modulesFilesDirectory.isDirectory()) {
             hybrisProjectSettings.setIdeModulesFilesDirectory(modulesFilesDirectory.getPath());
         }
         final Set<String> completeSetOfHybrisModules = newHashSet();

@@ -104,6 +104,11 @@ public class HybrisApplicationSettings {
     @PropertyName("allowedSendingPlainStatistics")
     private boolean allowedSendingPlainStatistics = false;
 
+    @PropertyName("externalDbDriversDirectory")
+    private String externalDbDriversDirectory = "";
+
+    @PropertyName("sourceCodeDirectory")
+    private String sourceCodeDirectory = "";
 
     public HybrisApplicationSettings() {
     }
@@ -253,6 +258,22 @@ public class HybrisApplicationSettings {
         this.allowedSendingPlainStatistics = allowedSendingPlainStatistics;
     }
 
+    public String getExternalDbDriversDirectory() {
+        return externalDbDriversDirectory;
+    }
+
+    public void setExternalDbDriversDirectory(final String externalDbDriversDirectory) {
+        this.externalDbDriversDirectory = externalDbDriversDirectory;
+    }
+
+    public String getSourceCodeDirectory() {
+        return sourceCodeDirectory;
+    }
+
+    public void setSourceCodeDirectory(final String sourceCodeDirectory) {
+        this.sourceCodeDirectory = sourceCodeDirectory;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -271,6 +292,8 @@ public class HybrisApplicationSettings {
             .append(usedActions)
             .append(followSymlink)
             .append(allowedSendingPlainStatistics)
+            .append(externalDbDriversDirectory)
+            .append(sourceCodeDirectory)
             .toHashCode();
     }
 
@@ -302,6 +325,8 @@ public class HybrisApplicationSettings {
             .append(usedActions, other.usedActions)
             .append(followSymlink, other.followSymlink)
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
+            .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
+            .append(sourceCodeDirectory, other.sourceCodeDirectory)
             .isEquals();
     }
 
@@ -323,6 +348,8 @@ public class HybrisApplicationSettings {
         sb.append(", usedActions='").append(usedActions).append('\'');
         sb.append(", followSymlink='").append(followSymlink).append('\'');
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
+        sb.append(", externalDbDriversDirectory='").append(externalDbDriversDirectory).append('\'');
+        sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');
         sb.append('}');
         return sb.toString();
     }
