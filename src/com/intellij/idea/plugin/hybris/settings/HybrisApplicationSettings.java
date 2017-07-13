@@ -63,10 +63,10 @@ public class HybrisApplicationSettings {
     private List<String> junkDirectoryList = DEFAULT_JUNK_FILE_NAMES;
 
     @PropertyName("groupHybris")
-    private String groupHybris = "Commerce";
+    private String groupHybris = "Hybris";
 
     @PropertyName("groupOtherHybris")
-    private String groupOtherHybris = "Commerce/Unused";
+    private String groupOtherHybris = "Hybris/Unused";
 
     @PropertyName("groupCustom")
     private String groupCustom = "Custom";

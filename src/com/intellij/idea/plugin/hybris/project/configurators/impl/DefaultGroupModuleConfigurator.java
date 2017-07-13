@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
 
@@ -114,9 +115,15 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groupOtherCustom;
         }
         if (requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
-            return groupHybris;
+            return Stream.of(groupHybris, getExtDirectoryName(moduleDescriptor))
+                         .flatMap(Stream::of)
+                         .toArray(String[]::new);
         }
         return groupOtherHybris;
+    }
+
+    private String[] getExtDirectoryName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        return new String[] {moduleDescriptor.getRootDirectory().getParentFile().getName()};
     }
 
     private void readSettings() {
