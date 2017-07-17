@@ -183,6 +183,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 );
                 LOG.info("Creating Overriden Config module in local.properties for " + configDir.getAbsolutePath());
                 foundModules.add(configHybrisModuleDescriptor);
+                Collections.sort(foundModules);
                 return configHybrisModuleDescriptor;
             } catch (HybrisConfigurationException e) {
                 // no-op

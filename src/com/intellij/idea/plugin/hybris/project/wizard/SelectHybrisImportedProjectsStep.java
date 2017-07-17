@@ -23,6 +23,7 @@ import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
+import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
@@ -300,5 +301,15 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         builder.append(')');
 
         return builder.toString();
+    }
+
+    @Override
+    protected boolean isElementEnabled(HybrisModuleDescriptor hybrisModuleDescriptor) {
+        if (hybrisModuleDescriptor instanceof ConfigHybrisModuleDescriptor) {
+            if (hybrisModuleDescriptor.isPreselected()) {
+                return false;
+            }
+        }
+        return super.isElementEnabled(hybrisModuleDescriptor);
     }
 }
