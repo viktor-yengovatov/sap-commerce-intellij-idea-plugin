@@ -3,6 +3,8 @@
 
 /out/
 /gradle-build/
+/common/gradle-build/
+/jps-plugin/gradle-build/
 /.gradle/
 
 Hybris-Integration.zip
