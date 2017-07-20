@@ -69,6 +69,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
+import static com.intellij.util.containers.ContainerUtil.newHashSet;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
@@ -131,7 +132,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (explicitlyDefinedModules.contains(StringUtils.lowerCase(hybrisModuleDescriptor.getName()))) {
                 hybrisModuleDescriptor.setInLocalExtensions(true);
             }
+            if (hybrisModuleDescriptor instanceof PlatformHybrisModuleDescriptor) {
+                PlatformHybrisModuleDescriptor platformDescriptor = (PlatformHybrisModuleDescriptor) hybrisModuleDescriptor;
+                Set<HybrisModuleDescriptor> dependenciesTree = newHashSet(platformDescriptor.getDependenciesTree());
+                dependenciesTree.add(configHybrisModuleDescriptor);
+                platformDescriptor.setDependenciesTree(dependenciesTree);
+            }
         }
+        configHybrisModuleDescriptor.setImportStatus(HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY);
         configHybrisModuleDescriptor.setPreselected(true);
     }
 
