@@ -21,7 +21,9 @@ package com.intellij.idea.plugin.hybris.impex.file.actions;
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
+import com.intellij.idea.plugin.hybris.actions.ActionUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
@@ -71,6 +73,11 @@ public class ImpexFileCreateAction extends CreateFileFromTemplateAction implemen
     @Override
     protected void postProcess(PsiFile createdElement, String templateName, Map<String, String> customProperties) {
         super.postProcess(createdElement, templateName, customProperties);
+    }
+
+    @Override
+    public void update(final AnActionEvent e) {
+        e.getPresentation().setEnabledAndVisible(ActionUtils.isHybrisContext(e));
     }
 
     @Override
