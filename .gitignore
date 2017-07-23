@@ -1,5 +1,8 @@
 .idea/workspace.xml
+.idea/modules.xml
 .idea/shelf
+.idea/modules
+.idea/libraries
 
 /out/
 /gradle-build/
@@ -10,9 +13,3 @@
 Hybris-Integration.zip
 
 **/.directory
-
-.idea/*
-
-!.idea/codeStyleSettings.xml
-!.idea/copyright
-!.idea/inspectionProfiles
