@@ -3,6 +3,7 @@
 .idea/shelf
 .idea/modules
 .idea/libraries
+.idea/.name
 
 /out/
 /gradle-build/
