@@ -155,6 +155,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             VfsUtil.pathToUrl(classesDirectory.getAbsolutePath())
         );
 
+        final File testClassesDirectory = new File(moduleDescriptor.getRootDirectory(), TEST_CLASSES_DIRECTORY);
+        contentEntry.addExcludeFolder(
+            VfsUtil.pathToUrl(testClassesDirectory.getAbsolutePath())
+        );
+
         final File eclipseBinDirectory = new File(moduleDescriptor.getRootDirectory(), ECLIPSE_BIN_DIRECTORY);
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(eclipseBinDirectory.getAbsolutePath())
