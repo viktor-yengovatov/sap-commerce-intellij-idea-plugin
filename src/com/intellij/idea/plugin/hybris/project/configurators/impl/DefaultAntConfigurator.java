@@ -80,7 +80,24 @@ public class DefaultAntConfigurator implements AntConfigurator {
         "deployment",
         "build",
         "extgen",
-        "modulegen"
+        "modulegen",
+        "initialize",
+        "updatesystem",
+        "yunitinit",
+        "integrationtests",
+        "unittests",
+        "performancetests",
+        "manualtests",
+        "bugprooftests",
+        "demotests",
+        "allwebtests",
+        "alltests",
+        "localizationtest",
+        "sonar",
+        "pmd",
+        "typecodetest",
+        "startHybrisServer",
+        "startAdminServer"
     ));
     public final List<String> desirableCustomTargets = new ArrayList<>(asList("build"));
     public final String[][] metaTargets = new String[][]{
@@ -154,7 +171,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         final List<String> desirableTargets
     ) {
         return Arrays.stream(antConfiguration.getModel(antBuildFile).getTargets())
-                     .map(e -> TargetFilter.fromTarget(e))
+                     .map(TargetFilter::fromTarget)
                      .peek(e -> e.setVisible(desirableTargets.contains(e.getTargetName())))
                      .collect(Collectors.toList());
     }
