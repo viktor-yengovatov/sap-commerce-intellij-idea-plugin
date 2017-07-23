@@ -50,6 +50,14 @@ allprojects {
 
         pluginName 'ccom.intellij.idea.plugin.hybris.impex'
         plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
+
+        runIde {
+            jvmArgs "-Xmx2G"
+        }
+
+        runIdea {
+            jvmArgs "-Xmx2G"
+        }
     }
     patchPluginXml {
         sinceBuild '172'
