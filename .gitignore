@@ -4,6 +4,7 @@
 .idea/modules
 .idea/libraries
 .idea/.name
+.idea/uiDesigner.xml
 
 /out/
 /gradle-build/
