@@ -150,7 +150,7 @@ public class DefaultStatsCollector implements StatsCollector {
     }
 
     private boolean acceptedSendingStatistics() {
-        return true;
+        return HybrisApplicationSettingsComponent.getInstance().getState().isAllowedSendingPlainStatistics();
     }
 
     private String getCurrentDateTimeWithTimeZone() {

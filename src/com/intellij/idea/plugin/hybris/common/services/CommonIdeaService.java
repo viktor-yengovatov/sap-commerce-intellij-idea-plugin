@@ -54,4 +54,6 @@ public interface CommonIdeaService {
     static CommonIdeaService getInstance() {
         return ServiceManager.getService(CommonIdeaService.class);
     }
+
+    boolean shouldShowPermissionToSendStatisticsDialog();
 }

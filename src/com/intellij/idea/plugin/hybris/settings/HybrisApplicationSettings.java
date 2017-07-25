@@ -104,6 +104,9 @@ public class HybrisApplicationSettings {
     @PropertyName("allowedSendingPlainStatistics")
     private boolean allowedSendingPlainStatistics = false;
 
+    @PropertyName("developmentMode")
+    private boolean developmentMode = false;
+
     @PropertyName("externalDbDriversDirectory")
     private String externalDbDriversDirectory = "";
 
@@ -274,6 +277,14 @@ public class HybrisApplicationSettings {
         this.sourceCodeDirectory = sourceCodeDirectory;
     }
 
+    public boolean isDevelopmentMode() {
+        return developmentMode;
+    }
+
+    public void setDevelopmentMode(final boolean developmentMode) {
+        this.developmentMode = developmentMode;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -294,6 +305,7 @@ public class HybrisApplicationSettings {
             .append(allowedSendingPlainStatistics)
             .append(externalDbDriversDirectory)
             .append(sourceCodeDirectory)
+            .append(developmentMode)
             .toHashCode();
     }
 
@@ -327,6 +339,7 @@ public class HybrisApplicationSettings {
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
             .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(sourceCodeDirectory, other.sourceCodeDirectory)
+            .append(developmentMode, other.developmentMode)
             .isEquals();
     }
 
@@ -350,6 +363,7 @@ public class HybrisApplicationSettings {
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
         sb.append(", externalDbDriversDirectory='").append(externalDbDriversDirectory).append('\'');
         sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');
+        sb.append(", developmentMode='").append(developmentMode).append('\'');
         sb.append('}');
         return sb.toString();
     }

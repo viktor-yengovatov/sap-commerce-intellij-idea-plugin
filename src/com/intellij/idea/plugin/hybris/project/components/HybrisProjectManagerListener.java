@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.idea.plugin.hybris.project.wizard.PermissionToSendStatisticsDialog;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
@@ -60,7 +59,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
     private void popupPermissionToSendStatistics(final Project project) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         if (commonIdeaService.isHybrisProject(project)) {
-            if (!HybrisApplicationSettingsComponent.getInstance().getState().isAllowedSendingPlainStatistics()) {
+            if (commonIdeaService.shouldShowPermissionToSendStatisticsDialog()) {
                 EventQueue.invokeLater(() -> new PermissionToSendStatisticsDialog(project).show());
             }
         }

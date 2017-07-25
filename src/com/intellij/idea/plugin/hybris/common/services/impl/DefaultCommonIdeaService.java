@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.common.services.impl;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.command.CommandProcessor;
@@ -138,6 +140,12 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
             .filter(e -> e instanceof PlatformHybrisModuleDescriptor)
             .findAny()
             .orElse(null);
+    }
+
+    @Override
+    public boolean shouldShowPermissionToSendStatisticsDialog() {
+        final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
+        return !settings.isAllowedSendingPlainStatistics() && !settings.isDevelopmentMode();
     }
 
     private boolean matchAllModuleNames(
