@@ -25,7 +25,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.wizard.CheckRequiredPluginsStep;
 import com.intellij.idea.plugin.hybris.project.wizard.HybrisWorkspaceRootStep;
 import com.intellij.idea.plugin.hybris.project.wizard.InformationStep;
-import com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisImportedProjectsStep;
+import com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisModulesToImportStep;
+import com.intellij.idea.plugin.hybris.project.wizard.SelectOtherModulesToImportStep;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.apache.commons.lang3.Validate;
@@ -62,7 +63,8 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
             new CheckRequiredPluginsStep(context),
             new InformationStep(context),
             new HybrisWorkspaceRootStep(context),
-            new SelectHybrisImportedProjectsStep(context),
+            new SelectHybrisModulesToImportStep(context),
+            new SelectOtherModulesToImportStep(context),
             stepFactory.createProjectJdkStep(context)
         };
     }

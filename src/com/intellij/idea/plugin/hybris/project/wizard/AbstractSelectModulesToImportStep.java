@@ -18,14 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.project.wizard;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
-import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
@@ -33,15 +29,12 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.UIUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,60 +46,16 @@ import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDe
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
 import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
-/**
- * @author Vlad Bozhenok <VladBozhenok@gmail.com>
- */
-public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep<HybrisModuleDescriptor>
-    implements NonGuiSupport {
+public abstract class AbstractSelectModulesToImportStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
 
     final static int COLUMN_WIDTH = 300;
 
-    private HybrisModuleDescriptor.IMPORT_STATUS selectionMode = MANDATORY;
-
-    public SelectHybrisImportedProjectsStep(final WizardContext context) {
+    public AbstractSelectModulesToImportStep(final WizardContext context) {
         super(context);
-
-        this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<HybrisModuleDescriptor>) (element, isMarked) -> {
-            if (isMarked) {
-                for (HybrisModuleDescriptor moduleDescriptor : element.getDependenciesPlainList()) {
-                    if (fileChooser.isElementMarked(moduleDescriptor)) {
-                        continue;
-                    }
-
-                    fileChooser.setElementMarked(moduleDescriptor, true);
-                    if (selectionMode == MANDATORY) {
-                        moduleDescriptor.setImportStatus(MANDATORY);
-                    }
-                }
-            }
-            fileChooser.repaint();
-        });
+        init();
     }
 
-    @Override
-    public void updateStep() {
-        super.updateStep();
-        selectionMode = MANDATORY;
-        for (int index = 0; index < fileChooser.getElementCount(); index++) {
-            final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
-            if (hybrisModuleDescriptor.isPreselected()) {
-                fileChooser.setElementMarked(hybrisModuleDescriptor, true);
-                hybrisModuleDescriptor.setImportStatus(MANDATORY);
-            }
-        }
-        selectionMode = UNUSED;
-    }
-
-    @Override
-    @Nullable
-    protected Icon getElementIcon(final HybrisModuleDescriptor item) {
-        if (this.getContext().getHybrisProjectDescriptor().getAlreadyOpenedModules().contains(item)) {
-            return AllIcons.Actions.Module;
-        } else if (this.isInConflict(item)) {
-            return AllIcons.Actions.Cancel;
-        }
-
-        return null;
+    protected void init() {
     }
 
     @Override
@@ -117,14 +66,20 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
     protected boolean isInConflict(@NotNull final HybrisModuleDescriptor item) {
         Validate.notNull(item);
 
-        return this.fileChooser.getMarkedElements().contains(item)
+        return (this.fileChooser.getMarkedElements().contains(item) || getAdditionalFixedElements().contains(item))
                && this.calculateSelectedModuleDuplicates().contains(item);
+    }
+
+    protected List<HybrisModuleDescriptor> getAdditionalFixedElements() {
+        return Collections.EMPTY_LIST;
     }
 
     @NotNull
     protected Set<HybrisModuleDescriptor> calculateSelectedModuleDuplicates() {
         final Set<HybrisModuleDescriptor> duplicateModules = newHashSet();
         final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<>();
+
+        getAdditionalFixedElements().stream().forEach(e -> uniqueModules.put(e.getName(), e));
 
         for (HybrisModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 
@@ -157,8 +112,6 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
             );
         }
 
-        this.getContext().setList(this.fileChooser.getMarkedElements());
-
         return true;
     }
 
@@ -167,8 +120,8 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         final List<HybrisModuleDescriptor> markedElements = newArrayList(this.fileChooser.getMarkedElements());
         final List<HybrisModuleDescriptor> allElements = newArrayList(markedElements);
         final Set<String> moduleDuplicateNames = allElements.stream()
-                                                             .map(e -> e.getName())
-                                                             .collect(Collectors.toSet());
+                                                            .map(e -> e.getName())
+                                                            .collect(Collectors.toSet());
         for (int index = 0; index < this.fileChooser.getElementCount(); index++) {
             final HybrisModuleDescriptor element = fileChooser.getElementAt(index);
             if (markedElements.contains(element)) {
@@ -182,12 +135,11 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
             }
         }
 
-        try {
-            this.getContext().setList(allElements);
-        } catch (ConfigurationException e) {
-            // no-op already validated
-        }
+        setList(allElements);
+
     }
+
+    protected abstract void setList(final List<HybrisModuleDescriptor> allElements);
 
 
     private boolean validateCommon() throws ConfigurationException {
@@ -211,74 +163,11 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         return true;
     }
 
-    @Override
-    public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
-        selectionMode = MANDATORY;
-        final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
-        final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
-        for (HybrisModuleDescriptor hybrisModuleDescriptor : getContext().getList()) {
-            if (hybrisModuleDescriptor.isPreselected()) {
-                moduleToImport.add(hybrisModuleDescriptor);
-                hybrisModuleDescriptor.setImportStatus(selectionMode);
-                moduleToCheck.add(hybrisModuleDescriptor);
-            }
-        }
-        resolveDependency(moduleToImport, moduleToCheck);
-
-        selectionMode = UNUSED;
-        final Set<String> unusedExtensionNameSet = settings.getUnusedExtensions();
-        getContext()
-            .getList()
-            .stream()
-            .filter(e -> unusedExtensionNameSet.contains(e.getName()))
-            .forEach(e -> {
-                moduleToImport.add(e);
-                e.setImportStatus(selectionMode);
-                moduleToCheck.add(e);
-            });
-        resolveDependency(moduleToImport, moduleToCheck);
-
-        selectionMode = UNLOADED;
-        final Set<String> moduleDuplicateNames = moduleToImport.stream()
-                                                                .map(e -> e.getName())
-                                                                .collect(Collectors.toSet());
-        for (HybrisModuleDescriptor element : getContext().getList()) {
-            if (!moduleToImport.contains(element) && !moduleDuplicateNames.contains(element.getName())) {
-                moduleDuplicateNames.add(element.getName());
-                element.setImportStatus(selectionMode);
-                moduleToImport.add(element);
-            }
-        }
-
-        try {
-            this.getContext().setList(moduleToImport);
-        } catch (ConfigurationException e) {
-            // no-op already validated
-        }
-    }
-
-    private void resolveDependency(
-        final List<HybrisModuleDescriptor> moduleToImport,
-        final Set<HybrisModuleDescriptor> moduleToCheck
-    ) {
-        while (!moduleToCheck.isEmpty()) {
-            final HybrisModuleDescriptor currentModule = moduleToCheck.iterator().next();
-            for (HybrisModuleDescriptor moduleDescriptor : currentModule.getDependenciesPlainList()) {
-                if (!moduleToImport.contains(moduleDescriptor)) {
-                    moduleToImport.add(moduleDescriptor);
-                    moduleDescriptor.setImportStatus(selectionMode);
-                    moduleToCheck.add(moduleDescriptor);
-                }
-            }
-            moduleToCheck.remove(currentModule);
-        }
-    }
-
     /*
      * Aligned text to COLUMN_WIDTH. It is not precise by space pixel width (4pixels)
      */
     @NotNull
-    private String getModuleNameAndPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    protected String getModuleNameAndPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
         Validate.notNull(moduleDescriptor);
 
         final StringBuilder builder = new StringBuilder();
@@ -303,13 +192,4 @@ public class SelectHybrisImportedProjectsStep extends SelectImportedProjectsStep
         return builder.toString();
     }
 
-    @Override
-    protected boolean isElementEnabled(HybrisModuleDescriptor hybrisModuleDescriptor) {
-        if (hybrisModuleDescriptor instanceof ConfigHybrisModuleDescriptor) {
-            if (hybrisModuleDescriptor.isPreselected()) {
-                return false;
-            }
-        }
-        return super.isElementEnabled(hybrisModuleDescriptor);
-    }
 }

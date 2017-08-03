@@ -49,6 +49,14 @@ public interface HybrisProjectDescriptor {
 
     void setModulesChosenForImport(@NotNull List<HybrisModuleDescriptor> moduleDescriptors);
 
+    // convenience method for configurators
+    @NotNull
+    ConfigHybrisModuleDescriptor getConfigHybrisModuleDescriptor();
+
+    // convenience method for configurators
+    @NotNull
+    PlatformHybrisModuleDescriptor getPlatformHybrisModuleDescriptor();
+
     @NotNull
     Set<HybrisModuleDescriptor> getAlreadyOpenedModules();
 

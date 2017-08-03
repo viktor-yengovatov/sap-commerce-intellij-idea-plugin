@@ -88,7 +88,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
 
     private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        final ConfigHybrisModuleDescriptor configDescriptor = getConfigDescriptor(hybrisProjectDescriptor);
+        final ConfigHybrisModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         if (configDescriptor != null) {
             final String port = findPortProperty(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
             if (port != null) {
@@ -144,15 +144,4 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         }
         return address.get().split("=")[1];
     }
-
-    private ConfigHybrisModuleDescriptor getConfigDescriptor(final HybrisProjectDescriptor hybrisProjectDescriptor) {
-        return (ConfigHybrisModuleDescriptor) hybrisProjectDescriptor
-            .getFoundModules()
-            .stream()
-            .filter(e -> e instanceof ConfigHybrisModuleDescriptor)
-            .findFirst()
-            .orElse(null);
-    }
-
-
 }

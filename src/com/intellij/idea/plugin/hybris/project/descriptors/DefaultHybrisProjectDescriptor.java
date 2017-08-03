@@ -112,6 +112,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected String javadocUrl;
     protected boolean createBackwardCyclicDependenciesForAddOns;
+    @NotNull
+    private ConfigHybrisModuleDescriptor configHybrisModuleDescriptor;
+    @NotNull
+    private PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor;
 
     private void processLocalExtensions() {
         final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor = findConfigDir();
@@ -625,6 +629,26 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         this.modulesChosenForImport.clear();
         this.modulesChosenForImport.addAll(moduleDescriptors);
+        moduleDescriptors.stream().forEach(module -> {
+            if (module instanceof ConfigHybrisModuleDescriptor) {
+                configHybrisModuleDescriptor = (ConfigHybrisModuleDescriptor) module;
+            }
+            if (module instanceof PlatformHybrisModuleDescriptor) {
+                platformHybrisModuleDescriptor = (PlatformHybrisModuleDescriptor) module;
+            }
+        });
+    }
+
+    @NotNull
+    @Override
+    public ConfigHybrisModuleDescriptor getConfigHybrisModuleDescriptor() {
+        return configHybrisModuleDescriptor;
+    }
+
+    @NotNull
+    @Override
+    public PlatformHybrisModuleDescriptor getPlatformHybrisModuleDescriptor() {
+        return platformHybrisModuleDescriptor;
     }
 
     @NotNull

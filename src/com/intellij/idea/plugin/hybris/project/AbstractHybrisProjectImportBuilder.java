@@ -24,6 +24,7 @@ import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created 5:20 PM 13 June 2015.
@@ -37,4 +38,11 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
     @NotNull
     public abstract HybrisProjectDescriptor getHybrisProjectDescriptor();
 
+    public abstract void setCoreStepModuleList();
+
+    public abstract void setExternalStepModuleList();
+
+    public abstract void setHybrisModulesToImport(final List<HybrisModuleDescriptor> hybrisModules);
+
+    public abstract List<HybrisModuleDescriptor> getHybrisModulesToImport();
 }

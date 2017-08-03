@@ -34,6 +34,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
@@ -82,6 +83,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
     protected final VirtualFileSystemService virtualFileSystemService;
+    private List<HybrisModuleDescriptor> moduleList;
+    private List<HybrisModuleDescriptor> hybrisModulesToImport;
 
     public DefaultHybrisProjectImportBuilder(@NotNull final VirtualFileSystemService virtualFileSystemService) {
         Validate.notNull(virtualFileSystemService);
@@ -329,9 +332,50 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return HybrisIcons.HYBRIS_ICON;
     }
 
+    protected void setAllModuleList() {
+        moduleList = this.getHybrisProjectDescriptor().getFoundModules();
+    }
+
+    @Override
+    public void setCoreStepModuleList() {
+        moduleList = this.getHybrisProjectDescriptor()
+                         .getFoundModules()
+                         .stream()
+                         .filter(e -> !(e instanceof RootModuleDescriptor))
+                         .collect(Collectors.toList());
+    }
+
+    @Override
+    public void setExternalStepModuleList() {
+        moduleList = this.getHybrisProjectDescriptor()
+                         .getFoundModules()
+                         .stream()
+                         .filter(e -> e instanceof RootModuleDescriptor)
+                         .collect(Collectors.toList());
+    }
+
+    @Override
+    public void setHybrisModulesToImport(final List<HybrisModuleDescriptor> hybrisModules) {
+        hybrisModulesToImport = hybrisModules;
+        try {
+            setList(hybrisModules);
+        } catch (ConfigurationException e) {
+            LOG.error(e);
+            // no-op already validated
+        }
+    }
+
+    @Override
+    public List<HybrisModuleDescriptor> getHybrisModulesToImport() {
+        return hybrisModulesToImport;
+    }
+
     @Override
     public List<HybrisModuleDescriptor> getList() {
-        return this.getHybrisProjectDescriptor().getFoundModules();
+        if (moduleList == null) {
+            setAllModuleList();
+        }
+        return moduleList;
     }
 
     @Override
