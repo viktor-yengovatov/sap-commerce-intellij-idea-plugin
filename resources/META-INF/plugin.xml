@@ -30,8 +30,7 @@
     <depends optional="true" config-file="junit-optional-dependencies.xml">JUnit</depends>
     <depends optional="true" config-file="maven-support-optional-dependencies.xml">org.jetbrains.idea.maven</depends>
     <depends optional="true" config-file="eclipse-support-optional-dependencies.xml">org.jetbrains.idea.eclipse</depends>
-    <depends optional="true" config-file="gradle-support-optional-dependencies.xml">org.jetbrains.plugins.gradle
-    </depends>
+    <depends optional="true" config-file="gradle-support-optional-dependencies.xml">org.jetbrains.plugins.gradle</depends>
     <depends optional="true" config-file="lang-optional-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="javaee-optional-dependencies.xml">com.intellij.javaee</depends>
