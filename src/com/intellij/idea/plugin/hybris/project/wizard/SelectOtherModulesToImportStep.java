@@ -88,6 +88,11 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     }
 
     @Override
+    public boolean validate() throws ConfigurationException {
+        return this.validateCommon();
+    }
+
+    @Override
     public boolean isStepVisible() {
         getContext().setExternalStepModuleList();
         getContext().setExternalStepName();

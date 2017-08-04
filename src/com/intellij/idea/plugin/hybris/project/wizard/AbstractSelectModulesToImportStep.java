@@ -142,7 +142,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
     protected abstract void setList(final List<HybrisModuleDescriptor> allElements);
 
 
-    private boolean validateCommon() throws ConfigurationException {
+    protected boolean validateCommon() throws ConfigurationException {
         final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
         final Collection<String> moduleDuplicateNames = newHashSet(moduleDuplicates.size());
 
