@@ -85,6 +85,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected final VirtualFileSystemService virtualFileSystemService;
     private List<HybrisModuleDescriptor> moduleList;
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
+    private String name = null;
 
     public DefaultHybrisProjectImportBuilder(@NotNull final VirtualFileSystemService virtualFileSystemService) {
         Validate.notNull(virtualFileSystemService);
@@ -321,10 +322,22 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return alreadyExistingModuleFiles;
     }
 
-    @NotNull
+    @Override
+    public void resetExternalStepName() {
+        name = null;
+    }
+
+    @Override
+    public void setExternalStepName() {
+        name = HybrisI18NBundleUtils.message("non.hybris.project.name");
+    }
+
     @Override
     public String getName() {
-        return HybrisI18NBundleUtils.message("hybris.project.name");
+        if (name == null) {
+            return HybrisI18NBundleUtils.message("hybris.project.name");
+        }
+        return name;
     }
 
     @Override

@@ -45,4 +45,8 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
     public abstract void setHybrisModulesToImport(final List<HybrisModuleDescriptor> hybrisModules);
 
     public abstract List<HybrisModuleDescriptor> getHybrisModulesToImport();
+
+    public abstract void resetExternalStepName();
+
+    public abstract void setExternalStepName();
 }

@@ -47,6 +47,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
                 fileChooser.setElementMarked(hybrisModuleDescriptor, true);
             }
         }
+        getContext().resetExternalStepName();
     }
 
     @Override
@@ -84,6 +85,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     @Override
     public boolean isStepVisible() {
         getContext().setExternalStepModuleList();
+        getContext().setExternalStepName();
         return !getContext().getList().isEmpty();
     }
 }
