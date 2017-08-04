@@ -194,6 +194,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 hybrisProjectDescriptor.getModulesChosenForImport()
                                        .stream()
                                        .filter(e -> e instanceof MavenModuleDescriptor)
+                                       .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
                                        .map(e -> (MavenModuleDescriptor) e)
                                        .collect(Collectors.toList())
             );
@@ -216,6 +217,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                     .getModulesChosenForImport()
                     .stream()
                     .filter(e -> e instanceof EclipseModuleDescriptor)
+                    .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
                     .map(e -> (EclipseModuleDescriptor) e)
                     .collect(Collectors.toList());
                 if (!eclipseModules.isEmpty()) {
@@ -345,7 +347,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return HybrisIcons.HYBRIS_ICON;
     }
 
-    protected void setAllModuleList() {
+    @Override
+    public void setAllModuleList() {
         moduleList = this.getHybrisProjectDescriptor().getFoundModules();
     }
 

@@ -91,6 +91,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
     @Override
     public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
         selectionMode = MANDATORY;
+        getContext().setAllModuleList();
         final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
         for (HybrisModuleDescriptor hybrisModuleDescriptor : getContext().getList()) {

@@ -38,6 +38,8 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
     @NotNull
     public abstract HybrisProjectDescriptor getHybrisProjectDescriptor();
 
+    public abstract void setAllModuleList();
+
     public abstract void setCoreStepModuleList();
 
     public abstract void setExternalStepModuleList();
