@@ -77,6 +77,11 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
             return new CustomHybrisModuleDescriptor(file, rootProjectDescriptor);
         }
 
+        if (hybrisProjectService.isGradleModule(file)) {
+            LOG.info("Creating gradle module for " + file.getAbsolutePath());
+            return new GradleModuleDescriptor(file, rootProjectDescriptor);
+        }
+
         if (hybrisProjectService.isMavenModule(file)) {
             LOG.info("Creating maven module for " + file.getAbsolutePath());
             return new MavenModuleDescriptor(file, rootProjectDescriptor);

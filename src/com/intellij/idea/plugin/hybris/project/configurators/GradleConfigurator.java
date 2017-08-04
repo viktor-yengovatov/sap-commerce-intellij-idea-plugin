@@ -16,35 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.services;
+package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
+import java.util.List;
 
 /**
- * Created 1:51 AM 11 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 4/8/17.
  */
-public interface HybrisProjectService {
+public interface GradleConfigurator {
 
-    boolean isConfigModule(@NotNull File file);
-
-    boolean isPlatformModule(@NotNull File file);
-
-    boolean isPlatformExtModule(@NotNull File file);
-
-    boolean isCoreExtModule(@NotNull File file);
-
-    boolean isHybrisModule(@NotNull File file);
-
-    boolean isOutOfTheBoxModule(@NotNull File file, @NotNull HybrisProjectDescriptor rootProjectDescriptor);
-
-    boolean isMavenModule(File rootProjectDirectory);
-
-    boolean isEclipseModule(File rootProjectDirectory);
-
-    boolean isGradleModule(File file);
+    void configure(
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final Project project,
+        @NotNull final List<GradleModuleDescriptor> gradleModules,
+        @Nullable final String[] gradleRootGroup
+    );
 }

@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
@@ -169,6 +170,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public EclipseConfigurator getEclipseConfigurator() {
         return ServiceManager.getService(EclipseConfigurator.class);
+    }
+
+    @Nullable
+    @Override
+    public GradleConfigurator getGradleConfigurator() {
+        return ServiceManager.getService(GradleConfigurator.class);
     }
 
     @NotNull

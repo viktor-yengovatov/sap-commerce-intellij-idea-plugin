@@ -26,6 +26,7 @@ import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
@@ -98,6 +99,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SHOW_UNLINKED_GRADLE_POPUP;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
 import static com.intellij.util.containers.ContainerUtil.newHashSet;
@@ -169,6 +171,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.saveCustomDirectoryLocation(project);
         this.saveImportedSettings(project);
         this.disableWrapOnType(ImpexLanguage.getInstance());
+        PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
 
         if (PlatformUtils.isIdeaUltimate()) {
             indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.facets"));

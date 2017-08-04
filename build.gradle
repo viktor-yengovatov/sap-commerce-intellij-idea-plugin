@@ -67,7 +67,7 @@ allprojects {
         sandboxDirectory "$buildDir/idea-sandbox"
 
         pluginName 'ccom.intellij.idea.plugin.hybris.impex'
-        plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse']
+        plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse', 'gradle']
 
         runIde {
             jvmArgs "-Xmx2G"

@@ -85,4 +85,7 @@ public interface ConfiguratorFactory {
 
     @NotNull
     LoadedConfigurator getLoadedConfigurator();
+
+    @Nullable
+    GradleConfigurator getGradleConfigurator();
 }

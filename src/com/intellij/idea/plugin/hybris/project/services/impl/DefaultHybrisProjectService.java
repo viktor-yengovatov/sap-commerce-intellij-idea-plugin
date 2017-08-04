@@ -116,4 +116,12 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         return new File(file, HybrisConstants.DOT_PROJECT).isFile();
     }
 
+    @Override
+    public boolean isGradleModule(final File file) {
+        Validate.notNull(file);
+        if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+            return false;
+        }
+        return new File(file, HybrisConstants.SETTINGS_GRADLE).isFile();
+    }
 }

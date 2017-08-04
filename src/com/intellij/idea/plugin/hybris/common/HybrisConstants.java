@@ -30,6 +30,7 @@ public interface HybrisConstants {
 
     String EXTENSION_INFO_XML = "extensioninfo.xml";
     String DOT_PROJECT = ".project";
+    String SETTINGS_GRADLE = "settings.gradle";
     String LOCAL_EXTENSIONS_XML = "localextensions.xml";
     String PLATFORM_MODULE_PREFIX = toSystemDependentName("/bin/platform/");
     String HYBRIS_SERVER_SHELL_SCRIPT_NAME = toSystemDependentName("bin/platform/hybrisserver.sh");

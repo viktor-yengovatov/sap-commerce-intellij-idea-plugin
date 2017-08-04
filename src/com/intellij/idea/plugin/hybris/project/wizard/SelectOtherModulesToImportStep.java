@@ -21,9 +21,11 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
+import icons.GradleIcons;
 import icons.MavenIcons;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,6 +63,9 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
         }
         if (module instanceof EclipseModuleDescriptor) {
             return AllIcons.Providers.Eclipse;
+        }
+        if (module instanceof GradleModuleDescriptor) {
+            return GradleIcons.Gradle;
         }
 
         return null;
