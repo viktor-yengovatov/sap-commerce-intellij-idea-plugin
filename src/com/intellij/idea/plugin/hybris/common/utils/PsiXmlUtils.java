@@ -55,6 +55,28 @@ public class PsiXmlUtils {
             ).inFile(XmlPatterns.psiFile()
                                 .withName(XmlPatterns.string().endsWith(fileName + ".xml")));
     }
+    
+    /**
+     * <tagName attributeName="XmlAttributeValue">
+     */
+    public static XmlAttributeValuePattern tagAttributeValuePattern(
+        String attributeName,
+        String fileName
+    ) {
+        return XmlPatterns
+            .xmlAttributeValue()
+            .withParent(
+                XmlPatterns
+                    .xmlAttribute(attributeName)
+                    .withParent(
+                        XmlPatterns
+                            .xmlTag()
+                    )
+            ).inside(
+                XmlPatterns.psiElement(XmlTag.class)
+            ).inFile(XmlPatterns.psiFile()
+                                .withName(XmlPatterns.string().endsWith(fileName + ".xml")));
+    }
 
     public static PsiFilePattern.Capture<PsiFile> getXmlFilePattern(@Nullable String fileName) {
         if (fileName == null) {
