@@ -32,7 +32,7 @@ import com.intellij.spring.model.utils.SpringModelSearchers
 import com.intellij.util.ProcessingContext
 import org.apache.commons.lang3.StringUtils
 
-class HybrisProcessReferenceProvider : PsiReferenceProvider() {
+class HybrisSpringProcessReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
 

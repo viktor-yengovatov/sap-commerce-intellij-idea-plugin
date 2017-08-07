@@ -242,7 +242,7 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.statistics.impl.DefaultStatsCollector"/>
 
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
-        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisProcessReferenceContributor"/>
+
 
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisItemLineMakerProvider"/>
 

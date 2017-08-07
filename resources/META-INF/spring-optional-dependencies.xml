@@ -32,6 +32,7 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.NoInheritanceSpringConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.NoInheritanceSpringConfigurator"/>
 
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisSpringProcessReferenceContributor"/>
     </extensions>
 
 </idea-plugin>

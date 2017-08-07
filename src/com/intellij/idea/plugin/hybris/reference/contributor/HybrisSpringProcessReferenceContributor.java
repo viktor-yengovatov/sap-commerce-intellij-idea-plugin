@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.reference.contributor;
 
-import com.intellij.idea.plugin.hybris.reference.provider.HybrisProcessReferenceProvider;
+import com.intellij.idea.plugin.hybris.reference.provider.HybrisSpringProcessReferenceProvider;
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ import static com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttrib
 /**
  * @author Nosov Aleksandr
  */
-public class HybrisProcessReferenceContributor extends PsiReferenceContributor {
+public class HybrisSpringProcessReferenceContributor extends PsiReferenceContributor {
 
     public static final String ITEMS_TYPE_FILE_NAME = "-process";
 
@@ -36,7 +36,7 @@ public class HybrisProcessReferenceContributor extends PsiReferenceContributor {
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(
             tagAttributeValuePattern("action", "bean", ITEMS_TYPE_FILE_NAME),
-            new HybrisProcessReferenceProvider()
+            new HybrisSpringProcessReferenceProvider()
         );
     }
 
