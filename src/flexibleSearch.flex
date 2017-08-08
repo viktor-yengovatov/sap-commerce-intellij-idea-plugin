@@ -111,6 +111,7 @@ EOL                             = \n|\r\n
 %state FROM_EXP 
 %state TABLE_IDENTIFIER 
 %state COLUMN_IDENTIFIER 
+%state LOCALIZATION 
 %state WHERE_EXP
 %state ON_EXP
 %state CORRELATION_NAME 
@@ -161,6 +162,8 @@ EOL                             = \n|\r\n
     "GROUP"                                { return GROUP; }  
 
     
+    {LEFT_BRACKET}                         { return RIGHT_BRACKET; }
+    {RIGHT_BRACKET}                        { return RIGHT_BRACKET; }
     {LEFT_BRACE}                           { return LEFT_BRACE; }
     {RIGHT_BRACE}                          { return RIGHT_BRACE; }
     {LEFT_DOUBLE_BRACE}                    { return LEFT_DOUBLE_BRACE; }
@@ -183,7 +186,6 @@ EOL                             = \n|\r\n
 <SELECT_EXP> {
     {INTEGER}                              { return NUMBER; }
     {COMMENT}                              { return COMMENT; }
-
     
     {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); pushState(SELECT_EXP); return LEFT_BRACE; }
     {RIGHT_BRACE}                          { return RIGHT_BRACE; }
@@ -195,7 +197,7 @@ EOL                             = \n|\r\n
     {ASTERISK}                             { return ASTERISK; }
     {COLON}                                { return COLON; }
     {SEMICOLON}                            { return SEMICOLON; }
-
+    
     /* keywords */
     "SELECT"                               { return SELECT; }
     "AS"                                   { yybegin(CORRELATION_NAME); pushState(SELECT_EXP); return AS; }
@@ -345,7 +347,8 @@ EOL                             = \n|\r\n
 
 <COLUMN_IDENTIFIER> {
     "AS"                                   { yybegin(CORRELATION_NAME); pushState(COLUMN_IDENTIFIER); return AS; }
-
+    
+    {IDENTIFIER}{LEFT_BRACKET}             { yypushback(1); yybegin(LOCALIZATION); return COLUMN_REFERENCE_IDENTIFIER;}
     {IDENTIFIER}{DOT}|{IDENTIFIER}{COLON}  { yypushback(yylength()); yybegin(TABLE_IDENTIFIER); }
     {DOT}                                  { return DOT; }
     {COMMA}                                { return COMMA; }
@@ -356,6 +359,13 @@ EOL                             = \n|\r\n
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
     
     {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
+}
+
+<LOCALIZATION> {
+    {LEFT_BRACKET}                         { return LEFT_BRACKET; }
+    {RIGHT_BRACKET}                        { yybegin(COLUMN_IDENTIFIER); return RIGHT_BRACKET; }
+    
+    {IDENTIFIER}                           { return IDENTIFIER; }
 }
 
 <SUB_QUERY> {

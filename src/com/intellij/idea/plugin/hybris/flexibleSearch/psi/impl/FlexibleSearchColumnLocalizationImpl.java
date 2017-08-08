@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.references.TypeNameMixin;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchTableNameImpl extends TypeNameMixin implements FlexibleSearchTableName {
+public class FlexibleSearchColumnLocalizationImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnLocalization {
 
-  public FlexibleSearchTableNameImpl(ASTNode node) {
+  public FlexibleSearchColumnLocalizationImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitTableName(this);
+    visitor.visitColumnLocalization(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,8 @@ public class FlexibleSearchTableNameImpl extends TypeNameMixin implements Flexib
 
   @Override
   @NotNull
-  public PsiElement getTableNameIdentifier() {
-    return findNotNullChildByType(TABLE_NAME_IDENTIFIER);
+  public PsiElement getIdentifier() {
+    return findNotNullChildByType(IDENTIFIER);
   }
 
 }

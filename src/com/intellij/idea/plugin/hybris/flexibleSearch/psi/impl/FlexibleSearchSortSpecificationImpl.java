@@ -1,70 +1,47 @@
-/*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchNullOrdering;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderingSpecification;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSortKey;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSortSpecification;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchSortSpecificationImpl extends ASTWrapperPsiElement
-    implements FlexibleSearchSortSpecification {
+public class FlexibleSearchSortSpecificationImpl extends ASTWrapperPsiElement implements FlexibleSearchSortSpecification {
 
-    public FlexibleSearchSortSpecificationImpl(ASTNode node) {
-        super(node);
-    }
+  public FlexibleSearchSortSpecificationImpl(ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull FlexibleSearchVisitor visitor) {
-        visitor.visitSortSpecification(this);
-    }
+  public void accept(@NotNull FlexibleSearchVisitor visitor) {
+    visitor.visitSortSpecification(this);
+  }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
-        if (visitor instanceof FlexibleSearchVisitor) {
-            accept((FlexibleSearchVisitor) visitor);
-        } else {
-            super.accept(visitor);
-        }
-    }
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
+    else super.accept(visitor);
+  }
 
-    @Override
-    @Nullable
-    public FlexibleSearchNullOrdering getNullOrdering() {
-        return findChildByClass(FlexibleSearchNullOrdering.class);
-    }
+  @Override
+  @Nullable
+  public FlexibleSearchNullOrdering getNullOrdering() {
+    return findChildByClass(FlexibleSearchNullOrdering.class);
+  }
 
-    @Override
-    @Nullable
-    public FlexibleSearchOrderingSpecification getOrderingSpecification() {
-        return findChildByClass(FlexibleSearchOrderingSpecification.class);
-    }
+  @Override
+  @Nullable
+  public FlexibleSearchOrderingSpecification getOrderingSpecification() {
+    return findChildByClass(FlexibleSearchOrderingSpecification.class);
+  }
 
-    @Override
-    @NotNull
-    public FlexibleSearchSortKey getSortKey() {
-        return findNotNullChildByClass(FlexibleSearchSortKey.class);
-    }
+  @Override
+  @NotNull
+  public FlexibleSearchSortKey getSortKey() {
+    return findNotNullChildByClass(FlexibleSearchSortKey.class);
+  }
 
 }

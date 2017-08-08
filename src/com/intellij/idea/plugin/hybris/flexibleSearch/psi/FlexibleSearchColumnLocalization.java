@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchAggregateFunction extends PsiElement {
+public interface FlexibleSearchColumnLocalization extends PsiElement {
 
-  @Nullable
-  FlexibleSearchGeneralSetFunction getGeneralSetFunction();
+  @NotNull
+  PsiElement getIdentifier();
 
 }

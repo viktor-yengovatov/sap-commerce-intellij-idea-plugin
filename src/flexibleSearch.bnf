@@ -254,9 +254,9 @@ character_substring_function ::=
 
 value_expression ::=  NUMBER 
                     | QUESTION_MARK? column_reference 
-                    | LEFT_BRACE column_reference (LEFT_BRACKET lang RIGHT_BRACKET)? COLON? column_reference? RIGHT_BRACE
+                    | LEFT_BRACE column_reference column_localization? RIGHT_BRACE
 
-lang ::= IDENTIFIER
+column_localization ::= LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
 
 private identifier_chain ::= (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ { (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER)  }* ]
 
