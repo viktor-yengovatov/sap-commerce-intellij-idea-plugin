@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexBeanShell;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexComment;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexRootMacroUsage;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
@@ -58,12 +60,12 @@ public final class ImpexPsiUtils {
 
     @Contract(value = "null -> false", pure = true)
     public static boolean isMacroNameDeclaration(@Nullable final PsiElement element) {
-        return Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_NAME_DECLARATION);
+        return element instanceof ImpexMacroNameDec || Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_NAME_DECLARATION);
     }
 
     @Contract(value = "null -> false", pure = true)
     public static boolean isMacroUsage(@Nullable final PsiElement element) {
-        return Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_USAGE);
+        return element instanceof ImpexMacroUsageDec || Objects.equals(CommonPsiUtils.getNullSafeElementType(element), ImpexTypes.MACRO_USAGE);
     }
 
     @Contract(value = "null -> false", pure = true)

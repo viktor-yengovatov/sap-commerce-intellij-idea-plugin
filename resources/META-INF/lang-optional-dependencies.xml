@@ -158,6 +158,12 @@
         <defaultLiveTemplatesProvider
             implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexTemplateProvider"/>
         <liveTemplateContext implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContext"/>
+
+
+        <renameHandler implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexMacrosRenameHandler"/>
+        <renamePsiElementProcessor
+            implementation="com.intellij.idea.plugin.hybris.impex.rename.processor.ImpexMacrosRenameProcessor"/>
+
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->

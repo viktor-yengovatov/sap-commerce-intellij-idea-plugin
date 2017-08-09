@@ -1,21 +1,3 @@
-/*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.impex.psi;
 
@@ -38,6 +20,8 @@ public interface ImpexTypes {
   IElementType HEADER_LINE = new ImpexElementType("HEADER_LINE");
   IElementType HEADER_TYPE_NAME = new ImpexElementType("HEADER_TYPE_NAME");
   IElementType MACRO_DECLARATION = new ImpexElementType("MACRO_DECLARATION");
+  IElementType MACRO_NAME_DEC = new ImpexElementType("MACRO_NAME_DEC");
+  IElementType MACRO_USAGE_DEC = new ImpexElementType("MACRO_USAGE_DEC");
   IElementType MODIFIERS = new ImpexElementType("MODIFIERS");
   IElementType PARAMETER = new ImpexElementType("PARAMETER");
   IElementType PARAMETERS = new ImpexElementType("PARAMETERS");
@@ -127,6 +111,12 @@ public interface ImpexTypes {
       }
       else if (type == MACRO_DECLARATION) {
         return new ImpexMacroDeclarationImpl(node);
+      }
+      else if (type == MACRO_NAME_DEC) {
+        return new ImpexMacroNameDecImpl(node);
+      }
+      else if (type == MACRO_USAGE_DEC) {
+        return new ImpexMacroUsageDecImpl(node);
       }
       else if (type == MODIFIERS) {
         return new ImpexModifiersImpl(node);

@@ -19,14 +19,18 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration;
+import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.ElementManipulator;
+import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,5 +85,14 @@ public class ImpexMacrosReferenceBase extends PsiReferenceBase.Poly<PsiElement> 
             return PsiElementResolveResult.createResults(references);
         }
         return ResolveResult.EMPTY_ARRAY;
+    }
+
+    @Override
+    public PsiElement handleElementRename(final String newElementName) throws IncorrectOperationException {
+        return getManipulator().handleContentChange(myElement, getRangeInElement(), newElementName);
+    }
+
+    private ElementManipulator<PsiElement> getManipulator() {
+        return new ImpexMacrosManipulator();
     }
 }

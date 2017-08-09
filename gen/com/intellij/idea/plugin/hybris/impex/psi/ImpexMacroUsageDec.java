@@ -5,6 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpexAnyHeaderMode extends PsiElement {
+public interface ImpexMacroUsageDec extends ImpexPsiNamedElement {
+
+  @Nullable
+  String getName();
+
+  @NotNull
+  PsiElement setName(String newName);
 
 }

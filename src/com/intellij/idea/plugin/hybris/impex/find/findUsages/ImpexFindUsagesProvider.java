@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.impex.find.findUsages;
 
 import com.intellij.idea.plugin.hybris.impex.ImpexLexerAdapter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
@@ -30,6 +29,8 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isMacroNameDeclaration;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isMacroUsage;
 import static com.intellij.psi.tree.TokenSet.create;
 import static com.intellij.psi.tree.TokenSet.orSet;
 
@@ -67,11 +68,8 @@ public class ImpexFindUsagesProvider implements FindUsagesProvider {
     @NotNull
     @Override
     public String getType(@NotNull final PsiElement element) {
-        if (ImpexPsiUtils.isMacroUsage(element)) {
-            return "macros usage";
-        }
-        if (ImpexPsiUtils.isMacroNameDeclaration(element)) {
-            return "macros declaration";
+        if (isMacroNameDeclaration(element) || isMacroUsage(element)) {
+            return "macros";
         }
         return "unknown";
     }
@@ -79,7 +77,7 @@ public class ImpexFindUsagesProvider implements FindUsagesProvider {
     @NotNull
     @Override
     public String getDescriptiveName(@NotNull final PsiElement element) {
-        return element.getText() + " desc";
+        return element.getText();
     }
 
     @NotNull
