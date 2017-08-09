@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.injection;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.InjectedLanguagePlaces;
 import com.intellij.psi.LanguageInjector;
@@ -63,6 +64,8 @@ public class FlexibleSearchInjector implements LanguageInjector {
                                     null,
                                     null
                                 );
+                            } catch (ProcessCanceledException e) {
+                                // ignore
                             } catch (Throwable e) {
                                 LOG.error(e);
                             }
