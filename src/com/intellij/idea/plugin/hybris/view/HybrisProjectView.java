@@ -23,15 +23,20 @@ import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode;
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.util.treeView.NodeOptions;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
@@ -87,6 +92,10 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 : children;
         }
 
+        if (parent instanceof ProjectViewModuleGroupNode) {
+            modifyIcons((ProjectViewModuleGroupNode) parent, children);
+        }
+
         if (parent instanceof ExternalLibrariesNode) {
             return this.modifyExternalLibrariesNodes(children);
         }
@@ -96,6 +105,41 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return this.isCompactEmptyMiddleFoldersEnabled(settings)
             ? this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
             : childrenWithProcessedJunkFiles;
+    }
+
+    private void modifyIcons(
+        final ProjectViewModuleGroupNode parent,
+        final Collection<AbstractTreeNode> children
+    ) {
+        children.stream()
+                .filter(child -> child instanceof PsiDirectoryNode)
+                .filter(child -> child.getParent() == null)
+                .map(child -> (PsiDirectoryNode) child)
+                .forEach(child -> {
+                    final VirtualFile vf = child.getVirtualFile();
+                    if (vf == null) {
+                        return;
+                    }
+                    final Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(vf);
+                    if (module == null) {
+                        return;
+                    }
+                    final HybrisModuleDescriptorType type = HybrisModuleDescriptor.getDescriptorType(module);
+                    if (type == null) {
+                        return;
+                    }
+                    switch (type) {
+                        case PLATFORM:
+                        case EXT:
+                        case OOTB:
+                            parent.getPresentation().setIcon(HybrisIcons.HYBRIS_ICON);
+                            final AbstractTreeNode superParent = parent.getParent();
+                            if (superParent != null) {
+                                superParent.getPresentation().setIcon(HybrisIcons.HYBRIS_ICON);
+                            }
+                            return;
+                    }
+                });
     }
 
     protected boolean isCompactEmptyMiddleFoldersEnabled(@Nullable final NodeOptions settings) {

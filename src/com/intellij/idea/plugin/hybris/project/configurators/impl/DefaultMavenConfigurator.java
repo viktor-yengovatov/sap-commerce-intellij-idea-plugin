@@ -18,8 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.application.AccessToken;
@@ -136,6 +138,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
             for (Module module : mavenModules) {
+                module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.MAVEN.name());
                 final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
                 modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(rootGroup, groupPath));
             }

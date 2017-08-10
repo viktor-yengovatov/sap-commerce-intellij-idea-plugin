@@ -46,6 +46,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
@@ -149,6 +150,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .stream()
             .filter(e -> !(e instanceof MavenModuleDescriptor))
             .filter(e -> !(e instanceof EclipseModuleDescriptor))
+            .filter(e -> !(e instanceof GradleModuleDescriptor))
             .collect(Collectors.toList());
         final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();

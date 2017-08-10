@@ -20,11 +20,18 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.ide.actions.ImportModuleAction;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.openapi.application.AccessToken;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.service.project.ProjectDataManager;
+import com.intellij.openapi.module.ModifiableModuleModel;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +64,30 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
                                                                                     .getProjectSettings();
             projectSettings.setUseAutoImport(true);
             projectSettings.setCreateEmptyContentRootDirectories(false);
-            ImportModuleAction.createFromWizard(project, wizard);
+            final List<Module> newModules = ImportModuleAction.createFromWizard(project, wizard);
+            if (gradleRootGroup != null && gradleRootGroup.length > 0) {
+                moveGradleModulesToGroup(project, newModules, gradleRootGroup);
+            }
         });
+    }
+
+    private void moveGradleModulesToGroup(
+        final Project project,
+        final List<Module> gradleModules,
+        final String[] gradleGroup
+    ) {
+        final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
+
+        for (Module module : gradleModules) {
+            module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.GRADLE.name());
+            modifiableModuleModel.setModuleGroupPath(module, gradleGroup);
+        }
+        AccessToken token = null;
+        try {
+            token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
+            modifiableModuleModel.commit();
+        } finally {
+            token.finish();
+        }
     }
 }

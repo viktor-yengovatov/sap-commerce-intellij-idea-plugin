@@ -18,8 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -77,6 +79,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         for (Module module : eclipseModules) {
+            module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.ECLIPSE.name());
             modifiableModuleModel.setModuleGroupPath(module, eclipseGroup);
         }
         AccessToken token = null;
