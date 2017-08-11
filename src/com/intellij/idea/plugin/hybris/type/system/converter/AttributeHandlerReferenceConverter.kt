@@ -54,7 +54,7 @@ class AttributeHandlerReferenceConverter : CustomReferenceConverter<String> {
                 val searchText = value.stringValue!!.trim()
 
                 psiSearchHelper.processElementsWithWord({ el, _ ->
-                    if (el is XmlAttribute && el.name == "id") foundEls.add(el)
+                    if (el.containingFile.name.contains("-spring") && el is XmlAttribute && el.name == "id") foundEls.add(el)
                     true
                 }, GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.moduleScope(module!!), XmlFileType.INSTANCE), searchText, UsageSearchContext.ANY, true)
 
