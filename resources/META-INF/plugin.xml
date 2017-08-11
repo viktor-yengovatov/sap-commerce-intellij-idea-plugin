@@ -246,6 +246,7 @@
 
 
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisItemLineMakerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisBeanLineMakerProvider"/>
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
     </extensions>
