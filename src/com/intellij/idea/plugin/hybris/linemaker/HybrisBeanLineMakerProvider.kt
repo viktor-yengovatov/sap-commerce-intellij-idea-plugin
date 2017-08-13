@@ -31,6 +31,8 @@ import com.intellij.psi.search.GlobalSearchScope.getScopeRestrictedByFileTypes
 import com.intellij.psi.search.GlobalSearchScope.moduleWithDependentsScope
 import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.UsageSearchContext
+import com.intellij.psi.xml.XmlAttribute
+import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 
 /**
@@ -53,7 +55,8 @@ class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
 
             val searchScope = getScopeRestrictedByFileTypes(moduleWithDependentsScope(module), XmlFileType.INSTANCE)
             searchHelper.processElementsWithWord({ el, _ ->
-                if (el.containingFile.name.contains("-beans") && el is XmlTag && el.name == "bean") {
+                if (el.containingFile.name.contains("-beans") && el is XmlAttributeValue 
+                        && (el.parent as XmlAttribute).name == "class") {
                     foundEls.add(el)
                     return@processElementsWithWord false
                 }
