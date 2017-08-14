@@ -187,8 +187,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
         moduleDescriptor.addSpringFile(propFile.getAbsolutePath());
 
-        try {
-            final FileInputStream fis = new FileInputStream(propFile);
+        try (FileInputStream fis = new FileInputStream(propFile)) {
             projectProperties.load(fis);
         } catch (FileNotFoundException e) {
             return;

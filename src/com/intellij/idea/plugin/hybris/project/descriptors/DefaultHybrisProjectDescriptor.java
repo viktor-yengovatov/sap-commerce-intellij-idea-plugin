@@ -216,8 +216,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         final Properties properties = new Properties();
-        try {
-            final FileReader fr = new FileReader(propertiesFile);
+        try (FileReader fr = new FileReader(propertiesFile)) {
             properties.load(fr);
         } catch (IOException e) {
             return expectedConfigDir;

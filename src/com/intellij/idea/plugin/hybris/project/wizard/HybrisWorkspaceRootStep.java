@@ -166,6 +166,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
 
         this.configOverrideLabel.addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(final MouseEvent e) {
                 configOverrideCheckBox.doClick();
@@ -507,8 +508,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         final File buildInfoFile = new File(hybrisRootDir + HybrisConstants.BUILD_NUMBER_FILE_PATH);
         final Properties buildProperties = new Properties();
 
-        try {
-            final FileInputStream fis = new FileInputStream(buildInfoFile);
+        try (FileInputStream fis = new FileInputStream(buildInfoFile)) {
             buildProperties.load(fis);
         } catch (IOException e) {
             return null;
