@@ -58,7 +58,7 @@ public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
     @Override
     public boolean isPreselected() {
-        return true;
+        return false;
     }
 
     @Override

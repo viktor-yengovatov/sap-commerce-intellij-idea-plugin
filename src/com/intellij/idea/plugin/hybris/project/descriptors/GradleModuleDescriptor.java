@@ -39,6 +39,6 @@ public class GradleModuleDescriptor extends RootModuleDescriptor {
     }
 
     public File getGradleFile() {
-        return new File(moduleRootDirectory, HybrisConstants.SETTINGS_GRADLE);
+        return new File(moduleRootDirectory, HybrisConstants.BUILD_GRADLE);
     }
 }

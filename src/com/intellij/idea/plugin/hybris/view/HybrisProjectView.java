@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.view;
 import com.google.common.collect.Iterables;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
+import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode;
@@ -50,8 +51,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
 
 /**
  * Created 10:14 PM 27 June 2015.
@@ -63,6 +67,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     protected final Project project;
     protected final HybrisProjectSettings hybrisProjectSettings;
     protected final HybrisApplicationSettings hybrisApplicationSettings;
+    private final String[] commerceGroupName;
+    private final String[] platformGroupName;
 
     public HybrisProjectView(@NotNull final Project project) {
         Validate.notNull(project);
@@ -70,6 +76,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         this.project = project;
         this.hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
         this.hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        this.commerceGroupName = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
+        this.platformGroupName = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
     }
 
     @Override
@@ -111,6 +119,13 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         final ProjectViewModuleGroupNode parent,
         final Collection<AbstractTreeNode> children
     ) {
+        if (parent.getValue() instanceof ModuleGroup) {
+            ModuleGroup moduleGroup = parent.getValue();
+            if (Arrays.equals(moduleGroup.getGroupPath(), commerceGroupName) ||
+                Arrays.equals(moduleGroup.getGroupPath(), platformGroupName)) {
+                parent.getPresentation().setIcon(HybrisIcons.HYBRIS_ICON);
+            }
+        }
         children.stream()
                 .filter(child -> child instanceof PsiDirectoryNode)
                 .filter(child -> child.getParent() == null)

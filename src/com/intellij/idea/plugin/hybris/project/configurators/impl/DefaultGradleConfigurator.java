@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.ide.actions.ImportModuleAction;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
+import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
@@ -64,6 +65,14 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
                                                                                     .getProjectSettings();
             projectSettings.setUseAutoImport(true);
             projectSettings.setCreateEmptyContentRootDirectories(false);
+            if (wizard.getStepCount() > 0) {
+                final ModuleWizardStep step = wizard.getCurrentStepObject();
+                if (step.isStepVisible()) {
+                    step.updateStep();
+                    step.updateDataModel();
+                }
+            }
+            wizard.doFinishAction();
             final List<Module> newModules = ImportModuleAction.createFromWizard(project, wizard);
             if (gradleRootGroup != null && gradleRootGroup.length > 0) {
                 moveGradleModulesToGroup(project, newModules, gradleRootGroup);
@@ -79,6 +88,10 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         for (Module module : gradleModules) {
+            if (module == null) {
+                // https://youtrack.jetbrains.com/issue/IDEA-177512
+                continue;
+            }
             module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.GRADLE.name());
             modifiableModuleModel.setModuleGroupPath(module, gradleGroup);
         }
