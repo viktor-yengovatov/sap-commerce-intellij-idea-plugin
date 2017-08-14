@@ -24,6 +24,8 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.getDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -33,7 +35,6 @@ import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
-import com.intellij.psi.xml.XmlTag
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -46,16 +47,16 @@ class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
             val project = element.project
 
             val searchHelper = PsiSearchHelper.SERVICE.getInstance(project)
-            val module = ModuleUtil.findModuleForPsiElement(element)
-            
-            if (module!!.name != "platform") {
+            val module = ModuleUtil.findModuleForPsiElement(element) ?: return
+
+            if (getDescriptorType(module) != HybrisModuleDescriptorType.PLATFORM) {
                 return
             }
             val foundEls = mutableListOf<PsiElement>()
 
             val searchScope = getScopeRestrictedByFileTypes(moduleWithDependentsScope(module), XmlFileType.INSTANCE)
             searchHelper.processElementsWithWord({ el, _ ->
-                if (el.containingFile.name.contains("-beans") && el is XmlAttributeValue 
+                if (el.containingFile.name.contains("-beans") && el is XmlAttributeValue
                         && (el.parent as XmlAttribute).name == "class") {
                     foundEls.add(el)
                     return@processElementsWithWord false

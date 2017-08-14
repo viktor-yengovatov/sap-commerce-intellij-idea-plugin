@@ -126,3 +126,7 @@ intellij {
 patchPluginXml {
     sinceBuild '172'
 }
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
