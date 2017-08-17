@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.find.FindSettings;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.module.Module;
@@ -31,6 +30,9 @@ import com.intellij.psi.search.scope.packageSet.NamedScopeManager;
 import com.intellij.psi.search.scope.packageSet.UnionPackageSet;
 
 import java.util.Arrays;
+
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_GROUP_PREFIX;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_Y_PREFIX;
 
 /**
  * Created by Martin Zdarsky-Jones on 04/07/2017.
@@ -81,21 +83,30 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     }
 
     private NamedScope addScope(final Project project, final String groupName) {
-        final FilePatternPackageSet filePatternPackageSet = new FilePatternPackageSet(groupName, "*//*");
-        final NamedScope scope = new NamedScope(HybrisConstants.Y_PREFIX + " " + groupName, filePatternPackageSet);
+        final FilePatternPackageSet filePatternPackageSet = new FilePatternPackageSet(
+            SEARCH_SCOPE_GROUP_PREFIX + groupName,
+            "*//*"
+        );
+        final NamedScope scope = new NamedScope(SEARCH_SCOPE_Y_PREFIX + " " + groupName, filePatternPackageSet);
         NamedScopeManager.getInstance(project).addScope(scope);
         return scope;
     }
 
     private NamedScope addScope(final Project project, final String firstGroupName, String secondGroupName) {
-        final FilePatternPackageSet firstFilePatternPackageSet = new FilePatternPackageSet(firstGroupName, "*//*");
-        final FilePatternPackageSet secondFilePatternPackageSet = new FilePatternPackageSet(secondGroupName, "*//*");
+        final FilePatternPackageSet firstFilePatternPackageSet = new FilePatternPackageSet(
+            SEARCH_SCOPE_GROUP_PREFIX + firstGroupName,
+            "*//*"
+        );
+        final FilePatternPackageSet secondFilePatternPackageSet = new FilePatternPackageSet(
+            SEARCH_SCOPE_GROUP_PREFIX + secondGroupName,
+            "*//*"
+        );
         final UnionPackageSet unionPackageSet = new UnionPackageSet(
             firstFilePatternPackageSet,
             secondFilePatternPackageSet
         );
         final NamedScope scope = new NamedScope(
-            HybrisConstants.Y_PREFIX + " " + firstGroupName + " " + secondGroupName,
+            SEARCH_SCOPE_Y_PREFIX + " " + firstGroupName + " " + secondGroupName,
             unionPackageSet
         );
         NamedScopeManager.getInstance(project).addScope(scope);
