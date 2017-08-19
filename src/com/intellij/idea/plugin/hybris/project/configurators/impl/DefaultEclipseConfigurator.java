@@ -87,7 +87,9 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
             token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
             modifiableModuleModel.commit();
         } finally {
-            token.finish();
+            if (token != null) {
+                token.finish();
+            }
         }
     }
 }

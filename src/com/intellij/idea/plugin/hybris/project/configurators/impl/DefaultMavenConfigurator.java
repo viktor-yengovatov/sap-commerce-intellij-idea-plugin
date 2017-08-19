@@ -97,24 +97,20 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                 .stream()
                 .filter(e -> pomList
                     .stream()
-                    .filter(pom -> pom.equals(e.getFile()))
-                    .findAny()
-                    .isPresent()
+                    .anyMatch(pom -> pom.equals(e.getFile()))
                 )
                 .collect(Collectors.toList());
             final List<Module> newRootModules = newModules
                 .stream()
                 .filter(e -> importedProjectRoots
                     .stream()
-                    .filter(i -> {
+                    .anyMatch(i -> {
                         final String name = i.getName();
                         if (name != null) {
                             return i.getName().equals(e.getName());
                         }
                         return i.getFinalName().startsWith(e.getName());
                     })
-                    .findAny()
-                    .isPresent()
                 )
                 .collect(Collectors.toList());
             final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator()
@@ -143,9 +139,11 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                 modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(rootGroup, groupPath));
             }
         } finally {
-            token.finish();
+            if (token != null) {
+                token.finish();
+            }
         }
-        ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(() -> modifiableModuleModel.commit()));
+        ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(modifiableModuleModel::commit));
     }
 
 

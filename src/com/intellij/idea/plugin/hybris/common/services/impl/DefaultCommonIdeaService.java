@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultCommonIdeaService implements CommonIdeaService {
 
-    protected final CommandProcessor commandProcessor;
+    private final CommandProcessor commandProcessor;
 
     public DefaultCommonIdeaService(@NotNull final CommandProcessor commandProcessor) {
         Validate.notNull(commandProcessor);
@@ -102,8 +102,8 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         final String majorVersion = versionParts[0];
         final String minorVersion = versionParts[1];
         try {
-            final int majorVersionNumber = Integer.valueOf(majorVersion);
-            final int minorVersionNumber = Integer.valueOf(minorVersion);
+            final int majorVersionNumber = Integer.parseInt(majorVersion);
+            final int minorVersionNumber = Integer.parseInt(minorVersion);
             final int versionNumber = majorVersionNumber * 10 + minorVersionNumber;
             return versionNumber < 64;
         } catch (NumberFormatException nfe) {
@@ -126,10 +126,7 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
             return true;
         }
         final Collection<String> webservicesNames = Arrays.asList("*hmc", "hmc", "platform");
-        if (matchAllModuleNames(webservicesNames, moduleNames)) {
-            return true;
-        }
-        return false;
+        return matchAllModuleNames(webservicesNames, moduleNames);
     }
 
     @Override
@@ -149,10 +146,10 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     }
 
     private boolean matchAllModuleNames(
-        @NotNull final Collection<String> namePaterns,
+        @NotNull final Collection<String> namePatterns,
         @NotNull final Collection<String> moduleNames
     ) {
-        return namePaterns.stream()
+        return namePatterns.stream()
                           .allMatch(pattern -> matchModuleName(pattern, moduleNames));
     }
 
@@ -160,8 +157,6 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         String regex = ("\\Q" + pattern + "\\E").replace("*", "\\E.*\\Q");
         return moduleNames.stream()
                           .parallel()
-                          .filter(p -> p.matches(regex))
-                          .findAny()
-                          .isPresent();
+                          .anyMatch(p -> p.matches(regex));
     }
 }

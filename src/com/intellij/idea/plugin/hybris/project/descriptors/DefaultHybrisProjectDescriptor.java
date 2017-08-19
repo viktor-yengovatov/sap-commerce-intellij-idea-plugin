@@ -527,7 +527,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             file.toString().endsWith(HybrisConstants.EXCLUDE_RESOURCES_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_SVN_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_TOMCAT_DIRECTORY) ||
             file.toString().endsWith(HybrisConstants.EXCLUDE_TMP_DIRECTORY)) {
             return true;

@@ -58,9 +58,7 @@ public final class ImpexTableFormatter {
 
         final StringBuilder sb = createNewTable(table, maxColumnWidth);
 
-        final int startOffset = table.first.getTextRange().getStartOffset() == 0
-            ? table.first.getTextRange().getStartOffset()
-            : table.first.getTextRange().getStartOffset();
+        final int startOffset = table.first.getTextRange().getStartOffset();
         final int endOffset = table.second.getTextRange().getEndOffset();
 
         return new ImpexTable(startOffset, endOffset, sb.toString());

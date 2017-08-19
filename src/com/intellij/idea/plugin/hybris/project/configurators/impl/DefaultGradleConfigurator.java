@@ -100,7 +100,9 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
             token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
             modifiableModuleModel.commit();
         } finally {
-            token.finish();
+            if (token != null) {
+                token.finish();
+            }
         }
     }
 }
