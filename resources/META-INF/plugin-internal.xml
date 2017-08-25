@@ -4,10 +4,8 @@
     <depends optional="true" config-file="ant-support-optional-dependencies.xml">AntSupport</depends>
     <depends optional="true" config-file="junit-optional-dependencies.xml">JUnit</depends>
     <depends optional="true" config-file="maven-support-optional-dependencies.xml">org.jetbrains.idea.maven</depends>
-    <depends optional="true" config-file="eclipse-support-optional-dependencies.xml">org.jetbrains.idea.eclipse
-    </depends>
-    <depends optional="true" config-file="gradle-support-optional-dependencies.xml">org.jetbrains.plugins.gradle
-    </depends>
+    <depends optional="true" config-file="gradle-support-optional-dependencies.xml">org.jetbrains.plugins.gradle</depends>
+    <depends optional="true" config-file="eclipse-support-optional-dependencies.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="lang-optional-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="javaee-optional-dependencies.xml">com.intellij.javaee</depends>
@@ -53,15 +51,13 @@
 
     <project-components>
         <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.runConfigurations.LocalExtensionsModuleGenerator
-            </implementation-class>
+            <implementation-class>com.intellij.idea.plugin.hybris.runConfigurations.LocalExtensionsModuleGenerator</implementation-class>
         </component>
     </project-components>
 
     <application-components>
         <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.statistics.StatsCollectingInitializer
-            </implementation-class>
+            <implementation-class>com.intellij.idea.plugin.hybris.statistics.StatsCollectingInitializer</implementation-class>
         </component>
     </application-components>
 
