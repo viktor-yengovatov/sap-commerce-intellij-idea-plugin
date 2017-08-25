@@ -5,6 +5,9 @@
 .idea/libraries
 .idea/.name
 .idea/uiDesigner.xml
+.idea/scopes
+.idea/compiler.xml
+.idea/checkstyle-idea.xml
 
 /out/
 /gradle-build/

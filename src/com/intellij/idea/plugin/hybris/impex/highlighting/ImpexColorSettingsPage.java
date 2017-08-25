@@ -68,6 +68,7 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SINGLE_STRING;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SQUARE_BRACKETS;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.VALUE_SUBTYPE;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.WARNINGS_ATTRIBUTES;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
 
@@ -108,7 +109,8 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
         new AttributesDescriptor("Comma", COMMA),
         new AttributesDescriptor("Alternative pattern", ALTERNATIVE_PATTERN),
         new AttributesDescriptor("Document id", DOCUMENT_ID),
-        new AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER)
+        new AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER),
+        new AttributesDescriptor("Warnings", WARNINGS_ATTRIBUTES)
     };
 
     @Nullable

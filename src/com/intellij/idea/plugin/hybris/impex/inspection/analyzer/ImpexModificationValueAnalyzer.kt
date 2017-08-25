@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.impex.inspection.analyzer
 
+import com.intellij.codeInspection.ProblemDescriptorUtil
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
@@ -23,13 +24,13 @@ fun keyAttrPredicate(param: ImpexFullHeaderParameter) =
 
 fun intersection(a: ByteArray, b: ByteArray) = a.filterIndexed { index, i -> b[index] != 0.toByte() && b[index] == i }.isNotEmpty()
 
-fun createTable(dataMap: MutableMap<String, List<PsiElement>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpexFullHeaderParameter>): Table {
+fun createDataTable(dataMap: MutableMap<String, List<PsiElement>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpexFullHeaderParameter>): DataTable {
     val countKeyAttrs = dataMap.entries.size
     val countRows = dataMap.values.first().size
 
     val keyRows = createRows(countRows, countKeyAttrs, dataMap)
 
-    return Table(keyRows, distinctCommonAttrsNames, notKeyAttrsList)
+    return DataTable(keyRows, distinctCommonAttrsNames, notKeyAttrsList)
 }
 
 fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: MutableMap<String, List<PsiElement>>): MutableList<Key> {
@@ -37,15 +38,16 @@ fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: MutableMap<String, L
     for (i in 0 until countRows) {
         val k = mutableListOf<PsiElement>()
         for (y in 0 until countKeyAttrs) {
-            val value = dataMap.entries.toList()[y]
-            k.add(value.value[i])
+            val entry = dataMap.entries.toList()[y]
+            if ((entry.value as List<*>).isNotEmpty())
+                k.add(entry.value[i])
         }
         keyRows.add(Key(k))
     }
     return keyRows
 }
 
-class Table(private val keyRows: List<Key>, private val attrs: List<String>, private val attrsValues: List<ImpexFullHeaderParameter>) {
+class DataTable(private val keyRows: List<Key>, private val attrs: List<String>, private val attrsValues: List<ImpexFullHeaderParameter>) {
 
     private val rows = mutableListOf<Row>()
     private val errorBag = mutableSetOf<PsiElement>()
@@ -89,12 +91,12 @@ class Table(private val keyRows: List<Key>, private val attrs: List<String>, pri
 
         warningBag.forEach {
             problemsHolder.registerProblem(
-                    it, "This value hides another value defined above",
+                    it, "This value will override the value above",
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         errorBag.forEach {
             problemsHolder.registerProblem(
-                    it, "This value is overridden below",
+                    it, "This value is overridden by a value below",
                     ProblemHighlightType.GENERIC_ERROR)
         }
     }

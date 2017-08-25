@@ -425,6 +425,46 @@ public final class ImpexPsiUtils {
         return null;
     }
 
+    public static List<PsiElement> getColumnForHeader(@NotNull final ImpexFullHeaderParameter headerParameter) {
+
+        final PsiElement[] children = headerParameter.getParent().getChildren();
+        int i = -2;
+        for (final PsiElement child : children) {
+            if (!child.equals(headerParameter)) {
+                i++;
+            } else {
+                break;
+            }
+        }
+
+        final List<PsiElement> result = newArrayList();
+        PsiElement psiElement = getNextSiblingOfAnyType(
+            PsiTreeUtil.getParentOfType(headerParameter, ImpexHeaderLine.class),
+            ImpexValueLine.class,
+            ImpexHeaderLine.class,
+            ImpexRootMacroUsage.class
+        );
+
+        while (psiElement != null && !isHeaderLine(psiElement) && !isUserRightsMacros(psiElement)) {
+            if (isImpexValueLine(psiElement)) {
+                final PsiElement[] elements = psiElement.getChildren();
+                if (elements.length > i) {
+                    result.add(elements[i]);
+                }
+            }
+
+
+            psiElement = getNextSiblingOfAnyType(
+                psiElement,
+                ImpexValueLine.class,
+                ImpexHeaderLine.class,
+                ImpexRootMacroUsage.class
+            );
+        }
+
+        return result;
+    }
+
     @Nullable
     @Contract(pure = true)
     public static ImpexValueGroup getClosestSelectedValueGroupFromTheSameLine(@Nullable final PsiElement psiElementUnderCaret) {
