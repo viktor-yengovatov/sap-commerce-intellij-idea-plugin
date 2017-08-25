@@ -12,9 +12,11 @@ import com.intellij.psi.util.PsiTreeUtil
 
 fun notKeyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filter { !keyAttrPredicate(it) }
 
+fun keyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filter { keyAttrPredicate(it) }
+
 fun fullParametersList(headerLines: List<ImpexHeaderLine>) = headerLines.flatMap { it.fullHeaderParameterList }
 
-fun keyAttrs(it: ImpexHeaderLine) = it.fullHeaderParameterList.filter { keyAttrPredicate(it) }.map { it.text }
+fun keyAttrsName(it: ImpexHeaderLine) = it.fullHeaderParameterList.filter { keyAttrPredicate(it) }.map { it.text }
 
 fun keyAttrPredicate(param: ImpexFullHeaderParameter) =
         param.modifiersList.flatMap { it.attributeList }.find { it.anyAttributeName.text == "unique" && it.anyAttributeValue?.text == "true" } != null

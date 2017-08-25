@@ -20,20 +20,23 @@ class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) : PsiElem
     override fun visitFile(file: PsiFile) {
         val headers = PsiTreeUtil.getChildrenOfType(file, ImpexHeaderLine::class.java) ?: return
 
-        val groupHeaders = headers.groupBy { "${it.fullHeaderType!!.text}|${keyAttrs(it).joinToString { it }}" }
+        val groupHeaders = headers.groupBy { "${it.fullHeaderType!!.text}|${keyAttrsName(it).joinToString { it }}" }
 
         groupHeaders.forEach { _, headerLines ->
             val fullParametersList = fullParametersList(headerLines)
+            val keyAttrsList = keyAttributesList(fullParametersList)
 
-            val notKeyAttrsList = notKeyAttributesList(fullParametersList)
-            val distinctCommonAttrsNames = notKeyAttrsList.map { it.text }.distinct()
+            if (keyAttrsList.isNotEmpty()) {
+                val notKeyAttrsList = notKeyAttributesList(fullParametersList)
+                val distinctCommonAttrsNames = notKeyAttrsList.map { it.text }.distinct()
 
-            val keyAttrsGroupedByName = fullParametersList.filter { keyAttrPredicate(it) }.groupBy { it.anyHeaderParameterName.text }
+                val keyAttrsGroupedByName = fullParametersList.filter { keyAttrPredicate(it) }.groupBy { it.anyHeaderParameterName.text }
 
-            val dataMap = mutableMapOf<String, List<PsiElement>>()
-            keyAttrsGroupedByName.forEach { name, attrs -> dataMap.put(name, attrs.flatMap { ImpexPsiUtils.getColumnForHeader(it).map { it.lastChild } }) }
+                val dataMap = mutableMapOf<String, List<PsiElement>>()
+                keyAttrsGroupedByName.forEach { name, attrs -> dataMap.put(name, attrs.flatMap { ImpexPsiUtils.getColumnForHeader(it).map { it.lastChild } }) }
 
-            createTable(dataMap, distinctCommonAttrsNames, notKeyAttrsList).analyze(problemsHolder)
+                createTable(dataMap, distinctCommonAttrsNames, notKeyAttrsList).analyze(problemsHolder)
+            }
         }
     }
 }
