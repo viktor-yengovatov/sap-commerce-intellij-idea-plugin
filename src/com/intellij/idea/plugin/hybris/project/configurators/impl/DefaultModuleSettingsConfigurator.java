@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,14 +32,14 @@ public class DefaultModuleSettingsConfigurator implements ModuleSettingsConfigur
 
     @Override
     public void configure(@NotNull final HybrisModuleDescriptor moduleDescriptor, @NotNull final Module javaModule) {
-        final DescriptorType descriptorType = moduleDescriptor.getDescriptorType();
+        final HybrisModuleDescriptorType descriptorType = moduleDescriptor.getDescriptorType();
         javaModule.setOption(HybrisConstants.DESCRIPTOR_TYPE, descriptorType.name());
 
         final boolean hasReadOnlySettings = moduleDescriptor.getRootProjectDescriptor()
                                                             .isImportOotbModulesInReadOnlyMode();
-        final boolean isReadOnlyType = descriptorType == DescriptorType.OOTB ||
-                                       descriptorType == DescriptorType.PLATFORM ||
-                                       descriptorType == DescriptorType.EXT;
+        final boolean isReadOnlyType = descriptorType == HybrisModuleDescriptorType.OOTB ||
+                                       descriptorType == HybrisModuleDescriptorType.PLATFORM ||
+                                       descriptorType == HybrisModuleDescriptorType.EXT;
         String readOnly = Boolean.valueOf(hasReadOnlySettings && isReadOnlyType).toString();
 
         javaModule.setOption(HybrisConstants.READ_ONLY, readOnly);

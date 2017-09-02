@@ -22,7 +22,20 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>6.3</version>
+    <version>7.0.2</version>
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <depends optional="true" config-file="ant-support-optional-dependencies.xml">AntSupport</depends>
+    <depends optional="true" config-file="junit-optional-dependencies.xml">JUnit</depends>
+    <depends optional="true" config-file="maven-support-optional-dependencies.xml">org.jetbrains.idea.maven</depends>
+    <depends optional="true" config-file="eclipse-support-optional-dependencies.xml">org.jetbrains.idea.eclipse</depends>
+    <depends optional="true" config-file="gradle-support-optional-dependencies.xml">org.jetbrains.plugins.gradle</depends>
+    <depends optional="true" config-file="lang-optional-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
+    <depends optional="true" config-file="javaee-optional-dependencies.xml">com.intellij.javaee</depends>
+    <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="diagram-optional-dependencies.xml">com.intellij.diagram</depends>
 
     <vendor email="AlexanderBartash@gmail.com"
             url="https://hybris-integration.atlassian.net/wiki/display/IIPPS/Intellij+IDEA+Plugin+Public+Space">
@@ -111,106 +124,42 @@
 
     <change-notes>
         <![CDATA[
-        <h2> Task </h2>
-        <ul>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-261'>IIP-261</a>] - Create module dependency chart
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-262'>IIP-262</a>] - Enable Maven import in 2017.2
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-263'>IIP-263</a>] - Ensure the setting &quot;clean
-                output directory&quot; is off upon opening a Hybris project
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-236'>IIP-236</a>] - Add findUsage by code for
-                &quot;collectiontype&quot;
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-245'>IIP-245</a>] - Remove ANSI color coding from
-                ant console
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-247'>IIP-247</a>] - When we trigger modulegen we
-                need to trigger ant clean all prior to refresh project
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-249'>IIP-249</a>] - Reformat all source code to
-                ease up code reviews
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-250'>IIP-250</a>] - Disable explicitly annotated
-                Spring beans
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-251'>IIP-251</a>] - Disable Spring plugin
-                configuration panel
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-253'>IIP-253</a>] - Support ANSI color for Hybris
-                Ant tasks
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-254'>IIP-254</a>] - Ddd Kotlin lang support to
-                project
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-265'>IIP-265</a>] - Create RunConfiguration for
-                jUnit tests
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-268'>IIP-268</a>] - Detect circular dependencies
-                in module dependency chart
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-220'>IIP-220</a>] - Execute flexible search via
-                IntelliJ IDEA on remote instance Hybris
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-255'>IIP-255</a>] - Ask users for permission to
-                send statistics
-            </li>
-        </ul>
-
-        <h2> Bug </h2>
-        <ul>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-136'>IIP-136</a>] - Add an additional step to the
-                import dialog telling user that he\she should run &quot;ant clean all&quot;
-            </li>
-        </ul>
-
-        <h2> New Feature Request </h2>
-        <ul>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-46'>IIPS-46</a>] - During &#39;Refresh project&#39;
-                pop up extension selection dialog
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-49'>IIPS-49</a>] - Allow overriding config folder
-                i.e. HYBRIS_CONFIG_DIR when importing
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-50'>IIPS-50</a>] - Auto-create custom search
-                scopes for Hybris projects to ease searching in a project
-            </li>
-        </ul>
-
         <h2> Fault </h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-45'>IIPS-45</a>] - ClassCastException in
-                PsiItemXmlUtil: EnhancerByJetBrainsMainCglib cannot be cast to Items
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-60'>IIPS-60</a>] - Compilation from IDEA fails with: "java.lang.ClassNotFoundException: org.apache.commons.io.FilenameUtils"
             </li>
         </ul>
-      ]]>
+        <h2> Task </h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-284'>IIP-284</a>] - Generate &quot;backoffice&quot; and &quot;hmc&quot; JARs during compilation
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-290'>IIP-290</a>] - Collect statistics for several events
+            </li>
+        </ul>
+        <h2> Bug </h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-285'>IIP-285</a>] - Add-on compilation works incorrectly if multiple modules depend on it
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-286'>IIP-286</a>] - Test classes are copied into wrong paths during compilation
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-293'>IIP-293</a>] - Module &#39;platform&#39; doesn&#39;t have a dependency to &#39;config&#39; module
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-297'>IIP-297</a>] - &quot;New&quot; action: hybris-specific items shouldn&#39;t be shown in non-hybris project
+            </li>
+        </ul>
+        ]]>
     </change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="172"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
-
 
 </idea-plugin>

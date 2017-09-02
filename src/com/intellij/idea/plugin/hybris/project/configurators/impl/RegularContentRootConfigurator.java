@@ -54,7 +54,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSE
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType.CUSTOM;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 
 /**
  * Created 2:07 AM 15 June 2015.

@@ -98,7 +98,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType.CUSTOM;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SHOW_UNLINKED_GRADLE_POPUP;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
@@ -166,6 +166,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
         final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
         final RunConfigurationConfigurator debugRunConfigurationConfigurator = configuratorFactory.getDebugRunConfigurationConfigurator();
+        final RunConfigurationConfigurator testRunConfigurationConfigurator = configuratorFactory.getTestRunConfigurationConfigurator();
         final SearchScopeConfigurator searchScopeConfigurator = configuratorFactory.getSearchScopeConfigurator();
 
         this.initializeHybrisProjectSettings(project);
@@ -281,6 +282,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         springConfigurator.configureDependencies(hybrisProjectDescriptor, rootProjectModifiableModel);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.runconfigurations"));
         debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+
+        if (testRunConfigurationConfigurator != null) {
+            testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+        }
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.search.scope"));

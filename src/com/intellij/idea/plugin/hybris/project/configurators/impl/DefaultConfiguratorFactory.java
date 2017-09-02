@@ -35,6 +35,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependencies
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.TestRunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
@@ -150,8 +151,8 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @Nullable
     @Override
-    public RunConfigurationConfigurator getJUnitRunConfigurationConfigurator() {
-        return ServiceManager.getService(JUnitRunConfigurationConfigurator.class);
+    public RunConfigurationConfigurator getTestRunConfigurationConfigurator() {
+        return ServiceManager.getService(TestRunConfigurationConfigurator.class);
     }
 
     @Nullable

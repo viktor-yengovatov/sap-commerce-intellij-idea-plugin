@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
@@ -261,16 +260,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             } catch (Exception e) {
                 LOG.error("Can not configure Ant due to an error.", e);
             }
-
-            try {
-                final RunConfigurationConfigurator runConfigurationConfigurator = configuratorFactory.getJUnitRunConfigurationConfigurator();
-                if (null != runConfigurationConfigurator) {
-                    runConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
-                }
-            } catch (Exception e) {
-                LOG.error("Can not configure JUnit due to an error.", e);
-            }
-
             triggerCacheInvalidation();
         });
 

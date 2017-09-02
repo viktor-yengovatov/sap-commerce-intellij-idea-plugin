@@ -31,6 +31,7 @@ public class PluginCommon {
     public static final String JAVAEE_PLUGIN_ID = "com.intellij.javaee";
     public static final String SPRING_PLUGIN_ID = "com.intellij.spring";
     public static final String SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup";
+    public static final String JUNIT_PLUGIN_ID = "JUnit";
 
     public static boolean isPluginActive(final String id) {
         final PluginId pluginId = PluginId.getId(id);

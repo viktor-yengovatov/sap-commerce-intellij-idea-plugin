@@ -43,8 +43,8 @@ public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
     }
 
     @Override
-    public DescriptorType getDescriptorType() {
-        return DescriptorType.OOTB;
+    public HybrisModuleDescriptorType getDescriptorType() {
+        return HybrisModuleDescriptorType.OOTB;
     }
 
     public Library createGlobalLibrary(

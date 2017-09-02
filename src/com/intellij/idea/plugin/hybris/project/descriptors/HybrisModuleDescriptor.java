@@ -34,8 +34,6 @@ import java.util.Set;
  */
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
 
-    enum DescriptorType {CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM, ECLIPSE, MAVEN}
-    
     enum IMPORT_STATUS {MANDATORY, UNUSED, UNLOADED}
 
     @NotNull
@@ -84,17 +82,17 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     boolean isAddOn();
 
     @NotNull
-    DescriptorType getDescriptorType();
+    HybrisModuleDescriptorType getDescriptorType();
 
     boolean hasServerJar();
 
     @Nullable
-    static DescriptorType getDescriptorType(@NotNull final Module module) {
+    static HybrisModuleDescriptorType getDescriptorType(@NotNull final Module module) {
         final String descriptorTypeName = module.getOptionValue(HybrisConstants.DESCRIPTOR_TYPE);
         try {
             return descriptorTypeName == null
                 ? null
-                : HybrisModuleDescriptor.DescriptorType.valueOf(descriptorTypeName);
+                : HybrisModuleDescriptorType.valueOf(descriptorTypeName);
         } catch (IllegalArgumentException e) {
             return null;
         }

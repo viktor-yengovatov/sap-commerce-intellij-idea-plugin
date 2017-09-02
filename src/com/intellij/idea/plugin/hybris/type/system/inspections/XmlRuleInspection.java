@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -111,8 +111,8 @@ public class XmlRuleInspection extends LocalInspectionTool {
             return false;
         }
 
-        final DescriptorType descriptorType = DescriptorType.valueOf(descriptorTypeName);
-        return descriptorType == DescriptorType.CUSTOM;
+        final HybrisModuleDescriptorType descriptorType = HybrisModuleDescriptorType.valueOf(descriptorTypeName);
+        return descriptorType == HybrisModuleDescriptorType.CUSTOM;
     }
 
     /*

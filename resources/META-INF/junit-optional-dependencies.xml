@@ -23,8 +23,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.JUnitRunConfigurationConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.JUnitRunConfigurationConfigurator"/>
+        <runConfigurationExtension
+            implementation="com.intellij.idea.plugin.hybris.runConfigurations.HybrisJUnitExtension"/>
 
     </extensions>
 

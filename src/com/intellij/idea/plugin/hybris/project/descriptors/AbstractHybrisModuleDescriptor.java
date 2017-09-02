@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.openapi.components.ServiceManager;
@@ -200,7 +201,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @Override
     public boolean isAddOn() {
-        return new File(this.getRootDirectory(), HybrisConstants.ACCELERATOR_ADDON_DIRECTORY).isDirectory();
+        return HybrisUtil.isAddOnModuleRoot(getRootDirectory());
     }
 
     @Override

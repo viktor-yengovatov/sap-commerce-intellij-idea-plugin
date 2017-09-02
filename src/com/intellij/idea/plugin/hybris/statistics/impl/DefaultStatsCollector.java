@@ -21,13 +21,11 @@ package com.intellij.idea.plugin.hybris.statistics.impl;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.ui.LicensingFacade;
-import com.intellij.util.containers.HashSet;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -36,6 +34,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
@@ -71,13 +70,14 @@ public class DefaultStatsCollector implements StatsCollector {
     }
 
     @Override
-    public void collectStat(final ACTIONS action) {
+    public void collectStat(@NotNull final ACTIONS action) {
         collectStat(action, null);
     }
 
     @Override
-    public void collectStat(final ACTIONS action, final String parameters) {
-        addInternalFlag(action);
+    public void collectStat(@NotNull final ACTIONS action, @Nullable final String parameters) {
+        HybrisApplicationSettingsComponent.getInstance().addUsedAction(action);
+
         if (shouldPostStat(action)) {
             cache.put(action, System.currentTimeMillis());
             try {
@@ -98,14 +98,7 @@ public class DefaultStatsCollector implements StatsCollector {
         return diff > TimeUnit.HOURS.toMillis(12);
     }
 
-    private void addInternalFlag(final ACTIONS action) {
-        final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
-        final HashSet<ACTIONS> usedActions = settings.getUsedActions();
-        usedActions.add(action);
-        settings.setUsedActions(usedActions);
-    }
-
-    private HttpPost buildRequest(final String action, final String parameters) throws UnsupportedEncodingException {
+    private HttpPost buildRequest(@NotNull final String action, @Nullable final String parameters) throws UnsupportedEncodingException {
         final HttpPost post = new HttpPost(HybrisConstants.STATS_COLLECTOR_URL);
         final List<NameValuePair> urlParameters = new ArrayList<>();
 

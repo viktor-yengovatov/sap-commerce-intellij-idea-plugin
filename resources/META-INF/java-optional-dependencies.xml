@@ -74,14 +74,9 @@
             serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator"
             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSearchScopeConfigurator"/>
 
-<<<<<<< HEAD
-=======
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultLoadedConfigurator"/>
 
-        <compileServer.plugin classpath="common.jar;jps-plugin.jar"/>
-
->>>>>>> 8bdec56... IIPS-54 unused extensions are imported as unloaded modules. They are compatible with refresh action
     </extensions>
 
 </idea-plugin>

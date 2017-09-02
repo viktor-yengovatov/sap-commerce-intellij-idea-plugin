@@ -186,7 +186,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     }
 
     @Override
-    public DescriptorType getDescriptorType() {
-        return DescriptorType.PLATFORM;
+    public HybrisModuleDescriptorType getDescriptorType() {
+        return HybrisModuleDescriptorType.PLATFORM;
     }
 }

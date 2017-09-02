@@ -69,7 +69,7 @@ public interface ConfiguratorFactory {
     RunConfigurationConfigurator getDebugRunConfigurationConfigurator();
 
     @Nullable
-    RunConfigurationConfigurator getJUnitRunConfigurationConfigurator();
+    RunConfigurationConfigurator getTestRunConfigurationConfigurator();
 
     @Nullable
     AntConfigurator getAntConfigurator();

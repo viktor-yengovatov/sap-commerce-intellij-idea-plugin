@@ -18,14 +18,34 @@
 
 package com.intellij.idea.plugin.hybris.statistics;
 
+import com.intellij.openapi.components.ServiceManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 28/2/17.
  */
 public interface StatsCollector {
 
-    void collectStat(ACTIONS action, String parameters);
+    void collectStat(@NotNull ACTIONS action, @Nullable String parameters);
 
-    enum ACTIONS {IMPORT_PROJECT, REFRESH_PROJECT, OPEN_PROJECT, ANT, OPEN_POTENTIAL_PROJECT, BUSINESS_DIAGRAM, DEPENDENCY_DIAGRAM, IMPEX_TABLE_FORMAT}
+    enum ACTIONS {
+        IMPORT_PROJECT,
+        REFRESH_PROJECT,
+        OPEN_PROJECT,
+        ANT,
+        OPEN_POTENTIAL_PROJECT,
+        BUSINESS_DIAGRAM,
+        DEPENDENCY_DIAGRAM,
+        IMPEX_TABLE_FORMAT,
+        BUILD_PROJECT,
+        RUN_TESTS
+    }
 
-    void collectStat(ACTIONS action);
+    void collectStat(@NotNull ACTIONS action);
+
+    @NotNull
+    static StatsCollector getInstance() {
+        return ServiceManager.getService(StatsCollector.class);
+    }
 }

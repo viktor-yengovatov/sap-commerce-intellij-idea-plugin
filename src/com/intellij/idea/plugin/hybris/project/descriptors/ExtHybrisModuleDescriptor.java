@@ -50,7 +50,7 @@ public class ExtHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
     }
 
     @Override
-    public DescriptorType getDescriptorType() {
-        return DescriptorType.EXT;
+    public HybrisModuleDescriptorType getDescriptorType() {
+        return HybrisModuleDescriptorType.EXT;
     }
 }

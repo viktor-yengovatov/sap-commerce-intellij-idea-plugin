@@ -265,10 +265,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private Hybrisconfig unmarshalLocalExtensions(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
         Validate.notNull(configHybrisModuleDescriptor);
 
-        final File localextensions = new File(
+        return unmarshalLocalExtensions(new File(
             configHybrisModuleDescriptor.getRootDirectory(),
             HybrisConstants.LOCAL_EXTENSIONS_XML
-        );
+        ));
+    }
+
+    @Nullable
+    public static Hybrisconfig unmarshalLocalExtensions(final File localextensions) {
         if (!localextensions.exists()) {
             return null;
         }

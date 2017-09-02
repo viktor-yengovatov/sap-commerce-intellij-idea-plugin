@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.services.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
@@ -75,9 +76,7 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isHybrisModule(@NotNull final File file) {
-        Validate.notNull(file);
-
-        return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
+        return HybrisUtil.isHybrisModuleRoot(file);
     }
 
     @Override

@@ -18,12 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.project.components;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.idea.plugin.hybris.project.wizard.PermissionToSendStatisticsDialog;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
@@ -31,38 +36,66 @@ import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.spring.settings.SpringGeneralSettings;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.ANT_SUPPORT_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
+import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
 /**
  * Created by Martin Zdarsky-Jones on 29/09/2016.
  */
 public class HybrisProjectManagerListener implements ProjectManagerListener {
 
+    private static final Logger LOG = Logger.getInstance(HybrisProjectManagerListener.class);
     @Override
     public void projectOpened(final Project project) {
         if (isOldHybrisProject(project)) {
             showNotification(project);
         }
-        registerAntListener(project);
-        resetSpringGeneralSettings(project);
-        popupPermissionToSendStatistics(project);
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        if (!commonIdeaService.isHybrisProject(project)) {
+            return;
+        }
+        if (popupPermissionToSendStatistics(project)) {
+            continueOpening(project);
+        }
     }
 
-    private void popupPermissionToSendStatistics(final Project project) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        if (commonIdeaService.isHybrisProject(project)) {
-            if (commonIdeaService.shouldShowPermissionToSendStatisticsDialog()) {
-                EventQueue.invokeLater(() -> new PermissionToSendStatisticsDialog(project).show());
-            }
+    private void continueOpening(final Project project) {
+        if (project.isDisposed()) {
+            return;
         }
+        registerAntListener(project);
+        resetSpringGeneralSettings(project);
+        fixBackOfficeJRebelSupport(project);
+    }
+
+    private boolean popupPermissionToSendStatistics(final Project project) {
+        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        if (commonIdeaService.shouldShowPermissionToSendStatisticsDialog()) {
+            EventQueue.invokeLater(() -> {
+                if (new PermissionToSendStatisticsDialog(project).showAndGet()) {
+                   continueOpening(project);
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
     private void resetSpringGeneralSettings(final Project project) {
@@ -117,5 +150,37 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
         );
         notification.setImportant(true);
         Notifications.Bus.notify(notification, project);
+    }
+
+    private void fixBackOfficeJRebelSupport(final Project project) {
+        Validate.notNull(project);
+
+        final IdeaPluginDescriptor jRebelPlugin = PluginManager.getPlugin(PluginId.getId(HybrisConstants.JREBEL_PLUGIN_ID));
+        if (jRebelPlugin == null || !jRebelPlugin.isEnabled()) {
+            return;
+        }
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final File compilingXml = new File(toSystemDependentName(project.getBasePath() + "/" + hybrisProjectSettings.getHybrisDirectory() +
+                                           HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML));
+        if (!compilingXml.isFile()) {
+            return;
+        }
+        String content;
+        try {
+            content = IOUtils.toString(new FileInputStream(compilingXml), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LOG.error(e);
+            return;
+        }
+        if (!content.contains("excludes=\"**/rebel.xml\"")) {
+            return;
+        }
+        content = content.replace("excludes=\"**/rebel.xml\"", "");
+        try {
+            IOUtils.write(content, new FileOutputStream(compilingXml), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LOG.error(e);
+            return;
+        }
     }
 }

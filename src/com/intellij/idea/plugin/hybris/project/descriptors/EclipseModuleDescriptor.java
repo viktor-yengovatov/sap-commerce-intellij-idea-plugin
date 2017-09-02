@@ -36,7 +36,7 @@ public class EclipseModuleDescriptor extends RootModuleDescriptor {
     }
 
     @Override
-    public DescriptorType getDescriptorType() {
-        return DescriptorType.ECLIPSE;
+    public HybrisModuleDescriptorType getDescriptorType() {
+        return HybrisModuleDescriptorType.ECLIPSE;
     }
 }

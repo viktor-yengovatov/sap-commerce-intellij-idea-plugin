@@ -16,27 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+package com.intellij.idea.plugin.hybris.common;
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 /**
- * Created by Martin Zdarsky-Jones on 10/11/16.
+ * @author Eugene.Kudelevsky
  */
-public class MavenModuleDescriptor extends RootModuleDescriptor {
+public final class HybrisUtil {
 
-    public MavenModuleDescriptor(
-        @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
-    ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
+    private HybrisUtil() {
     }
 
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return HybrisModuleDescriptorType.MAVEN;
+    public static boolean isHybrisModuleRoot(@NotNull final File file) {
+        return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
+    }
+
+    public static boolean isAddOnModuleRoot(@NotNull final File file) {
+        return new File(file, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY).isDirectory();
     }
 }

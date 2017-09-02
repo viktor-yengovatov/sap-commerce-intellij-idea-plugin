@@ -73,7 +73,7 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
     }
 
     @Override
-    public DescriptorType getDescriptorType() {
-        return DescriptorType.CONFIG;
+    public HybrisModuleDescriptorType getDescriptorType() {
+        return HybrisModuleDescriptorType.CONFIG;
     }
 }

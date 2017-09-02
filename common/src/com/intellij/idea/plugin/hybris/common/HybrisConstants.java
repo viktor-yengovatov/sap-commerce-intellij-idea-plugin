@@ -142,6 +142,7 @@ public interface HybrisConstants {
 
     String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
     String PLUGIN_ID = "ccom.intellij.idea.plugin.hybris.impex";
+    String JREBEL_PLUGIN_ID = "JRebelPlugin";
     String CONFIGURATOR_FACTORY_ID = PLUGIN_ID + ".hybrisConfiguratorFactory";
 
     String HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml";
@@ -163,6 +164,7 @@ public interface HybrisConstants {
     String ANT_PLATFORM_HOME = "PLATFORM_HOME";
     String ANT_OPTS = "ANT_OPTS";
     String ANT_HOME = "ANT_HOME";
+    String ANT_COMPILING_XML = "resources/ant/compiling.xml";
     String ANT_LIB_DIR = "resources/ant/lib";
     String ANT_BUILD_XML = "build.xml";
     int ANT_HEAP_SIZE_MB = 512;

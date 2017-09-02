@@ -24,7 +24,7 @@ import com.intellij.diagram.DiagramNode;
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.diagram.VisibilityLevel;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.DescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -171,12 +171,12 @@ public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagram
         }
 
         private boolean isCustomExtension(@NotNull final Module module) {
-            return HybrisModuleDescriptor.getDescriptorType(module) == DescriptorType.CUSTOM;
+            return HybrisModuleDescriptor.getDescriptorType(module) == HybrisModuleDescriptorType.CUSTOM;
         }
 
         private boolean isOotbOrPlatformExtension(@NotNull final Module module) {
-            final DescriptorType descriptorType = HybrisModuleDescriptor.getDescriptorType(module);
-            return descriptorType == DescriptorType.OOTB || descriptorType == DescriptorType.PLATFORM;
+            final HybrisModuleDescriptorType descriptorType = HybrisModuleDescriptor.getDescriptorType(module);
+            return descriptorType == HybrisModuleDescriptorType.OOTB || descriptorType == HybrisModuleDescriptorType.PLATFORM;
         }
 
         @SuppressWarnings("unchecked")

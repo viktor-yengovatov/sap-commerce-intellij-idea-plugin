@@ -70,7 +70,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(
             RemoteConfigurationType.class);
         final ConfigurationFactory configurationFactory = remoteConfigurationType.getConfigurationFactories()[0];
-        final String debugName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.debug");
+        final String debugName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.remote.debug");
         final RunnerAndConfigurationSettings runner = runManager.createRunConfiguration(
             debugName,
             configurationFactory
