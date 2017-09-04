@@ -24,18 +24,17 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywords;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchFromClause;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSetQuantifier;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchWhereClause;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.patterns.PlatformPatterns;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.SELECT_LIST;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.COLUMN_REFERENCE_IDENTIFIER;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.TABLE_NAME_IDENTIFIER;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
-import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 public class FlexibleSearchCompletionContributor extends CompletionContributor {
 
@@ -45,10 +44,15 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
         // keywords
         extend(
             CompletionType.BASIC,
-            psiElement()
-                .withLanguage(FlexibleSearchLanguage.getInstance())
-                .andNot(psiElement().inside(FlexibleSearchFromClause.class))
-                .andNot(psiElement().inside(FlexibleSearchWhereClause.class))
+            PlatformPatterns.psiElement(PsiElement.class)
+                            .withLanguage(FlexibleSearchLanguage.getInstance())
+//                            .andNot(psiElement().withParents(
+//                                FlexibleSearchTableName.class,
+//                                FlexibleSearchFromClause.class,
+//                                FlexibleSearchWhereClause.class
+//                            ))
+//                            .andNot(psiElement().inside(psiElement(COLUMN_REFERENCE)))
+//                            .andNot(psiElement().inside(psiElement(TABLE_NAME_IDENTIFIER)))
                 /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
             new FSKeywordCompletionProvider(FSKeywords.topLevelKeywords(), (keyword) ->
                 LookupElementBuilder.create(keyword)
@@ -66,61 +70,35 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 
         extend(
             CompletionType.BASIC,
-            psiElement()
-                .afterLeaf(psiElement().withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER)))
+            psiElement(COLUMN_REFERENCE_IDENTIFIER)
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            new FSKeywordCompletionProvider(newHashSet("AS"), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .withCaseSensitivity(false)
-                                    .withIcon(AllIcons.Nodes.Function))
-        );
-
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .inside(FlexibleSearchSetQuantifier.class)
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            new FSKeywordCompletionProvider(newHashSet("DISTINCT", "COUNT"), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .withCaseSensitivity(false)
-                                    .withIcon(AllIcons.Nodes.Method))
-        );
-
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .inside(psiElement(SELECT_LIST))
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            new FSKeywordCompletionProvider(newHashSet("*"), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .bold()
-                                    .withCaseSensitivity(false)
-                                    .withIcon(AllIcons.Nodes.Static))
+            FSFieldsCompletionProvider.Companion.getInstance()
         );
 
 //        extend(
 //            CompletionType.BASIC,
 //            psiElement()
-//                .inside(psiElement(FlexibleSearchFromClause.class))
+//                .afterLeaf(psiElement().withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER)))
 //                .withLanguage(FlexibleSearchLanguage.getInstance()),
-//            new FSKeywordCompletionProvider(FSKeywords.joinKeywords(), (keyword) ->
+//            new FSKeywordCompletionProvider(newHashSet("AS"), (keyword) ->
 //                LookupElementBuilder.create(keyword)
-//                                    .bold()
 //                                    .withCaseSensitivity(false)
-//                                    .withIcon(AllIcons.Nodes.Static))
+//                                    .withIcon(AllIcons.Nodes.Function))
 //        );
-//
+
+
 //        extend(
 //            CompletionType.BASIC,
 //            psiElement()
-//                .inside(psiElement(FlexibleSearchOrderByClause.class))
-//                .withLanguage(FlexibleSearchLanguage.getInstance()),
-//            new FSKeywordCompletionProvider(FSKeywords.orderKeywords(), (keyword) ->
+//                .inside(psiElement(SELECT_LIST))
+//                .withLanguage(FlexibleSearchLanguage.getInstance())
+//                .andNot(psiElement().inside(psiElement(COLUMN_REFERENCE))),
+//            new FSKeywordCompletionProvider(newHashSet("*", "DISTINCT", "COUNT"), (keyword) ->
 //                LookupElementBuilder.create(keyword)
 //                                    .bold()
 //                                    .withCaseSensitivity(false)
 //                                    .withIcon(AllIcons.Nodes.Static))
 //        );
-//
+
     }
 }

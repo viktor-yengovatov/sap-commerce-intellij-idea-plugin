@@ -44,10 +44,4 @@ public class FlexibleSearchCompOpImpl extends ASTWrapperPsiElement implements Fl
     return findChildByType(LESS_THAN_OR_EQUALS_OPERATOR);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getNotEqualsOperator() {
-    return findChildByType(NOT_EQUALS_OPERATOR);
-  }
-
 }

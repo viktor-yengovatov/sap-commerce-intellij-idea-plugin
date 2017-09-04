@@ -16,7 +16,4 @@ public interface FlexibleSearchCompOp extends PsiElement {
   @Nullable
   PsiElement getLessThanOrEqualsOperator();
 
-  @Nullable
-  PsiElement getNotEqualsOperator();
-
 }

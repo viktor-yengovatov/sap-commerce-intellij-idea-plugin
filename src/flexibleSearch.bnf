@@ -43,22 +43,22 @@
         MINUS_SIGN                      = "-"
         DOT                             = "."
         COLON                           = ":"
-        SEMICOLON                       = ";"
+        SEMICOLON                       = ';'
         QUESTION_MARK                   = "?"
         EXCLAMATION_MARK                = "!"
         UNDERSCORE                      = "_"
 
         LEFT_BRACKET                    = "["
         RIGHT_BRACKET                   = "]"
-        LEFT_PAREN                      = "("
-        RIGHT_PAREN                     = ")"
-        LEFT_BRACE                      = "{"
-        RIGHT_BRACE                     = "}"
+        LEFT_PAREN                      = '('
+        RIGHT_PAREN                     = ')'
+        LEFT_BRACE                      = '{'
+        RIGHT_BRACE                     = '}'
         RIGHT_DOUBLE_BRACE              = "regexp:(}})"
         LEFT_DOUBLE_BRACE               = "regexp:({{)"
         
         EQUALS_OPERATOR                 = 'regexp:(=)'
-        NOT_EQUALS_OPERATOR             = 'regexp:(<>)'
+        NOT_EQUALS_OPERATOR             = '<>'
         GREATER_THAN_OPERATOR           = '>'
         GREATER_THAN_OR_EQUALS_OPERATOR = "regexp:(>=)"
         LESS_THAN_OPERATOR              = "<"
@@ -66,11 +66,11 @@
 
 
         SPACE                           = 'regexp:\s+'
-        IDENTIFIER                      = "regexp:([:jletter:] [:jletterdigit:]*)"
-        COLUMN_REFERENCE_IDENTIFIER     = "regexp:([:jletter:] [:jletterdigit:]*)"
-        TABLE_NAME_IDENTIFIER           = "regexp:([:jletter:] [:jletterdigit:]*)"
+        IDENTIFIER                      = 'regexp:\p{Alpha}\w*'
+        COLUMN_REFERENCE_IDENTIFIER     = 'regexp:([:jletter:] [:jletterdigit:]*)'
+        TABLE_NAME_IDENTIFIER           = 'regexp:([:jletter:] [:jletterdigit:]*)'
         STRING                          = "regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
-        NUMBER                          = "regexp:[:jdigit:]*"
+        NUMBER                          = 'regexp:[:jdigit:]*'
   ]
 }
 
@@ -81,14 +81,16 @@ private statement ::= !<<eof>> (query_specification empty_statement?)* empty_sta
  
 private expressionRecoverWhile ::= !(SEMICOLON | <<eof>> )
 
-private empty_statement ::= SEMICOLON | <<eof>>
+private empty_statement ::= (SEMICOLON | <<eof>>)
 
 // Specify a table derived from the result of a <table expression>.
 
-query_specification ::= SELECT [ set_quantifier ] select_list table_expression
+query_specification ::= SELECT [ set_quantifier ] select_list table_expression (SEMICOLON | <<eof>>)?
 {pin = 1}
 
 select_list ::= ASTERISK | select_sublist [ ( COMMA select_sublist )* ]
+{pin=2 recoverWhile=select_list_recover}
+private select_list_recover ::= !(FROM)
 
 select_sublist ::= derived_column | (aggregate_function [COMMA aggregate_function*])
 
@@ -134,19 +136,25 @@ null_ordering ::= NULLS FIRST | NULLS LAST
 
 //<from clause> ::= FROM <table reference list>
 from_clause ::= FROM (LEFT_BRACE table_reference_list RIGHT_BRACE | subquery )
-{pin = 1}
+{pin = 1 recoverWhile=from_clause_recover}
+private from_clause_recover ::= !(WHERE | SELECT | FROM | SEMICOLON | LEFT_DOUBLE_BRACE | '(' | ')')
 
 table_reference_list ::=  table_reference [ { COMMA? table_reference }* ] 
+{pin=1}
 
 table_reference ::= table_primary [joined_table] | joined_table
+{pin=1}
 
 table_primary ::= table_name [ [ AS ] correlation_name ]
+{pin=1}
 
 table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
 {
     pin=1 
     mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.psi.references.TypeNameMixin"
+    recoverWhile = table_name_recover
 }
+private table_name_recover ::= !('}' | AS | SPACE | " ")
 
 correlation_name ::= IDENTIFIER
 
@@ -157,9 +165,11 @@ joined_table ::= [(table_primary [joined_table] | joined_table)] [ join_type ] J
 {pin = 3}
 
 join_specification ::= join_condition 
+{pin = 1}
 
 join_condition ::= ON search_condition
-{pin = 1}
+{pin = 1 recoverWhile = join_condition_recover}
+private join_condition_recover ::= !('}')
 
 join_type ::= LEFT |
 
@@ -171,6 +181,8 @@ LEFT_PAREN? LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE [(UNION ALL
 
 
 where_clause ::= WHERE search_condition
+{pin=1 recoverWhile=where_clause_recover}
+private where_clause_recover ::= !('{{' | <<eof>> | SELECT | ORDER | LEFT_PAREN | SEMICOLON | RIGHT_DOUBLE_BRACE )
 
 search_condition ::= boolean_value_expression
 
@@ -230,7 +242,7 @@ comp_op ::=
 between_predicate ::= row_value_predicand [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
 
 row_value_predicand ::= value_expression | common_value_expression
-
+{pin=1}
 common_value_expression ::= string_value_expression
 
 like_predicate ::= character_like_predicate
@@ -254,13 +266,18 @@ character_substring_function ::=
 
 value_expression ::=  NUMBER 
                     | QUESTION_MARK? column_reference 
-                    | LEFT_BRACE column_reference column_localization? RIGHT_BRACE
+                    | column_reference_value
+
+private column_reference_value ::= LEFT_BRACE column_reference column_localization? RIGHT_BRACE
+{pin = 1 /*recoverWhile=column_reference_value_recover*/}
 
 column_localization ::= LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
 
-private identifier_chain ::= (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ { (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER)  }* ]
+private identifier_chain ::= (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ ( (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) )* ]
 
 column_reference ::= identifier_chain
+{pin = 1 recoverWhile=column_reference_recover}
+private column_reference_recover ::= !(<<eof>> | IDENTIFIER | LINE_TERMINATOR | RIGHT_BRACE | FROM | LEFT_BRACKET | SEMICOLON | WHITE_SPACE | AND | ORDER | IS | OR)
 
 group_by_clause ::= GROUP BY [ set_quantifier ] grouping_element_list
 

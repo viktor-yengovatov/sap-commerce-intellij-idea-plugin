@@ -22,6 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.FSKeywordTableClauseAnalyzer;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,10 +51,7 @@ public class FSKeywordCompletionProvider extends CompletionProvider<CompletionPa
         final ProcessingContext processingContext,
         @NotNull final CompletionResultSet completionResultSet
     ) {
-        for (String keyword : keywords) {
-            completionResultSet.addElement(
-                func.apply(keyword)
-            );
-        }
+        final FSKeywordTableClauseAnalyzer keywordAnalyzer = FSKeywordTableClauseAnalyzer.INSTANCE;
+        keywordAnalyzer.analyzeKeyword(parameters, completionResultSet);
     }
 }
