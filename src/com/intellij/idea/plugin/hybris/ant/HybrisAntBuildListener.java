@@ -30,7 +30,6 @@ import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.lang.ant.config.execution.ExecutionHandler;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -136,8 +135,7 @@ public class HybrisAntBuildListener implements AntBuildListener {
     }
 
     private void collectStatistics() {
-        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
-        statsCollector.collectStat(StatsCollector.ACTIONS.ANT);
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.ANT);
     }
 
     private void processNewExtensions(final Map<Project, AntGenResult> resultMap) {

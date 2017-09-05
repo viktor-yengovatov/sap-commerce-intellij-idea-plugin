@@ -18,9 +18,6 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.statistics.StatsCollector"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.statistics.impl.DefaultStatsCollector"/>
-
         <psi.referenceContributor language="XML"
                                   implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
         <psi.referenceContributor language="XML"

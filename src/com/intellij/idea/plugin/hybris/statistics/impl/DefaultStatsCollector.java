@@ -98,35 +98,31 @@ public class DefaultStatsCollector implements StatsCollector {
         return diff > TimeUnit.HOURS.toMillis(12);
     }
 
-    private HttpPost buildRequest(@NotNull final String action, @Nullable final String parameters) throws UnsupportedEncodingException {
+    protected HttpPost buildRequest(@NotNull final String action, @Nullable final String parameters) throws UnsupportedEncodingException {
         final HttpPost post = new HttpPost(HybrisConstants.STATS_COLLECTOR_URL);
-        final List<NameValuePair> urlParameters = new ArrayList<>();
+        final List<NameValuePair> urlParameters = buildParameters(action, parameters);
+        post.setEntity(new UrlEncodedFormEntity(urlParameters, UTF_8));
+        return post;
+    }
 
+    protected List<NameValuePair> buildParameters(final String action, final String parameters) {
+        final List<NameValuePair> urlParameters = new ArrayList<>();
         urlParameters.add(new BasicNameValuePair("ide_version", getIdeVersion()));
         urlParameters.add(new BasicNameValuePair("ide_type", getIdeType()));
 
         final String registeredTo = getRegisteredTo();
         if (null != registeredTo) {
             urlParameters.add(new BasicNameValuePair("registered_to", DigestUtils.sha512Hex(registeredTo)));
-            if (acceptedSendingStatistics()) {
-                urlParameters.add(new BasicNameValuePair("registered_to_plain", registeredTo));
-            }
         }
 
         final String computerName = getComputerName();
         if (null != computerName) {
             urlParameters.add(new BasicNameValuePair("computer_name", DigestUtils.sha512Hex(computerName)));
-            if (acceptedSendingStatistics()) {
-                urlParameters.add(new BasicNameValuePair("computer_name_plain", computerName));
-            }
         }
 
         String loginName = getLoginName();
         if (null != loginName) {
             urlParameters.add(new BasicNameValuePair("login_name", DigestUtils.sha512Hex(loginName)));
-            if (acceptedSendingStatistics()) {
-                urlParameters.add(new BasicNameValuePair("login_name_plain", loginName));
-            }
         }
         String osName = System.getProperty("os.name").toLowerCase();
         urlParameters.add(new BasicNameValuePair("os", osName));
@@ -138,46 +134,42 @@ public class DefaultStatsCollector implements StatsCollector {
         if (parameters != null) {
             urlParameters.add(new BasicNameValuePair("parameters", parameters));
         }
-        post.setEntity(new UrlEncodedFormEntity(urlParameters, UTF_8));
-        return post;
-    }
 
-    private boolean acceptedSendingStatistics() {
-        return HybrisApplicationSettingsComponent.getInstance().getState().isAllowedSendingPlainStatistics();
+        return urlParameters;
     }
-
-    private String getCurrentDateTimeWithTimeZone() {
+    
+    protected String getCurrentDateTimeWithTimeZone() {
         final ZonedDateTime localDateTime = ZonedDateTime.now();
         return localDateTime.toString();
     }
 
-    private String getPluginVersion() {
+    protected String getPluginVersion() {
         final IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
         return null == plugin ? null : plugin.getVersion();
     }
 
-    private Future<StatsResponse> sendRequest(final HttpPost post) {
+    protected Future<StatsResponse> sendRequest(final HttpPost post) {
         Future<StatsResponse> response = executor.submit(new StatsRequest(client, post));
         return response;
     }
 
-    public String getIdeVersion() {
+    protected String getIdeVersion() {
         return ApplicationInfo.getInstance().getFullVersion();
     }
 
-    public String getIdeType() {
+    protected String getIdeType() {
         return ApplicationInfo.getInstance().getBuild().getProductCode();
     }
 
     @Nullable
-    public String getRegisteredTo() {
+    protected String getRegisteredTo() {
         final LicensingFacade instance = LicensingFacade.getInstance();
 
         return null == instance ? null : instance.getLicensedToMessage();
     }
 
     //the same user can have multiple computers with identical license. This would affect the user counter.
-    private String getComputerName() {
+    protected String getComputerName() {
         try {
             final String result = InetAddress.getLocalHost().getHostName();
             if (StringUtils.isNotEmpty(result)) {
@@ -200,7 +192,7 @@ public class DefaultStatsCollector implements StatsCollector {
         return null;
     }
 
-    private String getLoginName() {
+    protected String getLoginName() {
         String osName = System.getProperty("os.name").toLowerCase();
         String className = null;
         String methodName = "getUsername";

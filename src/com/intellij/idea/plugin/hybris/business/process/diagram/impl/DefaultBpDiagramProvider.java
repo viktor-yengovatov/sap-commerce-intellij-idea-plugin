@@ -91,7 +91,6 @@ public class DefaultBpDiagramProvider extends BpDiagramProvider {
     }
 
     private void collectStatistics() {
-        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
-        statsCollector.collectStat(StatsCollector.ACTIONS.BUSINESS_DIAGRAM);
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.BUSINESS_DIAGRAM);
     }
 }

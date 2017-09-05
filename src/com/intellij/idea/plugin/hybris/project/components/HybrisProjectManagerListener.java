@@ -120,7 +120,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
 
     private boolean isOldHybrisProject(final Project project) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
+        final StatsCollector statsCollector = StatsCollector.getInstance();
         if (commonIdeaService.isHybrisProject(project)) {
             statsCollector.collectStat(StatsCollector.ACTIONS.OPEN_PROJECT);
             return commonIdeaService.isOutDatedHybrisProject(project);

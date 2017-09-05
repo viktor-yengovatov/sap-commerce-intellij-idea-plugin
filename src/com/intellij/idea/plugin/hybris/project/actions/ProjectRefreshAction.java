@@ -108,8 +108,7 @@ public class ProjectRefreshAction extends ImportModuleAction {
     }
 
     private void collectStatistics() {
-        final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
-        statsCollector.collectStat(StatsCollector.ACTIONS.REFRESH_PROJECT);
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.REFRESH_PROJECT);
     }
 
     public List<Module> doReImport(final Project project) throws ConfigurationException {

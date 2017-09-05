@@ -1,0 +1,6 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.statistics.StatsCollector"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.statistics.impl.DefaultStatsCollector"/>
+    </extensions>
+</idea-plugin>

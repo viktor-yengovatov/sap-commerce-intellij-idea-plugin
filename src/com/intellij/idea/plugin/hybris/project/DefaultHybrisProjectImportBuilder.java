@@ -280,8 +280,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             parameters.append(",hasSources:");
             parameters.append(hasSourceZip);
 
-            final StatsCollector statsCollector = ServiceManager.getService(StatsCollector.class);
-            statsCollector.collectStat(StatsCollector.ACTIONS.IMPORT_PROJECT, parameters.toString());
+            StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPORT_PROJECT, parameters.toString());
         } catch (Exception e) {
             // we do not care
         }
