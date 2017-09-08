@@ -69,17 +69,17 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         }
 
         NamedScope defaultScope = customScope != null ? customScope : hybrisScope != null ? hybrisScope : platformScope;
-        FindSettings.getInstance().setCustomScope(defaultScope.getName());
-        FindSettings.getInstance().setDefaultScopeName(defaultScope.getName());
+        if (defaultScope != null) {
+            FindSettings.getInstance().setCustomScope(defaultScope.getName());
+            FindSettings.getInstance().setDefaultScopeName(defaultScope.getName());
+        }
     }
 
     private boolean groupExists(final Project project, final String groupName) {
         final Module[] modules = ModuleManager.getInstance(project).getModules();
         return Arrays.stream(modules)
                      .map(module -> ModuleManager.getInstance(project).getModuleGroupPath(module))
-                     .filter(groupPath -> groupPath != null && groupPath.length > 0 && groupPath[0].equals(groupName))
-                     .findAny()
-                     .isPresent();
+                     .anyMatch(groupPath -> groupPath != null && groupPath.length > 0 && groupPath[0].equals(groupName));
     }
 
     private NamedScope addScope(final Project project, final String groupName) {
