@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.actions;
 
 import com.intellij.ide.DataManager;
-import com.intellij.ide.actions.ImportModuleAction;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
 import com.intellij.ide.util.newProjectWizard.StepSequence;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
@@ -40,27 +39,28 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.extensions.Extensions;
+import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.CompilerProjectExtension;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportProvider;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
  * Created by Martin Zdarsky-Jones on 8/2/17.
  */
-public class ProjectRefreshAction extends ImportModuleAction {
-
-    final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+public class ProjectRefreshAction extends AnAction {
 
     public static void triggerAction() {
         final DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
@@ -82,9 +82,17 @@ public class ProjectRefreshAction extends ImportModuleAction {
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
+        final Project project = getEventProject(anActionEvent);
+
+        if (project == null) {
+            return;
+        }
+        removeAllModulesAndLibraries(project);
+
         try {
             collectStatistics();
-            doReImport(getEventProject(anActionEvent));
+            final AddModuleWizard wizard = getWizard(project);
+            wizard.getProjectBuilder().commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
         } catch (ConfigurationException e) {
             Messages.showErrorDialog(
                 anActionEvent.getProject(),
@@ -92,6 +100,23 @@ public class ProjectRefreshAction extends ImportModuleAction {
                 HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
             );
         }
+    }
+
+    private static void removeAllModulesAndLibraries(@NotNull final Project project) {
+        final ModifiableModuleModel moduleModel = ModuleManager.getInstance(project).getModifiableModel();
+
+        for (Module module : moduleModel.getModules()) {
+            moduleModel.disposeModule(module);
+        }
+        final LibraryTable.ModifiableModel libraryModel = ProjectLibraryTable.getInstance(project).getModifiableModel();
+
+        for (Library library : libraryModel.getLibraries()) {
+            libraryModel.removeLibrary(library);
+        }
+        ApplicationManager.getApplication().runWriteAction(() -> {
+            moduleModel.commit();
+            libraryModel.commit();
+        });
     }
 
     @Override
@@ -103,17 +128,16 @@ public class ProjectRefreshAction extends ImportModuleAction {
             return;
         }
         presentation.setIcon(HybrisIcons.HYBRIS_ICON);
-        final boolean visible = commonIdeaService.isHybrisProject(project);
-        presentation.setVisible(visible);
+        presentation.setVisible(CommonIdeaService.getInstance().isHybrisProject(project));
+    }
+
+    @Override
+    public boolean isDumbAware() {
+        return true;
     }
 
     private void collectStatistics() {
         StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.REFRESH_PROJECT);
-    }
-
-    public List<Module> doReImport(final Project project) throws ConfigurationException {
-        final AddModuleWizard wizard = getWizard(project);
-        return createFromWizard(null, wizard);
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {
@@ -123,8 +147,6 @@ public class ProjectRefreshAction extends ImportModuleAction {
         final Sdk jdk = ProjectRootManager.getInstance(project).getProjectSdk();
         final String compilerOutputUrl = CompilerProjectExtension.getInstance(project).getCompilerOutputUrl();
         final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
-
-        ProjectManagerEx.getInstanceEx().closeAndDispose(project);
 
         final AddModuleWizard wizard = new AddModuleWizard(null, basePath, provider) {
 

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

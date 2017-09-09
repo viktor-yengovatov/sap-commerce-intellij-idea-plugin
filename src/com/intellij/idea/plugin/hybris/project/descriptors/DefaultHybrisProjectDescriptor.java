@@ -421,8 +421,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.project = project;
     }
 
-    @NotNull
-    protected void findModuleRoots(
+    private void findModuleRoots(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
         @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor

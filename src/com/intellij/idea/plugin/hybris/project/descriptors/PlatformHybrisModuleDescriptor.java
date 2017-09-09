@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
@@ -104,21 +105,20 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         return true;
     }
 
-    public Library createBootstrapLib(
+    public void createBootstrapLib(
         @Nullable final VirtualFile sourceCodeRoot,
-        @NotNull final ModifiableModelsProvider modifiableModelsProvider
+        @NotNull final IdeModifiableModelsProvider modifiableModelsProvider
     ) {
 
         final Collection<File> libraryDirectories = getLibraryDirectories();
         final File bootStrapSrc = new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY);
 
         final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
-            .getLibraryTableModifiableModel(getRootProjectDescriptor().getProject());
+            .getModifiableProjectLibrariesModel();
 
         Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP);
         if (null == library) {
             library = libraryTableModifiableModel.createLibrary(HybrisConstants.PLATFORM_LIBRARY_GROUP);
-            libraryTableModifiableModel.commit();
         }
 
         if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {
@@ -140,16 +140,14 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
             );
 
         } else {
-            final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
-            for (final File libRoot : libraryDirectories) {
-                libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libRoot), true);
-            }
+            final Library.ModifiableModel model = modifiableModelsProvider.getModifiableLibraryModel(library);
 
-            libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(bootStrapSrc), OrderRootType.SOURCES);
-            libraryModifiableModel.commit();
+            for (final File libRoot : libraryDirectories) {
+                model.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libRoot), true);
+            }
+            model.addRoot(VfsUtil.getUrlForLibraryRoot(bootStrapSrc), OrderRootType.SOURCES);
         }
 
-        return library;
     }
 
     private Collection<File> getLibraryDirectories() {

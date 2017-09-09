@@ -40,6 +40,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSyste
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
@@ -111,12 +112,6 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public LibRootsConfigurator getLibRootsConfigurator() {
         return ServiceManager.getService(LibRootsConfigurator.class);
-    }
-
-    @NotNull
-    @Override
-    public ModifiableModelsProvider getModifiableModelsProvider() {
-        return new IdeaModifiableModelsProvider();
     }
 
     @NotNull
@@ -201,7 +196,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
         @Override
         public void configureDependencies(
             @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-            @NotNull final ModifiableModuleModel rootProjectModifiableModuleModel
+            @NotNull final IdeModifiableModelsProvider modifiableModelsProvider
         ) {
 
         }

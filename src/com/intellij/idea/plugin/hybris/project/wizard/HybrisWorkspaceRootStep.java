@@ -571,7 +571,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         }
         ));
 
-        final String hybrisApiVersion = getHybrisApiVersion(this.getBuilder().getFileToImport());
+        File hybrisDir = hybrisProjectDescriptor.getHybrisDistributionDirectory();
+        String hybrisDirPath = hybrisDir != null ? hybrisDir.getAbsolutePath() : getBuilder().getFileToImport();
+        final String hybrisApiVersion = getHybrisApiVersion(hybrisDirPath);
         final String defaultJavadocUrl = getDefaultJavadocUrl(hybrisApiVersion);
         if (StringUtils.isNotBlank(defaultJavadocUrl)) {
             hybrisProjectDescriptor.setJavadocUrl(defaultJavadocUrl);

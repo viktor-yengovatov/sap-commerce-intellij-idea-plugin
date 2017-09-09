@@ -18,13 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Martin Zdarsky-Jones on 04/07/2017.
  */
 public interface SearchScopeConfigurator {
 
-    void configure(final Project project);
+    void configure(
+        @NotNull final Project project,
+        @NotNull final ModifiableModuleModel model
+    );
 
 }

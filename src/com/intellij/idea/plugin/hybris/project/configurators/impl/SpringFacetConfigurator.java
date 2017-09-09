@@ -21,10 +21,12 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.facet.ModifiableFacetModel;
+import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.contexts.model.LocalXmlModel;
@@ -40,9 +42,10 @@ import java.io.File;
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 7/08/15.
  */
-public class SpringFacetConfigurator extends AbstractFacetConfigurator {
+public class SpringFacetConfigurator implements FacetConfigurator {
 
-    protected void configureInner(
+    @Override
+    public void configure(
         @NotNull final ModifiableFacetModel modifiableFacetModel,
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
         @NotNull final Module javaModule,
@@ -82,9 +85,10 @@ public class SpringFacetConfigurator extends AbstractFacetConfigurator {
                 springFileSet.addFile(vf);
             }
         }
-        final CustomSetting setting = springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED);
-        if (setting instanceof CustomSetting.BOOLEAN) {
-            ((CustomSetting.BOOLEAN) setting).setBooleanValue(false);
+        final CustomSetting.BOOLEAN setting = springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED);
+
+        if (setting != null) {
+            setting.setBooleanValue(false);
         }
     }
 }
