@@ -279,9 +279,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             final boolean override = hybrisProjectDescriptor.getExternalExtensionsDirectory() != null;
             parameters.append(override);
 
-            final boolean hasSourceZip = hybrisProjectDescriptor.getSourceCodeZip() != null;
+            final boolean hasSources = hybrisProjectDescriptor.getSourceCodeFile() != null;
             parameters.append(",hasSources:");
-            parameters.append(hasSourceZip);
+            parameters.append(hasSources);
 
             StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPORT_PROJECT, parameters.toString());
         } catch (Exception e) {

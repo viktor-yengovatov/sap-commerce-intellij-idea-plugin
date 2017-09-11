@@ -350,10 +350,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         hybrisProjectSettings.setCreateBackwardCyclicDependenciesForAddOns(hybrisProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn());
-        final File sourceZip = hybrisProjectDescriptor.getSourceCodeZip();
-        if (sourceZip != null && sourceZip.isFile()) {
-            hybrisProjectSettings.setSourceCodeZip(sourceZip.getPath());
-            appSettings.setSourceCodeDirectory(sourceZip.getParent());
+        final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();
+
+        if (sourceCodeFile != null && sourceCodeFile.exists()) {
+            hybrisProjectSettings.setSourceCodeFile(sourceCodeFile.getPath());
+            final boolean directory = sourceCodeFile.isDirectory();
+            appSettings.setSourceCodeDirectory(directory ? sourceCodeFile.getPath() : sourceCodeFile.getParent());
+            appSettings.setSourceZipUsed(!directory);
         }
         final File modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (modulesFilesDirectory != null && modulesFilesDirectory.isDirectory()) {

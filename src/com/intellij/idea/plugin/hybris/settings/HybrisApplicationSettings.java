@@ -113,6 +113,9 @@ public class HybrisApplicationSettings {
     @PropertyName("sourceCodeDirectory")
     private String sourceCodeDirectory = "";
 
+    @PropertyName("sourceZipUsed")
+    private boolean sourceZipUsed = true;
+
     public HybrisApplicationSettings() {
     }
 
@@ -277,6 +280,14 @@ public class HybrisApplicationSettings {
         this.sourceCodeDirectory = sourceCodeDirectory;
     }
 
+    public boolean isSourceZipUsed() {
+        return sourceZipUsed;
+    }
+
+    public void setSourceZipUsed(final boolean sourceZipUsed) {
+        this.sourceZipUsed = sourceZipUsed;
+    }
+
     public boolean isDevelopmentMode() {
         return developmentMode;
     }
@@ -305,6 +316,7 @@ public class HybrisApplicationSettings {
             .append(allowedSendingPlainStatistics)
             .append(externalDbDriversDirectory)
             .append(sourceCodeDirectory)
+            .append(sourceZipUsed)
             .append(developmentMode)
             .toHashCode();
     }
@@ -339,6 +351,7 @@ public class HybrisApplicationSettings {
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
             .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(sourceCodeDirectory, other.sourceCodeDirectory)
+            .append(sourceZipUsed, other.sourceZipUsed)
             .append(developmentMode, other.developmentMode)
             .isEquals();
     }
@@ -363,6 +376,7 @@ public class HybrisApplicationSettings {
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
         sb.append(", externalDbDriversDirectory='").append(externalDbDriversDirectory).append('\'');
         sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');
+        sb.append(", sourceZipUsed='").append(sourceZipUsed).append('\'');
         sb.append(", developmentMode='").append(developmentMode).append('\'');
         sb.append('}');
         return sb.toString();

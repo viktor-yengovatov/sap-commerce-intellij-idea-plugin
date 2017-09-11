@@ -29,12 +29,11 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.roots.DependencyScope;
 import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.JarFileSystem;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.Validate;
@@ -124,14 +123,16 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     @Nullable
     private VirtualFile getSourceCodeRoot(final @NotNull HybrisModuleDescriptor moduleDescriptor) {
         final VirtualFile sourceCodeRoot;
-        final File sourceCodeZip = moduleDescriptor.getRootProjectDescriptor().getSourceCodeZip();
+        final File sourceCodeFile = moduleDescriptor.getRootProjectDescriptor().getSourceCodeFile();
 
-        if (null != sourceCodeZip) {
-            final VirtualFile sourceZip = VfsUtil.findFileByIoFile(sourceCodeZip, true);
-            if (null == sourceZip) {
+        if (null != sourceCodeFile) {
+            final VirtualFile sourceVFile = VfsUtil.findFileByIoFile(sourceCodeFile, true);
+            if (null == sourceVFile) {
                 sourceCodeRoot = null;
+            } else if (sourceVFile.isDirectory()) {
+                sourceCodeRoot = sourceVFile;
             } else {
-                sourceCodeRoot = JarFileSystem.getInstance().getJarRootForLocalFile(sourceZip);
+                sourceCodeRoot = JarFileSystem.getInstance().getJarRootForLocalFile(sourceVFile);
             }
         } else {
             sourceCodeRoot = null;
