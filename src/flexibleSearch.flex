@@ -358,6 +358,8 @@ EOL                             = \n|\r\n
 
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
     
+    {WHITE_SPACE}                          { yybegin(popState()); return WHITE_SPACE; }
+    
     {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
 }
 

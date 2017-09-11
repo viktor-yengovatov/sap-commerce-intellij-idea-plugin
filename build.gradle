@@ -17,7 +17,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.1.4-2'
+    ext.kotlin_version = '1.1.4-3'
     
     repositories {
         maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
@@ -80,6 +80,13 @@ allprojects {
     patchPluginXml {
         sinceBuild '172'
     }
+
+    task copyPsiViewer(type: Copy) {
+        from "$projectDir/PsiViewer.jar"
+        into "$buildDir/idea-sandbox/plugins/"
+    }
+    
+    prepareSandbox.doLast {copyPsiViewer.execute()}
 }
 
 apply plugin: 'idea'
@@ -112,7 +119,4 @@ dependencies {
 
 compileKotlin {
     kotlinOptions.jvmTarget = '1.8'
-    
-    // workaround https://youtrack.jetbrains.com/issue/KT-19737
-    destinationDir = compileJava.destinationDir
 }

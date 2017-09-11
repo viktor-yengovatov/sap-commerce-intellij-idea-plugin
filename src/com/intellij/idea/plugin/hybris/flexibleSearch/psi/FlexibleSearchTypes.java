@@ -110,11 +110,12 @@ public interface FlexibleSearchTypes {
   IElementType LESS_THAN_OPERATOR = new FlexibleSearchTokenType("<");
   IElementType LESS_THAN_OR_EQUALS_OPERATOR = new FlexibleSearchTokenType("LESS_THAN_OR_EQUALS_OPERATOR");
   IElementType LIKE = new FlexibleSearchTokenType("LIKE");
+  IElementType LINE_TERMINATOR = new FlexibleSearchTokenType("LINE_TERMINATOR");
   IElementType MAX = new FlexibleSearchTokenType("MAX");
   IElementType MIN = new FlexibleSearchTokenType("MIN");
   IElementType MINUS_SIGN = new FlexibleSearchTokenType("-");
   IElementType NOT = new FlexibleSearchTokenType("NOT");
-  IElementType NOT_EQUALS_OPERATOR = new FlexibleSearchTokenType("NOT_EQUALS_OPERATOR");
+  IElementType NOT_EQUALS_OPERATOR = new FlexibleSearchTokenType("<>");
   IElementType NULL = new FlexibleSearchTokenType("NULL");
   IElementType NULLS = new FlexibleSearchTokenType("NULLS");
   IElementType NUMBER = new FlexibleSearchTokenType("NUMBER");
@@ -132,6 +133,7 @@ public interface FlexibleSearchTypes {
   IElementType SELECT = new FlexibleSearchTokenType("SELECT");
   IElementType SEMICOLON = new FlexibleSearchTokenType(";");
   IElementType SOME = new FlexibleSearchTokenType("SOME");
+  IElementType SPACE = new FlexibleSearchTokenType("SPACE");
   IElementType STRING = new FlexibleSearchTokenType("STRING");
   IElementType SUM = new FlexibleSearchTokenType("SUM");
   IElementType TABLE_NAME_IDENTIFIER = new FlexibleSearchTokenType("TABLE_NAME_IDENTIFIER");
@@ -139,6 +141,7 @@ public interface FlexibleSearchTypes {
   IElementType UNDERSCORE = new FlexibleSearchTokenType("_");
   IElementType UNION = new FlexibleSearchTokenType("UNION");
   IElementType WHERE = new FlexibleSearchTokenType("WHERE");
+  IElementType WHITE_SPACE = new FlexibleSearchTokenType("WHITE_SPACE");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
