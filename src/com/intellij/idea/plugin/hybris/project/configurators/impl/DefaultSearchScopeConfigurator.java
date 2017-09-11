@@ -21,13 +21,13 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.find.FindSettings;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet;
 import com.intellij.psi.search.scope.packageSet.NamedScope;
 import com.intellij.psi.search.scope.packageSet.NamedScopeManager;
 import com.intellij.psi.search.scope.packageSet.UnionPackageSet;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -40,7 +40,10 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOP
 public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
     @Override
-    public void configure(final Project project) {
+    public void configure(
+        @NotNull final Project project,
+        @NotNull final ModifiableModuleModel model
+    ) {
         final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
         final String commerceGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupHybris();
         final String nonHybrisGroupName = HybrisApplicationSettingsComponent.getInstance()
@@ -52,19 +55,19 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         NamedScope commerceScope = null;
         NamedScope hybrisScope = null;
 
-        if (groupExists(project, customGroupName)) {
+        if (groupExists(model, customGroupName)) {
             customScope = addScope(project, customGroupName);
         }
-        if (groupExists(project, platformGroupName)) {
+        if (groupExists(model, platformGroupName)) {
             platformScope = addScope(project, platformGroupName);
         }
-        if (groupExists(project, commerceGroupName)) {
+        if (groupExists(model, commerceGroupName)) {
             commerceScope = addScope(project, commerceGroupName);
         }
         if (platformScope != null && commerceScope != null) {
             hybrisScope = addScope(project, platformGroupName, commerceGroupName);
         }
-        if (groupExists(project, nonHybrisGroupName)) {
+        if (groupExists(model, nonHybrisGroupName)) {
             addScope(project, nonHybrisGroupName);
         }
 
@@ -75,11 +78,11 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         }
     }
 
-    private boolean groupExists(final Project project, final String groupName) {
-        final Module[] modules = ModuleManager.getInstance(project).getModules();
-        return Arrays.stream(modules)
-                     .map(module -> ModuleManager.getInstance(project).getModuleGroupPath(module))
-                     .anyMatch(groupPath -> groupPath != null && groupPath.length > 0 && groupPath[0].equals(groupName));
+    private static boolean groupExists(@NotNull ModifiableModuleModel model, final String groupName) {
+        return Arrays
+            .stream(model.getModules())
+            .map(model::getModuleGroupPath)
+            .anyMatch(groupPath -> groupPath != null && groupPath.length > 0 && groupPath[0].equals(groupName));
     }
 
     private NamedScope addScope(final Project project, final String groupName) {

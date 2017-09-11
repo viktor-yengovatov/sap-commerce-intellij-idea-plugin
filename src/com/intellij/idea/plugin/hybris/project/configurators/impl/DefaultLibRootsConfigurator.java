@@ -25,16 +25,15 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.roots.DependencyScope;
-import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
 import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -43,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Created 11:45 PM 24 June 2015.
@@ -52,24 +52,12 @@ import java.io.File;
  */
 public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
-    protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
-
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
-            () -> configureInner(modifiableRootModel, moduleDescriptor)));
-    }
-
-    protected void configureInner(
-        @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
-    ) {
-        Validate.notNull(modifiableRootModel);
-        Validate.notNull(moduleDescriptor);
-
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
         for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
@@ -77,9 +65,19 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
                 continue;
             }
             if (javaLibraryDescriptor.isDirectoryWithClasses()) {
-                this.addClassesToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
+                this.addClassesToModuleLibs(
+                    modifiableRootModel,
+                    modifiableModelsProvider,
+                    sourceCodeRoot,
+                    javaLibraryDescriptor
+                );
             } else {
-                this.addJarFolderToModuleLibs(modifiableRootModel, sourceCodeRoot, javaLibraryDescriptor);
+                this.addJarFolderToModuleLibs(
+                    modifiableRootModel,
+                    modifiableModelsProvider,
+                    sourceCodeRoot,
+                    javaLibraryDescriptor
+                );
             }
         }
 
@@ -89,7 +87,12 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
         if (moduleDescriptor instanceof CoreHybrisModuleDescriptor) {
-            addLibsToModule(modifiableRootModel, HybrisConstants.PLATFORM_LIBRARY_GROUP, true);
+            addLibsToModule(
+                modifiableRootModel,
+                modifiableModelsProvider,
+                HybrisConstants.PLATFORM_LIBRARY_GROUP,
+                true
+            );
         }
 
         if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
@@ -108,7 +111,12 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
                 }
             }
             if (moduleDescriptor.getName().equals(HybrisConstants.BACK_OFFICE_EXTENSION_NAME)) {
-                addLibsToModule(modifiableRootModel, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true);
+                addLibsToModule(
+                    modifiableRootModel,
+                    modifiableModelsProvider,
+                    HybrisConstants.BACKOFFICE_LIBRARY_GROUP,
+                    true
+                );
             }
         }
     }
@@ -132,16 +140,15 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         return sourceCodeRoot;
     }
 
-    protected void addClassesToModuleLibs(
+    private void addClassesToModuleLibs(
         @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @Nullable final VirtualFile sourceCodeRoot,
         @NotNull final JavaLibraryDescriptor javaLibraryDescriptor
     ) {
-        Validate.notNull(modifiableRootModel);
-        Validate.notNull(javaLibraryDescriptor);
-
         final Library library = modifiableRootModel.getModuleLibraryTable().createLibrary();
-        final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
+        final Library.ModifiableModel libraryModifiableModel = modifiableModelsProvider
+            .getModifiableLibraryModel(library);
         libraryModifiableModel.addRoot(
             VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.getLibraryFile()), OrderRootType.CLASSES
         );
@@ -161,22 +168,19 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             this.setLibraryEntryExported(modifiableRootModel, library);
         }
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());
-
-        libraryModifiableModel.commit();
     }
 
-    protected void addJarFolderToModuleLibs(
+    private void addJarFolderToModuleLibs(
         @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @Nullable final VirtualFile sourceCodeRoot,
         @NotNull final JavaLibraryDescriptor javaLibraryDescriptor
     ) {
-        Validate.notNull(modifiableRootModel);
-        Validate.notNull(javaLibraryDescriptor);
-
         final LibraryTable projectLibraryTable = modifiableRootModel.getModuleLibraryTable();
 
         final Library library = projectLibraryTable.createLibrary();
-        final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
+        final Library.ModifiableModel libraryModifiableModel = modifiableModelsProvider
+            .getModifiableLibraryModel(library);
 
         libraryModifiableModel.addJarDirectory(
             VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.getLibraryFile()), true
@@ -197,56 +201,63 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             this.setLibraryEntryExported(modifiableRootModel, library);
         }
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());
-
-        libraryModifiableModel.commit();
     }
 
-    protected void addLibsToModule(
+    private void addLibsToModule(
         @NotNull final ModifiableRootModel modifiableRootModel,
+        @NotNull IdeModifiableModelsProvider modifiableModelsProvider,
         @NotNull final String libraryName,
-        @NotNull final boolean export
+        final boolean export
     ) {
         Validate.notNull(modifiableRootModel);
 
         final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
-            .getLibraryTableModifiableModel(modifiableRootModel.getProject());
+            .getModifiableProjectLibrariesModel();
 
-        Library libsGroup = libraryTableModifiableModel.getLibraryByName(libraryName);
+        Library library = libraryTableModifiableModel.getLibraryByName(libraryName);
 
-        if (null == libsGroup) {
-            libsGroup = libraryTableModifiableModel.createLibrary(libraryName);
-            libraryTableModifiableModel.commit();
+        if (null == library) {
+            library = libraryTableModifiableModel.createLibrary(libraryName);
         }
-
-        modifiableRootModel.addLibraryEntry(libsGroup);
+        modifiableRootModel.addLibraryEntry(library);
 
         if (export) {
-            setLibraryEntryExported(modifiableRootModel, libsGroup);
+            setLibraryEntryExported(modifiableRootModel, library);
         }
     }
 
-    protected void setLibraryEntryExported(
+    private void setLibraryEntryExported(
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final Library library
     ) {
-        Validate.notNull(modifiableRootModel);
-        Validate.notNull(library);
+        final LibraryOrderEntry libraryOrderEntry = findOrderEntryForLibrary(modifiableRootModel, library);
 
-        final LibraryOrderEntry libraryOrderEntry = modifiableRootModel.findLibraryOrderEntry(library);
-        if (null != libraryOrderEntry) {
+        if (libraryOrderEntry != null) {
             libraryOrderEntry.setExported(true);
         }
     }
 
-    protected void setLibraryEntryScope(
+    private void setLibraryEntryScope(
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final Library library,
         @NotNull DependencyScope scope
     ) {
-        final LibraryOrderEntry entry = modifiableRootModel.findLibraryOrderEntry(library);
+        final LibraryOrderEntry entry = findOrderEntryForLibrary(modifiableRootModel, library);
 
         if (entry != null) {
             entry.setScope(scope);
         }
+    }
+
+    private static LibraryOrderEntry findOrderEntryForLibrary(
+        final @NotNull ModifiableRootModel modifiableRootModel,
+        final @NotNull Library library
+    ) {
+        // Workaround of using Library.equals in findLibraryOrderEntry, which doesn't work here, because all empty libs are equal. Use == instead.
+        return (LibraryOrderEntry) Arrays
+            .stream(modifiableRootModel.getOrderEntries())
+            .filter(entry -> entry instanceof LibraryOrderEntry && ((LibraryOrderEntry) entry).getLibrary() == library)
+            .findFirst()
+            .orElse(modifiableRootModel.findLibraryOrderEntry(library));
     }
 }

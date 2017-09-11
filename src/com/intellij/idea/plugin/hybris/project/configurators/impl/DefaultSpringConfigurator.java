@@ -26,14 +26,12 @@ import com.intellij.idea.plugin.hybris.project.descriptors.CoreHybrisModuleDescr
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.ModifiableModuleModel;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
-import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
+import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,13 +39,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
@@ -56,13 +50,11 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
 
     private static final Logger LOG = Logger.getInstance(DefaultSpringConfigurator.class);
 
-    protected final ModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
-
     @Override
     public void findSpringConfiguration(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 
-        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap = new HashMap<String, HybrisModuleDescriptor>();
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap = ContainerUtil.newHashMap();
         File localProperties = null;
         File advancedProperties = null;
         for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
@@ -92,33 +84,25 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     @Override
     public void configureDependencies(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        final @NotNull ModifiableModuleModel rootProjectModifiableModuleModel
+        final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        Validate.notNull(hybrisProjectDescriptor);
-        Validate.notNull(rootProjectModifiableModuleModel);
+        final Map<String, ModifiableFacetModel> modifiableFacetModelMap = ContainerUtil.newHashMap();
 
-        final List<Module> modules = Arrays.asList(rootProjectModifiableModuleModel.getModules());
-        final Map<String, ModifiableFacetModel> modifiableFacetModelMap = new HashMap<String, ModifiableFacetModel>();
-        final Map<String, Module> moduleMap = new HashMap<String, Module>();
-
-        for (Module module : modules) {
-            final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getFacetModifiableModel(module);
+        for (Module module : modifiableModelsProvider.getModules()) {
+            final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
             modifiableFacetModelMap.put(module.getName(), modifiableFacetModel);
-            moduleMap.put(module.getName(), module);
         }
 
         for (HybrisModuleDescriptor moduleDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
-            configureFacetDependencies(moduleDescriptor, moduleMap, modifiableFacetModelMap);
+            configureFacetDependencies(moduleDescriptor, modifiableFacetModelMap);
         }
     }
 
-    protected void configureFacetDependencies(
+    private void configureFacetDependencies(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final Map<String, Module> moduleMap,
         @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap
     ) {
         Validate.notNull(moduleDescriptor);
-        Validate.notNull(moduleMap);
         Validate.notNull(modifiableFacetModelMap);
 
         final SpringFileSet springFileSet = getSpringFileSet(modifiableFacetModelMap, moduleDescriptor.getName());
@@ -133,10 +117,9 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             }
             springFileSet.addDependency(parentFileSet);
         }
-        commitFacetModel(moduleDescriptor, moduleMap, modifiableFacetModelMap);
     }
 
-    protected SpringFileSet getSpringFileSet(
+    private SpringFileSet getSpringFileSet(
         @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap,
         @NotNull final String moduleName
     ) {
@@ -154,28 +137,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         return springFacet.getFileSets().iterator().next();
     }
 
-    protected void commitFacetModel(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final Map<String, Module> moduleMap,
-        @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap
-    ) {
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(moduleMap);
-        Validate.notNull(modifiableFacetModelMap);
-
-        final Module module = moduleMap.get(moduleDescriptor.getName());
-        final ModifiableFacetModel modifiableFacetModel = modifiableFacetModelMap.get(moduleDescriptor.getName());
-
-        invokeAndWaitIfNeeded(
-            (Runnable) () -> ApplicationManager.getApplication().runWriteAction(
-                () -> ApplicationManager.getApplication().runWriteAction(
-                    () -> modifiableModelsProvider.commitFacetModifiableModel(module, modifiableFacetModel)
-                )
-            )
-        );
-    }
-
-    protected void processHybrisModule(
+    private void processHybrisModule(
         @NotNull final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
         @NotNull final HybrisModuleDescriptor moduleDescriptor
     ) {

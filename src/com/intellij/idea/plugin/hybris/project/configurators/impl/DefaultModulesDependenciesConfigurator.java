@@ -23,9 +23,11 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescri
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.DependencyScope;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleOrderEntry;
 import com.intellij.openapi.roots.ModuleRootModificationUtil;
 import org.jetbrains.annotations.NotNull;
@@ -47,9 +49,9 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
     @Override
     public void configure(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        final @NotNull ModifiableModuleModel rootProjectModifiableModuleModel
+        final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        final List<Module> modules = Arrays.asList(rootProjectModifiableModuleModel.getModules());
+        final List<Module> modules = Arrays.asList(modifiableModelsProvider.getModules());
         final Set<HybrisModuleDescriptor> extModules = hybrisProjectDescriptor
             .getModulesChosenForImport()
             .stream()
@@ -58,34 +60,40 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
 
         for (final HybrisModuleDescriptor nextDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
             findModuleByNameIgnoreCase(modules, nextDescriptor.getName())
-                .ifPresent(nextModule -> configureModuleDependencies(nextDescriptor, nextModule, modules, extModules));
+                .ifPresent(nextModule -> configureModuleDependencies(
+                    nextDescriptor,
+                    nextModule,
+                    modules,
+                    extModules,
+                    modifiableModelsProvider
+                ));
         }
     }
 
-    protected void configureModuleDependencies(
+    private void configureModuleDependencies(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
         @NotNull final Module module,
         @NotNull final Collection<Module> allModules,
-        @NotNull final Set<HybrisModuleDescriptor> extModules
+        @NotNull final Set<HybrisModuleDescriptor> extModules,
+        final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        ModuleRootModificationUtil.updateModel(module, rootModel -> {
+        final ModifiableRootModel rootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
-            for (HybrisModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
-                if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
-                    if (extModules.contains(dependency)) {
-                        continue;
-                    }
+        for (HybrisModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
+            if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
+                if (extModules.contains(dependency)) {
+                    continue;
                 }
-
-                Optional<Module> targetDependencyModule = findModuleByNameIgnoreCase(allModules, dependency.getName());
-                final ModuleOrderEntry moduleOrderEntry = (targetDependencyModule.isPresent())
-                    ? rootModel.addModuleOrderEntry(targetDependencyModule.get())
-                    : rootModel.addInvalidModuleEntry(dependency.getName());
-
-                moduleOrderEntry.setExported(true);
-                moduleOrderEntry.setScope(DependencyScope.COMPILE);
             }
-        });
+
+            Optional<Module> targetDependencyModule = findModuleByNameIgnoreCase(allModules, dependency.getName());
+            final ModuleOrderEntry moduleOrderEntry = targetDependencyModule.isPresent()
+                ? rootModel.addModuleOrderEntry(targetDependencyModule.get())
+                : rootModel.addInvalidModuleEntry(dependency.getName());
+
+            moduleOrderEntry.setExported(true);
+            moduleOrderEntry.setScope(DependencyScope.COMPILE);
+        }
     }
 
     private static Optional<Module> findModuleByNameIgnoreCase(

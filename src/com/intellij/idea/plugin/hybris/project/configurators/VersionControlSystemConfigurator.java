@@ -26,5 +26,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface VersionControlSystemConfigurator {
 
-    void configure(@NotNull Project project);
+    void
+    configure(@NotNull Project project);
 }

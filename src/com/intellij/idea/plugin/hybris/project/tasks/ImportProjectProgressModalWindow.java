@@ -60,11 +60,11 @@ import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
@@ -73,7 +73,6 @@ import com.intellij.openapi.projectRoots.JavaSdkVersion;
 import com.intellij.openapi.projectRoots.JdkVersionUtil;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.LanguageLevelProjectExtension;
-import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
@@ -114,12 +113,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private final ModifiableModuleModel model;
     private final ConfiguratorFactory configuratorFactory;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
-    private final boolean isUpdate;
     private final List<Module> modules;
-    private ModifiableModuleModel rootProjectModifiableModel;
-    private ProjectStructureConfigurable projectStructureConfigurable;
-    private ModifiableRootModel modifiableRootModel;
-    private ModifiableFacetModel modifiableFacetModel;
+    private final IdeModifiableModelsProvider modifiableModelsProvider;
 
     private AccessToken token;
 
@@ -128,20 +123,19 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ModifiableModuleModel model,
         final ConfiguratorFactory configuratorFactory,
         final HybrisProjectDescriptor hybrisProjectDescriptor,
-        final boolean isUpdate,
         final List<Module> modules
     ) {
         super(project, HybrisI18NBundleUtils.message("hybris.project.import.commit"), false);
         this.project = project;
         this.model = model;
+        this.modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         this.configuratorFactory = configuratorFactory;
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
-        this.isUpdate = isUpdate;
         this.modules = modules;
     }
 
     @Override
-    public void run(@NotNull final ProgressIndicator indicator) {
+    public synchronized void run(@NotNull final ProgressIndicator indicator) {
         indicator.setIndeterminate(true);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.preparation"));
 
@@ -152,7 +146,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .filter(e -> !(e instanceof EclipseModuleDescriptor))
             .filter(e -> !(e instanceof GradleModuleDescriptor))
             .collect(Collectors.toList());
-        final ModifiableModelsProvider modifiableModelsProvider = configuratorFactory.getModifiableModelsProvider();
         final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
         final List<FacetConfigurator> facetConfigurators = configuratorFactory.getFacetConfigurators();
         final ContentRootConfigurator regularContentRootConfigurator = configuratorFactory.getRegularContentRootConfigurator();
@@ -187,10 +180,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             }
         }
 
+        final ModifiableModuleModel rootProjectModifiableModel;
+        final ProjectStructureConfigurable projectStructureConfigurable;
         try {
             token = ApplicationManager.getApplication().acquireReadActionLock();
             rootProjectModifiableModel = (null == model)
-                ? ModuleManager.getInstance(project).getModifiableModel()
+                ? modifiableModelsProvider.getModifiableModuleModel()
                 : model;
             projectStructureConfigurable = ProjectStructureConfigurable.getInstance(
                 project
@@ -222,14 +217,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 }
             }
 
+            final ModifiableRootModel modifiableRootModel;
+            final ModifiableFacetModel modifiableFacetModel;
             try {
                 token = ApplicationManager.getApplication().acquireReadActionLock();
-                modifiableRootModel = modifiableModelsProvider.getModuleModifiableModel(
-                    javaModule
-                );
-                modifiableFacetModel = modifiableModelsProvider.getFacetModifiableModel(
-                    javaModule
-                );
+                modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
+                modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule);
             } finally {
                 token.finish();
             }
@@ -237,12 +230,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.sdk"));
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
-            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
-                () -> modifiableRootModel.inheritSdk()));
+            modifiableRootModel.inheritSdk();
 
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.libs"));
-            libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.content"));
+
             if (shouldBeTreatedAsReadOnly(moduleDescriptor)) {
                 readOnlyContentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
             } else {
@@ -254,32 +247,20 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             javadocModuleConfigurator.configure(modifiableRootModel, moduleDescriptor);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.groups"));
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.save"));
-
-            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(
-                // [MG] modifiableRootModel::commit should work as well here
-                () -> modifiableModelsProvider.commitModuleModifiableModel(modifiableRootModel)));
 
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.facet"));
             for (FacetConfigurator facetConfigurator : facetConfigurators) {
                 facetConfigurator.configure(
-                    modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel, modifiableModelsProvider
+                    modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel
                 );
             }
 
             modules.add(javaModule);
         }
 
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.save"));
-        indicator.setText2("");
-        if (!isUpdate) {
-            ApplicationManager.getApplication()
-                              .invokeAndWait(() -> WriteAction.run(rootProjectModifiableModel::commit));
-        }
-
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.dependencies"));
-        modulesDependenciesConfigurator.configure(hybrisProjectDescriptor, rootProjectModifiableModel);
-        springConfigurator.configureDependencies(hybrisProjectDescriptor, rootProjectModifiableModel);
+        modulesDependenciesConfigurator.configure(hybrisProjectDescriptor, modifiableModelsProvider);
+        springConfigurator.configureDependencies(hybrisProjectDescriptor, modifiableModelsProvider);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.runconfigurations"));
         debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
 
@@ -289,12 +270,17 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.search.scope"));
-        searchScopeConfigurator.configure(project);
+        searchScopeConfigurator.configure(project, rootProjectModifiableModel);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.finishing"));
         loadedConfigurator.configure(project, allModules);
     }
 
-    protected void initializeHybrisProjectSettings(@NotNull final Project project) {
+    @Override
+    public synchronized void onSuccess() {
+        ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit);
+    }
+
+    private void initializeHybrisProjectSettings(@NotNull final Project project) {
         Validate.notNull(project);
 
         final @NotNull HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
@@ -394,11 +380,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
         final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
         final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
-        if (facetType != null) {
-            final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
-            if (frameworkType != null) {
-                configuration.addExcludedFramework(frameworkType);
-            }
+        final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
+
+        if (frameworkType != null) {
+            configuration.addExcludedFramework(frameworkType);
         }
     }
 
@@ -409,9 +394,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (moduleDescriptor.getDescriptorType() == CUSTOM) {
             return false;
         }
-        if (moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
-            return true;
-        }
-        return false;
+        return moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();
     }
 }

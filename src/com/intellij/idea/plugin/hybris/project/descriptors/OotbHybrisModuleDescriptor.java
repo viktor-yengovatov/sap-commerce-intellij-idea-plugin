@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.openapi.roots.ModifiableModelsProvider;
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
@@ -47,18 +47,17 @@ public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
         return HybrisModuleDescriptorType.OOTB;
     }
 
-    public Library createGlobalLibrary(
-        @NotNull final ModifiableModelsProvider modifiableModelsProvider,
+    public void createGlobalLibrary(
+        @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @NotNull final File libraryDirRoot,
         @NotNull final String libraryName
     ) {
         final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
-            .getLibraryTableModifiableModel(getRootProjectDescriptor().getProject());
+            .getModifiableProjectLibrariesModel();
 
         Library library = libraryTableModifiableModel.getLibraryByName(libraryName);
         if (null == library) {
             library = libraryTableModifiableModel.createLibrary(libraryName);
-            libraryTableModifiableModel.commit();
         }
 
         if (libraryTableModifiableModel instanceof LibrariesModifiableModel) {
@@ -68,11 +67,9 @@ public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
                 VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true, OrderRootType.CLASSES
             );
         } else {
-            final Library.ModifiableModel libraryModifiableModel = library.getModifiableModel();
+            final Library.ModifiableModel libraryModifiableModel = modifiableModelsProvider
+                .getModifiableLibraryModel(library);
             libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true);
-            libraryModifiableModel.commit();
         }
-
-        return library;
     }
 }

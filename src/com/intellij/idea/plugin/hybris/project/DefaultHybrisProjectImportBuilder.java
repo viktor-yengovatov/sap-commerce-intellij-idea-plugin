@@ -54,6 +54,7 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.newvfs.persistent.FSRecords;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
+import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -176,7 +177,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModulesProvider modulesProvider,
         final ModifiableArtifactModel artifactModel
     ) {
-        final List<Module> result = new ArrayList<>();
+
+        final List<Module> modules = ContainerUtil.newSmartList();
+
         final HybrisProjectDescriptor hybrisProjectDescriptor = getHybrisProjectDescriptor();
         final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor.getModulesChosenForImport();
         if (allModules.isEmpty()) {
@@ -186,6 +189,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         this.performProjectsCleanup(allModules);
         this.collectStatistics(hybrisProjectDescriptor);
+
+        new ImportProjectProgressModalWindow(
+            project, model, configuratorFactory, hybrisProjectDescriptor, modules
+        ).queue();
 
         final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
         final List<MavenModuleDescriptor> mavenModules = new ArrayList<>();
@@ -199,10 +206,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                                        .map(e -> (MavenModuleDescriptor) e)
                                        .collect(Collectors.toList())
             );
-
-            new ImportProjectProgressModalWindow(
-                project, model, configuratorFactory, hybrisProjectDescriptor, this.isUpdate(), result
-            ).queue();
 
             if (mavenConfigurator != null && !mavenModules.isEmpty()) {
                 mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules, configuratorFactory);
@@ -263,7 +266,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             triggerCacheInvalidation();
         });
 
-        return result;
+        return modules;
     }
 
     private void collectStatistics(final HybrisProjectDescriptor hybrisProjectDescriptor) {

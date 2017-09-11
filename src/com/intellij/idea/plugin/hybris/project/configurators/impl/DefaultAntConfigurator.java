@@ -47,6 +47,7 @@ import com.intellij.lang.ant.config.impl.TargetFilter;
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -282,23 +283,23 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     private void createAntInstallation(final File platformDir) {
         antInstallation = null;
-        final VirtualFile antFolder;
+        final String antFolderUrl;
         try {
-            antFolder = Files.find(
-                Paths.get(platformDir.getAbsolutePath()), 1, (path, basicFileAttributes)
-                    -> Files.isDirectory(path) && path.toFile().getName().matches("apache-ant.*")
-            ).map(e -> VfsUtil.findFileByIoFile(e.toFile(), true)).findAny().orElse(null);
+            antFolderUrl = Files
+                .find(Paths.get(platformDir.getAbsolutePath()), 1, (path, basicFileAttributes) ->
+                    Files.isDirectory(path) && path.toFile().getName().matches("apache-ant.*"))
+                .map(e -> VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(e.toFile().getAbsolutePath())))
+                .findAny()
+                .orElse(null);
         } catch (IOException e) {
             return;
         }
-        if (antFolder == null) {
+        if (antFolderUrl == null) {
             return;
         }
-
         try {
-            antInstallation = AntInstallation.fromHome(antFolder.getPresentableUrl());
-        } catch (AntInstallation.ConfigurationException e) {
-            return;
+            antInstallation = AntInstallation.fromHome(antFolderUrl);
+        } catch (AntInstallation.ConfigurationException ignored) {
         }
     }
 

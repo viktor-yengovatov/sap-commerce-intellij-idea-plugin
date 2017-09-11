@@ -40,17 +40,16 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
         final List<String> unloadedModuleNames = allModules
             .stream()
             .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
-            .map(e -> e.getName())
+            .map(HybrisModuleDescriptor::getName)
             .collect(Collectors.toList());
-        ApplicationManager.getApplication().invokeAndWait(()
-                                                              -> ReadAction.run(
-            () -> ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames)
-                                                          )
-        );
+
+        ApplicationManager.getApplication().invokeLater(
+            () -> ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames));
+
         final Set<String> unusedModuleNames = allModules
             .stream()
             .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNUSED)
-            .map(e -> e.getName())
+            .map(HybrisModuleDescriptor::getName)
             .collect(Collectors.toSet());
         HybrisProjectSettingsComponent.getInstance(project).getState().setUnusedExtensions(unusedModuleNames);
     }

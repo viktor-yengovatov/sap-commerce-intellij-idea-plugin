@@ -51,9 +51,6 @@ public interface ConfiguratorFactory {
     LibRootsConfigurator getLibRootsConfigurator();
 
     @NotNull
-    ModifiableModelsProvider getModifiableModelsProvider();
-
-    @NotNull
     GroupModuleConfigurator getGroupModuleConfigurator();
 
     @NotNull
