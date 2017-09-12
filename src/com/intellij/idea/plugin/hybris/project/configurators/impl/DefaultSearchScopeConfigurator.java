@@ -27,9 +27,14 @@ import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet;
 import com.intellij.psi.search.scope.packageSet.NamedScope;
 import com.intellij.psi.search.scope.packageSet.NamedScopeManager;
 import com.intellij.psi.search.scope.packageSet.UnionPackageSet;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_GROUP_PREFIX;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_Y_PREFIX;
@@ -50,32 +55,58 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
                                                                             .getState()
                                                                             .getGroupNonHybris();
         final String platformGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupPlatform();
+        final List<NamedScope> newScopes = ContainerUtil.newArrayList();
         NamedScope customScope = null;
         NamedScope platformScope = null;
         NamedScope commerceScope = null;
         NamedScope hybrisScope = null;
 
         if (groupExists(model, customGroupName)) {
-            customScope = addScope(project, customGroupName);
+            customScope = createScope(project, customGroupName);
+            newScopes.add(customScope);
         }
         if (groupExists(model, platformGroupName)) {
-            platformScope = addScope(project, platformGroupName);
+            platformScope = createScope(project, platformGroupName);
+            newScopes.add(platformScope);
         }
         if (groupExists(model, commerceGroupName)) {
-            commerceScope = addScope(project, commerceGroupName);
+            commerceScope = createScope(project, commerceGroupName);
+            newScopes.add(commerceScope);
         }
         if (platformScope != null && commerceScope != null) {
-            hybrisScope = addScope(project, platformGroupName, commerceGroupName);
+            hybrisScope = createScope(project, platformGroupName, commerceGroupName);
+            newScopes.add(hybrisScope);
         }
         if (groupExists(model, nonHybrisGroupName)) {
-            addScope(project, nonHybrisGroupName);
+            newScopes.add(createScope(project, nonHybrisGroupName));
         }
+        addOrReplaceScopes(project, newScopes);
 
         NamedScope defaultScope = customScope != null ? customScope : hybrisScope != null ? hybrisScope : platformScope;
         if (defaultScope != null) {
             FindSettings.getInstance().setCustomScope(defaultScope.getName());
             FindSettings.getInstance().setDefaultScopeName(defaultScope.getName());
         }
+    }
+
+    private static void addOrReplaceScopes(@NotNull Project project, @NotNull List<NamedScope> newScopes) {
+        final Set<String> newScopeNames = newScopes
+            .stream()
+            .map(NamedScope::getName)
+            .collect(Collectors.toSet());
+
+        final NamedScopeManager namedScopeManager = NamedScopeManager.getInstance(project);
+        final NamedScope[] existingScopes = namedScopeManager.getEditableScopes();
+
+        final NamedScope[] filteredScopes = Arrays
+            .stream(existingScopes)
+            .filter(it -> !newScopeNames.contains(it.getName()))
+            .toArray(NamedScope[]::new);
+
+        namedScopeManager.setScopes(ArrayUtil.mergeArrays(
+            filteredScopes,
+            newScopes.toArray(new NamedScope[newScopes.size()])
+        ));
     }
 
     private static boolean groupExists(@NotNull ModifiableModuleModel model, final String groupName) {
@@ -85,17 +116,16 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             .anyMatch(groupPath -> groupPath != null && groupPath.length > 0 && groupPath[0].equals(groupName));
     }
 
-    private NamedScope addScope(final Project project, final String groupName) {
+    @NotNull
+    private NamedScope createScope(final Project project, final String groupName) {
         final FilePatternPackageSet filePatternPackageSet = new FilePatternPackageSet(
             SEARCH_SCOPE_GROUP_PREFIX + groupName,
             "*//*"
         );
-        final NamedScope scope = new NamedScope(SEARCH_SCOPE_Y_PREFIX + " " + groupName, filePatternPackageSet);
-        NamedScopeManager.getInstance(project).addScope(scope);
-        return scope;
+        return new NamedScope(SEARCH_SCOPE_Y_PREFIX + " " + groupName, filePatternPackageSet);
     }
 
-    private NamedScope addScope(final Project project, final String firstGroupName, String secondGroupName) {
+    private NamedScope createScope(final Project project, final String firstGroupName, String secondGroupName) {
         final FilePatternPackageSet firstFilePatternPackageSet = new FilePatternPackageSet(
             SEARCH_SCOPE_GROUP_PREFIX + firstGroupName,
             "*//*"
@@ -108,11 +138,9 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             firstFilePatternPackageSet,
             secondFilePatternPackageSet
         );
-        final NamedScope scope = new NamedScope(
+        return new NamedScope(
             SEARCH_SCOPE_Y_PREFIX + " " + firstGroupName + " " + secondGroupName,
             unionPackageSet
         );
-        NamedScopeManager.getInstance(project).addScope(scope);
-        return scope;
     }
 }
