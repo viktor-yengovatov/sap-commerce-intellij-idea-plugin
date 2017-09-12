@@ -64,7 +64,7 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
             return null;
         }
 
-        if (!virtualFile.getName().endsWith("-process.xml")) {
+        if (!virtualFile.getName().endsWith("process.xml")) {
             return null;
         }
 
