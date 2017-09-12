@@ -288,7 +288,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
             antFolderUrl = Files
                 .find(Paths.get(platformDir.getAbsolutePath()), 1, (path, basicFileAttributes) ->
                     Files.isDirectory(path) && path.toFile().getName().matches("apache-ant.*"))
-                .map(e -> VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(e.toFile().getAbsolutePath())))
+                .map(e -> e.toFile().getAbsolutePath())
                 .findAny()
                 .orElse(null);
         } catch (IOException e) {
