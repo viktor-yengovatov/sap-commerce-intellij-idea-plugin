@@ -28,6 +28,7 @@ import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.ExistingLibraryEditor;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel;
+import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -131,7 +132,11 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
                 );
 
                 if (null != sourceCodeRoot) {
-                    existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES);
+                    if (sourceCodeRoot.getFileSystem() instanceof JarFileSystem) {
+                        existingLibraryEditor.addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES);
+                    } else {
+                        existingLibraryEditor.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
+                    }
                 }
             }
 

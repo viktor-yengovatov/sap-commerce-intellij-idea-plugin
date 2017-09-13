@@ -71,9 +71,9 @@ public interface HybrisProjectDescriptor {
     void setModulesFilesDirectory(@Nullable File modulesFilesDirectory);
 
     @Nullable
-    File getSourceCodeZip();
+    File getSourceCodeFile();
 
-    void setSourceCodeZip(@Nullable File sourceCodeZip);
+    void setSourceCodeFile(@Nullable File sourceCodeFile);
 
     void setRootDirectoryAndScanForModules(
         @NotNull File rootDirectory,

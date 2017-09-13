@@ -98,7 +98,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File modulesFilesDirectory;
     @Nullable
-    protected File sourceCodeZip;
+    protected File sourceCodeFile;
     protected boolean openProjectSettingsAfterImport;
     protected Boolean importOotbModulesInReadOnlyMode;
     @Nullable
@@ -712,13 +712,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Nullable
     @Override
-    public File getSourceCodeZip() {
-        return sourceCodeZip;
+    public File getSourceCodeFile() {
+        return sourceCodeFile;
     }
 
     @Override
-    public void setSourceCodeZip(@Nullable final File sourceCodeZip) {
-        this.sourceCodeZip = sourceCodeZip;
+    public void setSourceCodeFile(@Nullable final File sourceCodeFile) {
+        this.sourceCodeFile = sourceCodeFile;
     }
 
     @Override
