@@ -44,7 +44,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
 
-        excludeCompiledDirectories(contentEntry, moduleDescriptor);
+        excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
 
     protected void configureAdditionalRoots(

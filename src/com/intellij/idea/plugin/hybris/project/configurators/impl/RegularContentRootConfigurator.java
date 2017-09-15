@@ -31,6 +31,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
@@ -43,6 +44,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTERNAL_TO
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GEN_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NODE_MODULES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
@@ -130,40 +132,35 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JavaResourceRootType.RESOURCE
         );
 
-        excludeCompiledDirectories(contentEntry, moduleDescriptor);
+        excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
 
-    protected void excludeCompiledDirectories(
+    protected void excludeCommonNeedlessDirs(
         final ContentEntry contentEntry,
         final HybrisModuleDescriptor moduleDescriptor
     ) {
-        final File externalToolBuildersDirectory = new File(
-            moduleDescriptor.getRootDirectory(), EXTERNAL_TOOL_BUILDERS_DIRECTORY
-        );
+        excludeSubDirectories(contentEntry, moduleDescriptor.getRootDirectory(), Arrays.asList(
+            EXTERNAL_TOOL_BUILDERS_DIRECTORY,
+            SETTINGS_DIRECTORY,
+            CLASSES_DIRECTORY,
+            TEST_CLASSES_DIRECTORY,
+            ECLIPSE_BIN_DIRECTORY,
+            NODE_MODULES_DIRECTORY
+        ));
+    }
 
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(externalToolBuildersDirectory.getAbsolutePath())
-        );
+    private void excludeSubDirectories(
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final File dir,
+        @NotNull final Iterable<String> names
+    ) {
+        for (String subDirName : names) {
+            excludeDirectory(contentEntry, new File(dir, subDirName));
+        }
+    }
 
-        final File settingsDirectory = new File(moduleDescriptor.getRootDirectory(), SETTINGS_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(settingsDirectory.getAbsolutePath())
-        );
-
-        final File classesDirectory = new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(classesDirectory.getAbsolutePath())
-        );
-
-        final File testClassesDirectory = new File(moduleDescriptor.getRootDirectory(), TEST_CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(testClassesDirectory.getAbsolutePath())
-        );
-
-        final File eclipseBinDirectory = new File(moduleDescriptor.getRootDirectory(), ECLIPSE_BIN_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(eclipseBinDirectory.getAbsolutePath())
-        );
+    private static void excludeDirectory(@NotNull final ContentEntry contentEntry, @NotNull final File dir) {
+        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(dir.getAbsolutePath()));
     }
 
     protected void configureAdditionalRoots(
@@ -193,11 +190,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             VfsUtil.pathToUrl(additionalResourcesDirectory.getAbsolutePath()),
             JavaResourceRootType.RESOURCE
         );
-
-        final File additionalClassesDirectory = new File(additionalModuleDirectory, CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(additionalClassesDirectory.getAbsolutePath())
-        );
+        excludeDirectory(contentEntry, new File(additionalModuleDirectory, CLASSES_DIRECTORY));
     }
 
     protected void configureWebRoots(
@@ -269,11 +262,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             VfsUtil.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
             JavaResourceRootType.RESOURCE
         );
-
-        final File hmcClassesDirectory = new File(backOfficeModuleDirectory, CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(hmcClassesDirectory.getAbsolutePath())
-        );
+        excludeDirectory(contentEntry, new File(backOfficeModuleDirectory, CLASSES_DIRECTORY));
     }
 
     protected void configurePlatformRoots(
@@ -286,10 +275,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         if (!HybrisConstants.PLATFORM_EXTENSION_NAME.equalsIgnoreCase(moduleDescriptor.getName())) {
             return;
         }
-
-        final File platformBootstrapDirectory = new File(
-            moduleDescriptor.getRootDirectory(), PLATFORM_BOOTSTRAP_DIRECTORY
-        );
+        final File rootDirectory = moduleDescriptor.getRootDirectory();
+        final File platformBootstrapDirectory = new File(rootDirectory, PLATFORM_BOOTSTRAP_DIRECTORY);
 
         if (!moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
 
@@ -300,21 +287,9 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             );
         }
 
-        final File platformBootstrapModelClassesDirectory = new File(
-            platformBootstrapDirectory, PLATFORM_MODEL_CLASSES_DIRECTORY
-        );
-
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(platformBootstrapModelClassesDirectory.getAbsolutePath())
-        );
-
-        final File platformTomcatDirectory = new File(
-            moduleDescriptor.getRootDirectory(), PLATFORM_TOMCAT_DIRECTORY
-        );
-        final File platformTomcatWorkDirectory = new File(platformTomcatDirectory, PLATFORM_TOMCAT_WORK_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(platformTomcatWorkDirectory.getAbsolutePath())
-        );
+        excludeDirectory(contentEntry, new File(platformBootstrapDirectory, PLATFORM_MODEL_CLASSES_DIRECTORY));
+        excludeDirectory(contentEntry, new File(rootDirectory, PLATFORM_TOMCAT_DIRECTORY));
+        contentEntry.addExcludePattern("apache-ant-*");
     }
 
     protected void configureWebModuleRoots(
@@ -343,20 +318,9 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JavaSourceRootType.TEST_SOURCE
         );
 
-        final File webAddonSrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath())
-        );
-
-        final File webTestClassesDirectory = new File(webModuleDirectory, TEST_CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath())
-        );
-
-        final File commonWebSrcDirectory = new File(webModuleDirectory, COMMON_WEB_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath())
-        );
+        excludeSubDirectories(contentEntry, webModuleDirectory, Arrays.asList(
+            ADDON_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY, COMMON_WEB_SRC_DIRECTORY
+        ));
 
         configureWebInf(contentEntry, moduleDescriptor, webModuleDirectory);
     }
@@ -366,24 +330,15 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         final HybrisModuleDescriptor moduleDescriptor,
         final File webModuleDirectory
     ) {
+        final File rootDirectory = moduleDescriptor.getRootDirectory();
+
         if (moduleDescriptor.getDescriptorType() == CUSTOM) {
-            final File webInfClassesDirectory = new File(
-                moduleDescriptor.getRootDirectory(),
-                WEB_INF_CLASSES_DIRECTORY
-            );
-            contentEntry.addExcludeFolder(
-                VfsUtil.pathToUrl(webInfClassesDirectory.getAbsolutePath())
-            );
+            excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         } else {
             final File webSrcDirectory = new File(webModuleDirectory, SRC_DIRECTORY);
+
             if (webSrcDirectory.exists()) {
-                final File webInfClassesDirectory = new File(
-                    moduleDescriptor.getRootDirectory(),
-                    WEB_INF_CLASSES_DIRECTORY
-                );
-                contentEntry.addExcludeFolder(
-                    VfsUtil.pathToUrl(webInfClassesDirectory.getAbsolutePath())
-                );
+                excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
             }
         }
     }
