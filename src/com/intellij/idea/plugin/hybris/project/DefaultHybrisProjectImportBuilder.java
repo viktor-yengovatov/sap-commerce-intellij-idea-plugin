@@ -263,7 +263,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             } catch (Exception e) {
                 LOG.error("Can not configure Ant due to an error.", e);
             }
-            triggerCacheInvalidation();
         });
 
         return modules;
@@ -286,19 +285,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPORT_PROJECT, parameters.toString());
         } catch (Exception e) {
             // we do not care
-        }
-    }
-
-    private void triggerCacheInvalidation() {
-        try {
-            UsageTrigger.trigger(ApplicationManagerEx.getApplicationEx().getName() + ".caches.invalidated");
-            FSRecords.invalidateCaches();
-
-            for (CachesInvalidator invalidater : CachesInvalidator.EP_NAME.getExtensions()) {
-                invalidater.invalidateCaches();
-            }
-        } catch (Exception e) {
-            LOG.error("Can not invalidate cache due to an error.", e);
         }
     }
 
