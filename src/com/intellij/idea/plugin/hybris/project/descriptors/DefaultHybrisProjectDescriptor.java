@@ -55,20 +55,16 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
-import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
-import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
+import static com.intellij.util.containers.ContainerUtil.newArrayList;
 import static com.intellij.util.containers.ContainerUtil.newHashSet;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
@@ -82,15 +78,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectDescriptor.class);
     @NotNull
-    protected final List<HybrisModuleDescriptor> foundModules = new ArrayList<HybrisModuleDescriptor>();
+    protected final List<HybrisModuleDescriptor> foundModules = newArrayList();
     @NotNull
-    protected final List<HybrisModuleDescriptor> modulesChosenForImport = new ArrayList<HybrisModuleDescriptor>();
+    protected final List<HybrisModuleDescriptor> modulesChosenForImport = newArrayList();
     @NotNull
     @GuardedBy("lock")
-    protected final Set<HybrisModuleDescriptor> alreadyOpenedModules = new HashSet<HybrisModuleDescriptor>();
+    protected final Set<HybrisModuleDescriptor> alreadyOpenedModules = newHashSet();
     protected final Lock lock = new ReentrantLock();
     @NotNull
-    protected final List<String> explicitlyDefinedModules = new ArrayList<String>();
+    protected final List<String> explicitlyDefinedModules = newArrayList();
     @Nullable
     protected Project project;
     @Nullable
@@ -149,7 +145,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Nullable
     private ConfigHybrisModuleDescriptor findConfigDir() {
-        final List<ConfigHybrisModuleDescriptor> foundConfigModules = new ArrayList<ConfigHybrisModuleDescriptor>();
+        final List<ConfigHybrisModuleDescriptor> foundConfigModules = newArrayList();
         PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor = null;
         for (HybrisModuleDescriptor moduleDescriptor : foundModules) {
             if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
@@ -323,18 +319,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         this.foundModules.clear();
 
-        final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
         LOG.info("Scanning for modules");
-        this.findModuleRoots(moduleRootMap, rootDirectory, progressListenerProcessor);
+        final List<File> moduleRootDirectories = this.findModuleRoots(rootDirectory, progressListenerProcessor);
         if (externalExtensionsDirectory != null) {
             LOG.info("Scanning for external modules");
-            this.findModuleRoots(moduleRootMap, externalExtensionsDirectory, progressListenerProcessor);
+            moduleRootDirectories.addAll(
+                this.findModuleRoots(externalExtensionsDirectory, progressListenerProcessor)
+            );
         }
 
-        Set<File> moduleRootDirectories = processDirectoriesByTypePriority(moduleRootMap, progressListenerProcessor);
-
-        final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
-        final List<File> pathsFailedToImport = new ArrayList<>();
+        final List<HybrisModuleDescriptor> moduleDescriptors = newArrayList();
+        final List<File> pathsFailedToImport = newArrayList();
 
         addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport);
 
@@ -368,36 +363,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.foundModules.addAll(moduleDescriptors);
     }
 
-    // scan through eclipse module for hybris custom mudules in its subdirectories
-    private Set<File> processDirectoriesByTypePriority(
-        @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
-        @NotNull final TaskProgressProcessor<File> progressListenerProcessor
-    ) throws InterruptedException, IOException {
-        final Set<File> moduleRootDirectories = moduleRootMap.get(HYBRIS);
-
-        LOG.info("Scanning for higher priority modules");
-        for (final File nonHybrisDir : moduleRootMap.get(NON_HYBRIS)) {
-            final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
-            this.scanSubrirectories(nonHybrisModuleRootMap, nonHybrisDir.toPath(), progressListenerProcessor);
-            final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
-            if (hybrisModuleSet.isEmpty()) {
-                LOG.info("Confirmed module " + nonHybrisDir);
-                moduleRootDirectories.add(nonHybrisDir);
-            } else {
-                LOG.info("Replaced module " + nonHybrisDir);
-                moduleRootDirectories.addAll(hybrisModuleSet);
-            }
-        }
-        return moduleRootDirectories;
-    }
-
-    private Map<DIRECTORY_TYPE, Set<File>> newModuleRootMap() {
-        final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = new HashMap<>();
-        moduleRootMap.put(HYBRIS, new HashSet<>());
-        moduleRootMap.put(NON_HYBRIS, new HashSet<>());
-        return moduleRootMap;
-    }
-
     private void addRootModule(
         final File rootDirectory, final List<HybrisModuleDescriptor> moduleDescriptors,
         final List<File> pathsFailedToImport
@@ -421,14 +386,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.project = project;
     }
 
-    private void findModuleRoots(
-        @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
+    private List<File> findModuleRoots(
         @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
-        Validate.notNull(moduleRootMap);
         Validate.notNull(rootProjectDirectory);
-
+        List<File> paths = newArrayList();
         if (null != progressListenerProcessor) {
             if (!progressListenerProcessor.shouldContinue(rootProjectDirectory)) {
                 LOG.error("Modules scanning has been interrupted.");
@@ -440,13 +403,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.isHybrisModule(rootProjectDirectory)) {
             LOG.info("Detected hybris module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
-            return;
+            paths.add(rootProjectDirectory);
+            return paths;
         }
         if (hybrisProjectService.isConfigModule(rootProjectDirectory)) {
             LOG.info("Detected config module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
-            return;
+            paths.add(rootProjectDirectory);
+            return paths;
         }
 
         if (hybrisProjectService.isGradleModule(rootProjectDirectory) && !FileUtil.filesEqual(
@@ -454,8 +417,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             rootDirectory
         )) {
             LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-            return;
+            paths.add(rootProjectDirectory);
+            return paths;
         }
 
         if (hybrisProjectService.isMavenModule(rootProjectDirectory) && !FileUtil.filesEqual(
@@ -463,28 +426,29 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             rootDirectory
         )) {
             LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-            return;
+            paths.add(rootProjectDirectory);
+            return paths;
         }
 
         if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
             LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+            paths.add(rootProjectDirectory);
         } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
             rootProjectDirectory,
             rootDirectory
         )) {
             LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-            return;
+            paths.add(rootProjectDirectory);
+            return paths;
         }
 
-        scanSubrirectories(moduleRootMap, rootProjectDirectory.toPath(), progressListenerProcessor);
+        scanSubrirectories(paths, rootProjectDirectory.toPath(), progressListenerProcessor);
 
+        return paths;
     }
 
     private void scanSubrirectories(
-        @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
+        @NotNull final List<File> paths,
         @NotNull final Path rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
@@ -511,7 +475,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         });
         if (files != null) {
             for (Path file : files) {
-                this.findModuleRoots(moduleRootMap, file.toFile(), progressListenerProcessor);
+                paths.addAll(findModuleRoots(file.toFile(), progressListenerProcessor));
             }
             files.close();
         }
@@ -617,9 +581,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
         ));
     }
-
-    protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}
-
 
     @NotNull
     @Override
