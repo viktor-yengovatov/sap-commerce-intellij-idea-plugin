@@ -36,6 +36,7 @@ import java.util.Arrays;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BOWER_COMPONENTS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_SRC_DIRECTORY;
@@ -145,7 +146,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             CLASSES_DIRECTORY,
             TEST_CLASSES_DIRECTORY,
             ECLIPSE_BIN_DIRECTORY,
-            NODE_MODULES_DIRECTORY
+            NODE_MODULES_DIRECTORY,
+            BOWER_COMPONENTS_DIRECTORY
         ));
     }
 
