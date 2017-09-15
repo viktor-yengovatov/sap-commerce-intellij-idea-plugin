@@ -194,6 +194,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             project, model, configuratorFactory, hybrisProjectDescriptor, modules
         ).queue();
 
+        configuratorFactory.getLoadedConfigurator().configure(project, allModules);
+
         final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
         final List<MavenModuleDescriptor> mavenModules = new ArrayList<>();
 
