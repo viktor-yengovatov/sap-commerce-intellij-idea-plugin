@@ -154,7 +154,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
         final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
         final GroupModuleConfigurator groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
-        final LoadedConfigurator loadedConfigurator = configuratorFactory.getLoadedConfigurator();
         final JavadocModuleConfigurator javadocModuleConfigurator = configuratorFactory.getJavadocModuleConfigurator();
         final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
         final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
@@ -272,7 +271,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.search.scope"));
         searchScopeConfigurator.configure(project, rootProjectModifiableModel);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.finishing"));
-        loadedConfigurator.configure(project, allModules);
     }
 
     @Override

@@ -43,8 +43,7 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
             .map(HybrisModuleDescriptor::getName)
             .collect(Collectors.toList());
 
-        ApplicationManager.getApplication().invokeLater(
-            () -> ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames));
+        ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames);
 
         final Set<String> unusedModuleNames = allModules
             .stream()
