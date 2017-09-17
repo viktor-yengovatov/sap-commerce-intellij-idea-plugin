@@ -109,6 +109,8 @@ public interface HybrisConstants {
     String PLATFORM_MODEL_CLASSES_DIRECTORY = "modelclasses";
     String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
     String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
+    String NODE_MODULES_DIRECTORY = "node_modules";
+    String BOWER_COMPONENTS_DIRECTORY = "bower_components";
 
     String PLATFORM_LIBRARY_GROUP = "Platform Bootstrap";
     String BACKOFFICE_LIBRARY_GROUP = "Backoffice Library";
