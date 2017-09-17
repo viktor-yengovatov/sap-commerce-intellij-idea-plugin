@@ -55,15 +55,17 @@ class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
             val foundEls = mutableListOf<PsiElement>()
 
             val searchScope = getScopeRestrictedByFileTypes(moduleWithDependentsScope(module), XmlFileType.INSTANCE)
-            searchHelper.processElementsWithWord({ el, _ ->
-                if (el.containingFile.name.contains("-beans") && el is XmlAttributeValue
-                        && (el.parent as XmlAttribute).name == "class") {
-                    foundEls.add(el)
-                    return@processElementsWithWord false
-                }
-                true
-            }, searchScope, element.qualifiedName!!, UsageSearchContext.ANY, true)
-
+            val qualifiedName = element.qualifiedName
+            if (qualifiedName != null) {
+                searchHelper.processElementsWithWord({ el, _ ->
+                    if (el.containingFile.name.contains("-beans") && el is XmlAttributeValue
+                            && (el.parent as XmlAttribute).name == "class") {
+                        foundEls.add(el)
+                        return@processElementsWithWord false
+                    }
+                    true
+                }, searchScope, qualifiedName, UsageSearchContext.ANY, true)
+            }
 
             if (foundEls.isNotEmpty())
                 createTargetsWithGutterIcon(result, element, foundEls)
