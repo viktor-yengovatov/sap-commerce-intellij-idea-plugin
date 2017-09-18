@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
@@ -47,7 +48,6 @@ import com.intellij.lang.ant.config.impl.TargetFilter;
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -107,6 +107,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         {"clean", "customize", "all", "production"}
     };
 
+    private HybrisProjectDescriptor hybrisProjectDescriptor;
     private PlatformHybrisModuleDescriptor platformDescriptor;
     private List<ExtHybrisModuleDescriptor> extHybrisModuleDescriptorList;
     private List<CustomHybrisModuleDescriptor> customHybrisModuleDescriptorList;
@@ -115,7 +116,12 @@ public class DefaultAntConfigurator implements AntConfigurator {
     private List<AntClasspathEntry> classPaths;
 
     @Override
-    public void configure(@NotNull final List<HybrisModuleDescriptor> allModules, @NotNull final Project project) {
+    public void configure(
+        @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final List<HybrisModuleDescriptor> allModules,
+        @NotNull final Project project
+    ) {
+        this.hybrisProjectDescriptor = hybrisProjectDescriptor;
         parseModules(allModules);
         if (platformDescriptor == null) {
             return;
@@ -233,6 +239,10 @@ public class DefaultAntConfigurator implements AntConfigurator {
         buildFileProperties.add(antOptsProperty);
 
         AntBuildFileImpl.ANT_PROPERTIES.set(editPropertyContainer, buildFileProperties);
+        if (hybrisProjectDescriptor.getExternalConfigDirectory() != null) {
+            AntBuildFileImpl.ANT_COMMAND_LINE_PARAMETERS.set(editPropertyContainer, HybrisConstants.ANT_HYBRIS_CONFIG_DIR + hybrisProjectDescriptor.getExternalConfigDirectory().getAbsolutePath());
+        }
+
         AntBuildFileImpl.TARGET_FILTERS.set(editPropertyContainer, filterList);
     }
 

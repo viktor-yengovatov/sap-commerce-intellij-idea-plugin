@@ -162,6 +162,7 @@ public interface HybrisConstants {
     String X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport=";
     String ADDRESS = "address=";
     String ANT_ENCODING = "-Dfile.encoding=UTF-8";
+    String ANT_HYBRIS_CONFIG_DIR = "-J-DHYBRIS_CONFIG_DIR=";
     String ANT_XMX = "-Xmx";
     String ANT_PLATFORM_HOME = "PLATFORM_HOME";
     String ANT_OPTS = "ANT_OPTS";
