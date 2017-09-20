@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.ide.caches.CachesInvalidator;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
@@ -39,8 +38,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
-import com.intellij.internal.statistic.UsageTrigger;
-import com.intellij.openapi.application.ex.ApplicationManagerEx;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
@@ -52,7 +49,6 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.vfs.newvfs.persistent.FSRecords;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
@@ -260,7 +256,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             try {
                 final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
                 if (null != antConfigurator) {
-                    antConfigurator.configure(allModules, project);
+                    antConfigurator.configure(hybrisProjectDescriptor, allModules, project);
                 }
             } catch (Exception e) {
                 LOG.error("Can not configure Ant due to an error.", e);
