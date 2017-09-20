@@ -55,6 +55,9 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.gradle.settings.GradleSettings;
+
+import java.util.Collections;
 
 
 /**
@@ -117,6 +120,7 @@ public class ProjectRefreshAction extends AnAction {
             moduleModel.commit();
             libraryModel.commit();
         });
+        GradleSettings.getInstance(project).setLinkedProjectsSettings(Collections.emptyList());
     }
 
     @Override

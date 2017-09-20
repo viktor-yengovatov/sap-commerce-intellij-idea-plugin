@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.ProjectDataManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
@@ -51,6 +52,9 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         @NotNull final List<GradleModuleDescriptor> gradleModules,
         @Nullable final String[] gradleRootGroup
     ) {
+        if (gradleModules.isEmpty()) {
+            return;
+        }
         final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
         final GradleProjectImportBuilder gradleProjectImportBuilder = new GradleProjectImportBuilder(projectDataManager);
         final GradleProjectImportProvider gradleProjectImportProvider = new GradleProjectImportProvider(
@@ -78,6 +82,8 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
                 moveGradleModulesToGroup(project, newModules, gradleRootGroup);
             }
         });
+
+        project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
 
     private void moveGradleModulesToGroup(
