@@ -61,15 +61,14 @@ class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
                     if (el.containingFile.name.contains("-beans") && el is XmlAttributeValue
                             && (el.parent as XmlAttribute).name == "class") {
                         foundEls.add(el)
-                        return@processElementsWithWord false
                     }
                     true
                 }, searchScope, qualifiedName, UsageSearchContext.ANY, true)
             }
 
-            if (foundEls.isNotEmpty())
+            if (foundEls.isNotEmpty()) {
                 createTargetsWithGutterIcon(result, element, foundEls)
-
+            }
         }
     }
 
