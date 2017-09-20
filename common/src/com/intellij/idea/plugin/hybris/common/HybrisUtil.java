@@ -30,6 +30,10 @@ public final class HybrisUtil {
     private HybrisUtil() {
     }
 
+    public static boolean isPlatformModuleRoot(@NotNull File file) {
+        return new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
+    }
+
     public static boolean isHybrisModuleRoot(@NotNull final File file) {
         return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }

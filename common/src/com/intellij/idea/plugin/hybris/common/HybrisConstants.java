@@ -148,6 +148,7 @@ public interface HybrisConstants {
     String CONFIGURATOR_FACTORY_ID = PLUGIN_ID + ".hybrisConfiguratorFactory";
 
     String HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml";
+    String HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml";
     String RULESET_XML = "ruleset.xml";
 
     String HMC_WEB_INF_CLASSES = toSystemDependentName("/bin/ext-platform-optional/hmc/web/webroot/WEB-INF/classes");
@@ -167,7 +168,8 @@ public interface HybrisConstants {
     String ANT_OPTS = "ANT_OPTS";
     String ANT_HOME = "ANT_HOME";
     String ANT_COMPILING_XML = "resources/ant/compiling.xml";
-    String ANT_LIB_DIR = "resources/ant/lib";
+    String ANT_DIR = "resources/ant";
+    String ANT_LIB_DIR = ANT_DIR + "/lib";
     String ANT_BUILD_XML = "build.xml";
     int ANT_HEAP_SIZE_MB = 512;
     int ANT_STACK_SIZE_MB = 128;
