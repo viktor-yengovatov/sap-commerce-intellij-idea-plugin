@@ -31,6 +31,9 @@
 
         <completion.contributor language="XML"
                                 implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
+
+        <internalFileTemplate name="FlexibleSearch File"/>
+        <internalFileTemplate name="Impex File"/>
     </extensions>
 
     <actions>

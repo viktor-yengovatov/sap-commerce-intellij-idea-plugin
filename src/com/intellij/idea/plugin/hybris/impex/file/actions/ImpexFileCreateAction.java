@@ -24,6 +24,7 @@ import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.idea.plugin.hybris.actions.ActionUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
@@ -76,8 +77,8 @@ public class ImpexFileCreateAction extends CreateFileFromTemplateAction implemen
     }
 
     @Override
-    public void update(final AnActionEvent e) {
-        e.getPresentation().setEnabledAndVisible(ActionUtils.isHybrisContext(e));
+    protected boolean isAvailable(final DataContext dataContext) {
+        return super.isAvailable(dataContext) && ActionUtils.isHybrisContext(dataContext);
     }
 
     @Override
