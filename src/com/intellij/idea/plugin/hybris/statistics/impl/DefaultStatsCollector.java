@@ -61,7 +61,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class DefaultStatsCollector implements StatsCollector {
 
     private final ExecutorService executor;
-    private final HttpClient client;
+    protected final HttpClient client;
     private final Map<ACTIONS, Long> cache = new HashMap<>();
 
     public DefaultStatsCollector() {
@@ -81,8 +81,7 @@ public class DefaultStatsCollector implements StatsCollector {
         if (shouldPostStat(action)) {
             cache.put(action, System.currentTimeMillis());
             try {
-                final HttpPost post = buildRequest(action.name(), parameters);
-                sendRequest(post);
+                executor.submit(createStatsRequest(action, parameters));
             } catch (Throwable e) {
                 // we don't care
             }
@@ -98,11 +97,9 @@ public class DefaultStatsCollector implements StatsCollector {
         return diff > TimeUnit.HOURS.toMillis(12);
     }
 
-    protected HttpPost buildRequest(@NotNull final String action, @Nullable final String parameters) throws UnsupportedEncodingException {
-        final HttpPost post = new HttpPost(HybrisConstants.STATS_COLLECTOR_URL);
-        final List<NameValuePair> urlParameters = buildParameters(action, parameters);
-        post.setEntity(new UrlEncodedFormEntity(urlParameters, UTF_8));
-        return post;
+    @NotNull
+    protected StatsRequest createStatsRequest(final @NotNull ACTIONS action, final @Nullable String parameters) {
+        return new StatsRequest(client, buildParameters(action.name(), parameters));
     }
 
     protected List<NameValuePair> buildParameters(final String action, final String parameters) {
@@ -113,11 +110,6 @@ public class DefaultStatsCollector implements StatsCollector {
         final String registeredTo = getRegisteredTo();
         if (null != registeredTo) {
             urlParameters.add(new BasicNameValuePair("registered_to", DigestUtils.sha512Hex(registeredTo)));
-        }
-
-        final String computerName = getComputerName();
-        if (null != computerName) {
-            urlParameters.add(new BasicNameValuePair("computer_name", DigestUtils.sha512Hex(computerName)));
         }
 
         String loginName = getLoginName();
@@ -148,11 +140,6 @@ public class DefaultStatsCollector implements StatsCollector {
         return null == plugin ? null : plugin.getVersion();
     }
 
-    protected Future<StatsResponse> sendRequest(final HttpPost post) {
-        Future<StatsResponse> response = executor.submit(new StatsRequest(client, post));
-        return response;
-    }
-
     protected String getIdeVersion() {
         return ApplicationInfo.getInstance().getFullVersion();
     }
@@ -166,30 +153,6 @@ public class DefaultStatsCollector implements StatsCollector {
         final LicensingFacade instance = LicensingFacade.getInstance();
 
         return null == instance ? null : instance.getLicensedToMessage();
-    }
-
-    //the same user can have multiple computers with identical license. This would affect the user counter.
-    protected String getComputerName() {
-        try {
-            final String result = InetAddress.getLocalHost().getHostName();
-            if (StringUtils.isNotEmpty(result)) {
-                return result.trim();
-            }
-        } catch (UnknownHostException e) {
-            // failed;  try alternate means.
-        }
-
-        // try environment properties.
-        final String envCompName = System.getenv("COMPUTERNAME");
-        if (envCompName != null) {
-            return envCompName;
-        }
-        final String host = System.getenv("HOSTNAME");
-        if (host != null) {
-            return host;
-        }
-
-        return null;
     }
 
     protected String getLoginName() {
