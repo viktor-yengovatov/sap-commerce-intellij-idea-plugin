@@ -23,6 +23,7 @@ import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.idea.plugin.hybris.actions.ActionUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
@@ -87,5 +88,10 @@ public class FlexibleSearchFileCreateAction extends CreateFileFromTemplateAction
     @Override
     public boolean equals(Object obj) {
         return obj instanceof FlexibleSearchFileCreateAction;
+    }
+
+    @Override
+    protected boolean isAvailable(final DataContext dataContext) {
+        return super.isAvailable(dataContext) && ActionUtils.isHybrisContext(dataContext);
     }
 }
