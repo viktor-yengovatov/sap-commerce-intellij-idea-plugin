@@ -7,6 +7,7 @@
 .idea/uiDesigner.xml
 .idea/scopes
 .idea/compiler.xml
+.idea/sonarlint
 .idea/checkstyle-idea.xml
 
 /out/
