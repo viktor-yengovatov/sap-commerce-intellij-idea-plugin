@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.AbstractHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
@@ -33,10 +34,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/11/16.
@@ -56,15 +56,15 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         final EclipseImportBuilder eclipseImportBuilder = new EclipseImportBuilder();
         final List<String> projectList = eclipseModules
             .stream()
-            .map(e -> e.getRootDirectory())
-            .map(e -> e.getPath())
+            .map(AbstractHybrisModuleDescriptor::getRootDirectory)
+            .map(File::getPath)
             .collect(Collectors.toList());
         if (hybrisProjectDescriptor.getModulesFilesDirectory() != null) {
             eclipseImportBuilder.getParameters().converterOptions.commonModulesDirectory =
                 hybrisProjectDescriptor.getModulesFilesDirectory().getPath();
         }
         eclipseImportBuilder.setList(projectList);
-        invokeAndWaitIfNeeded((Runnable) () -> {
+        ApplicationManager.getApplication().invokeAndWait(() -> {
             final List<Module> newRootModules = eclipseImportBuilder.commit(project);
             moveEclipseModulesToGroup(project, newRootModules, eclipseGroup);
         });

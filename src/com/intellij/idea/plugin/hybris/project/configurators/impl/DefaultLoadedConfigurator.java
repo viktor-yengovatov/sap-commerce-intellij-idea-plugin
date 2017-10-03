@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 
@@ -43,13 +42,15 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
             .map(HybrisModuleDescriptor::getName)
             .collect(Collectors.toList());
 
-        ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames);
-
         final Set<String> unusedModuleNames = allModules
             .stream()
             .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNUSED)
             .map(HybrisModuleDescriptor::getName)
             .collect(Collectors.toSet());
-        HybrisProjectSettingsComponent.getInstance(project).getState().setUnusedExtensions(unusedModuleNames);
+
+        ApplicationManager.getApplication().invokeAndWait(() -> {
+            ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames);
+            HybrisProjectSettingsComponent.getInstance(project).getState().setUnusedExtensions(unusedModuleNames);
+        });
     }
 }
