@@ -59,28 +59,31 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         final GradleProjectImportBuilder gradleProjectImportBuilder = new GradleProjectImportBuilder(projectDataManager);
         final GradleProjectImportProvider gradleProjectImportProvider = new GradleProjectImportProvider(
             gradleProjectImportBuilder);
-        gradleModules.stream().forEach(gradleModule -> {
-            final AddModuleWizard wizard = new AddModuleWizard(
-                project,
-                gradleModule.getGradleFile().getPath(),
-                gradleProjectImportProvider
-            );
-            final GradleProjectSettings projectSettings = gradleProjectImportBuilder.getControl(project)
-                                                                                    .getProjectSettings();
-            projectSettings.setUseAutoImport(true);
-            projectSettings.setCreateEmptyContentRootDirectories(false);
-            if (wizard.getStepCount() > 0) {
-                final ModuleWizardStep step = wizard.getCurrentStepObject();
-                if (step.isStepVisible()) {
-                    step.updateStep();
-                    step.updateDataModel();
+
+        gradleModules.forEach(gradleModule -> {
+            ApplicationManager.getApplication().invokeAndWait(() -> {
+                final AddModuleWizard wizard = new AddModuleWizard(
+                    project,
+                    gradleModule.getGradleFile().getPath(),
+                    gradleProjectImportProvider
+                );
+                final GradleProjectSettings projectSettings = gradleProjectImportBuilder.getControl(project)
+                                                                                        .getProjectSettings();
+                projectSettings.setUseAutoImport(true);
+                projectSettings.setCreateEmptyContentRootDirectories(false);
+                if (wizard.getStepCount() > 0) {
+                    final ModuleWizardStep step = wizard.getCurrentStepObject();
+                    if (step.isStepVisible()) {
+                        step.updateStep();
+                        step.updateDataModel();
+                    }
                 }
-            }
-            wizard.doFinishAction();
-            final List<Module> newModules = ImportModuleAction.createFromWizard(project, wizard);
-            if (gradleRootGroup != null && gradleRootGroup.length > 0) {
-                moveGradleModulesToGroup(project, newModules, gradleRootGroup);
-            }
+                wizard.doFinishAction();
+                final List<Module> newModules = ImportModuleAction.createFromWizard(project, wizard);
+                if (gradleRootGroup != null && gradleRootGroup.length > 0) {
+                    moveGradleModulesToGroup(project, newModules, gradleRootGroup);
+                }
+            });
         });
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);

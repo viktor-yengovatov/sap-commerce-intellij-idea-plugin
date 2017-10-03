@@ -24,16 +24,10 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
@@ -189,68 +183,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         new ImportProjectProgressModalWindow(
             project, model, configuratorFactory, hybrisProjectDescriptor, modules
         ).queue();
-
-        configuratorFactory.getLoadedConfigurator().configure(project, allModules);
-
-        final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
-        final List<MavenModuleDescriptor> mavenModules = new ArrayList<>();
-
-        try {
-            mavenModules.addAll(
-                hybrisProjectDescriptor.getModulesChosenForImport()
-                                       .stream()
-                                       .filter(e -> e instanceof MavenModuleDescriptor)
-                                       .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
-                                       .map(e -> (MavenModuleDescriptor) e)
-                                       .collect(Collectors.toList())
-            );
-
-            if (mavenConfigurator != null && !mavenModules.isEmpty()) {
-                mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules, configuratorFactory);
-            }
-        } catch (Exception e) {
-            LOG.error("Can not import Maven modules due to an error.", e);
-        }
-
-        try {
-            final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
-            if (eclipseConfigurator != null) {
-                final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
-                    .getModulesChosenForImport()
-                    .stream()
-                    .filter(e -> e instanceof EclipseModuleDescriptor)
-                    .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
-                    .map(e -> (EclipseModuleDescriptor) e)
-                    .collect(Collectors.toList());
-                if (!eclipseModules.isEmpty()) {
-                    final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
-                        eclipseModules.get(0));
-                    eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
-                }
-            }
-        } catch (Exception e) {
-            LOG.error("Can not import Eclipse modules due to an error.", e);
-        }
-
-        try {
-            final GradleConfigurator gradleConfigurator = configuratorFactory.getGradleConfigurator();
-            if (gradleConfigurator != null) {
-                final List<GradleModuleDescriptor> gradleModules = hybrisProjectDescriptor
-                    .getModulesChosenForImport()
-                    .stream()
-                    .filter(e -> e instanceof GradleModuleDescriptor)
-                    .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
-                    .map(e -> (GradleModuleDescriptor) e)
-                    .collect(Collectors.toList());
-                if (!gradleModules.isEmpty()) {
-                    final String[] gradleRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
-                        gradleModules.get(0));
-                    gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules, gradleRootGroup);
-                }
-            }
-        } catch (Exception e) {
-            LOG.error("Can not import Gradle modules due to an error.", e);
-        }
 
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
             try {
