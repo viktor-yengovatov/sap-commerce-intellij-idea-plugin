@@ -11,9 +11,9 @@
 .idea/checkstyle-idea.xml
 
 /out/
-/gradle-build/
+/gradle-build-pro/
 /common/gradle-build/
-/jps-plugin/gradle-build/
+/common/gradle-build-pro/
 /.gradle/
 
 Hybris-Integration.zip
