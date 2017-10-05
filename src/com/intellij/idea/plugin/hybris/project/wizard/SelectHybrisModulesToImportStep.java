@@ -36,10 +36,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
 
 public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImportStep implements NonGuiSupport {
@@ -115,18 +113,6 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
                 moduleToCheck.add(e);
             });
         resolveDependency(moduleToImport, moduleToCheck);
-
-        selectionMode = UNLOADED;
-        final Set<String> moduleDuplicateNames = moduleToImport.stream()
-                                                               .map(e -> e.getName())
-                                                               .collect(Collectors.toSet());
-        for (HybrisModuleDescriptor element : getContext().getList()) {
-            if (!moduleToImport.contains(element) && !moduleDuplicateNames.contains(element.getName())) {
-                moduleDuplicateNames.add(element.getName());
-                element.setImportStatus(selectionMode);
-                moduleToImport.add(element);
-            }
-        }
 
         try {
             this.getContext().setList(moduleToImport);

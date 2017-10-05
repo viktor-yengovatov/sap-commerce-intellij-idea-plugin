@@ -36,6 +36,7 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
         final Project project,
         final List<HybrisModuleDescriptor> allModules
     ) {
+        // todo: remove "UNLOADED" mechanism completely. It is temporary disabled now, so this list should be empty
         final List<String> unloadedModuleNames = allModules
             .stream()
             .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
