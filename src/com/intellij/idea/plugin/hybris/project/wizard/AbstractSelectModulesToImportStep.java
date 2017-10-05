@@ -119,19 +119,13 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         super.onStepLeaving();
         final List<HybrisModuleDescriptor> markedElements = newArrayList(this.fileChooser.getMarkedElements());
         final List<HybrisModuleDescriptor> allElements = newArrayList(markedElements);
-        final Set<String> moduleDuplicateNames = allElements.stream()
-                                                            .map(e -> e.getName())
-                                                            .collect(Collectors.toSet());
+
         for (int index = 0; index < this.fileChooser.getElementCount(); index++) {
             final HybrisModuleDescriptor element = fileChooser.getElementAt(index);
             if (markedElements.contains(element)) {
                 if (element.getImportStatus() != MANDATORY) {
                     element.setImportStatus(UNUSED);
                 }
-            } else if (!moduleDuplicateNames.contains(element.getName())) {
-                moduleDuplicateNames.add(element.getName());
-                element.setImportStatus(UNLOADED);
-                allElements.add(element);
             }
         }
 
