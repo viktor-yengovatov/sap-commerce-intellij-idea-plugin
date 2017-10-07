@@ -19,18 +19,21 @@
 package com.intellij.idea.plugin.hybris.statistics.impl;
 
 import org.apache.http.HttpResponse;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 28/2/17.
  */
 public class StatsResponse {
 
+    @NotNull
     private HttpResponse response;
 
-    public StatsResponse(HttpResponse response) {
+    public StatsResponse(@NotNull HttpResponse response) {
         this.response = response;
     }
 
+    @NotNull
     public HttpResponse getResponse() {
         return response;
     }

@@ -1,7 +1,5 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.statistics.StatsCollector"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.statistics.impl.DefaultStatsCollector"/>
 
         <localInspection language="XML"
                          groupPath="hybris"
@@ -17,4 +15,11 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.DefaultXPathService"/>
 
     </extensions>
+
+    <application-components>
+        <component>
+            <interface-class>com.intellij.idea.plugin.hybris.statistics.StatsCollector</interface-class>
+            <implementation-class>com.intellij.idea.plugin.hybris.statistics.impl.DefaultStatsCollector</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>

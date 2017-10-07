@@ -18,14 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.statistics;
 
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 28/2/17.
  */
-public interface StatsCollector {
+public interface StatsCollector extends ApplicationComponent {
 
     void collectStat(@NotNull ACTIONS action, @Nullable String parameters);
 
@@ -46,6 +47,39 @@ public interface StatsCollector {
 
     @NotNull
     static StatsCollector getInstance() {
-        return ServiceManager.getService(StatsCollector.class);
+        return ApplicationManager.getApplication().getComponent(StatsCollector.class);
+    }
+
+    class Entity {
+
+        @NotNull
+        private final ACTIONS action;
+
+        @Nullable
+        private final String parameters;
+
+        @NotNull
+        private final String dateStr;
+
+        public Entity(@NotNull ACTIONS action, @Nullable String parameters, @NotNull final String dateStr) {
+            this.action = action;
+            this.parameters = parameters;
+            this.dateStr = dateStr;
+        }
+
+        @NotNull
+        public ACTIONS getAction() {
+            return action;
+        }
+
+        @Nullable
+        public String getParameters() {
+            return parameters;
+        }
+
+        @NotNull
+        public String getDateStr() {
+            return dateStr;
+        }
     }
 }
