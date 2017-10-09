@@ -31,6 +31,8 @@ import com.intellij.idea.plugin.hybris.project.wizard.NonGuiSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
+import com.intellij.lang.ant.config.AntBuildFile;
+import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -90,7 +92,7 @@ public class ProjectRefreshAction extends AnAction {
         if (project == null) {
             return;
         }
-        removeAllModulesAndLibraries(project);
+        removeOldProjectData(project);
 
         try {
             collectStatistics();
@@ -105,7 +107,7 @@ public class ProjectRefreshAction extends AnAction {
         }
     }
 
-    private static void removeAllModulesAndLibraries(@NotNull final Project project) {
+    private static void removeOldProjectData(@NotNull final Project project) {
         final ModifiableModuleModel moduleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         for (Module module : moduleModel.getModules()) {
@@ -121,6 +123,11 @@ public class ProjectRefreshAction extends AnAction {
             libraryModel.commit();
         });
         GradleSettings.getInstance(project).setLinkedProjectsSettings(Collections.emptyList());
+        final AntConfigurationBase antConfiguration = AntConfigurationBase.getInstance(project);
+
+        for (AntBuildFile antBuildFile : antConfiguration.getBuildFiles()) {
+            antConfiguration.removeBuildFile(antBuildFile);
+        }
     }
 
     @Override
