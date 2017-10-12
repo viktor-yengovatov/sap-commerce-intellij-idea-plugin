@@ -72,7 +72,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
             final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
 
             final String hybrisDataDirPath = FileUtil.toCanonicalPath(
-                project.getBasePath() + '/' + settings.getHybrisDirectory() + "/data");
+                project.getBasePath() + '/' + settings.getHybrisDirectory() + '/' + HybrisConstants.HYBRIS_DATA_DIRECTORY);
 
             if (hybrisDataDirPath != null) {
                 params.addEnv(HYBRIS_DATA_DIR_ENV, hybrisDataDirPath);
