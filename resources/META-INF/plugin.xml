@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>7.0.2</version>
+    <version>8.0</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -124,14 +124,53 @@
 
     <change-notes>
         <![CDATA[
-        <h2> Fault </h2>
+        <h2>Task</h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-60'>IIPS-60</a>] - Compilation from IDEA fails with: "java.lang.ClassNotFoundException: org.apache.commons.io.FilenameUtils"
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-36'>IIP-36</a>] - Add dialog for specifying db driver and add it as a dependency of &quot;config&quot; project
             </li>
-        </ul>
-        <h2> Task </h2>
-        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-174'>IIP-174</a>] - Better addon support
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-244'>IIP-244</a>] - Update support version to 2017.2
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-262'>IIP-262</a>] - Enable Maven import in 2017.2
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-266'>IIP-266</a>] - RunConfiguration for Integration test
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-269'>IIP-269</a>] - Review/refactor Index [y]-types
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-272'>IIP-272</a>] - Move circular dependency to project level
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-273'>IIP-273</a>] - Describe compilation rules in import wizard
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-274'>IIP-274</a>] - Improve Type System meta model
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-276'>IIP-276</a>] - Since we got custom IDE compilation we do not need clean output directory option anymore
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-277'>IIP-277</a>] - Create Run configuration type &quot;hybris integration&quot;
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-278'>IIP-278</a>] - Support unloaded modules
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-279'>IIP-279</a>] - Auto fill workspace wizard step where possible
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-280'>IIP-280</a>] - Workaround for IDEA-169055
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-283'>IIP-283</a>] - Make config directory mandatory
+            </li>
             <li>
                 [<a href='https://hybris-integration.atlassian.net/browse/IIP-284'>IIP-284</a>] - Generate &quot;backoffice&quot; and &quot;hmc&quot; JARs during compilation
             </li>
@@ -139,8 +178,12 @@
                 [<a href='https://hybris-integration.atlassian.net/browse/IIP-290'>IIP-290</a>] - Collect statistics for several events
             </li>
         </ul>
-        <h2> Bug </h2>
+
+        <h2>Bug</h2>
         <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-241'>IIP-241</a>] - Exception during execute Impex validation when hybris instance not started
+            </li>
             <li>
                 [<a href='https://hybris-integration.atlassian.net/browse/IIP-285'>IIP-285</a>] - Add-on compilation works incorrectly if multiple modules depend on it
             </li>
@@ -148,10 +191,26 @@
                 [<a href='https://hybris-integration.atlassian.net/browse/IIP-286'>IIP-286</a>] - Test classes are copied into wrong paths during compilation
             </li>
             <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-287'>IIP-287</a>] - &quot;java.lang.AssertionError: Already disposed&quot; in LocalExtensionsModuleGenerator.getOrCreateModule
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-291'>IIP-291</a>] - Can&#39;t reimport project after updating to the 7.0 version
+            </li>
+            <li>
                 [<a href='https://hybris-integration.atlassian.net/browse/IIP-293'>IIP-293</a>] - Module &#39;platform&#39; doesn&#39;t have a dependency to &#39;config&#39; module
             </li>
             <li>
                 [<a href='https://hybris-integration.atlassian.net/browse/IIP-297'>IIP-297</a>] - &quot;New&quot; action: hybris-specific items shouldn&#39;t be shown in non-hybris project
+            </li>
+        </ul>
+
+        <h2>Fault</h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-58'>IIPS-58</a>] - 7.0 import project wizard fails with IDEA 2017.2
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-60'>IIPS-60</a>] - Compilation from IDEA fails with: &quot;java.lang.ClassNotFoundException: org.apache.commons.io.FilenameUtils&quot;
             </li>
         </ul>
         ]]>
