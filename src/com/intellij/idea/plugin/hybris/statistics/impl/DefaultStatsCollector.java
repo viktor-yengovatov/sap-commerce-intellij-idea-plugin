@@ -35,9 +35,6 @@ import com.intellij.ui.LicensingFacade;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -67,26 +64,13 @@ public class DefaultStatsCollector implements StatsCollector, PersistentStateCom
     private static final String ATTR_NAME = "params";
     private static final String ATTR_DATE = "date";
     private static final String TAG_ENTITY = "entity";
-    private static final int TIMEOUT = 60000;
 
-    private final HttpClient client;
     private final Map<ACTIONS, Long> cache = new HashMap<>();
     private final List<Entity> queue = ContainerUtil.newArrayList();
     private final Object lock = new Object();
 
     private long lastFailureTime = 0;
     private volatile boolean disposed = false;
-
-    public DefaultStatsCollector() {
-
-        final RequestConfig config = RequestConfig
-            .custom()
-            .setConnectTimeout(TIMEOUT)
-            .setConnectionRequestTimeout(TIMEOUT)
-            .setSocketTimeout(TIMEOUT)
-            .build();
-        client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-    }
 
     @Override
     public void initComponent() {
@@ -127,7 +111,7 @@ public class DefaultStatsCollector implements StatsCollector, PersistentStateCom
                 return;
             }
             try {
-                final StatsResponse response = createStatsRequest(client, buildParameters(entitiesToFlush)).call();
+                final StatsResponse response = createStatsRequest(buildParameters(entitiesToFlush)).call();
                 final int statusCode = response.getResponse().getStatusLine().getStatusCode();
 
                 if (statusCode == 200) {
@@ -185,10 +169,9 @@ public class DefaultStatsCollector implements StatsCollector, PersistentStateCom
 
     @NotNull
     protected StatsRequest createStatsRequest(
-        @NotNull final HttpClient client,
         @NotNull final List<NameValuePair> urlParameters
     ) {
-        return new StatsRequest(client, urlParameters);
+        return new StatsRequest(urlParameters);
     }
 
     protected List<NameValuePair> buildParameters(@NotNull final List<Entity> entities) {
