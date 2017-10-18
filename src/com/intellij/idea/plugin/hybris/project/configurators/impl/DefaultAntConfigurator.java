@@ -255,8 +255,6 @@ public class DefaultAntConfigurator implements AntConfigurator {
         );
         classPaths.add(new SinglePathEntry(entry));
         //end of hack
-        final File libDir = new File(platformDir, HybrisConstants.ANT_LIB_DIR);
-        classPaths.add(new AllJarsUnderDirEntry(libDir));
         final File platformLibDir = new File(platformDir, HybrisConstants.LIB_DIRECTORY);
         classPaths.add(new AllJarsUnderDirEntry(platformLibDir));
         classPaths.addAll(
@@ -265,6 +263,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
                 .map(e -> new AllJarsUnderDirEntry(new File(e.getRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
                 .collect(Collectors.toList())
         );
+        final File libDir = new File(platformDir, HybrisConstants.ANT_LIB_DIR);
+        classPaths.add(new AllJarsUnderDirEntry(libDir));
     }
 
     private AntBuildFileBase findBuildFile(final File dir) {
