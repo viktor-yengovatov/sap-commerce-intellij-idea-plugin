@@ -66,8 +66,8 @@ public class StatsRequest implements Callable<StatsResponse> {
             .setConnectTimeout(TIMEOUT)
             .setConnectionRequestTimeout(TIMEOUT)
             .setSocketTimeout(TIMEOUT);
-        final RequestConfig config = builder.build();
         IdeHttpClientHelpers.ApacheHttpClient4.setProxyForUrlIfEnabled(builder, HybrisConstants.STATS_COLLECTOR_URL);
+        final RequestConfig config = builder.build();
         final HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
 
         final List<NameValuePair> patchedUrlParameters = ContainerUtil.newArrayList(urlParameters);
