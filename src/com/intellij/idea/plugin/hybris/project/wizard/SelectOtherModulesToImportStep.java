@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.ide.wizard.CommitStepException;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -97,5 +98,16 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
         getContext().setExternalStepModuleList();
         getContext().setExternalStepName();
         return !getContext().getList().isEmpty();
+    }
+
+    @Override
+    public void onStepLeaving() {
+        getContext().resetExternalStepName();
+        super.onStepLeaving();
+    }
+
+    public void onWizardFinished() throws CommitStepException {
+        getContext().resetExternalStepName();
+        super.onWizardFinished();
     }
 }

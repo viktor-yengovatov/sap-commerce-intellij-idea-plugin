@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.statistics.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.util.Ref;
 import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.net.IdeHttpClientHelpers;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -28,7 +29,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,22 +46,30 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class StatsRequest implements Callable<StatsResponse> {
 
+    private static final int TIMEOUT = 60000;
+
     private static final Object computerNameLock = new Object();
     @Nullable
     private static Ref<String> cachedComputerNameRef = null;
 
     @NotNull
-    private final HttpClient client;
-    @NotNull
     private final List<NameValuePair> urlParameters;
 
-    public StatsRequest(@NotNull final HttpClient client, @NotNull final List<NameValuePair> urlParameters) {
-        this.client = client;
+    public StatsRequest(@NotNull final List<NameValuePair> urlParameters) {
         this.urlParameters = ContainerUtil.newArrayList(urlParameters);
     }
 
     @Override
     public StatsResponse call() throws Exception {
+        final RequestConfig.Builder builder = RequestConfig
+            .custom()
+            .setConnectTimeout(TIMEOUT)
+            .setConnectionRequestTimeout(TIMEOUT)
+            .setSocketTimeout(TIMEOUT);
+        IdeHttpClientHelpers.ApacheHttpClient4.setProxyForUrlIfEnabled(builder, HybrisConstants.STATS_COLLECTOR_URL);
+        final RequestConfig config = builder.build();
+        final HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+
         final List<NameValuePair> patchedUrlParameters = ContainerUtil.newArrayList(urlParameters);
         patchUrlParameters(patchedUrlParameters);
         final HttpPost post = new HttpPost(HybrisConstants.STATS_COLLECTOR_URL);

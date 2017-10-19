@@ -26,6 +26,7 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.gradle.GradleSupport;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.wizard.NonGuiSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -57,9 +58,6 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.gradle.settings.GradleSettings;
-
-import java.util.Collections;
 
 
 /**
@@ -122,7 +120,11 @@ public class ProjectRefreshAction extends AnAction {
             moduleModel.commit();
             libraryModel.commit();
         });
-        GradleSettings.getInstance(project).setLinkedProjectsSettings(Collections.emptyList());
+        final GradleSupport gradleSupport = GradleSupport.getInstance();
+
+        if (gradleSupport != null) {
+            gradleSupport.clearLinkedProjectSettings(project);
+        }
         final AntConfigurationBase antConfiguration = AntConfigurationBase.getInstance(project);
 
         for (AntBuildFile antBuildFile : antConfiguration.getBuildFiles()) {
