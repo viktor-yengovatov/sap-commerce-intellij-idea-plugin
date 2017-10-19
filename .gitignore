@@ -12,6 +12,7 @@
 
 /out/
 /gradle-build-pro/
+/gradle-build/
 /common/gradle-build/
 /common/gradle-build-pro/
 /.gradle/
