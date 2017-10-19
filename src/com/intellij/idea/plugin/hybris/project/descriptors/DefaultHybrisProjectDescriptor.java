@@ -802,16 +802,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         for (Module module : ModuleManager.getInstance(project).getModules()) {
             try {
                 final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
-                if (ArrayUtils.isEmpty(contentRoots)) {
-                    LOG.error("Can not find module root directory for module: " + module.getName());
-                    continue;
+
+                if (!ArrayUtils.isEmpty(contentRoots)) {
+                    existingModules.add(hybrisModuleDescriptorFactory.createDescriptor(
+                        VfsUtil.virtualToIoFile(contentRoots[0]), this
+                    ));
                 }
-
-                final HybrisModuleDescriptor moduleDescriptor = hybrisModuleDescriptorFactory.createDescriptor(
-                    VfsUtil.virtualToIoFile(contentRoots[0]), this
-                );
-
-                existingModules.add(moduleDescriptor);
             } catch (HybrisConfigurationException e) {
                 LOG.error(e);
             }
