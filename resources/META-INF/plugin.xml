@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.0.1</version>
+    <version>8.0.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -124,33 +124,17 @@
 
     <change-notes>
         <![CDATA[
+        <h2>Task</h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-353'>IIP-353</a>] - Missing plugins warning in community edition
+            </li>
+        </ul>
+
         <h2>Bug</h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-348'>IIP-348</a>] - hybris becomes other in import step
-            </li>
-        </ul>
-
-        <h2>Fault</h2>
-        <ul>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-78'>IIPS-78</a>] - &quot;Hybris plugin validation failed&quot; slows down compilation
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-80'>IIPS-80</a>] - Can&#39;t build project after ubgrade to HybrisPlugin 8.0
-            </li>
-        </ul>
-
-        <h2>IT Help</h2>
-        <ul>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-79'>IIPS-79</a>] - Build failure with Error org.apache.commons.lang3.StringUtils.truncate(Ljava/lang/String;I)Ljava/lang/String;
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-81'>IIPS-81</a>] - Gradle plugin - disabled
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-84'>IIPS-84</a>] - Can not find module root directory for module: all_local_extensions
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-352'>IIP-352</a>] - Native Intellij build does not work for Hybris 6.5.0.0: &quot;Error:Hybris Model Source Generating Compiler: org.apache.commons.lang3.StringUtils.truncate(Ljava/lang/String;I)Ljava/lang/String;&quot;
             </li>
         </ul>
         ]]>
