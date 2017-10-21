@@ -24,6 +24,7 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ex.ApplicationEx;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import com.intellij.util.PlatformUtils;
@@ -49,6 +50,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private JButton enableButton;
     private final Set<PluginId> notInstalledPlugins;
     private final Set<PluginId> notEnabledPlugins;
+    private static final Logger LOG = Logger.getInstance(CheckRequiredPluginsStep.class);
 
     private final List<String> ULTIMATE_EDITION_ONLY = Arrays.asList(
         "com.intellij.spring",
@@ -125,7 +127,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
             return !notInstalledPlugins.isEmpty();
         }
         for (PluginId pluginId : notInstalledPlugins) {
-            if (!ULTIMATE_EDITION_ONLY.contains(pluginId)) {
+            if (!ULTIMATE_EDITION_ONLY.contains(pluginId.getIdString())) {
                 return true;
             }
         }
