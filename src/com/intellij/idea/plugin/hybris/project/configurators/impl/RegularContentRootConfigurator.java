@@ -45,11 +45,11 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTERNAL_TO
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GEN_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.JS_TARGET_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NODE_MODULES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_WORK_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIRECTORY;
@@ -147,7 +147,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             TEST_CLASSES_DIRECTORY,
             ECLIPSE_BIN_DIRECTORY,
             NODE_MODULES_DIRECTORY,
-            BOWER_COMPONENTS_DIRECTORY
+            BOWER_COMPONENTS_DIRECTORY,
+            JS_TARGET_DIRECTORY
         ));
     }
 
