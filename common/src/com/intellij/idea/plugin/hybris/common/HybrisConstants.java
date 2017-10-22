@@ -113,6 +113,7 @@ public interface HybrisConstants {
     String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
     String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
     String NODE_MODULES_DIRECTORY = "node_modules";
+    String JS_TARGET_DIRECTORY = "jsTarget";
     String BOWER_COMPONENTS_DIRECTORY = "bower_components";
 
     String PLATFORM_LIBRARY_GROUP = "Platform Bootstrap";
@@ -143,6 +144,7 @@ public interface HybrisConstants {
     String JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY;
 
     String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
+    String HYBRIS_PROJECT_SETTINGS_COMPONENT_NAME = "HybrisProjectSettings";
     String HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml";
 
     String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
