@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BOWER_COMPONENTS_DIRECTORY;
@@ -45,11 +46,11 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTERNAL_TO
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GEN_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.JS_TARGET_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NODE_MODULES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_WORK_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIRECTORY;
@@ -108,11 +109,16 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
 
-        final File srcDirectory = new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(srcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE
-        );
+        // https://hybris-integration.atlassian.net/browse/IIP-354
+        // Do not register acceleratorstorefrontcommons/src as source root because it references not existent class
+        // GeneratedAcceleratorstorefrontcommonsConstants and it breaks compilation from Intellij
+        if (!ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME.equals(moduleDescriptor.getName())) {
+            final File srcDirectory = new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY);
+            contentEntry.addSourceFolder(
+                VfsUtil.pathToUrl(srcDirectory.getAbsolutePath()),
+                JavaSourceRootType.SOURCE
+            );
+        }
 
         final File genSrcDirectory = new File(moduleDescriptor.getRootDirectory(), GEN_SRC_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -147,7 +153,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             TEST_CLASSES_DIRECTORY,
             ECLIPSE_BIN_DIRECTORY,
             NODE_MODULES_DIRECTORY,
-            BOWER_COMPONENTS_DIRECTORY
+            BOWER_COMPONENTS_DIRECTORY,
+            JS_TARGET_DIRECTORY
         ));
     }
 

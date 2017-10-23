@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.MetaType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -44,9 +43,11 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_META_KEY_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_META_KEY_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_WEB_INF_CLASSES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
+import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -185,6 +186,10 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         return null != this.extensionInfo.getExtension().getHmcmodule();
     }
 
+    public boolean isHacAddon() {
+        return this.isMetaKeySetToTrue(HAC_MODULE_META_KEY_NAME);
+    }
+
     public boolean hasBackofficeModule() {
         return this.isMetaKeySetToTrue(BACK_OFFICE_MODULE_META_KEY_NAME) && this.doesBackofficeDirectoryExist();
     }
@@ -192,13 +197,9 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     protected boolean isMetaKeySetToTrue(@NotNull final String metaKeyName) {
         Validate.notEmpty(metaKeyName);
 
-        for (MetaType metaType : emptyIfNull(this.extensionInfo.getExtension().getMeta())) {
-            if (metaKeyName.equalsIgnoreCase(metaType.getKey())) {
-                return Boolean.TRUE.toString().equals(metaType.getValue());
-            }
-        }
-
-        return false;
+        return emptyListIfNull(this.extensionInfo.getExtension().getMeta()).stream().anyMatch(
+            meta -> metaKeyName.equalsIgnoreCase(meta.getKey()) && Boolean.TRUE.toString().equals(meta.getValue())
+        );
     }
 
     protected boolean doesBackofficeDirectoryExist() {
@@ -238,8 +239,19 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                     true, true
                 ));
             }
-
         }
+
+        // https://hybris-integration.atlassian.net/browse/IIP-355
+        // HAC addons can not be compiled correctly by Intellij build because
+        // "hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes" from "hac" extension is not registered
+        // as a dependency for HAC addons.
+        if (this.isHacAddon()) {
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(this.getRootProjectDescriptor().getHybrisDistributionDirectory(), HAC_WEB_INF_CLASSES),
+                false, true
+            ));
+        }
+
         final File webSrcDir = new File(this.getRootDirectory(), HybrisConstants.WEB_SRC_DIRECTORY);
 
         if (!webSrcDir.exists()) {
