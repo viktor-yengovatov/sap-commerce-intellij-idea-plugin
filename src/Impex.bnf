@@ -120,7 +120,10 @@ bean_shell ::= BEAN_SHELL_MARKER (BEAN_SHELL_BODY | MACRO_USAGE)?
 {pin = 1}
 
 
-string ::= (SINGLE_STRING | DOUBLE_STRING)
+string ::= SINGLE_STRING | DOUBLE_STRING
+{
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexStringMixin"
+}
 
 
 // Value line rules
