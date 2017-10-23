@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.0.2</version>
+    <version>8.0.3</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -128,14 +128,10 @@
         <h2>Task</h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-353'>IIP-353</a>] - Missing plugins warning in community edition
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-354'>IIP-354</a>] - Do not register acceleratorstorefrontcommons/src as source root because it references not existent class GeneratedAcceleratorstorefrontcommonsConstants and it breaks compilation from Intellij
             </li>
-        </ul>
-
-        <h2>Bug</h2>
-        <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-352'>IIP-352</a>] - Native Intellij build does not work for Hybris 6.5.0.0: &quot;Error:Hybris Model Source Generating Compiler: org.apache.commons.lang3.StringUtils.truncate(Ljava/lang/String;I)Ljava/lang/String;&quot;
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-355'>IIP-355</a>] - HAC addons can not be compiled correctly by Intellij build because &quot;hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes&quot; from &quot;hac&quot; extension is not registered as a dependency for HAC addons.
             </li>
         </ul>
         ]]>
