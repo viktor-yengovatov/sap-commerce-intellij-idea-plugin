@@ -64,6 +64,7 @@ public interface HybrisConstants {
     String CORE_EXTENSION_NAME = "core";
     String BACK_OFFICE_EXTENSION_NAME = "backoffice";
     String BACK_OFFICE_MODULE_META_KEY_NAME = "backoffice-module";
+    String HAC_MODULE_META_KEY_NAME = "hac-module";
     String HMC_EXTENSION_NAME = "hmc";
     String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     String CONFIG_EXTENSION_NAME = "config";
@@ -90,6 +91,7 @@ public interface HybrisConstants {
     String TEST_SRC_DIRECTORY = "testsrc";
     String HMC_MODULE_DIRECTORY = "hmc";
     String HAC_MODULE_DIRECTORY = "hac";
+    String HAC_MODULE_EXTENSION_NAME = "hac";
     String WEB_MODULE_DIRECTORY = "web";
     String BACK_OFFICE_MODULE_DIRECTORY = "backoffice";
     String ADDON_SRC_DIRECTORY = "addonsrc";
@@ -111,6 +113,7 @@ public interface HybrisConstants {
     String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
     String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
     String NODE_MODULES_DIRECTORY = "node_modules";
+    String JS_TARGET_DIRECTORY = "jsTarget";
     String BOWER_COMPONENTS_DIRECTORY = "bower_components";
 
     String PLATFORM_LIBRARY_GROUP = "Platform Bootstrap";
@@ -141,6 +144,7 @@ public interface HybrisConstants {
     String JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY;
 
     String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
+    String HYBRIS_PROJECT_SETTINGS_COMPONENT_NAME = "HybrisProjectSettings";
     String HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml";
 
     String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
@@ -155,6 +159,7 @@ public interface HybrisConstants {
     String HMC_WEB_INF_CLASSES = toSystemDependentName("/bin/ext-platform-optional/hmc/web/webroot/WEB-INF/classes");
     String BACKOFFICE_WEB_INF_LIB = toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");
     String BACKOFFICE_WEB_INF_CLASSES = toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes");
+    String HAC_WEB_INF_CLASSES = toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes");
 
     String DESCRIPTOR_TYPE = "descriptorType";
     String READ_ONLY = "importedAsReadOnly";
