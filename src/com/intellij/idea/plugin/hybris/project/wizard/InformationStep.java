@@ -20,14 +20,12 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.projectImport.ProjectImportWizardStep;
+import com.intellij.ui.BrowserHyperlinkListener;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 6/5/17.
@@ -77,16 +75,6 @@ public class InformationStep extends ProjectImportWizardStep {
         jiraEditorPane = new JEditorPane();
         jiraEditorPane.setEditorKit(new HTMLEditorKit());
         ((HTMLDocument) jiraEditorPane.getDocument()).getStyleSheet().addRule(bodyRule);
-        jiraEditorPane.addHyperlinkListener(e -> {
-            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                if (Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().browse(e.getURL().toURI());
-                    } catch (IOException | URISyntaxException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        });
+        jiraEditorPane.addHyperlinkListener(BrowserHyperlinkListener.INSTANCE);
     }
 }

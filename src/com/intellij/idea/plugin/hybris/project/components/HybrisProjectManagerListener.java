@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.components;
 
+import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
@@ -41,9 +42,12 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.spring.settings.SpringGeneralSettings;
+import com.intellij.ui.LicensingFacade;
+import com.intellij.util.PlatformUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
+import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,10 +66,20 @@ import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 public class HybrisProjectManagerListener implements ProjectManagerListener {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectManagerListener.class);
+    private final NotificationGroup notificationGroup = new NotificationGroup(
+        "[y] project",
+        NotificationDisplayType.BALLOON,
+        true,
+        null,
+        HybrisIcons.HYBRIS_ICON
+    );
     @Override
     public void projectOpened(final Project project) {
         if (isOldHybrisProject(project)) {
             showNotification(project);
+        }
+        if (isDiscountTargetGroup()) {
+            showDiscountOffer(project);
         }
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         if (!commonIdeaService.isHybrisProject(project)) {
@@ -74,6 +88,11 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
         if (popupPermissionToSendStatistics(project)) {
             continueOpening(project);
         }
+    }
+
+    private boolean isDiscountTargetGroup() {
+        LicensingFacade licensingFacade = LicensingFacade.getInstance();
+        return licensingFacade == null || licensingFacade.isEvaluationLicense() || PlatformUtils.isIdeaCommunity();
     }
 
     private void continueOpening(final Project project) {
@@ -134,14 +153,6 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
     }
 
     private void showNotification(final Project project) {
-        final NotificationGroup notificationGroup = new NotificationGroup(
-            "[y] project",
-            NotificationDisplayType.BALLOON,
-            true,
-            null,
-            HybrisIcons.HYBRIS_ICON
-        );
-
         final Notification notification = notificationGroup.createNotification(
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.title"),
             HybrisI18NBundleUtils.message("hybris.project.open.outdated.text"),
@@ -150,6 +161,21 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
         );
         notification.setImportant(true);
         Notifications.Bus.notify(notification, project);
+    }
+
+    private void showDiscountOffer(final Project project) {
+        final Notification notification = notificationGroup.createNotification(
+            HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.title"),
+            HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.text"),
+            NotificationType.INFORMATION,
+            (myNotification, myHyperlinkEvent) -> goToDiscountOffer(myHyperlinkEvent)
+        );
+        notification.setImportant(true);
+        Notifications.Bus.notify(notification, project);
+    }
+
+    private void goToDiscountOffer(final HyperlinkEvent myHyperlinkEvent) {
+        BrowserUtil.browse(myHyperlinkEvent.getDescription());
     }
 
     private void fixBackOfficeJRebelSupport(final Project project) {
