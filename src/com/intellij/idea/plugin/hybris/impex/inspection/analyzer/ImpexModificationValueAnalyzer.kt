@@ -1,6 +1,5 @@
 package com.intellij.idea.plugin.hybris.impex.inspection.analyzer
 
-import com.intellij.codeInspection.ProblemDescriptorUtil
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
@@ -39,8 +38,9 @@ fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: MutableMap<String, L
         val k = mutableListOf<PsiElement>()
         for (y in 0 until countKeyAttrs) {
             val entry = dataMap.entries.toList()[y]
-            if ((entry.value as List<*>).isNotEmpty())
+            if ((entry.value as List<*>).isNotEmpty() && entry.value.size > i) {
                 k.add(entry.value[i])
+            }
         }
         keyRows.add(Key(k))
     }
@@ -52,7 +52,7 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
     private val rows = mutableListOf<Row>()
     private val errorBag = mutableSetOf<PsiElement>()
     private val warningBag = mutableSetOf<PsiElement>()
-    
+
     fun analyze(problemsHolder: ProblemsHolder) {
 
         analyzeProblems()
