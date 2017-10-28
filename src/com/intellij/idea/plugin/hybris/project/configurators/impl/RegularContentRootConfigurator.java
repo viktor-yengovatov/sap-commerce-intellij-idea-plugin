@@ -55,7 +55,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_D
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIR_NAMES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
@@ -127,11 +127,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
-        final File testSrcDirectory = new File(moduleDescriptor.getRootDirectory(), TEST_SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(testSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.TEST_SOURCE
-        );
+        addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory());
 
         final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -260,11 +256,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JavaSourceRootType.SOURCE
         );
 
-        final File backOfficeTestSrcDirectory = new File(backOfficeModuleDirectory, TEST_SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(backOfficeTestSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.TEST_SOURCE
-        );
+        addTestSourceRoots(contentEntry, backOfficeModuleDirectory);
 
         final File hmcResourcesDirectory = new File(backOfficeModuleDirectory, RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -321,17 +313,22 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
-        final File webTestSrcDirectory = new File(webModuleDirectory, TEST_SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(webTestSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.TEST_SOURCE
-        );
+        addTestSourceRoots(contentEntry, webModuleDirectory);
 
         excludeSubDirectories(contentEntry, webModuleDirectory, Arrays.asList(
             ADDON_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY, COMMON_WEB_SRC_DIRECTORY
         ));
 
         configureWebInf(contentEntry, moduleDescriptor, webModuleDirectory);
+    }
+
+    private static void addTestSourceRoots(final @NotNull ContentEntry contentEntry, @NotNull final File dir) {
+        for (String testSrcDirName : TEST_SRC_DIR_NAMES) {
+            contentEntry.addSourceFolder(
+                VfsUtil.pathToUrl(new File(dir, testSrcDirName).getAbsolutePath()),
+                JavaSourceRootType.TEST_SOURCE
+            );
+        }
     }
 
     protected void configureWebInf(
