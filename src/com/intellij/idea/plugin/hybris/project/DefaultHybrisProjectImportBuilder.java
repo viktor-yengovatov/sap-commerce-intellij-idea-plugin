@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
@@ -32,6 +32,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
@@ -61,6 +62,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
+import static com.intellij.idea.plugin.hybris.notifications.NotificationUtil.showSystemNotificationIfNotActive;
+
 /**
  * Created 8:58 PM 07 June 2015
  *
@@ -69,11 +73,13 @@ import java.util.stream.Collectors;
 public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
+
     protected final Lock lock = new ReentrantLock();
 
     @Nullable
     @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
+    protected volatile boolean refresh;
     protected final VirtualFileSystemService virtualFileSystemService;
     private List<HybrisModuleDescriptor> moduleList;
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
@@ -129,6 +135,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         } finally {
             this.lock.unlock();
         }
+        refresh = false;
+    }
+
+    @Override
+    public void setRefresh(final boolean refresh) {
+        this.refresh = refresh;
     }
 
     @NotNull
@@ -184,6 +196,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             project, model, configuratorFactory, hybrisProjectDescriptor, modules
         ).queue();
 
+        final boolean[] finished = {false};
+
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
             try {
                 final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
@@ -193,9 +207,48 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             } catch (Exception e) {
                 LOG.error("Can not configure Ant due to an error.", e);
             }
+            notifyImportFinished(project);
+            finished[0] = true;
         });
 
+        if (!finished[0]) {
+            notifyImportNotFinishedYet(project);
+        }
         return modules;
+    }
+
+    private void notifyImportNotFinishedYet(@NotNull Project project) {
+
+        final String notificationTitle = refresh
+            ? message("project.refresh.notification.title")
+            : message("project.import.notification.title");
+
+        NotificationUtil.NOTIFICATION_GROUP.createNotification(
+            notificationTitle,
+            message("import.or.refresh.process.not.finished.yet"),
+            NotificationType.INFORMATION,
+            null
+        ).notify(project);
+    }
+
+    private void notifyImportFinished(@NotNull Project project) {
+
+        final String notificationName = refresh
+            ? message("project.refresh.finished")
+            : message("project.import.finished");
+
+        final String notificationTitle = refresh
+            ? message("project.refresh.notification.title")
+            : message("project.import.notification.title");
+
+        NotificationUtil.NOTIFICATION_GROUP.createNotification(
+            notificationTitle,
+            notificationName,
+            NotificationType.INFORMATION,
+            null
+        ).notify(project);
+
+        showSystemNotificationIfNotActive(project, notificationName, notificationTitle, notificationName);
     }
 
     private void collectStatistics(final HybrisProjectDescriptor hybrisProjectDescriptor) {
@@ -260,13 +313,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public void setExternalStepName() {
-        name = HybrisI18NBundleUtils.message("non.hybris.project.name");
+        name = message("non.hybris.project.name");
     }
 
     @Override
     public String getName() {
         if (name == null) {
-            return HybrisI18NBundleUtils.message("hybris.project.name");
+            return message("hybris.project.name");
         }
         return name;
     }

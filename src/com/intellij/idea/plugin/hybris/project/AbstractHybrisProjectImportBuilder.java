@@ -51,4 +51,6 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
     public abstract void resetExternalStepName();
 
     public abstract void setExternalStepName();
+
+    public abstract void setRefresh(boolean refresh);
 }

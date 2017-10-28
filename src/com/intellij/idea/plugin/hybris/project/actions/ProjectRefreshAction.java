@@ -22,11 +22,13 @@ import com.intellij.ide.DataManager;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
 import com.intellij.ide.util.newProjectWizard.StepSequence;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
+import com.intellij.ide.util.projectWizard.ProjectBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.gradle.GradleSupport;
+import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.wizard.NonGuiSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -95,7 +97,12 @@ public class ProjectRefreshAction extends AnAction {
         try {
             collectStatistics();
             final AddModuleWizard wizard = getWizard(project);
-            wizard.getProjectBuilder().commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
+            final ProjectBuilder projectBuilder = wizard.getProjectBuilder();
+
+            if (projectBuilder instanceof AbstractHybrisProjectImportBuilder) {
+                ((AbstractHybrisProjectImportBuilder) projectBuilder).setRefresh(true);
+            }
+            projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
         } catch (ConfigurationException e) {
             Messages.showErrorDialog(
                 anActionEvent.getProject(),
