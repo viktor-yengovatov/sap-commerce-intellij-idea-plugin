@@ -21,11 +21,13 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.ide.wizard.CommitStepException;
+import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.projectImport.ProjectImportBuilder;
 import icons.GradleIcons;
 import icons.MavenIcons;
 import org.jetbrains.annotations.Nullable;
@@ -107,7 +109,13 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     }
 
     public void onWizardFinished() throws CommitStepException {
-        getContext().resetExternalStepName();
+        // This method is called even non-hybris builder is used for importing and the step
+        // hasn't been even shown to a user, so we can't use getContext() here.
+        final ProjectImportBuilder builder = getBuilder();
+
+        if (builder instanceof AbstractHybrisProjectImportBuilder) {
+            ((AbstractHybrisProjectImportBuilder) builder).resetExternalStepName();
+        }
         super.onWizardFinished();
     }
 }
