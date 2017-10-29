@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
@@ -41,9 +42,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
-import com.intellij.openapi.module.ModifiableModuleModel;
-import com.intellij.openapi.roots.IdeaModifiableModelsProvider;
-import com.intellij.openapi.roots.ModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -178,6 +176,12 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public SearchScopeConfigurator getSearchScopeConfigurator() {
         return ServiceManager.getService(SearchScopeConfigurator.class);
+    }
+
+    @Nullable
+    @Override
+    public DataSourcesConfigurator getDataSourcesConfigurator() {
+        return ServiceManager.getService(DataSourcesConfigurator.class);
     }
 
     @NotNull

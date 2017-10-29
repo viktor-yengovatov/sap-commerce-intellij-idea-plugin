@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.openapi.roots.ModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,4 +84,7 @@ public interface ConfiguratorFactory {
 
     @Nullable
     GradleConfigurator getGradleConfigurator();
+
+    @Nullable
+    DataSourcesConfigurator getDataSourcesConfigurator();
 }

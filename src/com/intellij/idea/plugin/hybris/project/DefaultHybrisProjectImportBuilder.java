@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -201,11 +202,21 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
             try {
                 final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
-                if (null != antConfigurator) {
+
+                if (antConfigurator != null) {
                     antConfigurator.configure(hybrisProjectDescriptor, allModules, project);
                 }
             } catch (Exception e) {
                 LOG.error("Can not configure Ant due to an error.", e);
+            }
+            final DataSourcesConfigurator dataSourcesConfigurator = configuratorFactory.getDataSourcesConfigurator();
+
+            if (dataSourcesConfigurator != null) {
+                try {
+                    dataSourcesConfigurator.configure(project);
+                } catch (Exception e) {
+                    LOG.error("Can not import data sources due to an error.", e);
+                }
             }
             notifyImportFinished(project);
             finished[0] = true;
