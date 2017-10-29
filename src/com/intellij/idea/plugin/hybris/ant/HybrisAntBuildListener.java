@@ -27,6 +27,9 @@ import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.lang.ant.config.AntBuildFileBase;
 import com.intellij.lang.ant.config.AntBuildListener;
 import com.intellij.lang.ant.config.AntConfigurationBase;
+import com.intellij.lang.ant.config.execution.AntBeforeExecutionEvent;
+import com.intellij.lang.ant.config.execution.AntExecutionListener;
+import com.intellij.lang.ant.config.execution.AntFinishedExecutionEvent;
 import com.intellij.lang.ant.config.execution.ExecutionHandler;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -34,6 +37,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ex.WindowManagerEx;
@@ -41,14 +45,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,52 +69,33 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MO
  * We need to search through all open projects to see if there is a "message" from ant process.
  * If there is then we also find out which project left the message.
  */
-public class HybrisAntBuildListener implements AntBuildListener {
+public class HybrisAntBuildListener implements AntExecutionListener {
 
-    public static final Key<STATES> STATE = new Key("hybrisAntStateMachine");
-    public static final String[] antCleanAll = new String[]{"clean", "all"};
+    private static final Key<STATES> STATE = Key.create("hybrisAntStateMachine");
+    private static final String[] antCleanAll = new String[]{"clean", "all"};
 
-    /**
-     * Injecting our listener implementation into ant integration interface.
-     */
-    public static void registerAntListener() {
-        try {
-            final Field field = AntBuildListener.class.getField("NULL");
-            setFinalStatic(field, new HybrisAntBuildListener());
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public static void registerAntListener(@NotNull Project project) {
+        project.getMessageBus().connect().subscribe(AntExecutionListener.TOPIC, new HybrisAntBuildListener());
     }
 
-    static void setFinalStatic(Field field, Object newValue) throws NoSuchFieldException, IllegalAccessException {
-        field.setAccessible(true);
-
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-        field.set(null, newValue);
-    }
-
-    /**
-     * Some ant build finished and we do not know what target not which project this is.
-     *
-     * @param state      0==ok
-     * @param errorCount
-     */
     @Override
-    public void buildFinished(final int state, final int errorCount) {
+    public void beforeExecution(final AntBeforeExecutionEvent event) {
+    }
+
+    @Override
+    public void buildFinished(final AntFinishedExecutionEvent event) {
         final Map<Project, AntGenResult> resultMap = new HashMap<>();
         findAntResult(resultMap);
-        collectStatistics();
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.ANT);
         processNewExtensions(resultMap);
         triggerNextAction();
     }
 
     private void findAntResult(final Map<Project, AntGenResult> resultMap) {
         for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-            final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                              .getState();
+            final HybrisProjectSettings hybrisProjectSettings =
+                HybrisProjectSettingsComponent.getInstance(project).getState();
+
             if (!hybrisProjectSettings.isHybrisProject()) {
                 continue;
             }
@@ -121,31 +105,26 @@ public class HybrisAntBuildListener implements AntBuildListener {
                 AntGenResult result = null;
                 try (
                     final FileInputStream fileIn = new FileInputStream(file);
-                    final ObjectInputStream in = new ObjectInputStream(fileIn);
+                    final ObjectInputStream in = new ObjectInputStream(fileIn)
                 ) {
                     result = (AntGenResult) in.readObject();
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-                file.delete();
+                FileUtil.delete(file);
                 resultMap.put(project, result);
                 return;
             }
         }
     }
 
-    private void collectStatistics() {
-        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.ANT);
-    }
-
     private void processNewExtensions(final Map<Project, AntGenResult> resultMap) {
-        if (resultMap.isEmpty()) {
-            return;
+        if (!resultMap.isEmpty()) {
+            final Project project = resultMap.keySet().iterator().next();
+            final AntGenResult antGenResult = resultMap.get(project);
+            modifyLocalExtensions(project, antGenResult);
+            project.putUserData(STATE, STATES.CLEAN_ALL_NEEDED);
         }
-        final Project project = resultMap.keySet().iterator().next();
-        final AntGenResult antGenResult = resultMap.get(project);
-        modifyLocalExtensions(project, antGenResult);
-        project.putUserData(STATE, STATES.CLEAN_ALL_NEEDED);
     }
 
     private void triggerNextAction() {
@@ -173,7 +152,15 @@ public class HybrisAntBuildListener implements AntBuildListener {
         final File file = new File(project.getBasePath() + "/" +
                                    hybrisProjectSettings.getHybrisDirectory() + "/config/localextensions.xml");
         final VirtualFile vf = VfsUtil.findFileByIoFile(file, true);
+
+        if (vf == null) {
+            return;
+        }
         final XmlFile xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vf);
+
+        if (xmlFile == null) {
+            return;
+        }
         new WriteCommandAction.Simple(project, xmlFile) {
 
             @Override
@@ -217,24 +204,34 @@ public class HybrisAntBuildListener implements AntBuildListener {
                                           yProjectSettings.getHybrisDirectory() + PLATFORM_MODULE_PREFIX);
         final VirtualFile vfPlatformDir = VfsUtil.findFileByIoFile(platformDir, true);
         final VirtualFile vfBuildFile = VfsUtil.findRelativeFile(vfPlatformDir, HybrisConstants.ANT_BUILD_XML);
+
+        if (vfBuildFile == null) {
+            return;
+        }
         final PsiFile psiBuildFile = PsiManager.getInstance(project).findFile(vfBuildFile);
+
+        if (psiBuildFile == null) {
+            return;
+        }
         final AntConfigurationBase antConfiguration = AntConfigurationBase.getInstance(project);
         final AntBuildFileBase antBuildFile = antConfiguration.getAntBuildFile(psiBuildFile);
-        ExecutionHandler.runBuild(
-            antBuildFile,
-            antCleanAll,
-            null,
-            getDataContext(project),
-            Collections.emptyList(),
-            AntBuildListener.NULL
-        );
+
+        if (antBuildFile != null) {
+            ExecutionHandler.runBuild(
+                antBuildFile,
+                antCleanAll,
+                null,
+                getDataContext(project),
+                Collections.emptyList(),
+                AntBuildListener.NULL
+            );
+        }
     }
 
     private DataContext getDataContext(final Project project) {
         final WindowManagerEx windowManager = WindowManagerEx.getInstanceEx();
         final Component focusedComponent = windowManager.getFocusedComponent(project);
-        final DataContext dataContext = DataManager.getInstance().getDataContext(focusedComponent);
-        return dataContext;
+        return DataManager.getInstance().getDataContext(focusedComponent);
     }
 
     public enum STATES {CLEAN_ALL_NEEDED, REFRESH_NEEDED}
