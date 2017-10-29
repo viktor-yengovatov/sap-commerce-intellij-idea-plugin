@@ -106,6 +106,8 @@
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingLinesBuilder"/>
 
+        <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
+
         <applicationConfigurable id="ImpexPlugin.ImpexConfigurable" parentId="root"
                                  instance="com.intellij.idea.plugin.hybris.settings.HybrisSettingsConfigurable"/>
 
