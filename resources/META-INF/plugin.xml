@@ -36,6 +36,7 @@
     <depends optional="true" config-file="javaee-optional-dependencies.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="diagram-optional-dependencies.xml">com.intellij.diagram</depends>
+    <depends optional="true" config-file="properties-optional-dependencies.xml">com.intellij.properties</depends>
 
     <vendor email="AlexanderBartash@gmail.com"
             url="https://hybris-integration.atlassian.net/wiki/display/IIPPS/Intellij+IDEA+Plugin+Public+Space">
