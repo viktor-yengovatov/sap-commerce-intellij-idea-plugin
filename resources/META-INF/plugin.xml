@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -128,10 +128,44 @@
         <h2>Task</h2>
         <ul>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-354'>IIP-354</a>] - Do not register acceleratorstorefrontcommons/src as source root because it references not existent class GeneratedAcceleratorstorefrontcommonsConstants and it breaks compilation from Intellij
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-20'>IIP-20</a>] - Show selected column name header inside &quot;breadcrumb&quot; line at the top of the editor
             </li>
             <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-355'>IIP-355</a>] - HAC addons can not be compiled correctly by Intellij build because &quot;hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes&quot; from &quot;hac&quot; extension is not registered as a dependency for HAC addons.
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-49'>IIP-49</a>] - In JSP fold localisable properties and display their real values from base.properties or base_en.properties
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-275'>IIP-275</a>] - Configure a data source during project import based on local.properties
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-312'>IIP-312</a>] - Intellij discount offer
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-339'>IIP-339</a>] - Eliminate reflection in HybrisAntBuildListener
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-347'>IIP-347</a>] - project refresh notification
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-351'>IIP-351</a>] - Auto detect groovytestsrc folder as test folder
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIP-257'>IIP-257</a>] - recognize FlexibleSearch laguage inside of Impex language
+            </li>
+        </ul>
+
+        <h2>Bug</h2>
+        <ul>
+            <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-357'>IIP-357</a>] - Error when use Impex inspection
+            </li>
+        </ul>
+
+        <h2>Fault</h2>
+        <ul>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-87'>IIPS-87</a>] - org.jetbrains.idea.maven.wizards.MavenProjectBuilder cannot be cast to com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder
+            </li>
+            <li>
+                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-88'>IIPS-88</a>] - org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder cannot be cast to com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder
             </li>
         </ul>
         ]]>
