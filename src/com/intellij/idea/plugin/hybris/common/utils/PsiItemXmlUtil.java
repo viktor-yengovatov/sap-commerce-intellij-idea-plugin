@@ -89,7 +89,7 @@ public final class PsiItemXmlUtil {
                         final Stream<ItemType> streamItemTypes = itemTypes.stream();
                         final Stream<ItemType> streamItemGroups =
                             sourceItems.getTypeGroups()
-                                       .parallelStream()
+                                       .stream()
                                        .flatMap(typeGroup -> typeGroup.getItemTypes().stream())
                                        .collect(Collectors.toList()).stream();
                         result.addAll(Stream.concat(streamItemTypes, streamItemGroups)
