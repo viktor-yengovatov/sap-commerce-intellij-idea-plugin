@@ -25,15 +25,18 @@ import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
@@ -200,32 +203,76 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final boolean[] finished = {false};
 
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
-            try {
-                final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
-
-                if (antConfigurator != null) {
-                    antConfigurator.configure(hybrisProjectDescriptor, allModules, project);
-                }
-            } catch (Exception e) {
-                LOG.error("Can not configure Ant due to an error.", e);
-            }
-            final DataSourcesConfigurator dataSourcesConfigurator = configuratorFactory.getDataSourcesConfigurator();
-
-            if (dataSourcesConfigurator != null) {
-                try {
-                    dataSourcesConfigurator.configure(project);
-                } catch (Exception e) {
-                    LOG.error("Can not import data sources due to an error.", e);
-                }
-            }
-            notifyImportFinished(project);
             finished[0] = true;
+
+            finishImport(
+                project,
+                hybrisProjectDescriptor,
+                allModules,
+                configuratorFactory,
+                () -> notifyImportFinished(project)
+            );
         });
 
         if (!finished[0]) {
             notifyImportNotFinishedYet(project);
         }
         return modules;
+    }
+
+    private static void finishImport(
+        @NotNull final Project project,
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final List<HybrisModuleDescriptor> allHybrisModules,
+        @NotNull final ConfiguratorFactory configuratorFactory,
+        @NotNull final Runnable callback
+    ) {
+        try {
+            final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
+
+            if (antConfigurator != null) {
+                antConfigurator.configure(hybrisProjectDescriptor, allHybrisModules, project);
+            }
+        } catch (Exception e) {
+            LOG.error("Can not configure Ant due to an error.", e);
+        }
+        final DataSourcesConfigurator dataSourcesConfigurator = configuratorFactory.getDataSourcesConfigurator();
+
+        if (dataSourcesConfigurator != null) {
+            try {
+                dataSourcesConfigurator.configure(project);
+            } catch (Exception e) {
+                LOG.error("Can not import data sources due to an error.", e);
+            }
+        }
+        // invokeLater is needed to avoid a problem with transaction validation:
+        // "Write-unsafe context!...", "Do not use API that changes roots from roots events..."
+        ApplicationManager.getApplication().invokeLater(() -> {
+            if (project.isDisposed()) {
+                return;
+            }
+            final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
+
+            if (mavenConfigurator != null) {
+                try {
+                    final List<MavenModuleDescriptor> mavenModules = hybrisProjectDescriptor
+                        .getModulesChosenForImport()
+                        .stream()
+                        .filter(e -> e instanceof MavenModuleDescriptor)
+                        .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
+                        .map(e -> (MavenModuleDescriptor) e)
+                        .collect(Collectors.toList());
+
+                    if (!mavenModules.isEmpty()) {
+                        mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules, configuratorFactory);
+                    }
+                } catch (Exception e) {
+                    LOG.error("Can not import Maven modules due to an error.", e);
+                } finally {
+                    callback.run();
+                }
+            }
+        });
     }
 
     private void notifyImportNotFinishedYet(@NotNull Project project) {

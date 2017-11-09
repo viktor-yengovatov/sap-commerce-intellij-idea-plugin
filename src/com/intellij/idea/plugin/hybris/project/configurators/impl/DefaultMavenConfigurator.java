@@ -33,7 +33,6 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.messages.MessageBusConnection;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
@@ -45,11 +44,10 @@ import org.jetbrains.idea.maven.wizards.MavenProjectBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 13/11/16.
@@ -63,10 +61,6 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         @NotNull final List<MavenModuleDescriptor> mavenModules,
         @NotNull final ConfiguratorFactory configuratorFactory
     ) {
-        if (mavenModules.isEmpty()) {
-            return;
-        }
-
         final MavenProjectBuilder mavenProjectBuilder = new MavenProjectBuilder();
         final List<VirtualFile> pomList = mavenModules
             .stream()
@@ -90,36 +84,69 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             }
         }
         mavenProjectBuilder.setList(selectedProjects);
-        invokeAndWaitIfNeeded((Runnable) () -> mavenProjectBuilder.commit(project));
-        final MessageBusConnection messageBusConnection = project.getMessageBus().connect();
-        messageBusConnection.subscribe(MavenImportListener.TOPIC, (importedProjects, newModules) -> {
-            final List<MavenProject> importedProjectRoots = importedProjects
-                .stream()
-                .filter(e -> pomList
-                    .stream()
-                    .anyMatch(pom -> pom.equals(e.getFile()))
-                )
-                .collect(Collectors.toList());
-            final List<Module> newRootModules = newModules
-                .stream()
-                .filter(e -> importedProjectRoots
-                    .stream()
-                    .anyMatch(i -> {
-                        final String name = i.getName();
-                        if (name != null) {
-                            return i.getName().equals(e.getName());
-                        }
-                        return i.getFinalName().startsWith(e.getName());
-                    })
-                )
-                .collect(Collectors.toList());
-            final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator()
-                                                          .getGroupName(mavenModules.get(0));
-            if (rootGroup != null && rootGroup.length > 0) {
-                moveMavenModulesToGroup(project, newRootModules, rootGroup);
+
+        project.getMessageBus().connect().subscribe(
+            MavenImportListener.TOPIC,
+            (importedProjects, newModules) -> {
+
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    if (!project.isDisposed()) {
+                        moveMavenModulesToCorrectGroup(
+                            project,
+                            mavenModules,
+                            configuratorFactory,
+                            pomList,
+                            importedProjects,
+                            newModules
+                        );
+                    }
+                });
             }
-        });
+        );
+        mavenProjectBuilder.commit(project);
         MavenProjectsManager.getInstance(project).importProjects();
+    }
+
+    private void moveMavenModulesToCorrectGroup(
+        final @NotNull Project project,
+        final @NotNull List<MavenModuleDescriptor> mavenModules,
+        final @NotNull ConfiguratorFactory configuratorFactory,
+        final List<VirtualFile> pomList,
+        final Collection<MavenProject> importedProjects,
+        final List<Module> newModules
+    ) {
+        final List<MavenProject> importedProjectRoots = importedProjects
+            .stream()
+            .filter(e -> pomList
+                .stream()
+                .anyMatch(pom -> pom.equals(e.getFile()))
+            )
+            .collect(Collectors.toList());
+
+        final List<Module> newRootModules = newModules
+            .stream()
+            .filter(e -> importedProjectRoots
+                .stream()
+                .anyMatch(i -> {
+                    final String name = i.getName();
+                    if (name != null) {
+                        return i.getName().equals(e.getName());
+                    }
+                    return i.getFinalName().startsWith(e.getName());
+                })
+            )
+            .collect(Collectors.toList());
+
+        final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator()
+                                                      .getGroupName(mavenModules.get(0));
+
+        if (rootGroup != null && rootGroup.length > 0) {
+            moveMavenModulesToGroup(
+                project,
+                newRootModules,
+                rootGroup
+            );
+        }
     }
 
     private void moveMavenModulesToGroup(
