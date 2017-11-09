@@ -39,7 +39,6 @@ import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
@@ -93,7 +92,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -268,30 +266,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLoadedConfigurator().configure(
             project, hybrisProjectDescriptor.getModulesChosenForImport());
 
-        final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
-
-        if (mavenConfigurator != null) {
-            indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.maven"));
-
-            try {
-                final List<MavenModuleDescriptor> mavenModules = new ArrayList<>();
-
-                mavenModules.addAll(
-                    hybrisProjectDescriptor.getModulesChosenForImport()
-                                           .stream()
-                                           .filter(e -> e instanceof MavenModuleDescriptor)
-                                           .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
-                                           .map(e -> (MavenModuleDescriptor) e)
-                                           .collect(Collectors.toList())
-                );
-
-                if (!mavenModules.isEmpty()) {
-                    mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules, configuratorFactory);
-                }
-            } catch (Exception e) {
-                LOG.error("Can not import Maven modules due to an error.", e);
-            }
-        }
         final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
 
         if (eclipseConfigurator != null) {
