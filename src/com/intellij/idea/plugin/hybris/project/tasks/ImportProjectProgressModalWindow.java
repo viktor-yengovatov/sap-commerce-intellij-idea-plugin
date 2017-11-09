@@ -265,7 +265,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         ApplicationManager.getApplication().invokeAndWait(
             () -> ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit));
 
-        configuratorFactory.getLoadedConfigurator().configure(project, allModules);
+        configuratorFactory.getLoadedConfigurator().configure(
+            project, hybrisProjectDescriptor.getModulesChosenForImport());
 
         final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
 
