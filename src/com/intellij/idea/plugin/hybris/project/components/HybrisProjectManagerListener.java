@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.components;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
@@ -36,14 +37,20 @@ import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.spring.settings.SpringGeneralSettings;
 import com.intellij.ui.LicensingFacade;
+import com.intellij.util.Alarm;
 import com.intellij.util.PlatformUtils;
+import com.intellij.util.text.DateFormatUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -63,9 +70,11 @@ import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 /**
  * Created by Martin Zdarsky-Jones on 29/09/2016.
  */
-public class HybrisProjectManagerListener implements ProjectManagerListener {
+public class HybrisProjectManagerListener implements ProjectManagerListener, Disposable {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectManagerListener.class);
+    private static final String LAST_DISCOUNT_OFFER_TIME_PROPERTY = "LAST_DISCOUNT_OFFER_TIME";
+
     private final NotificationGroup notificationGroup = new NotificationGroup(
         "[y] project",
         NotificationDisplayType.BALLOON,
@@ -73,21 +82,29 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
         null,
         HybrisIcons.HYBRIS_ICON
     );
+
+    private final Alarm notificationClosingAlarm = new Alarm(this);
+
     @Override
     public void projectOpened(final Project project) {
-        if (isOldHybrisProject(project)) {
-            showNotification(project);
-        }
-        if (isDiscountTargetGroup()) {
-            showDiscountOffer(project);
-        }
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
-        if (!commonIdeaService.isHybrisProject(project)) {
-            return;
-        }
-        if (popupPermissionToSendStatistics(project)) {
-            continueOpening(project);
-        }
+        StartupManager.getInstance(project).registerPostStartupActivity((DumbAwareRunnable) () -> {
+            if (project.isDisposed()) {
+                return;
+            }
+            if (isOldHybrisProject(project)) {
+                showNotification(project);
+            }
+            if (isDiscountTargetGroup()) {
+                showDiscountOffer(project);
+            }
+            final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+            if (!commonIdeaService.isHybrisProject(project)) {
+                return;
+            }
+            if (popupPermissionToSendStatistics(project)) {
+                continueOpening(project);
+            }
+        });
     }
 
     private boolean isDiscountTargetGroup() {
@@ -164,14 +181,29 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
     }
 
     private void showDiscountOffer(final Project project) {
-        final Notification notification = notificationGroup.createNotification(
-            HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.title"),
-            HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.text"),
-            NotificationType.INFORMATION,
-            (myNotification, myHyperlinkEvent) -> goToDiscountOffer(myHyperlinkEvent)
-        );
-        notification.setImportant(true);
-        Notifications.Bus.notify(notification, project);
+        final PropertiesComponent properties = PropertiesComponent.getInstance();
+        final long lastNotificationTime = properties.getOrInitLong(LAST_DISCOUNT_OFFER_TIME_PROPERTY, 0);
+        final long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastNotificationTime >= DateFormatUtil.MONTH) {
+            properties.setValue(LAST_DISCOUNT_OFFER_TIME_PROPERTY, String.valueOf(currentTime));
+
+            final Notification notification = notificationGroup.createNotification(
+                HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.title"),
+                HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.text"),
+                NotificationType.INFORMATION,
+                (myNotification, myHyperlinkEvent) -> goToDiscountOffer(myHyperlinkEvent)
+            );
+            notification.setImportant(true);
+            Notifications.Bus.notify(notification, project);
+
+            ApplicationManager.getApplication().invokeLater(() -> {
+                if (!notificationClosingAlarm.isDisposed()) {
+                    notificationClosingAlarm.addRequest(notification::hideBalloon, 3000);
+                }
+            });
+
+        }
     }
 
     private void goToDiscountOffer(final HyperlinkEvent myHyperlinkEvent) {
@@ -208,5 +240,9 @@ public class HybrisProjectManagerListener implements ProjectManagerListener {
             LOG.error(e);
             return;
         }
+    }
+
+    @Override
+    public void dispose() {
     }
 }
