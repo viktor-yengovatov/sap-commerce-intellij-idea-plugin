@@ -4,8 +4,6 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import com.intellij.ui.BrowserHyperlinkListener;
-import com.intellij.ui.LicensingFacade;
-import com.intellij.util.PlatformUtils;
 
 import javax.swing.*;
 import javax.swing.text.html.HTMLDocument;
@@ -34,8 +32,7 @@ public class DiscountImportstep extends ProjectImportWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        LicensingFacade licensingFacade = LicensingFacade.getInstance();
-        return licensingFacade == null || licensingFacade.isEvaluationLicense() || PlatformUtils.isIdeaCommunity();
+        return true;
     }
 
     private void createUIComponents() {
