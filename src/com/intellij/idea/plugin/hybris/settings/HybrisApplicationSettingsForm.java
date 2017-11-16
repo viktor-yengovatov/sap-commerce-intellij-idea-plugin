@@ -97,9 +97,15 @@ public class HybrisApplicationSettingsForm {
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
         data.setHybrisInstanceUsername(hybrisInstanceUsernameTextField.getText());
         data.setHybrisInstancePassword(hybrisInstancePasswordTextField.getText());
-        data.setHybrisHostUrl(hybrisHostUrlTextField.getText());
+        data.setHybrisHostUrl(getHybrisHostUrl());
         data.setFollowSymlink(followSymlink.isSelected());
 
+    }
+
+    @NotNull
+    private String getHybrisHostUrl() {
+        String url = hybrisHostUrlTextField.getText().trim();
+        return url.endsWith("/") ? url.substring(0, url.length() - 1).trim() : url;
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -130,7 +136,7 @@ public class HybrisApplicationSettingsForm {
         if (!StringUtil.equals(groupPlatformTextField.getText(), data.getGroupPlatform())) {
             return true;
         }
-        if (!StringUtil.equals(hybrisHostUrlTextField.getText(), data.getHybrisHostUrl())) {
+        if (!StringUtil.equals(getHybrisHostUrl(), data.getHybrisHostUrl())) {
             return true;
         }
         if (!StringUtil.equals(hybrisInstancePasswordTextField.getText(), data.getHybrisInstancePassword())) {
