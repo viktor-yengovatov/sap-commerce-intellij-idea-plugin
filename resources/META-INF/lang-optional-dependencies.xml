@@ -34,7 +34,13 @@
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.type.system.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
         <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
-        
+
+        <!-- ####################################################################################################### -->
+        <!--                                                Beans                                                    -->
+        <!-- ####################################################################################################### -->
+
+        <dom.fileDescription
+            implementation="com.intellij.idea.plugin.hybris.beans.BeansDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                          Flexible Search                                                -->
