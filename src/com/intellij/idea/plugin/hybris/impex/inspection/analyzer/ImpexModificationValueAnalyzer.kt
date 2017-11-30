@@ -122,10 +122,12 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                             bitSet[indexOf] = 0
                             row.valueGroup[indexOf] = null
                         } else {
-                            val foundHeader = ImpexPsiUtils.getHeaderForValueGroup(valueGroup as ImpexValueGroup?) as ImpexFullHeaderParameter
-                            val indexOf = attrs.indexOfFirst { foundHeader.text == it }
-                            bitSet[indexOf] = 1
-                            row.valueGroup[indexOf] = valueGroup
+                            val headerForValueGroup = ImpexPsiUtils.getHeaderForValueGroup(valueGroup as ImpexValueGroup?)
+                            if (headerForValueGroup is ImpexFullHeaderParameter) {
+                                val indexOf = attrs.indexOfFirst { headerForValueGroup.text == it }
+                                bitSet[indexOf] = 1
+                                row.valueGroup[indexOf] = valueGroup
+                            }
                         }
                     }
                 }
