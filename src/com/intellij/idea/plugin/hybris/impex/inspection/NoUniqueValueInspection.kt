@@ -20,7 +20,7 @@ class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) : PsiElem
     override fun visitFile(file: PsiFile) {
         val headers = PsiTreeUtil.getChildrenOfType(file, ImpexHeaderLine::class.java) ?: return
 
-        val groupHeaders = headers.groupBy { "${it.fullHeaderType!!.text}|${keyAttrsName(it).joinToString { it }}" }
+        val groupHeaders = headers.filter { it.fullHeaderType != null }.groupBy { "${it.fullHeaderType?.text}|${keyAttrsName(it).joinToString { it }}" }
 
         groupHeaders.forEach { _, headerLines ->
             val fullParametersList = fullParametersList(headerLines)
