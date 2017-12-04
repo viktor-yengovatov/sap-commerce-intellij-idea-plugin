@@ -41,12 +41,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIR_ENV;
+
 /**
  * @author Eugene.Kudelevsky
  */
 public class HybrisJUnitExtension extends RunConfigurationExtension {
-
-    private static final String HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR";
 
     @Override
     public <T extends RunConfigurationBase> void updateJavaParameters(
@@ -72,7 +73,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
             final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
 
             final String hybrisDataDirPath = FileUtil.toCanonicalPath(
-                project.getBasePath() + '/' + settings.getHybrisDirectory() + '/' + HybrisConstants.HYBRIS_DATA_DIRECTORY);
+                project.getBasePath() + '/' + settings.getHybrisDirectory() + '/' + HYBRIS_DATA_DIRECTORY);
 
             if (hybrisDataDirPath != null) {
                 params.addEnv(HYBRIS_DATA_DIR_ENV, hybrisDataDirPath);
