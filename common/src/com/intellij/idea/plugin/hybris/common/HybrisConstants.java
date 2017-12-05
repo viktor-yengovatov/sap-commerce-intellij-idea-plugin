@@ -189,4 +189,5 @@ public interface HybrisConstants {
     String STATS_COLLECTOR_URL = "http://intellij.bcom.cz/hybrisintegration";
     String SEARCH_SCOPE_Y_PREFIX = "[y]";
     String SEARCH_SCOPE_GROUP_PREFIX = "group:";
+    String HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR";
 }
