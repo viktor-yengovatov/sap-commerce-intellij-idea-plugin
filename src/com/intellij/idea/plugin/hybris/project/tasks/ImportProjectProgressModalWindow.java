@@ -78,6 +78,7 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
@@ -367,16 +368,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
         final File extDir = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         if (extDir != null && extDir.isDirectory()) {
-            hybrisProjectSettings.setExternalExtensionsDirectory(extDir.getPath());
+            hybrisProjectSettings.setExternalExtensionsDirectory(FileUtil.toSystemIndependentName(extDir.getPath()));
         }
         final File configDir = hybrisProjectDescriptor.getExternalConfigDirectory();
         if (configDir != null && configDir.isDirectory()) {
-            hybrisProjectSettings.setExternalConfigDirectory(configDir.getPath());
+            hybrisProjectSettings.setExternalConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
         }
         final File dbDriversDir = hybrisProjectDescriptor.getExternalDbDriversDirectory();
         if (dbDriversDir != null && dbDriversDir.isDirectory()) {
-            hybrisProjectSettings.setExternalDbDriversDirectory(dbDriversDir.getPath());
-            appSettings.setExternalDbDriversDirectory(dbDriversDir.getPath());
+            hybrisProjectSettings.setExternalDbDriversDirectory(FileUtil.toSystemIndependentName(dbDriversDir.getPath()));
+            appSettings.setExternalDbDriversDirectory(FileUtil.toSystemIndependentName(dbDriversDir.getPath()));
         } else {
             appSettings.setExternalDbDriversDirectory("");
         }
@@ -385,14 +386,15 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();
 
         if (sourceCodeFile != null && sourceCodeFile.exists()) {
-            hybrisProjectSettings.setSourceCodeFile(sourceCodeFile.getPath());
+            hybrisProjectSettings.setSourceCodeFile(FileUtil.toSystemIndependentName(sourceCodeFile.getPath()));
             final boolean directory = sourceCodeFile.isDirectory();
-            appSettings.setSourceCodeDirectory(directory ? sourceCodeFile.getPath() : sourceCodeFile.getParent());
+            appSettings.setSourceCodeDirectory(FileUtil.toSystemIndependentName(
+                directory ? sourceCodeFile.getPath() : sourceCodeFile.getParent()));
             appSettings.setSourceZipUsed(!directory);
         }
         final File modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (modulesFilesDirectory != null && modulesFilesDirectory.isDirectory()) {
-            hybrisProjectSettings.setIdeModulesFilesDirectory(modulesFilesDirectory.getPath());
+            hybrisProjectSettings.setIdeModulesFilesDirectory(FileUtil.toSystemIndependentName(modulesFilesDirectory.getPath()));
         }
         final Set<String> completeSetOfHybrisModules = newHashSet();
         hybrisProjectDescriptor.getFoundModules().stream()
