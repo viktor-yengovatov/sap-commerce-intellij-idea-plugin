@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
@@ -27,13 +28,21 @@ import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleD
 import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -43,6 +52,7 @@ import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 24/08/15.
  */
 public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
+    private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);
 
     private Set<HybrisModuleDescriptor> requiredHybrisModuleDescriptorList;
     private boolean groupModules;
@@ -88,11 +98,42 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Nullable
     @Override
     public String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        final String[] groupPathOverride = getGroupPathOverride(moduleDescriptor);
+        if (groupPathOverride != null) {
+            return groupPathOverride.clone();
+        }
+
         final String[] groupPath = getGroupPath(moduleDescriptor);
         if (groupPath == null) {
             return null;
         }
         return groupPath.clone();
+    }
+
+    private String[] getGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
+        final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
+        if (!groupFile.exists()) {
+            return null;
+        }
+        String rawGroupText = null;
+        try (InputStream in = new FileInputStream(groupFile)) {
+            Properties prop = new Properties();
+            prop.load(in);
+            rawGroupText = prop.getProperty(HybrisConstants.GROUP_OVERRIDE_KEY);
+        } catch (IOException e) {
+            LOG.error("Cannot read "+HybrisConstants.GROUP_OVERRIDE_FILENAME+" for module "+moduleDescriptor.getName());
+        }
+        if (rawGroupText == null || rawGroupText.isEmpty()) {
+            try (OutputStream out = new FileOutputStream(groupFile)) {
+                Properties properties = new Properties();
+                properties.setProperty(HybrisConstants.GROUP_OVERRIDE_KEY, "");
+                properties.store(out, HybrisConstants.GROUP_OVERRIDE_COMMENTS);
+            } catch (IOException e) {
+                LOG.error("Cannot write " + HybrisConstants.GROUP_OVERRIDE_FILENAME + " for module " + moduleDescriptor.getName());
+            }
+            return null;
+        }
+        return toIdeaGroup(rawGroupText);
     }
 
     private String[] getGroupPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
