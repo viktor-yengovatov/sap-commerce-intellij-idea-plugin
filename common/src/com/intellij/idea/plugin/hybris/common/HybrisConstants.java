@@ -190,4 +190,7 @@ public interface HybrisConstants {
     String SEARCH_SCOPE_Y_PREFIX = "[y]";
     String SEARCH_SCOPE_GROUP_PREFIX = "group:";
     String HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR";
+    String GROUP_OVERRIDE_FILENAME = "hybris4intellij.properties";
+    String GROUP_OVERRIDE_KEY = "group.override";
+    String GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group. Add a property group.override and value group name. if you use subgroups use / as a separator. for example group.override=mygroup/mysubgroup";
 }
