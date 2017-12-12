@@ -34,7 +34,6 @@ import java.io.File;
 import java.util.Arrays;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BOWER_COMPONENTS_DIRECTORY;
@@ -51,6 +50,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NODE_MODULE
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_WORK_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIRECTORY;
@@ -109,16 +109,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
 
-        // https://hybris-integration.atlassian.net/browse/IIP-354
-        // Do not register acceleratorstorefrontcommons/src as source root because it references not existent class
-        // GeneratedAcceleratorstorefrontcommonsConstants and it breaks compilation from Intellij
-        if (!ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME.equals(moduleDescriptor.getName())) {
-            final File srcDirectory = new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY);
-            contentEntry.addSourceFolder(
-                VfsUtil.pathToUrl(srcDirectory.getAbsolutePath()),
-                JavaSourceRootType.SOURCE
-            );
-        }
+        final File srcDirectory = new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY);
+        contentEntry.addSourceFolder(
+            VfsUtil.pathToUrl(srcDirectory.getAbsolutePath()),
+            JavaSourceRootType.SOURCE
+        );
 
         final File genSrcDirectory = new File(moduleDescriptor.getRootDirectory(), GEN_SRC_DIRECTORY);
         contentEntry.addSourceFolder(
