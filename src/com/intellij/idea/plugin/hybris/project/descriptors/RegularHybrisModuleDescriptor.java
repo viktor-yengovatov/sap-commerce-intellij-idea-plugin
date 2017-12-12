@@ -175,10 +175,6 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             requiredExtensionNames.add(HybrisConstants.BACK_OFFICE_EXTENSION_NAME);
         }
 
-        if (this.isAddOn()) {
-            requiredExtensionNames.add(HybrisConstants.ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME);
-        }
-
         return Collections.unmodifiableSet(requiredExtensionNames);
     }
 
