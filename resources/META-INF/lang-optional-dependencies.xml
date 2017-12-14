@@ -160,8 +160,12 @@
             implementation="com.intellij.idea.plugin.hybris.impex.rename.processor.ImpexMacrosRenameProcessor"/>
 
         <localInspection groupPath="Impex" shortName="NoUniqueValueInspection" displayName="No unique value in column"
-                         groupName="Impex" level="WARNING" language="Impex" enabledByDefault="true"
+                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.NoUniqueValueInspection"/>
+
+        <localInspection groupPath="Impex" shortName="UniqueAttributeWithoutIndex" displayName="Unique attribute without an index"
+                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UniqueAttributeWithoutIndexInspection"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
