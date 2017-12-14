@@ -32,6 +32,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +88,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
                        .map(ImpexFullHeaderType::getHeaderTypeName);
     }
 
-    private static class AttributeResolveResult implements ResolveResult {
+    private static class AttributeResolveResult implements TypeSystemResolveResult {
 
         private final Attribute myDomAttribute;
 
@@ -105,9 +106,15 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         public boolean isValidResult() {
             return getElement() != null;
         }
+
+        @NotNull
+        @Override
+        public DomElement getSemanticDomElement() {
+            return myDomAttribute;
+        }
     }
 
-    private static class RelationElementResolveResult implements ResolveResult {
+    private static class RelationElementResolveResult implements TypeSystemResolveResult {
 
         @NotNull
         private final RelationElement myDomRelationEnd;
@@ -127,7 +134,11 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
             return getElement() != null;
         }
 
+        @NotNull
+        @Override
+        public DomElement getSemanticDomElement() {
+            return myDomRelationEnd;
+        }
     }
-
 
 }

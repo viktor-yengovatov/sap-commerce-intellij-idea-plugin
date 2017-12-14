@@ -24,6 +24,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.ResolveResult;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -57,5 +59,12 @@ public abstract class TypeSystemReferenceBase<PSI extends PsiElement> extends Ps
     protected final TSMetaModel getTypeSystemMeta() {
         final TSMetaModelAccess metaModelService = TSMetaModelAccess.getInstance(getProject());
         return metaModelService.getTypeSystemMeta();
+    }
+
+    public interface TypeSystemResolveResult extends ResolveResult {
+
+        @NotNull
+        DomElement getSemanticDomElement();
+
     }
 }
