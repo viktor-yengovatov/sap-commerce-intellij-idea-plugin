@@ -30,6 +30,8 @@ import java.util.stream.Stream;
  */
 public interface TSMetaClass extends TSMetaClassifier<ItemType> {
 
+    String IMPLICIT_SUPER_CLASS_NAME = "GenericItem";
+
     @Nullable
     String getExtendedMetaClassName();
 
