@@ -46,6 +46,12 @@ public class FlexibleSearchPredicateImpl extends ASTWrapperPsiElement implements
 
   @Override
   @Nullable
+  public FlexibleSearchInPredicate getInPredicate() {
+    return findChildByClass(FlexibleSearchInPredicate.class);
+  }
+
+  @Override
+  @Nullable
   public FlexibleSearchLikePredicate getLikePredicate() {
     return findChildByClass(FlexibleSearchLikePredicate.class);
   }

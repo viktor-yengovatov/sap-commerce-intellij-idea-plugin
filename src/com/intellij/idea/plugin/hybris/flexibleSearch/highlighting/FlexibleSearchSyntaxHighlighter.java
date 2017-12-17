@@ -85,6 +85,7 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
         FlexibleSearchTypes.LIKE,
         FlexibleSearchTypes.AND,
         FlexibleSearchTypes.OR,
+        FlexibleSearchTypes.IN,
         FlexibleSearchTypes.ORDER,
         FlexibleSearchTypes.BY,
         FlexibleSearchTypes.DESC,

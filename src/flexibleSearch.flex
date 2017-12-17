@@ -81,8 +81,8 @@ WHITE_SPACE                     = \s+
 
 PERCENT                         = [%]
 QUOTE                           = [']
-COMMA                           = [,]
-DOT                             = [.]
+COMMA                           = ","
+DOT                             = "."
 COLON                           = [:]
 SEMICOLON                       = [;]
 LEFT_PAREN                      = [(]
@@ -152,6 +152,7 @@ EOL                             = \n|\r\n
     "OR"                                   { return OR; }
     "NOT"                                  { return NOT; }
     "IS"                                   { return IS; }
+    "IN"                                   { return IN; }
     "TRUE"                                 { return TRUE; }
     "FALSE"                                { return FALSE; }
     "NULL"                                 { return NULL; }
@@ -192,6 +193,7 @@ EOL                             = \n|\r\n
 
     {LEFT_PAREN}                           { return LEFT_PAREN; }
     {RIGHT_PAREN}                          { return RIGHT_PAREN; }
+    {IDENTIFIER}{DOT}                      { yypushback(yylength()); yybegin(COLUMN_IDENTIFIER); pushState(SELECT_EXP);}
     {DOT}                                  { return DOT; }
     {COMMA}                                { return COMMA; }
     {ASTERISK}                             { return ASTERISK; }
@@ -216,6 +218,8 @@ EOL                             = \n|\r\n
     "FROM"                                 { yybegin(FROM_EXP); pushState(SELECT_EXP); return FROM; }
     "IS"                                   { return IS; }
     "CONCAT"                               { return CONCAT; }
+    
+    "LEFT"                                 { yybegin(popState()); return LEFT; }
     
     {STRING_LITERAL}                       { return STRING; }
     {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
@@ -246,7 +250,6 @@ EOL                             = \n|\r\n
     "JOIN"                                 { yybegin(TABLE_IDENTIFIER); pushState(FROM_EXP); return JOIN; }
     "ON"                                   { yybegin(ON_EXP); pushState(FROM_EXP); return ON; }
     "LEFT"                                 { return LEFT; }
-    "ON"                                   { return ON; }
     "UNION"                                { return UNION; }
     "WHERE"                                { yybegin(WHERE_EXP); pushState(FROM_EXP); return WHERE; }
     "AND"                                  { return AND; }
@@ -271,6 +274,8 @@ EOL                             = \n|\r\n
     "AS"                                   { yybegin(CORRELATION_NAME); pushState(TABLE_IDENTIFIER); return AS; }
     
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
+    {COMMA}                                { yybegin(popState()); return COMMA; }
+    "LEFT"                                 { yybegin(FROM_EXP); return LEFT; }
 
     {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
     {QUESTION_MARK}                        { return QUESTION_MARK; }
@@ -296,6 +301,7 @@ EOL                             = \n|\r\n
     "OR"                                   { return OR; }
     "NOT"                                  { return NOT; }
     "IS"                                   { return IS; }
+    "IN"                                   { return IN; }
     "TRUE"                                 { return TRUE; }
     "FALSE"                                { return FALSE; }
     "NULL"                                 { return NULL; }
@@ -303,8 +309,10 @@ EOL                             = \n|\r\n
     "BETWEEN"                              { return BETWEEN; }
     "LIKE"                                 { return LIKE; }
     "CONCAT"                               { return CONCAT; }
-    "GROUP"                                { return GROUP; }  
+    "GROUP"                                { return GROUP; }
 
+    "LEFT"                                 { yybegin(FROM_EXP); pushState(WHERE_EXP); return LEFT; }
+    {IDENTIFIER}{DOT}                      { yypushback(yylength()); yybegin(COLUMN_IDENTIFIER); pushState(WHERE_EXP);}
     
     {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); pushState(WHERE_EXP); return LEFT_BRACE; }
     {RIGHT_BRACE}                          { return RIGHT_BRACE; }
@@ -339,6 +347,8 @@ EOL                             = \n|\r\n
     {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); pushState(ON_EXP); return LEFT_BRACE; }
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
      
+    "LEFT"                                 { yybegin(FROM_EXP); return LEFT; }
+
     /* operators */
     {EQUALS_OPERATOR}                      { return EQUALS_OPERATOR; }
     
@@ -351,13 +361,15 @@ EOL                             = \n|\r\n
     {IDENTIFIER}{LEFT_BRACKET}             { yypushback(1); yybegin(LOCALIZATION); return COLUMN_REFERENCE_IDENTIFIER;}
     {IDENTIFIER}{DOT}|{IDENTIFIER}{COLON}  { yypushback(yylength()); yybegin(TABLE_IDENTIFIER); }
     {DOT}                                  { return DOT; }
-    {COMMA}                                { return COMMA; }
+    {COMMA}                                { yybegin(popState()); return COMMA; }
     {ASTERISK}                             { return ASTERISK; }
     {COLON}                                { return COLON; }
     {SEMICOLON}                            { return SEMICOLON; }
 
+    {RIGHT_PAREN}                          { yybegin(popState()); return RIGHT_PAREN; }
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
     
+    {EQUALS_OPERATOR}                      { yybegin(popState()); return EQUALS_OPERATOR; }
     {WHITE_SPACE}                          { yybegin(popState()); return WHITE_SPACE; }
     
     {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }

@@ -40,18 +40,6 @@ public class FlexibleSearchJoinedTableImpl extends ASTWrapperPsiElement implemen
 
   @Override
   @Nullable
-  public FlexibleSearchJoinedTable getJoinedTable() {
-    return findChildByClass(FlexibleSearchJoinedTable.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchTablePrimary getTablePrimary() {
-    return findChildByClass(FlexibleSearchTablePrimary.class);
-  }
-
-  @Override
-  @Nullable
   public FlexibleSearchTableReference getTableReference() {
     return findChildByClass(FlexibleSearchTableReference.class);
   }

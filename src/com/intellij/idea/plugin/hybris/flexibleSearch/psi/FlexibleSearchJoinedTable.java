@@ -14,12 +14,6 @@ public interface FlexibleSearchJoinedTable extends PsiElement {
   FlexibleSearchJoinType getJoinType();
 
   @Nullable
-  FlexibleSearchJoinedTable getJoinedTable();
-
-  @Nullable
-  FlexibleSearchTablePrimary getTablePrimary();
-
-  @Nullable
   FlexibleSearchTableReference getTableReference();
 
 }

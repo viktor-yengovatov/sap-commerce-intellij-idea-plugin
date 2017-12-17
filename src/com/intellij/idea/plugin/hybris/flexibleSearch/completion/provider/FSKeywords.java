@@ -41,6 +41,7 @@ public final class FSKeywords {
             "LEFT",
             "JOIN",
             "ON",
+            "IN",
 
             "BY",
             "ASC",

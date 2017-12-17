@@ -36,6 +36,7 @@ public interface FlexibleSearchTypes {
   IElementType GROUPING_ELEMENT = new FlexibleSearchElementType("GROUPING_ELEMENT");
   IElementType GROUPING_ELEMENT_LIST = new FlexibleSearchElementType("GROUPING_ELEMENT_LIST");
   IElementType GROUP_BY_CLAUSE = new FlexibleSearchElementType("GROUP_BY_CLAUSE");
+  IElementType IN_PREDICATE = new FlexibleSearchElementType("IN_PREDICATE");
   IElementType JOINED_TABLE = new FlexibleSearchElementType("JOINED_TABLE");
   IElementType JOIN_CONDITION = new FlexibleSearchElementType("JOIN_CONDITION");
   IElementType JOIN_SPECIFICATION = new FlexibleSearchElementType("JOIN_SPECIFICATION");
@@ -98,6 +99,7 @@ public interface FlexibleSearchTypes {
   IElementType GREATER_THAN_OR_EQUALS_OPERATOR = new FlexibleSearchTokenType("GREATER_THAN_OR_EQUALS_OPERATOR");
   IElementType GROUP = new FlexibleSearchTokenType("GROUP");
   IElementType IDENTIFIER = new FlexibleSearchTokenType("IDENTIFIER");
+  IElementType IN = new FlexibleSearchTokenType("IN");
   IElementType IS = new FlexibleSearchTokenType("IS");
   IElementType JOIN = new FlexibleSearchTokenType("JOIN");
   IElementType JOIN_TYPE_1_0 = new FlexibleSearchTokenType("join_type_1_0");
@@ -229,6 +231,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == GROUP_BY_CLAUSE) {
         return new FlexibleSearchGroupByClauseImpl(node);
+      }
+      else if (type == IN_PREDICATE) {
+        return new FlexibleSearchInPredicateImpl(node);
       }
       else if (type == JOINED_TABLE) {
         return new FlexibleSearchJoinedTableImpl(node);

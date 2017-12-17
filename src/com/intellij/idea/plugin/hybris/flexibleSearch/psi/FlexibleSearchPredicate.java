@@ -17,6 +17,9 @@ public interface FlexibleSearchPredicate extends PsiElement {
   FlexibleSearchExistsPredicate getExistsPredicate();
 
   @Nullable
+  FlexibleSearchInPredicate getInPredicate();
+
+  @Nullable
   FlexibleSearchLikePredicate getLikePredicate();
 
   @Nullable
