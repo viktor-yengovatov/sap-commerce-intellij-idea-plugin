@@ -50,8 +50,6 @@ import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.rt.ant.execution.HybrisIdeaAntLogger;
 import com.intellij.util.config.AbstractProperty;
 import com.intellij.util.config.ListProperty;
@@ -141,10 +139,6 @@ public class DefaultAntConfigurator implements AntConfigurator {
         saveAntInstallation(antInstallation);
         removeMake(project);
         createMetaTargets(buildFile);
-
-        final ToolWindowManager manager = ToolWindowManager.getInstance(project);
-        final ToolWindow window = manager.getToolWindow("Ant Build");
-        window.show(null);
     }
 
     private void createMetaTargets(final AntBuildFileBase buildFile) {
