@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchTableReference extends PsiElement {
+public interface FlexibleSearchInPredicate extends PsiElement {
 
   @NotNull
-  List<FlexibleSearchJoinedTable> getJoinedTableList();
+  List<FlexibleSearchRowValuePredicand> getRowValuePredicandList();
 
   @Nullable
-  FlexibleSearchTablePrimary getTablePrimary();
+  FlexibleSearchTableSubquery getTableSubquery();
 
 }

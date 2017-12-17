@@ -27,9 +27,9 @@ public class FlexibleSearchTableReferenceImpl extends ASTWrapperPsiElement imple
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchJoinedTable getJoinedTable() {
-    return findChildByClass(FlexibleSearchJoinedTable.class);
+  @NotNull
+  public List<FlexibleSearchJoinedTable> getJoinedTableList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchJoinedTable.class);
   }
 
   @Override

@@ -119,6 +119,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitInPredicate(@NotNull FlexibleSearchInPredicate o) {
+    visitPsiElement(o);
+  }
+
   public void visitJoinCondition(@NotNull FlexibleSearchJoinCondition o) {
     visitPsiElement(o);
   }

@@ -10,7 +10,7 @@ public interface FlexibleSearchSubquery extends PsiElement {
   @Nullable
   FlexibleSearchCorrelationName getCorrelationName();
 
-  @NotNull
+  @Nullable
   FlexibleSearchQuerySpecification getQuerySpecification();
 
   @NotNull
@@ -19,7 +19,7 @@ public interface FlexibleSearchSubquery extends PsiElement {
   @NotNull
   PsiElement getLeftDoubleBrace();
 
-  @NotNull
+  @Nullable
   PsiElement getRightDoubleBrace();
 
 }

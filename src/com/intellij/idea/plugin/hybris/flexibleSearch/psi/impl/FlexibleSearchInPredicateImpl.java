@@ -11,14 +11,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchSubqueryImpl extends ASTWrapperPsiElement implements FlexibleSearchSubquery {
+public class FlexibleSearchInPredicateImpl extends ASTWrapperPsiElement implements FlexibleSearchInPredicate {
 
-  public FlexibleSearchSubqueryImpl(ASTNode node) {
+  public FlexibleSearchInPredicateImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitSubquery(this);
+    visitor.visitInPredicate(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,33 +27,15 @@ public class FlexibleSearchSubqueryImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchCorrelationName getCorrelationName() {
-    return findChildByClass(FlexibleSearchCorrelationName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchQuerySpecification getQuerySpecification() {
-    return findChildByClass(FlexibleSearchQuerySpecification.class);
-  }
-
-  @Override
   @NotNull
-  public List<FlexibleSearchSubquery> getSubqueryList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchSubquery.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getLeftDoubleBrace() {
-    return findNotNullChildByType(LEFT_DOUBLE_BRACE);
+  public List<FlexibleSearchRowValuePredicand> getRowValuePredicandList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchRowValuePredicand.class);
   }
 
   @Override
   @Nullable
-  public PsiElement getRightDoubleBrace() {
-    return findChildByType(RIGHT_DOUBLE_BRACE);
+  public FlexibleSearchTableSubquery getTableSubquery() {
+    return findChildByClass(FlexibleSearchTableSubquery.class);
   }
 
 }
