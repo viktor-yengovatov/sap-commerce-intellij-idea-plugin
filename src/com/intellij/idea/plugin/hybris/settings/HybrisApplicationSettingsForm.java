@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created 21:58 29 March 2015
@@ -60,13 +61,16 @@ public class HybrisApplicationSettingsForm {
     private JTextField hybrisHostUrlTextField;
     private JLabel hybrisRemoteControlLabel;
     private JCheckBox followSymlink;
+    private JPanel typeSystemDiagramStopWords;
 
-    private JunkListPanel junkListPanel;
+    private MyListPanel junkListPanel;
+    private MyListPanel tsdListPanel;
 
     public void setData(final HybrisApplicationSettings data) {
         enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
         useSmartFoldingCheckBox.setSelected(data.isUseSmartFolding());
-        junkListPanel.setJunkDirectoryList(data.getJunkDirectoryList());
+        junkListPanel.setMyList(data.getJunkDirectoryList());
+        tsdListPanel.setMyList(data.getTsdStopTypeList());
         groupModulesCheckBox.setSelected(data.isGroupModules());
         groupCustomTextField.setText(data.getGroupCustom());
         groupNonHybrisTextField.setText(data.getGroupNonHybris());
@@ -85,7 +89,8 @@ public class HybrisApplicationSettingsForm {
     public void getData(final HybrisApplicationSettings data) {
         data.setFoldingEnabled(enableFoldingCheckBox.isSelected());
         data.setUseSmartFolding(useSmartFoldingCheckBox.isSelected());
-        data.setJunkDirectoryList(junkListPanel.getJunkDirectoryList());
+        data.setJunkDirectoryList(junkListPanel.getMyList());
+        data.setTsdStopTypeList(tsdListPanel.getMyList());
         data.setGroupModules(groupModulesCheckBox.isSelected());
         data.setGroupCustom(groupCustomTextField.getText());
         data.setGroupOtherCustom(groupCustomUnusedTextField.getText());
@@ -115,7 +120,10 @@ public class HybrisApplicationSettingsForm {
         if (useSmartFoldingCheckBox.isSelected() != data.isUseSmartFolding()) {
             return true;
         }
-        if (!junkListPanel.getJunkDirectoryList().equals(data.getJunkDirectoryList())) {
+        if (!junkListPanel.getMyList().equals(data.getJunkDirectoryList())) {
+            return true;
+        }
+        if (!tsdListPanel.getMyList().equals(data.getTsdStopTypeList())) {
             return true;
         }
         if (groupModulesCheckBox.isSelected() != data.isGroupModules()) {
@@ -174,8 +182,10 @@ public class HybrisApplicationSettingsForm {
         projectImportLabel = new JBLabel();
         projectImportLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
             "hybris.import.settings.project.title")));
-        junkListPanel = new JunkListPanel("hybris.import.settings.junk.directory.name", new ArrayList<String>());
+        junkListPanel = new MyListPanel("hybris.import.settings.junk.directory.name", "hybris.import.settings.junk.directory.popup.add.title", "hybris.import.settings.junk.directory.popup.add.text", "hybris.import.settings.junk.directory.popup.edit.title", "hybris.import.settings.junk.directory.popup.edit.text", new ArrayList<String>());
         junkDirectoriesPanel = junkListPanel;
+        tsdListPanel = new MyListPanel("hybris.import.settings.tsv.diagram.name", "hybris.import.settings.tsv.diagram.popup.add.title", "hybris.import.settings.tsv.diagram.popup.add.text", "hybris.import.settings.tsv.diagram.popup.edit.title", "hybris.import.settings.tsv.diagram.popup.edit.text", new ArrayList<String>());
+        typeSystemDiagramStopWords = tsdListPanel;
 
         projectTreeViewSettingsLabel = new JBLabel();
         projectTreeViewSettingsLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
@@ -193,15 +203,22 @@ public class HybrisApplicationSettingsForm {
         });
     }
 
-    private static class JunkListPanel extends AddEditDeleteListPanel<String> {
-
+    private static class MyListPanel extends AddEditDeleteListPanel<String> {
         private static final long serialVersionUID = -6339262026248471671L;
+        private final String addTitle;
+        private final String addText;
+        private final String editTitle;
+        private final String editText;
 
-        public JunkListPanel(final String title, final java.util.List<String> initialList) {
+        public MyListPanel(final String title, final String addTitle, final String addText, final String editTitle, final String editText, final List<String> initialList) {
             super(HybrisI18NBundleUtils.message(title), initialList);
+            this.addTitle = addTitle;
+            this.addText = addText;
+            this.editTitle = editTitle;
+            this.editText = editText;
         }
 
-        public void setJunkDirectoryList(@Nullable java.util.List<String> itemList) {
+        public void setMyList(@Nullable java.util.List<String> itemList) {
             myListModel.clear();
             for (String itemToAdd : itemList) {
                 super.addElement(itemToAdd);
@@ -213,8 +230,8 @@ public class HybrisApplicationSettingsForm {
         protected String findItemToAdd() {
             return showEditDialog(
                 "",
-                "hybris.import.settings.junk.directory.popup.add.title",
-                "hybris.import.settings.junk.directory.popup.add.text"
+                HybrisI18NBundleUtils.message(addTitle),
+                HybrisI18NBundleUtils.message(addText)
             );
         }
 
@@ -223,8 +240,8 @@ public class HybrisApplicationSettingsForm {
         protected String editSelectedItem(@NotNull final String item) {
             return showEditDialog(
                 item,
-                "hybris.import.settings.junk.directory.popup.edit.title",
-                "hybris.import.settings.junk.directory.popup.edit.text"
+                HybrisI18NBundleUtils.message(editTitle),
+                HybrisI18NBundleUtils.message(editText)
             );
         }
 
@@ -269,7 +286,7 @@ public class HybrisApplicationSettingsForm {
         }
 
         @NotNull
-        public java.util.List<String> getJunkDirectoryList() {
+        public java.util.List<String> getMyList() {
             return Collections.list(myListModel.elements());
         }
     }

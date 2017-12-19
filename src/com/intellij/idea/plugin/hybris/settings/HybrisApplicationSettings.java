@@ -50,6 +50,13 @@ public class HybrisApplicationSettings {
         "testclasses"
     );
 
+    public static final List<String> DEFAULT_TSD_STOP_TYPE_NAMES = Lists.newArrayList(
+        "GenericItem",
+        "Item",
+        "LocalizableItem",
+        "CronJob"
+    );
+
     @PropertyName("foldingEnabled")
     private boolean foldingEnabled = true;
 
@@ -61,6 +68,9 @@ public class HybrisApplicationSettings {
 
     @PropertyName("junkDirectoryList")
     private List<String> junkDirectoryList = DEFAULT_JUNK_FILE_NAMES;
+
+    @PropertyName("typeSystemDiagramStopTypes")
+    private List<String> tsdStopTypeList = DEFAULT_TSD_STOP_TYPE_NAMES;
 
     @PropertyName("groupHybris")
     private String groupHybris = "Hybris";
@@ -296,6 +306,14 @@ public class HybrisApplicationSettings {
         this.developmentMode = developmentMode;
     }
 
+    public List<String> getTsdStopTypeList() {
+        return tsdStopTypeList;
+    }
+
+    public void setTsdStopTypeList(final List<String> tsdStopTypeList) {
+        this.tsdStopTypeList = tsdStopTypeList;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -303,6 +321,7 @@ public class HybrisApplicationSettings {
             .append(useSmartFolding)
             .append(groupModules)
             .append(junkDirectoryList)
+            .append(tsdStopTypeList)
             .append(groupHybris)
             .append(groupOtherHybris)
             .append(groupCustom)
@@ -338,6 +357,7 @@ public class HybrisApplicationSettings {
             .append(useSmartFolding, other.useSmartFolding)
             .append(groupModules, other.groupModules)
             .append(junkDirectoryList, other.junkDirectoryList)
+            .append(tsdStopTypeList, other.tsdStopTypeList)
             .append(groupHybris, other.groupHybris)
             .append(groupOtherHybris, other.groupOtherHybris)
             .append(groupCustom, other.groupCustom)
@@ -363,6 +383,7 @@ public class HybrisApplicationSettings {
         sb.append(", useSmartFolding=").append(useSmartFolding);
         sb.append(", groupModules=").append(groupModules);
         sb.append(", junkDirectoryList=").append(junkDirectoryList);
+        sb.append(", tsdStopTypeList=").append(tsdStopTypeList);
         sb.append(", groupHybris='").append(groupHybris).append('\'');
         sb.append(", groupOtherHybris='").append(groupOtherHybris).append('\'');
         sb.append(", groupCustom='").append(groupCustom).append('\'');
