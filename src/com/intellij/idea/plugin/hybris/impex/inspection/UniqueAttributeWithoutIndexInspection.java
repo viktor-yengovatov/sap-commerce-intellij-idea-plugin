@@ -87,7 +87,7 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             }
 
             myHolder.registerProblem(
-                impexAttribute,
+                param,
                 MessageFormat.format("Attribute ''{0}'' does not have an index", attributeName)
             );
         }
