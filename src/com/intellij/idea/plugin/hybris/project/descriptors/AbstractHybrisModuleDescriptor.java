@@ -52,7 +52,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     protected Set<String> springFileSet = new HashSet<String>();
 
     private boolean inLocalExtensions;
-    private IMPORT_STATUS importStatus = IMPORT_STATUS.UNLOADED;
+    private IMPORT_STATUS importStatus = IMPORT_STATUS.UNUSED;
 
     public AbstractHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,

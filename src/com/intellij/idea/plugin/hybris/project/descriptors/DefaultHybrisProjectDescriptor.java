@@ -55,16 +55,20 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
+import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
+import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
 import static com.intellij.util.containers.ContainerUtil.newHashSet;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
@@ -78,15 +82,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectDescriptor.class);
     @NotNull
-    protected final List<HybrisModuleDescriptor> foundModules = newArrayList();
+    protected final List<HybrisModuleDescriptor> foundModules = new ArrayList<>();
     @NotNull
-    protected final List<HybrisModuleDescriptor> modulesChosenForImport = newArrayList();
+    protected final List<HybrisModuleDescriptor> modulesChosenForImport = new ArrayList<>();
     @NotNull
     @GuardedBy("lock")
-    protected final Set<HybrisModuleDescriptor> alreadyOpenedModules = newHashSet();
+    protected final Set<HybrisModuleDescriptor> alreadyOpenedModules = new HashSet<>();
     protected final Lock lock = new ReentrantLock();
     @NotNull
-    protected final List<String> explicitlyDefinedModules = newArrayList();
+    protected final List<String> explicitlyDefinedModules = new ArrayList<>();
     @Nullable
     protected Project project;
     @Nullable
@@ -145,7 +149,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Nullable
     private ConfigHybrisModuleDescriptor findConfigDir() {
-        final List<ConfigHybrisModuleDescriptor> foundConfigModules = newArrayList();
+        final List<ConfigHybrisModuleDescriptor> foundConfigModules = new ArrayList<>();
         PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor = null;
         for (HybrisModuleDescriptor moduleDescriptor : foundModules) {
             if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
@@ -189,7 +193,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                     configDir,
                     platformHybrisModuleDescriptor.getRootProjectDescriptor()
                 );
-                LOG.info("Creating Overriden Config module in local.properties for " + configDir.getAbsolutePath());
+                LOG.info("Creating Overridden Config module in local.properties for " + configDir.getAbsolutePath());
                 foundModules.add(configHybrisModuleDescriptor);
                 Collections.sort(foundModules);
                 return configHybrisModuleDescriptor;
@@ -319,19 +323,22 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         this.foundModules.clear();
 
+        final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
+
+        final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
         LOG.info("Scanning for modules");
-        final List<File> moduleRootDirectories = this.findModuleRoots(rootDirectory, progressListenerProcessor);
+        this.findModuleRoots(moduleRootMap, rootDirectory, progressListenerProcessor);
         if (externalExtensionsDirectory != null) {
             LOG.info("Scanning for external modules");
-            moduleRootDirectories.addAll(
-                this.findModuleRoots(externalExtensionsDirectory, progressListenerProcessor)
-            );
+            this.findModuleRoots(moduleRootMap, externalExtensionsDirectory, progressListenerProcessor);
         }
 
-        final List<HybrisModuleDescriptor> moduleDescriptors = newArrayList();
-        final List<File> pathsFailedToImport = newArrayList();
+        Set<File> moduleRootDirectories = processDirectoriesByTypePriority(moduleRootMap, settings.isScanThroughExternalModule(), progressListenerProcessor);
 
-        addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport);
+        final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
+        final List<File> pathsFailedToImport = new ArrayList<>();
+
+        addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.isGroupModules());
 
         final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ServiceManager.getService(
             HybrisModuleDescriptorFactory.class
@@ -363,13 +370,46 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.foundModules.addAll(moduleDescriptors);
     }
 
+    // scan through eclipse module for hybris custom mudules in its subdirectories
+    private Set<File> processDirectoriesByTypePriority(
+        @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
+        @NotNull final boolean scanThroughExternalModule,
+        @NotNull final TaskProgressProcessor<File> progressListenerProcessor
+    ) throws InterruptedException, IOException {
+        final Set<File> moduleRootDirectories = newHashSet(moduleRootMap.get(HYBRIS));
+
+        if (scanThroughExternalModule) {
+            LOG.info("Scanning for higher priority modules");
+            for (final File nonHybrisDir : moduleRootMap.get(NON_HYBRIS)) {
+                final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
+                this.scanSubrirectories(nonHybrisModuleRootMap, nonHybrisDir.toPath(), progressListenerProcessor);
+                final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
+                if (hybrisModuleSet.isEmpty()) {
+                    LOG.info("Confirmed module " + nonHybrisDir);
+                    moduleRootDirectories.add(nonHybrisDir);
+                } else {
+                    LOG.info("Replaced module " + nonHybrisDir);
+                    moduleRootDirectories.addAll(hybrisModuleSet);
+                }
+            }
+        } else {
+            moduleRootDirectories.addAll(moduleRootMap.get(NON_HYBRIS));
+        }
+        return moduleRootDirectories;
+    }
+
+    private Map<DIRECTORY_TYPE, Set<File>> newModuleRootMap() {
+        final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = new HashMap<>();
+        moduleRootMap.put(HYBRIS, new HashSet<>());
+        moduleRootMap.put(NON_HYBRIS, new HashSet<>());
+        return moduleRootMap;
+    }
+
     private void addRootModule(
         final File rootDirectory, final List<HybrisModuleDescriptor> moduleDescriptors,
-        final List<File> pathsFailedToImport
+        final List<File> pathsFailedToImport,
+        final boolean groupModules
     ) {
-        final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance()
-                                                                                                      .getState();
-        final boolean groupModules = hybrisApplicationSettings.isGroupModules();
         if (groupModules) {
             return;
         }
@@ -386,12 +426,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.project = project;
     }
 
-    private List<File> findModuleRoots(
+    private void findModuleRoots(
+        @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
         @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
+        Validate.notNull(moduleRootMap);
         Validate.notNull(rootProjectDirectory);
-        List<File> paths = newArrayList();
+
         if (null != progressListenerProcessor) {
             if (!progressListenerProcessor.shouldContinue(rootProjectDirectory)) {
                 LOG.error("Modules scanning has been interrupted.");
@@ -403,13 +445,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.isHybrisModule(rootProjectDirectory)) {
             LOG.info("Detected hybris module " + rootProjectDirectory.getAbsolutePath());
-            paths.add(rootProjectDirectory);
-            return paths;
+            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+            return;
         }
         if (hybrisProjectService.isConfigModule(rootProjectDirectory)) {
             LOG.info("Detected config module " + rootProjectDirectory.getAbsolutePath());
-            paths.add(rootProjectDirectory);
-            return paths;
+            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+            return;
         }
 
         if (hybrisProjectService.isGradleModule(rootProjectDirectory) && !FileUtil.filesEqual(
@@ -417,8 +459,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             rootDirectory
         )) {
             LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
-            paths.add(rootProjectDirectory);
-            return paths;
+            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+            return;
         }
 
         if (hybrisProjectService.isMavenModule(rootProjectDirectory) && !FileUtil.filesEqual(
@@ -426,29 +468,28 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             rootDirectory
         )) {
             LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
-            paths.add(rootProjectDirectory);
-            return paths;
+            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+            return;
         }
 
         if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
             LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
-            paths.add(rootProjectDirectory);
+            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
         } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
             rootProjectDirectory,
             rootDirectory
         )) {
             LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
-            paths.add(rootProjectDirectory);
-            return paths;
+            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+            return;
         }
 
-        scanSubrirectories(paths, rootProjectDirectory.toPath(), progressListenerProcessor);
+        scanSubrirectories(moduleRootMap, rootProjectDirectory.toPath(), progressListenerProcessor);
 
-        return paths;
     }
 
     private void scanSubrirectories(
-        @NotNull final List<File> paths,
+        @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
         @NotNull final Path rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
@@ -475,7 +516,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         });
         if (files != null) {
             for (Path file : files) {
-                paths.addAll(findModuleRoots(file.toFile(), progressListenerProcessor));
+                this.findModuleRoots(moduleRootMap, file.toFile(), progressListenerProcessor);
             }
             files.close();
         }
@@ -581,6 +622,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
         ));
     }
+
+    protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}
+
 
     @NotNull
     @Override

@@ -277,7 +277,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     .getModulesChosenForImport()
                     .stream()
                     .filter(e -> e instanceof EclipseModuleDescriptor)
-                    .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
                     .map(e -> (EclipseModuleDescriptor) e)
                     .collect(Collectors.toList());
                 if (!eclipseModules.isEmpty()) {
@@ -299,7 +298,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     .getModulesChosenForImport()
                     .stream()
                     .filter(e -> e instanceof GradleModuleDescriptor)
-                    .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
                     .map(e -> (GradleModuleDescriptor) e)
                     .collect(Collectors.toList());
                 if (!gradleModules.isEmpty()) {

@@ -259,7 +259,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                         .getModulesChosenForImport()
                         .stream()
                         .filter(e -> e instanceof MavenModuleDescriptor)
-                        .filter(e -> e.getImportStatus() != HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
                         .map(e -> (MavenModuleDescriptor) e)
                         .collect(Collectors.toList());
 

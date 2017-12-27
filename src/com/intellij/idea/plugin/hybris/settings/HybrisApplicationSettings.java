@@ -126,6 +126,9 @@ public class HybrisApplicationSettings {
     @PropertyName("sourceZipUsed")
     private boolean sourceZipUsed = true;
 
+    @PropertyName("scanThroughExternalModule")
+    private boolean scanThroughExternalModule = false;
+
     public HybrisApplicationSettings() {
     }
 
@@ -314,6 +317,14 @@ public class HybrisApplicationSettings {
         this.tsdStopTypeList = tsdStopTypeList;
     }
 
+    public boolean isScanThroughExternalModule() {
+        return scanThroughExternalModule;
+    }
+
+    public void setScanThroughExternalModule(final boolean scanThroughExternalModule) {
+        this.scanThroughExternalModule = scanThroughExternalModule;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -332,6 +343,7 @@ public class HybrisApplicationSettings {
             .append(defaultPlatformInReadOnly)
             .append(usedActions)
             .append(followSymlink)
+            .append(scanThroughExternalModule)
             .append(allowedSendingPlainStatistics)
             .append(externalDbDriversDirectory)
             .append(sourceCodeDirectory)
@@ -368,6 +380,7 @@ public class HybrisApplicationSettings {
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
             .append(usedActions, other.usedActions)
             .append(followSymlink, other.followSymlink)
+            .append(scanThroughExternalModule, other.scanThroughExternalModule)
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
             .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(sourceCodeDirectory, other.sourceCodeDirectory)
@@ -394,6 +407,7 @@ public class HybrisApplicationSettings {
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
         sb.append(", usedActions='").append(usedActions).append('\'');
         sb.append(", followSymlink='").append(followSymlink).append('\'');
+        sb.append(", scanThroughExternalModule='").append(scanThroughExternalModule).append('\'');
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
         sb.append(", externalDbDriversDirectory='").append(externalDbDriversDirectory).append('\'');
         sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');

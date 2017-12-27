@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
 
-    enum IMPORT_STATUS {MANDATORY, UNUSED, UNLOADED}
+    enum IMPORT_STATUS {MANDATORY, UNUSED}
 
     @NotNull
     String getName();

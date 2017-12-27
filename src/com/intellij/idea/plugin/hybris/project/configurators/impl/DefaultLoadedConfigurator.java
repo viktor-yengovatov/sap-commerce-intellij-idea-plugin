@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 
 import java.util.List;
@@ -36,13 +35,6 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
         final Project project,
         final List<HybrisModuleDescriptor> allModules
     ) {
-        // todo: remove "UNLOADED" mechanism completely. It is temporary disabled now, so this list should be empty
-        final List<String> unloadedModuleNames = allModules
-            .stream()
-            .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNLOADED)
-            .map(HybrisModuleDescriptor::getName)
-            .collect(Collectors.toList());
-
         final Set<String> unusedModuleNames = allModules
             .stream()
             .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNUSED)
@@ -50,7 +42,6 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
             .collect(Collectors.toSet());
 
         ApplicationManager.getApplication().invokeAndWait(() -> {
-            ModuleManager.getInstance(project).setUnloadedModules(unloadedModuleNames);
             HybrisProjectSettingsComponent.getInstance(project).getState().setUnusedExtensions(unusedModuleNames);
         });
     }
