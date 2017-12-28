@@ -60,7 +60,7 @@ allprojects {
     intellij {
         type 'IU'
         //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
-        version '173.3942.27'
+        version '173.4127.27'
         downloadSources true
         updateSinceUntilBuild false
 
