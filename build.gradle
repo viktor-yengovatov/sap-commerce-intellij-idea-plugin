@@ -60,7 +60,7 @@ allprojects {
     intellij {
         type 'IU'
         //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
-        version '172.3544.35'
+        version '173.3942.27'
         downloadSources true
         updateSinceUntilBuild false
 
@@ -78,7 +78,7 @@ allprojects {
         }
     }
     patchPluginXml {
-        sinceBuild '172'
+        sinceBuild '173'
     }
 
     task copyPsiViewer(type: Copy) {
