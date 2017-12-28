@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.0.5</version>
+    <version>8.1</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -45,7 +45,7 @@
 
     <description>
         <![CDATA[
-          This plugin is an open source (LGPL) plugin for SAP Hybris Commerce integration.
+          This plugin is an open source plugin for SAP Hybris Commerce integration.
 
           <br/>
           <br/>
@@ -109,9 +109,11 @@
           <br/>
           - Alexander Nosov
           <br/>
+          - Eugene Kudelevsky
+          <br/>
           - Michael Golubev
           <br/>
-          - Eugene Kudelevsky
+          - Dan Wanigasekera
           <br/>
           - Markus Priegl
           <br/>
@@ -125,30 +127,89 @@
 
     <change-notes>
         <![CDATA[
-        <h2>Fault</h2>
-        <ul>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-83'>IIPS-83</a>] - Output path set to /eclipsebin not /classes
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-90'>IIPS-90</a>] - Unable to import maven modules along hybris
-            </li>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIPS-92'>IIPS-92</a>] - Exception in PsiItemXmlUtil.findTags
-            </li>
-        </ul>
+            <h2>Fault</h2>
+            <ul>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-80'>IIPS-80</a>] - Can&#39;t build project after upgrade to HybrisPlugin 8.0
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-96'>IIPS-96</a>] - Project setup files are generated with absolute path hybrisProjectSettings.xml
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-100'>IIPS-100</a>] - ClassCastException upon editing Impex header attributes
+                </li>
+            </ul>
 
-        <h2>Bug</h2>
-        <ul>
-            <li>
-                [<a href='https://hybris-integration.atlassian.net/browse/IIP-361'>IIP-361</a>] - java.lang.NoClassDefFoundError: com/intellij/database/dataSource/DataSourceManagerEx
-            </li>
-        </ul>
+            <h2>IT Help</h2>
+            <ul>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-102'>IIPS-102</a>] - Impex Auto Suggestion NullPointer Exception
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-105'>IIPS-105</a>] - Improve project grouping
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-106'>IIPS-106</a>] - Project structure dialog frozen after deleting a lot (&gt; 400) unused Hybris extension and click on Apply button
+                </li>
+            </ul>
+
+            <h2>Task</h2>
+            <ul>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-101'>IIP-101</a>] - Impex unique attributes should have a DB index
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-106'>IIP-106</a>] - &quot;Rename attribute&quot; refactoring support for beans.xml
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-175'>IIP-175</a>] - items.xml UML diagram generator
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-235'>IIP-235</a>] - Improve performance and flexibility of TVS rules for validation of items.xml files
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-275'>IIP-275</a>] - Configure a data source during project import based on local.properties
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-314'>IIP-314</a>] - Run Hybris tests directly on a running server via the test servlet
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-333'>IIP-333</a>] - Automatically perform Grunt build during project build done by Intellij (not ant build) when some JS file change for Hybris project
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-341'>IIP-341</a>] - TSV additional information
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-360'>IIP-360</a>] - DataSource improvement
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-362'>IIP-362</a>] - Make notifications less annoying
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-368'>IIP-368</a>] - support 2017.3
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-371'>IIP-371</a>] - TypeSystemDiagram - Plugin Settings
+                </li>
+            </ul>
+
+            <h2>Bug</h2>
+            <ul>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-354'>IIP-354</a>] - Do not register acceleratorstorefrontcommons/src as source root because it references not existent class GeneratedAcceleratorstorefrontcommonsConstants and it breaks compilation from Intellij
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-363'>IIP-363</a>] - ClassCastException: LeafPsiElement cannot be cast to ImpexFullHeaderParameter
+                </li>
+                <li>
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-370'>IIP-370</a>] - Syntax error when FS contains &#39;multiply join&#39;, &#39;on condition&#39; in where clause
+                </li>
+            </ul>
         ]]>
     </change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="172"/>
+    <idea-version since-build="173"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-community.xml" xpointer="xpointer(/idea-plugin/*)"/>
