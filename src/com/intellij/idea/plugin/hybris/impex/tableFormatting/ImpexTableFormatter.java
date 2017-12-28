@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.tableFormatting;
 
+import com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettings;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderMode;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
@@ -26,6 +27,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,15 +75,17 @@ public final class ImpexTableFormatter {
     ) {
         final StringBuilder sb = new StringBuilder();
         PsiElement currentValueLine = table.first;
+        final CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(table.first.getProject());
+        final ImpexCodeStyleSettings impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings.class);
         boolean keepProcess = true;
         while (keepProcess) {
             if (currentValueLine == null) {
                 break;
             }
             if (isHeaderLine(currentValueLine)) {
-                writeHeader(table.first, maxColumnWidth, sb);
+                writeHeader(table.first, maxColumnWidth, sb, impexSettings);
             } else if (isImpexValueLine(currentValueLine)) {
-                writeValueLine(maxColumnWidth, sb, currentValueLine);
+                writeValueLine(maxColumnWidth, sb, currentValueLine, impexSettings);
             } else {
                 sb.append(currentValueLine.getText().replaceAll(" ", ""));
             }
@@ -97,7 +102,8 @@ public final class ImpexTableFormatter {
     private static void writeValueLine(
         final int[] maxColumnWidth,
         final StringBuilder sb,
-        final PsiElement currentValueLine
+        final PsiElement currentValueLine,
+        final ImpexCodeStyleSettings impexSettings
     ) {
         if (isImpexValueGroup(currentValueLine.getFirstChild())) {
             sb.append(StringUtils.rightPad("", maxColumnWidth[0] + 1));
@@ -114,18 +120,31 @@ public final class ImpexTableFormatter {
         for (final PsiElement element : children) {
             final int length = maxColumnWidth.length - 1;
             if (isFirstFieldValueIsEmpty(element)) {
-                sb.append(';').append(' ').append(StringUtils.rightPad("", maxColumnWidth[min(i, length
+                addSeparator(impexSettings, ";", sb);
+                sb.append(StringUtils.rightPad("", maxColumnWidth[min(i, length
                 )]));
             } else {
-                sb
-                    .append(';')
-                    .append(' ')
-                    .append(StringUtils.rightPad(
-                        element.getLastChild().getText().trim(),
-                        maxColumnWidth[min(i, length)]
-                    ));
+                addSeparator(impexSettings, ";", sb);
+                sb.append(StringUtils.rightPad(
+                    element.getLastChild().getText().trim(),
+                    maxColumnWidth[min(i, length)]
+                ));
             }
             i++;
+        }
+    }
+
+    private static void addSeparator(
+        final ImpexCodeStyleSettings impexSettings,
+        final String text,
+        final StringBuilder sb
+    ) {
+        if (impexSettings.SPACE_BEFORE_PARAMETERS_SEPARATOR) {
+            sb.append(' ');
+        }
+        sb.append(text);
+        if (impexSettings.SPACE_AFTER_PARAMETERS_SEPARATOR) {
+            sb.append(' ');
         }
     }
 
@@ -137,7 +156,8 @@ public final class ImpexTableFormatter {
     private static void writeHeader(
         final PsiElement header,
         final int[] maxColumnWidth,
-        final StringBuilder sb
+        final StringBuilder sb,
+        final ImpexCodeStyleSettings impexSettings
     ) {
         final Collection<PsiElement> columns = findChildrenOfAnyType(
             header,
@@ -154,7 +174,7 @@ public final class ImpexTableFormatter {
             }
 
             if (isParameterSeparator(column)) {
-                sb.append(column.getText()).append(' ');
+                addSeparator(impexSettings, column.getText(), sb);
 
             } else if (column instanceof ImpexAnyHeaderMode
                        || column instanceof ImpexHeaderTypeName
@@ -214,15 +234,17 @@ public final class ImpexTableFormatter {
             }
             final PsiElement[] children = currentValueLine.getChildren();
 
-            int i = 1;
+            int i = 0;
             for (final PsiElement element : children) {
+                if (i == header.getChildren().length) {
+                    break;
+                }
+                i++;
                 if (!isFirstFieldValueIsEmpty(element)) {
                     final int textLength = getChildOfType(element, ImpexValue.class).getTextLength();
                     maxColumnWidth[i] = max(textLength, maxColumnWidth[i]);
                 }
-                i++;
             }
-
 
             if (table.second.equals(currentValueLine)) {
                 keepProcessing = false;
