@@ -327,10 +327,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
         LOG.info("Scanning for modules");
-        this.findModuleRoots(moduleRootMap, rootDirectory, progressListenerProcessor);
+        this.findModuleRoots(moduleRootMap, false, rootDirectory, progressListenerProcessor);
         if (externalExtensionsDirectory != null) {
             LOG.info("Scanning for external modules");
-            this.findModuleRoots(moduleRootMap, externalExtensionsDirectory, progressListenerProcessor);
+            this.findModuleRoots(moduleRootMap, false, externalExtensionsDirectory, progressListenerProcessor);
         }
 
         Set<File> moduleRootDirectories = processDirectoriesByTypePriority(moduleRootMap, settings.isScanThroughExternalModule(), progressListenerProcessor);
@@ -382,7 +382,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             LOG.info("Scanning for higher priority modules");
             for (final File nonHybrisDir : moduleRootMap.get(NON_HYBRIS)) {
                 final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
-                this.scanSubrirectories(nonHybrisModuleRootMap, nonHybrisDir.toPath(), progressListenerProcessor);
+                this.scanSubrirectories(nonHybrisModuleRootMap, true, nonHybrisDir.toPath(), progressListenerProcessor);
                 final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
                 if (hybrisModuleSet.isEmpty()) {
                     LOG.info("Confirmed module " + nonHybrisDir);
@@ -428,7 +428,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private void findModuleRoots(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
-        @NotNull final File rootProjectDirectory,
+        final boolean acceptOnlyHybrisModules, @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
         Validate.notNull(moduleRootMap);
@@ -454,43 +454,45 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
 
-        if (hybrisProjectService.isGradleModule(rootProjectDirectory) && !FileUtil.filesEqual(
-            rootProjectDirectory,
-            rootDirectory
-        )) {
-            LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-            return;
+        if (!acceptOnlyHybrisModules) {
+            if (hybrisProjectService.isGradleModule(rootProjectDirectory) && !FileUtil.filesEqual(
+                rootProjectDirectory,
+                rootDirectory
+            )) {
+                LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
+                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                return;
+            }
+
+            if (hybrisProjectService.isMavenModule(rootProjectDirectory) && !FileUtil.filesEqual(
+                rootProjectDirectory,
+                rootDirectory
+            )) {
+                LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
+                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                return;
+            }
+
+            if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
+                LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
+                moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+            } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
+                rootProjectDirectory,
+                rootDirectory
+            )) {
+                LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
+                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                return;
+            }
         }
 
-        if (hybrisProjectService.isMavenModule(rootProjectDirectory) && !FileUtil.filesEqual(
-            rootProjectDirectory,
-            rootDirectory
-        )) {
-            LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-            return;
-        }
-
-        if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
-            LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
-        } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
-            rootProjectDirectory,
-            rootDirectory
-        )) {
-            LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-            return;
-        }
-
-        scanSubrirectories(moduleRootMap, rootProjectDirectory.toPath(), progressListenerProcessor);
+        scanSubrirectories(moduleRootMap, acceptOnlyHybrisModules, rootProjectDirectory.toPath(), progressListenerProcessor);
 
     }
 
     private void scanSubrirectories(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
-        @NotNull final Path rootProjectDirectory,
+        final boolean acceptOnlyHybrisModules, @NotNull final Path rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
         if (!Files.isDirectory(rootProjectDirectory)) {
@@ -516,7 +518,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         });
         if (files != null) {
             for (Path file : files) {
-                this.findModuleRoots(moduleRootMap, file.toFile(), progressListenerProcessor);
+                this.findModuleRoots(moduleRootMap, acceptOnlyHybrisModules, file.toFile(), progressListenerProcessor);
             }
             files.close();
         }
