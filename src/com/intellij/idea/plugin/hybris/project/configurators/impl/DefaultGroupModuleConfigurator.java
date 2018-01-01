@@ -98,32 +98,34 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Nullable
     @Override
     public String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
-        final String[] groupPathOverride = getGroupPathOverride(moduleDescriptor);
+        String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
         if (groupPathOverride != null) {
             return groupPathOverride.clone();
         }
 
-        final String[] groupPath = getGroupPath(moduleDescriptor);
+        groupPathOverride = getGlobalGroupPathOverride(moduleDescriptor);
+        if (groupPathOverride != null) {
+            return groupPathOverride.clone();
+        }
+
+        String[] groupPath = getGroupPath(moduleDescriptor);
         if (groupPath == null) {
             return null;
         }
         return groupPath.clone();
     }
 
-    private String[] getGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
+    private String[] getGlobalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
+        final ConfigHybrisModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
+        final File groupFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
+        return getGroupPathOverride(groupFile, moduleDescriptor.getName());
+    }
+
+
+    private String[] getLocalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
         final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
-        if (!groupFile.exists()) {
-            return null;
-        }
-        String rawGroupText = null;
-        try (InputStream in = new FileInputStream(groupFile)) {
-            Properties prop = new Properties();
-            prop.load(in);
-            rawGroupText = prop.getProperty(HybrisConstants.GROUP_OVERRIDE_KEY);
-        } catch (IOException e) {
-            LOG.error("Cannot read "+HybrisConstants.GROUP_OVERRIDE_FILENAME+" for module "+moduleDescriptor.getName());
-        }
-        if (rawGroupText == null || rawGroupText.isEmpty()) {
+        final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor.getName());
+        if (groupFile.exists() && pathOverride == null) {
             try (OutputStream out = new FileOutputStream(groupFile)) {
                 Properties properties = new Properties();
                 properties.setProperty(HybrisConstants.GROUP_OVERRIDE_KEY, "");
@@ -131,7 +133,25 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             } catch (IOException e) {
                 LOG.error("Cannot write " + HybrisConstants.GROUP_OVERRIDE_FILENAME + " for module " + moduleDescriptor.getName());
             }
+        }
+        return null;
+    }
+
+    private String[] getGroupPathOverride(final File groupFile, final String moduleName) {
+        if (!groupFile.exists()) {
             return null;
+        }
+        String rawGroupText = null;
+        Properties properties = new Properties();
+        try (InputStream in = new FileInputStream(groupFile)) {
+            properties.load(in);
+        } catch (IOException e) {
+            LOG.error("Cannot read " + HybrisConstants.GROUP_OVERRIDE_FILENAME + " for module " + moduleName);
+            return null;
+        }
+        rawGroupText = properties.getProperty(HybrisConstants.GROUP_OVERRIDE_KEY);
+        if (rawGroupText == null) {
+            rawGroupText = properties.getProperty(moduleName + "." + HybrisConstants.GROUP_OVERRIDE_KEY);
         }
         return toIdeaGroup(rawGroupText);
     }
