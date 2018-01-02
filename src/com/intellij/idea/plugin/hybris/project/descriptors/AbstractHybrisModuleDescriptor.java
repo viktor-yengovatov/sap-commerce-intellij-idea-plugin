@@ -169,8 +169,8 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
-    public void addSpringFile(@NotNull final String springFile) {
-        this.springFileSet.add(springFile);
+    public boolean addSpringFile(@NotNull final String springFile) {
+        return this.springFileSet.add(springFile);
     }
 
     @Override

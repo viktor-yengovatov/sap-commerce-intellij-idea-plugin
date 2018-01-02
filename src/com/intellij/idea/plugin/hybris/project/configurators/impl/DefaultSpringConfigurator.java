@@ -29,12 +29,26 @@ import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleD
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -144,6 +158,18 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         Validate.notNull(moduleDescriptorMap);
         Validate.notNull(moduleDescriptor);
 
+        processPropertiesFile(moduleDescriptorMap, moduleDescriptor);
+        try {
+            processWebXml(moduleDescriptor);
+        } catch (Exception e) {
+            LOG.error("Unable to parse web.xml for module "+moduleDescriptor.getName(), e);
+        }
+    }
+
+    private void processPropertiesFile(
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        final HybrisModuleDescriptor moduleDescriptor
+    ) {
         final Properties projectProperties = new Properties();
 
         final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
@@ -158,8 +184,6 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             return;
         }
 
-        final File resourcesDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
-
         for (String key : projectProperties.stringPropertyNames()) {
             if (key.endsWith(HybrisConstants.APPLICATION_CONTEXT_SPRING_FILES)
                 || key.endsWith(HybrisConstants.ADDITIONAL_WEB_SPRING_CONFIG_FILES)
@@ -173,17 +197,93 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                         continue;
                     }
                     for (String file : rawFile.split(",")) {
-                        final File springFile;
-                        if (file.startsWith("classpath:")) {
-                            springFile = new File(resourcesDir, file.substring("classpath:".length(), file.length()));
-                        } else {
-                            springFile = new File(resourcesDir, file);
-                        }
-                        if (springFile.exists()) {
-                            relevantModule.addSpringFile(springFile.getAbsolutePath());
-                        }
+                        addSpringXmlFile(relevantModule, file);
                     }
                 }
+            }
+        }
+    }
+
+    private void scanForSpringImport(
+        final HybrisModuleDescriptor moduleDescriptor,
+        final File springFile
+    ) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(springFile.toURI().toURL().toString());
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        XPathExpression expr = xpath.compile("/beans/import");
+        NodeList importNodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+        if (importNodeList != null) {
+            processImportNodeList(moduleDescriptor, importNodeList);
+        }
+    }
+
+    private void processImportNodeList(
+        final HybrisModuleDescriptor moduleDescriptor,
+        final NodeList importNodeList
+    ) {
+        for (int index=0; index<importNodeList.getLength(); index++) {
+            Node importNode = importNodeList.item(index);
+            Node resourceNode = importNode.getAttributes().getNamedItem("resource");
+            addSpringXmlFile(moduleDescriptor, resourceNode.getNodeValue());
+        }
+    }
+    private void processWebXml(final HybrisModuleDescriptor moduleDescriptor) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+        final VirtualFile fileByIoFile = VfsUtil.findFileByIoFile(
+            new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH), true
+        );
+        if (fileByIoFile == null || !fileByIoFile.exists()) {
+            return;
+        }
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(fileByIoFile.getUrl());
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        XPathExpression expr = xpath.compile("/web-app/context-param[param-name='contextConfigLocation']/param-value/text()");
+        String contextConfigLocation = (String) expr.evaluate(doc, XPathConstants.STRING);
+        if (contextConfigLocation != null) {
+            processContextParam(moduleDescriptor, contextConfigLocation.trim());
+        }
+    }
+
+    private void processContextParam(final HybrisModuleDescriptor moduleDescriptor, final String contextConfigLocation) {
+        File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);;
+        for (String xml: contextConfigLocation.split(" ,")) {
+            if (!xml.endsWith("-spring.xml")) {
+                continue;
+            }
+            File springFile = new File(webModuleDir, xml);
+            if (!springFile.exists()) {
+                continue;
+            }
+            addSpringFle(moduleDescriptor, springFile);
+        }
+    }
+
+    private void addSpringXmlFile(final HybrisModuleDescriptor moduleDescriptor, final String file) {
+        final File resourcesDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+        final File springFile;
+        if (file.startsWith("classpath:")) {
+            springFile = new File(resourcesDir, file.substring("classpath:".length(), file.length()));
+        } else {
+            springFile = new File(resourcesDir, file);
+        }
+        if (springFile.exists()) {
+            addSpringFle(moduleDescriptor, springFile);
+        }
+    }
+
+
+    private void addSpringFle(final HybrisModuleDescriptor relevantModule, final File springFile) {
+        if (relevantModule.addSpringFile(springFile.getAbsolutePath())) {
+            try {
+                scanForSpringImport(relevantModule, springFile);
+            } catch (Exception e) {
+                LOG.error("unable scan file for spring imports "+springFile.getName());
             }
         }
     }

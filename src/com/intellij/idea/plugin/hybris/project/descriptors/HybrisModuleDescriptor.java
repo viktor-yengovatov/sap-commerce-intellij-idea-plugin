@@ -74,7 +74,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     Set<String> getSpringFileSet();
 
-    void addSpringFile(@NotNull String springFile);
+    boolean addSpringFile(@NotNull String springFile);
 
     @Nullable
     File getWebRoot();
