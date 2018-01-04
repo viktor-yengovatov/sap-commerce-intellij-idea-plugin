@@ -46,6 +46,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GLOBAL_GROUP_OVERRIDE_COMMENTS;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GROUP_OVERRIDE_KEY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.LOCAL_GROUP_OVERRIDE_COMMENTS;
 import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
 
 /**
@@ -118,6 +121,9 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private String[] getGlobalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
         final ConfigHybrisModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
         final File groupFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
+        if (!groupFile.exists()) {
+            createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
+        }
         return getGroupPathOverride(groupFile, moduleDescriptor.getName());
     }
 
@@ -126,15 +132,21 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
         final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor.getName());
         if (groupFile.exists() && pathOverride == null) {
-            try (OutputStream out = new FileOutputStream(groupFile)) {
-                Properties properties = new Properties();
-                properties.setProperty(HybrisConstants.GROUP_OVERRIDE_KEY, "");
-                properties.store(out, HybrisConstants.GROUP_OVERRIDE_COMMENTS);
-            } catch (IOException e) {
-                LOG.error("Cannot write " + HybrisConstants.GROUP_OVERRIDE_FILENAME + " for module " + moduleDescriptor.getName());
-            }
+            createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
         }
         return null;
+    }
+
+    private void createCommentedProperties(final File groupFile, final String key, final String comments) {
+        try (OutputStream out = new FileOutputStream(groupFile)) {
+            Properties properties = new Properties();
+            if (key != null) {
+                properties.setProperty(key, "");
+            }
+            properties.store(out, comments);
+        } catch (IOException e) {
+            LOG.error("Cannot write " + HybrisConstants.GROUP_OVERRIDE_FILENAME + ": " + groupFile.getAbsolutePath());
+        }
     }
 
     private String[] getGroupPathOverride(final File groupFile, final String moduleName) {
@@ -149,9 +161,9 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             LOG.error("Cannot read " + HybrisConstants.GROUP_OVERRIDE_FILENAME + " for module " + moduleName);
             return null;
         }
-        rawGroupText = properties.getProperty(HybrisConstants.GROUP_OVERRIDE_KEY);
+        rawGroupText = properties.getProperty(GROUP_OVERRIDE_KEY);
         if (rawGroupText == null) {
-            rawGroupText = properties.getProperty(moduleName + "." + HybrisConstants.GROUP_OVERRIDE_KEY);
+            rawGroupText = properties.getProperty(moduleName + "." + GROUP_OVERRIDE_KEY);
         }
         return toIdeaGroup(rawGroupText);
     }
