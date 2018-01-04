@@ -47,6 +47,7 @@ public interface HybrisConstants {
     String EXCLUDE_TMP_DIRECTORY = toSystemDependentName("/platform/tmp");
     String EXCLUDE_TCSERVER_DIRECTORY = toSystemDependentName("/platform/tcServer");
     String EXCLUDE_TOMCAT_DIRECTORY = toSystemDependentName("/platform/tomcat");
+    String EXCLUDE_TOMCAT_6_DIRECTORY = toSystemDependentName("/platform/tomcat-6");
     String EXCLUDE_LIB_DIRECTORY = toSystemDependentName("/platform/lib");
     String EXCLUDE_RESOURCES_DIRECTORY = toSystemDependentName("/platform/resources");
     String EXCLUDE_ECLIPSEBIN_DIRECTORY = toSystemDependentName("/platform/eclipsebin");
@@ -72,7 +73,6 @@ public interface HybrisConstants {
     String HMC_EXTENSION_NAME = "hmc";
     String PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext";
     String CONFIG_EXTENSION_NAME = "config";
-    String ACCELERATOR_STOREFRONT_COMMONS_EXTENSION_NAME = "acceleratorstorefrontcommons";
     String CONFIG_RELATIVE_PATH = toSystemDependentName("/../../" + CONFIG_EXTENSION_NAME);
     String LIB_DIRECTORY = "lib";
     String BIN_DIRECTORY = "bin";
@@ -116,8 +116,8 @@ public interface HybrisConstants {
     String ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon";
     String PLATFORM_BOOTSTRAP_DIRECTORY = "bootstrap";
     String PLATFORM_MODEL_CLASSES_DIRECTORY = "modelclasses";
+    String PLATFORM_TOMCAT_6_DIRECTORY = "tomcat-6";
     String PLATFORM_TOMCAT_DIRECTORY = "tomcat";
-    String PLATFORM_TOMCAT_WORK_DIRECTORY = "work";
     String NODE_MODULES_DIRECTORY = "node_modules";
     String JS_TARGET_DIRECTORY = "jsTarget";
     String BOWER_COMPONENTS_DIRECTORY = "bower_components";
@@ -137,15 +137,13 @@ public interface HybrisConstants {
     String PL_BOOTSTRAP_LIB_DIRECTORY = toSystemDependentName("bootstrap/bin");
     String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = toSystemDependentName("bootstrap/gensrc");
     String PL_TOMCAT_LIB_DIRECTORY = toSystemDependentName("tomcat/lib");
+    String PL_TOMCAT_6_LIB_DIRECTORY = toSystemDependentName("tomcat-6/lib");
     String PL_TOMCAT_BIN_DIRECTORY = toSystemDependentName("tomcat/bin");
+    String PL_TOMCAT_6_BIN_DIRECTORY = toSystemDependentName("tomcat-6/bin");
 
     String CONFIG_LICENCE_DIRECTORY = "licence";
 
     String ECLIPSE_BIN_DIRECTORY = "eclipsebin";
-    String WEB_COMPILER_OUTPUT_PATH = WEB_INF_CLASSES_DIRECTORY;
-    String WEB_COMPILER_FAKE_OUTPUT_PATH = toSystemDependentName("web/webroot/WEB-INF/eclipsebin");
-    String BACKOFFICE_COMPILER_OUTPUT_PATH = toSystemDependentName("/backoffice/classes");
-    String BACKOFFICE_COMPILER_FAKE_OUTPUT_PATH = toSystemDependentName("/backoffice/eclipsebin");
     String JAVA_COMPILER_OUTPUT_PATH = toSystemDependentName("/classes");
     String JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY;
 

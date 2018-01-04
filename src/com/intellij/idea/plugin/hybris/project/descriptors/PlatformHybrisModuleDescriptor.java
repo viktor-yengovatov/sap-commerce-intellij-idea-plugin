@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
-import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
@@ -181,11 +180,20 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
             }
         }
 
-        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY));
-        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY));
-        libraryDirectories.add(new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY));
+        addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY));
+
+        addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY));
+        addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_6_BIN_DIRECTORY));
+        addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY));
+        addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_6_LIB_DIRECTORY));
 
         return libraryDirectories;
+    }
+
+    private void addLibraryDirectories(final Collection<File> libraryDirectories, final File file) {
+        if (file.exists()) {
+            libraryDirectories.add(file);
+        }
     }
 
     @Override

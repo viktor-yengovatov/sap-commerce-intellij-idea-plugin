@@ -49,8 +49,8 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.JS_TARGET_D
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NODE_MODULES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_6_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_WORK_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIRECTORY;
@@ -284,7 +284,12 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         }
 
         excludeDirectory(contentEntry, new File(platformBootstrapDirectory, PLATFORM_MODEL_CLASSES_DIRECTORY));
-        excludeDirectory(contentEntry, new File(rootDirectory, PLATFORM_TOMCAT_DIRECTORY));
+        File tomcat6 = new File(rootDirectory, PLATFORM_TOMCAT_6_DIRECTORY);
+        if (tomcat6.exists()) {
+            excludeDirectory(contentEntry, tomcat6);
+        } else {
+            excludeDirectory(contentEntry, new File(rootDirectory, PLATFORM_TOMCAT_DIRECTORY));
+        }
         contentEntry.addExcludePattern("apache-ant-*");
     }
 
