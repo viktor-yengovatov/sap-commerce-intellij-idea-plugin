@@ -253,7 +253,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     private void processContextParam(final HybrisModuleDescriptor moduleDescriptor, final String contextConfigLocation) {
         File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);;
         for (String xml: contextConfigLocation.split(" ,")) {
-            if (!xml.endsWith("-spring.xml")) {
+            if (!xml.endsWith(".xml")) {
                 continue;
             }
             File springFile = new File(webModuleDir, xml);
@@ -279,12 +279,28 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
 
 
     private void addSpringFle(final HybrisModuleDescriptor relevantModule, final File springFile) {
-        if (relevantModule.addSpringFile(springFile.getAbsolutePath())) {
-            try {
-                scanForSpringImport(relevantModule, springFile);
-            } catch (Exception e) {
-                LOG.error("unable scan file for spring imports "+springFile.getName());
+        try {
+            if (!hasSpringContent(springFile)) {
+                return;
             }
+            if (relevantModule.addSpringFile(springFile.getAbsolutePath())) {
+                scanForSpringImport(relevantModule, springFile);
+            }
+        } catch (Exception e) {
+            LOG.error("unable scan file for spring imports "+springFile.getName());
         }
+    }
+
+    private boolean hasSpringContent(
+        final File springFile
+    ) throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(springFile.toURI().toURL().toString());
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        XPathExpression expr = xpath.compile("/beans");
+        Node rootBeansNode = (Node) expr.evaluate(doc, XPathConstants.NODE);
+        return rootBeansNode.hasChildNodes();
     }
 }
