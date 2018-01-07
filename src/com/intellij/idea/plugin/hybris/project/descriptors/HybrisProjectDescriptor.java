@@ -85,7 +85,7 @@ public interface HybrisProjectDescriptor {
 
     void setOpenProjectSettingsAfterImport(boolean openProjectSettingsAfterImport);
 
-    Boolean isImportOotbModulesInReadOnlyMode();
+    boolean isImportOotbModulesInReadOnlyMode();
 
     void setImportOotbModulesInReadOnlyMode(boolean importOotbModulesInReadOnlyMode);
 
@@ -117,4 +117,12 @@ public interface HybrisProjectDescriptor {
     void setCreateBackwardCyclicDependenciesForAddOns(boolean selected);
 
     boolean isCreateBackwardCyclicDependenciesForAddOn();
+
+    void setFollowSymlink(boolean followSymlink);
+
+    boolean isFollowSymlink();
+
+    void setScanThroughExternalModule(boolean scanThroughExternalModule);
+
+    boolean isScanThroughExternalModule();
 }

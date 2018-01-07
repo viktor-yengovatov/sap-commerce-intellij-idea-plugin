@@ -100,7 +100,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File sourceCodeFile;
     protected boolean openProjectSettingsAfterImport;
-    protected Boolean importOotbModulesInReadOnlyMode;
+    protected boolean importOotbModulesInReadOnlyMode;
     @Nullable
     protected File hybrisDistributionDirectory;
     @Nullable
@@ -112,6 +112,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected String javadocUrl;
     protected boolean createBackwardCyclicDependenciesForAddOns;
+    protected boolean followSymlink;
+    protected boolean scanThroughExternalModule;
     @NotNull
     private ConfigHybrisModuleDescriptor configHybrisModuleDescriptor;
     @NotNull
@@ -143,8 +145,28 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 platformDescriptor.setDependenciesTree(dependenciesTree);
             }
         }
+        preselectConfigModules(configHybrisModuleDescriptor, foundModules);
+    }
+
+    private void preselectConfigModules(
+        final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor,
+        final List<HybrisModuleDescriptor> foundModules
+    ) {
         configHybrisModuleDescriptor.setImportStatus(HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY);
+        configHybrisModuleDescriptor.setMainConfig(true);
         configHybrisModuleDescriptor.setPreselected(true);
+        List<String> preselectedNames = new ArrayList<>();
+        preselectedNames.add(configHybrisModuleDescriptor.getName());
+        foundModules
+            .stream()
+            .filter(e -> e instanceof ConfigHybrisModuleDescriptor)
+            .map(e -> (ConfigHybrisModuleDescriptor)e)
+            .forEach(e->{
+                if (!preselectedNames.contains(e.getName())) {
+                    e.setPreselected(true);
+                    preselectedNames.add(e.getName());
+                }
+            });
     }
 
     @Nullable
@@ -333,7 +355,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             this.findModuleRoots(moduleRootMap, false, externalExtensionsDirectory, progressListenerProcessor);
         }
 
-        Set<File> moduleRootDirectories = processDirectoriesByTypePriority(moduleRootMap, settings.isScanThroughExternalModule(), progressListenerProcessor);
+        Set<File> moduleRootDirectories = processDirectoriesByTypePriority(moduleRootMap, isScanThroughExternalModule(), progressListenerProcessor);
 
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
         final List<File> pathsFailedToImport = new ArrayList<>();
@@ -498,9 +520,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (!Files.isDirectory(rootProjectDirectory)) {
             return;
         }
-        final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance()
-                                                                                                      .getState();
-        final boolean followSymlink = hybrisApplicationSettings.isFollowSymlink();
+
         final DirectoryStream<Path> files = Files.newDirectoryStream(rootProjectDirectory, file -> {
             if (file == null) {
                 return false;
@@ -763,7 +783,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public Boolean isImportOotbModulesInReadOnlyMode() {
+    public boolean isImportOotbModulesInReadOnlyMode() {
         return importOotbModulesInReadOnlyMode;
     }
 
@@ -835,6 +855,26 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public boolean isCreateBackwardCyclicDependenciesForAddOn() {
         return createBackwardCyclicDependenciesForAddOns;
+    }
+
+    @Override
+    public void setFollowSymlink(final boolean followSymlink) {
+        this.followSymlink = followSymlink;
+    }
+
+    @Override
+    public boolean isFollowSymlink() {
+        return followSymlink;
+    }
+
+    @Override
+    public void setScanThroughExternalModule(final boolean scanThroughExternalModule) {
+        this.scanThroughExternalModule = scanThroughExternalModule;
+    }
+
+    @Override
+    public boolean isScanThroughExternalModule() {
+        return scanThroughExternalModule;
     }
 
     @NotNull

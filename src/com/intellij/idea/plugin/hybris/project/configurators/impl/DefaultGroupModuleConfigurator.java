@@ -101,12 +101,14 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Nullable
     @Override
     public String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
-        String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
-        if (groupPathOverride != null) {
-            return groupPathOverride.clone();
+        if (!(moduleDescriptor instanceof ConfigHybrisModuleDescriptor)) {
+            final String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
+            if (groupPathOverride != null) {
+                return groupPathOverride.clone();
+            }
         }
 
-        groupPathOverride = getGlobalGroupPathOverride(moduleDescriptor);
+        final String[] groupPathOverride = getGlobalGroupPathOverride(moduleDescriptor);
         if (groupPathOverride != null) {
             return groupPathOverride.clone();
         }
@@ -134,7 +136,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (groupFile.exists() && pathOverride == null) {
             createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
         }
-        return null;
+        return pathOverride;
     }
 
     private void createCommentedProperties(final File groupFile, final String key, final String comments) {

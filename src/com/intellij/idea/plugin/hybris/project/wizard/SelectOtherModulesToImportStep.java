@@ -20,14 +20,11 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.ide.wizard.CommitStepException;
-import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.projectImport.ProjectImportBuilder;
 import icons.GradleIcons;
 import icons.MavenIcons;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +49,6 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
                 fileChooser.setElementMarked(hybrisModuleDescriptor, true);
             }
         }
-        getContext().resetExternalStepName();
     }
 
     @Override
@@ -98,24 +94,11 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     @Override
     public boolean isStepVisible() {
         getContext().setExternalStepModuleList();
-        getContext().setExternalStepName();
         return !getContext().getList().isEmpty();
     }
 
     @Override
-    public void onStepLeaving() {
-        getContext().resetExternalStepName();
-        super.onStepLeaving();
-    }
-
-    public void onWizardFinished() throws CommitStepException {
-        // This method is called even non-hybris builder is used for importing and the step
-        // hasn't been even shown to a user, so we can't use getContext() here.
-        final ProjectImportBuilder builder = getBuilder();
-
-        if (builder instanceof AbstractHybrisProjectImportBuilder) {
-            ((AbstractHybrisProjectImportBuilder) builder).resetExternalStepName();
-        }
-        super.onWizardFinished();
+    public String getName() {
+        return "Other";
     }
 }

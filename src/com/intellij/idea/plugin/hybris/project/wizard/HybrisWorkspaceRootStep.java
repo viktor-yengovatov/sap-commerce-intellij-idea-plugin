@@ -37,8 +37,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import com.intellij.ui.JBColor;
@@ -98,6 +96,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JPanel dbDriverDirOverridePanel;
     private JLabel dbDriversDirOverrideLabel;
     private TextFieldWithBrowseButton dbDriversDirOverrideFileChooser;
+    private JLabel followSimlinkLabel;
+    private JCheckBox followSimplinkCheckbox;
+    private JLabel scanThroughExternalModuleLabel;
+    private JCheckBox scanThroughExternalModuleCheckbox;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -258,6 +260,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             this.importOotbModulesInReadOnlyModeCheckBox.isSelected()
         );
 
+        this.getContext().getHybrisProjectDescriptor().setFollowSymlink(
+            this.followSimplinkCheckbox.isSelected()
+        );
+
+        this.getContext().getHybrisProjectDescriptor().setScanThroughExternalModule(
+            this.scanThroughExternalModuleCheckbox.isSelected()
+        );
+
         this.getContext().getHybrisProjectDescriptor().setSourceCodeFile(
             sourceCodeCheckBox.isSelected()
                 ? new File(this.sourceCodeFilesInChooser.getText())
@@ -312,13 +322,23 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
 
-        if (hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode() == null) {
-            hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(
-                appSettings.isDefaultPlatformInReadOnly()
-            );
-        }
+        hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(
+            appSettings.isDefaultPlatformInReadOnly()
+        );
+        hybrisProjectDescriptor.setFollowSymlink(
+            appSettings.isFollowSymlink()
+        );
+        hybrisProjectDescriptor.setScanThroughExternalModule(
+            appSettings.isScanThroughExternalModule()
+        );
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
+        );
+        this.scanThroughExternalModuleCheckbox.setSelected(
+            hybrisProjectDescriptor.isScanThroughExternalModule()
+        );
+        this.followSimplinkCheckbox.setSelected(
+            hybrisProjectDescriptor.isFollowSymlink()
         );
 
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
@@ -549,12 +569,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setExternalDbDriversDirectory(toFile(settings.getExternalDbDriversDirectory()));
         hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.isCreateBackwardCyclicDependenciesForAddOns());
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
-
-        if (hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode() == null) {
-            hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(
-                HybrisApplicationSettingsComponent.getInstance().getState().isDefaultPlatformInReadOnly()
-            );
-        }
+        hybrisProjectDescriptor.setFollowSymlink(settings.isFollowSymlink());
+        hybrisProjectDescriptor.setScanThroughExternalModule(settings.isScanThroughExternalModule());
 
         this.getContext().setRootProjectDirectory(new File(this.getBuilder().getFileToImport()));
 

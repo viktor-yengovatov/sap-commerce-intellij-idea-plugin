@@ -44,8 +44,8 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
     public boolean isConfigModule(@NotNull final File file) {
         Validate.notNull(file);
 
-        return file.getName().equals(HybrisConstants.CONFIG_EXTENSION_NAME)
-               && new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile();
+        return new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
+               && new File(file, HybrisConstants.LOCAL_PROPERTIES).isFile();
     }
 
     @Override

@@ -42,6 +42,8 @@ public class HybrisProjectSettings {
     protected String externalDbDriversDirectory;
     protected String ideModulesFilesDirectory;
     protected boolean importOotbModulesInReadOnlyMode;
+    protected boolean followSymlink;
+    protected boolean scanThroughExternalModule;
     protected boolean createBackwardCyclicDependenciesForAddOns = false;
     protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
     protected Set<String> unusedExtensions = newHashSet();
@@ -126,6 +128,22 @@ public class HybrisProjectSettings {
         this.importOotbModulesInReadOnlyMode = importOotbModulesInReadOnlyMode;
     }
 
+    public boolean isFollowSymlink() {
+        return followSymlink;
+    }
+
+    public void setFollowSymlink(final boolean followSymlink) {
+        this.followSymlink = followSymlink;
+    }
+
+    public boolean isScanThroughExternalModule() {
+        return scanThroughExternalModule;
+    }
+
+    public void setScanThroughExternalModule(final boolean scanThroughExternalModule) {
+        this.scanThroughExternalModule = scanThroughExternalModule;
+    }
+
     public Set<String> getCompleteSetOfAvailableExtensionsInHybris() {
         return completeSetOfAvailableExtensionsInHybris;
     }
@@ -150,6 +168,7 @@ public class HybrisProjectSettings {
         this.unusedExtensions = unusedExtensions;
     }
 
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -163,6 +182,8 @@ public class HybrisProjectSettings {
             .append(externalDbDriversDirectory)
             .append(ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode)
+            .append(followSymlink)
+            .append(scanThroughExternalModule)
             .append(completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns)
             .append(unusedExtensions)
@@ -192,6 +213,8 @@ public class HybrisProjectSettings {
             .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(ideModulesFilesDirectory, other.ideModulesFilesDirectory)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
+            .append(followSymlink, other.followSymlink)
+            .append(scanThroughExternalModule, other.scanThroughExternalModule)
             .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .append(unusedExtensions, other.unusedExtensions)
@@ -211,6 +234,8 @@ public class HybrisProjectSettings {
         sb.append("externalDbDriversDirectory=").append(externalDbDriversDirectory);
         sb.append("ideModulesFilesDirectory=").append(ideModulesFilesDirectory);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
+        sb.append("followSymlink=").append(followSymlink);
+        sb.append("scanThroughExternalModule=").append(scanThroughExternalModule);
         sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);
         sb.append("createBackwardCyclicDependenciesForAddOns=").append(createBackwardCyclicDependenciesForAddOns);
         sb.append("unusedExtensions=").append(unusedExtensions);

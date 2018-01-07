@@ -87,7 +87,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected final VirtualFileSystemService virtualFileSystemService;
     private List<HybrisModuleDescriptor> moduleList;
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
-    private String name = null;
 
     public DefaultHybrisProjectImportBuilder(@NotNull final VirtualFileSystemService virtualFileSystemService) {
         Validate.notNull(virtualFileSystemService);
@@ -364,21 +363,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
-    public void resetExternalStepName() {
-        name = null;
-    }
-
-    @Override
-    public void setExternalStepName() {
-        name = message("non.hybris.project.name");
-    }
-
-    @Override
     public String getName() {
-        if (name == null) {
-            return message("hybris.project.name");
-        }
-        return name;
+        return message("hybris.project.name");
     }
 
     @Override
