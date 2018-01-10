@@ -15,8 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+jar.archiveName = "rt-ant.jar"
 
-rootProject.name = 'Hybris-Integration'
+// Should be 1.7 otherwise it will not work in Hybris 5.X which require java 1.7.
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
 
-include ':common'
-include ':rt-ant'
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //this should be pulled from <idea-home>/lib/ant/lib
+    compileOnly 'org.apache.ant:ant:1.9.4'
+}

@@ -33,7 +33,7 @@ import java.util.Arrays;
  * That can happen for targets extgen and modulegen.
  * If there is a need to change localextensions tyhis logger will serialize the result to hard drive to be picked up by IDEA JVM
  */
-public class HybrisParsingAntLogger extends HybrisIdeaAntLogger {
+public class HybrisParsingAntLogger extends com.intellij.rt.ant.execution.HybrisIdeaAntLogger {
 
     private enum HYBRIS_MODE {NONE, ADD, REMOVE}
 
@@ -120,8 +120,11 @@ public class HybrisParsingAntLogger extends HybrisIdeaAntLogger {
         if (commaSeparated.isEmpty()) {
             return;
         }
+
         final String[] extensions = commaSeparated.split(",");
-        Arrays.stream(extensions).forEach(e -> result.getExtensionsToRemove().add(e));
+        for (String extension : extensions) {
+            result.getExtensionsToRemove().add(extension);
+        }
     }
 
 }

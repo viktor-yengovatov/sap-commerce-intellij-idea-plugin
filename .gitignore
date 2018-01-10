@@ -1,12 +1,9 @@
 .idea/workspace.xml
-.idea/modules.xml
 .idea/shelf
-.idea/modules
 .idea/libraries
 .idea/.name
 .idea/uiDesigner.xml
 .idea/scopes
-.idea/compiler.xml
 .idea/sonarlint
 .idea/checkstyle-idea.xml
 
@@ -15,6 +12,8 @@
 /gradle-build/
 /common/gradle-build/
 /common/gradle-build-pro/
+/rt-ant/gradle-build/
+/rt-ant/gradle-build-pro/
 /.gradle/
 
 Hybris-Integration.zip

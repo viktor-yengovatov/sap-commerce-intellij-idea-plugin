@@ -36,11 +36,11 @@ public class AntMain2 {
                                            InvocationTargetException,
                                            FileNotFoundException,
                                            UnsupportedEncodingException {
-        HybrisIdeaAntLogger.guardStreams();
+        com.intellij.rt.ant.execution.HybrisIdeaAntLogger.guardStreams();
 
         for (int index = 0; index < args.length; index++) {
             if (IdeaAntLogger2.class.getName().equals(args[index])) {
-                args[index] = HybrisAnsiAntLogger.class.getName();
+                args[index] = com.intellij.rt.ant.execution.HybrisAnsiAntLogger.class.getName();
             }
         }
 

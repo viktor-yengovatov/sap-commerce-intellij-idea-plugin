@@ -109,12 +109,10 @@ dependencies {
     compile 'com.github.ben-manes.caffeine:caffeine:2.5.3'
     compile 'org.jsoup:jsoup:1.10.3'
 
-    //this should be pulled from <idea-home>/lib/ant/lib
-    compileOnly 'org.apache.ant:ant:1.9.4'
-
     testCompile 'org.mockito:mockito-core:2.8.47'
 
     compile project(':common')
+    compile project(':rt-ant')
 }
 
 compileKotlin {

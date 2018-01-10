@@ -25,7 +25,7 @@ import org.apache.tools.ant.BuildEvent;
  * <p>
  * Strips ANSI encoding from hybris output and assigns correct message priority.
  */
-public class HybrisAnsiAntLogger extends HybrisParsingAntLogger {
+public class HybrisAnsiAntLogger extends com.intellij.rt.ant.execution.HybrisParsingAntLogger {
 
     // IDEA
     public static final int MSG_ERR = 0;
