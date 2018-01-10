@@ -47,6 +47,7 @@ public class HybrisProjectSettings {
     protected boolean createBackwardCyclicDependenciesForAddOns = false;
     protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
     protected Set<String> unusedExtensions = newHashSet();
+    protected Set<String> modulesOnBlackList = newHashSet();
 
     public boolean isHybrisProject() {
         return hybrisProject;
@@ -168,6 +169,13 @@ public class HybrisProjectSettings {
         this.unusedExtensions = unusedExtensions;
     }
 
+    public void setModulesOnBlackList(final Set<String> modulesOnBlackList) {
+        this.modulesOnBlackList = modulesOnBlackList;
+    }
+
+    public Set<String> getModulesOnBlackList() {
+        return modulesOnBlackList;
+    }
 
     @Override
     public int hashCode() {

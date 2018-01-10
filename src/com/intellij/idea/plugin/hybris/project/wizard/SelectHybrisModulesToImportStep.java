@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
@@ -114,8 +115,13 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             });
         resolveDependency(moduleToImport, moduleToCheck);
 
+        final Set<String> modulesOnBlackList = settings.getModulesOnBlackList();
+        final List<HybrisModuleDescriptor> filteredModuleToImport = moduleToImport
+            .stream()
+            .filter(e->!modulesOnBlackList.contains(e.getRelativePath()))
+            .collect(Collectors.toList());
         try {
-            this.getContext().setList(moduleToImport);
+            this.getContext().setList(filteredModuleToImport);
         } catch (ConfigurationException e) {
             // no-op already validated
         }

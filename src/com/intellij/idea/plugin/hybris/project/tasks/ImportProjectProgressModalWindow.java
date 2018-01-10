@@ -394,11 +394,28 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (modulesFilesDirectory != null && modulesFilesDirectory.isDirectory()) {
             hybrisProjectSettings.setIdeModulesFilesDirectory(FileUtil.toSystemIndependentName(modulesFilesDirectory.getPath()));
         }
+        hybrisProjectSettings.setFollowSymlink(hybrisProjectDescriptor.isFollowSymlink());
+        hybrisProjectSettings.setScanThroughExternalModule(hybrisProjectDescriptor.isScanThroughExternalModule());
+        hybrisProjectSettings.setModulesOnBlackList(createModulesOnBlackList());
         final Set<String> completeSetOfHybrisModules = newHashSet();
         hybrisProjectDescriptor.getFoundModules().stream()
                                .filter(e -> e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
                                .forEach(e -> completeSetOfHybrisModules.add(e.getName()));
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
+    }
+
+    private Set<String> createModulesOnBlackList() {
+        final List<String> toBeImportedNames = hybrisProjectDescriptor
+            .getModulesChosenForImport().stream()
+            .map(e -> e.getName())
+            .collect(Collectors.toList());
+        final Set<String> modulesOnBlackList = hybrisProjectDescriptor
+            .getFoundModules().stream()
+            .filter(e -> !hybrisProjectDescriptor.getModulesChosenForImport().contains(e))
+            .filter(e -> toBeImportedNames.contains(e.getName()))
+            .map(e -> e.getRelativePath())
+            .collect(Collectors.toSet());
+        return modulesOnBlackList;
     }
 
     private void disableWrapOnType(final Language impexLanguage) {
