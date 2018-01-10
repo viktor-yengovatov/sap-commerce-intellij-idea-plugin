@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.contexts.model.LocalXmlModel;
@@ -89,6 +88,7 @@ public class SpringFacetConfigurator implements FacetConfigurator {
 
         if (setting != null) {
             setting.setBooleanValue(false);
+            setting.apply();
         }
     }
 }
