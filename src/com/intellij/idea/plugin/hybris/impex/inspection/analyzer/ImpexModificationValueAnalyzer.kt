@@ -119,14 +119,18 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                     valueGroups.forEach { valueGroup ->
                         if (valueGroup == null) {
                             val indexOf = attrs.indexOfFirst { s -> s == av }
-                            bitSet[indexOf] = 0
-                            row.valueGroup[indexOf] = null
+                            if (indexOf > -1) {
+                                bitSet[indexOf] = 0
+                                row.valueGroup[indexOf] = null
+                            }
                         } else {
                             val headerForValueGroup = ImpexPsiUtils.getHeaderForValueGroup(valueGroup as? ImpexValueGroup)
                             if (headerForValueGroup is ImpexFullHeaderParameter) {
                                 val indexOf = attrs.indexOfFirst { headerForValueGroup.text == it }
-                                bitSet[indexOf] = 1
-                                row.valueGroup[indexOf] = valueGroup
+                                if (indexOf > -1) {
+                                    bitSet[indexOf] = 1
+                                    row.valueGroup[indexOf] = valueGroup
+                                }
                             }
                         }
                     }
