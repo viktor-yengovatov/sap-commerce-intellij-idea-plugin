@@ -287,36 +287,41 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private Hybrisconfig unmarshalLocalExtensions(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
         Validate.notNull(configHybrisModuleDescriptor);
 
-        return unmarshalLocalExtensions(new File(
-            configHybrisModuleDescriptor.getRootDirectory(),
-            HybrisConstants.LOCAL_EXTENSIONS_XML
-        ));
-    }
-
-    @Nullable
-    public static Hybrisconfig unmarshalLocalExtensions(final File localextensions) {
-        if (!localextensions.exists()) {
-            return null;
-        }
         try {
-            final JAXBContext jaxbContext = JAXBContext.newInstance(Hybrisconfig.class);
-            if (null == jaxbContext) {
-                LOG.error(String.format(
-                    "Can not unmarshal '%s' because JAXBContext has not been created.",
-                    localextensions.getAbsolutePath()
-                ));
-
-                return null;
-            }
-
-            final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-
-            return (Hybrisconfig) jaxbUnmarshaller.unmarshal(localextensions);
+            return unmarshalLocalExtensions(new File(
+                configHybrisModuleDescriptor.getRootDirectory(),
+                HybrisConstants.LOCAL_EXTENSIONS_XML
+            ));
         } catch (JAXBException e) {
-            LOG.error("Can not unmarshal " + localextensions.getAbsolutePath(), e);
+            // Log the error because this is called during project import, it is unlikely that the user is typing in
+            // "localextensions.xml" right now.
+            LOG.error(
+                "Can not unmarshal " + configHybrisModuleDescriptor.getRootDirectory().getAbsolutePath(), e
+            );
         }
 
         return null;
+    }
+
+    @Nullable
+    public static Hybrisconfig unmarshalLocalExtensions(final File localextensions) throws JAXBException {
+        if (!localextensions.exists()) {
+            return null;
+        }
+
+        final JAXBContext jaxbContext = JAXBContext.newInstance(Hybrisconfig.class);
+        if (null == jaxbContext) {
+            LOG.error(String.format(
+                "Can not unmarshal '%s' because JAXBContext has not been created.",
+                localextensions.getAbsolutePath()
+            ));
+
+            return null;
+        }
+
+        final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+        return (Hybrisconfig) jaxbUnmarshaller.unmarshal(localextensions);
     }
 
     @Override
