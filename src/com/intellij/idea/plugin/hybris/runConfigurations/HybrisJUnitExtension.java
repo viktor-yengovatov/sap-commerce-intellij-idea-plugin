@@ -25,21 +25,13 @@ import com.intellij.execution.configurations.ParametersList;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.execution.junit.JUnitConfiguration;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIR_ENV;
@@ -63,7 +55,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
             vmParameters.add("-ea");
         }
         if (vmParameters.getParameters().stream().noneMatch(param -> param.startsWith("-Dplatformhome="))) {
-            final VirtualFile platformRootDirectory = findPlatformRootDirectory(project);
+            final VirtualFile platformRootDirectory = HybrisRootUtil.findPlatformRootDirectory(project);
 
             if (platformRootDirectory != null) {
                 vmParameters.add("-Dplatformhome=" + platformRootDirectory.getPath());
@@ -79,21 +71,6 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
                 params.addEnv(HYBRIS_DATA_DIR_ENV, hybrisDataDirPath);
             }
         }
-    }
-
-    @Nullable
-    private static VirtualFile findPlatformRootDirectory(@NotNull final Project project) {
-        final Module platformModule =
-            Arrays.stream(ModuleManager.getInstance(project).getModules())
-                  .filter(module -> HybrisModuleDescriptor.getDescriptorType(module) == HybrisModuleDescriptorType.PLATFORM)
-                  .findAny()
-                  .orElse(null);
-
-        return platformModule == null ? null
-            : Arrays.stream(ModuleRootManager.getInstance(platformModule).getContentRoots())
-                    .filter(vFile -> vFile.findChild(HybrisConstants.EXTENSIONS_XML) != null)
-                    .findAny()
-                    .orElse(null);
     }
 
     @Override
