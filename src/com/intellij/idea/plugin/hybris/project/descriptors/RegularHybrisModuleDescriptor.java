@@ -290,13 +290,20 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         ));
 
         if (this.hasHmcModule()) {
-            libs.add(new DefaultJavaLibraryDescriptor(
-                new File(
-                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                    HybrisConstants.HMC_WEB_INF_CLASSES
-                ),
-                false, true
-            ));
+            final HybrisModuleDescriptor hmcModule = getRootProjectDescriptor()
+                .getModulesChosenForImport().stream()
+                .filter(e -> e.getName().equals(HybrisConstants.HMC_EXTENSION_NAME))
+                .findFirst()
+                .orElse(null);
+            if (hmcModule != null) {
+                libs.add(new DefaultJavaLibraryDescriptor(
+                    new File(
+                        hmcModule.getRootDirectory(),
+                        HybrisConstants.WEB_INF_CLASSES_DIRECTORY
+                    ),
+                    false, true
+                ));
+            }
         }
 
         if (this.hasBackofficeModule()) {
