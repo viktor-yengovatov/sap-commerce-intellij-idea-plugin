@@ -160,7 +160,6 @@ public interface HybrisConstants {
     String HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml";
     String RULESET_XML = "ruleset.xml";
 
-    String HMC_WEB_INF_CLASSES = toSystemDependentName("/bin/ext-platform-optional/hmc/web/webroot/WEB-INF/classes");
     String BACKOFFICE_WEB_INF_LIB = toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");
     String BACKOFFICE_WEB_INF_CLASSES = toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes");
     String HAC_WEB_INF_CLASSES = toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes");
