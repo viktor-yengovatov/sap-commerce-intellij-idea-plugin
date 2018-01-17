@@ -208,9 +208,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final HybrisModuleDescriptor moduleDescriptor,
         final File springFile
     ) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = createNewDocumentBuilder();
         Document doc = builder.parse(springFile.toURI().toURL().toString());
         XPathFactory xPathfactory = XPathFactory.newInstance();
         XPath xpath = xPathfactory.newXPath();
@@ -238,8 +236,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         if (fileByIoFile == null || !fileByIoFile.exists()) {
             return;
         }
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = createNewDocumentBuilder();
         Document doc = builder.parse(fileByIoFile.getUrl());
         XPathFactory xPathfactory = XPathFactory.newInstance();
         XPath xpath = xPathfactory.newXPath();
@@ -294,13 +291,23 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     private boolean hasSpringContent(
         final File springFile
     ) throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = createNewDocumentBuilder();
         Document doc = builder.parse(springFile.toURI().toURL().toString());
         XPathFactory xPathfactory = XPathFactory.newInstance();
         XPath xpath = xPathfactory.newXPath();
         XPathExpression expr = xpath.compile("/beans");
         Node rootBeansNode = (Node) expr.evaluate(doc, XPathConstants.NODE);
         return rootBeansNode.hasChildNodes();
+    }
+
+    private DocumentBuilder createNewDocumentBuilder() throws ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        factory.setNamespaceAware(true);
+        factory.setFeature("http://xml.org/sax/features/namespaces", false);
+        factory.setFeature("http://xml.org/sax/features/validation", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        return factory.newDocumentBuilder();
     }
 }
