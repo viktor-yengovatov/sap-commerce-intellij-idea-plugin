@@ -111,6 +111,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File externalDbDriversDirectory;
     @Nullable
     protected String javadocUrl;
+    @Nullable
+    protected String hybrisApiVersion;
     protected boolean createBackwardCyclicDependenciesForAddOns;
     protected boolean followSymlink;
     protected boolean scanThroughExternalModule;
@@ -753,6 +755,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setSourceCodeFile(@Nullable final File sourceCodeFile) {
         this.sourceCodeFile = sourceCodeFile;
+    }
+
+    @Override
+    public void setHybrisApiVersion(final String hybrisApiVersion) {
+        this.hybrisApiVersion = hybrisApiVersion;
+    }
+
+    @Override
+    public String getHybrisApiVersion() {
+        return hybrisApiVersion;
     }
 
     @Override

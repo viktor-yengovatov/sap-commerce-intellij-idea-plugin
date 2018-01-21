@@ -125,4 +125,8 @@ public interface HybrisProjectDescriptor {
     void setScanThroughExternalModule(boolean scanThroughExternalModule);
 
     boolean isScanThroughExternalModule();
+
+    void setHybrisApiVersion(String hybrisApiVersion);
+
+    String getHybrisApiVersion();
 }
