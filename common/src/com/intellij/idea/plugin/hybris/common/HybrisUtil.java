@@ -38,7 +38,7 @@ public final class HybrisUtil {
         return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 
-    public static boolean isAddOnModuleRoot(@NotNull final File file) {
+    public static boolean isAcceleratorAddOnModuleRoot(@NotNull final File file) {
         return new File(file, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY).isDirectory();
     }
 }
