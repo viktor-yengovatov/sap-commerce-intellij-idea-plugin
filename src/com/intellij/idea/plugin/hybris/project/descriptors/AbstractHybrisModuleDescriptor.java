@@ -201,7 +201,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @Override
     public boolean isAddOn() {
-        return HybrisUtil.isAddOnModuleRoot(getRootDirectory());
+        return HybrisUtil.isAcceleratorAddOnModuleRoot(getRootDirectory());
     }
 
     @Override
