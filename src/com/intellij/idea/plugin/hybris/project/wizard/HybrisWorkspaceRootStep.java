@@ -100,7 +100,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox followSimplinkCheckbox;
     private JLabel scanThroughExternalModuleLabel;
     private JCheckBox scanThroughExternalModuleCheckbox;
-
+    private String hybrisApiVersion;
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
 
@@ -306,6 +306,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             this.javadocUrlTextField.getText()
         );
 
+        this.getContext().getHybrisProjectDescriptor().setHybrisApiVersion(hybrisApiVersion);
+
         this.getContext().setRootProjectDirectory(new File(this.getContext().getFileToImport()));
     }
 
@@ -393,7 +395,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
                 this.dbDriversDirOverrideFileChooser.setText(dbDriversDirAbsPath);
             }
 
-            final String hybrisApiVersion = getHybrisApiVersion(this.hybrisDistributionDirectoryFilesInChooser.getText());
+            hybrisApiVersion = getHybrisApiVersion(this.hybrisDistributionDirectoryFilesInChooser.getText());
             final String sourceCodeDirectory = appSettings.getSourceCodeDirectory();
             final File sourceFile = appSettings.isSourceZipUsed()
                 ? findSourceZip(sourceCodeDirectory, hybrisApiVersion)

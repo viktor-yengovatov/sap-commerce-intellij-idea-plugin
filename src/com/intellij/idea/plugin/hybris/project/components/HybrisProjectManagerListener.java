@@ -101,10 +101,19 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
             if (!commonIdeaService.isHybrisProject(project)) {
                 return;
             }
+            logVersion(project);
             if (popupPermissionToSendStatistics(project)) {
                 continueOpening(project);
             }
         });
+    }
+
+    private void logVersion(final Project project) {
+        final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final String importedBy = settings.getImportedByVersion();
+        final String hybrisApi = settings.getHybrisApiVersion();
+        final String pluginVersion = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
+        LOG.info("Opening hybris version "+hybrisApi+" which was imported by "+importedBy+". Current plugin is "+pluginVersion);
     }
 
     private boolean isDiscountTargetGroup() {
