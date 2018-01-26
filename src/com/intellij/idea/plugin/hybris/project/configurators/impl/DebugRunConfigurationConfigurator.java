@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
-import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.execution.remote.RemoteConfiguration;
 import com.intellij.execution.remote.RemoteConfigurationType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
@@ -37,7 +37,6 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -55,24 +54,25 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         @NotNull final Project project
     ) {
 
-        final RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
-        if (runManager == null) {
-            return;
-        }
-
+        final RunManager runManager = RunManager.getInstance(project);
         createRemoteDebug(runManager, hybrisProjectDescriptor);
     }
 
     private void createRemoteDebug(
-        final RunManagerImpl runManager,
-        final HybrisProjectDescriptor hybrisProjectDescriptor
+        @NotNull final RunManager runManager,
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor
     ) {
         final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(
             RemoteConfigurationType.class);
         final ConfigurationFactory configurationFactory = remoteConfigurationType.getConfigurationFactories()[0];
-        final String debugName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.remote.debug");
+        final String configurationName = HybrisI18NBundleUtils.message(
+            "hybris.project.import.run.configuration.remote.debug");
+
+        if (runManager.findConfigurationByName(configurationName) != null) {
+            return;
+        }
         final RunnerAndConfigurationSettings runner = runManager.createRunConfiguration(
-            debugName,
+            configurationName,
             configurationFactory
         );
         final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
@@ -89,19 +89,17 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
     private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         final ConfigHybrisModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
-        if (configDescriptor != null) {
-            final String port = findPortProperty(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
-            if (port != null) {
-                return port;
-            }
+        String port = findPortProperty(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
+
+        if (port != null) {
+            return port;
         }
         final PlatformHybrisModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(
             hybrisProjectDescriptor);
+
         if (platformDescriptor != null) {
-            final String port = findPortProperty(
-                platformDescriptor.getRootDirectory(),
-                HybrisConstants.PROJECT_PROPERTIES
-            );
+            port = findPortProperty(platformDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
+
             if (port != null) {
                 return port;
             }
@@ -119,8 +117,6 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final Properties properties = new Properties();
         try (FileReader fr = new FileReader(propertiesFile)) {
             properties.load(fr);
-        } catch (FileNotFoundException e) {
-            return null;
         } catch (IOException e) {
             return null;
         }
