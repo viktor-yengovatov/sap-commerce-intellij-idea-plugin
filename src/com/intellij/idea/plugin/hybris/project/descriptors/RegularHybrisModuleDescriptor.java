@@ -276,7 +276,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
 
         libs.add(new DefaultJavaLibraryDescriptor(
             new File(this.getRootDirectory(), HybrisConstants.COMMONWEB_WEBINF_LIB_DIRECTORY),
-            false
+            true
         ));
 
         libs.add(new DefaultJavaLibraryDescriptor(
