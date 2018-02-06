@@ -38,10 +38,15 @@ You can install this plugin to your IDE directly from the [repository](https://p
 * Martin.Zdarsky@hybris.com
 
 ## Credits ##
+* Alexander Bartash
 * Vlad Bozhenok
 * Martin Zdarsky-Jones
 * Alexander Nosov
-* Michael Golubev
 * Eugene Kudelevsky
+* Cristian Caprar
+* Michael Golubev
+* Dan Wanigasekera
 * Markus Priegl
 * Sergei Aksenenko
+* Roger Ye
+* Hector Longarte

@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.1.1</version>
+    <version>8.2.2</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -111,6 +111,8 @@
           <br/>
           - Eugene Kudelevsky
           <br/>
+          - Cristian Caprar
+          <br/>
           - Michael Golubev
           <br/>
           - Dan Wanigasekera
@@ -127,30 +129,13 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Bug</h2>
-            <ul>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-375'>IIP-375</a>] - javax.xml.bind.UnmarshalException is thrown when you type &quot;&lt;&quot; in localextensions.xml and wait
-                </li>
-            </ul>
-
-            <h2>New Feature Request</h2>
-            <ul>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-110'>IIPS-110</a>] - Extend the custom grouping concept added by IIPS-105
-                </li>
-            </ul>
-
             <h2>Fault</h2>
             <ul>
                 <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-111'>IIPS-111</a>] - Spring config files not completely imported
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-113'>IIPS-113</a>] - Issue with compiled classes sync with a storefront commons module
                 </li>
                 <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-116'>IIPS-116</a>] - java.lang.ArrayIndexOutOfBoundsException error during synchronization of IDE settings
-                </li>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-117'>IIPS-117</a>] - Duplicated extensions are not handled by &quot;Refresh project&quot; feature
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-118'>IIPS-118</a>] - Project refresh/import deletes more than it should
                 </li>
             </ul>
 
@@ -159,11 +144,12 @@
                 <li>
                     [<a href='https://hybris-integration.atlassian.net/browse/IIPS-112'>IIPS-112</a>] - Support Hybris 5.X
                 </li>
+            </ul>
+
+            <h2>Story</h2>
+            <ul>
                 <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-114'>IIPS-114</a>] - Module file keeps changing at each import
-                </li>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-115'>IIPS-115</a>] - Plugin unable to find Hybris extension if project folder != hybris installation directory
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-215'>IIP-215</a>] - Add predictive Class Loader Conflict resolution
                 </li>
             </ul>
         ]]>
