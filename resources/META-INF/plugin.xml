@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.2.2</version>
+    <version>8.2.3</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -132,24 +132,10 @@
             <h2>Fault</h2>
             <ul>
                 <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-113'>IIPS-113</a>] - Issue with compiled classes sync with a storefront commons module
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-104'>IIPS-104</a>] - After rebuild test classes and web directory from acceleratoraddon directory aren&#39;t compiled
                 </li>
                 <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-118'>IIPS-118</a>] - Project refresh/import deletes more than it should
-                </li>
-            </ul>
-
-            <h2>IT Help</h2>
-            <ul>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-112'>IIPS-112</a>] - Support Hybris 5.X
-                </li>
-            </ul>
-
-            <h2>Story</h2>
-            <ul>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-215'>IIP-215</a>] - Add predictive Class Loader Conflict resolution
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-122'>IIPS-122</a>] - Hybris Parameterized Integration tests
                 </li>
             </ul>
         ]]>
