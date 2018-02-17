@@ -83,10 +83,4 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
         return settings.isHybrisProject();
     }
 
-    @Override
-    public boolean isListenerDisabled(
-        final RunConfigurationBase configuration, final Object listener, final RunnerSettings runnerSettings
-    ) {
-        return listener instanceof HybrisJUnitListener && !isApplicableFor(configuration);
-    }
 }

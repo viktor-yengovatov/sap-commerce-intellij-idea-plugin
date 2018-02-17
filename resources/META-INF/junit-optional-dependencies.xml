@@ -26,7 +26,6 @@
         <runConfigurationExtension
             implementation="com.intellij.idea.plugin.hybris.runConfigurations.HybrisJUnitExtension"/>
 
-        <junitListener implementation="com.intellij.idea.plugin.hybris.runConfigurations.HybrisJUnitListener"/>
     </extensions>
 
 </idea-plugin>
