@@ -45,6 +45,7 @@ You can install this plugin to your IDE directly from the [repository](https://p
 * Eugene Kudelevsky
 * Cristian Caprar
 * Michael Golubev
+* Nicko Cadell
 * Dan Wanigasekera
 * Markus Priegl
 * Sergei Aksenenko

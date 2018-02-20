@@ -22,7 +22,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.2.3</version>
+    <version>8.2.4</version>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -115,6 +115,8 @@
           <br/>
           - Michael Golubev
           <br/>
+          - Nicko Cadell
+          <br/>
           - Dan Wanigasekera
           <br/>
           - Markus Priegl
@@ -129,11 +131,15 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Fault</h2>
+            <h2>Task</h2>
             <ul>
                 <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-104'>IIPS-104</a>] - After rebuild test classes and web directory from acceleratoraddon directory aren&#39;t compiled
+                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-384'>IIP-384</a>] - Preserve case of mixed case hybris extensions
                 </li>
+            </ul>
+
+            <h2>Fault</h2>
+            <ul>
                 <li>
                     [<a href='https://hybris-integration.atlassian.net/browse/IIPS-122'>IIPS-122</a>] - Hybris Parameterized Integration tests
                 </li>
