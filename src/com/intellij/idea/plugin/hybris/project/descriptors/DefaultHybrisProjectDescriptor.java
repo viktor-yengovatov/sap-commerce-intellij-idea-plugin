@@ -40,7 +40,6 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashSet;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -90,7 +90,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected final Set<HybrisModuleDescriptor> alreadyOpenedModules = new HashSet<>();
     protected final Lock lock = new ReentrantLock();
     @NotNull
-    protected final List<String> explicitlyDefinedModules = new ArrayList<>();
+    protected final Set<String> explicitlyDefinedModules = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     @Nullable
     protected Project project;
     @Nullable
@@ -137,7 +137,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private void preselectModules(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
         Validate.notNull(configHybrisModuleDescriptor);
         for (HybrisModuleDescriptor hybrisModuleDescriptor : foundModules) {
-            if (explicitlyDefinedModules.contains(StringUtils.lowerCase(hybrisModuleDescriptor.getName()))) {
+            if (explicitlyDefinedModules.contains(hybrisModuleDescriptor.getName())) {
                 hybrisModuleDescriptor.setInLocalExtensions(true);
             }
             if (hybrisModuleDescriptor instanceof PlatformHybrisModuleDescriptor) {
@@ -268,7 +268,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private void processHybrisConfig(@NotNull final Hybrisconfig hybrisconfig) {
         final List<ExtensionType> extensionTypeList = hybrisconfig.getExtensions().getExtension();
         for (ExtensionType extensionType : extensionTypeList) {
-            final String name = StringUtils.lowerCase(extensionType.getName());
+            final String name = extensionType.getName();
             if (name != null) {
                 explicitlyDefinedModules.add(name);
                 continue;
@@ -278,9 +278,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             final int indexBack = dir.lastIndexOf('\\');
             final int index = Math.max(indexSlash, indexBack);
             if (index == -1) {
-                explicitlyDefinedModules.add(StringUtils.lowerCase(dir));
+                explicitlyDefinedModules.add(dir);
             } else {
-                explicitlyDefinedModules.add(StringUtils.lowerCase(dir.substring(index + 1)));
+                explicitlyDefinedModules.add(dir.substring(index + 1));
             }
         }
     }
