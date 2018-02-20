@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.eclipse.EclipseProjectFinder;
 
 import java.io.File;
 
@@ -28,11 +29,35 @@ import java.io.File;
  */
 public class EclipseModuleDescriptor extends RootModuleDescriptor {
 
+    private final String eclipseProjectName;
+
     public EclipseModuleDescriptor(
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
         super(moduleRootDirectory, rootProjectDescriptor);
+
+        eclipseProjectName = findEclipseProjectName(moduleRootDirectory);
+    }
+
+    private String findEclipseProjectName(final @NotNull File moduleRootDirectory) {
+        String projectName = EclipseProjectFinder.findProjectName(moduleRootDirectory.getAbsolutePath());
+        if (projectName != null) {
+            projectName = projectName.trim();
+            if (!projectName.isEmpty()) {
+                return projectName;
+            }
+        }
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public String getName() {
+        if (eclipseProjectName != null) {
+            return eclipseProjectName;
+        }
+        return super.getName();
     }
 
     @Override
