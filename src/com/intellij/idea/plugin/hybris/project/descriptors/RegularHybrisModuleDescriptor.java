@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.openapi.diagnostic.Logger;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +89,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             throw new HybrisConfigurationException("Can not find module name using path: " + moduleRootDirectory);
         }
 
-        this.moduleName = StringUtils.lowerCase(extensionInfo.getExtension().getName());
+        this.moduleName = extensionInfo.getExtension().getName();
     }
 
     @Nullable
