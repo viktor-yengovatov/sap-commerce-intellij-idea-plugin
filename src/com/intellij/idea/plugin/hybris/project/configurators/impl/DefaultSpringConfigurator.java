@@ -29,24 +29,20 @@ import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleD
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
@@ -207,13 +203,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     private void scanForSpringImport(
         final HybrisModuleDescriptor moduleDescriptor,
         final File springFile
-    ) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
-        DocumentBuilder builder = createNewDocumentBuilder();
-        Document doc = builder.parse(springFile.toURI().toURL().toString());
-        XPathFactory xPathfactory = XPathFactory.newInstance();
-        XPath xpath = xPathfactory.newXPath();
-        XPathExpression expr = xpath.compile("/beans/import");
-        NodeList importNodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+    ) throws IOException, XPathExpressionException {
+        NodeList importNodeList = (NodeList) getXpathForExpression(springFile, "/beans/import", XPathConstants.NODESET);
         if (importNodeList != null) {
             processImportNodeList(moduleDescriptor, importNodeList);
         }
@@ -230,18 +221,11 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
     }
     private void processWebXml(final HybrisModuleDescriptor moduleDescriptor) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
-        final VirtualFile fileByIoFile = VfsUtil.findFileByIoFile(
-            new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH), true
-        );
-        if (fileByIoFile == null || !fileByIoFile.exists()) {
+        File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
+        if (webXml == null || !webXml.exists()) {
             return;
         }
-        DocumentBuilder builder = createNewDocumentBuilder();
-        Document doc = builder.parse(fileByIoFile.getUrl());
-        XPathFactory xPathfactory = XPathFactory.newInstance();
-        XPath xpath = xPathfactory.newXPath();
-        XPathExpression expr = xpath.compile("/web-app/context-param[param-name='contextConfigLocation']/param-value/text()");
-        String contextConfigLocation = (String) expr.evaluate(doc, XPathConstants.STRING);
+        final String contextConfigLocation = (String) getXpathForExpression(webXml, "/web-app/context-param[param-name='contextConfigLocation']/param-value/text()", XPathConstants.STRING);
         if (contextConfigLocation != null) {
             processContextParam(moduleDescriptor, contextConfigLocation.trim());
         }
@@ -288,26 +272,20 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
     }
 
-    private boolean hasSpringContent(
-        final File springFile
-    ) throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
-        DocumentBuilder builder = createNewDocumentBuilder();
-        Document doc = builder.parse(springFile.toURI().toURL().toString());
-        XPathFactory xPathfactory = XPathFactory.newInstance();
-        XPath xpath = xPathfactory.newXPath();
-        XPathExpression expr = xpath.compile("/beans");
-        Node rootBeansNode = (Node) expr.evaluate(doc, XPathConstants.NODE);
+    private boolean hasSpringContent(final File springFile) throws XPathExpressionException, IOException {
+        final Node rootBeansNode = (Node) getXpathForExpression(springFile, "/beans", XPathConstants.NODE);
+        if (rootBeansNode == null) {
+            return false;
+        }
         return rootBeansNode.hasChildNodes();
     }
 
-    private DocumentBuilder createNewDocumentBuilder() throws ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        factory.setNamespaceAware(true);
-        factory.setFeature("http://xml.org/sax/features/namespaces", false);
-        factory.setFeature("http://xml.org/sax/features/validation", false);
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        return factory.newDocumentBuilder();
+    private Object getXpathForExpression(File source, String expression, QName type) throws IOException, XPathExpressionException {
+        try (FileInputStream fis = new FileInputStream(source)) {
+            InputSource inputSource = new InputSource(fis);
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
+            return xpath.evaluate(expression, inputSource, type);
+        }
     }
 }
