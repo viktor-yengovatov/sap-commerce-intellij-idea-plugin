@@ -33,25 +33,21 @@ import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
@@ -203,32 +199,49 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     private void scanForSpringImport(
         final HybrisModuleDescriptor moduleDescriptor,
         final File springFile
-    ) throws IOException, XPathExpressionException {
-        NodeList importNodeList = (NodeList) getXpathForExpression(springFile, "/beans/import", XPathConstants.NODESET);
-        if (importNodeList != null) {
-            processImportNodeList(moduleDescriptor, importNodeList);
+    ) throws IOException, JDOMException {
+        final Document document = getDocument(springFile);
+        final List<Element> importList = document.getRootElement().getChildren()
+                                                 .stream()
+                                                 .filter(e -> e.getName().equals("import"))
+                                                 .collect(Collectors.toList());
+        if (importList != null) {
+            processImportNodeList(moduleDescriptor, importList);
         }
     }
 
     private void processImportNodeList(
         final HybrisModuleDescriptor moduleDescriptor,
-        final NodeList importNodeList
+        final List<Element> importList
     ) {
-        for (int index=0; index<importNodeList.getLength(); index++) {
-            Node importNode = importNodeList.item(index);
-            Node resourceNode = importNode.getAttributes().getNamedItem("resource");
-            addSpringXmlFile(moduleDescriptor, resourceNode.getNodeValue());
+        for (Element importElement: importList) {
+            String resource = importElement.getAttributeValue("resource");
+            addSpringXmlFile(moduleDescriptor, resource);
         }
     }
-    private void processWebXml(final HybrisModuleDescriptor moduleDescriptor) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+    private void processWebXml(final HybrisModuleDescriptor moduleDescriptor) throws IOException, JDOMException {
         File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
         if (webXml == null || !webXml.exists()) {
             return;
         }
-        final String contextConfigLocation = (String) getXpathForExpression(webXml, "/web-app/context-param[param-name='contextConfigLocation']/param-value/text()", XPathConstants.STRING);
-        if (contextConfigLocation != null) {
-            processContextParam(moduleDescriptor, contextConfigLocation.trim());
+        final Document document = getDocument(webXml);
+        final Element root = document.getRootElement();
+        if (root == null || !root.getName().equals("web-app")) {
+            return;
         }
+        String location = root.getChildren()
+                              .stream()
+                              .filter(e -> e.getName().equals("context-param"))
+                              .filter(e -> e.getChildren().stream().anyMatch(p -> p.getName().equals("param-name") && p.getValue().equals("contextConfigLocation")))
+                              .filter(Objects::nonNull)
+                              .map(e -> e.getChildren().stream().filter(p -> p.getName().equals("param-value")).findFirst().orElse(null))
+                              .filter(Objects::nonNull)
+                              .map(Element::getValue)
+                              .findFirst().orElse(null);
+        if (location == null) {
+            return;
+        }
+        processContextParam(moduleDescriptor, location.trim());
     }
 
     private void processContextParam(final HybrisModuleDescriptor moduleDescriptor, final String contextConfigLocation) {
@@ -272,20 +285,16 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
     }
 
-    private boolean hasSpringContent(final File springFile) throws XPathExpressionException, IOException {
-        final Node rootBeansNode = (Node) getXpathForExpression(springFile, "/beans", XPathConstants.NODE);
-        if (rootBeansNode == null) {
+    private boolean hasSpringContent(final File springFile) throws IOException, JDOMException {
+        final Document document = getDocument(springFile);
+        if (document == null) {
             return false;
         }
-        return rootBeansNode.hasChildNodes();
+        return document.getRootElement() != null && document.getRootElement().getName().equals("beans");
     }
 
-    private Object getXpathForExpression(File source, String expression, QName type) throws IOException, XPathExpressionException {
-        try (FileInputStream fis = new FileInputStream(source)) {
-            InputSource inputSource = new InputSource(fis);
-            XPathFactory xPathfactory = XPathFactory.newInstance();
-            XPath xpath = xPathfactory.newXPath();
-            return xpath.evaluate(expression, inputSource, type);
-        }
+    private Document getDocument(File inputFile) throws IOException, JDOMException {
+        SAXBuilder saxBuilder = new SAXBuilder();
+        return saxBuilder.build(inputFile);
     }
 }
