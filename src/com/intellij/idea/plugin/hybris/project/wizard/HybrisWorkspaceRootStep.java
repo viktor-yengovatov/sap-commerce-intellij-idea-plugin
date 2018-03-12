@@ -100,7 +100,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox followSimplinkCheckbox;
     private JLabel scanThroughExternalModuleLabel;
     private JCheckBox scanThroughExternalModuleCheckbox;
-    private String hybrisApiVersion;
+    private String hybrisVersion;
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
 
@@ -306,7 +306,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             this.javadocUrlTextField.getText()
         );
 
-        this.getContext().getHybrisProjectDescriptor().setHybrisApiVersion(hybrisApiVersion);
+        this.getContext().getHybrisProjectDescriptor().setHybrisVersion(hybrisVersion);
 
         this.getContext().setRootProjectDirectory(new File(this.getContext().getFileToImport()));
     }
@@ -395,10 +395,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
                 this.dbDriversDirOverrideFileChooser.setText(dbDriversDirAbsPath);
             }
 
-            hybrisApiVersion = getHybrisApiVersion(this.hybrisDistributionDirectoryFilesInChooser.getText());
+            hybrisVersion = getHybrisVersion(this.hybrisDistributionDirectoryFilesInChooser.getText(), false);
             final String sourceCodeDirectory = appSettings.getSourceCodeDirectory();
             final File sourceFile = appSettings.isSourceZipUsed()
-                ? findSourceZip(sourceCodeDirectory, hybrisApiVersion)
+                ? findSourceZip(sourceCodeDirectory, hybrisVersion)
                 : new File(sourceCodeDirectory);
 
             if (sourceFile != null) {
@@ -408,7 +408,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
                 sourceCodeFilesInChooser.setText(sourceFile.getPath());
             }
 
-            final String defaultJavadocUrl = getDefaultJavadocUrl(hybrisApiVersion);
+            final String defaultJavadocUrl = getDefaultJavadocUrl(getHybrisVersion(this.hybrisDistributionDirectoryFilesInChooser.getText(), true));
             if (StringUtils.isNotBlank(defaultJavadocUrl)) {
                 this.javadocUrlTextField.setText(defaultJavadocUrl);
             }
@@ -531,7 +531,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     }
 
     @Nullable
-    private String getHybrisApiVersion(@NotNull final String hybrisRootDir) {
+    private String getHybrisVersion(@NotNull final String hybrisRootDir, final boolean apiOnly) {
         Validate.notNull(hybrisRootDir);
 
         final File buildInfoFile = new File(hybrisRootDir + HybrisConstants.BUILD_NUMBER_FILE_PATH);
@@ -541,6 +541,13 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             buildProperties.load(fis);
         } catch (IOException e) {
             return null;
+        }
+
+        if (!apiOnly) {
+            String version = buildProperties.getProperty(HybrisConstants.HYBRIS_VERSION_KEY);
+            if (version != null) {
+                return version;
+            }
         }
 
         return buildProperties.getProperty(HybrisConstants.HYBRIS_API_VERSION_KEY);
@@ -598,11 +605,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         File hybrisDir = hybrisProjectDescriptor.getHybrisDistributionDirectory();
         String hybrisDirPath = hybrisDir != null ? hybrisDir.getAbsolutePath() : getBuilder().getFileToImport();
-        final String hybrisApiVersion = getHybrisApiVersion(hybrisDirPath);
+        final String hybrisApiVersion = getHybrisVersion(hybrisDirPath, true);
         final String defaultJavadocUrl = getDefaultJavadocUrl(hybrisApiVersion);
         if (StringUtils.isNotBlank(defaultJavadocUrl)) {
             hybrisProjectDescriptor.setJavadocUrl(defaultJavadocUrl);
         }
+        hybrisProjectDescriptor.setHybrisVersion(getHybrisVersion(hybrisDirPath,false ));
     }
 
     private File toFile(final String directory) {
@@ -634,7 +642,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         @Override
         protected String chosenFileToResultingText(@NotNull final VirtualFile chosenFile) {
             if (chosenFile.isDirectory()) {
-                final String hybrisApiVersion = getHybrisApiVersion(hybrisDistributionDirectoryFilesInChooser.getText());
+                final String hybrisApiVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.getText(), false);
                 final File sourceZip = findSourceZip(chosenFile.getPath(), hybrisApiVersion);
 
                 if (sourceZip != null) {

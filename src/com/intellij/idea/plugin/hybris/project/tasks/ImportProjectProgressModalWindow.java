@@ -397,7 +397,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setFollowSymlink(hybrisProjectDescriptor.isFollowSymlink());
         hybrisProjectSettings.setScanThroughExternalModule(hybrisProjectDescriptor.isScanThroughExternalModule());
         hybrisProjectSettings.setModulesOnBlackList(createModulesOnBlackList());
-        hybrisProjectSettings.setHybrisApiVersion(hybrisProjectDescriptor.getHybrisApiVersion());
+        hybrisProjectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
         final Set<String> completeSetOfHybrisModules = newHashSet();
         hybrisProjectDescriptor.getFoundModules().stream()
                                .filter(e -> e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)

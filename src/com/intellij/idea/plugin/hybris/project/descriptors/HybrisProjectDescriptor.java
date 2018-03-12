@@ -126,7 +126,7 @@ public interface HybrisProjectDescriptor {
 
     boolean isScanThroughExternalModule();
 
-    void setHybrisApiVersion(String hybrisApiVersion);
+    void setHybrisVersion(String hybrisVersion);
 
-    String getHybrisApiVersion();
+    String getHybrisVersion();
 }
