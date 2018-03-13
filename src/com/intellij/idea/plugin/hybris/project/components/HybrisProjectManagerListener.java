@@ -47,9 +47,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.spring.settings.SpringGeneralSettings;
-import com.intellij.ui.LicensingFacade;
 import com.intellij.util.Alarm;
-import com.intellij.util.PlatformUtils;
 import com.intellij.util.text.DateFormatUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
@@ -73,7 +71,7 @@ import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 public class HybrisProjectManagerListener implements ProjectManagerListener, Disposable {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectManagerListener.class);
-    private static final String LAST_DISCOUNT_OFFER_TIME_PROPERTY = "LAST_DISCOUNT_OFFER_TIME";
+    private static final String LAST_BUBBLE_INFO_TIME_PROPERTY = "LAST_BUBBLE_INFO_TIME";
 
     private final NotificationGroup notificationGroup = new NotificationGroup(
         "[y] project",
@@ -91,17 +89,26 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
             if (project.isDisposed()) {
                 return;
             }
+
             if (isOldHybrisProject(project)) {
                 showNotification(project);
             }
-            if (isDiscountTargetGroup()) {
-                showDiscountOffer(project);
+
+            if (CommonIdeaService.getInstance().isFansTargetGroup()) {
+                showInfoBubble(project, "support.us.step.title", "support.us.step.text");
             }
+
+            if (CommonIdeaService.getInstance().isDiscountTargetGroup()) {
+                showInfoBubble(project, "discount.offer.bubble.title", "discount.offer.bubble.text");
+            }
+
             final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
             if (!commonIdeaService.isHybrisProject(project)) {
                 return;
             }
+
             logVersion(project);
+
             if (popupPermissionToSendStatistics(project)) {
                 continueOpening(project);
             }
@@ -114,11 +121,6 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         final String hybrisVersion = settings.getHybrisVersion();
         final String pluginVersion = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
         LOG.info("Opening hybris version "+hybrisVersion+" which was imported by "+importedBy+". Current plugin is "+pluginVersion);
-    }
-
-    private boolean isDiscountTargetGroup() {
-        LicensingFacade licensingFacade = LicensingFacade.getInstance();
-        return licensingFacade == null || licensingFacade.isEvaluationLicense() || PlatformUtils.isIdeaCommunity();
     }
 
     private void continueOpening(final Project project) {
@@ -189,17 +191,17 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         Notifications.Bus.notify(notification, project);
     }
 
-    private void showDiscountOffer(final Project project) {
+    private void showInfoBubble(final Project project, String titleKey, String textKey) {
         final PropertiesComponent properties = PropertiesComponent.getInstance();
-        final long lastNotificationTime = properties.getOrInitLong(LAST_DISCOUNT_OFFER_TIME_PROPERTY, 0);
+        final long lastNotificationTime = properties.getOrInitLong(LAST_BUBBLE_INFO_TIME_PROPERTY, 0);
         final long currentTime = System.currentTimeMillis();
 
         if (currentTime - lastNotificationTime >= DateFormatUtil.MONTH) {
-            properties.setValue(LAST_DISCOUNT_OFFER_TIME_PROPERTY, String.valueOf(currentTime));
+            properties.setValue(LAST_BUBBLE_INFO_TIME_PROPERTY, String.valueOf(currentTime));
 
             final Notification notification = notificationGroup.createNotification(
-                HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.title"),
-                HybrisI18NBundleUtils.message("evaluation.license.discount.offer.bubble.text"),
+                HybrisI18NBundleUtils.message(titleKey),
+                HybrisI18NBundleUtils.message(textKey),
                 NotificationType.INFORMATION,
                 (myNotification, myHyperlinkEvent) -> goToDiscountOffer(myHyperlinkEvent)
             );

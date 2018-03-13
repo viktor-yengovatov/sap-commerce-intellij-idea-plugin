@@ -71,6 +71,7 @@ public class DefaultStatsCollector implements StatsCollector, PersistentStateCom
 
     private long lastFailureTime = 0;
     private volatile boolean disposed = false;
+    private boolean isOpenCollectiveContributor = false;
 
     @Override
     public void initComponent() {
@@ -141,8 +142,22 @@ public class DefaultStatsCollector implements StatsCollector, PersistentStateCom
         collectStat(new Entity(action, parameters, getCurrentDateTimeWithTimeZone()));
     }
 
+    @Override
+    public boolean isOpenCollectiveContributor() {
+        return isOpenCollectiveContributor;
+    }
+
+    @Override
+    public void setOpenCollectiveContributor(final boolean isOpenCollectiveContributor) {
+        this.isOpenCollectiveContributor = isOpenCollectiveContributor;
+    }
+
     public void collectStat(@NotNull final Entity entity) {
         HybrisApplicationSettingsComponent.getInstance().addUsedAction(entity.getAction());
+
+        if (isOpenCollectiveContributor() && HybrisApplicationSettingsComponent.getInstance().getState().isDisallowedSendingStatistics()) {
+            return;
+        }
 
         if (shouldPostStat(entity.getAction())) {
             cache.put(entity.getAction(), System.currentTimeMillis());

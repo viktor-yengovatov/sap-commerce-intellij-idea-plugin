@@ -30,6 +30,10 @@ public interface StatsCollector extends ApplicationComponent {
 
     void collectStat(@NotNull ACTIONS action, @Nullable String parameters);
 
+    boolean isOpenCollectiveContributor();
+
+    void setOpenCollectiveContributor(boolean isOpenCollectiveContributor);
+
     enum ACTIONS {
         IMPORT_PROJECT,
         REFRESH_PROJECT,
