@@ -112,7 +112,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected String javadocUrl;
     @Nullable
-    protected String hybrisApiVersion;
+    protected String hybrisVersion;
     protected boolean createBackwardCyclicDependenciesForAddOns;
     protected boolean followSymlink;
     protected boolean scanThroughExternalModule;
@@ -758,13 +758,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public void setHybrisApiVersion(final String hybrisApiVersion) {
-        this.hybrisApiVersion = hybrisApiVersion;
+    public void setHybrisVersion(final String hybrisVersion) {
+        this.hybrisVersion = hybrisVersion;
     }
 
     @Override
-    public String getHybrisApiVersion() {
-        return hybrisApiVersion;
+    public String getHybrisVersion() {
+        return hybrisVersion;
     }
 
     @Override

@@ -87,6 +87,7 @@ public interface HybrisConstants {
     String PLATFORM_HOME_PLACEHOLDER = "${platformhome}";
     String BUILD_NUMBER_FILE_PATH = toSystemDependentName("/bin/platform/build.number");
     String HYBRIS_API_VERSION_KEY = "version.api";
+    String HYBRIS_VERSION_KEY = "version";
     String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/%s/commercesuite";
     String HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL = "https://help.hybris.com/%s/api/commercesuite/index.html";
 
