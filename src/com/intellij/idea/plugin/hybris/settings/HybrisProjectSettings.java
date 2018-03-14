@@ -37,6 +37,7 @@ public class HybrisProjectSettings {
     protected String hybrisDirectory;
     protected String importedByVersion;
     protected String hybrisVersion;
+    protected String javadocUrl;
     protected String sourceCodeFile;
     protected String externalExtensionsDirectory;
     protected String externalConfigDirectory;
@@ -88,6 +89,14 @@ public class HybrisProjectSettings {
 
     public void setHybrisVersion(final String hybrisVersion) {
         this.hybrisVersion = hybrisVersion;
+    }
+
+    public String getJavadocUrl() {
+        return javadocUrl;
+    }
+
+    public void setJavadocUrl(final String javadocUrl) {
+        this.javadocUrl = javadocUrl;
     }
 
     public String getSourceCodeFile() {
@@ -194,6 +203,7 @@ public class HybrisProjectSettings {
             .append(hybrisDirectory)
             .append(importedByVersion)
             .append(hybrisVersion)
+            .append(javadocUrl)
             .append(sourceCodeFile)
             .append(externalExtensionsDirectory)
             .append(externalConfigDirectory)
@@ -226,6 +236,7 @@ public class HybrisProjectSettings {
             .append(hybrisDirectory, other.hybrisDirectory)
             .append(importedByVersion, other.importedByVersion)
             .append(hybrisVersion, other.hybrisVersion)
+            .append(javadocUrl, other.javadocUrl)
             .append(sourceCodeFile, other.sourceCodeFile)
             .append(externalExtensionsDirectory, other.externalExtensionsDirectory)
             .append(externalConfigDirectory, other.externalConfigDirectory)
@@ -248,6 +259,7 @@ public class HybrisProjectSettings {
         sb.append("hybrisDirectory=").append(hybrisDirectory);
         sb.append("importedByVersion=").append(importedByVersion);
         sb.append("hybrisVersion=").append(hybrisVersion);
+        sb.append("javadocUrl=").append(javadocUrl);
         sb.append("sourceCodeFile=").append(sourceCodeFile);
         sb.append("externalExtensionsDirectory=").append(externalExtensionsDirectory);
         sb.append("externalConfigDirectory=").append(externalConfigDirectory);

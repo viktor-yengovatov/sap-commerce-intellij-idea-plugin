@@ -603,14 +603,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         }
         ));
 
-        File hybrisDir = hybrisProjectDescriptor.getHybrisDistributionDirectory();
-        String hybrisDirPath = hybrisDir != null ? hybrisDir.getAbsolutePath() : getBuilder().getFileToImport();
-        final String hybrisApiVersion = getHybrisVersion(hybrisDirPath, true);
-        final String defaultJavadocUrl = getDefaultJavadocUrl(hybrisApiVersion);
-        if (StringUtils.isNotBlank(defaultJavadocUrl)) {
-            hybrisProjectDescriptor.setJavadocUrl(defaultJavadocUrl);
-        }
-        hybrisProjectDescriptor.setHybrisVersion(getHybrisVersion(hybrisDirPath,false ));
+        hybrisProjectDescriptor.setJavadocUrl(settings.getJavadocUrl());
+        hybrisProjectDescriptor.setHybrisVersion(settings.getHybrisVersion());
     }
 
     private File toFile(final String directory) {
