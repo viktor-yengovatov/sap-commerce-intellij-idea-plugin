@@ -685,7 +685,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         });
     }
 
-    @NotNull
+    @Nullable
     @Override
     public ConfigHybrisModuleDescriptor getConfigHybrisModuleDescriptor() {
         return configHybrisModuleDescriptor;
