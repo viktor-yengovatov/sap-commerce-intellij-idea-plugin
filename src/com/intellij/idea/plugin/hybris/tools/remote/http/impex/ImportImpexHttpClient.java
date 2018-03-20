@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http.impex;
 
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpClient;
+import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -44,7 +45,7 @@ public class ImportImpexHttpClient {
     private HybrisHttpClient hybrisHttpClient = HybrisHttpClient.INSTANCE;
 
     public @NotNull
-    HybrisHttpResult importImpex(final String content) {
+    HybrisHttpResult importImpex(final Project project, final String content) {
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptContent", content),
             new BasicNameValuePair("validationEnum", "IMPORT_STRICT"),
@@ -52,10 +53,10 @@ public class ImportImpexHttpClient {
             new BasicNameValuePair("maxThreads", "4")
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
-        final String actionUrl = hybrisHttpClient.hostUrl() + "/console/impex/import";
+        final String actionUrl = hybrisHttpClient.hostHacUrl(project) + "/console/impex/import";
         try {
-            final String sessionId = hybrisHttpClient.sessionId();
-            final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
+            final String sessionId = hybrisHttpClient.sessionId(project);
+            final HttpResponse response = hybrisHttpClient.post(project, actionUrl, sessionId, params);
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
 

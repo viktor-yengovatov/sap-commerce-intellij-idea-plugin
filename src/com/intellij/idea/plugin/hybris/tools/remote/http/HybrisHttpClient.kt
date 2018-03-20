@@ -18,7 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus.SC_FORBIDDEN
@@ -51,12 +53,12 @@ object HybrisHttpClient {
     private val settingsComponent = HybrisApplicationSettingsComponent.getInstance()
     private var currentSessionId: String = StringUtils.EMPTY
 
-    fun hostUrl(): String = HybrisApplicationSettingsComponent.getInstance().state.hybrisHostUrl
+    fun hostHacUrl(project: Project): String = CommonIdeaService.getInstance().getHostHacUrl(project)
 
 
-    private fun login(): String {
-        val validSessionId = validSessionId()
-        val csrfToken = csrfToken(validSessionId)
+    private fun login(project: Project): String {
+        val validSessionId = validSessionId(project)
+        val csrfToken = csrfToken(project, validSessionId)
 
         val params = asList(
                 BasicNameValuePair(
@@ -70,18 +72,18 @@ object HybrisHttpClient {
                 BasicNameValuePair("_csrf", csrfToken)
         )
 
-        val response = post(hostUrl() + "/j_spring_security_check", validSessionId, params)
+        val response = post(project, hostHacUrl(project) + "/j_spring_security_check", validSessionId, params)
         currentSessionId = CookieParser.getInstance().getSpecialCookie(response.allHeaders)
         return currentSessionId
     }
 
-    fun sessionId(): String = if (currentSessionId.isNotBlank()) currentSessionId else login()
+    fun sessionId(project: Project): String = if (currentSessionId.isNotBlank()) currentSessionId else login(project)
 
 
     @Throws(IOException::class, NoSuchAlgorithmException::class, KeyStoreException::class, KeyManagementException::class)
-    fun post(actionUrl: String, sessionId: String, params: List<BasicNameValuePair>): HttpResponse {
+    fun post(project: Project, actionUrl: String, sessionId: String, params: List<BasicNameValuePair>): HttpResponse {
 
-        val csrfToken = csrfToken(sessionId)
+        val csrfToken = csrfToken(project, sessionId)
         val client = createAllowAllClient(6000L)
 
         val post = HttpPost(actionUrl)
@@ -99,7 +101,7 @@ object HybrisHttpClient {
             post.entity = UrlEncodedFormEntity(params, "utf-8")
             response = client.execute(post)
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            throw RuntimeException(actionUrl, e)
         }
 
         if (response.statusLine.statusCode == SC_MOVED_TEMPORARILY) {
@@ -136,17 +138,17 @@ object HybrisHttpClient {
 
 
     @Throws(IOException::class)
-    private fun csrfToken(sessionId: String): String {
+    private fun csrfToken(project: Project, sessionId: String): String {
         //<meta name="_csrf" content="c1dee1f7-8c79-43b1-8f3f-767662abc87a" />
         if (sessionId.isNotBlank()) {
-            val doc = Jsoup.connect(hostUrl()).cookie("JSESSIONID", sessionId).get()
+            val doc = Jsoup.connect(hostHacUrl(project)).cookie("JSESSIONID", sessionId).get()
             val csrfMetaElt = doc.select("meta[name=_csrf]")
             return csrfMetaElt.attr("content")
         }
         return StringUtils.EMPTY
     }
 
-    private fun validSessionId(): String {
+    private fun validSessionId(project: Project): String {
         val res: Connection.Response
         try {
             // Create a trust manager that does not validate certificate chains
@@ -171,7 +173,7 @@ object HybrisHttpClient {
 
             // Install the all-trusting host verifier
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
-            res = Jsoup.connect(hostUrl()).method(Method.GET).execute()
+            res = Jsoup.connect(hostHacUrl(project)).method(Method.GET).execute()
         } catch (e: IOException) {
             return StringUtils.EMPTY
         }

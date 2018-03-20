@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch;
 import com.google.gson.Gson;
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpClient;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
+import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -48,7 +49,7 @@ public class FlexibleSearchHttpClient {
     private HybrisHttpClient hybrisHttpClient = HybrisHttpClient.INSTANCE;
 
     public @NotNull
-    HybrisHttpResult execute(final String content) {
+    HybrisHttpResult execute(final Project project, final String content) {
 //        HTTPRequestManager httpRequestManager = HTTPRequestManager.getInstance();
 //        List<NameValuePair> scriptParameter = new ArrayList<NameValuePair>();
 //        if(isHybrisVersion5OrAbove()) {
@@ -71,10 +72,10 @@ public class FlexibleSearchHttpClient {
 //            new BasicNameValuePair("locale", localeISOCode)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
-        final String actionUrl = hybrisHttpClient.hostUrl() + "/console/flexsearch/execute";
+        final String actionUrl = hybrisHttpClient.hostHacUrl(project) + "/console/flexsearch/execute";
         try {
-            final String sessionId = hybrisHttpClient.sessionId();
-            final HttpResponse response = hybrisHttpClient.post(actionUrl, sessionId, params);
+            final String sessionId = hybrisHttpClient.sessionId(project);
+            final HttpResponse response = hybrisHttpClient.post(project, actionUrl, sessionId, params);
             resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
             final Document document = parse(response.getEntity().getContent(), CharEncoding.UTF_8, "");
 

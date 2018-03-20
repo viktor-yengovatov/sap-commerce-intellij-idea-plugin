@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.common.services.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
@@ -26,6 +27,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsCompone
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorBundle;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -34,10 +36,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +53,7 @@ import java.util.stream.Collectors;
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public class DefaultCommonIdeaService implements CommonIdeaService {
-
+    private static final Logger LOG = Logger.getInstance(DefaultCommonIdeaService.class);
     private final CommandProcessor commandProcessor;
 
     public DefaultCommonIdeaService(@NotNull final CommandProcessor commandProcessor) {
@@ -143,6 +150,60 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     public boolean shouldShowPermissionToSendStatisticsDialog() {
         final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
         return !settings.isAllowedSendingPlainStatistics() && !settings.isDevelopmentMode();
+    }
+
+    @Override
+    public String getHostHacUrl(final Project project) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getHostUrl(project));
+        final Properties localProperties = getLocalProperties(project);
+        if (localProperties != null) {
+            final String hac = localProperties.getProperty(HybrisConstants.HAC_WEBROOT_KEY);
+            if (hac != null) {
+                sb.append("/");
+                sb.append(StringUtils.strip(hac, " /"));
+            }
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getHostUrl(final Project project) {
+        final String ip = HybrisApplicationSettingsComponent.getInstance().getState().getHybrisHostIP();
+        StringBuilder sb = new StringBuilder();
+        sb.append("https://");
+        sb.append(ip);
+        final Properties localProperties = getLocalProperties(project);
+        String port = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
+        if (localProperties != null) {
+            port = localProperties.getProperty(HybrisConstants.TOMCAT_SSL_PORT_KEY, HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
+        }
+        if (port != null && !port.isEmpty()) {
+            sb.append(":");
+            sb.append(port);
+        }
+        return sb.toString();
+    }
+
+    private Properties getLocalProperties(final Project project) {
+        final String configDir = HybrisProjectSettingsComponent.getInstance(project).getState().getConfigDirectory();
+        if (configDir == null) {
+            return null;
+        }
+        File propFile = new File(configDir, HybrisConstants.LOCAL_PROPERTIES);
+        if (!propFile.exists()) {
+            return null;
+        }
+        Properties prop = new Properties();
+        try (FileReader fr = new FileReader(propFile)) {
+            prop.load(fr);
+            return prop;
+        } catch (FileNotFoundException e) {
+            LOG.info(e.getMessage(), e);
+        } catch (IOException e) {
+            LOG.info(e.getMessage(), e);
+        }
+        return null;
     }
 
     private boolean matchAllModuleNames(

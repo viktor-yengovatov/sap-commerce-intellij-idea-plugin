@@ -56,4 +56,8 @@ public interface CommonIdeaService {
     }
 
     boolean shouldShowPermissionToSendStatisticsDialog();
+
+    String getHostHacUrl(final Project project);
+
+    String getHostUrl(final Project project);
 }
