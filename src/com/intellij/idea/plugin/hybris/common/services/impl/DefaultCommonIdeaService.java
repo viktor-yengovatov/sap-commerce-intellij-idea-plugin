@@ -169,7 +169,7 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     @Override
     public String getHostUrl(final Project project) {
-        final String ip = HybrisApplicationSettingsComponent.getInstance().getState().getHybrisHostIP();
+        final String ip = HybrisProjectSettingsComponent.getInstance(project).getState().getHostIP();
         StringBuilder sb = new StringBuilder();
         sb.append("https://");
         sb.append(ip);

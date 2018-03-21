@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
 import org.apache.http.HttpResponse
@@ -50,24 +50,24 @@ import javax.net.ssl.*
 object HybrisHttpClient {
 
     private val USER_AGENT = "Mozilla/5.0"
-    private val settingsComponent = HybrisApplicationSettingsComponent.getInstance()
     private var currentSessionId: String = StringUtils.EMPTY
 
     fun hostHacUrl(project: Project): String = CommonIdeaService.getInstance().getHostHacUrl(project)
 
 
     private fun login(project: Project): String {
+        val settingsComponent = HybrisProjectSettingsComponent.getInstance(project)
         val validSessionId = validSessionId(project)
         val csrfToken = csrfToken(project, validSessionId)
 
         val params = asList(
                 BasicNameValuePair(
                         "j_username",
-                        settingsComponent.state.hybrisInstanceUsername
+                        settingsComponent.state.hacLogin
                 ),
                 BasicNameValuePair(
                         "j_password",
-                        settingsComponent.state.hybrisInstancePassword
+                        settingsComponent.state.hacPassword
                 ),
                 BasicNameValuePair("_csrf", csrfToken)
         )
