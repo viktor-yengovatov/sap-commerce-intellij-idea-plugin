@@ -74,6 +74,7 @@ public abstract class ExecuteConsole {
     }
 
     protected void clearAllConsoles() {
+        //TODO this should be driven by a clear button to give a user a chance to preserve logs...
         for (ConsoleView consoleView : consoleViewList) {
             consoleView.clear();
         }
