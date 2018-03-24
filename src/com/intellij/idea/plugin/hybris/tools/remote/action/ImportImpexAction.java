@@ -42,7 +42,7 @@ public class ImportImpexAction extends AnAction {
             final ImportImpexHttpClient client = new ImportImpexHttpClient();
             final String selectedText = selectionModel.getSelectedText();
             if (StringUtils.isNotEmpty(selectedText)) {
-                final HybrisHttpResult hybrisHttpResult = client.importImpex(selectedText);
+                final HybrisHttpResult hybrisHttpResult = client.importImpex(e.getProject(), selectedText);
 
                 ExecuteHybrisConsole.getInstance().show(hybrisHttpResult, e.getProject());
             }

@@ -105,8 +105,8 @@ public class HybrisApplicationSettings {
     @PropertyName("hybrisInstancePassword")
     private String hybrisInstancePassword = "nimda";
 
-    @PropertyName("hybrisHostUrl")
-    private String hybrisHostUrl = "https://localhost:9002";
+    @PropertyName("hybrisHostIP")
+    private String hybrisHostIP = "localhost";
 
     @PropertyName("followSymlink")
     private boolean followSymlink = true;
@@ -253,12 +253,12 @@ public class HybrisApplicationSettings {
         this.hybrisInstancePassword = hybrisInstancePassword;
     }
 
-    public String getHybrisHostUrl() {
-        return hybrisHostUrl;
+    public String getHybrisHostIP() {
+        return hybrisHostIP;
     }
 
-    public void setHybrisHostUrl(final String hybrisHostUrl) {
-        this.hybrisHostUrl = hybrisHostUrl;
+    public void setHybrisHostIP(final String hybrisHostIP) {
+        this.hybrisHostIP = hybrisHostIP;
     }
 
     public boolean isFollowSymlink() {
@@ -349,6 +349,7 @@ public class HybrisApplicationSettings {
             .append(sourceCodeDirectory)
             .append(sourceZipUsed)
             .append(developmentMode)
+            .append(hybrisHostIP)
             .toHashCode();
     }
 
@@ -386,6 +387,7 @@ public class HybrisApplicationSettings {
             .append(sourceCodeDirectory, other.sourceCodeDirectory)
             .append(sourceZipUsed, other.sourceZipUsed)
             .append(developmentMode, other.developmentMode)
+            .append(hybrisHostIP, other.hybrisHostIP)
             .isEquals();
     }
 
@@ -413,6 +415,7 @@ public class HybrisApplicationSettings {
         sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');
         sb.append(", sourceZipUsed='").append(sourceZipUsed).append('\'');
         sb.append(", developmentMode='").append(developmentMode).append('\'');
+        sb.append(", hybrisHostIP='").append(hybrisHostIP).append('\'');
         sb.append('}');
         return sb.toString();
     }

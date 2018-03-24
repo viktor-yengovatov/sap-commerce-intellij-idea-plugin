@@ -58,7 +58,7 @@ public class HybrisApplicationSettingsForm {
     private JTextField groupPlatformTextField;
     private JTextField hybrisInstanceUsernameTextField;
     private JTextField hybrisInstancePasswordTextField;
-    private JTextField hybrisHostUrlTextField;
+    private JTextField hybrisHostIPTextField;
     private JLabel hybrisRemoteControlLabel;
     private JCheckBox followSymlink;
     private JPanel typeSystemDiagramStopWords;
@@ -83,7 +83,7 @@ public class HybrisApplicationSettingsForm {
         defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
         hybrisInstanceUsernameTextField.setText(data.getHybrisInstanceUsername());
         hybrisInstancePasswordTextField.setText(data.getHybrisInstancePassword());
-        hybrisHostUrlTextField.setText(data.getHybrisHostUrl());
+        hybrisHostIPTextField.setText(data.getHybrisHostIP());
         followSymlink.setSelected(data.isFollowSymlink());
         scanThroughExternalModule.setSelected(data.isScanThroughExternalModule());
     }
@@ -104,16 +104,10 @@ public class HybrisApplicationSettingsForm {
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
         data.setHybrisInstanceUsername(hybrisInstanceUsernameTextField.getText());
         data.setHybrisInstancePassword(hybrisInstancePasswordTextField.getText());
-        data.setHybrisHostUrl(getHybrisHostUrl());
+        data.setHybrisHostIP(hybrisHostIPTextField.getText());
         data.setFollowSymlink(followSymlink.isSelected());
         data.setScanThroughExternalModule(scanThroughExternalModule.isSelected());
 
-    }
-
-    @NotNull
-    private String getHybrisHostUrl() {
-        String url = hybrisHostUrlTextField.getText().trim();
-        return url.endsWith("/") ? url.substring(0, url.length() - 1).trim() : url;
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -147,7 +141,7 @@ public class HybrisApplicationSettingsForm {
         if (!StringUtil.equals(groupPlatformTextField.getText(), data.getGroupPlatform())) {
             return true;
         }
-        if (!StringUtil.equals(getHybrisHostUrl(), data.getHybrisHostUrl())) {
+        if (!StringUtil.equals(hybrisHostIPTextField.getText(), data.getHybrisHostIP())) {
             return true;
         }
         if (!StringUtil.equals(hybrisInstancePasswordTextField.getText(), data.getHybrisInstancePassword())) {

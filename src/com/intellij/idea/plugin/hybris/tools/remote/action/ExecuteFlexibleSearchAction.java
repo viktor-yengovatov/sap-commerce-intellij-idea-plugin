@@ -42,7 +42,7 @@ public class ExecuteFlexibleSearchAction extends AnAction {
             final FlexibleSearchHttpClient client = new FlexibleSearchHttpClient();
             final String selectedText = selectionModel.getSelectedText();
             if (StringUtils.isNotEmpty(selectedText)) {
-                final HybrisHttpResult hybrisHttpResult = client.execute(selectedText);
+                final HybrisHttpResult hybrisHttpResult = client.execute(e.getProject(), selectedText);
 
                 ExecuteHybrisConsole.getInstance().show(hybrisHttpResult, e.getProject());
             }

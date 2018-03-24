@@ -39,7 +39,7 @@ public class ValidateImpexAction extends AnAction {
         if (editor != null) {
             final SelectionModel selectionModel = editor.getSelectionModel();
             final ValidateImpexHttpClient client = new ValidateImpexHttpClient();
-            final HybrisHttpResult hybrisHttpResult = client.validateImpex(selectionModel.getSelectedText());
+            final HybrisHttpResult hybrisHttpResult = client.validateImpex(e.getProject(), selectionModel.getSelectedText());
 
             ExecuteHybrisConsole.getInstance().show(hybrisHttpResult, e.getProject());
         }

@@ -35,6 +35,7 @@ public class HybrisProjectSettings {
     protected boolean hybrisProject;
     protected String customDirectory;
     protected String hybrisDirectory;
+    protected String configDirectory;
     protected String importedByVersion;
     protected String hybrisVersion;
     protected String javadocUrl;
@@ -65,6 +66,14 @@ public class HybrisProjectSettings {
 
     public void setCustomDirectory(final String customDirectory) {
         this.customDirectory = customDirectory;
+    }
+
+    public String getConfigDirectory() {
+        return configDirectory;
+    }
+
+    public void setConfigDirectory(final String configDirectory) {
+        this.configDirectory = configDirectory;
     }
 
     public String getHybrisDirectory() {
@@ -201,6 +210,7 @@ public class HybrisProjectSettings {
             .append(hybrisProject)
             .append(customDirectory)
             .append(hybrisDirectory)
+            .append(configDirectory)
             .append(importedByVersion)
             .append(hybrisVersion)
             .append(javadocUrl)
@@ -234,6 +244,7 @@ public class HybrisProjectSettings {
             .append(hybrisProject, other.hybrisProject)
             .append(customDirectory, other.customDirectory)
             .append(hybrisDirectory, other.hybrisDirectory)
+            .append(configDirectory, other.configDirectory)
             .append(importedByVersion, other.importedByVersion)
             .append(hybrisVersion, other.hybrisVersion)
             .append(javadocUrl, other.javadocUrl)
@@ -257,6 +268,7 @@ public class HybrisProjectSettings {
         sb.append("hybrisProject=").append(hybrisProject);
         sb.append("customDirectoryPath=").append(customDirectory);
         sb.append("hybrisDirectory=").append(hybrisDirectory);
+        sb.append("configDirectory=").append(configDirectory);
         sb.append("importedByVersion=").append(importedByVersion);
         sb.append("hybrisVersion=").append(hybrisVersion);
         sb.append("javadocUrl=").append(javadocUrl);

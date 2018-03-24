@@ -45,6 +45,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationCon
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
@@ -368,9 +369,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (extDir != null && extDir.isDirectory()) {
             hybrisProjectSettings.setExternalExtensionsDirectory(FileUtil.toSystemIndependentName(extDir.getPath()));
         }
-        final File configDir = hybrisProjectDescriptor.getExternalConfigDirectory();
+        File configDir = hybrisProjectDescriptor.getExternalConfigDirectory();
         if (configDir != null && configDir.isDirectory()) {
             hybrisProjectSettings.setExternalConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
+        }
+        final ConfigHybrisModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
+        if (configModule != null) {
+            configDir = configModule.getRootDirectory();
+            if (configDir != null && configDir.isDirectory()) {
+                hybrisProjectSettings.setConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
+            }
         }
         final File dbDriversDir = hybrisProjectDescriptor.getExternalDbDriversDirectory();
         if (dbDriversDir != null && dbDriversDir.isDirectory()) {
