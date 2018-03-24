@@ -25,6 +25,7 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
@@ -39,7 +40,8 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
 
     protected void configureCommonRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
@@ -71,7 +73,8 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
 
     protected void configureBackOfficeRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
@@ -89,7 +92,8 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     protected void configureWebModuleRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
         final @NotNull ContentEntry contentEntry,
-        final File webModuleDirectory
+        @NotNull final File webModuleDirectory,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
 
