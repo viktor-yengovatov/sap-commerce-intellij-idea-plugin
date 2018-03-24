@@ -99,15 +99,6 @@ public class HybrisApplicationSettings {
     @PropertyName("usedActions")
     private HashSet<StatsCollector.ACTIONS> usedActions = new HashSet<>();
 
-    @PropertyName("hybrisInstanceUsername")
-    private String hybrisInstanceUsername = "admin";
-
-    @PropertyName("hybrisInstancePassword")
-    private String hybrisInstancePassword = "nimda";
-
-    @PropertyName("hybrisHostIP")
-    private String hybrisHostIP = "localhost";
-
     @PropertyName("followSymlink")
     private boolean followSymlink = true;
 
@@ -236,31 +227,6 @@ public class HybrisApplicationSettings {
         this.usedActions = usedActions;
     }
 
-
-    public String getHybrisInstanceUsername() {
-        return hybrisInstanceUsername;
-    }
-
-    public void setHybrisInstanceUsername(final String hybrisInstanceUsername) {
-        this.hybrisInstanceUsername = hybrisInstanceUsername;
-    }
-
-    public String getHybrisInstancePassword() {
-        return hybrisInstancePassword;
-    }
-
-    public void setHybrisInstancePassword(final String hybrisInstancePassword) {
-        this.hybrisInstancePassword = hybrisInstancePassword;
-    }
-
-    public String getHybrisHostIP() {
-        return hybrisHostIP;
-    }
-
-    public void setHybrisHostIP(final String hybrisHostIP) {
-        this.hybrisHostIP = hybrisHostIP;
-    }
-
     public boolean isFollowSymlink() {
         return followSymlink;
     }
@@ -349,7 +315,6 @@ public class HybrisApplicationSettings {
             .append(sourceCodeDirectory)
             .append(sourceZipUsed)
             .append(developmentMode)
-            .append(hybrisHostIP)
             .toHashCode();
     }
 
@@ -387,7 +352,6 @@ public class HybrisApplicationSettings {
             .append(sourceCodeDirectory, other.sourceCodeDirectory)
             .append(sourceZipUsed, other.sourceZipUsed)
             .append(developmentMode, other.developmentMode)
-            .append(hybrisHostIP, other.hybrisHostIP)
             .isEquals();
     }
 
@@ -415,7 +379,6 @@ public class HybrisApplicationSettings {
         sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');
         sb.append(", sourceZipUsed='").append(sourceZipUsed).append('\'');
         sb.append(", developmentMode='").append(developmentMode).append('\'');
-        sb.append(", hybrisHostIP='").append(hybrisHostIP).append('\'');
         sb.append('}');
         return sb.toString();
     }
