@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.AbstractHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
@@ -89,7 +90,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
     private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         final ConfigHybrisModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
-        String port = findPortProperty(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
+        String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES);
 
         if (port != null) {
             return port;
@@ -98,7 +99,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
             hybrisProjectDescriptor);
 
         if (platformDescriptor != null) {
-            port = findPortProperty(platformDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
+            port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES);
 
             if (port != null) {
                 return port;
@@ -108,8 +109,11 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
     }
 
 
-    private String findPortProperty(final File rootDirectory, final String fileName) {
-        final File propertiesFile = new File(rootDirectory, fileName);
+    private String findPortProperty(final AbstractHybrisModuleDescriptor moduleDescriptor, final String fileName) {
+        if (moduleDescriptor == null) {
+            return null;
+        }
+        final File propertiesFile = new File(moduleDescriptor.getRootDirectory(), fileName);
         if (!propertiesFile.exists()) {
             return null;
         }

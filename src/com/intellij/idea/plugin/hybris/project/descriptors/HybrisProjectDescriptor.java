@@ -50,7 +50,7 @@ public interface HybrisProjectDescriptor {
     void setModulesChosenForImport(@NotNull List<HybrisModuleDescriptor> moduleDescriptors);
 
     // convenience method for configurators
-    @NotNull
+    @Nullable
     ConfigHybrisModuleDescriptor getConfigHybrisModuleDescriptor();
 
     // convenience method for configurators

@@ -122,6 +122,9 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
     private String[] getGlobalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
         final ConfigHybrisModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
+        if (configDescriptor == null) {
+            return null;
+        }
         final File groupFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
         if (!groupFile.exists()) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
