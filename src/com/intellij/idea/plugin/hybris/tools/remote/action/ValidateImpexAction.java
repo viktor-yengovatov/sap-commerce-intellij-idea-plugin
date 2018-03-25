@@ -19,27 +19,32 @@
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.ExecuteHybrisConsole;
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ValidateImpexHttpClient;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-public class ValidateImpexAction extends AnAction {
+public class ValidateImpexAction extends AnAction implements DumbAware {
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
         final Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
         if (editor != null) {
             final SelectionModel selectionModel = editor.getSelectionModel();
-            final ValidateImpexHttpClient client = new ValidateImpexHttpClient();
-            final HybrisHttpResult hybrisHttpResult = client.validateImpex(e.getProject(), selectionModel.getSelectedText());
+            final HybrisHacHttpClient client = HybrisHacHttpClient.getInstance(e.getProject());
+            String content = selectionModel.getSelectedText();
+            if (content == null || content.trim().isEmpty()) {
+                content = editor.getDocument().getText();
+            }
+            final HybrisHttpResult hybrisHttpResult = client.validateImpex(e.getProject(), content);
 
             ExecuteHybrisConsole.getInstance().show(hybrisHttpResult, e.getProject());
         }

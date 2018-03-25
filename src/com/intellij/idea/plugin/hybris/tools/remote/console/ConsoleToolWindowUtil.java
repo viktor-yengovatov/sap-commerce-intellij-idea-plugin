@@ -105,8 +105,12 @@ public class ConsoleToolWindowUtil {
         toolWindow = ToolWindowManager.getInstance(project).registerToolWindow(
             "Hybris Console",
             true,
-            ToolWindowAnchor.BOTTOM
+            ToolWindowAnchor.BOTTOM,
+            project,
+            true,
+            true
         );
+
         toolWindow.setTitle("Hybris Console");
         toolWindow.setIcon(HybrisIcons.HYBRIS_ICON);
     }

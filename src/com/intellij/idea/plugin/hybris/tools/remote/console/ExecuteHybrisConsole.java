@@ -117,18 +117,21 @@ public class ExecuteHybrisConsole extends ExecuteConsole {
     private void handleBadRequest(final HybrisHttpResult httpResult, final Project project) {
         if (httpResult.getStatusCode() != SC_OK) {
             final StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-
+            final String message;
             if (httpResult.getStatusCode() == SC_NOT_FOUND || httpResult.getStatusCode() == SC_MOVED_TEMPORARILY) {
-                JBPopupFactory.getInstance().createHtmlTextBalloonBuilder(
-                    "Hybris Host URL '" + httpResult.getErrorMessage() + "' was incorrect. Please, check your settings.",
-                    MessageType.ERROR,
-                    null
-                ).setFadeoutTime(FADEOUT_TIME)
-                              .createBalloon().show(
-                    RelativePoint.getCenterOf(statusBar.getComponent()),
-                    Balloon.Position.atRight
-                );
+                message = "Hybris Host URL '" + httpResult.getErrorMessage() + "' was incorrect. Please, check your settings.";
+            } else {
+                message = httpResult.getErrorMessage();
             }
+            JBPopupFactory.getInstance().createHtmlTextBalloonBuilder(
+                message,
+                MessageType.ERROR,
+                null
+            ).setFadeoutTime(FADEOUT_TIME)
+                          .createBalloon().show(
+                RelativePoint.getCenterOf(statusBar.getComponent()),
+                Balloon.Position.atRight
+            );
         }
     }
 
