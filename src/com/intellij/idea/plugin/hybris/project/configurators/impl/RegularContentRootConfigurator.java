@@ -23,15 +23,22 @@ import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigur
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.jps.model.JpsElement;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
+import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
@@ -67,6 +74,13 @@ import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDe
  */
 public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
+    // module name -> relative paths
+    private static final Map<String, List<String>> ROOTS_TO_IGNORE = ContainerUtil.newHashMap();
+
+    static {
+        ROOTS_TO_IGNORE.put("acceleratorstorefrontcommons", ContainerUtil.list("commonweb/testsrc"));
+    }
+
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
@@ -79,8 +93,12 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getRootDirectory().getAbsolutePath()
         ));
 
+        final List<File> dirsToIgnore = ContainerUtil
+            .notNullize(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
+            .map(relPath -> new File(moduleDescriptor.getRootDirectory(), relPath))
+            .collect(Collectors.toList());
 
-        this.configureCommonRoots(moduleDescriptor, contentEntry);
+        this.configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
         if (moduleDescriptor.getRequiredExtensionNames().contains(HybrisConstants.HMC_EXTENSION_NAME)) {
             this.configureAdditionalRoots(
                 moduleDescriptor,
@@ -95,40 +113,41 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             contentEntry,
             moduleDescriptor.getRootDirectory()
         );
-        this.configureWebRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory());
-        this.configureCommonWebRoots(moduleDescriptor, contentEntry);
-        this.configureAcceleratorAddonRoots(moduleDescriptor, contentEntry);
-        this.configureBackOfficeRoots(moduleDescriptor, contentEntry);
+        this.configureWebRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
+        this.configureCommonWebRoots(moduleDescriptor, contentEntry, dirsToIgnore);
+        this.configureAcceleratorAddonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
+        this.configureBackOfficeRoots(moduleDescriptor, contentEntry, dirsToIgnore);
         this.configurePlatformRoots(moduleDescriptor, contentEntry);
     }
 
     protected void configureCommonRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
 
-        final File srcDirectory = new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(srcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE
-        );
-
-        final File genSrcDirectory = new File(moduleDescriptor.getRootDirectory(), GEN_SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(genSrcDirectory.getAbsolutePath()),
+        addSourceFolderIfNotIgnored(
+            contentEntry,
+            new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY),
             JavaSourceRootType.SOURCE,
-            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
+            dirsToIgnore
         );
 
-        addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory());
+        addSourceFolderIfNotIgnored(
+            contentEntry,
+            new File(moduleDescriptor.getRootDirectory(), GEN_SRC_DIRECTORY),
+            JavaSourceRootType.SOURCE,
+            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
+            dirsToIgnore
+        );
+
+        addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
 
         final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(resourcesDirectory.getAbsolutePath()),
-            JavaResourceRootType.RESOURCE
-        );
+
+        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore);
 
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
@@ -196,19 +215,21 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     protected void configureWebRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
-        @NotNull final File parentDirectory
+        @NotNull final File parentDirectory,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
         Validate.notNull(parentDirectory);
 
         final File webModuleDirectory = new File(parentDirectory, WEB_MODULE_DIRECTORY);
-        this.configureWebModuleRoots(moduleDescriptor, contentEntry, webModuleDirectory);
+        this.configureWebModuleRoots(moduleDescriptor, contentEntry, webModuleDirectory, dirsToIgnore);
     }
 
     protected void configureCommonWebRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
@@ -217,12 +238,13 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getRootDirectory(), COMMON_WEB_MODULE_DIRECTORY
         );
 
-        this.configureWebModuleRoots(moduleDescriptor, contentEntry, commonWebModuleDirectory);
+        this.configureWebModuleRoots(moduleDescriptor, contentEntry, commonWebModuleDirectory, dirsToIgnore);
     }
 
     protected void configureAcceleratorAddonRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
@@ -230,13 +252,14 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         final File commonWebModuleDirectory = new File(
             moduleDescriptor.getRootDirectory(), ACCELERATOR_ADDON_DIRECTORY
         );
-        this.configureWebRoots(moduleDescriptor, contentEntry, commonWebModuleDirectory);
+        this.configureWebRoots(moduleDescriptor, contentEntry, commonWebModuleDirectory, dirsToIgnore);
         this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, commonWebModuleDirectory);
     }
 
     protected void configureBackOfficeRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
@@ -251,7 +274,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JavaSourceRootType.SOURCE
         );
 
-        addTestSourceRoots(contentEntry, backOfficeModuleDirectory);
+        addTestSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore);
 
         final File hmcResourcesDirectory = new File(backOfficeModuleDirectory, RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -295,8 +318,9 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     protected void configureWebModuleRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        final @NotNull ContentEntry contentEntry,
-        final File webModuleDirectory
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final File webModuleDirectory,
+        @NotNull final List<File> dirsToIgnore
     ) {
         Validate.notNull(moduleDescriptor);
 
@@ -313,7 +337,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
-        addTestSourceRoots(contentEntry, webModuleDirectory);
+        addTestSourceRoots(contentEntry, webModuleDirectory, dirsToIgnore);
 
         excludeSubDirectories(contentEntry, webModuleDirectory, Arrays.asList(
             ADDON_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY, COMMON_WEB_SRC_DIRECTORY
@@ -322,11 +346,51 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         configureWebInf(contentEntry, moduleDescriptor, webModuleDirectory);
     }
 
-    private static void addTestSourceRoots(final @NotNull ContentEntry contentEntry, @NotNull final File dir) {
+    private static void addTestSourceRoots(
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final File dir,
+        @NotNull final List<File> dirsToIgnore) {
+
         for (String testSrcDirName : TEST_SRC_DIR_NAMES) {
+            addSourceFolderIfNotIgnored(
+                contentEntry,
+                new File(dir, testSrcDirName),
+                JavaSourceRootType.TEST_SOURCE,
+                dirsToIgnore
+            );
+        }
+    }
+
+    private static <P extends JpsElement> void addSourceFolderIfNotIgnored(
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final File testSrcDir,
+        @NotNull final JpsModuleSourceRootType<P> rootType,
+        @NotNull final List<File> dirsToIgnore
+    ) {
+        addSourceFolderIfNotIgnored(
+            contentEntry,
+            testSrcDir,
+            rootType,
+            rootType.createDefaultProperties(),
+            dirsToIgnore
+        );
+    }
+
+    // /Users/Evgenii/work/upwork/test-projects/pawel-hybris/bin/ext-accelerator/acceleratorstorefrontcommons/testsrc
+    // /Users/Evgenii/work/upwork/test-projects/pawel-hybris/bin/ext-accelerator/acceleratorstorefrontcommons/commonweb/testsrc
+
+    private static <P extends JpsElement> void addSourceFolderIfNotIgnored(
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final File testSrcDir,
+        @NotNull final JpsModuleSourceRootType<P> rootType,
+        @NotNull P properties,
+        @NotNull final List<File> dirsToIgnore
+    ) {
+        if (dirsToIgnore.stream().noneMatch(it -> FileUtil.isAncestor(it, testSrcDir, false))) {
             contentEntry.addSourceFolder(
-                VfsUtil.pathToUrl(new File(dir, testSrcDirName).getAbsolutePath()),
-                JavaSourceRootType.TEST_SOURCE
+                VfsUtil.pathToUrl(testSrcDir.getAbsolutePath()),
+                rootType,
+                properties
             );
         }
     }
