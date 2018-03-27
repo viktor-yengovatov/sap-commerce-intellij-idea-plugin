@@ -193,6 +193,6 @@ public interface HybrisConstants {
     String HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR";
     String GROUP_OVERRIDE_FILENAME = "hybris4intellij.properties";
     String GROUP_OVERRIDE_KEY = "group.override";
-    String LOCAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group. Add a property group.override and value group name. if you use subgroups use / as a separator. for example group.override=mygroup/mysubgroup";
-    String GLOBAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group for your extensions. Add a property <modulename>.group.override and as a value group name. if you use subgroups use / as a separator. for example myextension.group.override=mygroup/mysubgroup. It is recommended to keep custom hybris modules within custom group i.e. custom/subgroup so that the generated search scopes would function correctly.";
+    String LOCAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group. Add a property group.override and value group name.\nIf you use subgroups use / as a separator. For example group.override=mygroup/mysubgroup";
+    String GLOBAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group for your extensions.\nAdd a property <modulename>.group.override and group name as a value.\nIf you use subgroups use / as a separator. For example myextension.group.override=mygroup/mysubgroup.\nIt is recommended to keep custom hybris modules within custom group i.e. custom/subgroup, so that the generated search scopes would function correctly.";
 }
