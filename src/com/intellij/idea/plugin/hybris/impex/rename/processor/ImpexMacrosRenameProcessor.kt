@@ -46,7 +46,7 @@ class ImpexMacrosRenameProcessor : RenamePsiElementProcessor() {
         return psiElements.map { ImpexMacrosReferenceBase(it) }.toMutableList()
     }
 
-    override fun renameElement(element: PsiElement?, newName: String?, usages: Array<out UsageInfo>?, listener: RefactoringElementListener?) {
+    override fun renameElement(element: PsiElement, newName: String, usages: Array<out UsageInfo>, listener: RefactoringElementListener?) {
         if (element == null || newName == null) {
             return
         }
