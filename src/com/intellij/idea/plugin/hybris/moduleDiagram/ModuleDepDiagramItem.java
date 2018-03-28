@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.moduleDiagram;
 
-import com.android.annotations.Nullable;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Eugene.Kudelevsky
