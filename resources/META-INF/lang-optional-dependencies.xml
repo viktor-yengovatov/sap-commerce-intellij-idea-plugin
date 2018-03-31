@@ -271,16 +271,12 @@
         <group id="ImpexRemoteControl.Actions" text="Impex Remote Control" popup="true" icon="/icons/hybrisIcon.png">
             <action id="ImpexRemoteControl.Validate"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
-                    text="Validate selected Impex"
-                    icon="/icons/hybrisIcon.png"
-                    description="Validate IMPEX file via remote hybris instance">
+                    icon="/icons/hybrisIcon.png">
             </action>
 
             <action id="ImpexRemoteControl.Import"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ImportImpexAction"
-                    text="Import selected Impex"
-                    icon="/icons/hybrisIcon.png"
-                    description="Import IMPEX file to remote hybris instance">
+                    icon="/icons/hybrisIcon.png">
             </action>
 
             <add-to-group group-id="CodeMenu" anchor="last"/>
