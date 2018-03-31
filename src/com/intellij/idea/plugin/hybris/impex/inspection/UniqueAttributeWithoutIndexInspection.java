@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase.TypeSystemResolveResult;
+import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemValidationUtils;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
@@ -37,7 +38,9 @@ import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.xml.XmlElement;
 import com.intellij.util.ObjectUtils;
+import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +48,7 @@ import org.jetbrains.annotations.Nullable;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
 
@@ -74,6 +78,9 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             if (domAttribute == null) {
                 return;
             }
+            if (!isCustomAttribute(domAttribute)) {
+                return;
+            }
             String attributeName = domAttribute.getQualifier().getStringValue();
             if (StringUtil.isEmptyOrSpaces(attributeName)) {
                 return;
@@ -90,6 +97,14 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
                 param,
                 MessageFormat.format("Attribute ''{0}'' does not have an index", attributeName)
             );
+        }
+
+        private boolean isCustomAttribute(final Attribute attribute) {
+            return Optional.ofNullable(attribute)
+                           .map(DomElement::getXmlElement)
+                           .map(XmlElement::getContainingFile)
+                           .map(TypeSystemValidationUtils::isCustomExtensionFile)
+                           .orElse(false);
         }
 
         private boolean hasIndexForAttribute(
