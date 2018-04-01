@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.http;
 import com.google.gson.Gson;
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.http.HttpResponse;
@@ -46,7 +45,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     private static final Logger LOG = Logger.getInstance(HybrisHacHttpClient.class);
 
     public static HybrisHacHttpClient getInstance(@NotNull final Project project) {
-        return ServiceManager.getService(project, HybrisHacHttpClient.class);
+        return project.getComponent(HybrisHacHttpClient.class);
     }
 
     public @NotNull
