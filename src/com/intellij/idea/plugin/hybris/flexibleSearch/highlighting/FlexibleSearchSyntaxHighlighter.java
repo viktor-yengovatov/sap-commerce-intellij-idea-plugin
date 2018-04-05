@@ -148,7 +148,7 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
         } else if (tokenType.equals(FlexibleSearchParserDefinition.COMMENT)) {
             return COMMENT_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
-            return BAD_CHARACTER_KEYS;
+            return STRING_KEYS;
         } else {
             return EMPTY_KEYS;
         }
