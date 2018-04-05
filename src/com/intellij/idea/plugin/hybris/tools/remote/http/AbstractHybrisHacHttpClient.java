@@ -38,6 +38,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -184,6 +185,8 @@ public abstract class AbstractHybrisHacHttpClient {
             HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());
             res = Jsoup.connect(hacURL).method(Method.GET).execute();
             return res;
+        } catch (ConnectException ce) {
+            return null;
         } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
             LOG.info(e.getMessage(), e);
             return null;

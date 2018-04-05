@@ -112,7 +112,7 @@ public class ConsoleToolWindowUtil {
         );
 
         toolWindow.setTitle("Hybris Console");
-        toolWindow.setIcon(HybrisIcons.HYBRIS_ICON);
+        toolWindow.setIcon(HybrisIcons.HYBRIS_ICON_13x13);
     }
 
     private Content createConsoleContent(final ConsoleView console, final String title, final String description) {
