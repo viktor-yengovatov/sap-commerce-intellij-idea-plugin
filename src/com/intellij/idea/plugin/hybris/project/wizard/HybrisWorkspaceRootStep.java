@@ -269,9 +269,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
 
         this.getContext().getHybrisProjectDescriptor().setSourceCodeFile(
-            sourceCodeCheckBox.isSelected()
-                ? new File(this.sourceCodeFilesInChooser.getText())
-                : null
+            getValidSourceCode()
         );
 
         this.getWizardContext().setProjectName(this.projectNameTextField.getText());
@@ -309,6 +307,23 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         this.getContext().getHybrisProjectDescriptor().setHybrisVersion(hybrisVersion);
 
         this.getContext().setRootProjectDirectory(new File(this.getContext().getFileToImport()));
+    }
+
+    private File getValidSourceCode() {
+        if (!sourceCodeCheckBox.isSelected()) {
+            return null;
+        }
+        File sourceCodeFile = new File(this.sourceCodeFilesInChooser.getText());
+        if (!sourceCodeFile.exists()) {
+            return null;
+        }
+        if (sourceCodeFile.isDirectory()) {
+            final File hybrisFile = new File(this.hybrisDistributionDirectoryFilesInChooser.getText());
+            if (sourceCodeFile.getAbsolutePath().equals(hybrisFile.getAbsolutePath())) {
+                return null;
+            }
+        }
+        return sourceCodeFile;
     }
 
     @Override
