@@ -26,12 +26,15 @@ import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorBundle;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.LicensingFacade;
+import com.intellij.util.PlatformUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -149,6 +152,9 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     @Override
     public boolean shouldShowPermissionToSendStatisticsDialog() {
         final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
+        if (StatsCollector.getInstance().isOpenCollectiveContributor()) {
+            return !settings.isAllowedSendingPlainStatistics() && !settings.isDisallowedSendingStatistics();
+        }
         return !settings.isAllowedSendingPlainStatistics() && !settings.isDevelopmentMode();
     }
 
@@ -204,6 +210,18 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
             LOG.info(e.getMessage(), e);
         }
         return null;
+    }
+
+    @Override
+    public boolean isDiscountTargetGroup() {
+        LicensingFacade licensingFacade = LicensingFacade.getInstance();
+        return licensingFacade == null || licensingFacade.isEvaluationLicense() || PlatformUtils.isIdeaCommunity();
+    }
+
+    @Override
+    public boolean isFansTargetGroup() {
+        LicensingFacade licensingFacade = LicensingFacade.getInstance();
+        return licensingFacade != null && !licensingFacade.getLicensedToMessage().startsWith("Licensed to SAP");
     }
 
     private boolean matchAllModuleNames(

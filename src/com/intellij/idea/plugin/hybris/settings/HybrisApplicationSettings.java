@@ -105,6 +105,9 @@ public class HybrisApplicationSettings {
     @PropertyName("allowedSendingPlainStatistics")
     private boolean allowedSendingPlainStatistics = false;
 
+    @PropertyName("disallowedSendingStatistics")
+    private boolean disallowedSendingStatistics = false;
+
     @PropertyName("developmentMode")
     private boolean developmentMode = false;
 
@@ -243,6 +246,14 @@ public class HybrisApplicationSettings {
         this.allowedSendingPlainStatistics = allowedSendingPlainStatistics;
     }
 
+    public boolean isDisallowedSendingStatistics() {
+        return disallowedSendingStatistics;
+    }
+
+    public void setDisallowedSendingStatistics(final boolean disallowedSendingStatistics) {
+        this.disallowedSendingStatistics = disallowedSendingStatistics;
+    }
+
     public String getExternalDbDriversDirectory() {
         return externalDbDriversDirectory;
     }
@@ -311,6 +322,7 @@ public class HybrisApplicationSettings {
             .append(followSymlink)
             .append(scanThroughExternalModule)
             .append(allowedSendingPlainStatistics)
+            .append(disallowedSendingStatistics)
             .append(externalDbDriversDirectory)
             .append(sourceCodeDirectory)
             .append(sourceZipUsed)
@@ -348,6 +360,7 @@ public class HybrisApplicationSettings {
             .append(followSymlink, other.followSymlink)
             .append(scanThroughExternalModule, other.scanThroughExternalModule)
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
+            .append(disallowedSendingStatistics, other.disallowedSendingStatistics)
             .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(sourceCodeDirectory, other.sourceCodeDirectory)
             .append(sourceZipUsed, other.sourceZipUsed)
@@ -375,6 +388,7 @@ public class HybrisApplicationSettings {
         sb.append(", followSymlink='").append(followSymlink).append('\'');
         sb.append(", scanThroughExternalModule='").append(scanThroughExternalModule).append('\'');
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
+        sb.append(", disallowedSendingStatistics='").append(disallowedSendingStatistics).append('\'');
         sb.append(", externalDbDriversDirectory='").append(externalDbDriversDirectory).append('\'');
         sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');
         sb.append(", sourceZipUsed='").append(sourceZipUsed).append('\'');

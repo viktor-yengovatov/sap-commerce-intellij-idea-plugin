@@ -25,7 +25,7 @@
             <properties>
               <editable value="false"/>
               <margin top="10" left="10" bottom="10" right="10"/>
-              <text resource-bundle="i18n/HybrisBundle" key="evaluation.license.discount.offer.step.text"/>
+              <text resource-bundle="i18n/HybrisBundle" key="support.us.step.text"/>
             </properties>
           </component>
         </children>
@@ -38,7 +38,7 @@
           <font style="1"/>
           <horizontalAlignment value="0"/>
           <horizontalTextPosition value="11"/>
-          <text resource-bundle="i18n/HybrisBundle" key="evaluation.license.discount.offer.step.title"/>
+          <text resource-bundle="i18n/HybrisBundle" key="support.us.step.title"/>
         </properties>
       </component>
     </children>

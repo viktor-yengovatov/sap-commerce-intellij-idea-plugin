@@ -60,4 +60,8 @@ public interface CommonIdeaService {
     String getHostHacUrl(final Project project);
 
     String getHostUrl(final Project project);
+
+    boolean isDiscountTargetGroup();
+
+    boolean isFansTargetGroup();
 }

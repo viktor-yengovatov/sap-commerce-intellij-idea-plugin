@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -42,7 +43,11 @@ public class PermissionToSendStatisticsDialog extends DialogWrapper {
         super(project, false, DialogWrapper.IdeModalityType.PROJECT);
         myProject = project;
         setTitle(HybrisI18NBundleUtils.message("hybris.stats.permission.label"));
-        setCancelButtonText(HybrisI18NBundleUtils.message("hybris.stats.permission.cancel"));
+        if (StatsCollector.getInstance().isOpenCollectiveContributor()) {
+            setCancelButtonText(HybrisI18NBundleUtils.message("hybris.stats.permission.no"));
+        } else {
+            setCancelButtonText(HybrisI18NBundleUtils.message("hybris.stats.permission.cancel"));
+        }
         permissionToSendStatisticsCheckBox.addItemListener(e -> setOKActionEnabled(e.getStateChange() == ItemEvent.SELECTED));
         init();
     }
@@ -62,6 +67,10 @@ public class PermissionToSendStatisticsDialog extends DialogWrapper {
     @Override
     public void doCancelAction() {
         super.doCancelAction();
+        if (StatsCollector.getInstance().isOpenCollectiveContributor()) {
+            HybrisApplicationSettingsComponent.getInstance().getState().setDisallowedSendingStatistics(true);
+            return;
+        }
         ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
             LOG.error("User chose to close the project.");
             ProjectManager.getInstance().closeProject(myProject);
