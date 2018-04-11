@@ -37,33 +37,11 @@ You can install this plugin to your IDE directly from the [repository](https://p
 * AlexanderBartash@gmail.com
 * Martin.Zdarsky@hybris.com
 
-## Credits ##
-* Alexander Bartash
-* Vlad Bozhenok
-* Martin Zdarsky-Jones
-* Alexander Nosov
-* Eugene Kudelevsky
-* Cristian Caprar
-* Michael Golubev
-* Nicko Cadell
-* Dan Wanigasekera
-* Markus Priegl
-* Sergei Aksenenko
-* Roger Ye
-* Hector Longarte
-
-### Contributors
-
-This project exists thanks to all the people who contribute.
-<a href="graphs/contributors"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/contributors.svg?width=890&button=false" /></a>
-
-
 ### Backers
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/hybris-integration-intellij-idea-plugin#backer)]
 
 <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin#backers" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/backers.svg?width=890"></a>
-
 
 ### Sponsors
 
@@ -80,4 +58,22 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/8/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/9/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/9/avatar.svg"></a>
 
+### Contributors and Developers
 
+This project exists thanks to all the people who contribute.
+<a href="graphs/contributors"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/contributors.svg?width=890&button=false"/></a>
+* Alexander Bartash
+* Vlad Bozhenok
+* Martin Zdarsky-Jones
+* Alexander Nosov
+* Eugene Kudelevsky
+* Cristian Caprar
+* Daniel Carter
+* Oleksandr Mishchuk
+* Michael Golubev
+* Nicko Cadell
+* Dan Wanigasekera
+* Markus Priegl
+* Sergei Aksenenko
+* Roger Ye
+* Hector Longarte

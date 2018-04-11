@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
   ~ This file is part of "hybris integration" plugin for Intellij IDEA.
@@ -20,9 +20,7 @@
 
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <id>ccom.intellij.idea.plugin.hybris.impex</id>
-    <name>hybris integration</name>
-    <version>8.2.4</version>
+    <xi:include href="/META-INF/plugin-release-info.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -37,118 +35,6 @@
     <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="diagram-optional-dependencies.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="properties-optional-dependencies.xml">com.intellij.properties</depends>
-
-    <vendor email="AlexanderBartash@gmail.com"
-            url="https://hybris-integration.atlassian.net/wiki/display/IIPPS/Intellij+IDEA+Plugin+Public+Space">
-        Alexander Bartash
-    </vendor>
-
-    <description>
-        <![CDATA[
-          This plugin is an open source plugin for SAP Hybris Commerce integration.
-
-          <br/>
-          <br/>
-          Bug tracker: <a href="https://hybris-integration.atlassian.net/projects/IIPS">Intellij IDEA Plugin Support</a>
-
-          <br/>
-          <br/>
-          If you have any questions you can send an email to:
-          <br/>
-          <a href="mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com">Alexander Bartash</a> (repo owner)
-          <br/>
-          <a href="mailto:martin.zdarsky@hybris.com?cc=AlexanderBartash@gmail.com">Martin Zdarsky-Jones</a>
-
-          <br/>
-          <br/>
-          <b>Features:</b>
-          <br/>
-          - Import of Hybris extensions to Intellij IDEA.
-          <br/>
-          - Automatic configuration of Spring, Web and Ant Intellij IDEA plugins.
-          <br/>
-          - Custom editor for impex files with automatic formatting, find usages and go to declaration actions.
-          <br/>
-          - Custom editor for items.xml with validation and easy navigation.
-          <br/>
-          - Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).
-          <br/>
-          - Enhanced project view tree.
-          <br/>
-          - Syntax highlighting for flexible search queries.
-
-          <br/>
-          <br/>
-          <b>Contribution guidelines:</b>
-          <br/>
-          - Please read <a href="http://developercertificate.org/">Contributor License Agreement</a>
-          <br/>
-          - Available tasks are in our <a href="https://hybris-integration.atlassian.net/projects/IIP">JIRA</a> (requires a login but you can <a href="https://hybris-integration.atlassian.net/admin/users/sign-up">sign-up</a>) also you can suggest new features or report bugs without login on our <a href="https://hybris-integration.atlassian.net/projects/IIPS">Support Desk</a> it has anonymous access.
-          <br/>
-          - <a href="https://hybris-integration.atlassian.net/wiki/display/IIPPS/How+to+Configure+Project+Environment+For+Plugin+Developers">How to Configure Project Environment For Plugin Developers</a>
-          <br/>
-          - We are working with <a href="https://www.atlassian.com/git/tutorials/making-a-pull-request/">Pull Requests</a> because it allows us to review the code before merging it. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.
-          <br/>
-          - Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
-          <br/>
-          - For additional questions you can send an email to <a href="mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com">Alexander Bartash</a> or <a href="mailto:martin.zdarsky@hybris.com?cc=AlexanderBartash@gmail.com">Martin Zdarsky-Jones</a>
-
-          <br/>
-          <br/>
-          By installing thing plugin you agree to sending us anonymous statistics about plugin usage. We do not collect any information about you or your project. We just want to know which features from this plugin our users need most and learn new ways to make thing plugin better.
-
-          <br/>
-          <br/>
-          <b>Developers:</b>
-          <br/>
-          - Alexander Bartash
-          <br/>
-          - Vlad Bozhenok
-          <br/>
-          - Martin Zdarsky-Jones
-          <br/>
-          - Alexander Nosov
-          <br/>
-          - Eugene Kudelevsky
-          <br/>
-          - Cristian Caprar
-          <br/>
-          - Michael Golubev
-          <br/>
-          - Nicko Cadell
-          <br/>
-          - Dan Wanigasekera
-          <br/>
-          - Markus Priegl
-          <br/>
-          - Sergei Aksenenko
-          <br/>
-          - Roger Ye
-          <br/>
-          - Hector Longarte
-      ]]>
-    </description>
-
-    <change-notes>
-        <![CDATA[
-            <h2>Task</h2>
-            <ul>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIP-384'>IIP-384</a>] - Preserve case of mixed case hybris extensions
-                </li>
-            </ul>
-
-            <h2>Fault</h2>
-            <ul>
-                <li>
-                    [<a href='https://hybris-integration.atlassian.net/browse/IIPS-122'>IIPS-122</a>] - Hybris Parameterized Integration tests
-                </li>
-            </ul>
-        ]]>
-    </change-notes>
-
-    <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="173"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-community.xml" xpointer="xpointer(/idea-plugin/*)"/>
