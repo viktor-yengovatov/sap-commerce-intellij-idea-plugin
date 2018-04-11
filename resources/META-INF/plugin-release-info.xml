@@ -17,13 +17,13 @@
           <p>This plugin is an open source plugin for SAP Hybris Commerce integration.</p>
           <p>Bug tracker: <a href="https://hybris-integration.atlassian.net/projects/IIPS">Intellij IDEA Plugin Support</a></p>
 
-          <h3>If you have any questions you can send an email to:</h3>
+          <b>If you have any questions you can send an email to:</b>
           <ul>
               <li><a href="mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com">Alexander Bartash</a> (repo owner)</li>
               <li><a href="mailto:martin.zdarsky@hybris.com?cc=AlexanderBartash@gmail.com">Martin Zdarsky-Jones</a></li>
           </ul>
 
-          <h3>Features:</h3>
+          <b>Features:</b>
           <ul>
               <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation and correct unit and integration tests execution.</li>
               <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
@@ -38,7 +38,7 @@
               <li>And much more</li>
           </ul>
 
-          <h3>Contribution guidelines:</h3>
+          <b>Contribution guidelines:</b>
           <ul>
               <li>Please read <a href="http://developercertificate.org/">Contributor License Agreement</a></li>
               <li>Available tasks are in our <a href="https://hybris-integration.atlassian.net/projects/IIP">JIRA</a> (requires a login but you can <a href="https://hybris-integration.atlassian.net/admin/users/sign-up">sign-up</a>) also you can suggest new features or report bugs without login on our <a href="https://hybris-integration.atlassian.net/projects/IIPS">Support Desk</a> it has anonymous access.</li>
@@ -50,26 +50,32 @@
 
           <p>By installing thing plugin you agree to sending us anonymous statistics about plugin usage. We do not collect any information about you or your project. We just want to know which features from this plugin our users need most and learn new ways to make thing plugin better.</p>
 
-          <h3>Backers</h3>
+          <b>Backers</b>
           <p>Thank you to all our backers!</p>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin#backers" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/backers.svg?width=890"></a>
+          <p>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin#backers" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/backers.svg?width=890"></a>
+          </p>
 
-          <h3>Sponsors</h3>
+          <b>Sponsors</b>
           <p>Support this project by becoming a sponsor. Your logo will show up here with a link to your website.</p>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/0/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/0/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/1/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/1/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/2/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/2/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/3/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/3/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/4/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/4/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/5/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/5/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/6/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/6/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/7/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/7/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/8/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/8/avatar.svg"></a>
-          <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/9/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/9/avatar.svg"></a>
+          <p>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/0/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/0/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/1/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/1/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/2/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/2/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/3/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/3/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/4/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/4/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/5/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/5/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/6/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/6/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/7/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/7/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/8/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/8/avatar.svg"></a>
+              <a href="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/9/website" target="_blank"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/sponsor/9/avatar.svg"></a>
+          </p>
 
-          <h3>Contributors and Developers</h3>
+          <b>Contributors and Developers</b>
           <p>This project exists thanks to all the people who contribute.</p>
-          <a href="graphs/contributors"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/contributors.svg?width=890&button=false"/></a>
+          <p>
+              <a href="graphs/contributors"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/contributors.svg?width=890&button=false"/></a>
+          </p>
           <ul>
               <li>Alexander Bartash</li>
               <li>Vlad Bozhenok</li>
