@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.find.FindSettings;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet;
@@ -80,7 +81,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         if (groupExists(model, nonHybrisGroupName)) {
             newScopes.add(createScope(project, nonHybrisGroupName));
         }
-        addOrReplaceScopes(project, newScopes);
+        ApplicationManager.getApplication().invokeLater(() -> addOrReplaceScopes(project, newScopes));
 
         NamedScope defaultScope = customScope != null ? customScope : hybrisScope != null ? hybrisScope : platformScope;
         if (defaultScope != null) {
