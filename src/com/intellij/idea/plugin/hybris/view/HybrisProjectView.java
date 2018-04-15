@@ -119,7 +119,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         final ProjectViewModuleGroupNode parent,
         final Collection<AbstractTreeNode> children
     ) {
-        if (parent.getValue() instanceof ModuleGroup) {
+        if (parent.getValue() != null) {
             ModuleGroup moduleGroup = parent.getValue();
             if (Arrays.equals(moduleGroup.getGroupPath(), commerceGroupName) ||
                 Arrays.equals(moduleGroup.getGroupPath(), platformGroupName)) {

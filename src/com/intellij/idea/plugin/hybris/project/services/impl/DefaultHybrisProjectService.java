@@ -91,7 +91,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
                 // this will override bin/ext-* naming convention.
                 return false;
             }
-            ;
         }
         return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX)
                && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();

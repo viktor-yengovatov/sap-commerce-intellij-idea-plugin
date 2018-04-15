@@ -279,9 +279,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
 
         this.getContext().getHybrisProjectDescriptor().setExternalExtensionsDirectory(
-            directoryOverrideCheckBox.isSelected()
-                ? new File(this.externalExtensionsDirectoryFilesInChooser.getText())
-                : null
+            new File(this.externalExtensionsDirectoryFilesInChooser.getText())
         );
 
         this.getContext().getHybrisProjectDescriptor().setExternalConfigDirectory(

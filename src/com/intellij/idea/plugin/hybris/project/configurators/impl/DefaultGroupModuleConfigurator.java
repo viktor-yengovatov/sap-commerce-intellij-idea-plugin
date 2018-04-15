@@ -26,11 +26,13 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescri
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GLOBAL_GROUP_OVERRIDE_COMMENTS;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GROUP_OVERRIDE_KEY;
@@ -177,31 +178,50 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return groupPlatform;
         }
+
         if (moduleDescriptor instanceof ExtHybrisModuleDescriptor) {
             return groupPlatform;
         }
+
         if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
             return groupCustom;
         }
+
         if (moduleDescriptor instanceof RootModuleDescriptor) {
             return groupNonHybris;
         }
-        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor) {
-            if (requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
-                return groupCustom;
-            }
-            return groupOtherCustom;
-        }
-        if (requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
-            return Stream.of(groupHybris, getExtDirectoryName(moduleDescriptor))
-                         .flatMap(Stream::of)
-                         .toArray(String[]::new);
-        }
-        return groupOtherHybris;
-    }
 
-    private String[] getExtDirectoryName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
-        return new String[] {moduleDescriptor.getRootDirectory().getParentFile().getName()};
+        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor) {
+            final List<String> path = FileUtils.getPathToParentDirectoryFrom(
+                moduleDescriptor.getRootDirectory(),
+                moduleDescriptor.getRootProjectDescriptor().getExternalExtensionsDirectory()
+            );
+
+            final boolean isCustomModuleInLocalExtensionsXml = this.requiredHybrisModuleDescriptorList.contains(
+                moduleDescriptor
+            );
+
+            return ArrayUtils.addAll(
+                isCustomModuleInLocalExtensionsXml ? this.groupCustom : this.groupOtherCustom,
+                path.toArray(new String[0])
+            );
+        }
+
+        if (this.requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
+            final File hybrisBinDirectory = new File(
+                moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(),
+                HybrisConstants.BIN_DIRECTORY
+            );
+
+            final List<String> path = FileUtils.getPathToParentDirectoryFrom(
+                moduleDescriptor.getRootDirectory(),
+                hybrisBinDirectory
+            );
+
+            return ArrayUtils.addAll(this.groupHybris, path.toArray(new String[0]));
+        }
+
+        return groupOtherHybris;
     }
 
     private void readSettings() {
