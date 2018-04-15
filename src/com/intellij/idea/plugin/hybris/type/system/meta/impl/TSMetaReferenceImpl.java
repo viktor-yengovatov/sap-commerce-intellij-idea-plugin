@@ -66,12 +66,14 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
         private final String myTypeName;
         private final String myRole;
         private final boolean myNavigatable;
+        private final RelationElement relationElement;
 
         public ReferenceEndImpl(
             final @NotNull TSMetaModelImpl metaModel,
             final @NotNull TSMetaReference owner,
             final @NotNull RelationElement dom
         ) {
+            this.relationElement = dom;
             myOwner = owner;
             myMetaModel = metaModel;
             myDomAnchor = DomService.getInstance().createAnchor(dom);
@@ -113,6 +115,12 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
         @Override
         public TSMetaReference getOwningReference() {
             return myOwner;
+        }
+
+        @NotNull
+        @Override
+        public RelationElement getRelationElement() {
+            return relationElement;
         }
     }
 }
