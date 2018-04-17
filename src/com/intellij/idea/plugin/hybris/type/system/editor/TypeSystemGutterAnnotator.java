@@ -27,10 +27,10 @@ import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
@@ -58,44 +58,51 @@ public class TypeSystemGutterAnnotator implements Annotator {
     public void annotate(
         @NotNull final PsiElement psiElement, @NotNull final AnnotationHolder annotationHolder
     ) {
-        if (psiElement instanceof XmlTag && isTypeSystemXmlFile(psiElement.getContainingFile())) {
-            final Project project = psiElement.getProject();
-            final DomElement dom = DomManager.getDomManager(project).getDomElement((XmlTag) psiElement);
+        if (!(psiElement instanceof XmlAttributeValue) ||
+            !isTypeSystemXmlFile(psiElement.getContainingFile())) {
+            return;
+        }
+        final XmlTag parentTag = PsiTreeUtil.getParentOfType(psiElement, XmlTag.class);
 
-            if (dom instanceof ItemType) {
-                final ItemType itemType = (ItemType) dom;
-                if (itemType.getCode().getXmlAttributeValue() == null) {
-                    return;
-                }
+        if (parentTag == null) {
+            return;
+        }
+        final DomElement dom = DomManager.getDomManager(parentTag.getProject()).getDomElement(parentTag);
 
-                final Collection<? extends PsiElement> alternativeDoms = findAlternativeDoms(itemType);
-                if (!alternativeDoms.isEmpty()) {
-                    NavigationGutterIconBuilder
-                        .create(AllIcons.Actions.Nextfile, TypeSystemGutterAnnotator::findAlternativeDoms)
-                        .setTarget(itemType)
-                        .setTooltipText(alternativeDoms.size() > 1
-                                            ? "Alternative Definitions"
-                                            : "Alternative Definition")
-                        .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-                        .install(annotationHolder, itemType.getCode().getXmlAttributeValue());
-                }
+        if (dom instanceof ItemType) {
+            final ItemType itemType = (ItemType) dom;
+            if (!psiElement.equals(itemType.getCode().getXmlAttributeValue())) {
+                return;
+            }
 
-                final Optional<TSMetaClass> firstExtender = findFirstExtendingMetaClass(itemType);
-                if (firstExtender.isPresent()) {
-                    NavigationGutterIconBuilder
-                        .create(
-                            AllIcons.Gutter.OverridenMethod,
-                            TypeSystemGutterAnnotator::findAllExtendingXmlAttributes
-                        )
-                        .setTarget(itemType)
-                        .setAlignment(GutterIconRenderer.Alignment.LEFT)
-                        .setTooltipText("Has subtypes")
-                        .install(annotationHolder, itemType.getCode().getXmlAttributeValue());
-                }
+            final Collection<? extends PsiElement> alternativeDoms = findAlternativeDoms(itemType);
+            if (!alternativeDoms.isEmpty()) {
+                NavigationGutterIconBuilder
+                    .create(AllIcons.Actions.Nextfile, TypeSystemGutterAnnotator::findAlternativeDoms)
+                    .setTarget(itemType)
+                    .setTooltipText(alternativeDoms.size() > 1
+                                        ? "Alternative Definitions"
+                                        : "Alternative Definition")
+                    .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+                    .install(annotationHolder, psiElement);
+            }
+
+            final Optional<TSMetaClass> firstExtender = findFirstExtendingMetaClass(itemType);
+            if (firstExtender.isPresent()) {
+                NavigationGutterIconBuilder
+                    .create(
+                        AllIcons.Gutter.OverridenMethod,
+                        TypeSystemGutterAnnotator::findAllExtendingXmlAttributes
+                    )
+                    .setTarget(itemType)
+                    .setAlignment(GutterIconRenderer.Alignment.LEFT)
+                    .setTooltipText("Has subtypes")
+                    .install(annotationHolder, psiElement);
             }
         }
     }
 
+    @NotNull
     private static Collection<XmlAttributeValue> findAlternativeDoms(@NotNull final ItemType source) {
         final String code = source.getCode().getStringValue();
 
@@ -125,6 +132,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
         return getExtendingMetaClassNamesStream(source).findAny();
     }
 
+    @NotNull
     private static Collection<PsiElement> findAllExtendingXmlAttributes(@NotNull final ItemType source) {
         return getExtendingMetaClassNamesStream(source)
             .flatMap(TSMetaClass::retrieveAllDomsStream)
