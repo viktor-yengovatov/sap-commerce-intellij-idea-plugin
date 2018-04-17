@@ -55,7 +55,9 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ### Contributors and Developers
 
 This project exists thanks to all the people who contribute.
+
 <a href="graphs/contributors"><img src="https://opencollective.com/hybris-integration-intellij-idea-plugin/contributors.svg?width=890&button=false"/></a>
+
 * Alexander Bartash
 * Vlad Bozhenok
 * Martin Zdarsky-Jones
