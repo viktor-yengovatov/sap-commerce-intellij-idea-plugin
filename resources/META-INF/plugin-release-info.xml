@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.4.5</version>
+    <version>8.4.6</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -100,12 +100,18 @@
         <![CDATA[
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-403'>IIP-403</a>] - Group custom extensions by directory the same way OOTB extensions are grouped</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-404'>IIP-404</a>] - TS diagram dependencies filter doesn&#39;t respect other filters
+                </li>
             </ul>
 
-            <h2>Sub-task</h2>
+            <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-345'>IIP-345</a>] - Add dependencies to TS diagram</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-406'>IIP-406</a>] - FileUtils.getPathToParentDirectoryFrom must not be null</li>
+            </ul>
+
+            <h2>Fault</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-139'>IIPS-139</a>] - LogEventException in DefaultSearchScopeConfigurator</li>
             </ul>
         ]]>
     </change-notes>
