@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -45,6 +46,7 @@ public class HybrisProjectSettings {
     protected String externalDbDriversDirectory;
     protected String ideModulesFilesDirectory;
     protected String hostIP = "localhost";
+    protected String port = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
     protected String hacLogin = "admin";
     protected String hacPassword = "nimda";
     protected boolean importOotbModulesInReadOnlyMode;
@@ -159,6 +161,14 @@ public class HybrisProjectSettings {
         this.hostIP = hostIP;
     }
 
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(final String port) {
+        this.port = port;
+    }
+
     public String getHacLogin() {
         return hacLogin;
     }
@@ -247,6 +257,7 @@ public class HybrisProjectSettings {
             .append(externalDbDriversDirectory)
             .append(ideModulesFilesDirectory)
             .append(hostIP)
+            .append(port)
             .append(hacLogin)
             .append(hacPassword)
             .append(importOotbModulesInReadOnlyMode)
@@ -284,6 +295,7 @@ public class HybrisProjectSettings {
             .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(ideModulesFilesDirectory, other.ideModulesFilesDirectory)
             .append(hostIP, other.hostIP)
+            .append(port, other.port)
             .append(hacLogin, other.hacLogin)
             .append(hacPassword, other.hacPassword)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
@@ -311,6 +323,7 @@ public class HybrisProjectSettings {
         sb.append("externalDbDriversDirectory=").append(externalDbDriversDirectory);
         sb.append("ideModulesFilesDirectory=").append(ideModulesFilesDirectory);
         sb.append("hostIP=").append(hostIP);
+        sb.append("port=").append(port);
         sb.append("hacLogin=").append(hacLogin);
         sb.append("hacPassword=").append(hacPassword);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);

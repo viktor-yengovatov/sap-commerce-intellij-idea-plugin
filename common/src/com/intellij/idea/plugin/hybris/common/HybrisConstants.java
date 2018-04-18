@@ -171,6 +171,8 @@ public interface HybrisConstants {
     String DEBUG_PORT = "8000";
     String TOMCAT_SSL_PORT_KEY = "tomcat.ssl.port";
     String DEFAULT_TOMCAT_SSL_PORT = "9002";
+    String HTTPS_PROTOCOL = "https://";
+    String URL_PORT_DELIMITER = ":";
     String HAC_WEBROOT_KEY = "hac.webroot";
     String TOMCAT_JAVA_DEBUG_OPTIONS = "tomcat.debugjavaoptions";
     String X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport=";
