@@ -47,15 +47,11 @@ class ImpexMacrosRenameProcessor : RenamePsiElementProcessor() {
     }
 
     override fun renameElement(element: PsiElement, newName: String, usages: Array<out UsageInfo>, listener: RefactoringElementListener?) {
-        if (element == null || newName == null) {
-            return
-        }
-
         val macrosName = element as ImpexPsiNamedElement
 
         macrosName.setName(newName)
 
-        usages?.forEach { it.reference?.handleElementRename(newName) }
+        usages.forEach { it.reference?.handleElementRename(newName) }
 
         listener?.elementRenamed(macrosName)
     }

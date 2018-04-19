@@ -1,4 +1,7 @@
 ## Licence ##
+[![Build Status](https://img.shields.io/badge/Open%20Source-LGPL%203.0-brightgreen.svg)](http://www.gnu.org/licenses/)
+[![Build Status](https://img.shields.io/badge/Help-Support%20Desk-red.svg)](https://hybris-integration.atlassian.net/projects/IIPS)
+[![Build Status](https://img.shields.io/badge/Help-Contact%20a%20human-blue.svg)](mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com)
 
 [GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
 
@@ -19,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## Hybris Integration Intellij IDEA Plugin ##
 
-This plugin provides [hybris](https://hybris.com/ru/) integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
+This plugin provides [hybris](https://hybris.com/) integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 You can install this plugin to your IDE directly from the [repository](https://plugins.jetbrains.com/plugin/7525) by clicking on the ["Browse Repositories"](https://www.jetbrains.com/idea/help/installing-updating-and-uninstalling-repository-plugins.html) button in Settings/Plugins dialog.
 
 ## Contribution guidelines ##
