@@ -1,8 +1,8 @@
-## Licence ##
-[![Build Status](https://img.shields.io/badge/Open%20Source-LGPL%203.0-brightgreen.svg)](http://www.gnu.org/licenses/)
-[![Build Status](https://img.shields.io/badge/Help-Support%20Desk-red.svg)](https://hybris-integration.atlassian.net/projects/IIPS)
-[![Build Status](https://img.shields.io/badge/Help-Contact%20a%20human-blue.svg)](mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com)
+[![License](https://img.shields.io/badge/Open%20Source-LGPL%203.0-brightgreen.svg)](http://www.gnu.org/licenses/)
+[![Support Desk](https://img.shields.io/badge/Help-Support%20Desk-red.svg)](https://hybris-integration.atlassian.net/projects/IIPS)
+[![Email](https://img.shields.io/badge/Help-Contact%20a%20human-blue.svg)](mailto:AlexanderBartash@gmail.com?cc=martin.zdarsky@hybris.com)
 
+## Licence ##
 [GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
 
 Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
