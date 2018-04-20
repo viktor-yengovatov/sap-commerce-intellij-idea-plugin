@@ -10,7 +10,7 @@
 .idea/modules.xml
 
 /out/
-/gradle/
+/build/
 /common/build/
 /rt-ant/build/
 /.gradle/
