@@ -70,4 +70,9 @@ allprojects {
     patchPluginXml {
         sinceBuild intellijSinceBuild
     }
+
+    // Remove Intellij build output directory
+    clean.doFirst {
+        delete "out"
+    }
 }
