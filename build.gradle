@@ -17,7 +17,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.2.30'
+    ext.kotlin_version = '1.2.40'
 
     repositories {
         maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
@@ -67,7 +67,7 @@ allprojects {
         sandboxDirectory "$buildDir/idea-sandbox"
 
         pluginName 'ccom.intellij.idea.plugin.hybris.impex'
-        plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse', 'gradle', 'properties']
+        plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse', 'gradle', 'properties', 'groovy']
 
         runIde {
             jvmArgs "-Xmx2G"
