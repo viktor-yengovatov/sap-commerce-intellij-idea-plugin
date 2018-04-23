@@ -357,11 +357,24 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
         LOG.info("Scanning for modules");
         this.findModuleRoots(moduleRootMap, false, rootDirectory, progressListenerProcessor);
-        if (externalExtensionsDirectory != null) {
+
+        if (externalExtensionsDirectory != null && !FileUtil.isAncestor(
+            rootDirectory,
+            externalExtensionsDirectory,
+            false
+        )) {
             LOG.info("Scanning for external modules");
             this.findModuleRoots(moduleRootMap, false, externalExtensionsDirectory, progressListenerProcessor);
         }
 
+        if (hybrisDistributionDirectory != null && !FileUtil.isAncestor(
+            rootDirectory,
+            hybrisDistributionDirectory,
+            false
+        )) {
+            LOG.info("Scanning for hybris modules out of the project");
+            this.findModuleRoots(moduleRootMap, false, hybrisDistributionDirectory, progressListenerProcessor);
+        }
         Set<File> moduleRootDirectories = processDirectoriesByTypePriority(moduleRootMap, isScanThroughExternalModule(), progressListenerProcessor);
 
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
@@ -402,8 +415,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     // scan through eclipse module for hybris custom mudules in its subdirectories
     private Set<File> processDirectoriesByTypePriority(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
-        @NotNull final boolean scanThroughExternalModule,
-        @NotNull final TaskProgressProcessor<File> progressListenerProcessor
+        final boolean scanThroughExternalModule,
+        @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
         final Set<File> moduleRootDirectories = newHashSet(moduleRootMap.get(HYBRIS));
 
@@ -457,7 +470,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private void findModuleRoots(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
-        final boolean acceptOnlyHybrisModules, @NotNull final File rootProjectDirectory,
+        final boolean acceptOnlyHybrisModules,
+        @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
         Validate.notNull(moduleRootMap);
