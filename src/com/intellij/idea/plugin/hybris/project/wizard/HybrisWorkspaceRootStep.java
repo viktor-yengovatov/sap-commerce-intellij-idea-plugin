@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
@@ -28,7 +27,6 @@ import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDir
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
@@ -278,8 +276,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             new File(this.hybrisDistributionDirectoryFilesInChooser.getText())
         );
 
+        final String externalExtensionsDirPath = externalExtensionsDirectoryFilesInChooser.getText();
         this.getContext().getHybrisProjectDescriptor().setExternalExtensionsDirectory(
-            new File(this.externalExtensionsDirectoryFilesInChooser.getText())
+            externalExtensionsDirPath.isEmpty() ? null : new File(externalExtensionsDirPath)
         );
 
         this.getContext().getHybrisProjectDescriptor().setExternalConfigDirectory(
@@ -521,19 +520,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             throw new ConfigurationException(
                 HybrisI18NBundleUtils.message(
                     "hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"));
-        }
-
-        final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(VirtualFileSystemService.class);
-
-        if (virtualFileSystemService.pathDoesNotContainAnother(
-            this.getBuilder().getFileToImport(),
-            this.hybrisDistributionDirectoryFilesInChooser.getText()
-        )) {
-            throw new ConfigurationException(
-                HybrisI18NBundleUtils.message(
-                    "hybris.import.wizard.validation.hybris.distribution.directory.is.outside.of.project.root.directory",
-                    this.getBuilder().getFileToImport()
-                ));
         }
 
         return true;
