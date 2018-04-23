@@ -179,7 +179,7 @@ public abstract class AbstractHybrisHacHttpClient {
 
                 public void checkServerTrusted(@NotNull X509Certificate[] certs, @NotNull String authType) { }
             }};
-            SSLContext sc = SSLContext.getInstance("SSL");
+            SSLContext sc = SSLContext.getInstance("TLSv1");
             sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());

@@ -15,17 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-jar.archiveName = "rt-ant.jar"
 
-// Should be 1.7 otherwise it will not work in Hybris 5.X which require java 1.7.
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+package com.intellij.idea.plugin.hybris.toolwindow.document.listener;
 
-repositories {
-    mavenCentral()
-}
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
-dependencies {
-    //this should be pulled from <idea-home>/lib/ant/lib
-    compileOnly "org.apache.ant:ant:1.9.4"
+public abstract class SimpleDocumentListener implements DocumentListener {
+
+    public abstract void update(DocumentEvent e);
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        update(e);
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        update(e);
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        update(e);
+    }
 }

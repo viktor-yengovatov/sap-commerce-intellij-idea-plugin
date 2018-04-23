@@ -15,106 +15,43 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 buildscript {
-    ext.kotlin_version = '1.2.40'
-
     repositories {
-        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-    }//noinspection GroovyAssignabilityCheck
+
+        maven {
+            setUrl("https://plugins.gradle.org/m2/")
+        }
+    }
+
     dependencies {
-        classpath "org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.0-SNAPSHOT"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:$gradleIntellijPluginVersion"
     }
 }
 
-repositories {
-    mavenCentral()
-}
+apply from: "community.gradle"
 
-allprojects {
-    buildDir = customBuildDir
-
-    apply plugin: 'java'
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-    tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
-
-    //noinspection GroovyAssignabilityCheck
-    sourceSets {
-        //noinspection GroovyAssignabilityCheck
-        main {
-            java.srcDirs 'src', 'gen'
-            resources.srcDirs 'resources'
-        }
-
-        test {
-            java.srcDir 'tests'
-        }
-    }
-
-    // https://github.com/JetBrains/gradle-intellij-plugin
-    apply plugin: 'org.jetbrains.intellij'
-    intellij {
-        type 'IU'
-        //@see https://www.jetbrains.com/intellij-repository/releases (or ../snapshots) for possible values
-        version '181.4203.550'
-        downloadSources true
-        updateSinceUntilBuild false
-
-        sandboxDirectory "$buildDir/idea-sandbox"
-
-        pluginName 'ccom.intellij.idea.plugin.hybris.impex'
-        plugins = ['ant', 'Spring', 'uml', 'junit', 'JavaEE', 'maven', 'eclipse', 'gradle', 'properties', 'groovy']
-
-        runIde {
-            jvmArgs "-Xmx2G"
-        }
-
-        runIdea {
-            jvmArgs "-Xmx2G"
-        }
-    }
-    patchPluginXml {
-        sinceBuild '173'
-    }
-
-    task copyPsiViewer(type: Copy) {
-        from "$projectDir/PsiViewer.jar"
-        into "$buildDir/idea-sandbox/plugins/"
-    }
-
-    prepareSandbox.doLast {copyPsiViewer.execute()}
-}
-
-apply plugin: 'idea'
-apply plugin: 'java'
-apply plugin: "kotlin"
-
-//noinspection GroovyAssignabilityCheck
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    //compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    //testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    //testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
-    compile 'commons-codec:commons-codec:1.10'
-    compile 'commons-io:commons-io:2.5'
-    compile 'com.google.guava:guava:22.0'
-    compile 'com.google.code.findbugs:jsr305:3.0.2'
-    compile 'org.apache.commons:commons-lang3:3.6'
-    compile 'org.apache.commons:commons-collections4:4.1'
-    compile 'org.apache.maven:maven-model:3.5.0'
-    compile 'com.wutka:dtdparser:1.21'
+    compile "commons-codec:commons-codec:1.11"
+    compile "commons-io:commons-io:2.6"
+    compile "com.google.guava:guava:24.1-jre"
+    compile "com.google.code.findbugs:jsr305:3.0.2"
+    compile "org.apache.commons:commons-lang3:3.7"
+    compile "org.apache.commons:commons-collections4:4.1"
+    compile "org.apache.maven:maven-model:3.5.3"
+    compile "com.wutka:dtdparser:1.21"
 
-    compile 'com.github.ben-manes.caffeine:caffeine:2.5.3'
-    compile 'org.jsoup:jsoup:1.10.3'
+    compile "com.github.ben-manes.caffeine:caffeine:2.6.2"
+    compile "org.jsoup:jsoup:1.11.3"
 
-    testCompile 'org.mockito:mockito-core:2.8.47'
+    testCompile "org.mockito:mockito-core:2.18.0"
 
-    compile project(':common')
-    compile project(':rt-ant')
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = '1.8'
+    compile project("common")
+    compile project("rt-ant")
 }

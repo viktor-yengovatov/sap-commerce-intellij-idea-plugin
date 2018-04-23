@@ -192,9 +192,15 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         }
 
         if (moduleDescriptor instanceof CustomHybrisModuleDescriptor) {
+            final File customDirectory = moduleDescriptor.getRootProjectDescriptor().getExternalExtensionsDirectory();
+
+            if (null == customDirectory) {
+                return this.groupCustom;
+            }
+
             final List<String> path = FileUtils.getPathToParentDirectoryFrom(
                 moduleDescriptor.getRootDirectory(),
-                moduleDescriptor.getRootProjectDescriptor().getExternalExtensionsDirectory()
+                customDirectory
             );
 
             final boolean isCustomModuleInLocalExtensionsXml = this.requiredHybrisModuleDescriptorList.contains(

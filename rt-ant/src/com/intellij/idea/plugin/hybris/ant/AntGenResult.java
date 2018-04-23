@@ -29,8 +29,8 @@ public class AntGenResult implements Serializable {
     private static final long serialVersionUID = 45234594386590854L;
 
     private final String platformDir;
-    private final HashSet<String> extensionsToAdd = new HashSet();
-    private final HashSet<String> extensionsToRemove = new HashSet();
+    private final HashSet<String> extensionsToAdd = new HashSet<>();
+    private final HashSet<String> extensionsToRemove = new HashSet<>();
 
     public AntGenResult(final String platformDir) {
         this.platformDir = platformDir;

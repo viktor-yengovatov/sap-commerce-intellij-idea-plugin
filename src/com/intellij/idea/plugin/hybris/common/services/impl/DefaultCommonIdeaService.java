@@ -175,19 +175,23 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     @Override
     public String getHostUrl(final Project project) {
-        final String ip = HybrisProjectSettingsComponent.getInstance(project).getState().getHostIP();
+        final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final String ip = settings.getHostIP();
         StringBuilder sb = new StringBuilder();
-        sb.append("https://");
+        sb.append(HybrisConstants.HTTPS_PROTOCOL);
         sb.append(ip);
-        final Properties localProperties = getLocalProperties(project);
-        String port = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
-        if (localProperties != null) {
-            port = localProperties.getProperty(HybrisConstants.TOMCAT_SSL_PORT_KEY, HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
+
+        String port = settings.getPort();
+        if (port == null || port.isEmpty()) {
+            final Properties localProperties = getLocalProperties(project);
+            port = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
+            if (localProperties != null) {
+                port = localProperties.getProperty(HybrisConstants.TOMCAT_SSL_PORT_KEY, HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
+            }
         }
-        if (port != null && !port.isEmpty()) {
-            sb.append(":");
-            sb.append(port);
-        }
+        sb.append(HybrisConstants.URL_PORT_DELIMITER);
+        sb.append(port);
+
         return sb.toString();
     }
 
