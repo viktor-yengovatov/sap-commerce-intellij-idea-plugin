@@ -167,8 +167,6 @@
                          groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UniqueAttributeWithoutIndexInspection"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexLanguageInjector" />
-
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->
