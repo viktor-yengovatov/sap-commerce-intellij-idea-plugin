@@ -5,6 +5,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,12 @@ public final class FileUtils {
     }
 
     @NotNull
-    public static List<String> getPathToParentDirectoryFrom(@NotNull final File file, @NotNull final File parentDirectory) {
+    public static List<String> getPathToParentDirectoryFrom(
+        @NotNull final File file,
+        @NotNull final File parentDirectory
+    ) throws IOException {
         if (!FileUtils.isFileUnder(file, parentDirectory)) {
-            throw new IllegalStateException("File '" + file + "' is not under '" + parentDirectory + "'");
+            throw new IOException("File '" + file + "' is not under '" + parentDirectory + "'");
         }
 
         final List<String> path = new ArrayList<>();

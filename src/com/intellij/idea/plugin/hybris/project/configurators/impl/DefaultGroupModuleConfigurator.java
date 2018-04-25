@@ -198,10 +198,17 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
                 return this.groupCustom;
             }
 
-            final List<String> path = FileUtils.getPathToParentDirectoryFrom(
-                moduleDescriptor.getRootDirectory(),
-                customDirectory
-            );
+            final List<String> path;
+            try {
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getRootDirectory(), customDirectory);
+            } catch (IOException e) {
+                LOG.warn(String.format(
+                    "Can not build group path for a custom module '%s' because its root directory '%s' is not under" +
+                    " custom directory  '%s'.",
+                    moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), customDirectory
+                ));
+                return this.groupCustom;
+            }
 
             final boolean isCustomModuleInLocalExtensionsXml = this.requiredHybrisModuleDescriptorList.contains(
                 moduleDescriptor
@@ -219,10 +226,17 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
                 HybrisConstants.BIN_DIRECTORY
             );
 
-            final List<String> path = FileUtils.getPathToParentDirectoryFrom(
-                moduleDescriptor.getRootDirectory(),
-                hybrisBinDirectory
-            );
+            final List<String> path;
+            try {
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getRootDirectory(), hybrisBinDirectory);
+            } catch (IOException e) {
+                LOG.warn(String.format(
+                    "Can not build group path for OOTB module '%s' because its root directory '%s' is not under" +
+                    "under Hybris bin directory  '%s'.",
+                    moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), hybrisBinDirectory
+                ));
+                return this.groupHybris;
+            }
 
             return ArrayUtils.addAll(this.groupHybris, path.toArray(new String[0]));
         }
