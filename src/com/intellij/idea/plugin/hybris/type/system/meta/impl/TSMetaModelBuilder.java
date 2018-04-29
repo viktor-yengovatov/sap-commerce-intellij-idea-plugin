@@ -139,7 +139,11 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
     private void processEnumType(final @NotNull EnumType enumType) {
-        myResult.findOrCreateEnum(enumType);
+        final TSMetaEnumImpl aEnum = myResult.findOrCreateEnum(enumType);
+
+        if (aEnum != null) {
+            enumType.getValues().forEach(aEnum::createValue);
+        }
     }
 
     private void processCollectionType(final @NotNull CollectionType collectionType) {
