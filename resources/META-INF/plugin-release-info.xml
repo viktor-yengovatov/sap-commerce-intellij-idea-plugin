@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.4.6</version>
+    <version>8.5.7</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -98,20 +98,34 @@
 
     <change-notes>
         <![CDATA[
+            <h2>Story</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-380'>IIP-380</a>] - Simple execution of y-unit test</li>
+            </ul>
+
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-404'>IIP-404</a>] - TS diagram dependencies filter doesn&#39;t respect other filters
-                </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-401'>IIP-401</a>] - Allow to configure Tomcat SSL port number for HAC in Hybris panel</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-411'>IIP-411</a>] - Add support a groovy language injection in Impex file</li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-406'>IIP-406</a>] - FileUtils.getPathToParentDirectoryFrom must not be null</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-381'>IIP-381</a>] - Detect duplicates definition of beans in *-beans.xml</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-396'>IIP-396</a>] - Navigational gutter icons are missing in items.xml</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-407'>IIP-407</a>] - SSL Handshake fails when testing connection to HAC</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-415'>IIP-415</a>] - TS diagram enum rendering</li>
+            </ul>
+
+            <h2>New Feature Request</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-69'>IIPS-69</a>] - Allow Hybris Folder to be outside Project folder</li>
             </ul>
 
             <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-139'>IIPS-139</a>] - LogEventException in DefaultSearchScopeConfigurator</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-142'>IIPS-142</a>] - Custom extension outside of Custom folder causes import fail</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-145'>IIPS-145</a>] - Unable to import a fresh project</li>
             </ul>
         ]]>
     </change-notes>
