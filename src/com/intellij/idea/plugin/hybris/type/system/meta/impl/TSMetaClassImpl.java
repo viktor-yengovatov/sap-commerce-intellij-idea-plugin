@@ -82,11 +82,11 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
         return myAllDoms.stream().map(DomAnchor::retrieveDomElement).filter(Objects::nonNull);
     }
 
+    @Override
     @NotNull
-    TSMetaModelImpl getMetaModel() {
+    public TSMetaModelImpl getMetaModel() {
         return myMetaModel;
     }
-
 
     void createProperty(final @NotNull Attribute domAttribute) {
         final TSMetaPropertyImpl result = new TSMetaPropertyImpl(this, domAttribute);

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
@@ -115,5 +116,10 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
             return myOwner;
         }
 
+        @NotNull
+        @Override
+        public TSMetaModel getMetaModel() {
+            return myMetaModel;
+        }
     }
 }

@@ -57,6 +57,7 @@ class TSMetaPropertyImpl extends TSMetaEntityImpl<Attribute> implements TSMetaPr
     }
 
     @NotNull
+    @Override
     public TSMetaClassImpl getMetaClass() {
         return myMetaClass;
     }
