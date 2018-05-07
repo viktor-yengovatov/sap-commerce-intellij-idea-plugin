@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http.impex;
 
 import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.http.HttpStatus.SC_OK;
 
 /**
@@ -60,10 +61,10 @@ public class HybrisHttpResult {
     static public class HybrisHttpResultBuilder {
 
         private boolean hasError = false;
-        private String errorMessage;
-        private String detailMessage;
+        private String errorMessage= EMPTY;
+        private String detailMessage= EMPTY;
 
-        private String output;
+        private String output= EMPTY;
         private int statusCode = SC_OK;
 
         private HybrisHttpResultBuilder() {

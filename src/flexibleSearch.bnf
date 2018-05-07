@@ -273,7 +273,7 @@ value_expression ::=  NUMBER
                     | column_reference_value
 
 private column_reference_value ::= LEFT_BRACE? column_reference column_localization? RIGHT_BRACE?
-{pin = 1 /*recoverWhile=column_reference_value_recover*/}
+{pin = 2 /*recoverWhile=column_reference_value_recover*/}
 
 column_localization ::= LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
 

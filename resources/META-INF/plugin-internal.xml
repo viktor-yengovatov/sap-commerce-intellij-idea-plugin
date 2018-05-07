@@ -38,6 +38,8 @@
 
         <internalFileTemplate name="FlexibleSearch File"/>
         <internalFileTemplate name="Impex File"/>
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView"/>
     </extensions>
 
     <project-components>
@@ -61,6 +63,14 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
         -->
+        <action id="Console.Execute.Immediately" 
+                class="com.intellij.openapi.actionSystem.EmptyAction"
+                text="Execute Current Statement">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt ENTER"/>
+        </action>
     </actions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Hybris Console [Experimental]" icon="/icons/hybrisIcon.png" anchor="bottom" factoryClass="com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory"/>
+    </extensions>
 </idea-plugin>

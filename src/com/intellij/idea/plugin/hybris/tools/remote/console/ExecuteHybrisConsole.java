@@ -37,6 +37,10 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
 
+/**
+ * refer @see HybrisConsole
+ */
+@Deprecated
 public class ExecuteHybrisConsole extends ExecuteConsole {
 
     private static final String[] CONSOLE_NAMES = new String[]{"Hybris output console", "Error"};

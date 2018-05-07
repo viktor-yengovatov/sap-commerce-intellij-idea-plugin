@@ -30,6 +30,10 @@ import java.util.List;
 
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
+/**
+ * refer @see HybrisConsole
+ */
+@Deprecated
 public abstract class ExecuteConsole {
 
     private List<ConsoleView> consoleViewList;
