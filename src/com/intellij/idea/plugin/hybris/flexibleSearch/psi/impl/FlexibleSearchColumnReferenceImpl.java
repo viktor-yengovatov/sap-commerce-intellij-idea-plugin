@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.references.ColumnReferenceMixin;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchColumnReferenceImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnReference {
+public class FlexibleSearchColumnReferenceImpl extends ColumnReferenceMixin implements FlexibleSearchColumnReference {
 
   public FlexibleSearchColumnReferenceImpl(ASTNode node) {
     super(node);

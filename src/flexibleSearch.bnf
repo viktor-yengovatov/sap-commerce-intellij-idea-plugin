@@ -280,7 +280,11 @@ column_localization ::= LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
 private identifier_chain ::= (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ ( (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) )* ]
 
 column_reference ::= identifier_chain
-{pin = 1 recoverWhile=column_reference_recover}
+{
+    pin = 1 
+    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.references.ColumnReferenceMixin"
+    recoverWhile = column_reference_recover
+}
 private column_reference_recover ::= !(<<eof>> | IDENTIFIER | LINE_TERMINATOR | RIGHT_BRACE | FROM | LEFT_BRACKET | SEMICOLON | WHITE_SPACE | AND | ORDER | IS | OR | COMMA | RIGHT_PAREN | IN | RIGHT_DOUBLE_BRACE | comp_op)
 
 group_by_clause ::= GROUP BY [ set_quantifier ] grouping_element_list
