@@ -564,9 +564,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = column_reference_value_0(b, l + 1);
-    r = r && column_reference(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, column_reference_value_2(b, l + 1));
+    p = r; // pin = 1
+    r = r && report_error_(b, column_reference(b, l + 1));
+    r = p && report_error_(b, column_reference_value_2(b, l + 1)) && r;
     r = p && column_reference_value_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;

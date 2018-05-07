@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -229,6 +230,15 @@ class TSMetaModelImpl implements TSMetaModel {
     @Override
     public TSMetaAtomic findMetaAtomicByName(@NotNull final String name) {
         return getAtomics().get(name);
+    }
+
+    @Nullable
+    @Override
+    public List<TSMetaReference> findRelationByName(@NotNull final String name) {
+        return myReferencesBySourceTypeName.values().stream()
+                                           .map(TSMetaReference.ReferenceEnd::getOwningReference)
+                                           .filter(ref -> ref.getName().equals(name))
+                                           .collect(Collectors.toList());
     }
 
     @NotNull

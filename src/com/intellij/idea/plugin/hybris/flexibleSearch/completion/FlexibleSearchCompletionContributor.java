@@ -70,7 +70,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 
         extend(
             CompletionType.BASIC,
-            psiElement(COLUMN_REFERENCE_IDENTIFIER)
+            psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
             FSFieldsCompletionProvider.Companion.getInstance()
         );

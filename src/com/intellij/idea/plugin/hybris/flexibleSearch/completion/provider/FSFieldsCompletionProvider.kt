@@ -24,18 +24,22 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchCorrelationName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchQuerySpecification
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableReference
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.findSiblingBackward
 import com.intellij.util.JavaeeIcons.PARAMETER_ICON
 import com.intellij.util.ProcessingContext
-import java.util.*
+import java.util.Objects
+import java.util.Optional
 import java.util.stream.Stream
 
 /**
@@ -71,7 +75,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                     }
                 }
             } else {
-                val querySpecification = PsiTreeUtil.getParentOfType(psiElementUnderCaret, FlexibleSearchQuerySpecification::class.java)
+                val querySpecification = PsiTreeUtil.getTopmostParentOfType(psiElementUnderCaret, FlexibleSearchQuerySpecification::class.java)
                 val tableNames = PsiTreeUtil.findChildrenOfType(querySpecification, FlexibleSearchTableReference::class.java)
 
                 if (tableNames.isNotEmpty()) {
@@ -98,10 +102,10 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
             itemTypeCode: String,
             resultSet: CompletionResultSet
     ) {
-
         val metaModel = TSMetaModelAccess.getInstance(project).typeSystemMeta
         val metaClass = Optional.ofNullable(metaModel.findMetaClassByName(itemTypeCode))
 
+        val emptyPrefixResultSet = resultSet.withPrefixMatcher("") // its workaround 
         metaClass
                 .map { meta -> meta.getPropertiesStream(true) }
                 .orElse(Stream.empty<TSMetaProperty>())
@@ -114,16 +118,17 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                             .withStrikeoutness(prop.isDeprecated)
                     val typeText = getTypePresentableText(prop.type)
                     return@map if (StringUtil.isEmpty(typeText)) builder else builder.withTypeText(typeText, true)
-
                 }
                 .filter { Objects.nonNull(it) }
-                .forEach { resultSet.addElement(it) }
-
+                .forEach { emptyPrefixResultSet.addElement(it) }
         metaClass
                 .map { meta -> meta.getReferenceEndsStream(true) }
                 .orElse(Stream.empty<TSMetaReference.ReferenceEnd>())
-                .map { ref -> LookupElementBuilder.create(ref.role).withIcon(HybrisIcons.TYPE_SYSTEM) }
-                .forEach { resultSet.addElement(it) }
+                .map { ref -> LookupElementBuilder
+                        .create(ref.role)
+                        .withTypeText(ref.typeName)
+                        .withIcon(HybrisIcons.TYPE_SYSTEM) }
+                .forEach { emptyPrefixResultSet.addElement(it) }
     }
 
     private fun getTypePresentableText(type: String?): String {

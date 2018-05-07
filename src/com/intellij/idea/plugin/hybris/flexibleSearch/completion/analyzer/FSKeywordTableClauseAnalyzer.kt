@@ -53,6 +53,7 @@ object FSKeywordTableClauseAnalyzer {
         if ((isColumnReferenceIdentifier(parameters) && parameters.position.skipWhitespaceSiblingsBackward() != null && parameters.position.skipWhitespaceSiblingsBackward()!!.text != "}") ||
                 (isColumnReferenceIdentifier(parameters) && PsiTreeUtil.getParentOfType(parameters.position, FlexibleSearchSelectList::class.java) != null)) {
             FSFieldsCompletionProvider.instance.addCompletionVariants(parameters, null, completionResultSet)
+            
         }
         if (isFile(parameters)) {
             addToResult(hashSetOf("SELECT", "FROM", "WHERE"), completionResultSet, AllIcons.Nodes.Static, true)

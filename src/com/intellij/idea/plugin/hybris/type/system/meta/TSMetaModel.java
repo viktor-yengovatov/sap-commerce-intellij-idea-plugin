@@ -24,6 +24,7 @@ import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -72,4 +73,6 @@ public interface TSMetaModel {
 
     @Nullable
     TSMetaAtomic findOrCreateAtomicType(@NotNull AtomicType atomicType);
+
+    List<TSMetaReference> findRelationByName(@NotNull final String name);
 }

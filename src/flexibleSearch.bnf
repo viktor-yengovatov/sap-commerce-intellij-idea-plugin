@@ -151,7 +151,7 @@ table_primary ::= table_name [ [ AS ] correlation_name ]
 table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
 {
     pin=1 
-    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.psi.references.TypeNameMixin"
+    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.references.TypeNameMixin"
     recoverWhile = table_name_recover
 }
 private table_name_recover ::= !('}' | AS | SPACE | " ")
