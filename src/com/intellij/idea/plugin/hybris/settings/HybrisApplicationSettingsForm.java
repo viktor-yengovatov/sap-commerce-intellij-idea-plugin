@@ -56,7 +56,6 @@ public class HybrisApplicationSettingsForm {
     private JLabel projectTreeViewSettingsLabel;
     private JCheckBox defaultPlatformInReadOnly;
     private JTextField groupPlatformTextField;
-    private JLabel hybrisRemoteControlLabel;
     private JCheckBox followSymlink;
     private JPanel typeSystemDiagramStopWords;
     private JCheckBox scanThroughExternalModule;
@@ -158,9 +157,6 @@ public class HybrisApplicationSettingsForm {
         impexLabel = new JBLabel();
         impexLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
             "hybris.import.settings.impex.title"), false));
-        hybrisRemoteControlLabel = new JBLabel();
-        hybrisRemoteControlLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
-            "hybris.import.settings.tools.remote.title"), false));
         projectImportLabel = new JBLabel();
         projectImportLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
             "hybris.import.settings.project.title")));
