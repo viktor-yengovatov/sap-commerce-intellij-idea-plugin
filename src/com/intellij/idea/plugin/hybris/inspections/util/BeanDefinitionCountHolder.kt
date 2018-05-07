@@ -12,11 +12,10 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlFile
+import com.intellij.psi.xml.XmlTag
 import com.intellij.xml.XmlAttributeDescriptor
 import com.intellij.xml.util.XmlUtil
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.HashSet
+import java.util.*
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -44,6 +43,30 @@ class BeanDefinitionCountHolder {
         }
 
         list.add(attributeValue)
+    }
+
+    fun getDuplicatedAttributes(value: XmlAttributeValue): List<XmlTag> {
+        val id = XmlHighlightVisitor.getUnquotedValue(value, value.parent.parent as XmlTag)
+        val duplicatedDefinitions = beanClass2Attribute[id]
+
+
+        if (duplicatedDefinitions != null) {
+            val attributes = duplicatedDefinitions
+                    .filter { PsiTreeUtil.isAncestor(it, value, false) }
+                    .map { PsiTreeUtil.getParentOfType(it, XmlTag::class.java) }
+                    .flatMap { it!!.findSubTags("property").toList() }
+            val duplicatePropertiesNames = duplicatedDefinitions
+                    .map { PsiTreeUtil.getParentOfType(it, XmlTag::class.java) }
+                    .flatMap { it!!.findSubTags("property").toList() }
+                    .groupingBy { it.getAttribute("name")!!.value }
+                    .eachCount()
+                    .filter { entry -> entry.value > 1 }
+                    .map { it.key }
+                    .toHashSet()
+
+            return attributes.filter { duplicatePropertiesNames.contains(it.getAttribute("name")!!.value)}.distinct()
+        }
+        return emptyList()
     }
 
     private class BeanClassGatheringRecursiveVisitor internal constructor(private val countHolder: BeanDefinitionCountHolder) : XmlRecursiveElementWalkingVisitor(true) {

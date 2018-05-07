@@ -43,7 +43,12 @@ class DuplicateBeanDefinitionInspection : XmlSuppressableInspectionTool(), Unfai
 
     private fun checkValue(value: XmlAttributeValue, beanRefHolder: BeanDefinitionCountHolder, holder: ProblemsHolder) {
         if (beanRefHolder.isDuplicateBeanDefinition(value)) {
-            holder.registerProblem(value, "Bean definition duplicated", ProblemHighlightType.GENERIC_ERROR)
+            holder.registerProblem(value, "Bean definition duplicated", ProblemHighlightType.WEAK_WARNING)
+
+            val duplicatedAttributes = beanRefHolder.getDuplicatedAttributes(value)
+            if (duplicatedAttributes.isNotEmpty()) {
+                duplicatedAttributes.forEach {holder.registerProblem(it, "Duplicate definition of attribute", ProblemHighlightType.GENERIC_ERROR)}
+            }
         }
     }
     
