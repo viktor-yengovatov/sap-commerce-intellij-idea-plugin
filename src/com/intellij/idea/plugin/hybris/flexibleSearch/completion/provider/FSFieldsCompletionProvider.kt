@@ -105,7 +105,9 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         val metaModel = TSMetaModelAccess.getInstance(project).typeSystemMeta
         val metaClass = Optional.ofNullable(metaModel.findMetaClassByName(itemTypeCode))
 
-        val emptyPrefixResultSet = resultSet.withPrefixMatcher("") // its workaround 
+        val currentPrefix = resultSet.prefixMatcher.prefix
+        val delimiters = arrayOf('.', ':')
+        val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
         metaClass
                 .map { meta -> meta.getPropertiesStream(true) }
                 .orElse(Stream.empty<TSMetaProperty>())
@@ -124,10 +126,12 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         metaClass
                 .map { meta -> meta.getReferenceEndsStream(true) }
                 .orElse(Stream.empty<TSMetaReference.ReferenceEnd>())
-                .map { ref -> LookupElementBuilder
-                        .create(ref.role)
-                        .withTypeText(ref.typeName)
-                        .withIcon(HybrisIcons.TYPE_SYSTEM) }
+                .map { ref ->
+                    LookupElementBuilder
+                            .create(ref.role)
+                            .withTypeText(ref.typeName)
+                            .withIcon(HybrisIcons.TYPE_SYSTEM)
+                }
                 .forEach { emptyPrefixResultSet.addElement(it) }
     }
 
@@ -137,6 +141,14 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         }
         val index = type.lastIndexOf('.')
         return if (index >= 0) type.substring(index + 1) else type
+    }
+
+
+    private fun String.substringAfter(delimiters: Array<Char>, missingDelimiterValue: String = this): String {
+        val result = delimiters
+                .filter { delimiter -> indexOf(delimiter) != -1 }
+                .map { delimiter -> substring(indexOf(delimiter) + 1, length) }
+        return if (result.isEmpty()) missingDelimiterValue else result.first()
     }
 
 
