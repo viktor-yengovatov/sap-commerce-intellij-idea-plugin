@@ -75,11 +75,4 @@ allprojects {
     clean.doFirst {
         delete "out"
     }
-
-    task copyPsiViewer(type: Copy) {
-        from "$projectDir/PsiViewer.jar"
-        into "$buildDir/idea-sandbox/plugins/"
-    }
-
-    prepareSandbox.doLast {copyPsiViewer.execute()}
 }

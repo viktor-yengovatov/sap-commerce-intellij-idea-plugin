@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.5.8</version>
+    <version>8.6.9</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -100,32 +100,29 @@
         <![CDATA[
             <h2>Story</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-380'>IIP-380</a>] - Simple execution of y-unit test</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-219'>IIP-219</a>] - Output / Export TSV Report </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-349'>IIP-349</a>] - Add ability to execute FS/Impex/Groovy Script from IDEA </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-401'>IIP-401</a>] - Allow to configure Tomcat SSL port number for HAC in Hybris panel</li>
             </ul>
 
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-401'>IIP-401</a>] - Allow to configure Tomcat SSL port number for HAC in Hybris panel</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-411'>IIP-411</a>] - Add support a groovy language injection in Impex file</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-155'>IIP-155</a>] - TSV list all problems </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-417'>IIP-417</a>] - Enhancement of duplicate bean definition inspection </li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-381'>IIP-381</a>] - Detect duplicates definition of beans in *-beans.xml</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-396'>IIP-396</a>] - Navigational gutter icons are missing in items.xml</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-407'>IIP-407</a>] - SSL Handshake fails when testing connection to HAC</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-415'>IIP-415</a>] - TS diagram enum rendering</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-414'>IIP-414</a>] - TS diagram doesn&#39;t render Collections </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-419'>IIP-419</a>] - Incorrect completion for column value in FlexibleSearch query </li>
             </ul>
 
-            <h2>New Feature Request</h2>
+            <h2>Sub-task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-69'>IIPS-69</a>] - Allow Hybris Folder to be outside Project folder</li>
-            </ul>
-
-            <h2>Fault</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-142'>IIPS-142</a>] - Custom extension outside of Custom folder causes import fail</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-145'>IIPS-145</a>] - Unable to import a fresh project</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-258'>IIP-258</a>] - Add navigation from FlexibleSearch type and attributes to Type System (simple case) </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-364'>IIP-364</a>] - Create a tool-window for showing a result of execution Impex/Groovy/FlexibleSearch </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-418'>IIP-418</a>] - Add navigation from FlexibleSearch attributes to Type System (case with prefix) </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-345'>IIP-345</a>] - Add dependencies to TS diagram </li>
             </ul>
         ]]>
     </change-notes>

@@ -55,3 +55,10 @@ dependencies {
     compile project("common")
     compile project("rt-ant")
 }
+
+task copyPsiViewer(type: Copy) {
+    from "$projectDir/PsiViewer.jar"
+    into "$buildDir/idea-sandbox/plugins/"
+}
+
+prepareSandbox.finalizedBy copyPsiViewer
