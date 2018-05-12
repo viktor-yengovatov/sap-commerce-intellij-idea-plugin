@@ -71,7 +71,7 @@ class HybrisTabs(private val impexConsole: HybrisImpexConsole,
     init {
         insertTab("Impex", HybrisIcons.IMPEX_FILE, impexConsole.component, "Impex Console", 0)
         insertTab("FlexibleSearch", HybrisIcons.FS_FILE, fsConsole.component, "FlexibleSearch Console", 1)
-        insertTab("Groovy Scriptiong", Groovy_16x16, groovyConsole.component, "Groovy Console", 2)
+        insertTab("Groovy Scripting", Groovy_16x16, groovyConsole.component, "Groovy Console", 2)
     }
 
     fun activeConsole() = when (selectedIndex) {
