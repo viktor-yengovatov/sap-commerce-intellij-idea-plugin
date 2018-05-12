@@ -128,7 +128,7 @@ public final class ImpexPsiUtils {
         return psiElement != null && Objects.equals(
             ImpexTypes.ROOT_MACRO_USAGE,
             CommonPsiUtils.getNullSafeElementType(psiElement)
-        ) && (psiElement.getText().equals("$START_USERRIGHTS") || psiElement.getText().equals("$END_USERRIGHTS"));
+        ) && (psiElement.getText().contains("$START_USERRIGHTS") || psiElement.getText().contains("$END_USERRIGHTS"));
 
     }
 

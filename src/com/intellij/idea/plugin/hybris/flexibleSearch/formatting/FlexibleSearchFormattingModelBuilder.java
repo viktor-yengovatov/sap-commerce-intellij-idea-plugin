@@ -56,32 +56,38 @@ public class FlexibleSearchFormattingModelBuilder implements FormattingModelBuil
     private static SpacingBuilder createSpaceBuilder(final CodeStyleSettings settings) {
 
         return new SpacingBuilder(settings, FlexibleSearchLanguage.getInstance())
-            .after(FlexibleSearchTypes.COMP_OP)
-            .spaceIf(true)
-
-            .before(FlexibleSearchTypes.COMP_OP)
-            .spaceIf(true)
-
-            .after(FlexibleSearchTypes.LEFT_DOUBLE_BRACE)
-            .spaceIf(true)
-
-            .before(FlexibleSearchTypes.RIGHT_DOUBLE_BRACE)
-            .spaceIf(true)
-
-            .before(FlexibleSearchTypes.LEFT_BRACE)
-            .spaceIf(true)
-
-            .after(FlexibleSearchTypes.RIGHT_BRACE)
-            .spaceIf(true)
-
-            .before(FlexibleSearchTypes.LEFT_PAREN)
-            .spaceIf(true)
-
-            .after(FlexibleSearchTypes.RIGHT_PAREN)
-            .spaceIf(true)
-
-            .around(TokenSet.create(FlexibleSearchTypes.WHERE, FlexibleSearchTypes.WHERE_CLAUSE))
-            .spaceIf(true)
+//            .after(FlexibleSearchTypes.COMP_OP)
+//            .spaceIf(true)
+//
+//            .before(FlexibleSearchTypes.COMP_OP)
+//            .spaceIf(true)
+//
+//            .after(FlexibleSearchTypes.LEFT_DOUBLE_BRACE)
+//            .spaceIf(true)
+//
+//            .before(FlexibleSearchTypes.RIGHT_DOUBLE_BRACE)
+//            .spaceIf(true)
+//
+//            .before(FlexibleSearchTypes.LEFT_BRACE)
+//            .spaceIf(true)
+//
+//            .after(FlexibleSearchTypes.RIGHT_BRACE)
+//            .spaceIf(true)
+//
+//            .before(FlexibleSearchTypes.LEFT_PAREN)
+//            .spaceIf(true)
+//
+//            .after(FlexibleSearchTypes.RIGHT_PAREN)
+//            .spaceIf(true)
+//
+//            .around(TokenSet.create(FlexibleSearchTypes.WHERE, FlexibleSearchTypes.WHERE_CLAUSE))
+//            .spaceIf(true)
+            
+            .before(TokenSet.create(FlexibleSearchTypes.SELECT))
+            .spaces(2, true)
+            
+            .around(TokenSet.create(FlexibleSearchTypes.QUERY_SPECIFICATION))
+            .none()
             ;
     }
 

@@ -25,7 +25,6 @@ import com.intellij.formatting.Spacing;
 import com.intellij.formatting.SpacingBuilder;
 import com.intellij.formatting.Wrap;
 import com.intellij.formatting.WrapType;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.formatter.common.AbstractBlock;
@@ -37,35 +36,22 @@ import java.util.List;
 
 
 public class FlexibleSearchBlock extends AbstractBlock {
+    private SpacingBuilder spacingBuilder;
 
-    private final SpacingBuilder spacingBuilder;
-
-    protected FlexibleSearchBlock(
-        @NotNull final ASTNode node,
-        @Nullable final Wrap wrap,
-        @Nullable final Alignment alignment,
-        @NotNull final SpacingBuilder spacingBuilder
-    ) {
-
+    protected FlexibleSearchBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment,
+                          SpacingBuilder spacingBuilder) {
         super(node, wrap, alignment);
-
         this.spacingBuilder = spacingBuilder;
     }
 
     @Override
     protected List<Block> buildChildren() {
-        List<Block> blocks = new ArrayList<>();
+        List<Block> blocks = new ArrayList<Block>();
         ASTNode child = myNode.getFirstChildNode();
         while (child != null) {
             if (child.getElementType() != TokenType.WHITE_SPACE) {
-
-                Block block = new FlexibleSearchBlock(
-                    child,
-                    Wrap.createWrap(WrapType.NONE, false),
-                    null,
-                    spacingBuilder
-                );
-
+                Block block = new FlexibleSearchBlock(child, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(),
+                                              spacingBuilder);
                 blocks.add(block);
             }
             child = child.getTreeNext();
@@ -73,28 +59,14 @@ public class FlexibleSearchBlock extends AbstractBlock {
         return blocks;
     }
 
-    @Nullable
-    @Override
-    public Alignment getAlignment() {
-        if (this.getNode().getElementType() == FlexibleSearchTypes.QUERY_SPECIFICATION) {
-            return null;
-        }
-        return super.getAlignment();
-    }
-
     @Override
     public Indent getIndent() {
-        if (this.getNode().getElementType() == FlexibleSearchTypes.LEFT_DOUBLE_BRACE) {
-            return Indent.getNormalIndent();
-        } else if (this.getNode().getElementType() == FlexibleSearchTypes.QUERY_SPECIFICATION) {
-            return Indent.getNoneIndent();
-        }
         return Indent.getNoneIndent();
     }
 
     @Nullable
     @Override
-    public Spacing getSpacing(@Nullable final Block child1, @NotNull final Block child2) {
+    public Spacing getSpacing(@Nullable Block child1, @NotNull Block child2) {
         return spacingBuilder.getSpacing(this, child1, child2);
     }
 
@@ -103,3 +75,4 @@ public class FlexibleSearchBlock extends AbstractBlock {
         return myNode.getFirstChildNode() == null;
     }
 }
+

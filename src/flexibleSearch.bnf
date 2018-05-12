@@ -86,7 +86,8 @@ private empty_statement ::= (SEMICOLON | <<eof>>)
 // Specify a table derived from the result of a <table expression>.
 
 query_specification ::= SELECT [ set_quantifier ] select_list table_expression (SEMICOLON | <<eof>>)?
-{pin = 1}
+{pin = 1 recoverWhile= querySpecificationRecoverWhile}
+private querySpecificationRecoverWhile ::= !( SEMICOLON | query_specification | RIGHT_DOUBLE_BRACE)
 
 select_list ::= ASTERISK | select_sublist [ ( COMMA select_sublist )* ]
 {pin=2 recoverWhile=select_list_recover}

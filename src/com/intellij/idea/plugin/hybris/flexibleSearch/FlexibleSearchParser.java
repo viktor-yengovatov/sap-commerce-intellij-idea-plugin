@@ -564,9 +564,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = column_reference_value_0(b, l + 1);
-    p = r; // pin = 1
-    r = r && report_error_(b, column_reference(b, l + 1));
-    r = p && report_error_(b, column_reference_value_2(b, l + 1)) && r;
+    r = r && column_reference(b, l + 1);
+    p = r; // pin = 2
+    r = r && report_error_(b, column_reference_value_2(b, l + 1));
     r = p && column_reference_value_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
@@ -1402,19 +1402,41 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // !( SEMICOLON | query_specification | RIGHT_DOUBLE_BRACE)
+  static boolean querySpecificationRecoverWhile(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "querySpecificationRecoverWhile")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !querySpecificationRecoverWhile_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // SEMICOLON | query_specification | RIGHT_DOUBLE_BRACE
+  private static boolean querySpecificationRecoverWhile_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "querySpecificationRecoverWhile_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, SEMICOLON);
+    if (!r) r = query_specification(b, l + 1);
+    if (!r) r = consumeToken(b, RIGHT_DOUBLE_BRACE);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // SELECT [ set_quantifier ] select_list table_expression (SEMICOLON | <<eof>>)?
   public static boolean query_specification(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "query_specification")) return false;
-    if (!nextTokenIs(b, SELECT)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, QUERY_SPECIFICATION, null);
+    Marker m = enter_section_(b, l, _NONE_, QUERY_SPECIFICATION, "<query specification>");
     r = consumeToken(b, SELECT);
     p = r; // pin = 1
     r = r && report_error_(b, query_specification_1(b, l + 1));
     r = p && report_error_(b, select_list(b, l + 1)) && r;
     r = p && report_error_(b, table_expression(b, l + 1)) && r;
     r = p && query_specification_4(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, querySpecificationRecoverWhile_parser_);
     return r || p;
   }
 
@@ -2195,6 +2217,11 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   final static Parser orderByClauseRecoverWhile_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return orderByClauseRecoverWhile(b, l + 1);
+    }
+  };
+  final static Parser querySpecificationRecoverWhile_parser_ = new Parser() {
+    public boolean parse(PsiBuilder b, int l) {
+      return querySpecificationRecoverWhile(b, l + 1);
     }
   };
   final static Parser select_list_recover_parser_ = new Parser() {
