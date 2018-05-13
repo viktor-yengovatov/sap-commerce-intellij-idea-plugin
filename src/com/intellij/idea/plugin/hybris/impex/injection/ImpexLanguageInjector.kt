@@ -34,6 +34,7 @@ class ImpexLanguageInjector : LanguageInjector {
 
     private val GROOVY_MARKER = "#%groovy%"
     private val OFFSET = "\"#%groovy%".count()
+    private val QUOTE_SYMBOL_LENGTH = 1
 
     override fun getLanguagesToInject(
             host: PsiLanguageInjectionHost,
@@ -41,12 +42,12 @@ class ImpexLanguageInjector : LanguageInjector {
     ) {
         if (host is ImpexStringImpl) {
             val hostString = StringUtil.unquoteString(host.getText()).toLowerCase()
-            if (StringUtil.trim(hostString).startsWith(GROOVY_MARKER)) {
+            if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(GROOVY_MARKER)) {
                 val language = GroovyLanguage
                 try {
                     injectionPlacesRegistrar.addPlace(
                             language,
-                            TextRange.from(OFFSET, host.getTextLength() - OFFSET), null, null
+                            TextRange.from(OFFSET, host.getTextLength() - OFFSET - QUOTE_SYMBOL_LENGTH), null, null
                     )
                 } catch (e: ProcessCanceledException) {
                     // ignore

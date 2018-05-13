@@ -980,7 +980,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | value_line
   //     | comment
   //     | bean_shell
-  //     | string
+  //     | (string (';')?)
   //     | macro_declaration
   static boolean root_group(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_group")) return false;
@@ -991,9 +991,37 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = value_line(b, l + 1);
     if (!r) r = comment(b, l + 1);
     if (!r) r = bean_shell(b, l + 1);
-    if (!r) r = string(b, l + 1);
+    if (!r) r = root_group_5(b, l + 1);
     if (!r) r = macro_declaration(b, l + 1);
     exit_section_(b, l, m, r, false, not_line_break_parser_);
+    return r;
+  }
+
+  // string (';')?
+  private static boolean root_group_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_group_5")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = string(b, l + 1);
+    r = r && root_group_5_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (';')?
+  private static boolean root_group_5_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_group_5_1")) return false;
+    root_group_5_1_0(b, l + 1);
+    return true;
+  }
+
+  // (';')
+  private static boolean root_group_5_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_group_5_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ";");
+    exit_section_(b, m, null, r);
     return r;
   }
 

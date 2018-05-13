@@ -43,7 +43,7 @@ private root_group ::= (
     | value_line
     | comment
     | bean_shell
-    | string
+    | (string (';')?)
     | macro_declaration
 )
 {recoverWhile = not_line_break}
