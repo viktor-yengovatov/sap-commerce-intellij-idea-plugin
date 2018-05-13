@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.6.9</version>
+    <version>8.7.10</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -100,29 +100,13 @@
         <![CDATA[
             <h2>Story</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-219'>IIP-219</a>] - Output / Export TSV Report </li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-349'>IIP-349</a>] - Add ability to execute FS/Impex/Groovy Script from IDEA </li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-401'>IIP-401</a>] - Allow to configure Tomcat SSL port number for HAC in Hybris panel</li>
-            </ul>
-
-            <h2>Task</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-155'>IIP-155</a>] - TSV list all problems </li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-417'>IIP-417</a>] - Enhancement of duplicate bean definition inspection </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-256'>IIP-256</a>] - Unify impex formatters into the default action</li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-414'>IIP-414</a>] - TS diagram doesn&#39;t render Collections </li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-419'>IIP-419</a>] - Incorrect completion for column value in FlexibleSearch query </li>
-            </ul>
-
-            <h2>Sub-task</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-258'>IIP-258</a>] - Add navigation from FlexibleSearch type and attributes to Type System (simple case) </li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-364'>IIP-364</a>] - Create a tool-window for showing a result of execution Impex/Groovy/FlexibleSearch </li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-418'>IIP-418</a>] - Add navigation from FlexibleSearch attributes to Type System (case with prefix) </li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-345'>IIP-345</a>] - Add dependencies to TS diagram </li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-409'>IIP-409</a>] - Syntax error in impex file which contains groovy script only</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-420'>IIP-420</a>] - Typo in Hybris Console - tab&quot;Groovy Scriptiong&quot;</li>
             </ul>
         ]]>
     </change-notes>
