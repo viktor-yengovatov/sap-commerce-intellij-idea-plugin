@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.formatting.simple;
+package com.intellij.idea.plugin.hybris.impex.formatting;
 
 import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,17 +45,19 @@ import java.util.Objects;
 public class ImpexBlock extends AbstractBlock {
 
     private final SpacingBuilder spacingBuilder;
+    private final CodeStyleSettings codeStyleSettings;
 
     public ImpexBlock(
         @NotNull final ASTNode node,
         @Nullable final Wrap wrap,
         @Nullable final Alignment alignment,
-        @NotNull final SpacingBuilder spacingBuilder
+        @NotNull final SpacingBuilder spacingBuilder,
+        @NotNull final CodeStyleSettings codeStyleSettings
     ) {
-
         super(node, wrap, alignment);
 
         this.spacingBuilder = spacingBuilder;
+        this.codeStyleSettings = codeStyleSettings;
     }
 
     @Override
@@ -67,12 +70,6 @@ public class ImpexBlock extends AbstractBlock {
         ASTNode currentNode = myNode.getFirstChildNode();
 
         while (null != currentNode) {
-
-            // Unpack 'Value Line' as columns will not be aligned if they do not share the same parent
-            if (ImpexTypes.VALUE_LINE == currentNode.getElementType()) {
-                currentNode = currentNode.getFirstChildNode();
-            }
-
             alignmentStrategy.processNode(currentNode);
 
             if (isNotWhitespaceOrNewLine(currentNode)
@@ -82,30 +79,32 @@ public class ImpexBlock extends AbstractBlock {
                     currentNode,
                     null,
                     alignmentStrategy.getAlignment(currentNode),
-                    spacingBuilder
+                    spacingBuilder,
+                    codeStyleSettings
+
                 );
 
                 blocks.add(block);
             }
 
-            // Unpack Value Line
-            if (isEndOfValueLine(currentNode)) {
-                currentNode = currentNode.getTreeParent().getTreeNext();
-            } else {
-                currentNode = currentNode.getTreeNext();
-            }
+            currentNode = currentNode.getTreeNext();
         }
 
         return blocks;
     }
 
-    private boolean isEndOfValueLine(final ASTNode currentNode) {
-        return null == currentNode.getTreeNext() && ImpexTypes.VALUE_LINE == currentNode.getTreeParent()
-                                                                                        .getElementType();
-    }
-
+    @NotNull
     private AlignmentStrategy getAlignmentStrategy() {
-        return ServiceManager.getService(AlignmentStrategy.class);
+        final ImpexCodeStyleSettings impexCodeStyleSettings = this.codeStyleSettings.getCustomSettings(
+            ImpexCodeStyleSettings.class
+        );
+
+        if (impexCodeStyleSettings.TABLIFY) {
+
+            return ServiceManager.getService(TableAlignmentStrategy.class);
+        }
+
+        return ServiceManager.getService(ColumnsAlignmentStrategy.class);
     }
 
     private boolean isNotWhitespaceOrNewLine(final ASTNode currentNode) {

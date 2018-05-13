@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,22 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.formatting.simple
+package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.formatting.SpacingBuilder
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettings
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.formatting.Alignment;
+import com.intellij.formatting.Block;
+import com.intellij.formatting.FormattingModel;
+import com.intellij.formatting.FormattingModelBuilder;
+import com.intellij.formatting.FormattingModelProvider;
+import com.intellij.formatting.SpacingBuilder;
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.codeStyle.CodeStyleSettings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
+ * Created 22:33 21 December 2014
+ *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
+public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
 
-fun createSimpleSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
-    val impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings::class.java)
+    @NotNull
+    @Override
+    public FormattingModel createModel(final PsiElement element, final CodeStyleSettings settings) {
 
-    return SpacingBuilder(settings, ImpexLanguage.getInstance())
+        final Block impexBlock = new ImpexBlock(
+            element.getNode(),
+            null,
+            Alignment.createAlignment(),
+            createSpaceBuilder(settings),
+            settings
+        );
+
+        return FormattingModelProvider.createFormattingModelForPsiFile(
+            element.getContainingFile(),
+            impexBlock,
+            settings
+        );
+    }
+
+    private static SpacingBuilder createSpaceBuilder(final CodeStyleSettings settings) {
+        final ImpexCodeStyleSettings impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings.class);
+
+        return new SpacingBuilder(settings, ImpexLanguage.getInstance())
             .before(ImpexTypes.VALUE_GROUP)
             .spaceIf(impexSettings.SPACE_BEFORE_FIELD_VALUE_SEPARATOR)
 
@@ -71,11 +103,11 @@ fun createSimpleSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
             .after(ImpexTypes.LEFT_ROUND_BRACKET)
             .spaceIf(impexSettings.SPACE_AFTER_LEFT_ROUND_BRACKET)
 
-            //                .before(ImpexTypes.LEFT_ROUND_BRACKET)
-            //                .spaceIf(impexSettings.SPACE_BEFORE_LEFT_ROUND_BRACKET)
+//                .before(ImpexTypes.LEFT_ROUND_BRACKET)
+//                .spaceIf(impexSettings.SPACE_BEFORE_LEFT_ROUND_BRACKET)
 
-            //                .after(ImpexTypes.RIGHT_ROUND_BRACKET)
-            //                .spaceIf(impexSettings.SPACE_AFTER_RIGHT_ROUND_BRACKET)
+//                .after(ImpexTypes.RIGHT_ROUND_BRACKET)
+//                .spaceIf(impexSettings.SPACE_AFTER_RIGHT_ROUND_BRACKET)
 
             .before(ImpexTypes.RIGHT_ROUND_BRACKET)
             .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_ROUND_BRACKET)
@@ -83,11 +115,11 @@ fun createSimpleSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
             .after(ImpexTypes.LEFT_SQUARE_BRACKET)
             .spaceIf(impexSettings.SPACE_AFTER_LEFT_SQUARE_BRACKET)
 
-            //                .before(ImpexTypes.LEFT_SQUARE_BRACKET)
-            //                .spaceIf(impexSettings.SPACE_BEFORE_LEFT_SQUARE_BRACKET)
+//                .before(ImpexTypes.LEFT_SQUARE_BRACKET)
+//                .spaceIf(impexSettings.SPACE_BEFORE_LEFT_SQUARE_BRACKET)
 
-            //                .after(ImpexTypes.RIGHT_SQUARE_BRACKET)
-            //                .spaceIf(impexSettings.SPACE_AFTER_RIGHT_SQUARE_BRACKET)
+//                .after(ImpexTypes.RIGHT_SQUARE_BRACKET)
+//                .spaceIf(impexSettings.SPACE_AFTER_RIGHT_SQUARE_BRACKET)
 
             .before(ImpexTypes.RIGHT_SQUARE_BRACKET)
             .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_SQUARE_BRACKET)
@@ -97,4 +129,12 @@ fun createSimpleSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
 
             .before(ImpexTypes.ALTERNATIVE_PATTERN)
             .spaceIf(impexSettings.SPACE_BEFORE_ALTERNATIVE_PATTERN)
+            ;
+    }
+
+    @Nullable
+    @Override
+    public TextRange getRangeAffectingIndent(final PsiFile file, final int offset, final ASTNode elementAtOffset) {
+        return null;
+    }
 }

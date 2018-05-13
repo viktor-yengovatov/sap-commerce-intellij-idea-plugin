@@ -144,8 +144,11 @@
             serviceInterface="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"
             serviceImplementation="com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.formatting.simple.AlignmentStrategy"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.simple.ColumnsAlignmentStrategy"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.formatting.ColumnsAlignmentStrategy"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.ColumnsAlignmentStrategy"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.formatting.TableAlignmentStrategy"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.TableAlignmentStrategy"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighter"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>

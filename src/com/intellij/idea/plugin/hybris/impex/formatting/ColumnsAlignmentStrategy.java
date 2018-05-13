@@ -16,12 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.formatting.simple;
+package com.intellij.idea.plugin.hybris.impex.formatting;
 
 import com.intellij.formatting.Alignment;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.apache.commons.lang3.Validate;
@@ -39,8 +40,8 @@ import java.util.List;
  */
 public class ColumnsAlignmentStrategy implements AlignmentStrategy {
 
-    private final List<Alignment> alignments = new ArrayList<Alignment>();
-    private int columnNumber = 0;
+    protected final List<Alignment> alignments = new ArrayList<>();
+    protected int columnNumber = 0;
 
     public ColumnsAlignmentStrategy() {
     }
@@ -76,40 +77,51 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
         } else {
             if (isNewLine(currentNode)) {
                 columnNumber = 0;
-            } else if (isHeaderLine(currentNode)) {
+            }
+
+            if (isHeaderLine(currentNode)) {
+                alignments.clear();
+            }
+            
+            if (ImpexPsiUtils.isUserRightsMacros(currentNode.getPsi())) {
                 alignments.clear();
             }
         }
     }
 
     @Contract(pure = true)
-    private boolean isStartOfTheFile(@Nullable final ASTNode currentNode) {
+    protected boolean isStartOfTheFile(@Nullable final ASTNode currentNode) {
         return null != currentNode && currentNode.getPsi() instanceof ImpexFile;
     }
 
     @Contract(pure = true)
-    private boolean isNewLine(@Nullable final ASTNode currentNode) {
+    protected boolean isNewLine(@Nullable final ASTNode currentNode) {
         return null != currentNode
                && ImpexTypes.VALUE_GROUP == currentNode.getElementType()
                && isStartOfValueLine(currentNode);
     }
 
     @Contract(pure = true)
-    private boolean isStartOfValueLine(@Nullable final ASTNode currentNode) {
-        return null != currentNode
-               && PsiTreeUtil.findChildOfType(
+    protected boolean isStartOfValueLine(@Nullable final ASTNode currentNode) {
+        if (null == currentNode) {
+            return false;
+        }
+
+        final ImpexValueGroup child = PsiTreeUtil.findChildOfType(
             currentNode.getTreeParent().getPsi(),
             ImpexValueGroup.class
-        ) == currentNode.getPsi();
+        );
+
+        return child == currentNode.getPsi();
     }
 
     @Contract(pure = true)
-    private boolean isNewColumn(@Nullable final ASTNode currentNode) {
+    protected boolean isNewColumn(@Nullable final ASTNode currentNode) {
         return null != currentNode && ImpexTypes.VALUE_GROUP == currentNode.getElementType();
     }
 
     @Contract(pure = true)
-    private boolean isHeaderLine(@Nullable final ASTNode currentNode) {
+    protected boolean isHeaderLine(@Nullable final ASTNode currentNode) {
         return null != currentNode && ImpexTypes.HEADER_LINE == currentNode.getElementType();
     }
 }

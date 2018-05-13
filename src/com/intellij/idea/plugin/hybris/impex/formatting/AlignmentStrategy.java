@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.formatting.simple;
+package com.intellij.idea.plugin.hybris.impex.formatting;
 
 import com.intellij.formatting.Alignment;
 import com.intellij.lang.ASTNode;
