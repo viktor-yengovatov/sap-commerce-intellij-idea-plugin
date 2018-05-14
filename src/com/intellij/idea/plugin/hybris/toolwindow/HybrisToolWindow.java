@@ -15,6 +15,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -36,6 +37,8 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     private JTextField projectPortTextField;
     private JLabel projectUrlPreviewValueLabel;
     private JLabel projectUrlPreviewLabel;
+    private JLabel hacWebrootLabel;
+    private JTextField hacWebrootTextField;
 
     @Override
     public void createToolWindowContent(
@@ -47,6 +50,7 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         Content content = contentFactory.createContent(myToolWindowContent, "", false);
         toolWindow.getContentManager().addContent(content);
         projectIpTextField.addActionListener(action->saveSettings());
+        hacWebrootTextField.addActionListener(action->saveSettings());
         loginTextField.addActionListener(action->saveSettings());
         passwordField.addActionListener(action->saveSettings());
         testConnectionButton.addActionListener(action->testConnection());
@@ -54,22 +58,24 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         projectIpTextField.setText(settings.getHostIP());
         projectPortTextField.setText(settings.getPort());
         ((PlainDocument)projectPortTextField.getDocument()).setDocumentFilter(new UnsignedIntegerDocumentFilter());
+        hacWebrootTextField.setText(settings.getHacWebroot());
         loginTextField.setText(settings.getHacLogin());
         passwordField.setText(settings.getHacPassword());
 
         final SimpleDocumentListener generateUrlPreviewDocumentListener = new SimpleDocumentListener() {
             @Override
             public void update(final DocumentEvent e) {
-                generatePreviewUrl();
+                generateHacPreviewUrl();
             }
         };
         projectIpTextField.getDocument().addDocumentListener(generateUrlPreviewDocumentListener);
         projectPortTextField.getDocument().addDocumentListener(generateUrlPreviewDocumentListener);
+        hacWebrootTextField.getDocument().addDocumentListener(generateUrlPreviewDocumentListener);
 
-        generatePreviewUrl();
+        generateHacPreviewUrl();
     }
 
-    private void generatePreviewUrl() {
+    private void generateHacPreviewUrl() {
         final StringBuilder sb = new StringBuilder(HybrisConstants.HTTPS_PROTOCOL);
         sb.append(projectIpTextField.getText());
         sb.append(HybrisConstants.URL_PORT_DELIMITER);
@@ -79,20 +85,28 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         } else {
             sb.append(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
         }
+        final String hacWebroot = hacWebrootTextField.getText();
+        if (StringUtils.isNotEmpty(hacWebroot)) {
+            sb.append('/').append(StringUtils.strip(hacWebroot, " /"));
+        }
         projectUrlPreviewValueLabel.setText(sb.toString());
     }
 
     private void testConnection() {
         saveSettings();
-        final boolean success = HybrisHacHttpClient.getInstance(myProject).login(myProject);
+
+        HybrisHacHttpClient hybrisHacHttpClient = HybrisHacHttpClient.getInstance(myProject);
+        final boolean success = hybrisHacHttpClient.login(myProject);
+        final String testedHacURL = hybrisHacHttpClient.getHostHacURL(myProject);
+
         final NotificationType type;
         final String message;
         if (success) {
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success");
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", testedHacURL);
             type = NotificationType.INFORMATION;
         } else {
             type = NotificationType.WARNING;
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail");
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", testedHacURL);
         }
 
         NotificationUtil.NOTIFICATION_GROUP.createNotification(
@@ -104,6 +118,7 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(myProject).getState();
         settings.setHostIP(projectIpTextField.getText());
         settings.setPort(projectPortTextField.getText());
+        settings.setHacWebroot(hacWebrootTextField.getText());
         settings.setHacLogin(loginTextField.getText());
         settings.setHacPassword(new String(passwordField.getPassword()));
     }

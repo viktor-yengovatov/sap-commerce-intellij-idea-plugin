@@ -40,7 +40,6 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -160,17 +159,30 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     @Override
     public String getHostHacUrl(final Project project) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getHostUrl(project));
-        final Properties localProperties = getLocalProperties(project);
-        if (localProperties != null) {
-            final String hac = localProperties.getProperty(HybrisConstants.HAC_WEBROOT_KEY);
-            if (hac != null) {
-                sb.append("/");
-                sb.append(StringUtils.strip(hac, " /"));
+
+        // First try to get the HAC webroot from the project settings, fallback to local props if not set in settings;
+        // For a remote server configured with hac on the root context, use / in the tool settings
+        final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        String hac = settings.getHacWebroot();
+        if (StringUtils.isEmpty(hac)) {
+            final Properties localProperties = getLocalProperties(project);
+            if (localProperties != null) {
+                hac = localProperties.getProperty(HybrisConstants.HAC_WEBROOT_KEY);
             }
         }
-        return sb.toString();
+
+        if (hac != null) {
+            sb.append('/');
+            sb.append(StringUtils.strip(hac, " /"));
+        }
+
+        final String result = sb.toString();
+
+        LOG.debug("Calculated hostHacURL=" + result);
+
+        return result;
     }
 
     @Override
@@ -200,16 +212,14 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         if (configDir == null) {
             return null;
         }
-        File propFile = new File(configDir, HybrisConstants.LOCAL_PROPERTIES);
+        final File propFile = new File(configDir, HybrisConstants.LOCAL_PROPERTIES);
         if (!propFile.exists()) {
             return null;
         }
-        Properties prop = new Properties();
-        try (FileReader fr = new FileReader(propFile)) {
+        final Properties prop = new Properties();
+        try (final FileReader fr = new FileReader(propFile)) {
             prop.load(fr);
             return prop;
-        } catch (FileNotFoundException e) {
-            LOG.info(e.getMessage(), e);
         } catch (IOException e) {
             LOG.info(e.getMessage(), e);
         }

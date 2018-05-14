@@ -47,6 +47,7 @@ public class HybrisProjectSettings {
     protected String ideModulesFilesDirectory;
     protected String hostIP = "localhost";
     protected String port = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
+    protected String hacWebroot;
     protected String hacLogin = "admin";
     protected String hacPassword = "nimda";
     protected boolean importOotbModulesInReadOnlyMode;
@@ -169,6 +170,14 @@ public class HybrisProjectSettings {
         this.port = port;
     }
 
+    public String getHacWebroot() {
+        return hacWebroot;
+    }
+
+    public void setHacWebroot(final String hacWebroot) {
+        this.hacWebroot = hacWebroot;
+    }
+
     public String getHacLogin() {
         return hacLogin;
     }
@@ -258,6 +267,7 @@ public class HybrisProjectSettings {
             .append(ideModulesFilesDirectory)
             .append(hostIP)
             .append(port)
+            .append(hacWebroot)
             .append(hacLogin)
             .append(hacPassword)
             .append(importOotbModulesInReadOnlyMode)
@@ -296,6 +306,7 @@ public class HybrisProjectSettings {
             .append(ideModulesFilesDirectory, other.ideModulesFilesDirectory)
             .append(hostIP, other.hostIP)
             .append(port, other.port)
+            .append(hacWebroot, other.hacWebroot)
             .append(hacLogin, other.hacLogin)
             .append(hacPassword, other.hacPassword)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
@@ -324,6 +335,7 @@ public class HybrisProjectSettings {
         sb.append("ideModulesFilesDirectory=").append(ideModulesFilesDirectory);
         sb.append("hostIP=").append(hostIP);
         sb.append("port=").append(port);
+        sb.append("hacWebroot=").append(hacWebroot);
         sb.append("hacLogin=").append(hacLogin);
         sb.append("hacPassword=").append(hacPassword);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);

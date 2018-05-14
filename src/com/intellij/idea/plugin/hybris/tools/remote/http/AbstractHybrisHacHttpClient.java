@@ -123,7 +123,7 @@ public abstract class AbstractHybrisHacHttpClient {
         return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, SC_SERVICE_UNAVAILABLE, reasonPhrase));
     }
 
-    protected String getHostHacURL(Project project) {
+    public String getHostHacURL(Project project) {
         return CommonIdeaService.getInstance().getHostHacUrl(project);
     }
 
