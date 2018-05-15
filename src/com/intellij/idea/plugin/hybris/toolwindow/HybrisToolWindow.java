@@ -1,6 +1,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -76,20 +77,9 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     }
 
     private void generateHacPreviewUrl() {
-        final StringBuilder sb = new StringBuilder(HybrisConstants.HTTPS_PROTOCOL);
-        sb.append(projectIpTextField.getText());
-        sb.append(HybrisConstants.URL_PORT_DELIMITER);
-        final String port = projectPortTextField.getText();
-        if(port != null && !port.isEmpty()) {
-            sb.append(port);
-        } else {
-            sb.append(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
-        }
-        final String hacWebroot = hacWebrootTextField.getText();
-        if (StringUtils.isNotEmpty(hacWebroot)) {
-            sb.append('/').append(StringUtils.strip(hacWebroot, " /"));
-        }
-        projectUrlPreviewValueLabel.setText(sb.toString());
+        saveSettings();
+        final String previewUrl = CommonIdeaService.getInstance().getHostHacUrl(myProject);
+        projectUrlPreviewValueLabel.setText(previewUrl);
     }
 
     private void testConnection() {
