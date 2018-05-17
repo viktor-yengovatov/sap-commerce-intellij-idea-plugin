@@ -35,6 +35,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.LicensingFacade;
 import com.intellij.util.PlatformUtils;
+import com.intellij.util.proxy.ProtocolDefaultPorts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -190,17 +191,23 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
         final String ip = settings.getHostIP();
         StringBuilder sb = new StringBuilder();
-        sb.append(HybrisConstants.HTTPS_PROTOCOL);
-        sb.append(ip);
-
+        final Properties localProperties = getLocalProperties(project);
+        String sslPort = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
+        String httpPort =  HybrisConstants.DEFAULT_TOMCAT_HTTP_PORT;
+        if (localProperties != null) {
+            sslPort = localProperties.getProperty(HybrisConstants.TOMCAT_SSL_PORT_KEY, HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
+            httpPort = localProperties.getProperty(HybrisConstants.TOMCAT_HTTP_PORT_KEY, HybrisConstants.DEFAULT_TOMCAT_HTTP_PORT);
+        }
         String port = settings.getPort();
         if (port == null || port.isEmpty()) {
-            final Properties localProperties = getLocalProperties(project);
-            port = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
-            if (localProperties != null) {
-                port = localProperties.getProperty(HybrisConstants.TOMCAT_SSL_PORT_KEY, HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
-            }
+            port = sslPort;
         }
+        if (port.equals(httpPort) || port.equals(ProtocolDefaultPorts.HTTP)) {
+            sb.append(HybrisConstants.HTTP_PROTOCOL);
+        } else {
+            sb.append(HybrisConstants.HTTPS_PROTOCOL);
+        }
+        sb.append(ip);
         sb.append(HybrisConstants.URL_PORT_DELIMITER);
         sb.append(port);
 
