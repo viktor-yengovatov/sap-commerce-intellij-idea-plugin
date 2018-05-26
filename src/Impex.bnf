@@ -193,7 +193,7 @@ parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) para
 {pin = 1 recoverWhile = recover_parameters}
 
 parameter ::= (HEADER_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID) (sub_parameters | ((DOT)? macro_usage_dec))? modifiers*
-{pin = 1}
+{pin = 1 mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexParameterMixin"}
 
 sub_parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
 {pin = 1 extends = parameters}
