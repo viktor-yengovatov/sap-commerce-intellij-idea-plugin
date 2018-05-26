@@ -28,10 +28,11 @@
       <component id="8073c" class="javax.swing.JLabel">
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
+          <gridbag top="5" left="0" bottom="5" right="0" weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
           <font style="1"/>
+          <horizontalAlignment value="10"/>
           <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.remote.label"/>
         </properties>
       </component>
@@ -101,7 +102,7 @@
       <component id="1851f" class="javax.swing.JLabel" binding="projectUrlPreviewLabel">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
+          <gridbag top="5" left="0" bottom="5" right="0" weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
           <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.preview.label"/>
@@ -110,9 +111,10 @@
       <component id="e18ae" class="javax.swing.JLabel" binding="projectUrlPreviewValueLabel">
         <constraints>
           <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
-          <gridbag weightx="1.0" weighty="0.0"/>
+          <gridbag top="5" left="5" bottom="5" right="0" weightx="1.0" weighty="0.0"/>
         </constraints>
         <properties>
+          <foreground color="-12275880"/>
           <text value=""/>
         </properties>
       </component>
@@ -149,6 +151,12 @@
       <hspacer id="9c773">
         <constraints>
           <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="32b10">
+        <constraints>
+          <grid row="7" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
       </hspacer>
