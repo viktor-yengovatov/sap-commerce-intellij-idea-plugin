@@ -2,7 +2,9 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler
 
 
 import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.ui.ConsoleViewContentType.*
+import com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT
+import com.intellij.execution.ui.ConsoleViewContentType.NORMAL_OUTPUT
+import com.intellij.execution.ui.ConsoleViewContentType.SYSTEM_OUTPUT
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisFSConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisGroovyConsole
@@ -17,7 +19,6 @@ import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -26,13 +27,18 @@ import java.util.concurrent.TimeUnit
 class HybrisConsoleExecuteActionHandler(private val project: Project,
                                         private val preserveMarkup: Boolean) {
 
+    private fun setEditorEnabled(console: HybrisConsole, enabled: Boolean) {
+        console.consoleEditor.isRendererMode = !enabled
+        ApplicationManager.getApplication().invokeLater { console.consoleEditor.component.updateUI() }
+    }
+
     private fun processLine(console: HybrisConsole, text: String) {
         ApplicationManager.getApplication().runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to Hybris...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
-                        Thread.sleep(TimeUnit.SECONDS.toMillis(5))
+                        setEditorEnabled(console, false)
 
                         val client = HybrisHacHttpClient()
                         val httpResult =
@@ -43,15 +49,17 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                                     else -> null
                                 }
 
-                        val result = createResult().output(httpResult?.output).detailMessage(httpResult?.detailMessage).build()
+                        val result = createResult().errorMessage(httpResult?.errorMessage).output(httpResult?.output).detailMessage(httpResult?.detailMessage).build()
                         val detailMessage = result.detailMessage
                         val output = result.output
+                        val errorMessage = result.errorMessage
 
                         console.print("[RESULT] \n", SYSTEM_OUTPUT)
                         val outputType = if (result.hasError()) ERROR_OUTPUT else NORMAL_OUTPUT
-                        console.print("$output\n$detailMessage", outputType)
+                        console.print("$output$errorMessage\n$detailMessage\n", outputType)
                     } finally {
                         isProcessRunning = false
+                        setEditorEnabled(console, true)
                     }
                 }
             })

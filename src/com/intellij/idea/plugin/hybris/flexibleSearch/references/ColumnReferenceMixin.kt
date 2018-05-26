@@ -93,8 +93,8 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
             val corName = PsiTreeUtil.findSiblingForward(tableName!!.originalElement, FlexibleSearchTypes.CORRELATION_NAME, null)
             if (corName == null) false else prefix == corName.text
         }
-        return if (tableReference == null) {
-            deepSearchOfTypeReference(parent!!, prefix)
+        return if (tableReference == null && parent != null) {
+            deepSearchOfTypeReference(parent, prefix)
         } else {
             Optional.ofNullable(PsiTreeUtil.findChildOfType(tableReference, FlexibleSearchTableName::class.java))
         }

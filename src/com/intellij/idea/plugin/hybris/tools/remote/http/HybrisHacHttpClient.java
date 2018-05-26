@@ -23,8 +23,8 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBui
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
@@ -135,7 +135,12 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final String actionUrl = getHostHacURL(project) + "/console/flexsearch/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true);
-        resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
+        final StatusLine statusLine = response.getStatusLine();
+        resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
+        if (response.getEntity() == null) {
+            return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
+                                              statusLine.getReasonPhrase()).build();
+        }
         final Document document;
         try {
             document = parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
@@ -150,7 +155,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         if (json.get("exception") != null) {
             return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
                                                            .errorMessage(json.get("exception").toString())
-                                                           .detailMessage(json.get("exception").toString()).build();
+                                                           .build();
         } else {
             TableBuilder tableBuilder = new TableBuilder();
 
@@ -176,7 +181,12 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final String actionUrl = getHostHacURL(project) + "/console/scripting/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true);
-        resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
+        final StatusLine statusLine = response.getStatusLine();
+        resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
+        if (response.getEntity() == null) {
+            return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
+                                              statusLine.getReasonPhrase()).build();
+        }
         final Document document;
         try {
             document = parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
@@ -191,7 +201,6 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
             return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
                                                            .errorMessage(json.get("stacktraceText").toString())
-                                                           .detailMessage(json.get("stacktraceText").toString())
                                                            .build();
         } else {
             return resultBuilder.output(json.get("executionResult").toString()).build();
