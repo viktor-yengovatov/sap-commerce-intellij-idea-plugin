@@ -412,6 +412,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                                .filter(e -> e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
                                .forEach(e -> completeSetOfHybrisModules.add(e.getName()));
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
+        hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
     }
 
     private Set<String> createModulesOnBlackList() {

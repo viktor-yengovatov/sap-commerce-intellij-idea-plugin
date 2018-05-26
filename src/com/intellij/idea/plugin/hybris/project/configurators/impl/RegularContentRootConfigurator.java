@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -143,7 +144,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             dirsToIgnore
         );
 
-        addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
+        if(moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
+            addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
+        } else {
+            excludeTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory());
+        }
 
         final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
 
@@ -274,7 +279,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JavaSourceRootType.SOURCE
         );
 
-        addTestSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore);
+        if(moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
+            addTestSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore);
+        } else {
+            excludeTestSourceRoots(contentEntry, backOfficeModuleDirectory);
+        }
 
         final File hmcResourcesDirectory = new File(backOfficeModuleDirectory, RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -337,7 +346,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
-        addTestSourceRoots(contentEntry, webModuleDirectory, dirsToIgnore);
+        if(moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
+            addTestSourceRoots(contentEntry, webModuleDirectory, dirsToIgnore);
+        } else {
+            excludeTestSourceRoots(contentEntry, webModuleDirectory);
+        }
 
         excludeSubDirectories(contentEntry, webModuleDirectory, Arrays.asList(
             ADDON_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY, COMMON_WEB_SRC_DIRECTORY
@@ -358,6 +371,15 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
                 JavaSourceRootType.TEST_SOURCE,
                 dirsToIgnore
             );
+        }
+    }
+
+    private static void excludeTestSourceRoots(
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final File dir) {
+
+        for (String testSrcDirName : TEST_SRC_DIR_NAMES) {
+            excludeDirectory(contentEntry, new File(dir, testSrcDirName));
         }
     }
 

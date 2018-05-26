@@ -54,6 +54,7 @@ public class HybrisProjectSettings {
     protected boolean followSymlink;
     protected boolean scanThroughExternalModule;
     protected boolean createBackwardCyclicDependenciesForAddOns = false;
+    protected boolean excludeTestSources;
     protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
     protected Set<String> unusedExtensions = newHashSet();
     protected Set<String> modulesOnBlackList = newHashSet();
@@ -218,6 +219,14 @@ public class HybrisProjectSettings {
         this.scanThroughExternalModule = scanThroughExternalModule;
     }
 
+    public boolean isExcludeTestSources() {
+        return excludeTestSources;
+    }
+
+    public void setExcludeTestSources(final boolean excludeTestSources) {
+        this.excludeTestSources = excludeTestSources;
+    }
+
     public Set<String> getCompleteSetOfAvailableExtensionsInHybris() {
         return completeSetOfAvailableExtensionsInHybris;
     }
@@ -272,6 +281,7 @@ public class HybrisProjectSettings {
             .append(hacPassword)
             .append(importOotbModulesInReadOnlyMode)
             .append(followSymlink)
+            .append(excludeTestSources)
             .append(scanThroughExternalModule)
             .append(completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns)
@@ -311,6 +321,7 @@ public class HybrisProjectSettings {
             .append(hacPassword, other.hacPassword)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
             .append(followSymlink, other.followSymlink)
+            .append(excludeTestSources, other.excludeTestSources)
             .append(scanThroughExternalModule, other.scanThroughExternalModule)
             .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
@@ -340,6 +351,7 @@ public class HybrisProjectSettings {
         sb.append("hacPassword=").append(hacPassword);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
         sb.append("followSymlink=").append(followSymlink);
+        sb.append("excludeTestSources=").append(excludeTestSources);
         sb.append("scanThroughExternalModule=").append(scanThroughExternalModule);
         sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);
         sb.append("createBackwardCyclicDependenciesForAddOns=").append(createBackwardCyclicDependenciesForAddOns);

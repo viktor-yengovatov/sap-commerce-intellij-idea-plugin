@@ -115,6 +115,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected String hybrisVersion;
     protected boolean createBackwardCyclicDependenciesForAddOns;
     protected boolean followSymlink;
+    protected boolean excludeTestSources;
     protected boolean scanThroughExternalModule;
     @NotNull
     private ConfigHybrisModuleDescriptor configHybrisModuleDescriptor;
@@ -896,6 +897,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public boolean isFollowSymlink() {
         return followSymlink;
+    }
+
+    @Override
+    public void setExcludeTestSources(final boolean excludeTestSources) {
+        this.excludeTestSources = excludeTestSources;
+    }
+
+    @Override
+    public boolean isExcludeTestSources() {
+        return excludeTestSources;
     }
 
     @Override

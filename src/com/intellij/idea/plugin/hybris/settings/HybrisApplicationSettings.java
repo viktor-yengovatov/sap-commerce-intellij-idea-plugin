@@ -123,6 +123,9 @@ public class HybrisApplicationSettings {
     @PropertyName("scanThroughExternalModule")
     private boolean scanThroughExternalModule = false;
 
+    @PropertyName("excludeTestSources")
+    private boolean excludeTestSources = false;
+
     public HybrisApplicationSettings() {
     }
 
@@ -302,6 +305,14 @@ public class HybrisApplicationSettings {
         this.scanThroughExternalModule = scanThroughExternalModule;
     }
 
+    public boolean isExcludeTestSources() {
+        return excludeTestSources;
+    }
+
+    public void setExcludeTestSources(final boolean excludeTestSources) {
+        this.excludeTestSources = excludeTestSources;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -327,6 +338,7 @@ public class HybrisApplicationSettings {
             .append(sourceCodeDirectory)
             .append(sourceZipUsed)
             .append(developmentMode)
+            .append(excludeTestSources)
             .toHashCode();
     }
 
@@ -365,6 +377,7 @@ public class HybrisApplicationSettings {
             .append(sourceCodeDirectory, other.sourceCodeDirectory)
             .append(sourceZipUsed, other.sourceZipUsed)
             .append(developmentMode, other.developmentMode)
+            .append(excludeTestSources, other.excludeTestSources)
             .isEquals();
     }
 
@@ -393,6 +406,7 @@ public class HybrisApplicationSettings {
         sb.append(", sourceCodeDirectory='").append(sourceCodeDirectory).append('\'');
         sb.append(", sourceZipUsed='").append(sourceZipUsed).append('\'');
         sb.append(", developmentMode='").append(developmentMode).append('\'');
+        sb.append(", excludeTestSources='").append(excludeTestSources).append('\'');
         sb.append('}');
         return sb.toString();
     }

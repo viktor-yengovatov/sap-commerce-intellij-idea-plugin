@@ -98,6 +98,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox followSimplinkCheckbox;
     private JLabel scanThroughExternalModuleLabel;
     private JCheckBox scanThroughExternalModuleCheckbox;
+    private JCheckBox excludeTestSourcesCheckBox;
+    private JLabel excludeTestSourcesLabel;
     private String hybrisVersion;
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
@@ -262,6 +264,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             this.followSimplinkCheckbox.isSelected()
         );
 
+        this.getContext().getHybrisProjectDescriptor().setExcludeTestSources(
+            this.excludeTestSourcesCheckBox.isSelected()
+        );
+
         this.getContext().getHybrisProjectDescriptor().setScanThroughExternalModule(
             this.scanThroughExternalModuleCheckbox.isSelected()
         );
@@ -345,6 +351,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setScanThroughExternalModule(
             appSettings.isScanThroughExternalModule()
         );
+        hybrisProjectDescriptor.setExcludeTestSources(
+            appSettings.isExcludeTestSources()
+        );
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
@@ -353,6 +362,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
         this.followSimplinkCheckbox.setSelected(
             hybrisProjectDescriptor.isFollowSymlink()
+        );
+        this.excludeTestSourcesCheckBox.setSelected(
+            hybrisProjectDescriptor.isExcludeTestSources()
         );
 
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
@@ -578,6 +590,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.isCreateBackwardCyclicDependenciesForAddOns());
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
         hybrisProjectDescriptor.setFollowSymlink(settings.isFollowSymlink());
+        hybrisProjectDescriptor.setExcludeTestSources(settings.isExcludeTestSources());
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.isScanThroughExternalModule());
 
         this.getContext().setRootProjectDirectory(new File(this.getBuilder().getFileToImport()));
@@ -615,6 +628,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             return null;
         }
         return file;
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 
     private class MySourceCodeChooserActionListener

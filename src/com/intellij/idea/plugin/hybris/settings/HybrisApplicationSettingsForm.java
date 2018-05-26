@@ -59,6 +59,7 @@ public class HybrisApplicationSettingsForm {
     private JCheckBox followSymlink;
     private JPanel typeSystemDiagramStopWords;
     private JCheckBox scanThroughExternalModule;
+    private JCheckBox excludeTestSources;
 
     private MyListPanel junkListPanel;
     private MyListPanel tsdListPanel;
@@ -79,6 +80,7 @@ public class HybrisApplicationSettingsForm {
         defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
         followSymlink.setSelected(data.isFollowSymlink());
         scanThroughExternalModule.setSelected(data.isScanThroughExternalModule());
+        excludeTestSources.setSelected(data.isExcludeTestSources());
     }
 
     public void getData(final HybrisApplicationSettings data) {
@@ -97,7 +99,7 @@ public class HybrisApplicationSettingsForm {
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
         data.setFollowSymlink(followSymlink.isSelected());
         data.setScanThroughExternalModule(scanThroughExternalModule.isSelected());
-
+        data.setExcludeTestSources(excludeTestSources.isSelected());
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -144,6 +146,9 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (followSymlink.isSelected() != data.isFollowSymlink()) {
+            return true;
+        }
+        if (excludeTestSources.isSelected() != data.isExcludeTestSources()) {
             return true;
         }
         return false;

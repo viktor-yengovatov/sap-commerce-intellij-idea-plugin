@@ -122,6 +122,10 @@ public interface HybrisProjectDescriptor {
 
     boolean isFollowSymlink();
 
+    void setExcludeTestSources(boolean excludeTestSources);
+
+    boolean isExcludeTestSources();
+
     void setScanThroughExternalModule(boolean scanThroughExternalModule);
 
     boolean isScanThroughExternalModule();
