@@ -76,3 +76,4 @@ This project exists thanks to all the people who contribute.
 * Sergei Aksenenko
 * Roger Ye
 * Hector Longarte
+* Fabian Necci
