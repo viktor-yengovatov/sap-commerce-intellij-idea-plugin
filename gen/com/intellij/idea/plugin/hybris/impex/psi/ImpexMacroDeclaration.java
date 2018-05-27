@@ -13,4 +13,7 @@ public interface ImpexMacroDeclaration extends PsiElement {
   @NotNull
   List<ImpexMacroUsageDec> getMacroUsageDecList();
 
+  @NotNull
+  List<ImpexMacroValueDec> getMacroValueDecList();
+
 }

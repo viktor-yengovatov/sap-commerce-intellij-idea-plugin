@@ -53,8 +53,8 @@ single_string = ['](('')|([^'\r\n])*)[']
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
 macro_name_declaration = [$]({identifier})+{white_space}*[=]
-macro_usage       = [$]({identifier})+
-macro_value       = ({not_crlf}|{identifier}+)
+macro_usage       = [$]([a-zA-Z0-9_])+
+macro_value       = ({not_crlf}|({dot}?{identifier})+)
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]

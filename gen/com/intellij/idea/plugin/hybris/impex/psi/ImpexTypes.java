@@ -22,6 +22,7 @@ public interface ImpexTypes {
   IElementType MACRO_DECLARATION = new ImpexElementType("MACRO_DECLARATION");
   IElementType MACRO_NAME_DEC = new ImpexElementType("MACRO_NAME_DEC");
   IElementType MACRO_USAGE_DEC = new ImpexElementType("MACRO_USAGE_DEC");
+  IElementType MACRO_VALUE_DEC = new ImpexElementType("MACRO_VALUE_DEC");
   IElementType MODIFIERS = new ImpexElementType("MODIFIERS");
   IElementType PARAMETER = new ImpexElementType("PARAMETER");
   IElementType PARAMETERS = new ImpexElementType("PARAMETERS");
@@ -117,6 +118,9 @@ public interface ImpexTypes {
       }
       else if (type == MACRO_USAGE_DEC) {
         return new ImpexMacroUsageDecImpl(node);
+      }
+      else if (type == MACRO_VALUE_DEC) {
+        return new ImpexMacroValueDecImpl(node);
       }
       else if (type == MODIFIERS) {
         return new ImpexModifiersImpl(node);
