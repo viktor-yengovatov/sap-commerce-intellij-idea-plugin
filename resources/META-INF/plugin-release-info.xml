@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.7.10</version>
+    <version>8.8.11</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -14,7 +14,7 @@
 
     <description>
         <![CDATA[
-          <p>This plugin is an open source plugin for SAP Hybris Commerce integration.</p>
+          <p>This plugin is a plugin for SAP Hybris Commerce integration.</p>
           <p>Bug tracker: <a href="https://hybris-integration.atlassian.net/projects/IIPS">Intellij IDEA Plugin Support</a></p>
 
           <b>If you have any questions you can send an email to:</b>
@@ -92,6 +92,7 @@
               <li>Sergei Aksenenko</li>
               <li>Roger Ye</li>
               <li>Hector Longarte</li>
+              <li>Fabian Necci</li>
           </ul>
       ]]>
     </description>
@@ -100,13 +101,25 @@
         <![CDATA[
             <h2>Story</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-256'>IIP-256</a>] - Unify impex formatters into the default action</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-430'>IIP-430</a>] - Exclude Hybris OOTB testsrc folders from import</li>
+            </ul>
+
+            <h2>Task</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-421'>IIP-421</a>] - Get rid the old menus for formatting an impex file as a table</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-425'>IIP-425</a>] - Cosmetic changes of Hybris toolwindow</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-427'>IIP-427</a>] - Create navigation between docID references entire impex file</li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-409'>IIP-409</a>] - Syntax error in impex file which contains groovy script only</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-420'>IIP-420</a>] - Typo in Hybris Console - tab&quot;Groovy Scriptiong&quot;</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-426'>IIP-426</a>] - NPE during execute groovy/fs script from console</li>
+            </ul>
+
+            <h2>Fault</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-149'>IIPS-149</a>] - Can not connect to remote hybris instance</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-152'>IIPS-152</a>] - Cannot connect to local hybris</li>
             </ul>
         ]]>
     </change-notes>
