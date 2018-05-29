@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.constants;
 
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.BooleanModifierValue;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifierValue;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexProcessorModifier;
 
 /**
  * Created 20:39 29 March 2015
@@ -31,6 +32,7 @@ public interface ImpexConstants {
     interface ModifierCommonValues {
 
         BooleanModifierValue[] BOOLEAN = BooleanModifierValue.values();
+        ImpexModifierValue[] PROCESSOR_TYPES = ImpexProcessorModifier.INSTANCE.values();
         ImpexModifierValue[] NONE = new ImpexModifierValue[0];
     }
 }

@@ -22,19 +22,27 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifierValue;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexProcessorModifierValue;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+
+import static com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier.PROCESSOR;
 
 /**
  * Created 22:12 14 May 2016
@@ -73,8 +81,20 @@ public class ImpexHeaderTypeModifierValueCompletionProvider extends CompletionPr
 
         if (null != impexModifier) {
 
-            for (String possibleValue : impexModifier.getModifierValues()) {
-                result.addElement(LookupElementBuilder.create(possibleValue));
+            if (PROCESSOR.equals(impexModifier)) {
+                final ImpexModifierValue[] modifierValues = ((TypeModifier) impexModifier).getRawModifierValues();
+                Arrays.stream(modifierValues).forEach(it -> {
+                    final PsiClass psiClass = ((ImpexProcessorModifierValue) it).getPsiClass();
+                    final LookupElementBuilder lookup = LookupElementBuilder.create(psiClass.getQualifiedName())
+                                                                            .withPresentableText(psiClass.getName())
+                                                                            .withIcon(AllIcons.Nodes.Class);
+                    result.addElement(lookup);
+                });
+
+            } else {
+                for (String possibleValue : impexModifier.getModifierValues()) {
+                    result.addElement(LookupElementBuilder.create(possibleValue));
+                }
             }
 
         } else {
