@@ -38,4 +38,10 @@ public class ImpexMacroDeclarationImpl extends ASTWrapperPsiElement implements I
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexMacroUsageDec.class);
   }
 
+  @Override
+  @NotNull
+  public List<ImpexMacroValueDec> getMacroValueDecList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexMacroValueDec.class);
+  }
+
 }

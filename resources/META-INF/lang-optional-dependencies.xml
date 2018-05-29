@@ -166,6 +166,10 @@
                          groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.NoUniqueValueInspection"/>
 
+        <localInspection groupPath="Impex" shortName="UnknownConfigPropertyInspection" displayName="Uses unknown config property"
+                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UnknownConfigPropertyInspection"/>
+
         <localInspection groupPath="Impex" shortName="UniqueAttributeWithoutIndex" displayName="Unique attribute without an index"
                          groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UniqueAttributeWithoutIndexInspection"/>

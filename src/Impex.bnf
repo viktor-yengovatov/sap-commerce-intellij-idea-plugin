@@ -92,9 +92,11 @@ header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_hea
 comment ::= COMMENT_MARKER COMMENT_BODY?
 {pin = 1}
 
+macro_value_dec ::= MACRO_VALUE
+{mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosValueMixin"}
 
 macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
-      MACRO_VALUE
+      macro_value_dec
     | SINGLE_STRING
     | DOUBLE_STRING
     | HEADER_SPECIAL_PARAMETER_NAME
@@ -218,3 +220,4 @@ any_attribute_value ::= (
   | string
   | macro_usage_dec
 )+
+{mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAttributeValueMixin"}

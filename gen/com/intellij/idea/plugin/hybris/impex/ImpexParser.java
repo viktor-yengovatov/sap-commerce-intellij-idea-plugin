@@ -65,6 +65,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     else if (t == MACRO_USAGE_DEC) {
       r = macro_usage_dec(b, 0);
     }
+    else if (t == MACRO_VALUE_DEC) {
+      r = macro_value_dec(b, 0);
+    }
     else if (t == MODIFIERS) {
       r = modifiers(b, 0);
     }
@@ -396,7 +399,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // macro_name_dec ASSIGN_VALUE (
-  //       MACRO_VALUE
+  //       macro_value_dec
   //     | SINGLE_STRING
   //     | DOUBLE_STRING
   //     | HEADER_SPECIAL_PARAMETER_NAME
@@ -429,7 +432,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // (
-  //       MACRO_VALUE
+  //       macro_value_dec
   //     | SINGLE_STRING
   //     | DOUBLE_STRING
   //     | HEADER_SPECIAL_PARAMETER_NAME
@@ -463,7 +466,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // MACRO_VALUE
+  // macro_value_dec
   //     | SINGLE_STRING
   //     | DOUBLE_STRING
   //     | HEADER_SPECIAL_PARAMETER_NAME
@@ -485,7 +488,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "macro_declaration_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, MACRO_VALUE);
+    r = macro_value_dec(b, l + 1);
     if (!r) r = consumeToken(b, SINGLE_STRING);
     if (!r) r = consumeToken(b, DOUBLE_STRING);
     if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
@@ -528,6 +531,18 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, MACRO_USAGE);
     exit_section_(b, m, MACRO_USAGE_DEC, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // MACRO_VALUE
+  public static boolean macro_value_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "macro_value_dec")) return false;
+    if (!nextTokenIs(b, MACRO_VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, MACRO_VALUE);
+    exit_section_(b, m, MACRO_VALUE_DEC, r);
     return r;
   }
 

@@ -8,34 +8,22 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAttributeValueMixin;
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosValueMixin;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexAnyAttributeValueImpl extends ImpexAttributeValueMixin implements ImpexAnyAttributeValue {
+public class ImpexMacroValueDecImpl extends ImpexMacrosValueMixin implements ImpexMacroValueDec {
 
-  public ImpexAnyAttributeValueImpl(ASTNode node) {
+  public ImpexMacroValueDecImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitAnyAttributeValue(this);
+    visitor.visitMacroValueDec(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpexMacroUsageDec> getMacroUsageDecList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexMacroUsageDec.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpexString> getStringList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexString.class);
   }
 
 }
