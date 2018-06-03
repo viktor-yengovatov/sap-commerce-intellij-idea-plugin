@@ -26,4 +26,12 @@
             <option name="IMPEX" value="true"/>
         </context>
     </template>
+    <template name="deleteAll"
+              value="#PLEASE BE CAREFUL with this and add catalog version to the parameters if needed to avoid removing configuration from all sites&#10;REMOVE $TYPE$[batchmode=true];itemtype(code)[unique=true]&#10;;$TYPE$"
+              description="Delete all objects by type" toReformat="false" toShortenFQNames="false">
+        <variable name="TYPE" expression="" defaultValue="" alwaysStopAt="true"/>
+        <context>
+            <option name="IMPEX" value="true"/>
+        </context>
+    </template>
 </templateSet>

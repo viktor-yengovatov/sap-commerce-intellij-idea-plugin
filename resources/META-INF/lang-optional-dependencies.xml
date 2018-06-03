@@ -158,7 +158,7 @@
 
         <defaultLiveTemplatesProvider
             implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexTemplateProvider"/>
-        <liveTemplateContext implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContext"/>
+        <liveTemplateContext implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
 
 
         <renameHandler implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexMacrosRenameHandler"/>

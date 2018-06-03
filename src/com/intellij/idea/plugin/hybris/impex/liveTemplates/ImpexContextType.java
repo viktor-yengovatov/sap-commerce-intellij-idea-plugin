@@ -18,21 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.impex.liveTemplates;
 
+import com.intellij.codeInsight.template.FileTypeBasedContextType;
 import com.intellij.codeInsight.template.TemplateContextType;
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */
-public class ImpexContext extends TemplateContextType {
+public class ImpexContextType extends FileTypeBasedContextType {
 
-    protected ImpexContext() {
-        super("IMPEX", "Impex");
+    protected ImpexContextType() {
+        super("IMPEX", "Impex", ImpexFileType.getInstance());
     }
 
     @Override
     public boolean isInContext(@NotNull final PsiFile file, final int offset) {
-        return file.getName().endsWith(".impex");
+        return file instanceof ImpexFile;
     }
 }
