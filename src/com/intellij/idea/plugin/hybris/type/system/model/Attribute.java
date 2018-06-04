@@ -21,11 +21,14 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model;
 
+import com.intellij.idea.plugin.hybris.type.system.converter.AttributeHandlerReferenceConverter;
+import com.intellij.idea.plugin.hybris.type.system.converter.AttributeReferenceConverter;
 import com.intellij.idea.plugin.hybris.type.system.file.CompositeConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.Referencing;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.Stubbed;
 import com.intellij.util.xml.StubbedOccurrence;
@@ -69,6 +72,7 @@ public interface Attribute extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("qualifier")
     @Required
+    @Referencing(AttributeReferenceConverter.class)
     GenericAttributeValue<String> getQualifier();
 
 

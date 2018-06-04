@@ -28,11 +28,10 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
+import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.regex.Pattern;
 
 /**
  * @author Nosov Aleksandr
@@ -41,7 +40,6 @@ public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> imple
 
     private static final String JAVA_MODEL_SUFFIX = "Model";
     private static final int QUOTE_LENGTH = 2;
-    private static final Pattern PATTERN = Pattern.compile("\"");
 
     public HybrisModelItemReference(final PsiElement element, final boolean soft) {
         super(element, soft);
@@ -56,7 +54,7 @@ public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> imple
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final Project project = myElement.getProject();
-        final String modelName = PATTERN.matcher(myElement.getText()).replaceAll("");
+        final String modelName = ((XmlAttributeValue) myElement).getValue();
 
         final String javaModelName = modelName + JAVA_MODEL_SUFFIX;
         final String jaloModelName = modelName;
