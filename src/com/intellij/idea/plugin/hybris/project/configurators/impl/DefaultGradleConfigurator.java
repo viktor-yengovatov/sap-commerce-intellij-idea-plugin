@@ -26,11 +26,11 @@ import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.ProjectDataManager;
+import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataImportListener;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -60,6 +60,19 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         final GradleProjectImportProvider gradleProjectImportProvider = new GradleProjectImportProvider(
             gradleProjectImportBuilder);
 
+        project.getMessageBus().connect().subscribe(
+            ProjectDataImportListener.TOPIC,
+            (projectPath) -> {
+                if (projectPath != null && gradleRootGroup != null && gradleRootGroup.length > 0) {
+                    ApplicationManager.getApplication().invokeLater(() -> {
+                        if (!project.isDisposed()) {
+                            final Module module = ModuleManager.getInstance(project).findModuleByName(projectPath.substring(projectPath.lastIndexOf('/') + 1));
+                            moveGradleModulesToGroup(project, module, gradleRootGroup);
+                        }
+                    });
+                }
+            }
+        );
         gradleModules.forEach(gradleModule -> {
             ApplicationManager.getApplication().invokeAndWait(() -> {
                 final AddModuleWizard wizard = new AddModuleWizard(
@@ -79,10 +92,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
                     }
                 }
                 wizard.doFinishAction();
-                final List<Module> newModules = ImportModuleAction.createFromWizard(project, wizard);
-                if (gradleRootGroup != null && gradleRootGroup.length > 0) {
-                    moveGradleModulesToGroup(project, newModules, gradleRootGroup);
-                }
+                ImportModuleAction.createFromWizard(project, wizard);
             });
         });
 
@@ -91,27 +101,17 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
 
     private void moveGradleModulesToGroup(
         final Project project,
-        final List<Module> gradleModules,
+        final Module gradleModule,
         final String[] gradleGroup
     ) {
+        if (gradleModule == null) {
+            return;
+        }
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
-        for (Module module : gradleModules) {
-            if (module == null) {
-                // https://youtrack.jetbrains.com/issue/IDEA-177512
-                continue;
-            }
-            module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.GRADLE.name());
-            modifiableModuleModel.setModuleGroupPath(module, gradleGroup);
-        }
-        AccessToken token = null;
-        try {
-            token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
-            modifiableModuleModel.commit();
-        } finally {
-            if (token != null) {
-                token.finish();
-            }
-        }
+        gradleModule.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.GRADLE.name());
+        modifiableModuleModel.setModuleGroupPath(gradleModule, gradleGroup);
+
+        ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);
     }
 }
