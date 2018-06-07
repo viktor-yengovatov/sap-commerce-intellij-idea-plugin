@@ -13,4 +13,10 @@ public interface FlexibleSearchFromClause extends PsiElement {
   @Nullable
   FlexibleSearchTableReferenceList getTableReferenceList();
 
+  @Nullable
+  PsiElement getLeftBrace();
+
+  @Nullable
+  PsiElement getRightBrace();
+
 }

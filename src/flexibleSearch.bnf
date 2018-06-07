@@ -52,10 +52,10 @@
         RIGHT_BRACKET                   = "]"
         LEFT_PAREN                      = '('
         RIGHT_PAREN                     = ')'
-        LEFT_BRACE                      = '{'
-        RIGHT_BRACE                     = '}'
+        LEFT_BRACE                      = "regexp:(\{)"
+        RIGHT_BRACE                     = "regexp:(\})"
         RIGHT_DOUBLE_BRACE              = "regexp:(}})"
-        LEFT_DOUBLE_BRACE               = "regexp:({{)"
+        LEFT_DOUBLE_BRACE               = "regexp:(\{\{)"
         
         EQUALS_OPERATOR                 = 'regexp:(=)'
         NOT_EQUALS_OPERATOR             = '<>'
@@ -155,7 +155,7 @@ table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
     mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.references.TypeNameMixin"
     recoverWhile = table_name_recover
 }
-private table_name_recover ::= !('}' | AS | SPACE | " ")
+private table_name_recover ::= !(RIGHT_BRACE | AS | SPACE | " ")
 
 correlation_name ::= IDENTIFIER
 
@@ -170,7 +170,7 @@ join_specification ::= join_condition
 
 join_condition ::= ON search_condition
 {pin = 1 recoverWhile = join_condition_recover}
-private join_condition_recover ::= !( '}' | LEFT | JOIN )
+private join_condition_recover ::= !( RIGHT_BRACE | LEFT | JOIN )
 
 join_type ::= LEFT |
 

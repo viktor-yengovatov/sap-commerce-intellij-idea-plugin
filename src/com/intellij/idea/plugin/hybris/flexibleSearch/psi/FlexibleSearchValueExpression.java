@@ -14,6 +14,12 @@ public interface FlexibleSearchValueExpression extends PsiElement {
   FlexibleSearchColumnReference getColumnReference();
 
   @Nullable
+  PsiElement getLeftBrace();
+
+  @Nullable
   PsiElement getNumber();
+
+  @Nullable
+  PsiElement getRightBrace();
 
 }

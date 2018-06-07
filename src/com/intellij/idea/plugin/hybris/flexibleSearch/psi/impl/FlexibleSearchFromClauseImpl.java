@@ -38,4 +38,16 @@ public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implement
     return findChildByClass(FlexibleSearchTableReferenceList.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getLeftBrace() {
+    return findChildByType(LEFT_BRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightBrace() {
+    return findChildByType(RIGHT_BRACE);
+  }
+
 }

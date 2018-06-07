@@ -48,7 +48,14 @@
 
         <!-- Core elements -->
         <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
-        
+
+
+        <codeStyleSettingsProvider
+            implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FSCodeStyleSettingsProvider"/>
+
+        <langCodeStyleSettingsProvider
+            implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FSLanguageCodeStyleSettingsProvider"/>
+
         <!-- Support FlexibleSearch Language-->
         <fileTypeFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchTypeFactory"/>
 

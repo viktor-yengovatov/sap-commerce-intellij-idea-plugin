@@ -105,7 +105,7 @@ public interface FlexibleSearchTypes {
   IElementType JOIN_TYPE_1_0 = new FlexibleSearchTokenType("join_type_1_0");
   IElementType LAST = new FlexibleSearchTokenType("LAST");
   IElementType LEFT = new FlexibleSearchTokenType("LEFT");
-  IElementType LEFT_BRACE = new FlexibleSearchTokenType("{");
+  IElementType LEFT_BRACE = new FlexibleSearchTokenType("LEFT_BRACE");
   IElementType LEFT_BRACKET = new FlexibleSearchTokenType("[");
   IElementType LEFT_DOUBLE_BRACE = new FlexibleSearchTokenType("LEFT_DOUBLE_BRACE");
   IElementType LEFT_PAREN = new FlexibleSearchTokenType("(");
@@ -128,7 +128,7 @@ public interface FlexibleSearchTypes {
   IElementType PLUS_SIGN = new FlexibleSearchTokenType("+");
   IElementType QUESTION_MARK = new FlexibleSearchTokenType("?");
   IElementType QUOTE = new FlexibleSearchTokenType("'");
-  IElementType RIGHT_BRACE = new FlexibleSearchTokenType("}");
+  IElementType RIGHT_BRACE = new FlexibleSearchTokenType("RIGHT_BRACE");
   IElementType RIGHT_BRACKET = new FlexibleSearchTokenType("]");
   IElementType RIGHT_DOUBLE_BRACE = new FlexibleSearchTokenType("RIGHT_DOUBLE_BRACE");
   IElementType RIGHT_PAREN = new FlexibleSearchTokenType(")");

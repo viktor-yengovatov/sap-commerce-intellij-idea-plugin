@@ -40,8 +40,20 @@ public class FlexibleSearchValueExpressionImpl extends ASTWrapperPsiElement impl
 
   @Override
   @Nullable
+  public PsiElement getLeftBrace() {
+    return findChildByType(LEFT_BRACE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getNumber() {
     return findChildByType(NUMBER);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightBrace() {
+    return findChildByType(RIGHT_BRACE);
   }
 
 }

@@ -314,11 +314,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // ([AND|OR] boolean_term)*
   private static boolean boolean_term_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "boolean_term_1")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!boolean_term_1_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "boolean_term_1", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -345,10 +344,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean boolean_term_1_0_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "boolean_term_1_0_0_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, AND);
     if (!r) r = consumeToken(b, OR);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -426,10 +423,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean character_like_predicate_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "character_like_predicate_3")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = character_pattern(b, l + 1);
     if (!r) r = value_expression(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -478,10 +473,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean character_substring_function_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "character_substring_function_4")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = character_substring_function(b, l + 1);
     if (!r) r = string_value_expression(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -654,7 +647,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   static boolean computational_operation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "computational_operation")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, AVG);
     if (!r) r = consumeToken(b, MAX);
     if (!r) r = consumeToken(b, MIN);
@@ -663,7 +655,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, ANY);
     if (!r) r = consumeToken(b, SOME);
     if (!r) r = consumeToken(b, COUNT);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -760,11 +751,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // statement*
   static boolean flexibleSearchFile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flexibleSearchFile")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!statement(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "flexibleSearchFile", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -836,12 +826,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean from_clause_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause_recover_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, WHERE);
     if (!r) r = consumeToken(b, SELECT);
     if (!r) r = consumeToken(b, FROM);
     if (!r) r = consumeToken(b, SEMICOLON);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -959,11 +947,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // { COMMA grouping_column_reference }*
   private static boolean grouping_column_reference_list_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "grouping_column_reference_list_1_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!grouping_column_reference_list_1_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "grouping_column_reference_list_1_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1012,11 +999,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // { COMMA grouping_element }*
   private static boolean grouping_element_list_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "grouping_element_list_1_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!grouping_element_list_1_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "grouping_element_list_1_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1048,11 +1034,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean identifier_chain_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier_chain_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, TABLE_NAME_IDENTIFIER);
     if (!r) r = consumeToken(b, COLUMN_REFERENCE_IDENTIFIER);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1066,11 +1050,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // ( (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) )*
   private static boolean identifier_chain_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier_chain_1_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!identifier_chain_1_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "identifier_chain_1_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1090,10 +1073,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean identifier_chain_1_0_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier_chain_1_0_0_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, DOT);
     if (!r) r = consumeToken(b, COLON);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1101,10 +1082,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean identifier_chain_1_0_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier_chain_1_0_0_1")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, COLUMN_REFERENCE_IDENTIFIER);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1172,7 +1151,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !( '}' | LEFT | JOIN )
+  // !( RIGHT_BRACE | LEFT | JOIN )
   static boolean join_condition_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_condition_recover")) return false;
     boolean r;
@@ -1182,15 +1161,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '}' | LEFT | JOIN
+  // RIGHT_BRACE | LEFT | JOIN
   private static boolean join_condition_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_condition_recover_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, RIGHT_BRACE);
     if (!r) r = consumeToken(b, LEFT);
     if (!r) r = consumeToken(b, JOIN);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1521,11 +1498,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // ( COMMA select_sublist )*
   private static boolean select_list_1_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "select_list_1_1_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!select_list_1_1_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "select_list_1_1_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1596,11 +1572,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // aggregate_function*
   private static boolean select_sublist_1_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "select_sublist_1_1_0_1")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!aggregate_function(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "select_sublist_1_1_0_1", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1689,11 +1664,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // { COMMA sort_specification }*
   private static boolean sort_specification_list_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "sort_specification_list_1_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!sort_specification_list_1_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "sort_specification_list_1_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1735,11 +1709,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // (query_specification empty_statement?)*
   private static boolean statement_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "statement_1")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!statement_1_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "statement_1", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1829,11 +1802,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // (UNION ALL? subquery)*
   private static boolean subquery_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "subquery_4_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!subquery_4_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "subquery_4_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -1949,7 +1921,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !('}' | AS | SPACE | " ")
+  // !(RIGHT_BRACE | AS | SPACE | " ")
   static boolean table_name_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "table_name_recover")) return false;
     boolean r;
@@ -1959,7 +1931,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '}' | AS | SPACE | " "
+  // RIGHT_BRACE | AS | SPACE | " "
   private static boolean table_name_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "table_name_recover_0")) return false;
     boolean r;
@@ -2037,11 +2009,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // joined_table*
   private static boolean table_reference_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "table_reference_0_1")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!joined_table(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "table_reference_0_1", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -2069,11 +2040,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // ( COMMA? table_reference )*
   private static boolean table_reference_list_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "table_reference_list_1_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!table_reference_list_1_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "table_reference_list_1_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
