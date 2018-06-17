@@ -60,6 +60,7 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_PARAMETER_NAME;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_TYPE;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.IMPEX_FUNCTION_CALL;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_NAME_DECLARATION;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_USAGE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_VALUE;
@@ -69,6 +70,7 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SQUARE_BRACKETS;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.VALUE_SUBTYPE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.WARNINGS_ATTRIBUTES;
+import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.FUNCTION_CALL;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
 
@@ -83,6 +85,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
         new AttributesDescriptor("Update", HEADER_MODE_UPDATE),
         new AttributesDescriptor("Insert or update", HEADER_MODE_INSERT_UPDATE),
         new AttributesDescriptor("Remove", HEADER_MODE_REMOVE),
+        new AttributesDescriptor("Function call", IMPEX_FUNCTION_CALL),
         new AttributesDescriptor("Header type", HEADER_TYPE),
         new AttributesDescriptor("Value subtype", VALUE_SUBTYPE),
         new AttributesDescriptor("Field value separator", FIELD_VALUE_SEPARATOR),

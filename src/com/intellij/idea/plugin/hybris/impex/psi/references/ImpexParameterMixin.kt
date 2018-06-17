@@ -44,7 +44,7 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
             return arrayOf(ImpexDocumentIdReference(this))
         }
 
-        return PsiReference.EMPTY_ARRAY
+        return arrayOf(FunctionTypeSystemAttributeReference(this))
     }
 
     override fun clone(): Any {

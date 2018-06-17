@@ -93,6 +93,14 @@ public class ImpexHighlighterColors {
         )
     );
 
+    public static final TextAttributesKey IMPEX_FUNCTION_CALL = TextAttributesKey.createTextAttributesKey("IMPEX_FUNCTION_CALL", new TextAttributes(
+        JBColor.BLUE,
+        null,
+        null,
+        null,
+        Font.PLAIN
+    ));
+
     private static TextAttributesKey key(
         @NonNls @NotNull final String externalName,
         final TextAttributesKey fallbackAttributeKey

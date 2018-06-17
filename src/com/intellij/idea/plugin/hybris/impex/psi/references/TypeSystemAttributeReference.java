@@ -55,7 +55,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final TSMetaModel meta = getTypeSystemMeta();
-        final String featureName = getElement().getText();
+        final String featureName = getElement().getText().trim();
         final Optional<TSMetaClass> metaClass = findItemTypeReference()
             .map(PsiElement::getText)
             .map(meta::findMetaClassByName);

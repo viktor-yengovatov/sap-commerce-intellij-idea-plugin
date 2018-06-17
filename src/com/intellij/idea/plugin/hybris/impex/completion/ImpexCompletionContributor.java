@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeParameterNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordCompletionProvider;
@@ -107,8 +108,18 @@ public class ImpexCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
-                .withElementType(ImpexTypes.HEADER_PARAMETER_NAME),
+                .withElementType(ImpexTypes.HEADER_PARAMETER_NAME)
+                .andNot(psiElement().withParent(psiElement().withElementType(ImpexTypes.PARAMETER))),
             ImpexHeaderItemTypeAttributeNameCompletionProvider.getInstance()
+        );
+        // case: item's attribute
+        extend(
+            CompletionType.BASIC,
+            psiElement()
+                .withLanguage(ImpexLanguage.getInstance())
+                .withParent(psiElement().withElementType(ImpexTypes.PARAMETER))
+                .and(psiElement().withElementType(ImpexTypes.HEADER_PARAMETER_NAME)),
+            ImpexHeaderItemTypeParameterNameCompletionProvider.Companion.getInstance()
         );
         // case: impex keywords
         extend(

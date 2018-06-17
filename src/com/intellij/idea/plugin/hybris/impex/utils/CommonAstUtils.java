@@ -19,9 +19,13 @@
 package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+
+import static com.intellij.psi.util.PsiTreeUtil.findSiblingBackward;
 
 /**
  * Created 4:23 PM 31 May 2015
@@ -37,6 +41,17 @@ public final class CommonAstUtils {
     @Contract(pure = true)
     public static IElementType getNullSafeElementType(@Nullable final ASTNode node) {
         return node == null ? null : node.getElementType();
+    }
+
+    @Contract(pure = true)
+    public static ASTNode getPrevSibling(@Nullable final ASTNode node, final IElementType type) {
+        if (node != null) {
+            final PsiElement siblingBackward = findSiblingBackward(node.getPsi(), type, null);
+            if (siblingBackward != null) {
+                return siblingBackward.getNode();
+            }
+        }
+        return null;
     }
 
 }

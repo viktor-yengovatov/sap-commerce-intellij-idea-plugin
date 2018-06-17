@@ -223,6 +223,10 @@
             serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"
             serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"/>
 
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeParameterNameCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeParameterNameCompletionProvider"/>
+
         <!-- ####################################################################################################### -->
 
         <gotoDeclarationHandler

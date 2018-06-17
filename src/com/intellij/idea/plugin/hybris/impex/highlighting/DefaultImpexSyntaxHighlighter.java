@@ -55,6 +55,7 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_PARAMETER_NAME;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_TYPE;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.IMPEX_FUNCTION_CALL;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_NAME_DECLARATION;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_USAGE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_VALUE;
@@ -77,6 +78,7 @@ public class DefaultImpexSyntaxHighlighter extends ImpexSyntaxHighlighter {
     public static final TextAttributesKey[] HEADER_MODE_INSERT_UPDATE_KEYS = pack(HEADER_MODE_INSERT_UPDATE);
     public static final TextAttributesKey[] HEADER_MODE_REMOVE_KEYS = pack(HEADER_MODE_REMOVE);
     public static final TextAttributesKey[] HEADER_TYPE_KEYS = pack(HEADER_TYPE);
+    public static final TextAttributesKey[] FUNCTION_KEYS = pack(IMPEX_FUNCTION_CALL);
     public static final TextAttributesKey[] VALUE_SUBTYPE_KEYS = pack(VALUE_SUBTYPE);
     public static final TextAttributesKey[] FIELD_VALUE_SEPARATOR_KEYS = pack(FIELD_VALUE_SEPARATOR);
     public static final TextAttributesKey[] FIELD_LIST_ITEM_SEPARATOR_KEYS = pack(FIELD_LIST_ITEM_SEPARATOR);
@@ -187,6 +189,8 @@ public class DefaultImpexSyntaxHighlighter extends ImpexSyntaxHighlighter {
             return ALTERNATIVE_PATTERN_KEYS;
         } else if (tokenType.equals(ImpexTypes.DOCUMENT_ID)) {
             return DOCUMENT_ID_KEYS;
+        } else if (tokenType.equals(ImpexTypes.FUNCTION)) {
+            return FUNCTION_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHARACTER_KEYS;
         } else {

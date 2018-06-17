@@ -184,6 +184,11 @@ field_value_ignore = "<ignore>"
 
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {document_id}                                           { return ImpexTypes.DOCUMENT_ID; }
+    {parameter_name}{white_space}?+{left_round_bracket}     {
+                                                              yybegin(HEADER_LINE);
+                                                              yypushback(1);
+                                                              return ImpexTypes.FUNCTION; 
+                                                            }
     {parameter_name}                                        { return ImpexTypes.HEADER_PARAMETER_NAME; }
     {alternative_pattern}                                   { return ImpexTypes.ALTERNATIVE_PATTERN; }
     {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
