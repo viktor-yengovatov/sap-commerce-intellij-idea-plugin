@@ -52,9 +52,10 @@ single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-macro_name_declaration = [$]({identifier})+{white_space}*[=]
-macro_usage       = [$]([a-zA-Z0-9_])+
-macro_value       = ({not_crlf}|({dot}?{identifier})+)
+macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
+macro_usage       = [$]({identifier})+
+macro_config_usage = [$](config-)
+macro_value       = ({not_crlf}|(({dot})?{identifier})+)
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
@@ -106,6 +107,8 @@ field_value_ignore = "<ignore>"
 %state WAITING_ATTR_OR_PARAM_VALUE
 %state HEADER_PARAMETERS
 %state MACRO_USAGE
+%state MACRO_CONFIG_USAGE
+%state WAITING_MACRO_CONFIG_USAGE
 
 %%
 
@@ -229,7 +232,7 @@ field_value_ignore = "<ignore>"
     {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 
-    {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
+    {macro_usage}                                           { yypushback(yylength()); yybegin(WAITING_MACRO_CONFIG_USAGE); }
     {special_parameter_name}                                { return ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME; }
 
     {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
@@ -252,6 +255,21 @@ field_value_ignore = "<ignore>"
     {header_mode_remove}                                    { return ImpexTypes.HEADER_MODE_REMOVE; }
 
     {macro_value}                                           { return ImpexTypes.MACRO_VALUE; }
+}
+
+<WAITING_MACRO_CONFIG_USAGE> {
+   {macro_config_usage}                                     {
+                                                                yybegin(WAITING_MACRO_VALUE);
+                                                                return ImpexTypes.MACRO_USAGE; 
+                                                            }
+   .                                                        { yypushback(yylength()); yybegin(MACRO_USAGE); }
+}
+
+<MACRO_USAGE> {
+   {macro_usage}                                            {
+                                                                yybegin(WAITING_MACRO_VALUE);
+                                                                return ImpexTypes.MACRO_USAGE; 
+                                                            }
 }
 
 // Fallback

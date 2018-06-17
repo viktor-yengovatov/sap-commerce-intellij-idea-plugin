@@ -122,6 +122,9 @@
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexPropertyFoldingBuilder"/>
 
+        <lang.foldingBuilder language="Impex"
+                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexMacrosFoldingBuilder"/>
+
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
 
         <applicationConfigurable id="ImpexPlugin.ImpexConfigurable" parentId="root"

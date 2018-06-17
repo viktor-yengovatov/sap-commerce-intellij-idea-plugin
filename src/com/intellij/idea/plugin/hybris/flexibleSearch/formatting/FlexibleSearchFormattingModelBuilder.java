@@ -90,7 +90,6 @@ public class FlexibleSearchFormattingModelBuilder implements FormattingModelBuil
             .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
             .after(LEFT_DOUBLE_BRACE)
             .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES);
-
     }
 
     @Nullable

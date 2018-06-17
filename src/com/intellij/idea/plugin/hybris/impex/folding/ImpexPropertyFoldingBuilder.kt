@@ -35,10 +35,10 @@ import com.intellij.util.SmartList
 class ImpexPropertyFoldingBuilder : FoldingBuilderEx() {
 
     override fun getPlaceholderText(node: ASTNode): String? {
-        val key = node.text.replace("\$config", "").replace("-", "")
+        val key = node.text
         val properties = PropertiesImplUtil.findPropertiesByKey(node.psi.project, key)
         return if (properties.isNotEmpty())
-            "-" + properties.first().value
+            properties.first().value
         else
             null
     }
@@ -51,8 +51,12 @@ class ImpexPropertyFoldingBuilder : FoldingBuilderEx() {
                     val children = declaration.children
                     if (children.any { it.text.contains("\$config") }) {
                         val configTextElement = children.find { it.text.contains("\$config") }
-                        val value = configTextElement!!.nextSibling
-                        results.add(FoldingDescriptor(value.node, value.textRange, null))
+                        if (configTextElement != null) {
+                            val value = configTextElement.nextSibling
+                            if (value != null) {
+                                results.add(FoldingDescriptor(value.node, value.textRange, null))
+                            }
+                        }
                     }
                 }
             })

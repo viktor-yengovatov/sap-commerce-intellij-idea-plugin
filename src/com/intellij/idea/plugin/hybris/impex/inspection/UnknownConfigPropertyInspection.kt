@@ -43,7 +43,7 @@ class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsHolder) :
         if (macroValue != null) {
             val prevLeaf = PsiTreeUtil.prevLeaf(macroValue)
             if (prevLeaf != null && prevLeaf.text.contains("\$config")) {
-                val key = prevLeaf.text.replace("\$config", "") + macroValue.text.replace("-", "")
+                val key = macroValue.text
                 val properties = PropertiesImplUtil.findPropertiesByKey(declaration.project, key)
                 if (properties.isEmpty()) {
                     problemsHolder.registerProblem(macroValue, "Unknown config property", ProblemHighlightType.GENERIC_ERROR)
