@@ -1,6 +1,5 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
@@ -16,7 +15,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -86,17 +84,17 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         saveSettings();
 
         HybrisHacHttpClient hybrisHacHttpClient = HybrisHacHttpClient.getInstance(myProject);
-        final boolean success = hybrisHacHttpClient.login(myProject);
+        final String errorMessage = hybrisHacHttpClient.login(myProject);
         final String testedHacURL = hybrisHacHttpClient.getHostHacURL(myProject);
 
         final NotificationType type;
         final String message;
-        if (success) {
+        if (errorMessage.isEmpty()) {
             message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", testedHacURL);
             type = NotificationType.INFORMATION;
         } else {
             type = NotificationType.WARNING;
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", testedHacURL);
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", testedHacURL, errorMessage);
         }
 
         NotificationUtil.NOTIFICATION_GROUP.createNotification(

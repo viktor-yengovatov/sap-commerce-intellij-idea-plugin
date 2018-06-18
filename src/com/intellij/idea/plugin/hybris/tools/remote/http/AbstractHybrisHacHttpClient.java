@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -49,6 +50,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_SERVICE_UNAVAILABLE;
@@ -58,12 +61,12 @@ public abstract class AbstractHybrisHacHttpClient {
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
     protected String sessionId;
 
-    public boolean login(Project project) {
+    public String login(Project project) {
         final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
         String hostHacURL = getHostHacURL(project);
         sessionId = getSessionId(hostHacURL);
         if (sessionId == null) {
-            return false;
+            return "Unable to obtain sessionId";
         }
         final String csrfToken = getCsrfToken(hostHacURL, sessionId);
         List<BasicNameValuePair> params = new ArrayList<>();
@@ -73,8 +76,25 @@ public abstract class AbstractHybrisHacHttpClient {
         String loginURL = hostHacURL + "/j_spring_security_check";
         HttpResponse response = post(project, loginURL, params, false);
         sessionId = CookieParser.getInstance().getSpecialCookie(response.getAllHeaders());
-        boolean success = sessionId != null;
-        return success;
+        if (sessionId != null) {
+            return StringUtils.EMPTY;
+        }
+        int statusCode = response.getStatusLine().getStatusCode();
+        StringBuffer sb = new StringBuffer();
+        sb.append("HTTP ");
+        sb.append(statusCode);
+        sb.append(" ");
+        switch (statusCode) {
+            case HTTP_OK:
+                sb.append("Unable to obtain sessionId from response");
+                break;
+            case HTTP_MOVED_TEMP:
+                sb.append(response.getFirstHeader("Location"));
+                break;
+            default:
+                sb.append(response.getStatusLine().getReasonPhrase());
+        }
+        return sb.toString();
     }
 
     @NotNull
