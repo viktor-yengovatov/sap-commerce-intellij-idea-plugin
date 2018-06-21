@@ -32,19 +32,25 @@ import java.util.Optional
  */
 abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexParameter {
 
-    private var myReference: TypeSystemAttributeReference? = null
+    private var myReference: PsiReference? = null
 
     override fun getReferences(): Array<PsiReference> {
         val leafType = Optional.ofNullable(firstChild)
-                .map<ASTNode>({ it.node })
-                .map<IElementType>({ it.elementType })
+                .map<ASTNode> { it.node }
+                .map<IElementType> { it.elementType }
                 .orElse(null)
 
         if (ImpexTypes.DOCUMENT_ID == leafType) {
-            return arrayOf(ImpexDocumentIdReference(this))
+            if (myReference == null) {
+                myReference = ImpexDocumentIdReference(this)
+            }
+            return arrayOf(myReference!!)
         }
 
-        return arrayOf(FunctionTypeSystemAttributeReference(this))
+        if (myReference == null) {
+            myReference = FunctionTypeSystemAttributeReference(this)
+        }
+        return arrayOf(myReference!!)
     }
 
     override fun clone(): Any {

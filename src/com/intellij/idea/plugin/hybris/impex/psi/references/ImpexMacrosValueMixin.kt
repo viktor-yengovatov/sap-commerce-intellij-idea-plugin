@@ -29,15 +29,21 @@ import com.intellij.psi.util.PsiTreeUtil.prevLeaf
  */
 abstract class ImpexMacrosValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexMacroValue {
 
-    private var myReference: TypeSystemAttributeReference? = null
+    private var myReference: PsiReference? = null
 
     override fun getReferences(): Array<PsiReference> {
         val prevLeaf = prevLeaf(this)
         if (prevLeaf != null && prevLeaf.text.contains("\$config")) {
-            return arrayOf(ImpexPropertiesBaseReference(prevLeaf, this))
+            if (myReference == null) {
+                myReference = ImpexPropertiesBaseReference(prevLeaf, this)
+            }
+            return arrayOf(myReference!!)
         }
         if (this.text.contains("\$config")) {
-            return arrayOf(ImpexPropertiesBaseReference(null, this))
+            if (myReference == null) {
+                myReference = ImpexPropertiesBaseReference(null, this)
+            }
+            return arrayOf(myReference!!)
         }
 
         return PsiReference.EMPTY_ARRAY
