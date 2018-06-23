@@ -609,11 +609,21 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             );
         }
 
-        ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
-            new File(this.getBuilder().getFileToImport()), parameter -> {
-            hybrisProjectDescriptor.setHybrisDistributionDirectory(new File(parameter));
+        String hybrisDirectory = settings.getHybrisDirectory();
+        if (hybrisDirectory != null) {
+            hybrisProjectDescriptor.setHybrisDistributionDirectory(
+                new File(
+                    this.getBuilder().getFileToImport(),
+                    settings.getHybrisDirectory()
+                )
+            );
+        } else {
+            ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
+                new File(this.getBuilder().getFileToImport()), parameter -> {
+                    hybrisProjectDescriptor.setHybrisDistributionDirectory(new File(parameter));
+                }
+            ));
         }
-        ));
 
         hybrisProjectDescriptor.setJavadocUrl(settings.getJavadocUrl());
         hybrisProjectDescriptor.setHybrisVersion(settings.getHybrisVersion());
