@@ -25,6 +25,7 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -47,6 +48,7 @@ import com.intellij.lang.ant.config.impl.SinglePathEntry;
 import com.intellij.lang.ant.config.impl.TargetFilter;
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -56,21 +58,26 @@ import com.intellij.util.config.ListProperty;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ANT_OPTS;
 import static java.util.Arrays.asList;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/10/16.
  */
 public class DefaultAntConfigurator implements AntConfigurator {
+    private static final Logger LOG = Logger.getInstance(DefaultAntConfigurator.class);
 
     public final List<String> desirablePlatformTargets = new ArrayList<>(asList(
         "clean",
@@ -107,6 +114,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     private HybrisProjectDescriptor hybrisProjectDescriptor;
     private PlatformHybrisModuleDescriptor platformDescriptor;
+    private ConfigHybrisModuleDescriptor configDescriptor;
     private List<ExtHybrisModuleDescriptor> extHybrisModuleDescriptorList;
     private List<CustomHybrisModuleDescriptor> customHybrisModuleDescriptorList;
     private AntInstallation antInstallation;
@@ -152,6 +160,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     private void parseModules(final List<HybrisModuleDescriptor> allModules) {
         platformDescriptor = null;
+        configDescriptor = null;
         extHybrisModuleDescriptorList = new ArrayList<>();
         customHybrisModuleDescriptorList = new ArrayList<>();
         for (HybrisModuleDescriptor descriptor : allModules) {
@@ -163,6 +172,9 @@ public class DefaultAntConfigurator implements AntConfigurator {
             }
             if (descriptor instanceof CustomHybrisModuleDescriptor) {
                 customHybrisModuleDescriptorList.add((CustomHybrisModuleDescriptor) descriptor);
+            }
+            if (descriptor instanceof ConfigHybrisModuleDescriptor) {
+                configDescriptor = (ConfigHybrisModuleDescriptor) descriptor;
             }
         }
     }
@@ -225,7 +237,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
         final BuildFileProperty antOptsProperty = new BuildFileProperty();
         antOptsProperty.setPropertyName(HybrisConstants.ANT_OPTS);
-        antOptsProperty.setPropertyValue(HybrisConstants.ANT_XMX + HybrisConstants.ANT_HEAP_SIZE_MB + " " + HybrisConstants.ANT_ENCODING);
+        antOptsProperty.setPropertyValue(getAntOpts());
 
         final List<BuildFileProperty> buildFileProperties = new ArrayList<>();
         buildFileProperties.add(platformHomeProperty);
@@ -238,6 +250,25 @@ public class DefaultAntConfigurator implements AntConfigurator {
         }
 
         AntBuildFileImpl.TARGET_FILTERS.set(editPropertyContainer, filterList);
+    }
+
+    private String getAntOpts() {
+        if (configDescriptor != null) {
+            final File propertiesFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+            if (propertiesFile.exists()) {
+                Properties properties = new Properties();
+                try (InputStream in = new FileInputStream(propertiesFile)) {
+                    properties.load(in);
+                    String antOptsText = properties.getProperty(ANT_OPTS);
+                    if (antOptsText != null && !antOptsText.trim().isEmpty()) {
+                        return antOptsText.trim();
+                    }
+                } catch (IOException e) {
+                    LOG.error("Cannot read " + HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+                }
+            }
+        }
+        return HybrisConstants.ANT_XMX + HybrisConstants.ANT_HEAP_SIZE_MB + " " + HybrisConstants.ANT_ENCODING;
     }
 
     private void createAntClassPath(final File platformDir) {

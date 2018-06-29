@@ -196,8 +196,16 @@ public interface HybrisConstants {
     String SEARCH_SCOPE_Y_PREFIX = "[y]";
     String SEARCH_SCOPE_GROUP_PREFIX = "group:";
     String HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR";
-    String GROUP_OVERRIDE_FILENAME = "hybris4intellij.properties";
+    String IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties";
     String GROUP_OVERRIDE_KEY = "group.override";
-    String LOCAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group. Add a property group.override and value group name.\nIf you use subgroups use / as a separator. For example group.override=mygroup/mysubgroup";
-    String GLOBAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group for your extensions.\nAdd a property <modulename>.group.override and group name as a value.\nIf you use subgroups use / as a separator. For example myextension.group.override=mygroup/mysubgroup.\nIt is recommended to keep custom hybris modules within custom group i.e. custom/subgroup, so that the generated search scopes would function correctly.";
+    String LOCAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module grouping and add additional ant parameters.\n" +
+                                           "Add a property group.override and value group name.\n" +
+                                           "If you use subgroups use / as a separator. For example group.override=mygroup/mysubgroup";
+    String GLOBAL_GROUP_OVERRIDE_COMMENTS = "In this file you can override default module group for your extensions.\n" +
+                                            "Add a property <modulename>.group.override and group name as a value.\n" +
+                                            "If you use subgroups use / as a separator. For example myextension.group.override=mygroup/mysubgroup.\n" +
+                                            "It is recommended to keep custom hybris modules within custom group i.e. custom/subgroup, so that the generated search scopes would function correctly.\n" +
+                                            "\n" +
+                                            "Use ANT_OPTS to override ant properties. Current default value is\n" +
+                                            "ANT_OPTS=-Xmx512 -Dfile.encoding=UTF-8";
 }

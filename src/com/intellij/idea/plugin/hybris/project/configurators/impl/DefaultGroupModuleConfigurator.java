@@ -126,7 +126,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (configDescriptor == null) {
             return null;
         }
-        final File groupFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
+        final File groupFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         if (!groupFile.exists()) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
         }
@@ -135,7 +135,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
 
     private String[] getLocalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
-        final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.GROUP_OVERRIDE_FILENAME);
+        final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor.getName());
         if (groupFile.exists() && pathOverride == null) {
             createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
@@ -151,7 +151,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             }
             properties.store(out, comments);
         } catch (IOException e) {
-            LOG.error("Cannot write " + HybrisConstants.GROUP_OVERRIDE_FILENAME + ": " + groupFile.getAbsolutePath());
+            LOG.error("Cannot write " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + ": " + groupFile.getAbsolutePath());
         }
     }
 
@@ -164,7 +164,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         try (InputStream in = new FileInputStream(groupFile)) {
             properties.load(in);
         } catch (IOException e) {
-            LOG.error("Cannot read " + HybrisConstants.GROUP_OVERRIDE_FILENAME + " for module " + moduleName);
+            LOG.error("Cannot read " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + " for module " + moduleName);
             return null;
         }
         rawGroupText = properties.getProperty(GROUP_OVERRIDE_KEY);
