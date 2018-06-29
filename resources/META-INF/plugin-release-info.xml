@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.9.12-beta-2</version>
+    <version>8.9.12-beta-3</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -113,11 +113,19 @@
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-442'>IIP-442</a>] - Add folding for macros value in Impex</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-443'>IIP-443</a>] - Add inspection for macros usages without declaration</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-444'>IIP-444</a>] - Add autocompletion for parameters in Impex header line</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-423'>IIP-423</a>] - Add configuration parameter to set ANT_OPTS
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-447'>IIP-447</a>] - Add inspection to Impex file - "Unknown attribute $name for type $typeName"
+            </ul>
+
+            <h2>Bug</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-428'>IIP-428</a>] - Tool window [y] icon far too large in 2018.2</li>
             </ul>
 
             <h2>Fault</h2>
             <ul>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-152'>IIPS-152</a>] - Cannot connect to local hybris</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-146'>IIPS-146</a>] - Project Hybris refresh results into empty project</li>
             </ul>
         ]]>
     </change-notes>
