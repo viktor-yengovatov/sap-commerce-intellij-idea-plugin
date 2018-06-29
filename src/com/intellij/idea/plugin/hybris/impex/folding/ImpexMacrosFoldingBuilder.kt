@@ -28,6 +28,8 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType
 import com.intellij.util.SmartList
 
@@ -35,20 +37,41 @@ import com.intellij.util.SmartList
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class ImpexMacrosFoldingBuilder : FoldingBuilderEx() {
-
+    private var file: SmartPsiElementPointer<ImpexFile>? = null
+    private var declarations: Collection<ImpexMacroDeclaration>? = null 
+    
     override fun getPlaceholderText(node: ASTNode): String? {
         val macroName = node.text
 
         if ("\$config" == macroName) {
             return null
         }
-        val file = node.psi.containingFile
-        val foundDec = findMacrosDeclaration(file, macroName)
+        
+        // perf optim TODO maybe need some changes
+        cacheFile(node)
+        cacheMacrosDeclarations()
+        //
+        
+        val foundDec = findMacrosDeclaration(macroName)
 
         return if (foundDec != null) {
             "{${printText(foundDec)}}"
         } else {
             null
+        }
+    }
+
+    private fun cacheMacrosDeclarations() {
+        if (declarations == null) {
+            declarations = findChildrenOfAnyType(file!!.element, ImpexMacroDeclaration::class.java)
+        }
+    }
+
+    private fun cacheFile(node: ASTNode) {
+        if (file == null ) {
+            val project = node.psi.project
+            file  = SmartPointerManager.getInstance(project)
+                    .createSmartPsiElementPointer<ImpexFile>(node.psi.containingFile as ImpexFile)
         }
     }
 
@@ -61,7 +84,7 @@ class ImpexMacrosFoldingBuilder : FoldingBuilderEx() {
                     if (it.text == "\$config-") {
                         sb.append(it.text)
                     } else {
-                        val dec = findMacrosDeclaration(declaration.containingFile, it.text)
+                        val dec = findMacrosDeclaration(it.text)
                         if (dec != null) {
                             sb.append(printText(dec))
                         }
@@ -73,9 +96,8 @@ class ImpexMacrosFoldingBuilder : FoldingBuilderEx() {
         return sb.toString().substringAfter('=').trim()
     }
 
-    private fun findMacrosDeclaration(file: PsiFile, macroName: String): ImpexMacroDeclaration? {
-        val declarations = findChildrenOfAnyType(file, ImpexMacroDeclaration::class.java)
-        return declarations.find { it.firstChild.text == macroName }
+    private fun findMacrosDeclaration(macroName: String): ImpexMacroDeclaration? {
+        return declarations!!.find { it.firstChild.text == macroName }
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
