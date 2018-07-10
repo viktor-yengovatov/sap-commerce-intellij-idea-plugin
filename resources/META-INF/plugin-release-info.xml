@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.9.12-beta-3</version>
+    <version>8.9.12-beta-4</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -102,6 +102,7 @@
         <![CDATA[
             <h2>Task</h2>
             <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-423'>IIP-423</a>] - Add configuration parameter to set ANT_OPTS</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-432'>IIP-432</a>] - Add autosuggestion/completion in Impex for properties following &#39;$config-...&#39;</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-434'>IIP-434</a>] - Add folding in Impex for &#39;$config-xxx&#39; which shows the real value of the property</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-435'>IIP-435</a>] - Show a warning if there is no &quot;&lt;...GenericItem...&gt;&quot; in the Impex file with a usage of &quot;$config-...&quot;</li>
@@ -113,19 +114,19 @@
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-442'>IIP-442</a>] - Add folding for macros value in Impex</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-443'>IIP-443</a>] - Add inspection for macros usages without declaration</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-444'>IIP-444</a>] - Add autocompletion for parameters in Impex header line</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-423'>IIP-423</a>] - Add configuration parameter to set ANT_OPTS
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-447'>IIP-447</a>] - Add inspection to Impex file - "Unknown attribute $name for type $typeName"
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-447'>IIP-447</a>] - Add inspection to Impex file - &quot;Unknown attribute $name for type $typeName&quot;</li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-428'>IIP-428</a>] - Tool window [y] icon far too large in 2018.2</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-450'>IIP-450</a>] - &quot;java.util.NoSuchElementException: List is empty.&quot; exception during autocompletion in Flexible Search</li>
             </ul>
 
             <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-152'>IIPS-152</a>] - Cannot connect to local hybris</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-146'>IIPS-146</a>] - Project Hybris refresh results into empty project</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-152'>IIPS-152</a>] - Cannot connect to local hybris</li>
             </ul>
         ]]>
     </change-notes>
