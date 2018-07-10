@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
+import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -41,9 +42,13 @@ class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : Impex
         if (isNotMacros(parameter) && isNotDocumentId(parameter.firstChild)) {
             val references = parameter.references
             if (references.isNotEmpty()) {
-                val resolve = references.first().resolve()
-                if (resolve == null) {
-                    problemsHolder.registerProblem(parameter, "Unknown attribute", ProblemHighlightType.GENERIC_ERROR)
+                val firstReference = references.first()
+                if (firstReference is TypeSystemReferenceBase<*>) {
+                    val result = firstReference.multiResolve(false)
+                    if (result.isEmpty()) {
+                        problemsHolder.registerProblem(parameter, "Unknown attribute", ProblemHighlightType.GENERIC_ERROR)
+                    }
+
                 }
             }
         }
