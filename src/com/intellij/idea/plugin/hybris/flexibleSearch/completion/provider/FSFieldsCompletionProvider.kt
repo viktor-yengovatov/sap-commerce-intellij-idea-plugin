@@ -89,7 +89,9 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                                     false
                                 }
                             }
-                    fillDomAttributesCompletions(project, foundTableName.first()!!.text, result)
+                    if (foundTableName.isNotEmpty()) {
+                        fillDomAttributesCompletions(project, foundTableName.first()!!.text, result)
+                    }
                 }
             }
         }

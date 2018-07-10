@@ -30,17 +30,16 @@ import com.intellij.formatting.WrapType
 import com.intellij.formatting.alignment.AlignmentStrategy
 import com.intellij.formatting.alignment.AlignmentStrategy.createAlignmentPerTypeStrategy
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.BOOLEAN_PREDICAND
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.FROM
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.FROM_CLAUSE
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.LEFT_PAREN
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.ON
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.RIGHT_PAREN
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.SEARCH_CONDITION
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.FormatterUtil
-import com.intellij.psi.tree.IElementType
 import java.util.function.Predicate
 
 /**
@@ -116,10 +115,10 @@ class FSBlock internal constructor(
             return Indent.getNormalIndent()
         }
         if (type !== FROM && parentType === FROM_CLAUSE) {
-            return Indent.getContinuationIndent()
+            return Indent.getNormalIndent()
         }
-        if (type === ON) {
-            return Indent.getContinuationIndent()
+        if (type === ON || type === BOOLEAN_PREDICAND) {
+            return Indent.getNormalIndent()
         }
         if (isReturnBodyKeywords(node)) {
             return Indent.getNormalIndent()
