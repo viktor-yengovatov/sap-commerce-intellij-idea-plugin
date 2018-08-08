@@ -38,6 +38,7 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.Flexib
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_COMMENT;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_KEYWORD;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_NUMBER;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_PARAMETER;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_PARENTHESES;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_SYMBOL;
 
@@ -45,6 +46,7 @@ public class FlexibleSearchColorSettingsPage implements ColorSettingsPage {
 
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
         new AttributesDescriptor("Comment", FS_COMMENT),
+        new AttributesDescriptor("Parameter", FS_PARAMETER),
         new AttributesDescriptor("Keywords", FS_KEYWORD),
         new AttributesDescriptor("Column", FS_COLUMN),
         new AttributesDescriptor("Comma", FS_SYMBOL),

@@ -19,8 +19,12 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.TextAttributes;
+import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
 
 import static com.intellij.ide.highlighter.JavaHighlightingColors.CLASS_NAME_ATTRIBUTES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACES;
@@ -51,6 +55,16 @@ public final class FlexibleSearchHighlighterColors {
     public static final TextAttributesKey FS_TABLE = key("TABLE NAME", CLASS_NAME_ATTRIBUTES);
 
     public static final TextAttributesKey FS_COMMENT = key("COMMENT", LINE_COMMENT);
+
+    public static final TextAttributesKey FS_PARAMETER =
+        TextAttributesKey.createTextAttributesKey("FS_PARAMETER", new TextAttributes(
+            new JBColor(0x0D96D9, 0x0097C5),
+            null,
+            null,
+            null,
+            Font.PLAIN
+        ));
+
 
     private static TextAttributesKey key(
         @NonNls @NotNull final String externalName,

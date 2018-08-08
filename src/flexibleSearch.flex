@@ -97,7 +97,7 @@ GREATER_THAN_OPERATOR           = [>]
 LESS_THAN_OR_EQUALS_OPERATOR    = <=
 GREATER_THAN_OR_EQUALS_OPERATOR = >=
 NON_EQUAL_OPERATOR              = <>
-QUESTION_MARK                   = [?]
+QUESTION_MARK                   = "?"
 EXCLAMATION_MARK                = [!]
 LEFT_BRACKET                    = [\[]
 RIGHT_BRACKET                   = [\]]
@@ -112,6 +112,7 @@ EOL                             = \n|\r\n
 %state FROM_EXP 
 %state TABLE_IDENTIFIER 
 %state COLUMN_IDENTIFIER 
+%state PARAMETER_EXP
 %state LOCALIZATION 
 %state WHERE_EXP
 %state ON_EXP
@@ -325,7 +326,7 @@ EOL                             = \n|\r\n
     {DOT}                                  { return DOT; }
     {COMMA}                                { return COMMA; }
     {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
-    {QUESTION_MARK}                        { return QUESTION_MARK; }
+    {QUESTION_MARK}                        { yybegin(PARAMETER_EXP); pushState(WHERE_EXP); return QUESTION_MARK; }
     {COLON}                                { return COLON; }
     {SEMICOLON}                            { return SEMICOLON; }
      
@@ -350,7 +351,7 @@ EOL                             = \n|\r\n
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
      
     "LEFT"                                 { yybegin(FROM_EXP); return LEFT; }
-    
+    {QUESTION_MARK}                        { yybegin(PARAMETER_EXP); pushState(FROM_EXP); return QUESTION_MARK; }
     /* operators */
 //    {EQUALS_OPERATOR}                      { return EQUALS_OPERATOR; }
     
@@ -375,6 +376,10 @@ EOL                             = \n|\r\n
     {WHITE_SPACE}                          { return WHITE_SPACE; }
     
     {IDENTIFIER}                           { yybegin(popState()); return COLUMN_REFERENCE_IDENTIFIER; }
+}
+
+<PARAMETER_EXP> {
+    {IDENTIFIER}                           { yybegin(popState()); return PARAMETER_IDENTIFIER; }
 }
 
 <LOCALIZATION> {

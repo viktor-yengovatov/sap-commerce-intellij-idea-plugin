@@ -163,6 +163,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitParameterReference(@NotNull FlexibleSearchParameterReference o) {
+    visitPsiElement(o);
+  }
+
   public void visitPredicate(@NotNull FlexibleSearchPredicate o) {
     visitPsiElement(o);
   }

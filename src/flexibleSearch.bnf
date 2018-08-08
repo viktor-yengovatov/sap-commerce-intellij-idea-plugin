@@ -44,7 +44,7 @@
         DOT                             = "."
         COLON                           = ":"
         SEMICOLON                       = ';'
-        QUESTION_MARK                   = "?"
+        QUESTION_MARK                   = '?'
         EXCLAMATION_MARK                = "!"
         UNDERSCORE                      = "_"
 
@@ -67,6 +67,7 @@
 
         SPACE                           = 'regexp:\s+'
         IDENTIFIER                      = 'regexp:\p{Alpha}\w*'
+        PARAMETER_IDENTIFIER            = 'regexp:([:jletter:] [:jletterdigit:]*)'
         COLUMN_REFERENCE_IDENTIFIER     = 'regexp:([:jletter:] [:jletterdigit:]*)'
         TABLE_NAME_IDENTIFIER           = 'regexp:([:jletter:] [:jletterdigit:]*)'
         STRING                          = "regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
@@ -74,7 +75,7 @@
   ]
 }
 
-flexibleSearchFile ::= statement*
+flexibleSearchFile ::= ( statement )? ( ';' ( statement )? )*
 
 private statement ::= !<<eof>> (query_specification empty_statement?)* empty_statement?
 {recoverWhile = expressionRecoverWhile }
@@ -272,7 +273,7 @@ character_substring_function ::=
         CONCAT LEFT_PAREN string_value_expression COMMA  (character_substring_function | string_value_expression) RIGHT_PAREN
 
 value_expression ::=  NUMBER 
-                    | QUESTION_MARK? column_reference 
+                    | parameter_reference
                     | column_reference_value
 
 private column_reference_value ::= LEFT_BRACE? column_reference column_localization? RIGHT_BRACE?
@@ -282,6 +283,8 @@ column_localization ::= LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
 
 private identifier_chain ::= (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ ( (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) )* ]
 
+parameter_reference ::= QUESTION_MARK PARAMETER_IDENTIFIER 
+{pin = 1}
 column_reference ::= identifier_chain
 {
     pin = 1 

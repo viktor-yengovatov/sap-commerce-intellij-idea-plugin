@@ -140,6 +140,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     else if (t == ORDINARY_GROUPING_SET) {
       r = ordinary_grouping_set(b, 0);
     }
+    else if (t == PARAMETER_REFERENCE) {
+      r = parameter_reference(b, 0);
+    }
     else if (t == PREDICATE) {
       r = predicate(b, 0);
     }
@@ -767,15 +770,71 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // statement*
+  // ( statement )? ( ';' ( statement )? )*
   static boolean flexibleSearchFile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flexibleSearchFile")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = flexibleSearchFile_0(b, l + 1);
+    r = r && flexibleSearchFile_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( statement )?
+  private static boolean flexibleSearchFile_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flexibleSearchFile_0")) return false;
+    flexibleSearchFile_0_0(b, l + 1);
+    return true;
+  }
+
+  // ( statement )
+  private static boolean flexibleSearchFile_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flexibleSearchFile_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = statement(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( ';' ( statement )? )*
+  private static boolean flexibleSearchFile_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flexibleSearchFile_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "flexibleSearchFile", c)) break;
+      if (!flexibleSearchFile_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "flexibleSearchFile_1", c)) break;
     }
     return true;
+  }
+
+  // ';' ( statement )?
+  private static boolean flexibleSearchFile_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flexibleSearchFile_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, SEMICOLON);
+    r = r && flexibleSearchFile_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( statement )?
+  private static boolean flexibleSearchFile_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flexibleSearchFile_1_0_1")) return false;
+    flexibleSearchFile_1_0_1_0(b, l + 1);
+    return true;
+  }
+
+  // ( statement )
+  private static boolean flexibleSearchFile_1_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flexibleSearchFile_1_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = statement(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -1359,6 +1418,19 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, RIGHT_PAREN);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // QUESTION_MARK PARAMETER_IDENTIFIER
+  public static boolean parameter_reference(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_reference")) return false;
+    if (!nextTokenIs(b, QUESTION_MARK)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PARAMETER_REFERENCE, null);
+    r = consumeTokens(b, 1, QUESTION_MARK, PARAMETER_IDENTIFIER);
+    p = r; // pin = 1
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -2157,35 +2229,17 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // NUMBER 
-  //                     | QUESTION_MARK? column_reference 
+  //                     | parameter_reference
   //                     | column_reference_value
   public static boolean value_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_expression")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, VALUE_EXPRESSION, "<value expression>");
     r = consumeToken(b, NUMBER);
-    if (!r) r = value_expression_1(b, l + 1);
+    if (!r) r = parameter_reference(b, l + 1);
     if (!r) r = column_reference_value(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
-  }
-
-  // QUESTION_MARK? column_reference
-  private static boolean value_expression_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_expression_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = value_expression_1_0(b, l + 1);
-    r = r && column_reference(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // QUESTION_MARK?
-  private static boolean value_expression_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_expression_1_0")) return false;
-    consumeToken(b, QUESTION_MARK);
-    return true;
   }
 
   /* ********************************************************** */

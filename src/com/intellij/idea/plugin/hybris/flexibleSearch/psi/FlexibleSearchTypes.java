@@ -47,6 +47,7 @@ public interface FlexibleSearchTypes {
   IElementType ORDERING_SPECIFICATION = new FlexibleSearchElementType("ORDERING_SPECIFICATION");
   IElementType ORDER_BY_CLAUSE = new FlexibleSearchElementType("ORDER_BY_CLAUSE");
   IElementType ORDINARY_GROUPING_SET = new FlexibleSearchElementType("ORDINARY_GROUPING_SET");
+  IElementType PARAMETER_REFERENCE = new FlexibleSearchElementType("PARAMETER_REFERENCE");
   IElementType PREDICATE = new FlexibleSearchElementType("PREDICATE");
   IElementType QUERY_SPECIFICATION = new FlexibleSearchElementType("QUERY_SPECIFICATION");
   IElementType ROW_VALUE_PREDICAND = new FlexibleSearchElementType("ROW_VALUE_PREDICAND");
@@ -124,6 +125,7 @@ public interface FlexibleSearchTypes {
   IElementType ON = new FlexibleSearchTokenType("ON");
   IElementType OR = new FlexibleSearchTokenType("OR");
   IElementType ORDER = new FlexibleSearchTokenType("ORDER");
+  IElementType PARAMETER_IDENTIFIER = new FlexibleSearchTokenType("PARAMETER_IDENTIFIER");
   IElementType PERCENT = new FlexibleSearchTokenType("%");
   IElementType PLUS_SIGN = new FlexibleSearchTokenType("+");
   IElementType QUESTION_MARK = new FlexibleSearchTokenType("?");
@@ -264,6 +266,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == ORDINARY_GROUPING_SET) {
         return new FlexibleSearchOrdinaryGroupingSetImpl(node);
+      }
+      else if (type == PARAMETER_REFERENCE) {
+        return new FlexibleSearchParameterReferenceImpl(node);
       }
       else if (type == PREDICATE) {
         return new FlexibleSearchPredicateImpl(node);

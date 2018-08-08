@@ -36,6 +36,7 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.Flexib
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_COMMENT;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_KEYWORD;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_NUMBER;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_PARAMETER;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_PARENTHESES;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_STRING;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_SYMBOL;
@@ -72,6 +73,11 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
         FlexibleSearchTypes.TABLE_NAME_IDENTIFIER
     );
 
+    private static final TokenSet PARAMETER_REFERENCE_TOKEN_SET = TokenSet.create(
+        FlexibleSearchTypes.QUESTION_MARK,
+        FlexibleSearchTypes.PARAMETER_IDENTIFIER
+    );
+
     private static final TokenSet KEYWORD_TOKEN_SET = TokenSet.create(
         FlexibleSearchTypes.SELECT,
         FlexibleSearchTypes.FROM,
@@ -79,7 +85,6 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
         FlexibleSearchTypes.DISTINCT,
         FlexibleSearchTypes.GROUP,
         FlexibleSearchTypes.AS,
-        FlexibleSearchTypes.QUESTION_MARK,
         FlexibleSearchTypes.IS,
         FlexibleSearchTypes.NULL,
         FlexibleSearchTypes.LIKE,
@@ -137,6 +142,8 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
             return COLUMN_KEYS;
         } else if (TABLE_NAME_TOKEN_SET.contains(tokenType)) {
             return TABLE_KEYS;
+        } else if (PARAMETER_REFERENCE_TOKEN_SET.contains(tokenType)) {
+            return pack(FS_PARAMETER);
         } else if (BRACES_TOKEN_SET.contains(tokenType)) {
             return BRACES_KEYS;
         } else if (BRACKETS_TOKEN_SET.contains(tokenType)) {
