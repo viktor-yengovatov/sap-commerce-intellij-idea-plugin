@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchCharacterSubstringFunctionImpl extends ASTWrapperPsiElement implements FlexibleSearchCharacterSubstringFunction {
 
-  public FlexibleSearchCharacterSubstringFunctionImpl(ASTNode node) {
+  public FlexibleSearchCharacterSubstringFunctionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

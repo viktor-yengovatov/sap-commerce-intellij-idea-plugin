@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchJoinedTableImpl extends ASTWrapperPsiElement implements FlexibleSearchJoinedTable {
 
-  public FlexibleSearchJoinedTableImpl(ASTNode node) {
+  public FlexibleSearchJoinedTableImpl(@NotNull ASTNode node) {
     super(node);
   }
 

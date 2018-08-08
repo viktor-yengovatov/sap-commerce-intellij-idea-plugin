@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchRowValuePredicandImpl extends ASTWrapperPsiElement implements FlexibleSearchRowValuePredicand {
 
-  public FlexibleSearchRowValuePredicandImpl(ASTNode node) {
+  public FlexibleSearchRowValuePredicandImpl(@NotNull ASTNode node) {
     super(node);
   }
 
@@ -27,9 +27,9 @@ public class FlexibleSearchRowValuePredicandImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchCommonValueExpression getCommonValueExpression() {
-    return findChildByClass(FlexibleSearchCommonValueExpression.class);
+  @NotNull
+  public List<FlexibleSearchCommonValueExpression> getCommonValueExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchCommonValueExpression.class);
   }
 
   @Override

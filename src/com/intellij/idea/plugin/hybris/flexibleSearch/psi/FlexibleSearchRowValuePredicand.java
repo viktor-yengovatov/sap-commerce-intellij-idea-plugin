@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchRowValuePredicand extends PsiElement {
 
-  @Nullable
-  FlexibleSearchCommonValueExpression getCommonValueExpression();
+  @NotNull
+  List<FlexibleSearchCommonValueExpression> getCommonValueExpressionList();
 
   @Nullable
   FlexibleSearchValueExpression getValueExpression();

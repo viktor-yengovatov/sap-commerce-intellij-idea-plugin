@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchGroupingColumnReferenceImpl extends ASTWrapperPsiElement implements FlexibleSearchGroupingColumnReference {
 
-  public FlexibleSearchGroupingColumnReferenceImpl(ASTNode node) {
+  public FlexibleSearchGroupingColumnReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 

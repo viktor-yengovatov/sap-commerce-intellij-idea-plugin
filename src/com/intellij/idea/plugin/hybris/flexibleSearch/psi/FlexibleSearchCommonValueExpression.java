@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchCommonValueExpression extends PsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchStringValueExpression getStringValueExpression();
+
+  @Nullable
+  PsiElement getNumber();
 
 }

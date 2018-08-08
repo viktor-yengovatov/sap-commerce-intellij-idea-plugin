@@ -71,8 +71,9 @@ LINE_TERMINATOR                 = \r|\n|\r\n
 COMMENT                         = "-""-"[^\r\n]*
 
 // Strings
-STRING_LITERAL                  = \'([^\\\'\r\n]|{ESCAPE_SEQUENCE})*(\'|\\)?
-ESCAPE_SEQUENCE                 = \\[^\r\n]
+ESCAPE_SEQUENCE = \\[^\r\n]
+CHARACTER_LITERAL = "'" ([^\\\'\r\n] | {ESCAPE_SEQUENCE})* ("'"|\\)?
+STRING_LITERAL = \" ([^\\\"\r\n] | {ESCAPE_SEQUENCE})* (\"|\\)?
 
 /* main character classes */
 DIGIT                           = [:digit:]
@@ -178,6 +179,7 @@ EOL                             = \n|\r\n
      
     
     
+    {CHARACTER_LITERAL}                    { return STRING; }
     {STRING_LITERAL}                       { return STRING; }
     {IDENTIFIER}                           { return IDENTIFIER; }
 }
@@ -220,6 +222,7 @@ EOL                             = \n|\r\n
     
     "LEFT"                                 { yybegin(popState()); return LEFT; }
     
+    {CHARACTER_LITERAL}                    { return STRING; }
     {STRING_LITERAL}                       { return STRING; }
     {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
 }
@@ -264,7 +267,7 @@ EOL                             = \n|\r\n
     "CONCAT"                               { return CONCAT; }
     "GROUP"                                { return GROUP; }  
      
-    
+    {CHARACTER_LITERAL}                    { return STRING; }
     {STRING_LITERAL}                       { return STRING; }
     {IDENTIFIER}                           { return IDENTIFIER; }
 }
@@ -334,7 +337,7 @@ EOL                             = \n|\r\n
     {GREATER_THAN_OPERATOR}                { return GREATER_THAN_OPERATOR; }
     {NON_EQUAL_OPERATOR}                   { return NOT_EQUALS_OPERATOR; }
 
-    
+    {CHARACTER_LITERAL}                    { return STRING; }
     {STRING_LITERAL}                       { return STRING; }
     {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
 }

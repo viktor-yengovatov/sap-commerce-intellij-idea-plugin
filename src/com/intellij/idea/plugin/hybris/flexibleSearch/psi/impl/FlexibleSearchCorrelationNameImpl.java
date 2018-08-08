@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchCorrelationNameImpl extends ASTWrapperPsiElement implements FlexibleSearchCorrelationName {
 
-  public FlexibleSearchCorrelationNameImpl(ASTNode node) {
+  public FlexibleSearchCorrelationNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 

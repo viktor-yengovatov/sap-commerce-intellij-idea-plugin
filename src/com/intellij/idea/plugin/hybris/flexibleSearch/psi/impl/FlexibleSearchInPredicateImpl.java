@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchInPredicateImpl extends ASTWrapperPsiElement implements FlexibleSearchInPredicate {
 
-  public FlexibleSearchInPredicateImpl(ASTNode node) {
+  public FlexibleSearchInPredicateImpl(@NotNull ASTNode node) {
     super(node);
   }
 

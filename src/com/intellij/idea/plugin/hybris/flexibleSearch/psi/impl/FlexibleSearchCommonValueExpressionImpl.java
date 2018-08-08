@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchCommonValueExpressionImpl extends ASTWrapperPsiElement implements FlexibleSearchCommonValueExpression {
 
-  public FlexibleSearchCommonValueExpressionImpl(ASTNode node) {
+  public FlexibleSearchCommonValueExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
@@ -27,9 +27,15 @@ public class FlexibleSearchCommonValueExpressionImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchStringValueExpression getStringValueExpression() {
-    return findNotNullChildByClass(FlexibleSearchStringValueExpression.class);
+    return findChildByClass(FlexibleSearchStringValueExpression.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNumber() {
+    return findChildByType(NUMBER);
   }
 
 }

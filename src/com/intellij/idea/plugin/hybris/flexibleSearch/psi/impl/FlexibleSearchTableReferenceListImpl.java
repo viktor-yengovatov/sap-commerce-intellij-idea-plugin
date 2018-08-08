@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchTableReferenceListImpl extends ASTWrapperPsiElement implements FlexibleSearchTableReferenceList {
 
-  public FlexibleSearchTableReferenceListImpl(ASTNode node) {
+  public FlexibleSearchTableReferenceListImpl(@NotNull ASTNode node) {
     super(node);
   }
 

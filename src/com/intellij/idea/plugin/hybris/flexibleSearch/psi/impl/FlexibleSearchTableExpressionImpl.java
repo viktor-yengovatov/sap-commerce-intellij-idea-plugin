@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchTableExpressionImpl extends ASTWrapperPsiElement implements FlexibleSearchTableExpression {
 
-  public FlexibleSearchTableExpressionImpl(ASTNode node) {
+  public FlexibleSearchTableExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

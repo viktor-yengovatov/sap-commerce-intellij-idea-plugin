@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchJoinConditionImpl extends ASTWrapperPsiElement implements FlexibleSearchJoinCondition {
 
-  public FlexibleSearchJoinConditionImpl(ASTNode node) {
+  public FlexibleSearchJoinConditionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

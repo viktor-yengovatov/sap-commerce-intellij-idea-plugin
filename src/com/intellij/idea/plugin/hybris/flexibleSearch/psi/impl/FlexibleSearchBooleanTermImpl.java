@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchBooleanTermImpl extends ASTWrapperPsiElement implements FlexibleSearchBooleanTerm {
 
-  public FlexibleSearchBooleanTermImpl(ASTNode node) {
+  public FlexibleSearchBooleanTermImpl(@NotNull ASTNode node) {
     super(node);
   }
 

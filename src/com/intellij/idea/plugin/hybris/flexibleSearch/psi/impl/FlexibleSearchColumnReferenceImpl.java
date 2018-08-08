@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchColumnReferenceImpl extends ColumnReferenceMixin implements FlexibleSearchColumnReference {
 
-  public FlexibleSearchColumnReferenceImpl(ASTNode node) {
+  public FlexibleSearchColumnReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 

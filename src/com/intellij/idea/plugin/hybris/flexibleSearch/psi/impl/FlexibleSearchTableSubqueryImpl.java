@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchTableSubqueryImpl extends ASTWrapperPsiElement implements FlexibleSearchTableSubquery {
 
-  public FlexibleSearchTableSubqueryImpl(ASTNode node) {
+  public FlexibleSearchTableSubqueryImpl(@NotNull ASTNode node) {
     super(node);
   }
 

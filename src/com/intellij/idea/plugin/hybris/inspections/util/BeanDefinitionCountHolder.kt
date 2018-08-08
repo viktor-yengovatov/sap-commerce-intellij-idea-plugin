@@ -59,7 +59,7 @@ class BeanDefinitionCountHolder {
                     .map { PsiTreeUtil.getParentOfType(it, XmlTag::class.java) }
                     .flatMap { it!!.findSubTags("property").toList() }
                     .groupingBy { it.getAttribute("name")!!.value }
-                    .eachCount()
+                    .myEachCount()
                     .filter { entry -> entry.value > 1 }
                     .map { it.key }
                     .toHashSet()

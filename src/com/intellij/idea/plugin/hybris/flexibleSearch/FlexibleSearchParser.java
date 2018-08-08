@@ -605,14 +605,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string_value_expression
+  // string_value_expression | NUMBER
   public static boolean common_value_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "common_value_expression")) return false;
-    if (!nextTokenIs(b, STRING)) return false;
+    if (!nextTokenIs(b, "<common value expression>", NUMBER, STRING)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, COMMON_VALUE_EXPRESSION, "<common value expression>");
     r = string_value_expression(b, l + 1);
-    exit_section_(b, m, COMMON_VALUE_EXPRESSION, r);
+    if (!r) r = consumeToken(b, NUMBER);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1461,14 +1462,47 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_expression | common_value_expression
+  // value_expression | common_value_expression (','common_value_expression)*
   public static boolean row_value_predicand(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "row_value_predicand")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ROW_VALUE_PREDICAND, "<row value predicand>");
     r = value_expression(b, l + 1);
-    if (!r) r = common_value_expression(b, l + 1);
+    if (!r) r = row_value_predicand_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // common_value_expression (','common_value_expression)*
+  private static boolean row_value_predicand_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_value_predicand_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = common_value_expression(b, l + 1);
+    r = r && row_value_predicand_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (','common_value_expression)*
+  private static boolean row_value_predicand_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_value_predicand_1_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!row_value_predicand_1_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "row_value_predicand_1_1", c)) break;
+    }
+    return true;
+  }
+
+  // ','common_value_expression
+  private static boolean row_value_predicand_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_value_predicand_1_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && common_value_expression(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

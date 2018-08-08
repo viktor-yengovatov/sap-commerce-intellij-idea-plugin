@@ -248,9 +248,9 @@ comp_op ::=
 // Specify a range comparison. <between predicate>
 between_predicate ::= row_value_predicand [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
 
-row_value_predicand ::= value_expression | common_value_expression
+row_value_predicand ::= value_expression | common_value_expression (','common_value_expression)* 
 
-common_value_expression ::= string_value_expression
+common_value_expression ::= string_value_expression | NUMBER
 
 like_predicate ::= character_like_predicate
 

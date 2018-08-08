@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchOrderingSpecificationImpl extends ASTWrapperPsiElement implements FlexibleSearchOrderingSpecification {
 
-  public FlexibleSearchOrderingSpecificationImpl(ASTNode node) {
+  public FlexibleSearchOrderingSpecificationImpl(@NotNull ASTNode node) {
     super(node);
   }
 

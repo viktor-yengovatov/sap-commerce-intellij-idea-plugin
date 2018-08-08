@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchSetQuantifierImpl extends ASTWrapperPsiElement implements FlexibleSearchSetQuantifier {
 
-  public FlexibleSearchSetQuantifierImpl(ASTNode node) {
+  public FlexibleSearchSetQuantifierImpl(@NotNull ASTNode node) {
     super(node);
   }
 

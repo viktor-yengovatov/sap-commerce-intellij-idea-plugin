@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchStringValueFunctionImpl extends ASTWrapperPsiElement implements FlexibleSearchStringValueFunction {
 
-  public FlexibleSearchStringValueFunctionImpl(ASTNode node) {
+  public FlexibleSearchStringValueFunctionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

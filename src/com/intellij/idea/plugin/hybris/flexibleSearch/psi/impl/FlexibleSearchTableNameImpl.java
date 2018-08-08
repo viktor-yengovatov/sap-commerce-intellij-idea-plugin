@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchTableNameImpl extends TypeNameMixin implements FlexibleSearchTableName {
 
-  public FlexibleSearchTableNameImpl(ASTNode node) {
+  public FlexibleSearchTableNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 

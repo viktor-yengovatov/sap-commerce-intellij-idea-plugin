@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchColumnLocalizationImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnLocalization {
 
-  public FlexibleSearchColumnLocalizationImpl(ASTNode node) {
+  public FlexibleSearchColumnLocalizationImpl(@NotNull ASTNode node) {
     super(node);
   }
 
