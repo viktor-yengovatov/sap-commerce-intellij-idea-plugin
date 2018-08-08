@@ -30,16 +30,18 @@ import static com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttrib
  */
 public class HybrisProcessReferenceContributor extends PsiReferenceContributor {
 
-    public static final String ITEMS_TYPE_FILE_NAME = "-process";
-
     @Override
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("transition", "to", ITEMS_TYPE_FILE_NAME),
+            tagAttributeValuePattern("transition", "to", "process"),
             new HybrisTransitionProcessReferenceProvider()
         );
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("then", ITEMS_TYPE_FILE_NAME),
+            tagAttributeValuePattern("process", "start", "process"),
+            new HybrisTransitionProcessReferenceProvider()
+        );
+        registrar.registerReferenceProvider(
+            tagAttributeValuePattern("then", "process"),
             new HybrisTransitionProcessReferenceProvider()
         );
     }

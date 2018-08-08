@@ -44,18 +44,21 @@ class HybrisTransitionProcessReferenceProvider : PsiReferenceProvider() {
 
             override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
                 val currentFile = myElement.containingFile
-                val name = myElement.text.replace("\"".toRegex(), StringUtils.EMPTY)
+                val name = myElement.text.replace("[\"\']".toRegex(), StringUtils.EMPTY)
 
                 val rootTag = (currentFile as XmlFile).rootTag
-                
-                val tag = PsiTreeUtil.collectElements(rootTag, { el ->
-                    el is XmlTag && setOf("action", "end", "wait").contains(el.name)
-                })
-                        .map { el -> el as XmlTag }
-                        .filter { el -> el.getAttribute("id")?.value == name }
-                        .first()
 
-                return createResults(tag)
+                val filter: (PsiElement) -> Boolean = { el ->
+                    el is XmlTag && setOf("action", "end", "wait").contains(el.name)
+                }
+                val tag = PsiTreeUtil.collectElements(rootTag, filter)
+                        .map { el -> el as XmlTag }
+                        .firstOrNull { el -> el.getAttribute("id")?.value == name }
+
+                if (tag != null) {
+                    return createResults(tag)
+                }
+                return ResolveResult.EMPTY_ARRAY;
             }
 
             override fun resolve(): PsiElement? {

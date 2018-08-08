@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.impex.injection
 
 import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexStringImpl
+import com.intellij.lang.xml.XMLLanguage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
@@ -25,15 +26,16 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-import org.jetbrains.plugins.groovy.GroovyLanguage
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 
 /**
  * @author Nosov Aleksandr <nosovae.dev></nosovae.dev>@gmail.com>
  */
-class ImpexLanguageInjector : LanguageInjector {
+class ImpexXmlLanguageInjector : LanguageInjector {
 
-    private val GROOVY_MARKER = "#%groovy%"
-    private val OFFSET = "\"#%groovy%".count()
+    private val XML_MARKER = "<"
     private val QUOTE_SYMBOL_LENGTH = 1
 
     override fun getLanguagesToInject(
@@ -42,12 +44,12 @@ class ImpexLanguageInjector : LanguageInjector {
     ) {
         if (host is ImpexStringImpl) {
             val hostString = StringUtil.unquoteString(host.getText()).toLowerCase()
-            if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(GROOVY_MARKER)) {
-                val language = GroovyLanguage
+            if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
+                val language = XMLLanguage.INSTANCE
                 try {
                     injectionPlacesRegistrar.addPlace(
                             language,
-                            TextRange.from(OFFSET, host.getTextLength() - OFFSET - QUOTE_SYMBOL_LENGTH), null, null
+                            TextRange.from(QUOTE_SYMBOL_LENGTH, host.getTextLength() - 2), null, null
                     )
                 } catch (e: ProcessCanceledException) {
                     // ignore
@@ -60,6 +62,26 @@ class ImpexLanguageInjector : LanguageInjector {
     }
 
     companion object {
-        private val LOG = Logger.getInstance(ImpexLanguageInjector::class.java)
+        private val LOG = Logger.getInstance(ImpexXmlLanguageInjector::class.java)
+    }
+
+
+    /**
+     * return true if the String passed in is something like XML
+     *
+     *
+     * @param inString a string that might be XML
+     * @return true of the string is XML, false otherwise
+     */
+    val xmlPatternRegExp = "<(\\S+?)(.*?)>(.*?)</\\1>".toRegex()
+    
+    fun String.isXmlLike(): Boolean {
+        if (this.trim { it <= ' ' }.isNotEmpty()) {
+            if (this.trim { it <= ' ' }.startsWith("<")) {
+                return xmlPatternRegExp.containsMatchIn(this)
+            }
+        }
+
+        return false
     }
 }

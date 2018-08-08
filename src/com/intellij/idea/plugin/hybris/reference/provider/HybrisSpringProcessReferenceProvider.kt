@@ -28,6 +28,8 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.ResolveResult
 import com.intellij.spring.SpringManager
+import com.intellij.spring.model.CommonSpringBean
+import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.utils.SpringModelSearchers
 import com.intellij.util.ProcessingContext
 import org.apache.commons.lang3.StringUtils
@@ -44,14 +46,20 @@ class HybrisSpringProcessReferenceProvider : PsiReferenceProvider() {
 
             override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
                 val project = myElement.project
-                val name = myElement.text.replace("\"".toRegex(), StringUtils.EMPTY)
+                val name = myElement.text.replace("[\"\']".toRegex(), StringUtils.EMPTY)
 
                 val module = ModuleUtil.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
 
-                val springModel = SpringManager.getInstance(project).getCombinedModel(module)
-                val pointer = SpringModelSearchers.findBean(springModel, name) ?: return ResolveResult.EMPTY_ARRAY
+                val result = mutableSetOf<SpringBeanPointer<CommonSpringBean>>()
+                val allModels = SpringManager.getInstance(project).getAllModels(module)
+                allModels.forEach { model ->
+                    val pointer = SpringModelSearchers.findBean(model, name)
+                    if (pointer != null) {
+                        result.add(pointer)
+                    }
+                }
 
-                return createResults(pointer.beanClass)
+                return createResults(result.map { it.beanClass })
             }
 
             override fun resolve(): PsiElement? {

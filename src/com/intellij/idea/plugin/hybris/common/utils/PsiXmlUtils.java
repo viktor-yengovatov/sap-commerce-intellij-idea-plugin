@@ -27,6 +27,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.Nullable;
 
+import static com.intellij.patterns.XmlPatterns.xmlTag;
+
 /**
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */
@@ -35,7 +37,7 @@ public class PsiXmlUtils {
     /**
      * <tagName attributeName="XmlAttributeValue">
      */
-    public static XmlAttributeValuePattern tagAttributeValuePattern(
+    public static XmlAttributeValuePattern tagAttributeValuePatternInFile(
         String tagName,
         String attributeName,
         String fileName
@@ -59,7 +61,7 @@ public class PsiXmlUtils {
     /**
      * <tagName attributeName="XmlAttributeValue">
      */
-    public static XmlAttributeValuePattern tagAttributeValuePattern(
+    public static XmlAttributeValuePattern tagAttributeValuePatternInFile(
         String attributeName,
         String fileName
     ) {
@@ -76,6 +78,51 @@ public class PsiXmlUtils {
                 XmlPatterns.psiElement(XmlTag.class)
             ).inFile(XmlPatterns.psiFile()
                                 .withName(XmlPatterns.string().endsWith(fileName + ".xml")));
+    }
+    
+    /**
+     * <tagName attributeName="XmlAttributeValue">
+     */
+    public static XmlAttributeValuePattern tagAttributeValuePattern(
+        String tagName,
+        String attributeName,
+        String rootTag
+    ) {
+        return XmlPatterns
+            .xmlAttributeValue()
+            .withAncestor(6, xmlTag().withLocalName(rootTag))
+            .withParent(
+                XmlPatterns
+                    .xmlAttribute(attributeName)
+                    .withParent(
+                        xmlTag()
+                            .withName(tagName)
+                    )        
+            )
+            .inside(
+                insideTagPattern(tagName)
+            );
+    }
+    
+    /**
+     * <tagName attributeName="XmlAttributeValue">
+     */
+    public static XmlAttributeValuePattern tagAttributeValuePattern(
+        String attributeName,
+        String rootTag
+    ) {
+        return XmlPatterns
+            .xmlAttributeValue()
+            .withAncestor(6, xmlTag().withLocalName(rootTag))
+            .and(XmlPatterns.xmlAttributeValue().withParent(
+                XmlPatterns
+                    .xmlAttribute(attributeName)
+                    .withParent(
+                        xmlTag()
+                    )
+            ).inside(
+                XmlPatterns.psiElement(XmlTag.class)
+            ));
     }
 
     public static PsiFilePattern.Capture<PsiFile> getXmlFilePattern(@Nullable String fileName) {
@@ -99,8 +146,7 @@ public class PsiXmlUtils {
                 XmlPatterns
                     .xmlAttribute(attributeName)
                     .withParent(
-                        XmlPatterns
-                            .xmlTag()
+                        xmlTag()
                             .withName(tagName)
                     )
             );
@@ -122,10 +168,7 @@ public class PsiXmlUtils {
                         .inside(XmlPatterns
                                     .xmlAttribute()
                                     .withName(attributeName)
-                                    .withParent(XmlPatterns
-                                                    .xmlTag()
-                                                    .withName(tag)
-                                    )
+                                    .withParent(xmlTag().withName(tag))
                         )
             ).inFile(getXmlFilePattern(fileName));
     }

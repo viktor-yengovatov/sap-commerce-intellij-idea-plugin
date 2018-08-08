@@ -30,12 +30,10 @@ import static com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttrib
  */
 public class HybrisSpringProcessReferenceContributor extends PsiReferenceContributor {
 
-    public static final String ITEMS_TYPE_FILE_NAME = "-process";
-
     @Override
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("action", "bean", ITEMS_TYPE_FILE_NAME),
+            tagAttributeValuePattern("action", "bean", "process"),
             new HybrisSpringProcessReferenceProvider()
         );
     }

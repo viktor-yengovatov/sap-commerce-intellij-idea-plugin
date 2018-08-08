@@ -245,6 +245,8 @@
         <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
         <lang.findUsagesProvider language="Impex"
                                  implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
+        
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector" />
     </extensions>
 
     <application-components>
