@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.BOOLEAN;
-import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.PROCESSOR_TYPES;
+import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.NONE;
 
 /**
  * https://wiki.hybris.com/pages/viewpage.action?title=ImpEx+Syntax&spaceKey=release5
@@ -41,7 +41,12 @@ public enum TypeModifier implements ImpexModifier {
     BATCH_MODE("batchmode", BOOLEAN),
     CACHE_UNIQUE("cacheUnique", BOOLEAN),
     IMPEX_LEGACY_MODE("impex.legacy.mode", BOOLEAN),
-    PROCESSOR("processor", PROCESSOR_TYPES);
+    PROCESSOR("processor", NONE) {
+        @Override
+        public ImpexModifierValue[] getRawModifierValues() {
+            return ImpexProcessorModifier.values();
+        }
+    };
 
     private final String modifierName;
     private final List<String> modifierValues;

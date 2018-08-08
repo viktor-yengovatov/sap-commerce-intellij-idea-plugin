@@ -26,7 +26,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifierValue;
-import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexProcessorModifierValue;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.notification.Notification;
@@ -42,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+import static com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexProcessorModifier.ImpexProcessorModifierValue;
 import static com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier.PROCESSOR;
 
 /**

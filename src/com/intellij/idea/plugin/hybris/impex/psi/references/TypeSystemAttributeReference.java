@@ -36,11 +36,16 @@ import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.collections4.SetUtils.emptyIfNull;
+
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -61,7 +66,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
             .map(meta::findMetaClassByName);
 
         if (!metaClass.isPresent()) {
-            return ResolveResult.EMPTY_ARRAY;
+            return tryResolveForRelationType(meta, featureName);
         }
 
         final List<ResolveResult> result = metaClass.get()
@@ -79,7 +84,35 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
                  .map(RelationElementResolveResult::new)
                  .collect(Collectors.toCollection(() -> result));
 
-        return result.toArray(new ResolveResult[result.size()]);
+        return result.toArray(new ResolveResult[0]);
+    }
+
+    private ResolveResult[] tryResolveForRelationType(final TSMetaModel meta, final String featureName) {
+        final Optional<List<TSMetaReference>> metaReferences = findItemTypeReference()
+            .map(PsiElement::getText)
+            .map(meta::findRelationByName);
+
+        if (metaReferences.isPresent()) {
+            final Set<TSMetaReference> references = new HashSet<>(metaReferences.get());
+            if (featureName.equals("source")) {
+                return emptyIfNull(references).stream()
+                                              .map(TSMetaReference::getSource)
+                                              .map(TSMetaReference.ReferenceEnd::retrieveDom)
+                                              .filter(Objects::nonNull)
+                                              .map(RelationElementResolveResult::new)
+                                              .toArray(ResolveResult[]::new);
+            }
+            if (featureName.equals("target")) {
+                return emptyIfNull(references).stream()
+                                              .map(TSMetaReference::getTarget)
+                                              .map(TSMetaReference.ReferenceEnd::retrieveDom)
+                                              .filter(Objects::nonNull)
+                                              .map(RelationElementResolveResult::new)
+                                              .toArray(ResolveResult[]::new);
+            }
+        }
+
+        return ResolveResult.EMPTY_ARRAY.clone();
     }
 
     private Optional<ImpexHeaderTypeName> findItemTypeReference() {

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.inspection
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.idea.plugin.hybris.flexibleSearch.references.TypeSystemAttributeReference
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
@@ -33,11 +34,11 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-class UnknownTypeAttribute : LocalInspectionTool() {
+class UnknownTypeAttributeInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder)
 }
 
-class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
     override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
         if (isNotMacros(parameter) && isNotDocumentId(parameter.firstChild)) {
             val references = parameter.references
@@ -45,10 +46,10 @@ class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : Impex
                 val firstReference = references.first()
                 if (firstReference is TypeSystemReferenceBase<*>) {
                     val result = firstReference.multiResolve(false)
+                    
                     if (result.isEmpty()) {
                         problemsHolder.registerProblem(parameter, "Unknown attribute", ProblemHighlightType.GENERIC_ERROR)
                     }
-
                 }
             }
         }
