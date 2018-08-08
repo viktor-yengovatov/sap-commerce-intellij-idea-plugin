@@ -10,7 +10,7 @@ public interface FlexibleSearchTableReference extends PsiElement {
   @NotNull
   List<FlexibleSearchJoinedTable> getJoinedTableList();
 
-  @Nullable
+  @NotNull
   FlexibleSearchTablePrimary getTablePrimary();
 
 }

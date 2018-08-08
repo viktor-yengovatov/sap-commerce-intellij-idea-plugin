@@ -144,8 +144,7 @@ EOL                             = \n|\r\n
     "FIRST"                                { return FIRST; }
     "LAST"                                 { return LAST; }
     "FROM"                                 { yybegin(FROM_EXP); return FROM; }
-    "JOIN"                                 { return JOIN; }
-    "ON"                                   { return ON; }
+    "ON"                                   { yybegin(ON_EXP); pushState(FROM_EXP); return ON; }
     "UNION"                                { return UNION; }
     "WHERE"                                { yybegin(WHERE_EXP); return WHERE; }
     "AND"                                  { return AND; }
@@ -241,7 +240,7 @@ EOL                             = \n|\r\n
     {QUESTION_MARK}                        { return QUESTION_MARK; }
     {COLON}                                { return COLON; }
     {SEMICOLON}                            { return SEMICOLON; }
-
+    {EQUALS_OPERATOR}                      { return EQUALS_OPERATOR; }
 
     /* keywords */
     "SELECT"                               { yybegin(SELECT_EXP); pushState(FROM_EXP); return SELECT; }
@@ -276,7 +275,7 @@ EOL                             = \n|\r\n
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
     {COMMA}                                { yybegin(popState()); return COMMA; }
     "LEFT"                                 { yybegin(FROM_EXP); return LEFT; }
-
+      
     {EXCLAMATION_MARK}                     { return EXCLAMATION_MARK; }
     {QUESTION_MARK}                        { return QUESTION_MARK; }
     
@@ -344,13 +343,13 @@ EOL                             = \n|\r\n
     {INTEGER}                              { return NUMBER; }
     {COMMENT}                              { return COMMENT; }
     
-    {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); pushState(ON_EXP); return LEFT_BRACE; }
+    {LEFT_BRACE}                           { yybegin(COLUMN_IDENTIFIER); return LEFT_BRACE; }
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
      
     "LEFT"                                 { yybegin(FROM_EXP); return LEFT; }
-
+    
     /* operators */
-    {EQUALS_OPERATOR}                      { return EQUALS_OPERATOR; }
+//    {EQUALS_OPERATOR}                      { return EQUALS_OPERATOR; }
     
     {IDENTIFIER}                           { return IDENTIFIER; }
 }
@@ -370,9 +369,9 @@ EOL                             = \n|\r\n
     {RIGHT_BRACE}                          { yybegin(popState()); return RIGHT_BRACE; }
     
     {EQUALS_OPERATOR}                      { yybegin(popState()); return EQUALS_OPERATOR; }
-    {WHITE_SPACE}                          { yybegin(popState()); return WHITE_SPACE; }
+    {WHITE_SPACE}                          { return WHITE_SPACE; }
     
-    {IDENTIFIER}                           { return COLUMN_REFERENCE_IDENTIFIER; }
+    {IDENTIFIER}                           { yybegin(popState()); return COLUMN_REFERENCE_IDENTIFIER; }
 }
 
 <LOCALIZATION> {

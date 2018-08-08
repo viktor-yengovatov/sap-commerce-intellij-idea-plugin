@@ -46,7 +46,7 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val meta = typeSystemMeta
-        val featureName = element.text
+        val featureName = element.text.replace("!", "")
         if (hasPrefix(element)) {
             return findReference(meta, deepSearchOfTypeReference(element, element.firstChild.text), element.lastChild.text)
         }
@@ -57,8 +57,8 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
 
     private fun findReference(meta: TSMetaModel, itemType: Optional<FlexibleSearchTableName>, refName: String): Array<ResolveResult> {
         val metaClass = itemType
-                .map { it.text }
-                .map({ meta.findMetaClassByName(it) })
+                .map { it.text.replace("!", "") }
+                .map { meta.findMetaClassByName(it) }
 
         if (!metaClass.isPresent) {
             return ResolveResult.EMPTY_ARRAY
@@ -90,8 +90,8 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
 
         val tableReference = tables.find {
             val tableName = PsiTreeUtil.findChildOfAnyType(it, FlexibleSearchTableName::class.java)
-            val corName = PsiTreeUtil.findSiblingForward(tableName!!.originalElement, FlexibleSearchTypes.CORRELATION_NAME, null)
-            if (corName == null) false else prefix == corName.text
+            val corName = findCorName(tableName)
+            prefix == corName
         }
         return if (tableReference == null && parent != null) {
             deepSearchOfTypeReference(parent, prefix)
@@ -99,6 +99,15 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
             Optional.ofNullable(PsiTreeUtil.findChildOfType(tableReference, FlexibleSearchTableName::class.java))
         }
     }
+
+    private fun findCorName(tableName: FlexibleSearchTableName?) : String {
+        val corNameEl = PsiTreeUtil.findSiblingForward(tableName!!.originalElement, FlexibleSearchTypes.CORRELATION_NAME, null)
+        if (corNameEl == null) {
+            return tableName.text
+        } 
+        return corNameEl.text
+    }
+        
 
     private class AttributeResolveResult(private val myDomAttribute: Attribute) : TypeSystemReferenceBase.TypeSystemResolveResult {
         override fun getElement(): PsiElement? = myDomAttribute.qualifier.xmlAttributeValue

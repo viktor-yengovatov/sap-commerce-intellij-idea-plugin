@@ -33,9 +33,9 @@ public class FlexibleSearchTableReferenceImpl extends ASTWrapperPsiElement imple
   }
 
   @Override
-  @Nullable
+  @NotNull
   public FlexibleSearchTablePrimary getTablePrimary() {
-    return findChildByClass(FlexibleSearchTablePrimary.class);
+    return findNotNullChildByClass(FlexibleSearchTablePrimary.class);
   }
 
 }

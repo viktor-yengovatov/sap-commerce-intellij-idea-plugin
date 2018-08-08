@@ -143,11 +143,12 @@ private from_clause_recover ::= !(WHERE | SELECT | FROM | SEMICOLON )
 table_reference_list ::=  table_reference [ ( COMMA? table_reference )* ] 
 {pin=1}
 
-table_reference ::= table_primary joined_table* | joined_table
+table_reference ::= table_primary [joined_table*]
 {pin=1}
 
 table_primary ::= table_name [ [ AS ] correlation_name ]
-{pin=1}
+{pin=1 /*recoverWhile=table_primary_recover*/}
+private table_primary_recover ::= !(JOIN)
 
 table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
 {
@@ -155,7 +156,7 @@ table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
     mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.references.TypeNameMixin"
     recoverWhile = table_name_recover
 }
-private table_name_recover ::= !(RIGHT_BRACE | AS | SPACE | " ")
+private table_name_recover ::= !(RIGHT_BRACE | AS | JOIN | ON | SPACE | " ")
 
 correlation_name ::= IDENTIFIER
 
@@ -190,8 +191,9 @@ search_condition ::= boolean_value_expression
 // boolean_value_expression 
 boolean_value_expression ::= boolean_term
 
-boolean_term ::= boolean_factor ([AND|OR] boolean_term)*
-{pin = 1}
+boolean_term ::= boolean_factor [([AND|OR] boolean_term)*]
+{pin = 1/* recoverWhile= boolean_term_recover*/}
+private boolean_term_recover ::= !(JOIN)
 
 boolean_factor ::= [ NOT ] boolean_test
 
