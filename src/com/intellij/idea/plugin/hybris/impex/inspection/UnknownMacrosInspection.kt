@@ -36,7 +36,7 @@ class UnknownMacrosInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = UnknownMacrosVisitor(holder)
 }
 
-class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
     private val cachedMacros = ContainerUtilRt.newHashMap<String, Boolean>()
 
     override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {

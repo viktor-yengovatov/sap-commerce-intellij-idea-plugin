@@ -15,7 +15,7 @@ class NoUniqueValueInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = NoUniqueValueVisitor(holder)
 }
 
-class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) : PsiElementVisitor() {
+private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) : PsiElementVisitor() {
 
     override fun visitFile(file: PsiFile) {
         val headers = PsiTreeUtil.getChildrenOfType(file, ImpexHeaderLine::class.java) ?: return

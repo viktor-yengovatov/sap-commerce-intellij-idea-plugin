@@ -36,7 +36,7 @@ class UnknownConfigPropertyInspection : LocalInspectionTool() {
 }
 
 
-class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
 
     override fun visitMacroDeclaration(declaration: ImpexMacroDeclaration) {
         val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpexMacroValue::class.java)

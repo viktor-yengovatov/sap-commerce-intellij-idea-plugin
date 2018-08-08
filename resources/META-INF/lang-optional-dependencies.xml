@@ -199,6 +199,10 @@
                          groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UniqueAttributeWithoutIndexInspection"/>
 
+        <localInspection groupPath="Impex" shortName="UniqueDocumentId" displayName="Unique document Id in column"
+                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UniqueDocumentIdInspection"/>
+
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->
