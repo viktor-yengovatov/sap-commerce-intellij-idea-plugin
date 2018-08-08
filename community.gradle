@@ -20,6 +20,11 @@ repositories {
 }
 
 allprojects {
+    repositories {
+        maven {
+            url "https://jcenter.bintray.com"
+        }
+    }
     apply plugin: "kotlin"
 
     // Set source version for Java code

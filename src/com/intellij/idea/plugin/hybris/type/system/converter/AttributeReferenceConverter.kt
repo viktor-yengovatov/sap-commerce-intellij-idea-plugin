@@ -46,7 +46,7 @@ import com.intellij.util.xml.GenericDomValue
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class AttributeReferenceConverter : CustomReferenceConverter<String> {
-    override fun createReferences(value: GenericDomValue<String>?, element: PsiElement?, context: ConvertContext?): Array<PsiReference> {
+    override fun createReferences(value: GenericDomValue<String>?, element: PsiElement, context: ConvertContext?): Array<PsiReference> {
         val reference = object : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
             override fun resolve(): PsiElement? {
                 val resolveResults = multiResolve(false)
@@ -54,7 +54,7 @@ class AttributeReferenceConverter : CustomReferenceConverter<String> {
             }
 
             override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-                val project = element!!.project
+                val project = element.project
                 val className = findItemTag(element).getAttributeValue("code")
                 val psiElements = mutableListOf<PsiElement>()
                 val searchFieldName = (element as XmlAttributeValueImpl).value!!

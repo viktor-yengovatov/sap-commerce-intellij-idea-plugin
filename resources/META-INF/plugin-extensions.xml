@@ -3,7 +3,7 @@
 
         <toolWindow
             id="Hybris"
-            icon="/icons/hybrisIcon.png"
+            icon="/icons/grayHybrisIcon.svg"
             anchor="right"
             secondary="true"
             conditionClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowCondition"

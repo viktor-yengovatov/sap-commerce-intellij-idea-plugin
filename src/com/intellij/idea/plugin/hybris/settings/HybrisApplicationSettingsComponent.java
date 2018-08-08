@@ -30,18 +30,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_INTEGRATION_SETTINGS_FILE_NAME;
+
 
 /**
  * Created 19:39 29 March 2015
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-@State(
-    name = "HybrisApplicationSettings",
-    storages = {
-        @Storage(file = StoragePathMacros.APP_CONFIG + '/' + HybrisConstants.HYBRIS_INTEGRATION_SETTINGS_FILE_NAME)
-    }
-)
+@State(name = "HybrisApplicationSettings", storages = {@Storage(HYBRIS_INTEGRATION_SETTINGS_FILE_NAME)})
 public class HybrisApplicationSettingsComponent implements PersistentStateComponent<HybrisApplicationSettings> {
 
     protected final HybrisApplicationSettings hybrisApplicationSettings = new HybrisApplicationSettings();

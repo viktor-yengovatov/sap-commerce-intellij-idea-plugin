@@ -22,28 +22,19 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StorageScheme;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PROJECT_SETTINGS_COMPONENT_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PROJECT_SETTINGS_FILE_NAME;
-import static com.intellij.openapi.components.StoragePathMacros.PROJECT_CONFIG_DIR;
-import static com.intellij.openapi.components.StoragePathMacros.PROJECT_FILE;
 
 /**
  * Created 6:43 PM 28 June 2015.
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-@State(
-    name = HYBRIS_PROJECT_SETTINGS_COMPONENT_NAME,
-    storages = {
-        @Storage(file = PROJECT_FILE),
-        @Storage(file = PROJECT_CONFIG_DIR + '/' + HYBRIS_PROJECT_SETTINGS_FILE_NAME, scheme = StorageScheme.DIRECTORY_BASED)
-    }
-)
+@State(name = HYBRIS_PROJECT_SETTINGS_COMPONENT_NAME, storages = {@Storage(HYBRIS_PROJECT_SETTINGS_FILE_NAME)})
 public class HybrisProjectSettingsComponent implements PersistentStateComponent<HybrisProjectSettings> {
 
     private final HybrisProjectSettings hybrisProjectSettings = new HybrisProjectSettings();

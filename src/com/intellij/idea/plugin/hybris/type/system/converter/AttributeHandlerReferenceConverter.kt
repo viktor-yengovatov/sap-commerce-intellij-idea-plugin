@@ -47,7 +47,7 @@ class AttributeHandlerReferenceConverter : CustomReferenceConverter<String> {
             override fun getRangeInElement() = TextRange.from(1, element.textLength - QUOTE_LENGTH)
 
             override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-                val psiSearchHelper = PsiSearchHelper.SERVICE.getInstance(project)
+                val psiSearchHelper = PsiSearchHelper.getInstance(project)
                 val module = ModuleUtil.findModuleForPsiElement(element)
 
                 val foundEls = mutableListOf<PsiElement>()

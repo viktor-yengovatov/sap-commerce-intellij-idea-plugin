@@ -35,13 +35,9 @@ import com.intellij.refactoring.rename.RenameHandler
 class ImpexMacrosRenameHandler : RenameHandler {
     val psiRenameHandler = PsiElementRenameHandler()
 
-    override fun isRenaming(dataContext: DataContext?) = isAvailableOnDataContext(dataContext)
+    override fun isRenaming(dataContext: DataContext) = isAvailableOnDataContext(dataContext)
 
-    override fun isAvailableOnDataContext(dataContext: DataContext?): Boolean {
-        if (dataContext == null) {
-            return false
-        }
-
+    override fun isAvailableOnDataContext(dataContext: DataContext): Boolean {
         val element = getElement(dataContext)
         if (element is ImpexMacroNameDec || element is ImpexMacroUsageDec) {
             return true

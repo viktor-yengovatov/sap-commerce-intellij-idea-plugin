@@ -29,21 +29,26 @@ import javax.swing.*;
  */
 public interface HybrisIcons {
 
-    Icon IMPEX_FILE = IconLoader.getIcon("/icons/impexFile.png");
-    Icon FS_FILE = IconLoader.getIcon("/icons/fxs.png");
-    Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybrisIcon.png");
-    Icon HYBRIS_ICON_13x13 = IconLoader.getIcon("/icons/hybrisIcon13x13.png");
-    Icon HYBRIS_REMOTE_ICON = IconLoader.getIcon("/icons/hybris_remote.png");
-    Icon WAIT = IconLoader.getIcon("/icons/Wait-16.png");
-    Icon END = IconLoader.getIcon("/icons/End-16.png");
-    Icon NOTIFY = IconLoader.getIcon("/icons/Notify-16.png");
-    Icon ACTION = IconLoader.getIcon("/icons/Action-16.png");
-    Icon SPLIT = IconLoader.getIcon("/icons/Split-16.png");
-    Icon JOIN = IconLoader.getIcon("/icons/Join-16.png");
-    Icon SCRIPT = IconLoader.getIcon("/icons/Script-16.png");
-    Icon TYPE_SYSTEM = IconLoader.getIcon("/icons/type-system.png");
-    Icon BEAN = IconLoader.getIcon("/icons/bean.png");
-    Icon LOCALIZED = IconLoader.getIcon("/icons/localized.gif");
+    Icon IMPEX_FILE = IconLoader.getIcon("/icons/impexFile.svg");
+    Icon FS_FILE = IconLoader.getIcon("/icons/flexibleSearchFile.svg");
+    Icon BEAN_FILE = IconLoader.getIcon("/icons/beanFile.svg");
+    
+    Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybrisIcon.svg");
+    Icon HYBRIS_ICON_13x13 = IconLoader.getIcon("/icons/hybrisIcon_13x13.svg");
+    Icon HYBRIS_REMOTE_ICON = IconLoader.getIcon("/icons/hybrisRemoteIcon.svg");
+    
+    Icon WAIT = IconLoader.getIcon("/icons/waitIcon.svg");
+    Icon END = IconLoader.getIcon("/icons/endIcon.svg");
+    Icon NOTIFY = IconLoader.getIcon("/icons/notifyIcon.svg");
+    Icon ACTION = IconLoader.getIcon("/icons/actionIcon.svg");
+    Icon SPLIT = IconLoader.getIcon("/icons/splitIcon.svg");
+    Icon JOIN = IconLoader.getIcon("/icons/joinIcon.svg");
+    Icon SCRIPT = IconLoader.getIcon("/icons/scriptIcon.svg");
+    
+    
+    Icon TYPE_SYSTEM = IconLoader.getIcon("/icons/typeSystem.svg");
+    Icon BEAN = IconLoader.getIcon("/icons/beanIcon.svg");
+    Icon LOCALIZED = IconLoader.getIcon("/icons/localized.svg");
 
     Icon MACROS = IconLoader.getIcon("/icons/macros.png");
 }

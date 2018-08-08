@@ -62,7 +62,7 @@ public class BeansDomFileDescription extends DomFileDescription<AbstractPojos> {
     @Nullable
     @Override
     public Icon getFileIcon(final int flags) {
-        return HybrisIcons.BEAN;
+        return HybrisIcons.BEAN_FILE;
     }
 
     public static boolean isBeansXmlFile(@NotNull final XmlFile file) {

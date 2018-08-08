@@ -279,7 +279,7 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true" icon="/icons/hybrisIcon.png">
+        <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true" icon="/icons/hybrisIcon.svg">
             <!-- This feature not ready for production. Temporary disabled.  -->
             <!--<action id="ImpexTableFormatter.FormatAllTables"-->
             <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
@@ -294,7 +294,7 @@
             <action id="ImpexTableFormatter.SelectTable"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
                     text="Select Impex"
-                    icon="/icons/hybrisIcon.png"
+                    icon="/icons/hybrisIcon.svg"
                     description="Select Impex">
                 <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
             </action>
@@ -303,26 +303,26 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <group id="ImpexRemoteControl.Actions" text="Impex Remote Control" popup="true" icon="/icons/hybrisIcon.png">
+        <group id="ImpexRemoteControl.Actions" text="Impex Remote Control" popup="true" icon="/icons/hybrisIcon.svg">
             <action id="ImpexRemoteControl.Validate"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
-                    icon="/icons/hybrisIcon.png">
+                    icon="/icons/hybrisIcon.svg">
             </action>
 
             <action id="ImpexRemoteControl.Import"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ImportImpexAction"
-                    icon="/icons/hybrisIcon.png">
+                    icon="/icons/hybrisIcon.svg">
             </action>
 
             <add-to-group group-id="CodeMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <group id="FSRemoteControl.Actions" text="FlexibleSearch Remote Control" popup="true" icon="/icons/hybrisIcon.png">
+        <group id="FSRemoteControl.Actions" text="FlexibleSearch Remote Control" popup="true" icon="/icons/hybrisIcon.svg">
             <action id="FSRemoteControl.Execute"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ExecuteFlexibleSearchAction"
                     text="Execute selected FlexibleSearch Statement"
-                    icon="/icons/hybrisIcon.png"
+                    icon="/icons/hybrisIcon.svg"
                     description="Execute FlexibleSearch file via remote hybris instance">
             </action>
 
