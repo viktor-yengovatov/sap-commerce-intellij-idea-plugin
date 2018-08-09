@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.PsiSearchHelper.getInstance
+import com.intellij.psi.search.PsiSearchHelper.SERVICE.getInstance
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.util.PsiTreeUtil
 

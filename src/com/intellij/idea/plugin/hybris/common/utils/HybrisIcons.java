@@ -29,9 +29,9 @@ import javax.swing.*;
  */
 public interface HybrisIcons {
 
-    Icon IMPEX_FILE = IconLoader.getIcon("/icons/impexFile.svg");
-    Icon FS_FILE = IconLoader.getIcon("/icons/flexibleSearchFile.svg");
-    Icon BEAN_FILE = IconLoader.getIcon("/icons/beanFile.svg");
+    Icon IMPEX_FILE = IconLoader.getIcon("/icons/fileTypes/impexFile.svg");
+    Icon FS_FILE = IconLoader.getIcon("/icons/fileTypes/flexibleSearchFile.svg");
+    Icon BEAN_FILE = IconLoader.getIcon("/icons/beanIcon.svg");
     
     Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybrisIcon.svg");
     Icon HYBRIS_ICON_13x13 = IconLoader.getIcon("/icons/hybrisIcon_13x13.svg");
