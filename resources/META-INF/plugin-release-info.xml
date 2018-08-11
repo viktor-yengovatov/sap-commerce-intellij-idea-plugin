@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.9.12</version>
+    <version>8.10.12-beta-1</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -102,43 +102,7 @@
         <![CDATA[
             <h2>Task</h2>
             <ul>
-                <li>New Icons!</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-155'>IIP-155</a>] - TSV list all problems</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-423'>IIP-423</a>] - Add configuration parameter to set ANT_OPTS</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-429'>IIP-429</a>] - Export custom inspection report into excel spreadsheet</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-432'>IIP-432</a>] - Add autosuggestion/completion in Impex for properties following &#39;$config-...&#39;</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-434'>IIP-434</a>] - Add folding in Impex for &#39;$config-xxx&#39; which shows the real value of the property</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-435'>IIP-435</a>] - Show a warning if there is no &quot;&lt;...GenericItem...&gt;&quot; in the Impex file with a usage of &quot;$config-...&quot;</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-436'>IIP-436</a>] - Add autocompletion for &quot;processor&quot; attribute in Impex files</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-438'>IIP-438</a>] - Add navigation by &quot;Control + Click&quot; between the value of &#39;attribute&#39; tag in items.xml and the corresponding field in Model Java class</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-439'>IIP-439</a>] - Add liveTemplate for generating &quot;delete all objects by type&quot; construction in Impex file</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-440'>IIP-440</a>] - During import of Gradle submodules the plugin ignores &quot;group&quot; settings of the Gradle plugin</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-441'>IIP-441</a>] - Create formatting settings for FlexibleSearch language</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-442'>IIP-442</a>] - Add folding for macros value in Impex</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-443'>IIP-443</a>] - Add inspection for macros usages without declaration</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-444'>IIP-444</a>] - Add autocompletion for parameters in Impex header line</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-447'>IIP-447</a>] - Add inspection to Impex file - &quot;Unknown attribute $name for type $typeName&quot;</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-451'>IIP-451</a>] - Improve autocomplete of column for FlexibleSearch</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-453'>IIP-453</a>] - Add syntax highlighting for &#39;parameter&#39; in FlexibleSearch</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-454'>IIP-454</a>] - add xml language injection in impex file</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-456'>IIP-456</a>] - update icons</li>
-            </ul>
-
-            <h2>Bug</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-414'>IIP-414</a>] - TS diagram doesn&#39;t render Collections</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-428'>IIP-428</a>] - Tool window [y] icon far too large in 2018.2</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-448'>IIP-448</a>] - ExceptionInInitializerError at AttributeModifier.&lt;clinit&gt;(AttributeModifier.java:40)</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-450'>IIP-450</a>] - &quot;java.util.NoSuchElementException: List is empty.&quot; exception during autocompletion in Flexible Search</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-452'>IIP-452</a>] - Incorrect error highlight for Relation types (target/source fields) in Impex file</li>
-            </ul>
-
-            <h2>Fault</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-146'>IIPS-146</a>] - Project Hybris refresh results into empty project</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-152'>IIPS-152</a>] - Cannot connect to local hybris</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-159'>IIPS-159</a>] - IDEA compilation fails</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-161'>IIPS-161</a>] - IntelliJ IDEA Ultimate 2018.2 keeps getting deadlocks in *.tag-files</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-457'>IIP-457</a>] - Add feature &#39;Impex monitor&#39;</li>
             </ul>
         ]]>
     </change-notes>
