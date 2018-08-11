@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexBeanShellImpl extends ASTWrapperPsiElement implements ImpexBeanShell {
 
-  public ImpexBeanShellImpl(ASTNode node) {
+  public ImpexBeanShellImpl(@NotNull ASTNode node) {
     super(node);
   }
 

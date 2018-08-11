@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyHeaderModeImpl extends ASTWrapperPsiElement implements ImpexAnyHeaderMode {
 
-  public ImpexAnyHeaderModeImpl(ASTNode node) {
+  public ImpexAnyHeaderModeImpl(@NotNull ASTNode node) {
     super(node);
   }
 

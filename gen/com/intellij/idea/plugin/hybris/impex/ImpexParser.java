@@ -1108,6 +1108,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // ((  FIELD_VALUE
+  //              | FIELD_VALUE_URL
   //              | BOOLEAN
   //              | DIGIT
   //              | string
@@ -1129,6 +1130,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // (  FIELD_VALUE
+  //              | FIELD_VALUE_URL
   //              | BOOLEAN
   //              | DIGIT
   //              | string
@@ -1153,6 +1155,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // FIELD_VALUE
+  //              | FIELD_VALUE_URL
   //              | BOOLEAN
   //              | DIGIT
   //              | string
@@ -1165,6 +1168,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "value_0_0")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE);
+    if (!r) r = consumeToken(b, FIELD_VALUE_URL);
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
     if (!r) r = string(b, l + 1);

@@ -32,7 +32,6 @@ import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
 
-
 class AttributeHandlerReferenceConverter : CustomReferenceConverter<String> {
 
     override fun createReferences(value: GenericDomValue<String>, element: PsiElement, context: ConvertContext): Array<PsiReference>

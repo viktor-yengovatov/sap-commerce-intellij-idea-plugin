@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexMacroValueDecImpl extends ImpexMacrosValueMixin implements ImpexMacroValueDec {
 
-  public ImpexMacroValueDecImpl(ASTNode node) {
+  public ImpexMacroValueDecImpl(@NotNull ASTNode node) {
     super(node);
   }
 

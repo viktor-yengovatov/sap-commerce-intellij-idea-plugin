@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexMacroNameDecImpl extends ImpexPsiNamedElementImpl implements ImpexMacroNameDec {
 
-  public ImpexMacroNameDecImpl(ASTNode node) {
+  public ImpexMacroNameDecImpl(@NotNull ASTNode node) {
     super(node);
   }
 

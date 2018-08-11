@@ -135,6 +135,7 @@ value_group ::= FIELD_VALUE_SEPARATOR value?
 {pin = 1}
 
 value ::= (((  FIELD_VALUE
+             | FIELD_VALUE_URL
              | BOOLEAN
              | DIGIT
              | string

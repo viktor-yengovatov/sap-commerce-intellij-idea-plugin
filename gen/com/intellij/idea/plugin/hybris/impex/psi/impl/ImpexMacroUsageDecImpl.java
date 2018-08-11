@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexMacroUsageDecImpl extends ImpexPsiNamedElementImpl implements ImpexMacroUsageDec {
 
-  public ImpexMacroUsageDecImpl(ASTNode node) {
+  public ImpexMacroUsageDecImpl(@NotNull ASTNode node) {
     super(node);
   }
 

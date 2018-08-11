@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexMacroDeclarationImpl extends ASTWrapperPsiElement implements ImpexMacroDeclaration {
 
-  public ImpexMacroDeclarationImpl(ASTNode node) {
+  public ImpexMacroDeclarationImpl(@NotNull ASTNode node) {
     super(node);
   }
 

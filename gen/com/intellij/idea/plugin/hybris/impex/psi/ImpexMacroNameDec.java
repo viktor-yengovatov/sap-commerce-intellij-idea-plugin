@@ -11,6 +11,6 @@ public interface ImpexMacroNameDec extends ImpexPsiNamedElement {
   String getName();
 
   @NotNull
-  PsiElement setName(String newName);
+  PsiElement setName(@NotNull String newName);
 
 }

@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexValueLine {
 
-  public ImpexValueLineImpl(ASTNode node) {
+  public ImpexValueLineImpl(@NotNull ASTNode node) {
     super(node);
   }
 

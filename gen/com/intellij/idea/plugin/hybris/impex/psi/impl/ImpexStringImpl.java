@@ -12,7 +12,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexStringImpl extends ImpexStringMixin implements ImpexString {
 
-  public ImpexStringImpl(ASTNode node) {
+  public ImpexStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 

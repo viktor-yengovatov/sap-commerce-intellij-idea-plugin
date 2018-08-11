@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexValueGroupImpl extends ASTWrapperPsiElement implements ImpexValueGroup {
 
-  public ImpexValueGroupImpl(ASTNode node) {
+  public ImpexValueGroupImpl(@NotNull ASTNode node) {
     super(node);
   }
 

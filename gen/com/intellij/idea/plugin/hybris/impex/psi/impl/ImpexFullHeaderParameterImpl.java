@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implements ImpexFullHeaderParameter {
 
-  public ImpexFullHeaderParameterImpl(ASTNode node) {
+  public ImpexFullHeaderParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 

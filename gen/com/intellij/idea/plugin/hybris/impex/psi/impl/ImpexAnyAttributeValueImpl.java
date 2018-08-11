@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyAttributeValueImpl extends ImpexAttributeValueMixin implements ImpexAnyAttributeValue {
 
-  public ImpexAnyAttributeValueImpl(ASTNode node) {
+  public ImpexAnyAttributeValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -4,6 +4,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisFSConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisGroovyConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexMonitorConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisSuspendAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
@@ -33,6 +35,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     private val impexConsole = HybrisImpexConsole(project)
     private val fsConsole = HybrisFSConsole(project)
     private val groovyConsole = HybrisGroovyConsole(project)
+    private val monitorConsole = HybrisImpexMonitorConsole(project)
 
     init {
         layout = BorderLayout()
@@ -43,7 +46,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 
         val panel = JPanel(BorderLayout())
         
-        val tabsPane = HybrisTabs(impexConsole, fsConsole, groovyConsole, project, TOP)
+        val tabsPane = HybrisTabs(impexConsole, fsConsole, groovyConsole, monitorConsole, project, TOP)
 
         panel.add(tabsPane.component, BorderLayout.CENTER)
         actionToolbar.setTargetComponent(tabsPane.component)
@@ -56,7 +59,9 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         toolbarActions.add(executeAction)
         toolbarActions.add(HybrisSuspendAction(tabsPane, actionHandler))
 
-        toolbarActions.addAll(*impexConsole.createConsoleActions())
+        val actions = impexConsole.createConsoleActions()
+        actions[5] = HybrisClearAllAction(tabsPane)
+        toolbarActions.addAll(*actions)
         add(panel)
     }
 
@@ -66,18 +71,21 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 class HybrisTabs(private val impexConsole: HybrisImpexConsole,
                  private val fsConsole: HybrisFSConsole,
                  private val groovyConsole: HybrisGroovyConsole,
+                 private val impexMonitorConsole: HybrisImpexMonitorConsole,
                  project: Project,
                  tabPlacement: Int) : JBTabsPaneImpl(project, tabPlacement, Disposable {  }) {
     init {
         insertTab("Impex", HybrisIcons.IMPEX_FILE, impexConsole.component, "Impex Console", 0)
         insertTab("FlexibleSearch", HybrisIcons.FS_FILE, fsConsole.component, "FlexibleSearch Console", 1)
         insertTab("Groovy Scripting", Groovy_16x16, groovyConsole.component, "Groovy Console", 2)
+        insertTab("Impex Monitor", HybrisIcons.TYPE_SYSTEM, impexMonitorConsole.component, "Last imported Impex files", 3)
     }
 
     fun activeConsole() = when (selectedIndex) {
         0 -> impexConsole
         1 -> fsConsole
         2 -> groovyConsole
+        3 -> impexMonitorConsole
         else -> impexConsole
     } 
 }

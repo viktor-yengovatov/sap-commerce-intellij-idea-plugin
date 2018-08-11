@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyHeaderParameterNameImpl extends ImpexAnyHeaderParameterNameMixin implements ImpexAnyHeaderParameterName {
 
-  public ImpexAnyHeaderParameterNameImpl(ASTNode node) {
+  public ImpexAnyHeaderParameterNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 

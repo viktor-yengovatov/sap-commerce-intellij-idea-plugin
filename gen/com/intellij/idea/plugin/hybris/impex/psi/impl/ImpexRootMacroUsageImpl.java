@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexRootMacroUsageImpl extends ASTWrapperPsiElement implements ImpexRootMacroUsage {
 
-  public ImpexRootMacroUsageImpl(ASTNode node) {
+  public ImpexRootMacroUsageImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHeaderLine {
 
-  public ImpexHeaderLineImpl(ASTNode node) {
+  public ImpexHeaderLineImpl(@NotNull ASTNode node) {
     super(node);
   }
 

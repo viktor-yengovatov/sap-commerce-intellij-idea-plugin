@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyAttributeNameImpl extends ASTWrapperPsiElement implements ImpexAnyAttributeName {
 
-  public ImpexAnyAttributeNameImpl(ASTNode node) {
+  public ImpexAnyAttributeNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 

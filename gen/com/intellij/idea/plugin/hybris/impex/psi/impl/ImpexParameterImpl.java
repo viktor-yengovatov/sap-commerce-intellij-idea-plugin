@@ -13,7 +13,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexParameterImpl extends ImpexParameterMixin implements ImpexParameter {
 
-  public ImpexParameterImpl(ASTNode node) {
+  public ImpexParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
