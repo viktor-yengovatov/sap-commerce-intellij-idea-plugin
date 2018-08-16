@@ -39,9 +39,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyCollectionIfNull;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -235,7 +238,8 @@ class TSMetaModelImpl implements TSMetaModel {
     @Nullable
     @Override
     public List<TSMetaReference> findRelationByName(@NotNull final String name) {
-        return myReferencesBySourceTypeName.values().stream()
+        return emptyCollectionIfNull(myReferencesBySourceTypeName.values()).stream()
+                                           .filter(Objects::nonNull) 
                                            .map(TSMetaReference.ReferenceEnd::getOwningReference)
                                            .filter(ref -> ref.getName().equals(name))
                                            .collect(Collectors.toList());

@@ -2,7 +2,7 @@
 <svg id="Layer_1" data-name="Layer 1" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
   <title>xml</title>
   <g>
-    <rect x="1" y="9" width="15" height="7" opacity="0.7" style="fill: rgb(126, 210, 255);"/>
+    <rect x="1" y="9" width="15" height="7" opacity="0.7" fill="#40B6E0"/>
     <g>
       <polygon points="7 1 3 5 7 5 7 1" fill="#9aa7b0" opacity="0.8" style="isolation: isolate"/>
       <polygon points="8 1 8 5 8 6 7 6 3 6 3 8 13 8 13 1 8 1" fill="#9aa7b0" opacity="0.8" style="isolation: isolate"/>
