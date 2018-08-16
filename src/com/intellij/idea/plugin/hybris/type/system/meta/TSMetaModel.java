@@ -44,6 +44,9 @@ public interface TSMetaModel {
     @NotNull
     Stream<? extends TSMetaCollection> getMetaCollectionsStream();
 
+    @NotNull
+    Stream<? extends TSMetaReference> getMetaRelationsStream();
+
     @Nullable
     default TSMetaClassifier<? extends DomElement> findMetaClassifierByName(final @NotNull String name) {
         TSMetaClassifier<? extends DomElement> result = findMetaClassByName(name);

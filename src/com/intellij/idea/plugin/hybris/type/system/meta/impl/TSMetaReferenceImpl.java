@@ -43,7 +43,7 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
         myTargetEnd = new ReferenceEndImpl(metaModel, this, dom.getTargetElement());
     }
 
-    private static String extractName(final @NotNull Relation domRelation) {
+    protected static String extractName(final @NotNull Relation domRelation) {
         return domRelation.getCode().getValue();
     }
 

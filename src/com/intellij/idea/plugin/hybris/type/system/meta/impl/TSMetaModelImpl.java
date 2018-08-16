@@ -49,6 +49,7 @@ import java.util.stream.Stream;
 class TSMetaModelImpl implements TSMetaModel {
 
     private NoCaseMap<TSMetaClassImpl> myClasses;
+    private NoCaseMap<TSMetaReferenceImpl> myRelations;
     private NoCaseMap<TSMetaEnumImpl> myEnums;
     private NoCaseMap<TSMetaCollectionImpl> myCollections;
     private NoCaseMap<TSMetaAtomicImpl> myAtomics;
@@ -70,6 +71,15 @@ class TSMetaModelImpl implements TSMetaModel {
             myBaseModels.forEach(model -> myClasses.putAll(model.getClasses()));
         }
         return myClasses;
+    }
+
+    @NotNull
+    private synchronized NoCaseMap<TSMetaReferenceImpl> getRelations() {
+        if (myRelations == null) {
+            myRelations = new NoCaseMap<>();
+            myBaseModels.forEach(model -> myRelations.putAll(model.getRelations()));
+        }
+        return myRelations;
     }
 
     @NotNull
@@ -158,13 +168,21 @@ class TSMetaModelImpl implements TSMetaModel {
     }
 
     @Nullable
-    TSMetaReference createReference(@NotNull final Relation domRelation) {
-        final TSMetaReferenceImpl result = new TSMetaReferenceImpl(this, domRelation);
+    TSMetaReference findOrCreateReference(@NotNull final Relation domRelationType) {
+        final String name = TSMetaReferenceImpl.extractName(domRelationType);
+        if (StringUtil.isEmpty(name)) {
+            return null;
+        }
 
-        registerReferenceEnd(result.getSource(), result.getTarget());
-        registerReferenceEnd(result.getTarget(), result.getSource());
-
-        return result;
+        final NoCaseMap<TSMetaReferenceImpl> relations = getRelations();
+        TSMetaReferenceImpl impl = relations.get(name);
+        if (impl == null) {
+            impl = new TSMetaReferenceImpl(this, domRelationType);
+            registerReferenceEnd(impl.getSource(), impl.getTarget());
+            registerReferenceEnd(impl.getTarget(), impl.getSource());
+            relations.put(name, impl);
+        }
+        return impl;
     }
 
     private void registerReferenceEnd(
@@ -192,6 +210,12 @@ class TSMetaModelImpl implements TSMetaModel {
     @Override
     public Stream<? extends TSMetaClass> getMetaClassesStream() {
         return getClasses().values().stream();
+    }
+
+    @NotNull
+    @Override
+    public Stream<? extends TSMetaReference> getMetaRelationsStream() {
+        return getRelations().values().stream();
     }
 
     @NotNull
