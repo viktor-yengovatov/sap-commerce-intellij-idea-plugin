@@ -124,10 +124,11 @@ class TSMetaModelImpl implements TSMetaModel {
         if (name == null) {
             return null;
         }
+        final String typeCode = domItemType.getDeployment().getTypeCode().getStringValue();
         final NoCaseMap<TSMetaClassImpl> classes = getClasses();
         TSMetaClassImpl impl = classes.get(name);
         if (impl == null) {
-            impl = new TSMetaClassImpl(this, name, domItemType);
+            impl = new TSMetaClassImpl(this, name, typeCode, domItemType);
             classes.put(name, impl);
         } else {
             impl.addDomRepresentation(domItemType);
@@ -161,7 +162,7 @@ class TSMetaModelImpl implements TSMetaModel {
         final NoCaseMap<TSMetaCollectionImpl> collections = getCollections();
         TSMetaCollectionImpl impl = collections.get(name);
         if (impl == null) {
-            impl = new TSMetaCollectionImpl(this, domCollectionType);
+            impl = new TSMetaCollectionImpl(this, name, domCollectionType);
             collections.put(name, impl);
         }
         return impl;
@@ -175,9 +176,11 @@ class TSMetaModelImpl implements TSMetaModel {
         }
 
         final NoCaseMap<TSMetaReferenceImpl> relations = getRelations();
+        final String typeCode = domRelationType.getDeployment().getTypeCode().getStringValue();
+
         TSMetaReferenceImpl impl = relations.get(name);
         if (impl == null) {
-            impl = new TSMetaReferenceImpl(this, domRelationType);
+            impl = new TSMetaReferenceImpl(this, name, typeCode, domRelationType);
             registerReferenceEnd(impl.getSource(), impl.getTarget());
             registerReferenceEnd(impl.getTarget(), impl.getSource());
             relations.put(name, impl);
