@@ -1,10 +1,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisFSConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisGroovyConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexMonitorConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisSuspendAction
@@ -19,6 +16,7 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.JBTabsPaneImpl
 import icons.JetgroovyIcons.Groovy.Groovy_16x16
 import java.awt.BorderLayout
+import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.SwingConstants.TOP
 
@@ -33,7 +31,6 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     }
 
     private val impexConsole = HybrisImpexConsole(project)
-    private val fsConsole = HybrisFSConsole(project)
     private val groovyConsole = HybrisGroovyConsole(project)
     private val monitorConsole = HybrisImpexMonitorConsole(project)
 
@@ -46,7 +43,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 
         val panel = JPanel(BorderLayout())
         
-        val tabsPane = HybrisTabs(impexConsole, fsConsole, groovyConsole, monitorConsole, project, TOP)
+        val tabsPane = HybrisTabs(impexConsole, groovyConsole, monitorConsole, project, TOP)
 
         panel.add(tabsPane.component, BorderLayout.CENTER)
         actionToolbar.setTargetComponent(tabsPane.component)
@@ -68,24 +65,32 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     override fun getComponent() = super.getComponent()!!
 }
 
-class HybrisTabs(private val impexConsole: HybrisImpexConsole,
-                 private val fsConsole: HybrisFSConsole,
-                 private val groovyConsole: HybrisGroovyConsole,
-                 private val impexMonitorConsole: HybrisImpexMonitorConsole,
+class HybrisTabs(impexConsole: HybrisImpexConsole,
+                 groovyConsole: HybrisGroovyConsole,
+                 impexMonitorConsole: HybrisImpexMonitorConsole,
                  project: Project,
                  tabPlacement: Int) : JBTabsPaneImpl(project, tabPlacement, Disposable {  }) {
+
+    private val consoles = arrayListOf<HybrisConsole>()
+
     init {
-        insertTab("Impex", HybrisIcons.IMPEX_FILE, impexConsole.component, "Impex Console", 0)
-        insertTab("FlexibleSearch", HybrisIcons.FS_FILE, fsConsole.component, "FlexibleSearch Console", 1)
-        insertTab("Groovy Scripting", Groovy_16x16, groovyConsole.component, "Groovy Console", 2)
-        insertTab("Impex Monitor", HybrisIcons.TYPE_SYSTEM, impexMonitorConsole.component, "Last imported Impex files", 3)
+        addConsoleTab("Impex", HybrisIcons.IMPEX_FILE, impexConsole, "Impex Console")
+
+        for (extension in HybrisConsoleProvider.EP_NAME.extensions) {
+            val console = extension.createConsole(project)
+
+            if (console != null) {
+                addConsoleTab(extension.tabTitle, extension.icon, console, extension.tip)
+            }
+        }
+        addConsoleTab("Groovy Scripting", Groovy_16x16, groovyConsole, "Groovy Console")
+        addConsoleTab("Impex Monitor", HybrisIcons.TYPE_SYSTEM, impexMonitorConsole, "Last imported Impex files")
     }
 
-    fun activeConsole() = when (selectedIndex) {
-        0 -> impexConsole
-        1 -> fsConsole
-        2 -> groovyConsole
-        3 -> impexMonitorConsole
-        else -> impexConsole
-    } 
+    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole, tip: String) {
+        insertTab(title, icon, console.component, tip, consoles.size)
+        consoles.add(console)
+    }
+
+    fun activeConsole() = consoles[selectedIndex]
 }
