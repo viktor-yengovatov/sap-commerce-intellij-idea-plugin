@@ -53,6 +53,8 @@ public interface TSMetaClass extends TSMetaClassifier<ItemType> {
     @NotNull
     Stream<? extends TSMetaReference.ReferenceEnd> getReferenceEndsStream(boolean includeInherited);
 
+    String getTypeCode();
+
     @NotNull
     Stream<? extends ItemType> retrieveAllDomsStream();
 

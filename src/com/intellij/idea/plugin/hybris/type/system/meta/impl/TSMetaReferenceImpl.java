@@ -35,16 +35,28 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
 
     private final ReferenceEndImpl mySourceEnd;
     private final ReferenceEndImpl myTargetEnd;
+    private final String myTypeCode;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public TSMetaReferenceImpl(final @NotNull TSMetaModelImpl metaModel, final @NotNull Relation dom) {
-        super(extractName(dom), dom);
+    public TSMetaReferenceImpl(
+        final @NotNull TSMetaModelImpl metaModel,
+        final String name,
+        final String typeCode,
+        final @NotNull Relation dom
+    ) {
+        super(name, dom);
+        myTypeCode = typeCode;
         mySourceEnd = new ReferenceEndImpl(metaModel, this, dom.getSourceElement());
         myTargetEnd = new ReferenceEndImpl(metaModel, this, dom.getTargetElement());
     }
 
-    private static String extractName(final @NotNull Relation domRelation) {
+    protected static String extractName(final @NotNull Relation domRelation) {
         return domRelation.getCode().getValue();
+    }
+
+    @Override
+    public String getTypeCode() {
+        return myTypeCode;
     }
 
     @NotNull

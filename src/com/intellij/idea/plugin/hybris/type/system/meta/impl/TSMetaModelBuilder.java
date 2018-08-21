@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
+import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -127,11 +128,15 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
             items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
             items.getAtomicTypes().getAtomicTypes().forEach(this::processAtomicType);
             items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
-            items.getRelations().getRelations().forEach(myResult::createReference);
+            items.getRelations().getRelations().forEach(this::processRelationType);
         }
 
         //continue visiting
         return true;
+    }
+
+    private void processRelationType(final Relation relation) {
+        myResult.findOrCreateReference(relation);
     }
 
     private void processAtomicType(final AtomicType atomicType) {

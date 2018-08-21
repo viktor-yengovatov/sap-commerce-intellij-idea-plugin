@@ -25,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 public interface TSMetaReference extends TSMetaClassifier<Relation> {
 
+    String getTypeCode();
+
     @NotNull
     ReferenceEnd getSource();
 
