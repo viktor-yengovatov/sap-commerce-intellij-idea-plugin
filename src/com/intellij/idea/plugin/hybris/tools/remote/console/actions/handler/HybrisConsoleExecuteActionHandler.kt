@@ -3,20 +3,13 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler
 
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.impl.ConsoleViewUtil
-import com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT
-import com.intellij.execution.ui.ConsoleViewContentType.NORMAL_OUTPUT
-import com.intellij.execution.ui.ConsoleViewContentType.SYSTEM_OUTPUT
+import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisFSConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisGroovyConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -44,16 +37,8 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                     isProcessRunning = true
                     try {
                         setEditorEnabled(console, false)
+                        val httpResult = console.execute(text)
 
-                        val client = HybrisHacHttpClient()
-                        val httpResult =
-                                when (console) {
-                                    is HybrisFSConsole -> client.executeFlexibleSearch(project, text)
-                                    is HybrisImpexConsole -> client.importImpex(project, text)
-                                    is HybrisGroovyConsole -> client.executeGroovyScript(project, text)
-                                    is HybrisImpexMonitorConsole -> monitorImpexFiles(console.timeOption().value, console.timeOption().unit, console.workingDir())
-                                    else -> null
-                                }
                         when (console) {
                             is HybrisImpexMonitorConsole -> printSyntaxText(console, httpResult)
                             else -> printPlainText(console, httpResult)

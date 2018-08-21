@@ -4,9 +4,11 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -27,7 +29,10 @@ import javax.swing.border.EmptyBorder
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language)
+abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
+
+    abstract fun execute(text: String): HybrisHttpResult
+}
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impex Console", ImpexLanguage.getInstance()) {
     object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
@@ -35,13 +40,9 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impe
     init {
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
     }
-}
 
-class HybrisFSConsole(project: Project) : HybrisConsole(project, "Hybris FS Console", FlexibleSearchLanguage.getInstance()) {
-    object MyConsoleRootType : ConsoleRootType("hybris.fs.shell", null)
-
-    init {
-        ConsoleHistoryController(MyConsoleRootType, "hybris.fs.shell", this).install()
+    override fun execute(text: String): HybrisHttpResult {
+        return HybrisHacHttpClient().importImpex(project, text)
     }
 }
 
@@ -50,6 +51,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, "Hybris Gro
 
     init {
         ConsoleHistoryController(MyConsoleRootType, "hybris.groovy.shell", this).install()
+    }
+
+    override fun execute(text: String): HybrisHttpResult {
+        return HybrisHacHttpClient().executeGroovyScript(project, text)
     }
 }
 
@@ -101,6 +106,10 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, "Hybr
     fun timeOption() = (timeComboBox.selectedItem as TimeOption)
 
     fun workingDir() = obtainDataFolder(project)
+
+    override fun execute(text: String): HybrisHttpResult {
+        return monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
+    }
 }
 
 data class TimeOption(val name: String, val value: Int, val unit: TimeUnit)
