@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 public class TSMetaModelAccessImpl implements TSMetaModelAccess {
 
@@ -53,8 +53,10 @@ public class TSMetaModelAccessImpl implements TSMetaModelAccess {
 
                     final TSMetaModelBuilder builder = new TSMetaModelBuilder(project);
                     final TSMetaModelImpl model = builder.buildModel();
-                    final Set<PsiFile> psiFiles = builder.getFiles();
-                    return CachedValueProvider.Result.create(model, psiFiles.isEmpty() ? ModificationTracker.EVER_CHANGED : psiFiles);
+                    final Object[] dependencies = builder.getFiles().stream()
+                                                         .filter(Objects::nonNull)
+                                                         .toArray();
+                    return CachedValueProvider.Result.create(model, dependencies.length == 0 ? ModificationTracker.EVER_CHANGED: dependencies);
                 }), false);
     }
 
