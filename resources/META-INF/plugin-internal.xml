@@ -74,4 +74,10 @@
         <toolWindow id="Hybris Console [Experimental]" icon="/icons/grayHybrisIcon.svg" anchor="bottom" 
                     factoryClass="com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory"/>
     </extensions>
+
+    <extensionPoints>
+        <extensionPoint
+            qualifiedName="com.intellij.idea.plugin.hybris.consoleProvider"
+            interface="com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleProvider"/>
+    </extensionPoints>
 </idea-plugin>

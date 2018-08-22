@@ -50,18 +50,26 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
 
     private final TSMetaModelImpl myMetaModel;
+    private final String myTypeCode;
 
     private String myExtendedMetaClassName = null;
 
     public TSMetaClassImpl(
         final @NotNull TSMetaModelImpl model,
         final @NotNull String name,
+        final String typeCode,
         final @NotNull ItemType dom
     ) {
         super(name, dom);
         myMetaModel = model;
+        myTypeCode = typeCode;
         myAllDoms.add(DomService.getInstance().createAnchor(dom));
         registerExtends(dom);
+    }
+
+    @Override
+    public String getTypeCode() {
+        return myTypeCode;
     }
 
     public void addDomRepresentation(final @NotNull ItemType anotherDom) {
