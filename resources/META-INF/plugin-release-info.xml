@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>8.10.12</version>
+    <version>8.11.13-beta-1</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -102,7 +102,21 @@
         <![CDATA[
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-457'>IIP-457</a>] - Add feature &#39;Impex monitor&#39;</li>
+                <li>Fixed Impex icon color.</li>
+                <li>Fixed for flexible search parser.</li>
+            </ul>
+
+            <h2>New Feature Request</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-144'>IIPS-144</a>] - Show conflicting extensions on top of of list of selected extensions</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-163'>IIPS-163</a>] - Add validation for unique deployment codes</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-164'>IIPS-164</a>] - Sort modules in &quot;all_local_extensions.iml&quot; alphanumeric to avoid merge conflicts</li>
+            </ul>
+
+            <h2>Fault</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-126'>IIPS-126</a>] - No dependencies provided which causes CachedValue to be never recalculated again</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-162'>IIPS-162</a>] -  java.lang.NullPointerException at com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelImpl.findRelationByName(TSMetaModelImpl.java:238)</li>
             </ul>
         ]]>
     </change-notes>
