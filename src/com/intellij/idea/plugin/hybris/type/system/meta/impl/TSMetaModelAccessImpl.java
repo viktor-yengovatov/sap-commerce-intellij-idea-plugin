@@ -24,6 +24,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.CachedValue;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class TSMetaModelAccessImpl implements TSMetaModelAccess {
 
@@ -51,8 +53,8 @@ public class TSMetaModelAccessImpl implements TSMetaModelAccess {
 
                     final TSMetaModelBuilder builder = new TSMetaModelBuilder(project);
                     final TSMetaModelImpl model = builder.buildModel();
-                    return CachedValueProvider.Result.create(model, builder.getFiles());
-
+                    final Set<PsiFile> psiFiles = builder.getFiles();
+                    return CachedValueProvider.Result.create(model, psiFiles.isEmpty() ? ModificationTracker.EVER_CHANGED : psiFiles);
                 }), false);
     }
 
