@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
+import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImportStep implements NonGuiSupport {
 
@@ -81,6 +83,42 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             }
         }
         selectionMode = UNUSED;
+        Set<String> duplicateModules = newHashSet();
+        Set<String> uniqueModules = newHashSet();
+        getContext().getList().forEach(e->{
+            if (uniqueModules.contains(e.getName())) {
+                duplicateModules.add(e.getName());
+            } else {
+                uniqueModules.add(e.getName());
+            }
+        });
+        fileChooser.sort((o1,o2)->{
+            boolean o1dup = duplicateModules.contains(o1.getName());
+            boolean o2dup = duplicateModules.contains(o2.getName());
+            if (o1dup ^ o2dup) {
+                return o1dup ? -1 : 1;
+            }
+
+            boolean o1custom = o1 instanceof CustomHybrisModuleDescriptor || o1 instanceof ConfigHybrisModuleDescriptor;
+            boolean o2custom = o2 instanceof CustomHybrisModuleDescriptor || o2 instanceof ConfigHybrisModuleDescriptor;
+            if (o1custom ^ o2custom) {
+                return o1custom ? -1 : 1;
+            }
+
+            boolean o1selected = o1.getImportStatus() == MANDATORY || o1.isPreselected();
+            boolean o2selected = o2.getImportStatus() == MANDATORY || o2.isPreselected();
+            if (o1selected ^ o2selected) {
+                return o1selected ? -1 : 1;
+            }
+
+            return o1.compareTo(o2);
+        });
+        //scroll to top
+        JComponent component = fileChooser.getComponent();
+        if (component instanceof JBTable) {
+            JBTable table = (JBTable)component;
+            table.changeSelection(0, 0, false, false);
+        }
     }
 
     protected void setList(final List<HybrisModuleDescriptor> hybrisModules) {
