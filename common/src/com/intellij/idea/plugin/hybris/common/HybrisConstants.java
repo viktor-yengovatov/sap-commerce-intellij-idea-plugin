@@ -209,4 +209,8 @@ public interface HybrisConstants {
                                             "\n" +
                                             "Use ANT_OPTS to override ant properties. Current default value is\n" +
                                             "ANT_OPTS=-Xmx512 -Dfile.encoding=UTF-8";
+    
+    String SOURCE_ATTRIBUTE_NAME = "source";
+    String TARGET_ATTRIBUTE_NAME = "target";
+    String CODE_ATTRIBUTE_NAME = "code";
 }

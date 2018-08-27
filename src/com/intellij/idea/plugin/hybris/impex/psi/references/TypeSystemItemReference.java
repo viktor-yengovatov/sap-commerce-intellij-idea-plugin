@@ -19,9 +19,12 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -47,11 +50,26 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final TSMetaModel meta = getTypeSystemMeta();
         final String lookingForName = getElement().getText();
-        return Optional.ofNullable(meta.findMetaClassByName(lookingForName))
-                       .map(TSMetaClass::retrieveAllDomsStream)
-                       .orElse(Stream.empty())
-                       .map(ItemTypeResolveResult::new)
-                       .toArray(ResolveResult[]::new);
+        final Optional<TSMetaClass> metaClass = searchInMetaClasses(meta, lookingForName);
+        if (metaClass.isPresent()) {
+            return metaClass
+                .map(TSMetaClass::retrieveAllDomsStream)
+                .orElse(Stream.empty())
+                .map(ItemTypeResolveResult::new)
+                .toArray(ResolveResult[]::new);
+        } else {
+            final TSMetaEnum metaEnum = meta.findMetaEnumByName(lookingForName);
+            if (metaEnum != null) {
+                final EnumType enumType = metaEnum.retrieveDom();
+                final EnumResolveResult resolveResult = new EnumResolveResult(enumType);
+                return new ResolveResult[]{resolveResult};
+            }
+        }
+        return ResolveResult.EMPTY_ARRAY;
+    }
+
+    private Optional<TSMetaClass> searchInMetaClasses(final TSMetaModel meta, final String lookingForName) {
+        return Optional.ofNullable(meta.findMetaClassByName(lookingForName));
     }
 
     private static class ItemTypeResolveResult implements TypeSystemResolveResult {

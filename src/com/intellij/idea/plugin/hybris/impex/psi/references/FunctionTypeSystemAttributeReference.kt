@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType
@@ -83,15 +84,7 @@ class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemRe
         val typeTag = PsiTreeUtil.findFirstParent(reference, { value -> value is XmlTag })
         return if (typeTag != null) (typeTag as XmlTag).attributes.first { it.name == "type" }.value!! else ""
     }
-
-
-    private class EnumResolveResult(private val enumType: EnumType) : TypeSystemReferenceBase.TypeSystemResolveResult {
-        override fun getSemanticDomElement(): DomElement = enumType
-        override fun getElement() = enumType.xmlTag
-        override fun isValidResult() = element != null
-
-    }
-
+    
     private class AttributeResolveResult(private val myDomAttribute: Attribute) : TypeSystemReferenceBase.TypeSystemResolveResult {
 
         override fun getElement(): PsiElement? {
