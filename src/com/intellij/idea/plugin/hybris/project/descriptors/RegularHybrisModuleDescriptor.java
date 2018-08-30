@@ -258,15 +258,6 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             }
         }
 
-        final File srcDir = new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY);
-        if (srcDir.isDirectory()) {
-            libs.add(new DefaultJavaLibraryDescriptor(
-                new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY),
-                srcDir,
-                true
-            ));
-        }
-
         addServerJar(libs);
 
         libs.add(new DefaultJavaLibraryDescriptor(
@@ -344,8 +335,9 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         if (serverJars == null || serverJars.length == 0) {
             return;
         }
+        final File srcDir = new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY);
         for (File serverJar: serverJars) {
-            libs.add(new DefaultJavaLibraryDescriptor(serverJar,true, true));
+            libs.add(new DefaultJavaLibraryDescriptor(serverJar, srcDir.isDirectory() ? srcDir : null, true, true));
         }
     }
 

@@ -87,7 +87,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
 
     public DefaultJavaLibraryDescriptor(
         @NotNull final File libraryFile,
-        @NotNull final File sourcesFile,
+        @Nullable final File sourcesFile,
         final boolean isExported,
         final boolean isDirectoryWithClasses
     ) {

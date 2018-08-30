@@ -155,14 +155,16 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.getLibraryFile()), OrderRootType.CLASSES
         );
 
+        boolean sourceDirAttached = false;
         if (null != javaLibraryDescriptor.getSourcesFile()) {
             final VirtualFile srcDirVF = VfsUtil.findFileByIoFile(javaLibraryDescriptor.getSourcesFile(), true);
             if (null != srcDirVF) {
                 libraryModifiableModel.addRoot(srcDirVF, OrderRootType.SOURCES);
+                sourceDirAttached = true;
             }
         }
 
-        if (sourceCodeRoot != null && javaLibraryDescriptor.getLibraryFile().getName().endsWith(HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)) {
+        if (sourceCodeRoot != null && !sourceDirAttached && javaLibraryDescriptor.getLibraryFile().getName().endsWith(HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }
 
