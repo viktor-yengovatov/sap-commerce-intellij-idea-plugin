@@ -33,7 +33,6 @@ import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.vfs.JarFileSystem;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.Validate;
@@ -192,10 +191,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             if (null != srcDirVF) {
                 libraryModifiableModel.addRoot(srcDirVF, OrderRootType.SOURCES);
             }
-        }
-
-        if (null != sourceCodeRoot) {
-            libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }
 
         if (javaLibraryDescriptor.isExported()) {

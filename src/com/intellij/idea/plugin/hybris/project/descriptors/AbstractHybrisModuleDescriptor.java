@@ -210,8 +210,8 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         if (!binDir.isDirectory()) {
             return false;
         }
-        final File[] serverJars = binDir.listFiles((dir, name) -> name.equals("server.jar"));
-        return serverJars.length > 0;
+        final File[] serverJars = binDir.listFiles((dir, name) -> name.endsWith("server.jar"));
+        return serverJars != null && serverJars.length > 0;
     }
 
     @Override

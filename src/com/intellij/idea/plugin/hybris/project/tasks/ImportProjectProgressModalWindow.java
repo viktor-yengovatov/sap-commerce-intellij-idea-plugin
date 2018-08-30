@@ -451,9 +451,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private boolean shouldBeTreatedAsReadOnly(final HybrisModuleDescriptor moduleDescriptor) {
-        if (!moduleDescriptor.hasServerJar() || moduleDescriptor.getName().equals("hmc")) {
-            return false;
-        }
         if (moduleDescriptor.getDescriptorType() == CUSTOM) {
             return false;
         }

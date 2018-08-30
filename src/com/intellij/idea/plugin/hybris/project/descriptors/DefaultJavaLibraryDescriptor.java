@@ -101,22 +101,6 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.scope = DependencyScope.COMPILE;
     }
 
-    public DefaultJavaLibraryDescriptor(
-        @NotNull final File libraryFile,
-        @Nullable final File sourcesFile,
-        final boolean isExported,
-        final boolean isDirectoryWithClasses,
-        @NotNull final DependencyScope scope
-    ) {
-        Validate.notNull(libraryFile);
-
-        this.libraryFile = libraryFile;
-        this.sourcesFile = sourcesFile;
-        this.isExported = isExported;
-        this.isDirectoryWithClasses = isDirectoryWithClasses;
-        this.scope = scope;
-    }
-
     @NotNull
     @Override
     public File getLibraryFile() {
@@ -147,9 +131,6 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
 
     @Override
     public boolean isValid() {
-        if (libraryFile == null) {
-            return false;
-        }
         return libraryFile.exists();
     }
 
@@ -186,7 +167,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     public String toString() {
         final StringBuilder sb = new StringBuilder("DefaultJavaLibraryDescriptor{");
         sb.append("libraryFile=").append(libraryFile);
-        sb.append("sourcesFile=").append(sourcesFile);
+        sb.append(", sourcesFile=").append(sourcesFile);
         sb.append(", isExported=").append(isExported);
         sb.append(", isDirectoryWithClasses=").append(isDirectoryWithClasses);
         sb.append('}');

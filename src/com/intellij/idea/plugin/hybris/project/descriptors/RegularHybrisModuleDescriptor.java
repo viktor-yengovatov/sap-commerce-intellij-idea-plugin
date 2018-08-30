@@ -257,11 +257,16 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             }
         }
 
-        libs.add(new DefaultJavaLibraryDescriptor(
-            new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY),
-            new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY),
-            true
-        ));
+        final File srcDir = new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY);
+        if (srcDir.isDirectory()) {
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY),
+                srcDir,
+                true
+            ));
+        }
+
+        addServerJar(libs);
 
         libs.add(new DefaultJavaLibraryDescriptor(
             new File(this.getRootDirectory(), HybrisConstants.LIB_DIRECTORY),
@@ -327,6 +332,20 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         }
 
         return Collections.unmodifiableList(libs);
+    }
+
+    private void addServerJar(final List<JavaLibraryDescriptor> libs) {
+        final File binDir = new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY);
+        if (!binDir.isDirectory()) {
+            return;
+        }
+        final File[] serverJars = binDir.listFiles((dir, name) -> name.endsWith("server.jar"));
+        if (serverJars == null || serverJars.length == 0) {
+            return;
+        }
+        for (File serverJar: serverJars) {
+            libs.add(new DefaultJavaLibraryDescriptor(serverJar,true, true));
+        }
     }
 
     protected void processAddOnBackwardDependencies(@NotNull final List<JavaLibraryDescriptor> libs) {
