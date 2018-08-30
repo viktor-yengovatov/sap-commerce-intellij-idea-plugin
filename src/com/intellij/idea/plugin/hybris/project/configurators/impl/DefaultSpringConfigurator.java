@@ -32,6 +32,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import com.intellij.util.containers.ContainerUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -48,6 +49,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
+
+import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
@@ -152,7 +155,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
 
         processPropertiesFile(moduleDescriptorMap, moduleDescriptor);
         try {
-            processWebXml(moduleDescriptor);
+            processWebXml(moduleDescriptorMap, moduleDescriptor);
         } catch (Exception e) {
             LOG.error("Unable to parse web.xml for module "+moduleDescriptor.getName(), e);
         }
@@ -189,39 +192,28 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                         continue;
                     }
                     for (String file : rawFile.split(",")) {
-                        addSpringXmlFile(relevantModule, file);
+                        if (!addSpringXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(relevantModule), file)) {
+                            File dir = hackGuessLocation(relevantModule);
+                            addSpringXmlFile(moduleDescriptorMap, relevantModule, dir, file);
+                        }
                     }
                 }
             }
         }
     }
 
-    private void scanForSpringImport(
-        final HybrisModuleDescriptor moduleDescriptor,
-        final File springFile
-    ) throws IOException, JDOMException {
-        final Document document = getDocument(springFile);
-        final List<Element> importList = document.getRootElement().getChildren()
-                                                 .stream()
-                                                 .filter(e -> e.getName().equals("import"))
-                                                 .collect(Collectors.toList());
-        if (importList != null) {
-            processImportNodeList(moduleDescriptor, importList);
-        }
+    // This is not a nice practice but the platform has a bug in acceleratorstorefrontcommons/project.properties.
+    // See https://jira.hybris.com/browse/ECP-3167
+    private File hackGuessLocation(final HybrisModuleDescriptor moduleDescriptor) {
+        return new File(getResourceDir(moduleDescriptor), toSystemDependentName(moduleDescriptor.getName() + "/web/spring"));
     }
 
-    private void processImportNodeList(
-        final HybrisModuleDescriptor moduleDescriptor,
-        final List<Element> importList
-    ) {
-        for (Element importElement: importList) {
-            String resource = importElement.getAttributeValue("resource");
-            addSpringXmlFile(moduleDescriptor, resource);
-        }
-    }
-    private void processWebXml(final HybrisModuleDescriptor moduleDescriptor) throws IOException, JDOMException {
+    private void processWebXml(
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        final HybrisModuleDescriptor moduleDescriptor
+    ) throws IOException, JDOMException {
         File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
-        if (webXml == null || !webXml.exists()) {
+        if (!webXml.exists()) {
             return;
         }
         final Document document = getDocument(webXml);
@@ -233,7 +225,6 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                               .stream()
                               .filter(e -> e.getName().equals("context-param"))
                               .filter(e -> e.getChildren().stream().anyMatch(p -> p.getName().equals("param-name") && p.getValue().equals("contextConfigLocation")))
-                              .filter(Objects::nonNull)
                               .map(e -> e.getChildren().stream().filter(p -> p.getName().equals("param-value")).findFirst().orElse(null))
                               .filter(Objects::nonNull)
                               .map(Element::getValue)
@@ -241,11 +232,15 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         if (location == null) {
             return;
         }
-        processContextParam(moduleDescriptor, location.trim());
+        processContextParam(moduleDescriptorMap, moduleDescriptor, location.trim());
     }
 
-    private void processContextParam(final HybrisModuleDescriptor moduleDescriptor, final String contextConfigLocation) {
-        File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);;
+    private void processContextParam(
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        final HybrisModuleDescriptor moduleDescriptor,
+        final String contextConfigLocation
+    ) {
+        File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
         for (String xml: contextConfigLocation.split(" ,")) {
             if (!xml.endsWith(".xml")) {
                 continue;
@@ -254,35 +249,13 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             if (!springFile.exists()) {
                 continue;
             }
-            addSpringFle(moduleDescriptor, springFile);
+            processSpringFile(moduleDescriptorMap, moduleDescriptor, springFile);
         }
     }
 
-    private void addSpringXmlFile(final HybrisModuleDescriptor moduleDescriptor, final String file) {
-        final File resourcesDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
-        final File springFile;
-        if (file.startsWith("classpath:")) {
-            springFile = new File(resourcesDir, file.substring("classpath:".length(), file.length()));
-        } else {
-            springFile = new File(resourcesDir, file);
-        }
-        if (springFile.exists()) {
-            addSpringFle(moduleDescriptor, springFile);
-        }
-    }
-
-
-    private void addSpringFle(final HybrisModuleDescriptor relevantModule, final File springFile) {
-        try {
-            if (!hasSpringContent(springFile)) {
-                return;
-            }
-            if (relevantModule.addSpringFile(springFile.getAbsolutePath())) {
-                scanForSpringImport(relevantModule, springFile);
-            }
-        } catch (Exception e) {
-            LOG.error("unable scan file for spring imports "+springFile.getName());
-        }
+    private Document getDocument(File inputFile) throws IOException, JDOMException {
+        SAXBuilder saxBuilder = new SAXBuilder();
+        return saxBuilder.build(inputFile);
     }
 
     private boolean hasSpringContent(final File springFile) throws IOException, JDOMException {
@@ -293,8 +266,94 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         return document.getRootElement() != null && document.getRootElement().getName().equals("beans");
     }
 
-    private Document getDocument(File inputFile) throws IOException, JDOMException {
-        SAXBuilder saxBuilder = new SAXBuilder();
-        return saxBuilder.build(inputFile);
+    private boolean processSpringFile(final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+                                      final HybrisModuleDescriptor relevantModule,
+                                      final File springFile) {
+        try {
+            if (!hasSpringContent(springFile)) {
+                return false;
+            }
+            if (relevantModule.addSpringFile(springFile.getAbsolutePath())) {
+                scanForSpringImport(moduleDescriptorMap, relevantModule, springFile);
+            }
+            return true;
+        } catch (Exception e) {
+            LOG.error("unable scan file for spring imports "+springFile.getName());
+        }
+        return false;
     }
+
+    private void scanForSpringImport(
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        final HybrisModuleDescriptor moduleDescriptor,
+        final File springFile
+    ) throws IOException, JDOMException {
+        final Document document = getDocument(springFile);
+        final List<Element> importList = document.getRootElement().getChildren()
+                                                 .stream()
+                                                 .filter(e -> e.getName().equals("import"))
+                                                 .collect(Collectors.toList());
+        processImportNodeList(moduleDescriptorMap, moduleDescriptor, importList, springFile);
+    }
+
+    private void processImportNodeList(
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        final HybrisModuleDescriptor moduleDescriptor,
+        final List<Element> importList,
+        final File springFile
+    ) {
+        for (Element importElement: importList) {
+            String resource = importElement.getAttributeValue("resource");
+            if (resource.startsWith("classpath:")) {
+                addSpringOnClasspath(moduleDescriptorMap, moduleDescriptor, resource.substring("classpath:".length()));
+            } else {
+                addSpringXmlFile(moduleDescriptorMap, moduleDescriptor, springFile.getParentFile(), resource);
+            }
+        }
+    }
+    private void addSpringOnClasspath(
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        final HybrisModuleDescriptor relevantModule,
+        final String fileOnClasspath
+    ) {
+        if (addSpringXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(relevantModule), fileOnClasspath)) {
+            return;
+        }
+        final String file = StringUtils.stripStart(fileOnClasspath, "/");
+        final int index = file.indexOf("/");
+        if (index != -1) {
+            final String moduleName = file.substring(0, index);
+            final HybrisModuleDescriptor module = moduleDescriptorMap.get(moduleName);
+            if (module != null && addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(module), fileOnClasspath)) {
+                return;
+            }
+        }
+        moduleDescriptorMap.values().stream().anyMatch(module->addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(module), fileOnClasspath));
+    }
+
+    private boolean addSpringXmlFile(final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+                                     final HybrisModuleDescriptor moduleDescriptor,
+                                     final File resourceDirectory,
+                                     final String file) {
+        if (StringUtils.startsWith(file, "/")) {
+            return addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, getResourceDir(moduleDescriptor), file);
+        }
+        return addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, file);
+    }
+
+    private File getResourceDir(final HybrisModuleDescriptor moduleToSearch) {
+        return new File(moduleToSearch.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+    }
+
+    private boolean addSpringExternalXmlFile(final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+                                             final HybrisModuleDescriptor moduleDescriptor,
+                                             final File resourcesDir,
+                                             final String file) {
+        final File springFile = new File(resourcesDir, file);
+        if (!springFile.exists()) {
+            return false;
+        }
+        return processSpringFile(moduleDescriptorMap, moduleDescriptor, springFile);
+    }
+
 }
