@@ -205,16 +205,6 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
-    public boolean hasServerJar() {
-        final File binDir = new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY);
-        if (!binDir.isDirectory()) {
-            return false;
-        }
-        final File[] serverJars = binDir.listFiles((dir, name) -> name.endsWith("server.jar"));
-        return serverJars != null && serverJars.length > 0;
-    }
-
-    @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .append(this.getName())

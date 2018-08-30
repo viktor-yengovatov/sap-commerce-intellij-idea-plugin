@@ -42,6 +42,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.Arrays;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
+
 /**
  * Created 11:45 PM 24 June 2015.
  *
@@ -160,7 +162,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             }
         }
 
-        if (sourceCodeRoot != null && javaLibraryDescriptor.getLibraryFile().getName().endsWith("server.jar")) {
+        if (sourceCodeRoot != null && javaLibraryDescriptor.getLibraryFile().getName().endsWith(HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }
 

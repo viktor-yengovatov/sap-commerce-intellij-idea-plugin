@@ -45,6 +45,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_META_KEY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_WEB_INF_CLASSES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
@@ -339,7 +340,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         if (!binDir.isDirectory()) {
             return;
         }
-        final File[] serverJars = binDir.listFiles((dir, name) -> name.endsWith("server.jar"));
+        final File[] serverJars = binDir.listFiles((dir, name) -> name.endsWith(HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX));
         if (serverJars == null || serverJars.length == 0) {
             return;
         }

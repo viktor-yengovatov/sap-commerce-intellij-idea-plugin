@@ -84,8 +84,6 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     HybrisModuleDescriptorType getDescriptorType();
 
-    boolean hasServerJar();
-
     @Nullable
     static HybrisModuleDescriptorType getDescriptorType(@NotNull final Module module) {
         final String descriptorTypeName = module.getOptionValue(HybrisConstants.DESCRIPTOR_TYPE);

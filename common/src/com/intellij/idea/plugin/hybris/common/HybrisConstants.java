@@ -43,7 +43,7 @@ public interface HybrisConstants {
     String PLATFORM_OOTB_MODULE_PREFIX = toSystemDependentName("bin/ext-");
     String HYBRIS_OOTB_MODULE_PREFIX = toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX;
     String HYBRIS_DATA_DIRECTORY = "data";
-
+    String HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar";
     String EXCLUDE_TMP_DIRECTORY = toSystemDependentName("/platform/tmp");
     String EXCLUDE_TCSERVER_DIRECTORY = toSystemDependentName("/platform/tcServer");
     String EXCLUDE_TOMCAT_DIRECTORY = toSystemDependentName("/platform/tomcat");
