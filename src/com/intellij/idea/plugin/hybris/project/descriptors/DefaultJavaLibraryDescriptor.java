@@ -92,7 +92,6 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         final boolean isDirectoryWithClasses
     ) {
         Validate.notNull(libraryFile);
-        Validate.notNull(sourcesFile);
 
         this.libraryFile = libraryFile;
         this.sourcesFile = sourcesFile;
