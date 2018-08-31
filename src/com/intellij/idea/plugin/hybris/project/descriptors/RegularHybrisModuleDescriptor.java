@@ -45,6 +45,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_META_KEY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_WEB_INF_CLASSES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
@@ -257,11 +258,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             }
         }
 
-        libs.add(new DefaultJavaLibraryDescriptor(
-            new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY),
-            new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY),
-            true
-        ));
+        addServerJar(libs);
 
         libs.add(new DefaultJavaLibraryDescriptor(
             new File(this.getRootDirectory(), HybrisConstants.LIB_DIRECTORY),
@@ -327,6 +324,21 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         }
 
         return Collections.unmodifiableList(libs);
+    }
+
+    private void addServerJar(final List<JavaLibraryDescriptor> libs) {
+        final File binDir = new File(this.getRootDirectory(), HybrisConstants.BIN_DIRECTORY);
+        if (!binDir.isDirectory()) {
+            return;
+        }
+        final File[] serverJars = binDir.listFiles((dir, name) -> name.endsWith(HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX));
+        if (serverJars == null || serverJars.length == 0) {
+            return;
+        }
+        final File srcDir = new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY);
+        for (File serverJar: serverJars) {
+            libs.add(new DefaultJavaLibraryDescriptor(serverJar, srcDir.isDirectory() ? srcDir : null, true, true));
+        }
     }
 
     protected void processAddOnBackwardDependencies(@NotNull final List<JavaLibraryDescriptor> libs) {

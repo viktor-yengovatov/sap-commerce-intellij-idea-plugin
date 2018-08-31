@@ -33,7 +33,6 @@ import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.vfs.JarFileSystem;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.Validate;
@@ -42,6 +41,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Arrays;
+
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
 
 /**
  * Created 11:45 PM 24 June 2015.
@@ -154,14 +155,16 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.getLibraryFile()), OrderRootType.CLASSES
         );
 
+        boolean sourceDirAttached = false;
         if (null != javaLibraryDescriptor.getSourcesFile()) {
             final VirtualFile srcDirVF = VfsUtil.findFileByIoFile(javaLibraryDescriptor.getSourcesFile(), true);
             if (null != srcDirVF) {
                 libraryModifiableModel.addRoot(srcDirVF, OrderRootType.SOURCES);
+                sourceDirAttached = true;
             }
         }
 
-        if (sourceCodeRoot != null && javaLibraryDescriptor.getLibraryFile().getName().endsWith("server.jar")) {
+        if (sourceCodeRoot != null && !sourceDirAttached && javaLibraryDescriptor.getLibraryFile().getName().endsWith(HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }
 
@@ -192,10 +195,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             if (null != srcDirVF) {
                 libraryModifiableModel.addRoot(srcDirVF, OrderRootType.SOURCES);
             }
-        }
-
-        if (null != sourceCodeRoot) {
-            libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }
 
         if (javaLibraryDescriptor.isExported()) {
