@@ -21,11 +21,14 @@ package com.intellij.idea.plugin.hybris.impex.folding
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.util.SmartList
 
@@ -34,13 +37,53 @@ import com.intellij.util.SmartList
  */
 class ImpexPropertyFoldingBuilder : FoldingBuilderEx() {
 
+    private val varPlaceholderRegexp = "\\$\\{(.+?)}".toRegex()
+    private fun isUseSmartFolding() = HybrisApplicationSettingsComponent.getInstance().state.isUseSmartFolding
+
     override fun getPlaceholderText(node: ASTNode): String? {
         val key = node.text
         val properties = PropertiesImplUtil.findPropertiesByKey(node.psi.project, key)
-        return if (properties.isNotEmpty())
-            properties.first().value
-        else
-            null
+        return computePlaceholderValue(node, properties)
+    }
+
+    private fun computePlaceholderValue(node: ASTNode, properties: List<IProperty>): String? {
+        if (properties.isEmpty()) {
+            return null
+        }
+
+        val value = properties.first().value
+        if (value != null) {
+            if (isUseSmartFolding() && value.contains(varPlaceholderRegexp)) {
+                return computeSmartPlaceholderText(value, node.psi.project)
+            }
+            return value
+        }
+        return null
+    }
+
+    private fun computeSmartPlaceholderText(input: String, project: Project): String? {
+        var value = input
+        val matches = varPlaceholderRegexp.findAll(input).toList()
+        if (matches.isNotEmpty()) {
+            matches.filter { match -> match.groups.isNotEmpty() }
+                    .forEach { match -> value = replaceVarPlaceholder(match, project, value) }
+
+            return value
+        }
+        return input
+    }
+
+    private fun replaceVarPlaceholder(match: MatchResult, project: Project, text: String): String {
+        val matchGroups = match.groups
+        if (matchGroups.size >= 2) {
+            val matchPlaceholder = matchGroups.first()!!.value // ${var.var}
+            val matchValue = matchGroups.last()!!.value // var.var
+            val foundProperty = PropertiesImplUtil.findPropertiesByKey(project, matchValue).first()
+            if (foundProperty != null) {
+                return text.replace(matchPlaceholder, foundProperty.value!!)
+            }
+        }
+        return text
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {

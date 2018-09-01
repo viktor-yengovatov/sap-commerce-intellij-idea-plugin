@@ -60,9 +60,11 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
                                 UsageSearchContext.ANY,
                                 true,
                                 false)
-                if (!isExist) problemsHolder.registerProblem(macroValue,
-                        "Incorrect use of \$config macros",
-                        ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                if (!isExist) {
+                    problemsHolder.registerProblem(macroValue,
+                            "Incorrect use of \$config macros - not defined ConfigPropertyImportProcessor",
+                            ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                }
 
             }
         }
