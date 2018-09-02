@@ -95,6 +95,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -281,9 +282,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     .map(e -> (EclipseModuleDescriptor) e)
                     .collect(Collectors.toList());
                 if (!eclipseModules.isEmpty()) {
-                    final String[] eclipseRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
-                        eclipseModules.get(0));
-                    eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseRootGroup);
+                    final Map<String, String[]> eclipseGroupMapping = eclipseModules.stream().collect(Collectors.
+                         toMap(EclipseModuleDescriptor::getName, groupModuleConfigurator::getGroupName));
+                    eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseGroupMapping);
                 }
             } catch (Exception e) {
                 LOG.error("Can not import Eclipse modules due to an error.", e);

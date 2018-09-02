@@ -36,6 +36,7 @@ import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +49,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
         @NotNull final List<EclipseModuleDescriptor> eclipseModules,
-        @Nullable final String[] eclipseGroup
+        @Nullable final Map<String,String[]> eclipseGroupMapping
     ) {
         if (eclipseModules.isEmpty()) {
             return;
@@ -66,7 +67,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         eclipseImportBuilder.setList(projectList);
         ApplicationManager.getApplication().invokeAndWait(() -> {
             final List<Module> newRootModules = eclipseImportBuilder.commit(project);
-            moveEclipseModulesToGroup(project, newRootModules, eclipseGroup);
+            moveEclipseModulesToGroup(project, newRootModules, eclipseGroupMapping);
         });
 
     }
@@ -74,13 +75,13 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
     private void moveEclipseModulesToGroup(
         @NotNull final Project project,
         @NotNull final List<Module> eclipseModules,
-        @Nullable final String[] eclipseGroup
+        @Nullable final Map<String,String[]> eclipseGroupMapping
     ) {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         for (Module module : eclipseModules) {
             module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.ECLIPSE.name());
-            modifiableModuleModel.setModuleGroupPath(module, eclipseGroup);
+            modifiableModuleModel.setModuleGroupPath(module, eclipseGroupMapping.get(module.getName()));
         }
         AccessToken token = null;
         try {

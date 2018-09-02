@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/11/16.
@@ -36,6 +36,6 @@ public interface EclipseConfigurator {
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
         @NotNull final List<EclipseModuleDescriptor> eclipseModules,
-        @Nullable final String[] eclipseRootGroup
+        @Nullable final Map<String,String[]> eclipseGroupMapping
     );
 }
