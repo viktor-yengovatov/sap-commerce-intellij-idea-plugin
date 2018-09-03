@@ -31,7 +31,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
 
 import java.io.File;
@@ -49,7 +48,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
         @NotNull final List<EclipseModuleDescriptor> eclipseModules,
-        @Nullable final Map<String,String[]> eclipseGroupMapping
+        @NotNull final Map<String,String[]> eclipseGroupMapping
     ) {
         if (eclipseModules.isEmpty()) {
             return;
@@ -75,7 +74,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
     private void moveEclipseModulesToGroup(
         @NotNull final Project project,
         @NotNull final List<Module> eclipseModules,
-        @Nullable final Map<String,String[]> eclipseGroupMapping
+        @NotNull final Map<String,String[]> eclipseGroupMapping
     ) {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 

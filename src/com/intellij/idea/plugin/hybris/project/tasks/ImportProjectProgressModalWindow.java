@@ -100,6 +100,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
+import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SHOW_UNLINKED_GRADLE_POPUP;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
@@ -282,8 +283,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     .map(e -> (EclipseModuleDescriptor) e)
                     .collect(Collectors.toList());
                 if (!eclipseModules.isEmpty()) {
-                    final Map<String, String[]> eclipseGroupMapping = eclipseModules.stream().collect(Collectors.
-                         toMap(EclipseModuleDescriptor::getName, groupModuleConfigurator::getGroupName));
+                    Map<String, String[]> eclipseGroupMapping = fetchGroupMapping(groupModuleConfigurator, eclipseModules);
                     eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseGroupMapping);
                 }
             } catch (Exception e) {
@@ -303,9 +303,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     .map(e -> (GradleModuleDescriptor) e)
                     .collect(Collectors.toList());
                 if (!gradleModules.isEmpty()) {
-                    final String[] gradleRootGroup = configuratorFactory.getGroupModuleConfigurator().getGroupName(
-                        gradleModules.get(0));
-                    gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules, gradleRootGroup);
+                    Map<String, String[]> gradleRootGroupMapping = fetchGroupMapping(groupModuleConfigurator, gradleModules);
+                    gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules, gradleRootGroupMapping);
                 }
             } catch (Exception e) {
                 LOG.error("Can not import Gradle modules due to an error.", e);
@@ -377,7 +376,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ConfigHybrisModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         if (configModule != null) {
             configDir = configModule.getRootDirectory();
-            if (configDir != null && configDir.isDirectory()) {
+            if (configDir.isDirectory()) {
                 hybrisProjectSettings.setConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
             }
         }
@@ -419,15 +418,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private Set<String> createModulesOnBlackList() {
         final List<String> toBeImportedNames = hybrisProjectDescriptor
             .getModulesChosenForImport().stream()
-            .map(e -> e.getName())
+            .map(HybrisModuleDescriptor::getName)
             .collect(Collectors.toList());
-        final Set<String> modulesOnBlackList = hybrisProjectDescriptor
+        return hybrisProjectDescriptor
             .getFoundModules().stream()
             .filter(e -> !hybrisProjectDescriptor.getModulesChosenForImport().contains(e))
             .filter(e -> toBeImportedNames.contains(e.getName()))
-            .map(e -> e.getRelativePath())
+            .map(HybrisModuleDescriptor::getRelativePath)
             .collect(Collectors.toSet());
-        return modulesOnBlackList;
     }
 
     private void disableWrapOnType(final Language impexLanguage) {
@@ -435,9 +433,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
         if (impexLanguage != null) {
             CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
-            if (langSettings != null) {
-                langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
-            }
+            langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
         }
     }
 

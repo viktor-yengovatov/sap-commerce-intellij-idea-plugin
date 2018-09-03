@@ -36,12 +36,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder;
 import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportProvider;
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings;
 
 import java.util.List;
+import java.util.Map;
 
 public class DefaultGradleConfigurator implements GradleConfigurator {
 
@@ -50,7 +50,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
         @NotNull final List<GradleModuleDescriptor> gradleModules,
-        @Nullable final String[] gradleRootGroup
+        @NotNull final Map<String, String[]> gradleRootGroupMapping
     ) {
         if (gradleModules.isEmpty()) {
             return;
@@ -63,11 +63,11 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         project.getMessageBus().connect().subscribe(
             ProjectDataImportListener.TOPIC,
             (projectPath) -> {
-                if (projectPath != null && gradleRootGroup != null && gradleRootGroup.length > 0) {
+                if (projectPath != null && !gradleRootGroupMapping.isEmpty()) {
                     ApplicationManager.getApplication().invokeLater(() -> {
                         if (!project.isDisposed()) {
                             final Module module = ModuleManager.getInstance(project).findModuleByName(projectPath.substring(projectPath.lastIndexOf('/') + 1));
-                            moveGradleModulesToGroup(project, module, gradleRootGroup);
+                            moveGradleModulesToGroup(project, module, gradleRootGroupMapping);
                         }
                     });
                 }
@@ -102,7 +102,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
     private void moveGradleModulesToGroup(
         final Project project,
         final Module gradleModule,
-        final String[] gradleGroup
+        final Map<String, String[]> gradleRootGroupMapping
     ) {
         if (gradleModule == null) {
             return;
@@ -110,7 +110,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         gradleModule.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.GRADLE.name());
-        modifiableModuleModel.setModuleGroupPath(gradleModule, gradleGroup);
+        modifiableModuleModel.setModuleGroupPath(gradleModule, gradleRootGroupMapping.get(gradleModule.getName()));
 
         ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);
     }
