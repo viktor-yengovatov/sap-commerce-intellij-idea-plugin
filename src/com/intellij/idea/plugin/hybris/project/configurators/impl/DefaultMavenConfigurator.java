@@ -46,8 +46,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 13/11/16.
@@ -87,21 +90,18 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
 
         project.getMessageBus().connect().subscribe(
             MavenImportListener.TOPIC,
-            (importedProjects, newModules) -> {
-
-                ApplicationManager.getApplication().invokeLater(() -> {
-                    if (!project.isDisposed()) {
-                        moveMavenModulesToCorrectGroup(
-                            project,
-                            mavenModules,
-                            configuratorFactory,
-                            pomList,
-                            importedProjects,
-                            newModules
-                        );
-                    }
-                });
-            }
+            (importedProjects, newModules) -> ApplicationManager.getApplication().invokeLater(() -> {
+                if (!project.isDisposed()) {
+                    moveMavenModulesToCorrectGroup(
+                        project,
+                        mavenModules,
+                        configuratorFactory,
+                        pomList,
+                        importedProjects,
+                        newModules
+                    );
+                }
+            })
         );
         mavenProjectBuilder.commit(project);
         MavenProjectsManager.getInstance(project).importProjects();
@@ -137,22 +137,14 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             )
             .collect(Collectors.toList());
 
-        final String[] rootGroup = configuratorFactory.getGroupModuleConfigurator()
-                                                      .getGroupName(mavenModules.get(0));
-
-        if (rootGroup != null && rootGroup.length > 0) {
-            moveMavenModulesToGroup(
-                project,
-                newRootModules,
-                rootGroup
-            );
-        }
+        Map<String, String[]> mavenGroupMapping = fetchGroupMapping(configuratorFactory.getGroupModuleConfigurator(), mavenModules);
+        moveMavenModulesToGroup(project, newRootModules, mavenGroupMapping);
     }
 
     private void moveMavenModulesToGroup(
-        final Project project,
-        final List<Module> mavenModules,
-        final String[] rootGroup
+        final @NotNull Project project,
+        final @NotNull List<Module> mavenModules,
+        final @NotNull Map<String, String[]> mavenGroupMapping
     ) {
         AccessToken token = null;
         final ModifiableModuleModel modifiableModuleModel;
@@ -163,7 +155,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             for (Module module : mavenModules) {
                 module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.MAVEN.name());
                 final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
-                modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(rootGroup, groupPath));
+                modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(mavenGroupMapping.get(module.getName()), groupPath));
             }
         } finally {
             if (token != null) {

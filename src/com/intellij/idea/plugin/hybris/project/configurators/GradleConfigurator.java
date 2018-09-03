@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 4/8/17.
@@ -35,6 +35,6 @@ public interface GradleConfigurator {
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
         @NotNull final List<GradleModuleDescriptor> gradleModules,
-        @Nullable final String[] gradleRootGroup
+        @NotNull final Map<String, String[]> gradleRootGroupMapping
     );
 }
