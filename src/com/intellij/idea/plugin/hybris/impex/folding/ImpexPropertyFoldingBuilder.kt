@@ -56,7 +56,7 @@ class ImpexPropertyFoldingBuilder : FoldingBuilderEx() {
             if (isUseSmartFolding() && value.contains(varPlaceholderRegexp)) {
                 return computeSmartPlaceholderText(value, node.psi.project)
             }
-            return value
+            return if (value.isEmpty()) node.text else value
         }
         return null
     }

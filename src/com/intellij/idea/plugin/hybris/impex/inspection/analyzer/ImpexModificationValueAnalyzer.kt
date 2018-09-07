@@ -109,6 +109,7 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
             attrs.forEach { av ->
                 val valueGroups =
                         attrsValues.filter { it.text == av }
+                                .filter { hasNoAppendModeModifier(it) }
                                 .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
                                 .filter {
                                     val commonContext = PsiTreeUtil.findCommonContext(keyValue.keys.first(), it)
@@ -139,6 +140,11 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
             rows.add(row)
         }
     }
+
+    private fun hasNoAppendModeModifier(headerParameter: ImpexFullHeaderParameter) =
+            !headerParameter.modifiersList
+                    .flatMap { it.attributeList }
+                    .any { attr -> attr.anyAttributeName.text == "mode" && attr.anyAttributeValue?.text == "append" }
 
 }
 
