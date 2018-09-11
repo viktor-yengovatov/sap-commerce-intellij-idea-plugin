@@ -236,8 +236,8 @@ public class HybrisApplicationSettingsForm {
         ) {
             return Messages.showInputDialog(
                 this,
-                HybrisI18NBundleUtils.message(message),
-                HybrisI18NBundleUtils.message(title),
+                message,
+                title,
                 Messages.getQuestionIcon(),
                 initialValue,
                 new InputValidatorEx() {
