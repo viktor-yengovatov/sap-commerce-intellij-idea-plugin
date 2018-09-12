@@ -21,9 +21,11 @@ package com.intellij.idea.plugin.hybris.common.services;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -57,9 +59,13 @@ public interface CommonIdeaService {
 
     boolean shouldShowPermissionToSendStatisticsDialog();
 
-    String getHostHacUrl(final Project project);
+    String getHostHacUrl(@NotNull Project project);
 
-    String getHostUrl(final Project project);
+    String getHostHacUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings mySettings);
+
+    String getHostUrl(@NotNull final Project project);
+
+    String getHostUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings settings);
 
     boolean isDiscountTargetGroup();
 

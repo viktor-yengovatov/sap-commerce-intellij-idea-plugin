@@ -1,8 +1,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +62,7 @@ public abstract class AbstractHybrisHacHttpClient {
     protected String sessionId;
 
     public String login(Project project) {
-        final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        HybrisRemoteConnectionSettings settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project);
         String hostHacURL = getHostHacURL(project);
         sessionId = getSessionId(hostHacURL);
         if (sessionId == null) {

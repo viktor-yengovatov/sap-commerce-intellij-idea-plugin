@@ -8,6 +8,9 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"
                         serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
 
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"/>
+
         <applicationService
             serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"
             serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>

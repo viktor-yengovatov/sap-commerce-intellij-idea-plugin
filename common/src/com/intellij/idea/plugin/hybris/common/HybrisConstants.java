@@ -152,6 +152,8 @@ public interface HybrisConstants {
     String HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml";
     String HYBRIS_PROJECT_SETTINGS_COMPONENT_NAME = "HybrisProjectSettings";
     String HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml";
+    String HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME = "hybrisDeveloperSpecificProjectSettings.xml";
+    String HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_COMPONENT_NAME = "HybrisDeveloperSpecificProjectSettings";
 
     String DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files";
     String PLUGIN_ID = "ccom.intellij.idea.plugin.hybris.impex";
