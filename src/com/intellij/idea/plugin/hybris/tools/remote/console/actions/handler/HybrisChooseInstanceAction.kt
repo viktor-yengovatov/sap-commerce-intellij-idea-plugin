@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_REMOTE_IC
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ui.Messages
 
 
@@ -26,5 +27,19 @@ class HybrisChooseInstanceAction : AnAction(
         if (ret == -1)
             return
         state.activeRemoteConnectionHash= list[ret].hashCode()
+    }
+
+    override fun update(e: AnActionEvent) {
+        val project = e.getData(CommonDataKeys.PROJECT)
+        if (project == null) {
+            e.presentation.isEnabledAndVisible=false
+            return
+        }
+        val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+        if (state == null) {
+            e.presentation.isEnabledAndVisible=false
+            return
+        }
+        e.presentation.isEnabledAndVisible = state.remoteConnectionSettingsList.size > 1
     }
 }
