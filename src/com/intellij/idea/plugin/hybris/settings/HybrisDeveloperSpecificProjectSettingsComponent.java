@@ -45,9 +45,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         if (remoteList.isEmpty()) {
             return getDefaultHybrisRemoteConnectionSettings(project);
         }
-        // TODO implement active profile switching from hybris console first
-        // int hash = state.getActiveRemoteConnectionHash();
-        int hash = 0;
+        int hash = state.getActiveRemoteConnectionHash();
 
         return remoteList.stream().filter(e->hash == e.hashCode()).findFirst().orElse(remoteList.get(0));
     }
