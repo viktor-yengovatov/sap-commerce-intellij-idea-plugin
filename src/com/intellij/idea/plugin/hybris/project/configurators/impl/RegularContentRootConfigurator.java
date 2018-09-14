@@ -114,11 +114,19 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             contentEntry,
             moduleDescriptor.getRootDirectory()
         );
-        this.configureWebRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
+        configureRegularWebRoots(moduleDescriptor, contentEntry, dirsToIgnore);
         this.configureCommonWebRoots(moduleDescriptor, contentEntry, dirsToIgnore);
         this.configureAcceleratorAddonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
         this.configureBackOfficeRoots(moduleDescriptor, contentEntry, dirsToIgnore);
         this.configurePlatformRoots(moduleDescriptor, contentEntry);
+    }
+
+    protected void configureRegularWebRoots(
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final List<File> dirsToIgnore
+    ) {
+        configureWebRoots(moduleDescriptor, contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
     }
 
     protected void configureCommonRoots(
@@ -144,7 +152,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             dirsToIgnore
         );
 
-        if(moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
+        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
+                                                                                         .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
         } else {
             excludeTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory());
@@ -223,10 +232,6 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final File parentDirectory,
         @NotNull final List<File> dirsToIgnore
     ) {
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(contentEntry);
-        Validate.notNull(parentDirectory);
-
         final File webModuleDirectory = new File(parentDirectory, WEB_MODULE_DIRECTORY);
         this.configureWebModuleRoots(moduleDescriptor, contentEntry, webModuleDirectory, dirsToIgnore);
     }
@@ -279,7 +284,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JavaSourceRootType.SOURCE
         );
 
-        if(moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
+        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
+                                                                                         .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore);
         } else {
             excludeTestSourceRoots(contentEntry, backOfficeModuleDirectory);
@@ -346,7 +352,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
-        if(moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
+        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
+                                                                                         .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, webModuleDirectory, dirsToIgnore);
         } else {
             excludeTestSourceRoots(contentEntry, webModuleDirectory);
@@ -362,7 +369,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     private static void addTestSourceRoots(
         @NotNull final ContentEntry contentEntry,
         @NotNull final File dir,
-        @NotNull final List<File> dirsToIgnore) {
+        @NotNull final List<File> dirsToIgnore
+    ) {
 
         for (String testSrcDirName : TEST_SRC_DIR_NAMES) {
             addSourceFolderIfNotIgnored(
@@ -376,14 +384,15 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     private static void excludeTestSourceRoots(
         @NotNull final ContentEntry contentEntry,
-        @NotNull final File dir) {
+        @NotNull final File dir
+    ) {
 
         for (String testSrcDirName : TEST_SRC_DIR_NAMES) {
             excludeDirectory(contentEntry, new File(dir, testSrcDirName));
         }
     }
 
-    private static <P extends JpsElement> void addSourceFolderIfNotIgnored(
+    protected static <P extends JpsElement> void addSourceFolderIfNotIgnored(
         @NotNull final ContentEntry contentEntry,
         @NotNull final File testSrcDir,
         @NotNull final JpsModuleSourceRootType<P> rootType,

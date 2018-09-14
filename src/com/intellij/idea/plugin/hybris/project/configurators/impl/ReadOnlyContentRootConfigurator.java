@@ -23,6 +23,7 @@ import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.vfs.VfsUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.jps.model.java.JavaResourceRootType;
 
 import java.io.File;
 import java.util.List;
@@ -31,7 +32,9 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_D
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
 
 /**
  * Created by Martin Zdarsky-Jones <zdary@zdary.cz> on 12/4/17.
@@ -43,9 +46,8 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(contentEntry);
-
+        final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
+        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore);
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
 
@@ -69,6 +71,12 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(additionalClassesDirectory.getAbsolutePath())
         );
+
+        final File additionalResourcesDirectory = new File(additionalModuleDirectory, RESOURCES_DIRECTORY);
+        contentEntry.addSourceFolder(
+            VfsUtil.pathToUrl(additionalResourcesDirectory.getAbsolutePath()),
+            JavaResourceRootType.RESOURCE
+        );
     }
 
     protected void configureBackOfficeRoots(
@@ -87,15 +95,21 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         contentEntry.addExcludeFolder(
             VfsUtil.pathToUrl(hmcClassesDirectory.getAbsolutePath())
         );
+
+        final File hmcResourcesDirectory = new File(backOfficeModuleDirectory, RESOURCES_DIRECTORY);
+        contentEntry.addSourceFolder(
+            VfsUtil.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
+            JavaResourceRootType.RESOURCE
+        );
     }
 
-    protected void configureWebModuleRoots(
+    @Override
+    protected void configureRegularWebRoots(
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        final @NotNull ContentEntry contentEntry,
-        @NotNull final File webModuleDirectory,
+        @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        Validate.notNull(moduleDescriptor);
+        final File webModuleDirectory = new File(moduleDescriptor.getRootDirectory(), WEB_MODULE_DIRECTORY);
 
         final File webAddonSrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
         contentEntry.addExcludeFolder(
