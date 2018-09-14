@@ -20,7 +20,11 @@ package com.intellij.idea.plugin.hybris.common;
 
 import com.intellij.util.containers.ContainerUtil;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
@@ -215,4 +219,14 @@ public interface HybrisConstants {
     String SOURCE_ATTRIBUTE_NAME = "source";
     String TARGET_ATTRIBUTE_NAME = "target";
     String CODE_ATTRIBUTE_NAME = "code";
+    Set<String> DICTIONARY_WORDS = Collections.unmodifiableSet(
+        new HashSet<>(Arrays.asList(
+            "autocreate",
+            "backoffice",
+            "hybris",
+            "itemtype",
+            "jalo",
+            "jaloclass"
+        ))
+    );
 }
