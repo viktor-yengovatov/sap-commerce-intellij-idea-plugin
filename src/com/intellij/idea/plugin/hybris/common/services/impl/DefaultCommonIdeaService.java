@@ -117,8 +117,8 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         try {
             final int majorVersionNumber = Integer.parseInt(majorVersion);
             final int minorVersionNumber = Integer.parseInt(minorVersion);
-            final int versionNumber = majorVersionNumber * 10 + minorVersionNumber;
-            return versionNumber < 90;
+            final int versionNumber = majorVersionNumber * 100 + minorVersionNumber;
+            return versionNumber < 900;
         } catch (NumberFormatException nfe) {
             return true;
         }
