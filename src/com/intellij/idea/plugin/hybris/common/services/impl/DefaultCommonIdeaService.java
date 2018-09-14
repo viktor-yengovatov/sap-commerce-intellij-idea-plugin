@@ -24,8 +24,10 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
@@ -39,6 +41,7 @@ import com.intellij.util.proxy.ProtocolDefaultPorts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
@@ -114,8 +117,8 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         try {
             final int majorVersionNumber = Integer.parseInt(majorVersion);
             final int minorVersionNumber = Integer.parseInt(minorVersion);
-            final int versionNumber = majorVersionNumber * 10 + minorVersionNumber;
-            return versionNumber < 81;
+            final int versionNumber = majorVersionNumber * 100 + minorVersionNumber;
+            return versionNumber < 900;
         } catch (NumberFormatException nfe) {
             return true;
         }
@@ -159,13 +162,20 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     }
 
     @Override
-    public String getHostHacUrl(final Project project) {
+    public String getHostHacUrl(@NotNull final Project project) {
+        return getHostHacUrl(project, null);
+    }
+
+    @Override
+    public String getHostHacUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings settings) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(getHostUrl(project));
 
         // First try to get the HAC webroot from the project settings, fallback to local props if not set in settings;
         // For a remote server configured with hac on the root context, use / in the tool settings
-        final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        if (settings == null) {
+            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project);
+        }
+        sb.append(getHostUrl(project, settings));
         String hac = settings.getHacWebroot();
         if (StringUtils.isEmpty(hac)) {
             final Properties localProperties = getLocalProperties(project);
@@ -187,8 +197,15 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     }
 
     @Override
-    public String getHostUrl(final Project project) {
-        final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
+    public String getHostUrl(@NotNull final Project project) {
+        return getHostUrl(project, null);
+    }
+
+    @Override
+    public String getHostUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings settings) {
+        if (settings == null) {
+            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project);
+        }
         final String ip = settings.getHostIP();
         StringBuilder sb = new StringBuilder();
         final Properties localProperties = getLocalProperties(project);
@@ -202,7 +219,7 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         if (port == null || port.isEmpty()) {
             port = sslPort;
         }
-        if (port.equals(httpPort) || port.equals(ProtocolDefaultPorts.HTTP)) {
+        if (port.equals(httpPort) || port.equals(String.valueOf(ProtocolDefaultPorts.HTTP))) {
             sb.append(HybrisConstants.HTTP_PROTOCOL);
         } else {
             sb.append(HybrisConstants.HTTPS_PROTOCOL);
@@ -242,7 +259,7 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     @Override
     public boolean isFansTargetGroup() {
         LicensingFacade licensingFacade = LicensingFacade.getInstance();
-        return licensingFacade != null && !licensingFacade.getLicensedToMessage().startsWith("Licensed to SAP");
+        return licensingFacade != null && !StringUtils.startsWith(licensingFacade.getLicensedToMessage(), "Licensed to SAP");
     }
 
     private boolean matchAllModuleNames(

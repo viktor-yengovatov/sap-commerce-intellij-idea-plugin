@@ -55,8 +55,11 @@ import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -79,8 +82,11 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
@@ -413,6 +419,21 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                                .forEach(e -> completeSetOfHybrisModules.add(e.getName()));
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
         hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
+        HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
+        HybrisDeveloperSpecificProjectSettings state = developerSpecificSettings.getState();
+        if (state != null) {
+            List<HybrisRemoteConnectionSettings> list = state.getRemoteConnectionSettingsList();
+            if (list.isEmpty()) {
+                HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(myProject);
+                list.add(newSettings);
+                state.setActiveRemoteConnectionHash(newSettings.hashCode());
+            }
+        }
+        StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
+            final ToolWindowManager manager = ToolWindowManager.getInstance(project);
+            final ToolWindow window = manager.getToolWindow("Hybris");
+            window.show(null);
+        });
     }
 
     private Set<String> createModulesOnBlackList() {

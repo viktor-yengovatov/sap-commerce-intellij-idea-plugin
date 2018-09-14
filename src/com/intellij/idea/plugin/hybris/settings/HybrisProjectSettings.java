@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -45,11 +44,6 @@ public class HybrisProjectSettings {
     protected String externalConfigDirectory;
     protected String externalDbDriversDirectory;
     protected String ideModulesFilesDirectory;
-    protected String hostIP = "localhost";
-    protected String port = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
-    protected String hacWebroot;
-    protected String hacLogin = "admin";
-    protected String hacPassword = "nimda";
     protected boolean importOotbModulesInReadOnlyMode;
     protected boolean followSymlink;
     protected boolean scanThroughExternalModule;
@@ -155,46 +149,6 @@ public class HybrisProjectSettings {
         this.ideModulesFilesDirectory = ideModulesFilesDirectory;
     }
 
-    public String getHostIP() {
-        return hostIP;
-    }
-
-    public void setHostIP(final String hostIP) {
-        this.hostIP = hostIP;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(final String port) {
-        this.port = port;
-    }
-
-    public String getHacWebroot() {
-        return hacWebroot;
-    }
-
-    public void setHacWebroot(final String hacWebroot) {
-        this.hacWebroot = hacWebroot;
-    }
-
-    public String getHacLogin() {
-        return hacLogin;
-    }
-
-    public void setHacLogin(final String hacLogin) {
-        this.hacLogin = hacLogin;
-    }
-
-    public String getHacPassword() {
-        return hacPassword;
-    }
-
-    public void setHacPassword(final String hacPassword) {
-        this.hacPassword = hacPassword;
-    }
-
     public boolean getImportOotbModulesInReadOnlyMode() {
         return importOotbModulesInReadOnlyMode;
     }
@@ -274,11 +228,6 @@ public class HybrisProjectSettings {
             .append(externalConfigDirectory)
             .append(externalDbDriversDirectory)
             .append(ideModulesFilesDirectory)
-            .append(hostIP)
-            .append(port)
-            .append(hacWebroot)
-            .append(hacLogin)
-            .append(hacPassword)
             .append(importOotbModulesInReadOnlyMode)
             .append(followSymlink)
             .append(excludeTestSources)
@@ -314,11 +263,6 @@ public class HybrisProjectSettings {
             .append(externalConfigDirectory, other.externalConfigDirectory)
             .append(externalDbDriversDirectory, other.externalDbDriversDirectory)
             .append(ideModulesFilesDirectory, other.ideModulesFilesDirectory)
-            .append(hostIP, other.hostIP)
-            .append(port, other.port)
-            .append(hacWebroot, other.hacWebroot)
-            .append(hacLogin, other.hacLogin)
-            .append(hacPassword, other.hacPassword)
             .append(importOotbModulesInReadOnlyMode, other.importOotbModulesInReadOnlyMode)
             .append(followSymlink, other.followSymlink)
             .append(excludeTestSources, other.excludeTestSources)
@@ -344,11 +288,6 @@ public class HybrisProjectSettings {
         sb.append("externalConfigDirectory=").append(externalConfigDirectory);
         sb.append("externalDbDriversDirectory=").append(externalDbDriversDirectory);
         sb.append("ideModulesFilesDirectory=").append(ideModulesFilesDirectory);
-        sb.append("hostIP=").append(hostIP);
-        sb.append("port=").append(port);
-        sb.append("hacWebroot=").append(hacWebroot);
-        sb.append("hacLogin=").append(hacLogin);
-        sb.append("hacPassword=").append(hacPassword);
         sb.append("importOotbModulesInReadOnlyMode=").append(importOotbModulesInReadOnlyMode);
         sb.append("followSymlink=").append(followSymlink);
         sb.append("excludeTestSources=").append(excludeTestSources);

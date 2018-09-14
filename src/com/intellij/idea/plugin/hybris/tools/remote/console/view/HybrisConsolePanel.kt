@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisSuspendAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisChooseInstanceAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -52,7 +53,10 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         val actionHandler = HybrisConsoleExecuteActionHandler(project, false)
         val executeAction = HybrisExecuteImmediatelyAction(tabsPane, actionHandler)
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
-        
+
+        val choseInstanceAction = HybrisChooseInstanceAction()
+
+        toolbarActions.add(choseInstanceAction)
         toolbarActions.add(executeAction)
         toolbarActions.add(HybrisSuspendAction(tabsPane, actionHandler))
 
