@@ -64,6 +64,7 @@ import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
@@ -91,6 +92,10 @@ import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import com.intellij.spellchecker.dictionary.EditableDictionary;
+import com.intellij.spellchecker.dictionary.ProjectDictionary;
+import com.intellij.spellchecker.dictionary.UserDictionary;
+import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.util.PlatformUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -105,6 +110,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_WORDS;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
@@ -171,6 +178,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final SearchScopeConfigurator searchScopeConfigurator = configuratorFactory.getSearchScopeConfigurator();
 
         this.initializeHybrisProjectSettings(project);
+        this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
         this.selectSdk(project);
         this.saveCustomDirectoryLocation(project);
         this.saveImportedSettings(project);
@@ -316,6 +324,28 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 LOG.error("Can not import Gradle modules due to an error.", e);
             }
         }
+    }
+
+    private void updateProjectDictionary(
+        final Project project,
+        final List<HybrisModuleDescriptor> modules
+    ) {
+        final ProjectDictionaryState dictionaryState = ServiceManager.getService(project, ProjectDictionaryState.class);
+        final ProjectDictionary projectDictionary = dictionaryState.getProjectDictionary();
+        projectDictionary.getEditableWords();//ensure dictionaries exist
+        EditableDictionary hybrisDictionary = projectDictionary.getDictionaries().stream()
+                    .filter(e -> DICTIONARY_NAME.equals(e.getName())).findFirst().orElse(null);
+        if (hybrisDictionary == null) {
+            hybrisDictionary = new UserDictionary(DICTIONARY_NAME);
+            projectDictionary.getDictionaries().add(hybrisDictionary);
+        }
+        hybrisDictionary.addToDictionary(DICTIONARY_WORDS);
+        hybrisDictionary.addToDictionary(project.getName().toLowerCase());
+        Set<String> moduleNames = modules.stream()
+                                         .map(HybrisModuleDescriptor::getName)
+                                         .map(String::toLowerCase)
+                                         .collect(Collectors.toSet());
+        hybrisDictionary.addToDictionary(moduleNames);
     }
 
     private void initializeHybrisProjectSettings(@NotNull final Project project) {

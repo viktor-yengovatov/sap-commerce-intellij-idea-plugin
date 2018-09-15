@@ -18,9 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.common;
 
+import com.google.common.collect.ImmutableSet;
 import com.intellij.util.containers.ContainerUtil;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
@@ -215,4 +217,53 @@ public interface HybrisConstants {
     String SOURCE_ATTRIBUTE_NAME = "source";
     String TARGET_ATTRIBUTE_NAME = "target";
     String CODE_ATTRIBUTE_NAME = "code";
+    String DICTIONARY_NAME = "hybris_integration";
+    Set<String> DICTIONARY_WORDS = ImmutableSet.of(
+        "argumenttype",
+        "atomictype",
+        "autocreate",
+        "backoffice",
+        "beanutils",
+        "builddate",
+        "cockpitng",
+        "collectiontype",
+        "columntype",
+        "creationmode",
+        "cronjobs",
+        "defaultvalue",
+        "dontoptimize",
+        "elementtype",
+        "extname",
+        "hybris",
+        "itemtype",
+        "jalo",
+        "jaloclass",
+        "jaloonly",
+        "jalosession",
+        "jspc",
+        "jstl",
+        "maptypes",
+        "metatype",
+        "metatype",
+        "nimda",
+        "NOPMD",
+        "partof",
+        "pojos",
+        "positiveshort",
+        "postgresql",
+        "propertytable",
+        "releasedate",
+        "returntype",
+        "servicelayer",
+        "solr",
+        "solrconfig",
+        "sqlserver",
+        "taglibs",
+        "typecode",
+        "typegroup",
+        "typesystem",
+        "webroot",
+        "ybackoffice",
+        "ybootstrap"
+    );
 }
