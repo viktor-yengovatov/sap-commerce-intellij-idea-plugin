@@ -1,8 +1,8 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.project.DumbAware;
@@ -29,7 +29,6 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     private JPanel myToolWindowContent;
     private JPanel connectionPanel;
 
-    private HybrisDeveloperSpecificProjectSettings state;
     private MyListPanel myListPanel;
 
     @Override
@@ -38,11 +37,16 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     ) {
         myToolWindow = toolWindow;
         myProject = project;
-        state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState();
-        myListPanel.setInitialList(state.getRemoteConnectionSettingsList());
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(myToolWindowContent, "", false);
         toolWindow.getContentManager().addContent(content);
+        project.getMessageBus().connect(project).subscribe(HybrisDeveloperSpecificProjectSettingsListener.TOPIC, this::loadSettings);
+        loadSettings();
+    }
+
+    private void loadSettings() {
+        List<HybrisRemoteConnectionSettings> currentList = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState().getRemoteConnectionSettingsList();
+        myListPanel.setInitialList(currentList);
     }
 
 
@@ -98,6 +102,7 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         }
 
         public void setInitialList(final List<HybrisRemoteConnectionSettings> remoteConnectionSettingsList) {
+            myListModel.clear();
             remoteConnectionSettingsList.forEach(this::addElement);
         }
 
@@ -116,8 +121,8 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         }
     }
 
-    private void saveSettings() {
-        state.setRemoteConnectionSettingsList(myListPanel.getData());
+    public void saveSettings() {
+        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState().setRemoteConnectionSettingsList(myListPanel.getData());
     }
 
 
