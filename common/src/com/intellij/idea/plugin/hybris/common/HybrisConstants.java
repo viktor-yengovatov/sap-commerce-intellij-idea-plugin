@@ -18,11 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.common;
 
+import com.google.common.collect.ImmutableSet;
 import com.intellij.util.containers.ContainerUtil;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -219,14 +217,53 @@ public interface HybrisConstants {
     String SOURCE_ATTRIBUTE_NAME = "source";
     String TARGET_ATTRIBUTE_NAME = "target";
     String CODE_ATTRIBUTE_NAME = "code";
-    Set<String> DICTIONARY_WORDS = Collections.unmodifiableSet(
-        new HashSet<>(Arrays.asList(
-            "autocreate",
-            "backoffice",
-            "hybris",
-            "itemtype",
-            "jalo",
-            "jaloclass"
-        ))
+    String DICTIONARY_NAME = "hybris_integration";
+    Set<String> DICTIONARY_WORDS = ImmutableSet.of(
+        "argumenttype",
+        "atomictype",
+        "autocreate",
+        "backoffice",
+        "beanutils",
+        "builddate",
+        "cockpitng",
+        "collectiontype",
+        "columntype",
+        "creationmode",
+        "cronjobs",
+        "defaultvalue",
+        "dontoptimize",
+        "elementtype",
+        "extname",
+        "hybris",
+        "itemtype",
+        "jalo",
+        "jaloclass",
+        "jaloonly",
+        "jalosession",
+        "jspc",
+        "jstl",
+        "maptypes",
+        "metatype",
+        "metatype",
+        "nimda",
+        "NOPMD",
+        "partof",
+        "pojos",
+        "positiveshort",
+        "postgresql",
+        "propertytable",
+        "releasedate",
+        "returntype",
+        "servicelayer",
+        "solr",
+        "solrconfig",
+        "sqlserver",
+        "taglibs",
+        "typecode",
+        "typegroup",
+        "typesystem",
+        "webroot",
+        "ybackoffice",
+        "ybootstrap"
     );
 }
