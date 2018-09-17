@@ -56,9 +56,14 @@ dependencies {
     compile project("rt-ant")
 }
 
-task copyPsiViewer(type: Copy) {
-    from "$projectDir/PsiViewer.jar"
-    into "$buildDir/idea-sandbox/plugins/"
+
+task addPsiViewerPlugin {
+    def slurper = new groovy.json.JsonSlurper()
+    def psiVersions = slurper.parseText(psiViewerVersions)
+    def psiVersion = psiVersions[intelijVersion.split("\\.").first()]
+    if (psiVersion != null) {
+        intellij.plugins += "PsiViewer:$psiVersion"
+    }
 }
 
-prepareSandbox.finalizedBy copyPsiViewer
+prepareSandbox.finalizedBy addPsiViewerPlugin
