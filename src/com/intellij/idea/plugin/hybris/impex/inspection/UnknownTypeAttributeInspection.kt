@@ -43,7 +43,7 @@ private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder)
             val references = parameter.references
             if (references.isNotEmpty()) {
                 val firstReference = references.first()
-                if (firstReference is TypeSystemReferenceBase<*>) {
+                if (!firstReference.canonicalText.contains(".") && firstReference is TypeSystemReferenceBase<*>) {
                     val result = firstReference.multiResolve(false)
                     
                     if (result.isEmpty()) {
