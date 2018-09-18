@@ -49,6 +49,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME;
 import static org.apache.commons.collections4.SetUtils.emptyIfNull;
@@ -94,7 +95,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         }
 
         final EnumType enumType = metaEnum.get().retrieveDom();
-        if (CODE_ATTRIBUTE_NAME.equals(featureName)) {
+        if (CODE_ATTRIBUTE_NAME.equals(featureName) || NAME_ATTRIBUTE_NAME.equals(featureName)) {
             final EnumResolveResult resolveResult = new EnumResolveResult(enumType);
             return Collections.singletonList(resolveResult);
         }

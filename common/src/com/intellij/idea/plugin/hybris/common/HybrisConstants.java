@@ -217,6 +217,7 @@ public interface HybrisConstants {
     String SOURCE_ATTRIBUTE_NAME = "source";
     String TARGET_ATTRIBUTE_NAME = "target";
     String CODE_ATTRIBUTE_NAME = "code";
+    String NAME_ATTRIBUTE_NAME = "name";
     String DICTIONARY_NAME = "hybris_integration";
     Set<String> DICTIONARY_WORDS = ImmutableSet.of(
         "argumenttype",
