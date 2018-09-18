@@ -236,6 +236,7 @@ public interface HybrisConstants {
         "elementtype",
         "extname",
         "hybris",
+        "impex",
         "itemtype",
         "jalo",
         "jaloclass",
