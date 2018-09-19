@@ -193,7 +193,7 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
         @NotNull final Set<String> visitedParents,
         @NotNull final Consumer<TSMetaClassImpl> visitor
     ) {
-        Optional.ofNullable(myExtendedMetaClassName)
+        Optional.ofNullable(getRealExtendedMetaClassName())
                 .filter(aName -> !visitedParents.contains(aName))
                 .map(myMetaModel::findMetaClassByName)
                 .filter(TSMetaClassImpl.class::isInstance)
@@ -205,6 +205,10 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
                 });
     }
 
+    private String getRealExtendedMetaClassName() {
+        return myExtendedMetaClassName == null ? IMPLICIT_SUPER_CLASS_NAME : myExtendedMetaClassName;
+    }
+    
     @Nullable
     @Override
     public String getExtendedMetaClassName() {
