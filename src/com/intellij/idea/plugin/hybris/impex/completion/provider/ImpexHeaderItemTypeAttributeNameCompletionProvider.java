@@ -35,6 +35,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -94,11 +95,11 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
             .map(prop -> {
                 final String name = prop.getName();
 
-                if (name == null) {
+                if (StringUtils.isBlank(name)) {
                     return null;
                 }
                 final LookupElementBuilder builder = LookupElementBuilder
-                    .create(name)
+                    .create(name.trim())
                     .withIcon(HybrisIcons.TYPE_SYSTEM)
                     .withStrikeoutness(prop.isDeprecated());
                 final String typeText = getTypePresentableText(prop.getType());

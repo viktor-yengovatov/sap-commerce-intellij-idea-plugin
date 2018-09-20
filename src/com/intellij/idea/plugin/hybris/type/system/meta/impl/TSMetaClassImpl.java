@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomService;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,8 +99,8 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     void createProperty(final @NotNull Attribute domAttribute) {
         final TSMetaPropertyImpl result = new TSMetaPropertyImpl(this, domAttribute);
-        if (result.getName() != null) {
-            myProperties.putValue(result.getName(), result);
+        if (StringUtils.isNotBlank(result.getName())) {
+            myProperties.putValue(result.getName().trim(), result);
         }
     }
 
