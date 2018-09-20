@@ -71,6 +71,11 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
                 SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.custom.ts.files"),
                 createCustomTSFilesPattern()
             ));
+
+            newScopes.add(new NamedScope(
+                SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.custom.ts.beans.impex.files"),
+                createCustomTsImpexBeansFilesPattern()
+            ));
         }
         if (groupExists(model, platformGroupName)) {
             platformScope = createScope(platformGroupName);
@@ -104,6 +109,28 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     public static FilePatternPackageSet createCustomTSFilesPattern() {
         final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
         return new FilePatternPackageSet(SEARCH_SCOPE_GROUP_PREFIX + customGroupName, "*//*-items.xml");
+    }
+
+    @NotNull
+    public static UnionPackageSet createCustomTsImpexBeansFilesPattern() {
+        final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
+        final FilePatternPackageSet tsFilePatternPackageSet = new FilePatternPackageSet(
+            SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
+            "*//*-items.xml"
+        );
+        final FilePatternPackageSet beansFilePatternPackageSet = new FilePatternPackageSet(
+            SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
+            "*//*-beans.xml"
+        );
+        final FilePatternPackageSet impexFilePatternPackageSet = new FilePatternPackageSet(
+            SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
+            "*//*.impex"
+        );
+
+        return new UnionPackageSet(
+            new UnionPackageSet(tsFilePatternPackageSet, beansFilePatternPackageSet),
+            impexFilePatternPackageSet
+        );
     }
 
     private static void addOrReplaceScopes(@NotNull Project project, @NotNull List<NamedScope> newScopes) {
