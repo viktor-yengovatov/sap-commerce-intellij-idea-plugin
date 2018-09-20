@@ -154,9 +154,11 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
         }
 
         // This list must be modifiable
-        // https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issue/11/unsupportedoperationexception-null
+        // https://hybris-integration.atlassian.net/browse/IIP-11
         final List<TextRange> ranges = new ArrayList<TextRange>();
-        ranges.add(impexFullHeaderParameter.getTextRange());
+        if (impexFullHeaderParameter.getTextRange().getLength() > 0) {
+            ranges.add(impexFullHeaderParameter.getTextRange());
+        }
 
         HighlightUsagesHandler.highlightRanges(
             HighlightManager.getInstance(editor.getProject()),

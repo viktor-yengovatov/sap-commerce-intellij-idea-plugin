@@ -156,9 +156,9 @@ public class DefaultImpexColumnHighlighterService implements ImpexColumnHighligh
         }
 
         // This list must be modifiable
-        // https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin/issue/11/unsupportedoperationexception-null
+        // https://hybris-integration.atlassian.net/browse/IIP-11
         final List<TextRange> ranges = newArrayList();
-        column.forEach((cell) -> ranges.add(cell.getTextRange()));
+        column.stream().filter(cell -> cell.getTextRange().getLength() > 0).forEach((cell) -> ranges.add(cell.getTextRange()));
 
         HighlightUsagesHandler.highlightRanges(
             HighlightManager.getInstance(editor.getProject()),
