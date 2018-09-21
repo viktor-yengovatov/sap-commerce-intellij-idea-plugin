@@ -1,15 +1,18 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.impex.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.impex.psi.*;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implements ImpexFullHeaderParameter {
 
@@ -39,9 +42,9 @@ public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  @Nullable
-  public ImpexParameters getParameters() {
-    return findChildByClass(ImpexParameters.class);
+  @NotNull
+  public List<ImpexParameters> getParametersList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexParameters.class);
   }
 
 }

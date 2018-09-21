@@ -75,8 +75,7 @@ private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR
 private recover_parameter_name ::= !(LEFT_SQUARE_BRACKET | LEFT_ROUND_BRACKET | PARAMETERS_SEPARATOR | CRLF)
 private recover_header_type ::= !(LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | CRLF)
 private recover_parameters ::= !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR)
-private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET)
-
+private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET | LEFT_ROUND_BRACKET)
 
 /*#################################################################################*/
 /*                                     Root                                        */
@@ -178,7 +177,7 @@ header_type_name ::= HEADER_TYPE
     mixin="com.intellij.idea.plugin.hybris.impex.psi.references.ImpexHeaderTypeNameMixin"
 }
 
-full_header_parameter ::= any_header_parameter_name parameters? modifiers*
+full_header_parameter ::= any_header_parameter_name parameters? modifiers* parameters?
 {pin = 1 recoverWhile = not_line_break_or_parameters_separator}
 
 any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION

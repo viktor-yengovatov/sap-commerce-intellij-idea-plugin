@@ -1,9 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.impex.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public interface ImpexFullHeaderParameter extends PsiElement {
 
@@ -13,7 +14,7 @@ public interface ImpexFullHeaderParameter extends PsiElement {
   @NotNull
   List<ImpexModifiers> getModifiersList();
 
-  @Nullable
-  ImpexParameters getParameters();
+  @NotNull
+  List<ImpexParameters> getParametersList();
 
 }
