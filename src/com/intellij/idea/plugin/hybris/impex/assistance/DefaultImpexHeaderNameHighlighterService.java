@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
+import com.intellij.codeInsight.folding.impl.FoldingUtil;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
@@ -156,17 +157,17 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
         // This list must be modifiable
         // https://hybris-integration.atlassian.net/browse/IIP-11
         final List<TextRange> ranges = new ArrayList<TextRange>();
-        if (impexFullHeaderParameter.getTextRange().getLength() > 0) {
+        if (!FoldingUtil.isTextRangeFolded(editor, impexFullHeaderParameter.getTextRange())) {
             ranges.add(impexFullHeaderParameter.getTextRange());
-        }
 
-        HighlightUsagesHandler.highlightRanges(
-            HighlightManager.getInstance(editor.getProject()),
-            editor,
-            EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
-            clear,
-            ranges
-        );
+            HighlightUsagesHandler.highlightRanges(
+                HighlightManager.getInstance(editor.getProject()),
+                editor,
+                EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
+                clear,
+                ranges
+            );
+        }
     }
 
     @Override

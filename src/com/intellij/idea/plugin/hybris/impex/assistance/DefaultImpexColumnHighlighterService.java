@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.assistance;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.intellij.codeInsight.folding.impl.FoldingUtil;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
@@ -33,16 +34,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilBase;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
+import java.util.stream.Collectors;
 
 
 public class DefaultImpexColumnHighlighterService implements ImpexColumnHighlighterService {
@@ -121,9 +123,7 @@ public class DefaultImpexColumnHighlighterService implements ImpexColumnHighligh
             final List<PsiElement> column = cache.getIfPresent(editor);
             cache.invalidate(editor);
             if (null != column) {
-                ApplicationManager.getApplication()
-                                  .invokeLater(
-                                      () -> modifyHighlightedArea(editor, column, true));
+                ApplicationManager.getApplication().invokeLater(() -> modifyHighlightedArea(editor, column, true));
             }
         }
     }
@@ -157,16 +157,27 @@ public class DefaultImpexColumnHighlighterService implements ImpexColumnHighligh
 
         // This list must be modifiable
         // https://hybris-integration.atlassian.net/browse/IIP-11
-        final List<TextRange> ranges = newArrayList();
-        column.stream().filter(cell -> cell.getTextRange().getLength() > 0).forEach((cell) -> ranges.add(cell.getTextRange()));
+        final List<TextRange> ranges = column
+            .stream()
+            .filter(psiElement -> !FoldingUtil.isTextRangeFolded(editor, psiElement.getTextRange()))
+            .map(PsiElement::getTextRange)
+            // Do not use Collectors.toList() here because:
+            // There are no guarantees on the type, mutability, serializability,
+            // or thread-safety of the List returned; if more control over the
+            // returned List is required, use toCollection(Supplier).
+            .collect(Collectors.toCollection(ArrayList::new));
 
-        HighlightUsagesHandler.highlightRanges(
-            HighlightManager.getInstance(editor.getProject()),
-            editor,
-            EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
-            clear,
-            ranges
-        );
+        if (CollectionUtils.isNotEmpty(ranges)) {
+            HighlightUsagesHandler.highlightRanges(
+                HighlightManager.getInstance(editor.getProject()),
+                editor,
+                EditorColorsManager.getInstance()
+                                   .getGlobalScheme()
+                                   .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
+                clear,
+                ranges
+            );
+        }
     }
 
     @Override
