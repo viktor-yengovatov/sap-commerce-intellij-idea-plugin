@@ -42,13 +42,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderNameHighlighterService {
+public class DefaultImpexHeaderNameHighlighterService
+    extends AbstractImpexHighlighterService
+    implements ImpexHeaderNameHighlighterService {
 
     protected final Map<Editor, PsiElement> highlightedBlocks = new ConcurrentHashMap<Editor, PsiElement>();
 
     @Override
     @Contract(pure = false)
-    public void highlightCurrentHeader(@NotNull final Editor editor) {
+    public void highlight(@NotNull final Editor editor) {
         Validate.notNull(editor);
 
         final Project project = editor.getProject();
@@ -154,6 +156,8 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
             return;
         }
 
+        this.removeInvalidRangeHighlighters(editor);
+
         // This list must be modifiable
         // https://hybris-integration.atlassian.net/browse/IIP-11
         final List<TextRange> ranges = new ArrayList<TextRange>();
@@ -163,7 +167,9 @@ public class DefaultImpexHeaderNameHighlighterService implements ImpexHeaderName
             HighlightUsagesHandler.highlightRanges(
                 HighlightManager.getInstance(editor.getProject()),
                 editor,
-                EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
+                EditorColorsManager.getInstance()
+                                   .getGlobalScheme()
+                                   .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
                 clear,
                 ranges
             );

@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -18,18 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
-import com.intellij.openapi.editor.Editor;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */
-public interface ImpexColumnHighlighterService {
+public interface ImpexColumnHighlighterService extends ImpexHighlighterService {
 
-    @Contract
-    void highlightCurrentColumn(@NotNull Editor editor);
-
-    @Contract
-    void releaseEditorData(@NotNull Editor editor);
 }

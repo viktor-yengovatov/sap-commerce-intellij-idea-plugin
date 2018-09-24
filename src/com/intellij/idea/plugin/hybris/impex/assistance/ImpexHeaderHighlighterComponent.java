@@ -97,7 +97,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
                 return;
             }
 
-            impexHeaderNameHighlighterService.highlightCurrentHeader(e.getEditor());
+            impexHeaderNameHighlighterService.highlight(e.getEditor());
         }
 
         @Override
@@ -117,7 +117,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
                 return;
             }
 
-            impexColumnHighlighterService.highlightCurrentColumn(e.getEditor());
+            impexColumnHighlighterService.highlight(e.getEditor());
         }
 
         @Override
@@ -161,8 +161,8 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
                 return;
             }
 
-            impexHeaderNameHighlighterService.highlightCurrentHeader(editor);
-            impexColumnHighlighterService.highlightCurrentColumn(editor);
+            impexHeaderNameHighlighterService.highlight(editor);
+            impexColumnHighlighterService.highlight(editor);
         }
 
         @Override

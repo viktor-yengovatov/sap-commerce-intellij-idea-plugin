@@ -47,7 +47,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
-public class DefaultImpexColumnHighlighterService implements ImpexColumnHighlighterService {
+public class DefaultImpexColumnHighlighterService
+    extends AbstractImpexHighlighterService
+    implements ImpexColumnHighlighterService {
 
     private final Cache<Editor, List<PsiElement>> cache =
         Caffeine.newBuilder()
@@ -58,7 +60,7 @@ public class DefaultImpexColumnHighlighterService implements ImpexColumnHighligh
 
     @Override
     @Contract
-    public void highlightCurrentColumn(@NotNull final Editor editor) {
+    public void highlight(@NotNull final Editor editor) {
         Validate.notNull(editor);
 
         final Project project = editor.getProject();
@@ -154,6 +156,8 @@ public class DefaultImpexColumnHighlighterService implements ImpexColumnHighligh
         if (editor.getProject().isDisposed()) {
             return;
         }
+
+        this.removeInvalidRangeHighlighters(editor);
 
         // This list must be modifiable
         // https://hybris-integration.atlassian.net/browse/IIP-11
