@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.0.beta-1</version>
+    <version>9.0</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -123,6 +123,7 @@
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-474'>IIP-474</a>] - Hybris Tool window shares configuration among projects</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-476'>IIP-476</a>] - Wrong error &#39;Unknown attribute&#39; for some Enum types and attributes with &#39;.&#39; symbol in name</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-479'>IIP-479</a>] - Incomplete data model were used in some TSV rules which created false positive warnings as well as missed real problems</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-483'>IIP-483</a>] - Intellij build generates incomplete classes from beans.xml with some attributes missing</li>
                 <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-485'>IIP-485</a>] - Impex syntax error when you switch ()[] to []()</li>
             </ul>
 
