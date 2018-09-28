@@ -268,4 +268,9 @@ public interface HybrisConstants {
         "ybackoffice",
         "ybootstrap"
     );
+    
+    interface IMPEX {
+        String CATALOG_VERSION_ONLINE = "Online";
+        String CATALOG_VERSION_STAGED = "Staged";
+    }
 }

@@ -3,7 +3,9 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler
 
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.impl.ConsoleViewUtil
-import com.intellij.execution.ui.ConsoleViewContentType.*
+import com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT
+import com.intellij.execution.ui.ConsoleViewContentType.NORMAL_OUTPUT
+import com.intellij.execution.ui.ConsoleViewContentType.SYSTEM_OUTPUT
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexMonitorConsole
@@ -88,6 +90,9 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
 
         // Process input and add to history
         val document = console.currentEditor.document
+
+        console.preProcessors().forEach { processor -> console.setInputText(processor.process(console)) }
+
         val text = document.text
         val range = TextRange(0, document.textLength)
 
