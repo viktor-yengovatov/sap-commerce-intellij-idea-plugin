@@ -29,6 +29,7 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -189,40 +190,42 @@ public abstract class AbstractHybrisHacHttpClient {
     }
 
     protected Response getResponseForUrl(String hacURL) {
-        Response res;
         try {
-            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                @Nullable
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                public void checkClientTrusted(@NotNull X509Certificate[] certs, @NotNull String authType) { }
-
-                public void checkServerTrusted(@NotNull X509Certificate[] certs, @NotNull String authType) { }
-            }};
-            SSLContext sc = SSLContext.getInstance("TLSv1");
-            sc.init(null, trustAllCerts, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());
-            res = Jsoup.connect(hacURL).validateTLSCertificates(false).method(Method.GET).execute();
-            return res;
+            return connect(hacURL).method(Method.GET).execute();
         } catch (ConnectException ce) {
             return null;
         } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
-            LOG.info(e.getMessage(), e);
+            LOG.warn(e.getMessage(), e);
             return null;
         }
     }
 
     protected String getCsrfToken(@NotNull String hacURL, @NotNull String sessionId) {
         try {
-            final Document doc = Jsoup.connect(hacURL).cookie("JSESSIONID", sessionId).get();
+            final Document doc = connect(hacURL).cookie("JSESSIONID", sessionId).get();
             final Elements csrfMetaElt = doc.select("meta[name=_csrf]");
             return csrfMetaElt.attr("content");
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
             LOG.warn(e.getMessage(), e);
         }
         return null;
+    }
+
+    private Connection connect(@NotNull String url) throws NoSuchAlgorithmException, KeyManagementException {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Nullable
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            public void checkClientTrusted(@NotNull X509Certificate[] certs, @NotNull String authType) { }
+
+            public void checkServerTrusted(@NotNull X509Certificate[] certs, @NotNull String authType) { }
+        }};
+        SSLContext sc = SSLContext.getInstance("TLSv1");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());
+        return Jsoup.connect(url).validateTLSCertificates(false);
     }
 }
