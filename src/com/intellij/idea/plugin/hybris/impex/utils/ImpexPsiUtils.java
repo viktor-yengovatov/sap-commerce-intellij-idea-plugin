@@ -18,11 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.impex.utils;
 
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexBeanShell;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexComment;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
@@ -44,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
@@ -592,6 +596,12 @@ public final class ImpexPsiUtils {
         }
 
         return -1;
+    }
+    
+    public static Optional<ImpexHeaderTypeName> findHeaderItemTypeName(final ImpexAnyHeaderParameterName parameter) {
+        return Optional.ofNullable(PsiTreeUtil.getParentOfType(parameter, ImpexHeaderLine.class))
+                       .map(ImpexHeaderLine::getFullHeaderType)
+                       .map(ImpexFullHeaderType::getHeaderTypeName);
     }
 
     @Nullable
