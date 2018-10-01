@@ -64,6 +64,10 @@ public abstract class AbstractHybrisHacHttpClient {
 
     public String login(Project project) {
         HybrisRemoteConnectionSettings settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project);
+        return login(project, settings);
+    }
+
+    public String login(@NotNull Project project, @NotNull HybrisRemoteConnectionSettings settings) {
         String hostHacURL = getHostHacURL(project);
         sessionId = getSessionId(hostHacURL);
         if (sessionId == null) {
@@ -147,6 +151,10 @@ public abstract class AbstractHybrisHacHttpClient {
 
     public String getHostHacURL(Project project) {
         return CommonIdeaService.getInstance().getHostHacUrl(project);
+    }
+
+    public String getHostHacURL(Project project, HybrisRemoteConnectionSettings settings) {
+        return CommonIdeaService.getInstance().getHostHacUrl(project, settings);
     }
 
     protected CloseableHttpClient createAllowAllClient(long timeout) {
