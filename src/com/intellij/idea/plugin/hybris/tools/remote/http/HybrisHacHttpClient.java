@@ -203,7 +203,13 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
                                                            .errorMessage(json.get("stacktraceText").toString())
                                                            .build();
         } else {
-            return resultBuilder.output(json.get("executionResult").toString()).build();
+            if (json.get("outputText") != null) {
+                resultBuilder.output(json.get("outputText").toString());
+            }
+            if (json.get("executionResult") != null) {
+                resultBuilder.result(json.get("executionResult").toString());
+            }
+            return resultBuilder.build();
         }
     }
 
