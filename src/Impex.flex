@@ -53,7 +53,8 @@ single_string = ['](('')|([^'\r\n])*)[']
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
 macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
-macro_usage       = [$]({identifier})+
+root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
+macro_usage            = [$]({identifier})+
 macro_config_usage = [$](config-)
 macro_value       = ({not_crlf}|(({dot})?{identifier})+)
 
@@ -123,6 +124,7 @@ field_value_ignore = "<ignore>"
 
     {end_of_line_comment_marker}                            { yybegin(COMMENT); return ImpexTypes.COMMENT_MARKER; }
 
+    {root_macro_usage}                                      { return ImpexTypes.MACRO_USAGE; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {macro_name_declaration}                                {
                                                               yybegin(MACRO_DECLARATION);

@@ -4,20 +4,27 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERSION_ONLINE
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERSION_STAGED
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessor
+import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
 import com.intellij.lang.Language
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil.toCanonicalPath
 import com.intellij.ui.ListCellRendererWrapper
 import com.intellij.ui.components.JBLabel
 import org.apache.batik.ext.swing.GridBagConstants
+import org.apache.commons.lang.StringUtils
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
+import java.awt.FlowLayout
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.io.File
@@ -30,15 +37,45 @@ import javax.swing.border.EmptyBorder
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
-
     abstract fun execute(text: String): HybrisHttpResult
+
+    open fun preProcessors(): List<HybrisConsolePreProcessor> = listOf()
 }
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impex Console", ImpexLanguage.getInstance()) {
     object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
+    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val catalogVersionLabel = JBLabel("Catalog Version")
+    val catalogVersionComboBox = ComboBox(arrayOf(
+            CatalogVersionOption("doesn't change", StringUtils.EMPTY),
+            CatalogVersionOption("changes to $CATALOG_VERSION_STAGED", CATALOG_VERSION_STAGED),
+            CatalogVersionOption("changes to $CATALOG_VERSION_ONLINE", CATALOG_VERSION_ONLINE)
+    ))
+
+    override fun preProcessors() = listOf(HybrisConsolePreProcessorCatalogVersion())
+
     init {
+        createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
+    }
+
+    private fun createUI() {
+        catalogVersionComboBox.renderer = object : ListCellRendererWrapper<CatalogVersionOption>() {
+            override fun customize(list: JList<*>?, value: CatalogVersionOption, index: Int, selected: Boolean, hasFocus: Boolean) {
+                setText(value.name)
+            }
+        }
+        catalogVersionComboBox.addItemListener {
+            preProcessors().forEach { processor ->
+                ApplicationManager.getApplication().invokeLater { this.setInputText(processor.process(this)) }
+            }
+        }
+        catalogVersionLabel.border = EmptyBorder(0, 10, 0, 5)
+        panel.add(catalogVersionLabel)
+        panel.add(catalogVersionComboBox)
+        add(panel, BorderLayout.NORTH)
+        isEditable = true
     }
 
     override fun execute(text: String): HybrisHttpResult {
@@ -103,9 +140,9 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, "Hybr
         return toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 
-    fun timeOption() = (timeComboBox.selectedItem as TimeOption)
+    private fun timeOption() = (timeComboBox.selectedItem as TimeOption)
 
-    fun workingDir() = obtainDataFolder(project)
+    private fun workingDir() = obtainDataFolder(project)
 
     override fun execute(text: String): HybrisHttpResult {
         return monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
@@ -113,3 +150,4 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, "Hybr
 }
 
 data class TimeOption(val name: String, val value: Int, val unit: TimeUnit)
+data class CatalogVersionOption(val name: String, val value: String)
