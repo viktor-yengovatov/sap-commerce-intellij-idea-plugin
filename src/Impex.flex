@@ -250,7 +250,7 @@ field_value_ignore = "<ignore>"
     {left_square_bracket}                                   { return ImpexTypes.LEFT_SQUARE_BRACKET; }
     {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
 
-    {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
+//    {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
 
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }

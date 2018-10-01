@@ -19,9 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
@@ -34,7 +31,6 @@ import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +48,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIB
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.findHeaderItemTypeName;
 import static org.apache.commons.collections4.SetUtils.emptyIfNull;
 
 
@@ -88,8 +85,8 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     }
 
     private List<ResolveResult> tryResolveForEnumType(final TSMetaModel meta, final String featureName) {
-        final Optional<TSMetaEnum> metaEnum = findItemTypeReference().map(PsiElement::getText)
-                                                                     .map(meta::findMetaEnumByName);
+        final Optional<TSMetaEnum> metaEnum = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
+                                                                                  .map(meta::findMetaEnumByName);
         if (!metaEnum.isPresent()) {
             return null;
         }
@@ -104,8 +101,8 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     }
 
     private List<ResolveResult> tryResolveForItemType(final TSMetaModel meta, final String featureName) {
-        final Optional<TSMetaClass> metaClass = findItemTypeReference().map(PsiElement::getText)
-                                                                       .map(meta::findMetaClassByName);
+        final Optional<TSMetaClass> metaClass = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
+                                                                                    .map(meta::findMetaClassByName);
         if (!metaClass.isPresent()) {
             return null;
         }
@@ -129,7 +126,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     }
 
     private List<ResolveResult> tryResolveForRelationType(final TSMetaModel meta, final String featureName) {
-        final Optional<List<TSMetaReference>> metaReferences = findItemTypeReference()
+        final Optional<List<TSMetaReference>> metaReferences = findHeaderItemTypeName(getElement())
             .map(PsiElement::getText)
             .map(meta::findRelationByName);
 
@@ -155,12 +152,6 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         }
 
         return null;
-    }
-
-    private Optional<ImpexHeaderTypeName> findItemTypeReference() {
-        return Optional.ofNullable(PsiTreeUtil.getParentOfType(getElement(), ImpexHeaderLine.class))
-                       .map(ImpexHeaderLine::getFullHeaderType)
-                       .map(ImpexFullHeaderType::getHeaderTypeName);
     }
 
     private static class AttributeResolveResult implements TypeSystemResolveResult {

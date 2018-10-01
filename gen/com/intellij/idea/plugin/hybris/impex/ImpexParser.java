@@ -841,7 +841,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET)
+  // !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR)
   static boolean recover_parameters(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_parameters")) return false;
     boolean r;
@@ -851,14 +851,13 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET
+  // CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR
   private static boolean recover_parameters_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_parameters_0")) return false;
     boolean r;
     r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, LEFT_SQUARE_BRACKET);
     if (!r) r = consumeToken(b, PARAMETERS_SEPARATOR);
-    if (!r) r = consumeToken(b, RIGHT_ROUND_BRACKET);
     return r;
   }
 
