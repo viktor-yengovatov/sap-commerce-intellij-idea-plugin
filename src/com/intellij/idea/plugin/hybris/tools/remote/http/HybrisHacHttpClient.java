@@ -40,7 +40,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_SERVICE_UNAVAILABLE;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.jsoup.Jsoup.parse;
 
 public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
@@ -56,7 +56,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final HttpResponse response = getHttpResponse(project, content, "/console/impex/import/validate");
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
-        if (response.getStatusLine().getStatusCode() == SC_SERVICE_UNAVAILABLE) {
+        if (response.getStatusLine().getStatusCode() != SC_OK) {
             return resultBuilder.errorMessage(response.getStatusLine().getReasonPhrase()).build();
         }
         final Document document;
@@ -89,7 +89,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final HttpResponse response = getHttpResponse(project, content, "/console/impex/import");
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
-        if (response.getStatusLine().getStatusCode() == SC_SERVICE_UNAVAILABLE) {
+        if (response.getStatusLine().getStatusCode() != SC_OK) {
             return resultBuilder.errorMessage(response.getStatusLine().getReasonPhrase()).build();
         }
         final Document document;
@@ -137,7 +137,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final HttpResponse response = post(project, actionUrl, params, true);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
-        if (response.getEntity() == null) {
+        if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
             return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
                                               statusLine.getReasonPhrase()).build();
         }
@@ -183,7 +183,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final HttpResponse response = post(project, actionUrl, params, true);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
-        if (response.getEntity() == null) {
+        if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
             return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
                                               statusLine.getReasonPhrase()).build();
         }
@@ -203,7 +203,13 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
                                                            .errorMessage(json.get("stacktraceText").toString())
                                                            .build();
         } else {
-            return resultBuilder.output(json.get("executionResult").toString()).build();
+            if (json.get("outputText") != null) {
+                resultBuilder.output(json.get("outputText").toString());
+            }
+            if (json.get("executionResult") != null) {
+                resultBuilder.result(json.get("executionResult").toString());
+            }
+            return resultBuilder.build();
         }
     }
 
