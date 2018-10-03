@@ -53,6 +53,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private static final Logger LOG = Logger.getInstance(CheckRequiredPluginsStep.class);
 
     private final List<String> ULTIMATE_EDITION_ONLY = Arrays.asList(
+        "com.intellij.database",
         "com.intellij.spring",
         "com.intellij.javaee",
         "com.intellij.diagram"
