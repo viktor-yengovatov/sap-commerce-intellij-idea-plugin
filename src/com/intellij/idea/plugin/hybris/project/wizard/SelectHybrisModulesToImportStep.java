@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleD
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.table.JBTable;
+import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -56,7 +57,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<HybrisModuleDescriptor>) (element, isMarked) -> {
             if (isMarked) {
                 for (HybrisModuleDescriptor moduleDescriptor : element.getDependenciesPlainList()) {
-                    if (fileChooser.isElementMarked(moduleDescriptor)) {
+                    if (BooleanUtils.isNotFalse(fileChooser.getElementMarkStates().get(moduleDescriptor))) {
                         continue;
                     }
 
