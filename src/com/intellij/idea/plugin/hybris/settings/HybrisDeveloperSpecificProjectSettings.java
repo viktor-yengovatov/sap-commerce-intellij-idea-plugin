@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class HybrisDeveloperSpecificProjectSettings {
 
-    protected int activeRemoteConnectionHash;
+    protected String activeRemoteConnectionID;
     protected List<HybrisRemoteConnectionSettings> remoteConnectionSettingsList = new ArrayList<>();
 
     public List<HybrisRemoteConnectionSettings> getRemoteConnectionSettingsList() {
@@ -17,12 +17,12 @@ public class HybrisDeveloperSpecificProjectSettings {
         this.remoteConnectionSettingsList = remoteConnectionSettingsList;
     }
 
-    public int getActiveRemoteConnectionHash() {
-        return activeRemoteConnectionHash;
+    public String getActiveRemoteConnectionID() {
+        return activeRemoteConnectionID;
     }
 
-    public void setActiveRemoteConnectionHash(final int activeRemoteConnectionHash) {
-        this.activeRemoteConnectionHash = activeRemoteConnectionHash;
+    public void setActiveRemoteConnectionID(final String activeRemoteConnectionID) {
+        this.activeRemoteConnectionID = activeRemoteConnectionID;
     }
 
     @Override
@@ -34,12 +34,12 @@ public class HybrisDeveloperSpecificProjectSettings {
             return false;
         }
         final HybrisDeveloperSpecificProjectSettings that = (HybrisDeveloperSpecificProjectSettings) o;
-        return getActiveRemoteConnectionHash() == that.getActiveRemoteConnectionHash() &&
+        return getActiveRemoteConnectionID().equals(that.getActiveRemoteConnectionID()) &&
                Objects.equals(getRemoteConnectionSettingsList(), that.getRemoteConnectionSettingsList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getActiveRemoteConnectionHash(), getRemoteConnectionSettingsList());
+        return Objects.hash(getActiveRemoteConnectionID(), getRemoteConnectionSettingsList());
     }
 }

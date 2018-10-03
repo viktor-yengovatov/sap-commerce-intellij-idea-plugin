@@ -18,7 +18,7 @@ class HybrisChooseInstanceAction : AnAction(
         val project = getEventProject(e) ?: return
         val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state ?: return
         val list = state.remoteConnectionSettingsList
-        val options:Array<String> = list.stream().map { e -> e.toString() }.toArray<String> { length -> arrayOfNulls(length)}
+        val options:Array<String> = list.stream().map { it.toString() }.toArray<String> { length -> arrayOfNulls(length)}
         val active = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project)
         val ret =  Messages.showChooseDialog(project,
                 message("action.choose.hybris.instance.message.text"),
@@ -26,7 +26,7 @@ class HybrisChooseInstanceAction : AnAction(
                 HYBRIS_REMOTE_ICON, options, active.toString())
         if (ret == -1)
             return
-        state.activeRemoteConnectionHash= list[ret].hashCode()
+        state.activeRemoteConnectionID= list[ret].uuid
     }
 
     override fun update(e: AnActionEvent) {

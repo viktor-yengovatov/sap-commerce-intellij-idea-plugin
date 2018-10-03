@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class HybrisRemoteConnectionSettings implements Serializable {
 
+    protected String uuid;
     protected String displayName;
     protected String hostIP;
     protected String port;
@@ -14,6 +15,14 @@ public class HybrisRemoteConnectionSettings implements Serializable {
     protected String hacLogin;
     protected String hacPassword;
     protected String generatedURL;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(final String uuid) {
+        this.uuid = uuid;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -80,26 +89,12 @@ public class HybrisRemoteConnectionSettings implements Serializable {
             return false;
         }
         final HybrisRemoteConnectionSettings that = (HybrisRemoteConnectionSettings) o;
-        return Objects.equals(getDisplayName(), that.getDisplayName()) &&
-               Objects.equals(getHostIP(), that.getHostIP()) &&
-               Objects.equals(getPort(), that.getPort()) &&
-               Objects.equals(getHacWebroot(), that.getHacWebroot()) &&
-               Objects.equals(getHacLogin(), that.getHacLogin()) &&
-               Objects.equals(getHacPassword(), that.getHacPassword()) &&
-               Objects.equals(getGeneratedURL(), that.getGeneratedURL());
+        return Objects.equals(getUuid(), that.getUuid());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            getDisplayName(),
-            getHostIP(),
-            getPort(),
-            getHacWebroot(),
-            getHacLogin(),
-            getHacPassword(),
-            getGeneratedURL()
-        );
+        return Objects.hash(getUuid());
     }
 
     @Override

@@ -457,7 +457,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             if (list.isEmpty()) {
                 HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(myProject);
                 list.add(newSettings);
-                state.setActiveRemoteConnectionHash(newSettings.hashCode());
+                state.setActiveRemoteConnectionID(newSettings.getUuid());
             }
         }
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
