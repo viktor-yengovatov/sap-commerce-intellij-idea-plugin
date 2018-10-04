@@ -83,8 +83,8 @@ public class RemoteConnectionDialog extends DialogWrapper {
         saveSettings();
 
         HybrisHacHttpClient hybrisHacHttpClient = HybrisHacHttpClient.getInstance(myProject);
-        final String errorMessage = hybrisHacHttpClient.login(myProject);
-        final String testedHacURL = hybrisHacHttpClient.getHostHacURL(myProject);
+        final String errorMessage = hybrisHacHttpClient.login(myProject, mySettings);
+        final String testedHacURL = hybrisHacHttpClient.getHostHacURL(myProject, mySettings);
 
         final NotificationType type;
         final String message;

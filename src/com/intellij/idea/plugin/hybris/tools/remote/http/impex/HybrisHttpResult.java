@@ -32,6 +32,7 @@ public class HybrisHttpResult {
     private String detailMessage;
 
     private String output;
+    private String result;
     private int statusCode;
 
 
@@ -58,6 +59,10 @@ public class HybrisHttpResult {
         return output;
     }
 
+    public String getResult() {
+        return result;
+    }
+
     static public class HybrisHttpResultBuilder {
 
         private boolean hasError = false;
@@ -65,6 +70,7 @@ public class HybrisHttpResult {
         private String detailMessage= EMPTY;
 
         private String output= EMPTY;
+        private String result= EMPTY;
         private int statusCode = SC_OK;
 
         private HybrisHttpResultBuilder() {
@@ -95,6 +101,11 @@ public class HybrisHttpResult {
             return this;
         }
 
+        public HybrisHttpResultBuilder result(final String result) {
+            this.result = result;
+            return this;
+        }
+
         public HybrisHttpResultBuilder httpCode(final int statusCode) {
             this.statusCode = statusCode;
             return this;
@@ -107,6 +118,7 @@ public class HybrisHttpResult {
             httpResult.errorMessage = this.errorMessage;
             httpResult.detailMessage = this.detailMessage;
             httpResult.output = this.output;
+            httpResult.result = this.result;
             httpResult.statusCode = this.statusCode;
 
             return httpResult;

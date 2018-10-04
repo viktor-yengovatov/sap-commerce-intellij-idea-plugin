@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_COMPONENT_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME;
@@ -45,14 +47,15 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         if (remoteList.isEmpty()) {
             return getDefaultHybrisRemoteConnectionSettings(project);
         }
-        int hash = state.getActiveRemoteConnectionHash();
+        String id = state.getActiveRemoteConnectionID();
 
-        return remoteList.stream().filter(e->hash == e.hashCode()).findFirst().orElse(remoteList.get(0));
+        return remoteList.stream().filter(e-> Objects.equals(id, e.getUuid())).findFirst().orElse(remoteList.get(0));
     }
 
     @NotNull
     public HybrisRemoteConnectionSettings getDefaultHybrisRemoteConnectionSettings(final Project project) {
         HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
+        item.setUuid(UUID.randomUUID().toString());
         item.setHostIP("localhost");
         item.setPort(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
         item.setHacLogin("admin");

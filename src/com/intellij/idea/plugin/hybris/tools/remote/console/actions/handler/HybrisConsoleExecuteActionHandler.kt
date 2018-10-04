@@ -53,19 +53,31 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
     }
 
     private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
-        val result = createResult().errorMessage(httpResult?.errorMessage).output(httpResult?.output).detailMessage(httpResult?.detailMessage).build()
+        val result = createResult().errorMessage(httpResult?.errorMessage).output(httpResult?.output).result(httpResult?.result).detailMessage(httpResult?.detailMessage).build()
         val detailMessage = result.detailMessage
         val output = result.output
+        val res = result.result
         val errorMessage = result.errorMessage
 
-        console.print("[RESULT] \n", SYSTEM_OUTPUT)
-        val outputType = if (result.hasError()) ERROR_OUTPUT else NORMAL_OUTPUT
-        console.print("$output$errorMessage\n$detailMessage\n", outputType)
+        if (result.hasError()) {
+            console.print("[ERROR] \n", SYSTEM_OUTPUT)
+            console.print("$errorMessage\n$detailMessage\n", ERROR_OUTPUT)
+            return
+        }
+        if (!StringUtil.isEmptyOrSpaces(output)) {
+            console.print("[OUTPUT] \n", SYSTEM_OUTPUT)
+            console.print(output, NORMAL_OUTPUT)
+        }
+        if (!StringUtil.isEmptyOrSpaces(output)) {
+            console.print("[RESULT] \n", SYSTEM_OUTPUT)
+            console.print(res, NORMAL_OUTPUT)
+        }
     }
 
     private fun printSyntaxText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
         val result = createResult().errorMessage(httpResult?.errorMessage)
                 .output(httpResult?.output)
+                .result(httpResult?.result)
                 .detailMessage(httpResult?.detailMessage)
                 .build()
         val output = result.output
@@ -88,6 +100,9 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
 
         // Process input and add to history
         val document = console.currentEditor.document
+
+        console.preProcessors().forEach { processor -> console.setInputText(processor.process(console)) }
+
         val text = document.text
         val range = TextRange(0, document.textLength)
 

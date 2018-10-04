@@ -22,13 +22,17 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.findHeaderItemTypeName
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.PsiTreeUtil
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -45,14 +49,17 @@ private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder)
                 val firstReference = references.first()
                 if (!firstReference.canonicalText.contains(".") && firstReference is TypeSystemReferenceBase<*>) {
                     val result = firstReference.multiResolve(false)
-                    
+
                     if (result.isEmpty()) {
-                        problemsHolder.registerProblem(parameter, "Unknown attribute", ProblemHighlightType.GENERIC_ERROR)
+                        problemsHolder.registerProblem(parameter,
+                                "Unknown attribute for type '${findHeaderItemTypeName(parameter).map { it.text }.orElse("")}'",
+                                ProblemHighlightType.GENERIC_ERROR)
                     }
                 }
             }
         }
     }
+
 
     private fun isNotMacros(parameter: ImpexAnyHeaderParameterName) = parameter.firstChild !is ImpexMacroUsageDec
 
