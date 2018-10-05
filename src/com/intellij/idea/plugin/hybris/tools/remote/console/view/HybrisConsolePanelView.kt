@@ -22,7 +22,7 @@ class HybrisConsolePanelView(val project: Project) : Disposable {
         fun getInstance(project: Project): HybrisConsolePanelView = ServiceManager.getService(project, HybrisConsolePanelView::class.java)
     }
     
-    private val consolePanel = HybrisConsolePanel(project)
+    val consolePanel = HybrisConsolePanel(project)
     private val panel = JPanel()
 
 

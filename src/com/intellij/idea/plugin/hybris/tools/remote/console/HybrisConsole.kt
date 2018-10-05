@@ -81,6 +81,10 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impe
     override fun execute(text: String): HybrisHttpResult {
         return HybrisHacHttpClient().importImpex(project, text)
     }
+
+    fun validate(text: String): HybrisHttpResult {
+        return HybrisHacHttpClient().validateImpex(project, text)
+    }
 }
 
 class HybrisGroovyConsole(project: Project) : HybrisConsole(project, "Hybris Groovy Console", GroovyLanguage) {

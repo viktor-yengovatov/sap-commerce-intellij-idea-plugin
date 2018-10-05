@@ -2,16 +2,11 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.*
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisSuspendAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisChooseInstanceAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.CommonShortcuts
-import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.JBTabsPaneImpl
@@ -35,12 +30,13 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     private val groovyConsole = HybrisGroovyConsole(project)
     private val monitorConsole = HybrisImpexMonitorConsole(project)
 
+    private val actionToolbar: ActionToolbar 
     init {
         layout = BorderLayout()
 
         val toolbarActions = DefaultActionGroup()
         val actionManager = ActionManager.getInstance()
-        val actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, toolbarActions, false)
+        actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, toolbarActions, false)
 
         val panel = JPanel(BorderLayout())
         
@@ -51,6 +47,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
         val actionHandler = HybrisConsoleExecuteActionHandler(project, false)
+        val validateHandler = HybrisConsoleExecuteValidateActionHandler(project, false)
         val executeAction = HybrisExecuteImmediatelyAction(tabsPane, actionHandler)
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
 
@@ -59,7 +56,8 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         toolbarActions.add(choseInstanceAction)
         toolbarActions.add(executeAction)
         toolbarActions.add(HybrisSuspendAction(tabsPane, actionHandler))
-
+        toolbarActions.add(HybrisImpexValidateAction(tabsPane, validateHandler))
+        
         val actions = impexConsole.createConsoleActions()
         actions[5] = HybrisClearAllAction(tabsPane)
         toolbarActions.addAll(*actions)
@@ -67,6 +65,22 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     }
 
     override fun getComponent() = super.getComponent()!!
+    
+    fun sendTextToImpexConsole(text: String) {
+        impexConsole.setInputText(text)
+    }
+    
+    fun validateImpex() {
+        val action = actionToolbar.actions.first { it is HybrisImpexValidateAction }
+        val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext);
+        action.actionPerformed(event)
+    }
+
+    fun importImpex() {
+        val action = actionToolbar.actions.first { it is HybrisExecuteImmediatelyAction }
+        val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext);
+        action.actionPerformed(event)
+    }
 }
 
 class HybrisTabs(impexConsole: HybrisImpexConsole,

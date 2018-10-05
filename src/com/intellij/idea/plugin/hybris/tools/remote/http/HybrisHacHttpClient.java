@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -154,7 +155,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
         if (json.get("exception") != null) {
             return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
-                                                           .errorMessage(json.get("exception").toString())
+                                                           .errorMessage(((Map<String, Object>) json.get("exception")).get("message").toString())
                                                            .build();
         } else {
             TableBuilder tableBuilder = new TableBuilder();

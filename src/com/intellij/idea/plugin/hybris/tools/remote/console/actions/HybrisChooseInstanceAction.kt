@@ -1,4 +1,4 @@
-package com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler
+package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_REMOTE_ICON
