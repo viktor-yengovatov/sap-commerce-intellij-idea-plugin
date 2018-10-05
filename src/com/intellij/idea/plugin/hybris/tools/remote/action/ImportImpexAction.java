@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -18,16 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.ExecuteHybrisConsole;
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient;
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -39,14 +41,21 @@ public class ImportImpexAction extends AnAction implements DumbAware {
         final Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
         if (editor != null) {
             final SelectionModel selectionModel = editor.getSelectionModel();
-            final HybrisHacHttpClient client = HybrisHacHttpClient.getInstance(e.getProject());
             String content = selectionModel.getSelectedText();
             if (content == null || content.trim().isEmpty()) {
                 content = editor.getDocument().getText();
             }
-            final HybrisHttpResult hybrisHttpResult = client.importImpex(e.getProject(), content);
 
-            ExecuteHybrisConsole.getInstance().show(hybrisHttpResult, e.getProject());
+            final HybrisConsolePanelView consolePanelView = ServiceManager.getService(
+                e.getProject(),
+                HybrisConsolePanelView.class
+            );
+            final HybrisConsolePanel consolePanel = consolePanelView.getConsolePanel();
+            consolePanel.sendTextToImpexConsole(content);
+            consolePanel.importImpex();
+
+            ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow("Hybris Console [Experimental]");
+            toolWindow.activate(null);
         }
     }
 
