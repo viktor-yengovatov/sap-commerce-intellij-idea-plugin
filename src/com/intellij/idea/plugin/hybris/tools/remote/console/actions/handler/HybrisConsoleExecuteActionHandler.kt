@@ -68,7 +68,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
             console.print("[OUTPUT] \n", SYSTEM_OUTPUT)
             console.print(output, NORMAL_OUTPUT)
         }
-        if (!StringUtil.isEmptyOrSpaces(output)) {
+        if (!StringUtil.isEmptyOrSpaces(res)) {
             console.print("[RESULT] \n", SYSTEM_OUTPUT)
             console.print(res, NORMAL_OUTPUT)
         }
@@ -100,7 +100,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
 
         // Process input and add to history
         val document = console.currentEditor.document
-
+        val textForHistory = document.text
         console.preProcessors().forEach { processor -> console.setInputText(processor.process(console)) }
 
         val text = document.text
@@ -110,8 +110,8 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
             console.currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
             console.addToHistory(range, console.consoleEditor, preserveMarkup)
             console.setInputText("")
-            if (!StringUtil.isEmptyOrSpaces(text)) {
-                consoleHistoryController.addToHistory(text.trim())
+            if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
+                consoleHistoryController.addToHistory(textForHistory.trim())
             }
 
             processLine(console, text)

@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -54,7 +55,7 @@ public class ValidateImpexAction extends AnAction implements DumbAware {
             consolePanel.sendTextToImpexConsole(content);
             consolePanel.validateImpex();
 
-            ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow("Hybris Console [Experimental]");
+            ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow(HybrisConsoleToolWindowFactory.ID);
             toolWindow.activate(null);
         }
     }
