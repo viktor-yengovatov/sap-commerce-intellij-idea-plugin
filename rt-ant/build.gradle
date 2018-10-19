@@ -27,5 +27,5 @@ repositories {
 
 dependencies {
     //this should be pulled from <idea-home>/lib/ant/lib
-    compileOnly "org.apache.ant:ant:1.9.4"
+    compileOnly "org.apache.ant:ant:1.10.5"
 }
