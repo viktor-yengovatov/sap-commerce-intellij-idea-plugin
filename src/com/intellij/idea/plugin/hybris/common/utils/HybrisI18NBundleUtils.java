@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.utils;
 
 import com.intellij.AbstractBundle;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.PropertyKey;
 
@@ -42,8 +43,12 @@ public final class HybrisI18NBundleUtils extends AbstractBundle {
         @NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) final String key,
         @NotNull final Object... params
     ) {
+        if (StringUtils.isBlank(key)) {
+            return "";
+        }
+
         final String message = BUNDLE.getMessage(key, params);
 
-        return (null == message) ? "" : message;
+        return StringUtils.isBlank(message) ? key : message;
     }
 }
