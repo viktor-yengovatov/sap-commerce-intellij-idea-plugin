@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.1.2</version>
+    <version>9.1.3</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="173"/>
@@ -100,9 +100,14 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Bug</h2>
+            <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-462'>IIP-462</a>] - Spring files not being registered</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-179'>IIPS-179</a>] - Doing Hybris Refresh results into removing OOTB modules</li>
+            </ul>
+
+            <h2>Task</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-503'>IIP-503</a>] - Improve TSV initial value for optional fields</li>
             </ul>
         ]]>
     </change-notes>
