@@ -6,9 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.intellij.openapi.util.io.FileUtil.toSystemDependentName;
 
 public final class FileUtils {
 
@@ -17,7 +18,20 @@ public final class FileUtils {
     }
 
     public static boolean isFileUnder(@NotNull final File child, @NotNull final File parent) {
-        return Paths.get(child.getAbsolutePath()).startsWith(parent.getAbsolutePath());
+        String parentPath;
+        try {
+            parentPath = toSystemDependentName(parent.getCanonicalPath()+"/");
+        } catch (IOException e) {
+            parentPath = toSystemDependentName(parent.getAbsolutePath()+"/");
+        }
+        String childPath;
+        try {
+            childPath = toSystemDependentName(child.getCanonicalPath()+"/");
+        } catch (IOException e) {
+            childPath = toSystemDependentName(child.getAbsolutePath()+"/");
+        }
+
+        return childPath.startsWith(parentPath);
     }
 
     @NotNull
@@ -38,5 +52,37 @@ public final class FileUtils {
         }
 
         return Lists.reverse(path);
+    }
+
+    public static File toFile(final String path) {
+        return toFile(path, false);
+    }
+
+    public static File toFile(final String path, boolean checkExists) {
+        if (path == null) {
+            return null;
+        }
+        File file = new File(path);
+        if (checkExists && !file.exists()) {
+            return null;
+        }
+        try {
+            final String cannonPath = file.getCanonicalPath();
+            file = new File(cannonPath);
+        } catch (IOException e) {
+           //ignore
+        }
+        return file;
+    }
+
+    public static File toFile(String parent, String child) {
+        File file = new File(parent, child);
+        try {
+            final String cannonPath = file.getCanonicalPath();
+            file = new File(cannonPath);
+        } catch (IOException e) {
+            //ignore
+        }
+        return file;
     }
 }

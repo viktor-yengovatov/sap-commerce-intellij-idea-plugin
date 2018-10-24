@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ExtensionType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
+import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -359,20 +360,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         LOG.info("Scanning for modules");
         this.findModuleRoots(moduleRootMap, false, rootDirectory, progressListenerProcessor);
 
-        if (externalExtensionsDirectory != null && !FileUtil.isAncestor(
-            rootDirectory,
-            externalExtensionsDirectory,
-            false
-        )) {
+
+        if (externalExtensionsDirectory != null && !FileUtils.isFileUnder(externalExtensionsDirectory, rootDirectory)) {
             LOG.info("Scanning for external modules");
             this.findModuleRoots(moduleRootMap, false, externalExtensionsDirectory, progressListenerProcessor);
         }
 
-        if (hybrisDistributionDirectory != null && !FileUtil.isAncestor(
-            rootDirectory,
-            hybrisDistributionDirectory,
-            false
-        )) {
+        if (hybrisDistributionDirectory != null && !FileUtils.isFileUnder(hybrisDistributionDirectory, rootDirectory)) {
             LOG.info("Scanning for hybris modules out of the project");
             this.findModuleRoots(moduleRootMap, false, hybrisDistributionDirectory, progressListenerProcessor);
         }
@@ -944,5 +938,26 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         return existingModules;
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultHybrisProjectDescriptor{" +
+               "rootDirectory=" + rootDirectory +
+               ", modulesFilesDirectory=" + modulesFilesDirectory +
+               ", sourceCodeFile=" + sourceCodeFile +
+               ", openProjectSettingsAfterImport=" + openProjectSettingsAfterImport +
+               ", importOotbModulesInReadOnlyMode=" + importOotbModulesInReadOnlyMode +
+               ", hybrisDistributionDirectory=" + hybrisDistributionDirectory +
+               ", externalExtensionsDirectory=" + externalExtensionsDirectory +
+               ", externalConfigDirectory=" + externalConfigDirectory +
+               ", externalDbDriversDirectory=" + externalDbDriversDirectory +
+               ", javadocUrl='" + javadocUrl + '\'' +
+               ", hybrisVersion='" + hybrisVersion + '\'' +
+               ", createBackwardCyclicDependenciesForAddOns=" + createBackwardCyclicDependenciesForAddOns +
+               ", followSymlink=" + followSymlink +
+               ", excludeTestSources=" + excludeTestSources +
+               ", scanThroughExternalModule=" + scanThroughExternalModule +
+               '}';
     }
 }

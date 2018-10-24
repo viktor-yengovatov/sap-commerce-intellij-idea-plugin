@@ -120,6 +120,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     public void setRootProjectDirectory(@NotNull final File directory) {
         Validate.notNull(directory);
 
+        LOG.info("setting RootProjectDirectory to "+directory.getAbsolutePath());
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
             directory, this.getHybrisProjectDescriptor()
         ));
