@@ -265,8 +265,8 @@ class TSMetaModelImpl implements TSMetaModel {
     @Nullable
     @Override
     public List<TSMetaReference> findRelationByName(@NotNull final String name) {
-        return emptyCollectionIfNull(myReferencesBySourceTypeName.values()).stream()
-                                           .filter(Objects::nonNull) 
+        return emptyCollectionIfNull(getReferencesBySourceTypeName().values()).stream()
+                                           .filter(Objects::nonNull)
                                            .map(TSMetaReference.ReferenceEnd::getOwningReference)
                                            .filter(ref -> ref.getName().equals(name))
                                            .collect(Collectors.toList());
