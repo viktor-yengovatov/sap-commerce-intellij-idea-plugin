@@ -33,7 +33,7 @@ class HybrisClearAllAction(val hybrisTabs: HybrisTabs) :
         DumbAwareAction(ExecutionBundle.message("clear.all.from.console.action.name"),
                 "Clear the contents of the console", AllIcons.Actions.GC) {
 
-    override fun update(e: AnActionEvent?) {
+    override fun update(e: AnActionEvent) {
         var enabled = hybrisTabs.activeConsole().contentSize > 0
         if (!enabled) {
             enabled = e!!.getData(LangDataKeys.CONSOLE_VIEW) != null

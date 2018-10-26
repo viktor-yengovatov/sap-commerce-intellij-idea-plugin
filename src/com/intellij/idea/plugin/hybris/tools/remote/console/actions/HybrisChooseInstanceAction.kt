@@ -14,7 +14,7 @@ class HybrisChooseInstanceAction : AnAction(
         message("action.choose.hybris.instance.message.title"),
         HYBRIS_REMOTE_ICON) {
 
-    override fun actionPerformed(e: AnActionEvent?) {
+    override fun actionPerformed(e: AnActionEvent) {
         val project = getEventProject(e) ?: return
         val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state ?: return
         val list = state.remoteConnectionSettingsList
