@@ -74,7 +74,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
     }
 
     @Override
-    protected boolean isApplicableFor(@NotNull final RunConfigurationBase configuration) {
+    public boolean isApplicableFor(@NotNull final RunConfigurationBase configuration) {
         if (!(configuration instanceof JUnitConfiguration)) {
             return false;
         }

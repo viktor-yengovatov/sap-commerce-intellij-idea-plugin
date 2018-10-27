@@ -24,26 +24,26 @@ abstract class HybrisExecuteActionBase(val executeActionHandler: HybrisConsoleEx
 
 class HybrisExecuteImmediatelyAction(private val tabbedPane: HybrisTabs, executeActionHandler: HybrisConsoleExecuteActionHandler) : 
         HybrisExecuteActionBase(executeActionHandler, AllIcons.Actions.Execute) {
-    override fun actionPerformed(e: AnActionEvent?) {
+    override fun actionPerformed(e: AnActionEvent) {
         executeActionHandler.runExecuteAction(tabbedPane)
     }
-    override fun update(e: AnActionEvent?) {
+    override fun update(e: AnActionEvent) {
         val editor = tabbedPane.activeConsole().consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
-        e!!.presentation.isEnabled = !executeActionHandler.isProcessRunning && (lookup == null || !lookup.isCompletion)
+        e.presentation.isEnabled = !executeActionHandler.isProcessRunning && (lookup == null || !lookup.isCompletion)
     }
 }
 
 class HybrisSuspendAction(private val tabbedPane: HybrisTabs, executeActionHandler: HybrisConsoleExecuteActionHandler) :
         HybrisExecuteActionBase(executeActionHandler, AllIcons.Actions.Suspend) {
-    override fun actionPerformed(e: AnActionEvent?) {
+    override fun actionPerformed(e: AnActionEvent) {
         
     }
 
-    override fun update(e: AnActionEvent?) {
+    override fun update(e: AnActionEvent) {
         val editor = tabbedPane.activeConsole().consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
-        e!!.presentation.isEnabled = executeActionHandler.isProcessRunning
+        e.presentation.isEnabled = executeActionHandler.isProcessRunning
     }
 
 }

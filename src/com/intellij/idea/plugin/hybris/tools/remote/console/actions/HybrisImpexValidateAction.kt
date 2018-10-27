@@ -18,11 +18,11 @@ class HybrisImpexValidateAction(private val tabbedPane: HybrisTabs,
         HybrisI18NBundleUtils.message("action.console.hybris.impex.validate.message.title"),
         Checked) {
 
-    override fun actionPerformed(e: AnActionEvent?) {
+    override fun actionPerformed(e: AnActionEvent) {
         executeValidationActionHandler.runExecuteAction(tabbedPane)
     }
 
-    override fun update(e: AnActionEvent?) {
+    override fun update(e: AnActionEvent) {
         val editor = tabbedPane.activeConsole().consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
         
