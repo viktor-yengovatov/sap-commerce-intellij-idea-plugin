@@ -2,10 +2,10 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.1.4</version>
+    <version>9.1.4.182</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="173"/>
+    <idea-version since-build="182.2371.4" until-build="183.*"/>
 
     <vendor email="AlexanderBartash@gmail.com"
             url="https://hybris-integration.atlassian.net/wiki/display/IIPPS/Intellij+IDEA+Plugin+Public+Space">
