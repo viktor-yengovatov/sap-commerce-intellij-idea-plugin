@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
+import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +42,14 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
         return dom.getCode().getValue();
     }
 
+
+    @Nullable
+    @Override
+    public Type getType() {
+        return Optional.ofNullable(retrieveDom())
+            .map(dom -> dom.getType().getValue())
+            .orElse(null);
+    }
 
     @Nullable
     @Override

@@ -19,10 +19,14 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
+import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.Nullable;
 
 public interface TSMetaCollection extends TSMetaClassifier<CollectionType> {
+
+    @Nullable
+    Type getType();
 
     @Nullable
     String getElementTypeName();
