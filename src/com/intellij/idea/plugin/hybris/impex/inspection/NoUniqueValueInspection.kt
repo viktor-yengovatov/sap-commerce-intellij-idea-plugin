@@ -20,7 +20,7 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
     override fun visitFile(file: PsiFile) {
         val headers = PsiTreeUtil.getChildrenOfType(file, ImpexHeaderLine::class.java) ?: return
 
-        val groupHeaders = headers.filter { it.fullHeaderType != null }.groupBy { "${it.fullHeaderType?.text}|${keyAttrsName(it).joinToString { it }}" }
+        val groupHeaders = headers.filter { it.fullHeaderType != null }.groupBy { "${it.fullHeaderType?.text?.cleanWhitespaces()}|${keyAttrsName(it).joinToString { attr -> attr.cleanWhitespaces() }}" }
 
         groupHeaders.forEach { _, headerLines ->
             val fullParametersList = fullParametersList(headerLines)
@@ -33,7 +33,7 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
                 val keyAttrsGroupedByName = fullParametersList.filter { keyAttrPredicate(it) }.groupBy { it.anyHeaderParameterName.text }
 
                 val dataMap = mutableMapOf<String, List<PsiElement>>()
-                keyAttrsGroupedByName.forEach { name, attrs -> dataMap.put(name, attrs.flatMap { ImpexPsiUtils.getColumnForHeader(it).map { it.lastChild } }) }
+                keyAttrsGroupedByName.forEach { name, attrs -> dataMap[name] = attrs.flatMap { ImpexPsiUtils.getColumnForHeader(it).map { it.lastChild } } }
 
                 if (distinctCommonAttrsNames.isEmpty()) {
                     val attrsNames = fullParametersList.filter { keyAttrPredicate(it) }.map { it.text }.distinct()
@@ -45,3 +45,5 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
         }
     }
 }
+
+private fun String.cleanWhitespaces() = this.replace(" ", "")
