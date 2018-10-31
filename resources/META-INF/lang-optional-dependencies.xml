@@ -78,7 +78,7 @@
 
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingLinesBuilder"/>
-        
+
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexPropertyFoldingBuilder"/>
 
@@ -144,7 +144,7 @@
                          implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UnknownConfigPropertyInspection"/>
 
         <localInspection groupPath="hybris" shortName="UnknownMacrosInspection" displayName="Unknown macros"
-                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="false"
+                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.impex.inspection.UnknownMacrosInspection"/>
 
         <localInspection groupPath="hybris" shortName="UnknownTypeAttributeInspection" displayName="Unknown attribute"
@@ -209,7 +209,7 @@
         <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
         <lang.findUsagesProvider language="Impex"
                                  implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
-        
+
         <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector" />
     </extensions>
 

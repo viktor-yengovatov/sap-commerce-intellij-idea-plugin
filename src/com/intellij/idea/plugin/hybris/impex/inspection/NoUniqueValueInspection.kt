@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.impex.inspection
 
+import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.*
@@ -12,6 +13,9 @@ import com.intellij.psi.util.PsiTreeUtil
 
 
 class NoUniqueValueInspection : LocalInspectionTool() {
+    override fun getDefaultLevel(): HighlightDisplayLevel {
+        return HighlightDisplayLevel.WARNING
+    }
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = NoUniqueValueVisitor(holder)
 }
 
