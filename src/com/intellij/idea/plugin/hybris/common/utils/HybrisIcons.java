@@ -50,4 +50,9 @@ public interface HybrisIcons {
     Icon LOCALIZED = IconLoader.getIcon("/icons/localized.svg");
 
     Icon MACROS = IconLoader.getIcon("/icons/macros.png");
+    
+    
+    interface Gutter {
+        Icon POPULATOR = IconLoader.getIcon("/icons/gutter/populator.svg");
+    }
 }

@@ -3,7 +3,12 @@ package com.intellij.idea.plugin.hybris.impex.inspection
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.*
+import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.createDataTable
+import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.fullParametersList
+import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.keyAttrPredicate
+import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.keyAttributesList
+import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.keyAttrsName
+import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.notKeyAttributesList
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.psi.PsiElement
@@ -24,7 +29,8 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
     override fun visitFile(file: PsiFile) {
         val headers = PsiTreeUtil.getChildrenOfType(file, ImpexHeaderLine::class.java) ?: return
 
-        val groupHeaders = headers.filter { it.fullHeaderType != null }.groupBy { "${it.fullHeaderType?.text?.cleanWhitespaces()}|${keyAttrsName(it).joinToString { attr -> attr.cleanWhitespaces() }}" }
+        val groupHeaders = headers.filter { it.fullHeaderType != null }
+                .groupBy { createHeaderKey(it) }
 
         groupHeaders.forEach { _, headerLines ->
             val fullParametersList = fullParametersList(headerLines)
@@ -48,6 +54,9 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
             }
         }
     }
+
+    private fun createHeaderKey(it: ImpexHeaderLine) =
+            "${it.fullHeaderType?.text?.cleanWhitespaces()}|${keyAttrsName(it).joinToString { attr -> attr.cleanWhitespaces() }}"
 }
 
 private fun String.cleanWhitespaces() = this.replace(" ", "")
