@@ -100,10 +100,18 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Fault</h2>
+            <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-178'>IIPS-178</a>] - Incorrect size of the Impex file icon in IntelliJ IDEA 2018.3</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-181'>IIPS-181</a>] - java.lang.NullPointerException at com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelImpl.findRelationByName(TSMetaModelImpl.java:268)</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-502'>IIP-502</a>] - Impex validation wrongly assumes that a value is overridden when a unique attribute is provided as a default value in the header</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-505'>IIP-505</a>] - Provide more clear message for Type System validation rule for usages of Hybris collection types</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-506'>IIP-506</a>] - Configure correct priorities for Type System Validation inspections of *-items.xml</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-507'>IIP-507</a>] - Suppress XmlDefaultAttributeValueInspection for *-items.xml</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-509'>IIP-509</a>] - Add a basic navigation between field with type Convert and Populator</li>
+            </ul>
+
+            <h2>Bug</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-508'>IIP-508</a>] - NPE durping project opening at com.intellij.idea.plugin.hybris.project.utils.FileUtils.getPathToParentDirectoryFrom(FileUtils.java:50)</li>
             </ul>
         ]]>
     </change-notes>

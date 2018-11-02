@@ -87,11 +87,11 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
         ));
 
         builder.setPopupTitle(HybrisI18NBundleUtils.message(
-            "hybris.bean.class.navigate.choose.class.title",
+            "hybris.gutter.bean.class.navigate.choose.class.title",
             new Object[0]
         ));
         builder.setTooltipText(HybrisI18NBundleUtils.message(
-            "hybris.item.class.tooltip.navigate.declaration", new Object[0]
+            "hybris.gutter.item.class.tooltip.navigate.declaration", new Object[0]
         ));
         result.add(builder.createLineMarkerInfo(psiClass.getNameIdentifier()));
     }

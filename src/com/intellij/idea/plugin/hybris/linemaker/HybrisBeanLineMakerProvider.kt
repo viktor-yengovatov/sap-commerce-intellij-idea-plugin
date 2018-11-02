@@ -85,11 +85,11 @@ class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
         ))
 
         builder.setPopupTitle(HybrisI18NBundleUtils.message(
-                "hybris.bean.class.navigate.choose.class.title",
+                "hybris.gutter.bean.class.navigate.choose.class.title",
                 *arrayOfNulls<Any>(0)
         ))
         builder.setTooltipText(HybrisI18NBundleUtils.message(
-                "hybris.item.class.tooltip.navigate.declaration", *arrayOfNulls<Any>(0)
+                "hybris.gutter.item.class.tooltip.navigate.declaration", *arrayOfNulls<Any>(0)
         ))
         result.add(builder.createLineMarkerInfo(psiClass.nameIdentifier!!))
     }

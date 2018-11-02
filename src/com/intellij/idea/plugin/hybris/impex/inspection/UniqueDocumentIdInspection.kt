@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.inspection
 
+import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
@@ -35,6 +36,9 @@ import com.intellij.util.containers.ContainerUtil.newHashSet
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class UniqueDocumentIdInspection : LocalInspectionTool() {
+    override fun getDefaultLevel(): HighlightDisplayLevel {
+        return HighlightDisplayLevel.ERROR
+    }
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexDocumentIdVisitor(holder)
 }
 
@@ -46,7 +50,7 @@ private class ImpexDocumentIdVisitor(private val problemsHolder: ProblemsHolder)
             column.forEach { value ->
                 if (!set.add(value.text)) {
                     problemsHolder.registerProblem(value, "Qualifier '${parameter.text}' already used",
-                            ProblemHighlightType.GENERIC_ERROR)
+                            ProblemHighlightType.ERROR)
                 }
             }
         }

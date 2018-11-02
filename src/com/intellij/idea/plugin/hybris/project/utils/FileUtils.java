@@ -1,7 +1,9 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
 import com.google.common.collect.Lists;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.io.FileUtil;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -12,6 +14,7 @@ import java.util.List;
 import static com.intellij.openapi.util.io.FileUtil.toSystemDependentName;
 
 public final class FileUtils {
+    private static final Logger LOG = Logger.getInstance(FileUtils.class);
 
     private FileUtils() throws IllegalAccessException {
         throw new IllegalAccessException("Util class should never be instantiated.");
@@ -46,12 +49,15 @@ public final class FileUtils {
         final List<String> path = new ArrayList<>();
         File currentDirectory = file.getParentFile();
 
-        while (!FileUtil.filesEqual(currentDirectory, parentDirectory)) {
+        while (currentDirectory != null && !FileUtil.filesEqual(currentDirectory, parentDirectory)) {
             path.add(currentDirectory.getName());
             currentDirectory = currentDirectory.getParentFile();
         }
 
-        return Lists.reverse(path);
+        final List<String> reversePath = Lists.reverse(path);
+        LOG.info("Relative path for module dir " + file.getAbsolutePath() + " in " + parentDirectory.getAbsolutePath()
+                 + " found as " + StringUtils.join(reversePath, '/'));
+        return reversePath;
     }
 
     public static File toFile(final String path) {

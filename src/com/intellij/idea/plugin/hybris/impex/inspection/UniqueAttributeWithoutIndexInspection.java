@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.inspection;
 
+import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName;
@@ -51,6 +52,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
+
+    @NotNull
+    @Override
+    public HighlightDisplayLevel getDefaultLevel() {
+        return HighlightDisplayLevel.ERROR;
+    }
 
     @NotNull
     @Override

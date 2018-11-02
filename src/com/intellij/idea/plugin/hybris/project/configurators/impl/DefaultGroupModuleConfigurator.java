@@ -50,6 +50,7 @@ import java.util.Set;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GLOBAL_GROUP_OVERRIDE_COMMENTS;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GROUP_OVERRIDE_KEY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.LOCAL_GROUP_OVERRIDE_COMMENTS;
+import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
 
 /**
@@ -197,9 +198,10 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             if (null == customDirectory) {
                 customDirectory = new File(moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
             }
-            if (null == customDirectory || !customDirectory.exists()) {
+            if (!customDirectory.exists()) {
                 return this.groupCustom;
             }
+            customDirectory = toFile(customDirectory.getAbsolutePath());
 
             final List<String> path;
             try {
