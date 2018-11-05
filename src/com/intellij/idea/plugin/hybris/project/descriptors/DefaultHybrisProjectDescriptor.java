@@ -122,6 +122,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private ConfigHybrisModuleDescriptor configHybrisModuleDescriptor;
     @NotNull
     private PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor;
+    private Set<File> vcs = new HashSet<>();
 
     private void processLocalExtensions() {
         final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor = findConfigDir();
@@ -480,6 +481,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
+
+        if (hybrisProjectService.hasVCS(rootProjectDirectory)) {
+            LOG.info("Detected version control service " + rootProjectDirectory.getAbsolutePath());
+            vcs.add(rootProjectDirectory);
+        }
 
         if (hybrisProjectService.isHybrisModule(rootProjectDirectory)) {
             LOG.info("Detected hybris module " + rootProjectDirectory.getAbsolutePath());
@@ -911,6 +917,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public boolean isScanThroughExternalModule() {
         return scanThroughExternalModule;
+    }
+
+    @Override
+    public Set<File> getDetectedVcs() {
+        return vcs;
     }
 
     @NotNull

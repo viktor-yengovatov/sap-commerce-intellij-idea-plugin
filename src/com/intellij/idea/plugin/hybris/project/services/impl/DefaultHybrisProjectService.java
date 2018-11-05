@@ -122,4 +122,18 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         }
         return new File(file, HybrisConstants.SETTINGS_GRADLE).isFile();
     }
+
+    @Override
+    public boolean hasVCS(final File dir) {
+        if (new File(dir, ".git").isDirectory()) {
+            return true;
+        }
+        if (new File(dir, ".hg").isDirectory()) {
+            return true;
+        }
+        if (new File(dir, ".svn").isDirectory()) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -274,7 +274,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
         }
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
-        versionControlSystemConfigurator.configure(project);
+        versionControlSystemConfigurator.configure(hybrisProjectDescriptor, project);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.search.scope"));
         searchScopeConfigurator.configure(project, rootProjectModifiableModel);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.saving.project"));

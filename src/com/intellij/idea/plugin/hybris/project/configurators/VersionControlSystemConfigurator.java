@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,5 +28,8 @@ import org.jetbrains.annotations.NotNull;
 public interface VersionControlSystemConfigurator {
 
     void
-    configure(@NotNull Project project);
+    configure(
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final Project project
+    );
 }
