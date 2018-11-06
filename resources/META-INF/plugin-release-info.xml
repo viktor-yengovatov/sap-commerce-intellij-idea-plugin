@@ -2,10 +2,10 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.2.6.182</version>
+    <version>9.2.7.182</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="182.2371.4" until-build="182.4892.20"/>
+    <idea-version since-build="182.2371.4" until-build="182.5107.6"/>
 
     <vendor email="AlexanderBartash@gmail.com"
             url="https://hybris-integration.atlassian.net/wiki/display/IIPPS/Intellij+IDEA+Plugin+Public+Space">
@@ -100,18 +100,11 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Task</h2>
+            <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-502'>IIP-502</a>] - Impex validation wrongly assumes that a value is overridden when a unique attribute is provided as a default value in the header</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-505'>IIP-505</a>] - Provide more clear message for Type System validation rule for usages of Hybris collection types</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-506'>IIP-506</a>] - Configure correct priorities for Type System Validation inspections of *-items.xml</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-507'>IIP-507</a>] - Suppress XmlDefaultAttributeValueInspection for *-items.xml</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-509'>IIP-509</a>] - Add a basic navigation between field with type Convert and Populator</li>
-            </ul>
-
-            <h2>Bug</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-508'>IIP-508</a>] - NPE durping project opening at com.intellij.idea.plugin.hybris.project.utils.FileUtils.getPathToParentDirectoryFrom(FileUtils.java:50)</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-183'>IIPS-183</a>] - Reseting git repository configuration on Project Refresh</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-184'>IIPS-184</a>] - NoSuchElementException: Array contains no element matching the predicate.</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-185'>IIPS-185</a>] - AbstractCellEditor#cancelCellEditing:Access is allowed from event dispatch thread only.</li>
             </ul>
         ]]>
     </change-notes>
