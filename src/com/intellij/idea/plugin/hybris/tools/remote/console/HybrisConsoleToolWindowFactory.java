@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class HybrisConsoleToolWindowFactory implements ToolWindowFactory {
 
-    public static final String ID = "Hybris Console [Experimental]";
+    public static final String ID = "Hybris Console";
 
     @Override
     public void createToolWindowContent(

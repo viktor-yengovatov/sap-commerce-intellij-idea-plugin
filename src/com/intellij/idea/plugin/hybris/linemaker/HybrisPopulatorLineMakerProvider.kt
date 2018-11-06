@@ -51,30 +51,35 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
                 populatorClass = findPopulatorClass(project)
             }
 
-            val allPopulators = ClassInheritorsSearch.search(populatorClass!!.element!!)
+            if (populatorClass != null) {
+                val allPopulators = ClassInheritorsSearch.search(populatorClass!!.element!!)
 
-            psiClass.fields
-                    .filter { it.isNotStatic() }
-                    .filter {
-                        it.type is PsiClassReferenceType
-                                && (it.type as PsiClassReferenceType).reference.qualifiedName == "de.hybris.platform.servicelayer.dto.converter.Converter"
-                    }
-                    .forEach { field ->
-
-                        val fieldName = field.name.replace("Converter", "")
-                        val candidates = allPopulators.filter { it.name!!.contains(fieldName, true) }
-
-                        if (candidates.isNotEmpty()) {
-                            createTargetsWithGutterIcon(result, field.nameIdentifier, candidates)
+                psiClass.fields
+                        .filter { it.isNotStatic() }
+                        .filter {
+                            it.type is PsiClassReferenceType
+                                    && (it.type as PsiClassReferenceType).reference.qualifiedName == "de.hybris.platform.servicelayer.dto.converter.Converter"
                         }
-                    }
+                        .forEach { field ->
+
+                            val fieldName = field.name.replace("Converter", "")
+                            val candidates = allPopulators.filter { it.name!!.contains(fieldName, true) }
+
+                            if (candidates.isNotEmpty()) {
+                                createTargetsWithGutterIcon(result, field.nameIdentifier, candidates)
+                            }
+                        }
+            }
         }
     }
 
-    private fun findPopulatorClass(project: Project): SmartPsiElementPointer<PsiClass> {
+    private fun findPopulatorClass(project: Project): SmartPsiElementPointer<PsiClass>? {
         val populators = PsiShortNamesCache.getInstance(project).getClassesByName("Populator", GlobalSearchScope.allScope(project))
-        val populator = populators.first { it.qualifiedName == "de.hybris.platform.converters.Populator" }
-        return SmartPointerManager.getInstance(project).createSmartPsiElementPointer<PsiClass>(populator)
+        val populator = populators.firstOrNull { it.qualifiedName == "de.hybris.platform.converters.Populator" }
+        if (populator != null) {
+            return SmartPointerManager.getInstance(project).createSmartPsiElementPointer<PsiClass>(populator)
+        }
+        return null
     }
 
     private fun createTargetsWithGutterIcon(

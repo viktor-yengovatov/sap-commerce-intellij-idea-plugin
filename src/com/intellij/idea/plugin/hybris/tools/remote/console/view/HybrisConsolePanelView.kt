@@ -35,7 +35,7 @@ class HybrisConsolePanelView(val project: Project) : Disposable {
         val factory = RunnerLayoutUi.Factory.getInstance(project)
         val layoutUi = factory.create("", "", "session", project)
 
-        val console = layoutUi.createContent(HybrisConsoleToolWindowFactory.ID, consolePanel.component, " (Experimental)", null, null)
+        val console = layoutUi.createContent(HybrisConsoleToolWindowFactory.ID, consolePanel.component, "", null, null)
         layoutUi.addContent(console, 0, PlaceInGrid.right, false)
 
         val layoutComponent = layoutUi.component
