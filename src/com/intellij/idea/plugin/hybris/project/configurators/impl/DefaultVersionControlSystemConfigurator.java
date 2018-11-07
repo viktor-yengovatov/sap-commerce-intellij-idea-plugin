@@ -19,16 +19,20 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsDirectoryMapping;
 import com.intellij.openapi.vcs.VcsRoot;
 import com.intellij.openapi.vcs.roots.VcsRootDetector;
+import com.intellij.openapi.vfs.VfsUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -37,9 +41,16 @@ import java.util.stream.Collectors;
 public class DefaultVersionControlSystemConfigurator implements VersionControlSystemConfigurator {
 
     @Override
-    public void configure(@NotNull Project project) {
+    public void configure(
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final Project project
+    ) {
         final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(project);
-        final Collection<VcsRoot> detectedRoots = ServiceManager.getService(project, VcsRootDetector.class).detect();
+        final VcsRootDetector rootDetector = ServiceManager.getService(project, VcsRootDetector.class);
+        final Set<VcsRoot> detectedRoots = new HashSet<>(rootDetector.detect());
+        for (File vcs: hybrisProjectDescriptor.getDetectedVcs()) {
+            detectedRoots.addAll(rootDetector.detect(VfsUtil.findFileByIoFile(vcs, true)));
+        }
         final ArrayList<VcsDirectoryMapping> directoryMappings = detectedRoots
             .stream()
             .map(root -> new VcsDirectoryMapping(root.getPath().getPath(), root.getVcs().getName()))

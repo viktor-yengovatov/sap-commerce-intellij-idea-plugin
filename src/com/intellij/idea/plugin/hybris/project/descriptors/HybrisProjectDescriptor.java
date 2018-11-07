@@ -133,4 +133,6 @@ public interface HybrisProjectDescriptor {
     void setHybrisVersion(String hybrisVersion);
 
     String getHybrisVersion();
+
+    Set<File> getDetectedVcs();
 }

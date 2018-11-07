@@ -47,4 +47,6 @@ public interface HybrisProjectService {
     boolean isEclipseModule(File rootProjectDirectory);
 
     boolean isGradleModule(File file);
+
+    boolean hasVCS(File rootProjectDirectory);
 }

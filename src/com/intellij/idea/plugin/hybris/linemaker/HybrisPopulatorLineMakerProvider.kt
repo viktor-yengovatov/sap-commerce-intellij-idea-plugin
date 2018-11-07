@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -23,13 +23,10 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.jvm.JvmModifier
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiField
-import com.intellij.psi.SmartPointerManager
-import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
@@ -46,6 +43,10 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
                                           result: MutableCollection<in RelatedItemLineMarkerInfo<PsiElement>>) {
         if (psiClass is PsiClass) {
             val project = psiClass.project
+
+            if (!HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject) {
+                return;
+            }
 
             if (populatorClass == null) {
                 populatorClass = findPopulatorClass(project)
