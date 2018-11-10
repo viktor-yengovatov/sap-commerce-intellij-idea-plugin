@@ -72,13 +72,13 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     
     fun validateImpex() {
         val action = actionToolbar.actions.first { it is HybrisImpexValidateAction }
-        val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext);
+        val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
         action.actionPerformed(event)
     }
 
     fun importImpex() {
         val action = actionToolbar.actions.first { it is HybrisExecuteImmediatelyAction }
-        val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext);
+        val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
         action.actionPerformed(event)
     }
 }
