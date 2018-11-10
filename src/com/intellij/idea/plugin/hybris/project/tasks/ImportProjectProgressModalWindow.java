@@ -61,6 +61,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSe
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -460,12 +461,29 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 state.setActiveRemoteConnectionID(newSettings.getUuid());
             }
         }
+        
+        if (state != null) {
+            fillSolrConnectionSettings(developerSpecificSettings, state);
+        }
+        
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
             final ToolWindowManager manager = ToolWindowManager.getInstance(project);
             final ToolWindow window = manager.getToolWindow("Hybris");
             project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).remoteConnectionSettingsChanged();
             window.show(null);
         });
+    }
+
+    private void fillSolrConnectionSettings(
+        final HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings,
+        final HybrisDeveloperSpecificProjectSettings state
+    ) {
+        final SolrConnectionSettings solrConnectionSettings = state.getSolrConnectionSettings();
+        final SolrConnectionSettings defaultSolrConnectionSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings();
+        solrConnectionSettings.setLocation(defaultSolrConnectionSettings.getLocation());
+        solrConnectionSettings.setAdminLogin(defaultSolrConnectionSettings.getAdminLogin());
+        solrConnectionSettings.setAdminPwd(defaultSolrConnectionSettings.getAdminPwd());
+        state.setSolrConnectionSettings(solrConnectionSettings);
     }
 
     private Set<String> createModulesOnBlackList() {

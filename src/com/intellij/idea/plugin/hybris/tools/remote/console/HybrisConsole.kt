@@ -37,9 +37,17 @@ import javax.swing.border.EmptyBorder
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
+    init {
+        this.printDefaultText()
+    }
+
     abstract fun execute(text: String): HybrisHttpResult
 
     open fun preProcessors(): List<HybrisConsolePreProcessor> = listOf()
+
+    open fun printDefaultText() {
+        setInputText("")
+    }
 }
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impex Console", ImpexLanguage.getInstance()) {
@@ -79,11 +87,11 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impe
     }
 
     override fun execute(text: String): HybrisHttpResult {
-        return HybrisHacHttpClient().importImpex(project, text)
+        return HybrisHacHttpClient.getInstance(project).importImpex(project, text)
     }
 
     fun validate(text: String): HybrisHttpResult {
-        return HybrisHacHttpClient().validateImpex(project, text)
+        return HybrisHacHttpClient.getInstance(project).validateImpex(project, text)
     }
 }
 
@@ -95,9 +103,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, "Hybris Gro
     }
 
     override fun execute(text: String): HybrisHttpResult {
-        return HybrisHacHttpClient().executeGroovyScript(project, text)
+        return HybrisHacHttpClient.getInstance(project).executeGroovyScript(project, text)
     }
 }
+
 
 class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, "Hybris Monitor Console", ImpexLanguage.getInstance()) {
     object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
