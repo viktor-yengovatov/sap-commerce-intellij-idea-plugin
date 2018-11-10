@@ -57,7 +57,8 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
     public HybrisRemoteConnectionSettings getDefaultHybrisRemoteConnectionSettings(final Project project) {
         final HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
         item.setUuid(UUID.randomUUID().toString());
-        item.setHostIP("http://localhost:8983/solr");
+        item.setHostIP("localhost");
+        item.setPort(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
         item.setHacLogin("admin");
         item.setHacPassword("nimda");
         item.setGeneratedURL(CommonIdeaService.getInstance().getHostHacUrl(project, item));
