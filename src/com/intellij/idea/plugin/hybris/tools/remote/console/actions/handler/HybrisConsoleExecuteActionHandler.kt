@@ -7,10 +7,14 @@ import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexMonitorConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.SolrConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
+import com.intellij.json.JsonFileType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -32,7 +36,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
 
     private fun processLine(console: HybrisConsole, text: String) {
         ApplicationManager.getApplication().runReadAction {
-            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to Hybris...") {
+            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call ...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
