@@ -19,7 +19,8 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVE
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME;
 
 @State(name = HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_COMPONENT_NAME, storages = {@Storage(HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME)})
-public class HybrisDeveloperSpecificProjectSettingsComponent implements PersistentStateComponent<HybrisDeveloperSpecificProjectSettings> {
+public class HybrisDeveloperSpecificProjectSettingsComponent
+    implements PersistentStateComponent<HybrisDeveloperSpecificProjectSettings> {
 
     private HybrisDeveloperSpecificProjectSettings state = new HybrisDeveloperSpecificProjectSettings();
 
@@ -39,22 +40,22 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
     }
 
     public HybrisRemoteConnectionSettings getActiveHybrisRemoteConnectionSettings(final Project project) {
-        HybrisDeveloperSpecificProjectSettings state = getState();
+        final HybrisDeveloperSpecificProjectSettings state = getState();
         if (state == null) {
             return getDefaultHybrisRemoteConnectionSettings(project);
         }
-        List<HybrisRemoteConnectionSettings> remoteList = state.getRemoteConnectionSettingsList();
+        final List<HybrisRemoteConnectionSettings> remoteList = state.getRemoteConnectionSettingsList();
         if (remoteList.isEmpty()) {
             return getDefaultHybrisRemoteConnectionSettings(project);
         }
-        String id = state.getActiveRemoteConnectionID();
+        final String id = state.getActiveRemoteConnectionID();
 
-        return remoteList.stream().filter(e-> Objects.equals(id, e.getUuid())).findFirst().orElse(remoteList.get(0));
+        return remoteList.stream().filter(e -> Objects.equals(id, e.getUuid())).findFirst().orElse(remoteList.get(0));
     }
 
     @NotNull
     public HybrisRemoteConnectionSettings getDefaultHybrisRemoteConnectionSettings(final Project project) {
-        HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
+        final HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
         item.setUuid(UUID.randomUUID().toString());
         item.setHostIP("localhost");
         item.setPort(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
@@ -62,5 +63,10 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         item.setHacPassword("nimda");
         item.setGeneratedURL(CommonIdeaService.getInstance().getHostHacUrl(project, item));
         return item;
+    }
+
+    @NotNull
+    public SolrConnectionSettings getDefaultSolrRemoteConnectionSettings() {
+        return SolrConnectionSettings.createDefaultSolrConnectionSettings();
     }
 }

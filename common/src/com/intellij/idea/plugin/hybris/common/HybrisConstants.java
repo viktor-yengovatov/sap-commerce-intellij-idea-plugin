@@ -178,6 +178,7 @@ public interface HybrisConstants {
     String TOMCAT_HTTP_PORT_KEY = "tomcat.http.port";
     String DEFAULT_TOMCAT_HTTP_PORT = "9001";
     String DEFAULT_TOMCAT_SSL_PORT = "9002";
+    String DEFAULT_SOLR_TOMCAT_SSL_PORT = "8983";
     String HTTP_PROTOCOL = "http://";
     String HTTPS_PROTOCOL = "https://";
     String URL_PORT_DELIMITER = ":";
