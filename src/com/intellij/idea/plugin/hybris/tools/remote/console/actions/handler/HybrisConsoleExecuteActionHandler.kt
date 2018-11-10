@@ -44,7 +44,19 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                         val httpResult = console.execute(text)
 
                         when (console) {
-                            is HybrisImpexMonitorConsole -> printSyntaxText(console, httpResult)
+                            is HybrisImpexMonitorConsole -> {
+                                console.clear()
+                                printSyntaxText(console, httpResult.output, ImpexFileType.getInstance())
+                            }
+                            is SolrConsole -> {
+                                console.clear()
+                                if (httpResult.hasError()) {
+                                    printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)
+                                } else {
+                                    printSyntaxText(console, httpResult.output, JsonFileType.INSTANCE)
+                                }
+
+                            }
                             else -> printPlainText(console, httpResult)
                         }
                     } finally {
@@ -78,17 +90,8 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
         }
     }
 
-    private fun printSyntaxText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
-        val result = createResult().errorMessage(httpResult?.errorMessage)
-                .output(httpResult?.output)
-                .result(httpResult?.result)
-                .detailMessage(httpResult?.detailMessage)
-                .build()
-        val output = result.output
-
-        console.clear()
-        ConsoleViewUtil.printAsFileType(console, output, ImpexFileType.getInstance())
-
+    private fun printSyntaxText(console: HybrisConsole, output: String, fileType: FileType) {
+        ConsoleViewUtil.printAsFileType(console, output, fileType)
     }
 
     fun runExecuteAction(tabbedPane: HybrisTabs) {
@@ -113,7 +116,8 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
         if (text.isNotEmpty() || console is HybrisImpexMonitorConsole) {
             console.currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
             console.addToHistory(range, console.consoleEditor, preserveMarkup)
-            console.setInputText("")
+            console.printDefaultText()
+
             if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
                 consoleHistoryController.addToHistory(textForHistory.trim())
             }

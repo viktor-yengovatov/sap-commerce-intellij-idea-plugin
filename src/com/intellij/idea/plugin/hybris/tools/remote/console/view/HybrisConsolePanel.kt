@@ -21,16 +21,17 @@ import javax.swing.SwingConstants.TOP
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Disposable {
-    
+
     override fun dispose() {
-        
+
     }
 
     private val impexConsole = HybrisImpexConsole(project)
     private val groovyConsole = HybrisGroovyConsole(project)
     private val monitorConsole = HybrisImpexMonitorConsole(project)
 
-    private val actionToolbar: ActionToolbar 
+    private val actionToolbar: ActionToolbar
+
     init {
         layout = BorderLayout()
 
@@ -39,8 +40,11 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, toolbarActions, false)
 
         val panel = JPanel(BorderLayout())
-        
-        val tabsPane = HybrisTabs(impexConsole, groovyConsole, monitorConsole, project, TOP)
+
+        val tabsPane = HybrisTabs(impexConsole,
+                groovyConsole,
+                monitorConsole,
+                project, TOP)
 
         panel.add(tabsPane.component, BorderLayout.CENTER)
         actionToolbar.setTargetComponent(tabsPane.component)
@@ -57,7 +61,8 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         toolbarActions.add(executeAction)
         toolbarActions.add(HybrisSuspendAction(tabsPane, actionHandler))
         toolbarActions.add(HybrisImpexValidateAction(tabsPane, validateHandler))
-        
+        toolbarActions.add(HybrisSolrUpdateConnectionAction(tabsPane))
+
         val actions = impexConsole.createConsoleActions()
         actions[5] = HybrisClearAllAction(tabsPane)
         toolbarActions.addAll(*actions)
@@ -65,11 +70,11 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     }
 
     override fun getComponent() = super.getComponent()!!
-    
+
     fun sendTextToImpexConsole(text: String) {
         impexConsole.setInputText(text)
     }
-    
+
     fun validateImpex() {
         val action = actionToolbar.actions.first { it is HybrisImpexValidateAction }
         val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
@@ -87,12 +92,14 @@ class HybrisTabs(impexConsole: HybrisImpexConsole,
                  groovyConsole: HybrisGroovyConsole,
                  impexMonitorConsole: HybrisImpexMonitorConsole,
                  project: Project,
-                 tabPlacement: Int) : JBTabsPaneImpl(project, tabPlacement, Disposable {  }) {
+                 tabPlacement: Int) : JBTabsPaneImpl(project, tabPlacement, Disposable { }) {
 
     private val consoles = arrayListOf<HybrisConsole>()
 
     init {
         addConsoleTab("Impex", HybrisIcons.IMPEX_FILE, impexConsole, "Impex Console")
+        addConsoleTab("Groovy Scripting", Groovy_16x16, groovyConsole, "Groovy Console")
+        addConsoleTab("Impex Monitor", HybrisIcons.TYPE_SYSTEM, impexMonitorConsole, "Last imported Impex files")
 
         for (extension in HybrisConsoleProvider.EP_NAME.extensions) {
             val console = extension.createConsole(project)
@@ -101,8 +108,6 @@ class HybrisTabs(impexConsole: HybrisImpexConsole,
                 addConsoleTab(extension.tabTitle, extension.icon, console, extension.tip)
             }
         }
-        addConsoleTab("Groovy Scripting", Groovy_16x16, groovyConsole, "Groovy Console")
-        addConsoleTab("Impex Monitor", HybrisIcons.TYPE_SYSTEM, impexMonitorConsole, "Last imported Impex files")
     }
 
     private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole, tip: String) {

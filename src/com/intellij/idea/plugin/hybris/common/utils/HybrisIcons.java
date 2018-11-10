@@ -55,4 +55,8 @@ public interface HybrisIcons {
     interface Gutter {
         Icon POPULATOR = IconLoader.getIcon("/icons/gutter/populator.svg");
     }
+    
+    interface Console {
+        Icon SOLR = IconLoader.getIcon("/icons/console/solr.svg");
+    }
 }

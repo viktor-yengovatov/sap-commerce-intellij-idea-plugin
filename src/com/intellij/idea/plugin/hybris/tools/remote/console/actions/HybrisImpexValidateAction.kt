@@ -26,8 +26,10 @@ class HybrisImpexValidateAction(private val tabbedPane: HybrisTabs,
         val editor = tabbedPane.activeConsole().consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
         
-        e!!.presentation.isEnabled = !executeValidationActionHandler.isProcessRunning && 
+        e.presentation.isEnabled = !executeValidationActionHandler.isProcessRunning && 
                 (lookup == null || !lookup.isCompletion) && tabbedPane.activeConsole() is HybrisImpexConsole
+
+        e.presentation.isVisible = tabbedPane.activeConsole() is HybrisImpexConsole
     }
 
 }
