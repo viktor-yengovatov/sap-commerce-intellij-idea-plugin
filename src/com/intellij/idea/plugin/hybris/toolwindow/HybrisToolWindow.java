@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSe
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -18,18 +19,61 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
+
     private ToolWindow myToolWindow;
     private Project myProject;
     private JPanel myToolWindowContent;
     private JPanel connectionPanel;
+    private JTextField solrLocationTextField;
+    private JTextField adminNameTextField;
+    private JTextField adminPwdTextField;
 
     private MyListPanel myListPanel;
+
+    public HybrisToolWindow() {
+        final DocumentListener listener = new DocumentListener() {
+
+            @Override
+            public void insertUpdate(final DocumentEvent e) {
+                saveSolrConnectionSettings();
+            }
+
+            @Override
+            public void removeUpdate(final DocumentEvent e) {
+                saveSolrConnectionSettings();
+            }
+
+            @Override
+            public void changedUpdate(final DocumentEvent e) {
+                saveSolrConnectionSettings();
+            }
+        };
+        final FocusListener focusListener = new FocusListener() {
+
+            @Override
+            public void focusGained(final FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(final FocusEvent e) {
+                saveSolrConnectionSettings();
+            }
+        };
+        adminNameTextField.addFocusListener(focusListener);
+        adminPwdTextField.addFocusListener(focusListener);
+        solrLocationTextField.addFocusListener(focusListener);
+    }
 
     @Override
     public void createToolWindowContent(
@@ -40,13 +84,23 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(myToolWindowContent, "", false);
         toolWindow.getContentManager().addContent(content);
-        project.getMessageBus().connect(project).subscribe(HybrisDeveloperSpecificProjectSettingsListener.TOPIC, this::loadSettings);
+        project.getMessageBus().connect(project).subscribe(
+            HybrisDeveloperSpecificProjectSettingsListener.TOPIC,
+            this::loadSettings
+        );
         loadSettings();
     }
 
     private void loadSettings() {
-        List<HybrisRemoteConnectionSettings> currentList = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState().getRemoteConnectionSettingsList();
+        final HybrisDeveloperSpecificProjectSettingsComponent instance = HybrisDeveloperSpecificProjectSettingsComponent
+            .getInstance(myProject);
+        List<HybrisRemoteConnectionSettings> currentList = instance.getState().getRemoteConnectionSettingsList();
         myListPanel.setInitialList(currentList);
+
+        final SolrConnectionSettings solrConnectionSettings = instance.getState().getSolrConnectionSettings();
+        adminNameTextField.setText(solrConnectionSettings.getAdminLogin());
+        adminPwdTextField.setText(solrConnectionSettings.getAdminPwd());
+        solrLocationTextField.setText(solrConnectionSettings.getLocation());
     }
 
 
@@ -123,6 +177,16 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
 
     public void saveSettings() {
         HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState().setRemoteConnectionSettingsList(myListPanel.getData());
+    }
+
+    public void saveSolrConnectionSettings() {
+        final SolrConnectionSettings solrConnectionSettings = new SolrConnectionSettings();
+        solrConnectionSettings.setAdminPwd(adminPwdTextField.getText());
+        solrConnectionSettings.setAdminLogin(adminNameTextField.getText());
+        solrConnectionSettings.setLocation(solrLocationTextField.getText());
+        HybrisDeveloperSpecificProjectSettingsComponent
+            .getInstance(myProject)
+            .getState().setSolrConnectionSettings(solrConnectionSettings);
     }
 
 

@@ -2,6 +2,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.icons.AllIcons.Actions.Checked
+import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
@@ -25,9 +26,12 @@ class HybrisImpexValidateAction(private val tabbedPane: HybrisTabs,
     override fun update(e: AnActionEvent) {
         val editor = tabbedPane.activeConsole().consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
-        
-        e!!.presentation.isEnabled = !executeValidationActionHandler.isProcessRunning && 
-                (lookup == null || !lookup.isCompletion) && tabbedPane.activeConsole() is HybrisImpexConsole
+
+
+        e.presentation.isEnabled = ActionUtils.isHybrisContext(e) && (!executeValidationActionHandler.isProcessRunning &&
+                (lookup == null || !lookup.isCompletion) && tabbedPane.activeConsole() is HybrisImpexConsole)
+
+        e.presentation.isVisible = ActionUtils.isHybrisContext(e) && tabbedPane.activeConsole() is HybrisImpexConsole
     }
 
 }

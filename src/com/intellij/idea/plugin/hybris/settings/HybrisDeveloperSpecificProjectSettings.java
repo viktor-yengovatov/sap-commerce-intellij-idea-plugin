@@ -8,6 +8,7 @@ public class HybrisDeveloperSpecificProjectSettings {
 
     protected String activeRemoteConnectionID;
     protected List<HybrisRemoteConnectionSettings> remoteConnectionSettingsList = new ArrayList<>();
+    protected SolrConnectionSettings solrRemoteConnectionSettings;
 
     public List<HybrisRemoteConnectionSettings> getRemoteConnectionSettingsList() {
         return remoteConnectionSettingsList;
@@ -25,6 +26,14 @@ public class HybrisDeveloperSpecificProjectSettings {
         this.activeRemoteConnectionID = activeRemoteConnectionID;
     }
 
+    public SolrConnectionSettings getSolrConnectionSettings() {
+        return solrRemoteConnectionSettings;
+    }
+
+    public void setSolrConnectionSettings(final SolrConnectionSettings solrRemoteConnectionSettings) {
+        this.solrRemoteConnectionSettings = solrRemoteConnectionSettings;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -35,7 +44,8 @@ public class HybrisDeveloperSpecificProjectSettings {
         }
         final HybrisDeveloperSpecificProjectSettings that = (HybrisDeveloperSpecificProjectSettings) o;
         return getActiveRemoteConnectionID().equals(that.getActiveRemoteConnectionID()) &&
-               Objects.equals(getRemoteConnectionSettingsList(), that.getRemoteConnectionSettingsList());
+               Objects.equals(getRemoteConnectionSettingsList(), that.getRemoteConnectionSettingsList()) &&
+               Objects.equals(getSolrConnectionSettings(), that.getSolrConnectionSettings());
     }
 
     @Override

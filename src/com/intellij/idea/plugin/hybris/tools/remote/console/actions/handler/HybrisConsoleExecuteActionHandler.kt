@@ -7,10 +7,14 @@ import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexMonitorConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.SolrConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
+import com.intellij.json.JsonFileType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -32,7 +36,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
 
     private fun processLine(console: HybrisConsole, text: String) {
         ApplicationManager.getApplication().runReadAction {
-            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to Hybris...") {
+            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call ...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
@@ -40,7 +44,19 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                         val httpResult = console.execute(text)
 
                         when (console) {
-                            is HybrisImpexMonitorConsole -> printSyntaxText(console, httpResult)
+                            is HybrisImpexMonitorConsole -> {
+                                console.clear()
+                                printSyntaxText(console, httpResult.output, ImpexFileType.getInstance())
+                            }
+                            is SolrConsole -> {
+                                console.clear()
+                                if (httpResult.hasError()) {
+                                    printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)
+                                } else {
+                                    printSyntaxText(console, httpResult.output, JsonFileType.INSTANCE)
+                                }
+
+                            }
                             else -> printPlainText(console, httpResult)
                         }
                     } finally {
@@ -74,17 +90,8 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
         }
     }
 
-    private fun printSyntaxText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
-        val result = createResult().errorMessage(httpResult?.errorMessage)
-                .output(httpResult?.output)
-                .result(httpResult?.result)
-                .detailMessage(httpResult?.detailMessage)
-                .build()
-        val output = result.output
-
-        console.clear()
-        ConsoleViewUtil.printAsFileType(console, output, ImpexFileType.getInstance())
-
+    private fun printSyntaxText(console: HybrisConsole, output: String, fileType: FileType) {
+        ConsoleViewUtil.printAsFileType(console, output, fileType)
     }
 
     fun runExecuteAction(tabbedPane: HybrisTabs) {
@@ -109,7 +116,8 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
         if (text.isNotEmpty() || console is HybrisImpexMonitorConsole) {
             console.currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
             console.addToHistory(range, console.consoleEditor, preserveMarkup)
-            console.setInputText("")
+            console.printDefaultText()
+
             if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
                 consoleHistoryController.addToHistory(textForHistory.trim())
             }

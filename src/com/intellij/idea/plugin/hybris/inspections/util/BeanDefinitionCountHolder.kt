@@ -15,6 +15,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.xml.XmlAttributeDescriptor
 import com.intellij.xml.util.XmlUtil
+import java.io.FileWriter
 import java.util.*
 
 /**
@@ -59,7 +60,7 @@ class BeanDefinitionCountHolder {
                     .map { PsiTreeUtil.getParentOfType(it, XmlTag::class.java) }
                     .flatMap { it!!.findSubTags("property").toList() }
                     .groupingBy { it.getAttribute("name")!!.value }
-                    .myEachCount()
+                    .eachCount()
                     .filter { entry -> entry.value > 1 }
                     .map { it.key }
                     .toHashSet()
