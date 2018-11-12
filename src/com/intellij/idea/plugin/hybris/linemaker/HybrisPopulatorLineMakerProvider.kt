@@ -29,56 +29,61 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.search.searches.ClassInheritorsSearch
+import org.apache.commons.lang3.StringUtils
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
 
-    private var populatorClass: SmartPsiElementPointer<PsiClass>? = null
-
     override fun collectNavigationMarkers(psiClass: PsiElement,
                                           result: MutableCollection<in RelatedItemLineMarkerInfo<PsiElement>>) {
         if (psiClass is PsiClass) {
             val project = psiClass.project
 
-            if (!HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject) {
-                return;
+            if (isNotHybrisProject(project)) {
+                return
             }
 
-            if (populatorClass == null) {
-                populatorClass = findPopulatorClass(project)
+            val populatorClass = findPopulatorClass(project)
+            if (populatorClass == null || populatorClass.element == null) {
+                return
             }
 
-            if (populatorClass != null) {
-                val allPopulators = ClassInheritorsSearch.search(populatorClass!!.element!!)
+            val converterFields = filterNotConverterFields(psiClass)
+            if (converterFields.isNotEmpty()) {
+                val allPopulators = ClassInheritorsSearch.search(populatorClass.element!!)
 
-                psiClass.fields
-                        .filter { it.isNotStatic() }
-                        .filter {
-                            it.type is PsiClassReferenceType
-                                    && (it.type as PsiClassReferenceType).reference.qualifiedName == "de.hybris.platform.servicelayer.dto.converter.Converter"
-                        }
-                        .forEach { field ->
+                converterFields.forEach { field ->
+                    val fieldName = field.name.replace("Converter", StringUtils.EMPTY)
+                    val candidates = allPopulators.filter { it.name!!.contains(fieldName, true) }
 
-                            val fieldName = field.name.replace("Converter", "")
-                            val candidates = allPopulators.filter { it.name!!.contains(fieldName, true) }
+                    if (candidates.isNotEmpty()) {
+                        createTargetsWithGutterIcon(result, field.nameIdentifier, candidates)
+                    }
+                }
 
-                            if (candidates.isNotEmpty()) {
-                                createTargetsWithGutterIcon(result, field.nameIdentifier, candidates)
-                            }
-                        }
             }
         }
     }
 
+    private fun filterNotConverterFields(psiClass: PsiClass): List<PsiField> {
+        return psiClass.fields
+                .filter { it.isNotStatic() }
+                .filter {
+                    it.type is PsiClassReferenceType
+                            && (it.type as PsiClassReferenceType).reference.qualifiedName == "de.hybris.platform.servicelayer.dto.converter.Converter"
+                }
+    }
+
+    private fun isNotHybrisProject(project: Project) =
+            !HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject
+
     private fun findPopulatorClass(project: Project): SmartPsiElementPointer<PsiClass>? {
-        val populators = PsiShortNamesCache.getInstance(project).getClassesByName("Populator", GlobalSearchScope.allScope(project))
-        val populator = populators.firstOrNull { it.qualifiedName == "de.hybris.platform.converters.Populator" }
-        if (populator != null) {
-            return SmartPointerManager.getInstance(project).createSmartPsiElementPointer<PsiClass>(populator)
+        val populatorClass = JavaPsiFacade.getInstance(project).findClass("de.hybris.platform.converters.Populator", GlobalSearchScope.allScope(project))
+        if (populatorClass != null) {
+            return SmartPointerManager.getInstance(project).createSmartPsiElementPointer<PsiClass>(populatorClass)
         }
         return null
     }
