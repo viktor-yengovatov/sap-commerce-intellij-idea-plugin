@@ -38,6 +38,7 @@ import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -130,6 +131,14 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         registerAntListener(project);
         resetSpringGeneralSettings(project);
         fixBackOfficeJRebelSupport(project);
+
+        if (isObsoleteIDEVersion()) {
+            performShowInfoBubble(project, "obsolete.ide.version.title", "obsolete.ide.version.text");
+        }
+    }
+
+    private boolean isObsoleteIDEVersion() {
+        return ApplicationInfo.getInstance().getStrictVersion().compareTo("2018.3") < 0;
     }
 
     private boolean popupPermissionToSendStatistics(final Project project) {
@@ -199,6 +208,11 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         if (currentTime - lastNotificationTime >= DateFormatUtil.MONTH) {
             properties.setValue(LAST_BUBBLE_INFO_TIME_PROPERTY, String.valueOf(currentTime));
 
+            performShowInfoBubble(project, titleKey, textKey);
+        }
+    }
+
+    private void performShowInfoBubble(final Project project, String titleKey, String textKey) {
             final Notification notification = notificationGroup.createNotification(
                 HybrisI18NBundleUtils.message(titleKey),
                 HybrisI18NBundleUtils.message(textKey),
@@ -213,8 +227,6 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
                     notificationClosingAlarm.addRequest(notification::hideBalloon, 3000);
                 }
             });
-
-        }
     }
 
     private void goToDiscountOffer(final HyperlinkEvent myHyperlinkEvent) {
