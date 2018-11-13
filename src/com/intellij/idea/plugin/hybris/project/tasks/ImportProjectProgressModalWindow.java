@@ -479,11 +479,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final HybrisDeveloperSpecificProjectSettings state
     ) {
         final SolrConnectionSettings solrConnectionSettings = state.getSolrConnectionSettings();
-        final SolrConnectionSettings defaultSolrConnectionSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings();
-        solrConnectionSettings.setLocation(defaultSolrConnectionSettings.getLocation());
-        solrConnectionSettings.setAdminLogin(defaultSolrConnectionSettings.getAdminLogin());
-        solrConnectionSettings.setAdminPwd(defaultSolrConnectionSettings.getAdminPwd());
-        state.setSolrConnectionSettings(solrConnectionSettings);
+        final SolrConnectionSettings defaultSolrConnectionSettings 
+            = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings();
+        if (solrConnectionSettings == null) {
+            state.setSolrConnectionSettings(defaultSolrConnectionSettings);
+        } else {
+            solrConnectionSettings.setLocation(defaultSolrConnectionSettings.getLocation());
+            solrConnectionSettings.setAdminLogin(defaultSolrConnectionSettings.getAdminLogin());
+            solrConnectionSettings.setAdminPwd(defaultSolrConnectionSettings.getAdminPwd());
+            state.setSolrConnectionSettings(solrConnectionSettings);
+        }
     }
 
     private Set<String> createModulesOnBlackList() {
