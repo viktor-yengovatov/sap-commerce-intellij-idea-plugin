@@ -97,7 +97,10 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         List<HybrisRemoteConnectionSettings> currentList = instance.getState().getRemoteConnectionSettingsList();
         myListPanel.setInitialList(currentList);
 
-        final SolrConnectionSettings solrConnectionSettings = instance.getState().getSolrConnectionSettings();
+        SolrConnectionSettings solrConnectionSettings = instance.getState().getSolrConnectionSettings();
+        if (solrConnectionSettings == null) {
+            solrConnectionSettings = SolrConnectionSettings.createDefaultSolrConnectionSettings();
+        }
         adminNameTextField.setText(solrConnectionSettings.getAdminLogin());
         adminPwdTextField.setText(solrConnectionSettings.getAdminPwd());
         solrLocationTextField.setText(solrConnectionSettings.getLocation());
