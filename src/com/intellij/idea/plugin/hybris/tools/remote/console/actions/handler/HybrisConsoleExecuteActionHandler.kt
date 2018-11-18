@@ -34,14 +34,14 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
         ApplicationManager.getApplication().invokeLater { console.consoleEditor.component.updateUI() }
     }
 
-    private fun processLine(console: HybrisConsole, text: String) {
+    private fun processLine(console: HybrisConsole, query: String) {
         ApplicationManager.getApplication().runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call ...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
                         setEditorEnabled(console, false)
-                        val httpResult = console.execute(text)
+                        val httpResult = console.execute(query)
 
                         when (console) {
                             is HybrisImpexMonitorConsole -> {
@@ -110,10 +110,10 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
         val textForHistory = document.text
         console.preProcessors().forEach { processor -> console.setInputText(processor.process(console)) }
 
-        val text = document.text
+        val query = document.text
         val range = TextRange(0, document.textLength)
 
-        if (text.isNotEmpty() || console is HybrisImpexMonitorConsole) {
+        if (query.isNotEmpty() || console is HybrisImpexMonitorConsole) {
             console.currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
             console.addToHistory(range, console.consoleEditor, preserveMarkup)
             console.printDefaultText()
@@ -122,7 +122,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                 consoleHistoryController.addToHistory(textForHistory.trim())
             }
 
-            processLine(console, text)
+            processLine(console, query)
         }
     }
 

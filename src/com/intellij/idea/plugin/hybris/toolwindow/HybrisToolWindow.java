@@ -97,13 +97,10 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         List<HybrisRemoteConnectionSettings> currentList = instance.getState().getRemoteConnectionSettingsList();
         myListPanel.setInitialList(currentList);
 
-        SolrConnectionSettings solrConnectionSettings = instance.getState().getSolrConnectionSettings();
-        if (solrConnectionSettings == null) {
-            solrConnectionSettings = SolrConnectionSettings.createDefaultSolrConnectionSettings();
-        }
+        SolrConnectionSettings solrConnectionSettings = instance.getActiveSolrConnectionSettings(myProject);
         adminNameTextField.setText(solrConnectionSettings.getAdminLogin());
-        adminPwdTextField.setText(solrConnectionSettings.getAdminPwd());
-        solrLocationTextField.setText(solrConnectionSettings.getLocation());
+        adminPwdTextField.setText(solrConnectionSettings.getAdminPassword());
+        solrLocationTextField.setText(solrConnectionSettings.getGeneratedURL());
     }
 
 
@@ -183,13 +180,11 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     }
 
     public void saveSolrConnectionSettings() {
-        final SolrConnectionSettings solrConnectionSettings = new SolrConnectionSettings();
-        solrConnectionSettings.setAdminPwd(adminPwdTextField.getText());
-        solrConnectionSettings.setAdminLogin(adminNameTextField.getText());
-        solrConnectionSettings.setLocation(solrLocationTextField.getText());
-        HybrisDeveloperSpecificProjectSettingsComponent
-            .getInstance(myProject)
-            .getState().setSolrConnectionSettings(solrConnectionSettings);
+        final SolrConnectionSettings settings = HybrisDeveloperSpecificProjectSettingsComponent
+            .getInstance(myProject).getActiveSolrConnectionSettings(myProject);
+        settings.setAdminPassword(adminPwdTextField.getText());
+        settings.setAdminLogin(adminNameTextField.getText());
+        settings.setGeneratedURL(solrLocationTextField.getText());
     }
 
 

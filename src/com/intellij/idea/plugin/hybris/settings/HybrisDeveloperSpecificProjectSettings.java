@@ -7,8 +7,9 @@ import java.util.Objects;
 public class HybrisDeveloperSpecificProjectSettings {
 
     protected String activeRemoteConnectionID;
+    protected String activeSolrConnectionID;
     protected List<HybrisRemoteConnectionSettings> remoteConnectionSettingsList = new ArrayList<>();
-    protected SolrConnectionSettings solrRemoteConnectionSettings;
+    protected List<SolrConnectionSettings> solrConnectionSettingsList = new ArrayList<>();
 
     public List<HybrisRemoteConnectionSettings> getRemoteConnectionSettingsList() {
         return remoteConnectionSettingsList;
@@ -26,12 +27,20 @@ public class HybrisDeveloperSpecificProjectSettings {
         this.activeRemoteConnectionID = activeRemoteConnectionID;
     }
 
-    public SolrConnectionSettings getSolrConnectionSettings() {
-        return solrRemoteConnectionSettings;
+    public String getActiveSolrConnectionID() {
+        return activeSolrConnectionID;
     }
 
-    public void setSolrConnectionSettings(final SolrConnectionSettings solrRemoteConnectionSettings) {
-        this.solrRemoteConnectionSettings = solrRemoteConnectionSettings;
+    public void setActiveSolrConnectionID(final String activeSolrConnectionID) {
+        this.activeSolrConnectionID = activeSolrConnectionID;
+    }
+
+    public List<SolrConnectionSettings> getSolrConnectionSettingsList() {
+        return solrConnectionSettingsList;
+    }
+
+    public void setSolrConnectionSettingsList(final List<SolrConnectionSettings> solrConnectionSettingsList) {
+        this.solrConnectionSettingsList = solrConnectionSettingsList;
     }
 
     @Override
@@ -44,12 +53,18 @@ public class HybrisDeveloperSpecificProjectSettings {
         }
         final HybrisDeveloperSpecificProjectSettings that = (HybrisDeveloperSpecificProjectSettings) o;
         return getActiveRemoteConnectionID().equals(that.getActiveRemoteConnectionID()) &&
+               getActiveSolrConnectionID().equals(that.getActiveSolrConnectionID()) &&
                Objects.equals(getRemoteConnectionSettingsList(), that.getRemoteConnectionSettingsList()) &&
-               Objects.equals(getSolrConnectionSettings(), that.getSolrConnectionSettings());
+               Objects.equals(getSolrConnectionSettingsList(), that.getSolrConnectionSettingsList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getActiveRemoteConnectionID(), getRemoteConnectionSettingsList());
+        return Objects.hash(
+            getActiveRemoteConnectionID(),
+            getRemoteConnectionSettingsList(),
+            getSolrConnectionSettingsList(),
+            getActiveSolrConnectionID()
+        );
     }
 }
