@@ -41,7 +41,7 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
         this.printDefaultText()
     }
 
-    abstract fun execute(text: String): HybrisHttpResult
+    abstract fun execute(query: String): HybrisHttpResult
 
     open fun preProcessors(): List<HybrisConsolePreProcessor> = listOf()
 

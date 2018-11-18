@@ -22,6 +22,7 @@ package com.intellij.idea.plugin.hybris.common.services;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -70,4 +71,6 @@ public interface CommonIdeaService {
     boolean isDiscountTargetGroup();
 
     boolean isFansTargetGroup();
+
+    String getHostSolrUrl(Project project, SolrConnectionSettings item);
 }

@@ -461,11 +461,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 state.setActiveRemoteConnectionID(newSettings.getUuid());
             }
         }
-        
+
         if (state != null) {
             fillSolrConnectionSettings(developerSpecificSettings, state);
         }
-        
+
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
             final ToolWindowManager manager = ToolWindowManager.getInstance(project);
             final ToolWindow window = manager.getToolWindow("Hybris");
@@ -478,16 +478,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings,
         final HybrisDeveloperSpecificProjectSettings state
     ) {
-        final SolrConnectionSettings solrConnectionSettings = state.getSolrConnectionSettings();
-        final SolrConnectionSettings defaultSolrConnectionSettings 
-            = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings();
-        if (solrConnectionSettings == null) {
-            state.setSolrConnectionSettings(defaultSolrConnectionSettings);
-        } else {
-            solrConnectionSettings.setLocation(defaultSolrConnectionSettings.getLocation());
-            solrConnectionSettings.setAdminLogin(defaultSolrConnectionSettings.getAdminLogin());
-            solrConnectionSettings.setAdminPwd(defaultSolrConnectionSettings.getAdminPwd());
-            state.setSolrConnectionSettings(solrConnectionSettings);
+        List<SolrConnectionSettings> list = state.getSolrConnectionSettingsList();
+        if (list.isEmpty()) {
+            SolrConnectionSettings newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(project);
+            list.add(newSettings);
+            state.setActiveRemoteConnectionID(newSettings.getUuid());
         }
     }
 

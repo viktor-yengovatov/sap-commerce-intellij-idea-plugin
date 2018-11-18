@@ -53,6 +53,20 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
         return remoteList.stream().filter(e -> Objects.equals(id, e.getUuid())).findFirst().orElse(remoteList.get(0));
     }
 
+    public SolrConnectionSettings getActiveSolrConnectionSettings(final Project project) {
+        final HybrisDeveloperSpecificProjectSettings state = getState();
+        if (state == null) {
+            return getDefaultSolrRemoteConnectionSettings(project);
+        }
+        final List<SolrConnectionSettings> solrList = state.getSolrConnectionSettingsList();
+        if (solrList.isEmpty()) {
+            return getDefaultSolrRemoteConnectionSettings(project);
+        }
+        final String id = state.getActiveSolrConnectionID();
+
+        return solrList.stream().filter(e -> Objects.equals(id, e.getUuid())).findFirst().orElse(solrList.get(0));
+    }
+
     @NotNull
     public HybrisRemoteConnectionSettings getDefaultHybrisRemoteConnectionSettings(final Project project) {
         final HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
@@ -66,7 +80,15 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
     }
 
     @NotNull
-    public SolrConnectionSettings getDefaultSolrRemoteConnectionSettings() {
-        return SolrConnectionSettings.createDefaultSolrConnectionSettings();
+    public SolrConnectionSettings getDefaultSolrRemoteConnectionSettings(final Project project) {
+        final SolrConnectionSettings item = new SolrConnectionSettings();
+        item.setUuid(UUID.randomUUID().toString());
+        item.setHostIP("localhost");
+        item.setPort(HybrisConstants.DEFAULT_SOLR_TOMCAT_SSL_PORT);
+        item.setSolrWebroot("solr");
+        item.setAdminLogin("solradmin");
+        item.setAdminPassword("admin123");
+        item.setGeneratedURL(CommonIdeaService.getInstance().getHostSolrUrl(project, item));
+        return item;
     }
 }
