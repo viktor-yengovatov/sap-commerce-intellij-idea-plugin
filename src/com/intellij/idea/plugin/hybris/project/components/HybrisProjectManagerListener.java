@@ -43,10 +43,15 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.startup.StartupManager;
+import com.intellij.openapi.updateSettings.impl.PluginDownloader;
+import com.intellij.openapi.updateSettings.impl.UpdateChecker;
+import com.intellij.openapi.updateSettings.impl.UpdateInstaller;
+import com.intellij.openapi.updateSettings.impl.UpdateSettings;
 import com.intellij.spring.settings.SpringGeneralSettings;
 import com.intellij.util.Alarm;
 import com.intellij.util.text.DateFormatUtil;
@@ -60,6 +65,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.ANT_SUPPORT_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
@@ -131,6 +137,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         registerAntListener(project);
         resetSpringGeneralSettings(project);
         fixBackOfficeJRebelSupport(project);
+        checkForUpdates();
 
         if (isObsoleteIDEVersion()) {
             performShowInfoBubble(project, "obsolete.ide.version.title", "obsolete.ide.version.text");
@@ -139,6 +146,32 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
 
     private boolean isObsoleteIDEVersion() {
         return ApplicationInfo.getInstance().getStrictVersion().compareTo("2018.3") < 0;
+    }
+
+    private void checkForUpdates() {
+        UpdateSettings.getInstance().setCheckNeeded(true);
+        UpdateSettings.getInstance().forceCheckForUpdateAfterRestart();
+        ApplicationManager.getApplication().executeOnPooledThread(() -> {
+            Collection<PluginDownloader> availableUpdates = UpdateChecker.getPluginUpdates();
+            if (availableUpdates == null) {
+                LOG.info("Some plugin updates found");
+                return;
+            }
+            PluginDownloader pluginDownloader =
+                availableUpdates.stream()
+                                .filter(downloader -> HybrisConstants.PLUGIN_ID.equals(downloader.getPluginId()))
+                                .findAny().orElse(null);
+            if (pluginDownloader == null) {
+                LOG.info("Hybris integration plugin update not found");
+                return;
+            }
+            LOG.info("Hybris integration plugin update available");
+            if (UpdateInstaller.installPluginUpdates(availableUpdates, new EmptyProgressIndicator())) {
+                LOG.info("Hybris integration plugin update succeeded");
+            } else {
+                LOG.info("Hybris integration plugin update failed");
+            }
+        });
     }
 
     private boolean popupPermissionToSendStatistics(final Project project) {

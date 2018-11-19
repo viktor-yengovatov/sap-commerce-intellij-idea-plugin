@@ -213,8 +213,8 @@ public interface HybrisConstants {
                                             "It is recommended to keep custom hybris modules within custom group i.e. custom/subgroup, so that the generated search scopes would function correctly.\n" +
                                             "\n" +
                                             "Use ANT_OPTS to override ant properties. Current default value is\n" +
-                                            "ANT_OPTS=-Xmx512 -Dfile.encoding=UTF-8";
-    
+                                            "ANT_OPTS=-Xmx512m -Dfile.encoding=UTF-8";
+
     String SOURCE_ATTRIBUTE_NAME = "source";
     String TARGET_ATTRIBUTE_NAME = "target";
     String CODE_ATTRIBUTE_NAME = "code";
@@ -269,7 +269,7 @@ public interface HybrisConstants {
         "ybackoffice",
         "ybootstrap"
     );
-    
+
     interface IMPEX {
         String CATALOG_VERSION_ONLINE = "Online";
         String CATALOG_VERSION_STAGED = "Staged";
