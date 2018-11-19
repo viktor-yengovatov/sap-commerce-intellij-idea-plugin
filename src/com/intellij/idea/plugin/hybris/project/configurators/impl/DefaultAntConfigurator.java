@@ -268,7 +268,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
                 }
             }
         }
-        return HybrisConstants.ANT_XMX + HybrisConstants.ANT_HEAP_SIZE_MB + " " + HybrisConstants.ANT_ENCODING;
+        return HybrisConstants.ANT_XMX + HybrisConstants.ANT_HEAP_SIZE_MB + "m " + HybrisConstants.ANT_ENCODING;
     }
 
     private void createAntClassPath(final File platformDir) {
