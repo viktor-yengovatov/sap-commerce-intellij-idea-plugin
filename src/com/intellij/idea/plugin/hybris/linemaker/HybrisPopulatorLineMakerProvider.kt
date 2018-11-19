@@ -51,13 +51,13 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
                 return
             }
 
-            val converterFields = filterNotConverterFields(psiClass)
+            val converterFields = retrieveConverterFields(psiClass)
             if (converterFields.isNotEmpty()) {
                 val allPopulators = ClassInheritorsSearch.search(populatorClass.element!!)
 
                 converterFields.forEach { field ->
                     val fieldName = field.name.replace("Converter", StringUtils.EMPTY)
-                    val candidates = allPopulators.filter { it.name!!.contains(fieldName, true) }
+                    val candidates = allPopulators.filter { byName(it, fieldName) || byGenerics(it, field) }
 
                     if (candidates.isNotEmpty()) {
                         createTargetsWithGutterIcon(result, field.nameIdentifier, candidates)
@@ -68,7 +68,22 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
         }
     }
 
-    private fun filterNotConverterFields(psiClass: PsiClass): List<PsiField> {
+    private fun byName(it: PsiClass, fieldName: String) = it.name!!.contains(fieldName, true)
+
+    private fun byGenerics(it: PsiClass, field: PsiField): Boolean {
+        val interfaces = it.implementsListTypes
+        if (interfaces.isNotEmpty()) {
+            if (field.type is PsiClassReferenceType) {
+                if (interfaces.first().parameterCount == (field.type as PsiClassReferenceType).parameterCount) {
+                    return interfaces.first().parameters.contentEquals((field.type as PsiClassReferenceType).parameters)
+                }
+            }
+        }
+        
+        return false
+    }
+
+    private fun retrieveConverterFields(psiClass: PsiClass): List<PsiField> {
         return psiClass.fields
                 .filter { it.isNotStatic() }
                 .filter {
