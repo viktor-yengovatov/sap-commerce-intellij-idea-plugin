@@ -414,7 +414,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final boolean scanThroughExternalModule,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
-        final Set<File> moduleRootDirectories = newHashSet(moduleRootMap.get(HYBRIS));
+        final Map<String, File> moduleRootDirectories = new HashMap<>();
+
+        moduleRootMap.get(HYBRIS).forEach(file-> addIfNotExists(moduleRootDirectories, file));
 
         if (scanThroughExternalModule) {
             LOG.info("Scanning for higher priority modules");
@@ -424,16 +426,48 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
                 if (hybrisModuleSet.isEmpty()) {
                     LOG.info("Confirmed module " + nonHybrisDir);
-                    moduleRootDirectories.add(nonHybrisDir);
+                    addIfNotExists(moduleRootDirectories, nonHybrisDir);
                 } else {
                     LOG.info("Replaced module " + nonHybrisDir);
-                    moduleRootDirectories.addAll(hybrisModuleSet);
+                    hybrisModuleSet.forEach(file -> addIfNotExists(moduleRootDirectories, file));
                 }
             }
         } else {
-            moduleRootDirectories.addAll(moduleRootMap.get(NON_HYBRIS));
+            moduleRootMap.get(NON_HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
         }
-        return moduleRootDirectories;
+        return newHashSet(moduleRootDirectories.values());
+    }
+
+    private void addIfNotExists(final Map<String, File> moduleRootDirectories, final File file) {
+        try {
+            // this will resolve symlinks
+            final String path = file.getCanonicalPath();
+            File current = moduleRootDirectories.get(path);
+            if (current == null) {
+                moduleRootDirectories.put(path, file);
+                return;
+            }
+            if (hybrisDistributionDirectory != null && !FileUtils.isFileUnder(current, hybrisDistributionDirectory)) {
+                if (FileUtils.isFileUnder(file, hybrisDistributionDirectory)) {
+                    moduleRootDirectories.put(path, file);
+                    return;
+                }
+            }
+            if (externalExtensionsDirectory != null && !FileUtils.isFileUnder(current, externalExtensionsDirectory)) {
+                if (FileUtils.isFileUnder(file, externalExtensionsDirectory)) {
+                    moduleRootDirectories.put(path, file);
+                    return;
+                }
+            }
+            if (rootDirectory != null && !FileUtils.isFileUnder(current, rootDirectory)) {
+                if (FileUtils.isFileUnder(file, rootDirectory)) {
+                    moduleRootDirectories.put(path, file);
+                    return;
+                }
+            }
+        } catch (IOException e) {
+            LOG.error("Unable to locate "+file.getAbsolutePath());
+        }
     }
 
     private Map<DIRECTORY_TYPE, Set<File>> newModuleRootMap() {
