@@ -57,7 +57,11 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
 
                 converterFields.forEach { field ->
                     val fieldName = field.name.replace("Converter", StringUtils.EMPTY)
-                    val candidates = allPopulators.filter { byName(it, fieldName) || byGenerics(it, field) }
+                    val candidates = allPopulators
+                            .filter { byName(it, fieldName) || byGenerics(it, field) }
+                            .map { if (byGenerics(it, field)) CandidateWrapper(0, it) else CandidateWrapper(1, it) }
+                            .sortedBy { it.priority }
+                            .map { it.psiClass }
 
                     if (candidates.isNotEmpty()) {
                         createTargetsWithGutterIcon(result, field.nameIdentifier, candidates)
@@ -79,7 +83,7 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
                 }
             }
         }
-        
+
         return false
     }
 
@@ -124,6 +128,8 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
         ))
         result.add(builder.createLineMarkerInfo(psiElement))
     }
+
+    private data class CandidateWrapper(var priority: Int, var psiClass: PsiClass)
 }
 
 private fun PsiField.isNotStatic() = !this.hasModifier(JvmModifier.STATIC)
