@@ -35,6 +35,8 @@
               <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
               <li>Enhanced project view tree.</li>
               <li>JRebel and DCEVM support.</li>
+              <li>Execution of Flexible Search queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
+              <li>Execution of queries on remote Solr instances.</li>
               <li>And much more</li>
           </ul>
 
@@ -100,11 +102,23 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Fault</h2>
+            <h2>IT Help</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-183'>IIPS-183</a>] - Reseting git repository configuration on Project Refresh</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-184'>IIPS-184</a>] - NoSuchElementException: Array contains no element matching the predicate.</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-185'>IIPS-185</a>] - AbstractCellEditor#cancelCellEditing:Access is allowed from event dispatch thread only.</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-188'>IIPS-188</a>] - Hybris Tests.Integration Tests must be added before selecting
+                </li>
+            </ul>
+
+            <h2>Task</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-301'>IIP-301</a>] - Check latest plugin version</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-512'>IIP-512</a>] - Improve symlink support</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-513'>IIP-513</a>] - Add a Solr console for executing search queries on a remote Solr instance</li>
+            </ul>
+
+            <h2>Bug</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-514'>IIP-514</a>] - NullPointerException in HybrisPopulatorLineMakerProvider</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-516'>IIP-516</a>] - NPE during save or load a solr connection config</li>
             </ul>
         ]]>
     </change-notes>
