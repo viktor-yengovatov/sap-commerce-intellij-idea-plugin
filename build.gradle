@@ -49,6 +49,9 @@ dependencies {
 
     compile("org.apache.solr:solr-solrj:7.5.0") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+        exclude group: 'org.apache.httpcomponents', module: 'httpmime'
     }
 
     compile "com.github.ben-manes.caffeine:caffeine:2.6.2"
