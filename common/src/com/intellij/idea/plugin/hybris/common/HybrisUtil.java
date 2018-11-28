@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.common;
 
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -36,6 +37,10 @@ public final class HybrisUtil {
 
     public static boolean isHybrisModuleRoot(@NotNull final File file) {
         return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
+    }
+
+    public static boolean isHybrisModuleRoot(@NotNull VirtualFile file) {
+        return file.findChild(HybrisConstants.EXTENSION_INFO_XML) != null;
     }
 
     public static boolean isAcceleratorAddOnModuleRoot(@NotNull final File file) {
