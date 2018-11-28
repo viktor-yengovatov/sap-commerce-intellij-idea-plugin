@@ -173,13 +173,19 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         excludeSubDirectories(contentEntry, moduleDescriptor.getRootDirectory(), Arrays.asList(
             EXTERNAL_TOOL_BUILDERS_DIRECTORY,
             SETTINGS_DIRECTORY,
-            CLASSES_DIRECTORY,
             TEST_CLASSES_DIRECTORY,
             ECLIPSE_BIN_DIRECTORY,
             NODE_MODULES_DIRECTORY,
             BOWER_COMPONENTS_DIRECTORY,
             JS_TARGET_DIRECTORY
         ));
+
+        if (
+            moduleDescriptor.getDescriptorType() == CUSTOM ||
+            !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
+        ) {
+            excludeDirectory(contentEntry, new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY));
+        }
     }
 
     private void excludeSubDirectories(
@@ -435,12 +441,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
         if (moduleDescriptor.getDescriptorType() == CUSTOM) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
-        } else {
-            final File webSrcDirectory = new File(webModuleDirectory, SRC_DIRECTORY);
-
-            if (webSrcDirectory.exists()) {
-                excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
-            }
+        } else if (
+            !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode() &&
+            new File(webModuleDirectory, SRC_DIRECTORY).exists()
+        ) {
+            excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         }
     }
 }

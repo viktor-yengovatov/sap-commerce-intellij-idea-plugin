@@ -45,6 +45,8 @@
         <internalFileTemplate name="Impex File"/>
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView"/>
+
+        <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
     </extensions>
 
     <project-components>
@@ -68,7 +70,7 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
         -->
-        <action id="Console.Execute.Immediately" 
+        <action id="Console.Execute.Immediately"
                 class="com.intellij.openapi.actionSystem.EmptyAction"
                 text="Execute Current Statement">
             <keyboard-shortcut keymap="$default" first-keystroke="alt ENTER"/>
@@ -76,7 +78,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Hybris Console" icon="/icons/grayHybrisIcon.svg" anchor="bottom" 
+        <toolWindow id="Hybris Console" icon="/icons/grayHybrisIcon.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory"/>
     </extensions>
 
