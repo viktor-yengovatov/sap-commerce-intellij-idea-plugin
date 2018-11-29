@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.3.8.183</version>
+    <version>9.3.9.183</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="183"/>
@@ -102,23 +102,14 @@
 
     <change-notes>
         <![CDATA[
-            <h2>IT Help</h2>
+            <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-188'>IIPS-188</a>] - Hybris Tests.Integration Tests must be added before selecting
-                </li>
-            </ul>
-
-            <h2>Task</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-301'>IIP-301</a>] - Check latest plugin version</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-512'>IIP-512</a>] - Improve symlink support</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-513'>IIP-513</a>] - Add a Solr console for executing search queries on a remote Solr instance</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-189'>IIPS-189</a>] - Fatal error initializing plugin ccom.intellij.idea.plugin.hybris.impex</li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-514'>IIP-514</a>] - NullPointerException in HybrisPopulatorLineMakerProvider</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-516'>IIP-516</a>] - NPE during save or load a solr connection config</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-515'>IIP-515</a>] - Imported project not setup correctly</li>
             </ul>
         ]]>
     </change-notes>
