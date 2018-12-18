@@ -34,6 +34,10 @@ import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
  */
 public interface HybrisConstants {
 
+    String IMPEX_CONSOLE_TITLE = "Hybris Impex Console";
+    String IMPEX_MONITOR_CONSOLE_TITLE = "Hybris Monitor Console";
+    String GROOVY_CONSOLE_TITLE = "Hybris Groovy Console";
+    String FLEXIBLE_SEARCH_CONSOLE_TITLE = "Hybris FS Console";
     String EXTENSION_INFO_XML = "extensioninfo.xml";
     String DOT_PROJECT = ".project";
     String SETTINGS_GRADLE = "settings.gradle";

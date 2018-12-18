@@ -31,7 +31,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     private val monitorConsole = HybrisImpexMonitorConsole(project)
 
     private val actionToolbar: ActionToolbar
-
+    private val hybrisTabs: HybrisTabs
     init {
         layout = BorderLayout()
 
@@ -41,38 +41,52 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 
         val panel = JPanel(BorderLayout())
 
-        val tabsPane = HybrisTabs(impexConsole,
+        hybrisTabs = HybrisTabs(impexConsole,
                 groovyConsole,
                 monitorConsole,
                 project, TOP)
 
-        panel.add(tabsPane.component, BorderLayout.CENTER)
-        actionToolbar.setTargetComponent(tabsPane.component)
+        panel.add(hybrisTabs.component, BorderLayout.CENTER)
+        actionToolbar.setTargetComponent(hybrisTabs.component)
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
         val actionHandler = HybrisConsoleExecuteActionHandler(project, false)
         val validateHandler = HybrisConsoleExecuteValidateActionHandler(project, false)
-        val executeAction = HybrisExecuteImmediatelyAction(tabsPane, actionHandler)
+        val executeAction = HybrisExecuteImmediatelyAction(hybrisTabs, actionHandler)
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
 
         val choseInstanceAction = HybrisChooseInstanceAction()
 
         toolbarActions.add(choseInstanceAction)
         toolbarActions.add(executeAction)
-        toolbarActions.add(HybrisSuspendAction(tabsPane, actionHandler))
-        toolbarActions.add(HybrisImpexValidateAction(tabsPane, validateHandler))
-        toolbarActions.add(HybrisSolrUpdateConnectionAction(tabsPane))
+        toolbarActions.add(HybrisSuspendAction(hybrisTabs, actionHandler))
+        toolbarActions.add(HybrisImpexValidateAction(hybrisTabs, validateHandler))
+        toolbarActions.add(HybrisSolrUpdateConnectionAction(hybrisTabs))
 
         val actions = impexConsole.createConsoleActions()
-        actions[5] = HybrisClearAllAction(tabsPane)
+        actions[5] = HybrisClearAllAction(hybrisTabs)
         toolbarActions.addAll(*actions)
         add(panel)
     }
 
     override fun getComponent() = super.getComponent()!!
 
-    fun sendTextToImpexConsole(text: String) {
-        impexConsole.setInputText(text)
+    fun sendTextToConsole(console: HybrisConsole, text: String) {
+        console.setInputText(text)
+    }
+
+    fun setActiveConsole(console: HybrisConsole) {
+        hybrisTabs.setActiveConsole(console)
+    }
+
+    fun findConsole(consoleTitle: String): HybrisConsole? {
+        for (index in 0 until hybrisTabs.tabCount) {
+            val component = hybrisTabs.getComponentAt(index) as HybrisConsole
+            if (component.title == consoleTitle) {
+                return component
+            }
+        }
+        return null
     }
 
     fun validateImpex() {
@@ -81,7 +95,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         action.actionPerformed(event)
     }
 
-    fun importImpex() {
+    fun execute() {
         val action = actionToolbar.actions.first { it is HybrisExecuteImmediatelyAction }
         val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
         action.actionPerformed(event)
@@ -116,4 +130,7 @@ class HybrisTabs(impexConsole: HybrisImpexConsole,
     }
 
     fun activeConsole() = consoles[selectedIndex]
+    fun setActiveConsole(console: HybrisConsole) {
+        selectedIndex=consoles.indexOf(console);
+    }
 }

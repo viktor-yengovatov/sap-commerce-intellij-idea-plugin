@@ -24,4 +24,11 @@
 
     </extensions>
 
+    <actions>
+        <action id="GroovyRemoteControl.Execute"
+                class="com.intellij.idea.plugin.hybris.tools.remote.action.ExecuteGroovyAction"
+                icon="/icons/hybrisIcon.svg">
+        </action>
+    </actions>
+
 </idea-plugin>

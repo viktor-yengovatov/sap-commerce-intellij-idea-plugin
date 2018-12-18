@@ -4,6 +4,7 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.*
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERSION_ONLINE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERSION_STAGED
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
@@ -50,7 +51,7 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
     }
 }
 
-class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impex Console", ImpexLanguage.getInstance()) {
+class HybrisImpexConsole(project: Project) : HybrisConsole(project, IMPEX_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
     object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
     private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
@@ -95,7 +96,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, "Hybris Impe
     }
 }
 
-class HybrisGroovyConsole(project: Project) : HybrisConsole(project, "Hybris Groovy Console", GroovyLanguage) {
+class HybrisGroovyConsole(project: Project) : HybrisConsole(project, GROOVY_CONSOLE_TITLE, GroovyLanguage) {
     object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
 
     init {
@@ -108,7 +109,7 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, "Hybris Gro
 }
 
 
-class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, "Hybris Monitor Console", ImpexLanguage.getInstance()) {
+class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, IMPEX_MONITOR_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
     object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
 
     private val panel = JPanel()

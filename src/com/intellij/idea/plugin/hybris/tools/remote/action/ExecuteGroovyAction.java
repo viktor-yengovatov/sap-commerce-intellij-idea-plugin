@@ -18,23 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
+import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_CONSOLE_TITLE;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GROOVY_CONSOLE_TITLE;
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-public class ImportImpexAction extends AbstractExecuteAction {
-
+public class ExecuteGroovyAction extends AbstractExecuteAction {
 
     @Override
     protected String getExtension() {
-        return ImpexFileType.getInstance().getDefaultExtension();
+        return GroovyFileType.GROOVY_FILE_TYPE.getDefaultExtension();
     }
 
     @Override
     protected String getConsoleName() {
-        return IMPEX_CONSOLE_TITLE;
+        return GROOVY_CONSOLE_TITLE;
     }
+
 }

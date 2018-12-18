@@ -18,53 +18,29 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory;
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
+
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_CONSOLE_TITLE;
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-public class ValidateImpexAction extends AnAction implements DumbAware {
+public class ValidateImpexAction extends AbstractExecuteAction  {
 
     @Override
-    public void actionPerformed(final AnActionEvent e) {
-        final Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
-        if (editor != null) {
-            final SelectionModel selectionModel = editor.getSelectionModel();
-            String content = selectionModel.getSelectedText();
-            if (content == null || content.trim().isEmpty()) {
-                content = editor.getDocument().getText();
-            }
-
-            final HybrisConsolePanelView consolePanelView = ServiceManager.getService(
-                e.getProject(),
-                HybrisConsolePanelView.class
-            );
-            final HybrisConsolePanel consolePanel = consolePanelView.getConsolePanel();
-            consolePanel.sendTextToImpexConsole(content);
-            consolePanel.validateImpex();
-
-            ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow(HybrisConsoleToolWindowFactory.ID);
-            toolWindow.activate(null);
-        }
+    protected void doExecute(final HybrisConsolePanel consolePanel) {
+        consolePanel.validateImpex();
     }
 
     @Override
-    public void update(final AnActionEvent e) {
-        super.update(e);
-        final VirtualFile file = e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE);
-        final boolean enabled = file != null && file.getName().endsWith(".impex");
-        e.getPresentation().setEnabledAndVisible(enabled);
+    protected String getExtension() {
+        return ImpexFileType.getInstance().getDefaultExtension();
     }
+
+    @Override
+    protected String getConsoleName() {
+        return IMPEX_CONSOLE_TITLE;
+    }
+
 }
