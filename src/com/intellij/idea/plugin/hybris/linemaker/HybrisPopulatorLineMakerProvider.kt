@@ -72,7 +72,7 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
         }
     }
 
-    private fun byName(it: PsiClass, fieldName: String) = it.name!!.contains(fieldName, true)
+    private fun byName(it: PsiClass, fieldName: String) = it.name != null && it.name!!.contains(fieldName, true)
 
     private fun byGenerics(it: PsiClass, field: PsiField): Boolean {
         val interfaces = it.implementsListTypes
