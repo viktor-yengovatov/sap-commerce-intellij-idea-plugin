@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -47,21 +47,21 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
     @Override
     public void addCompletions(
         @NotNull final CompletionParameters parameters,
-        final ProcessingContext context,
-        @NotNull final CompletionResultSet result
+        @NotNull final ProcessingContext context,
+        @NotNull CompletionResultSet result
     ) {
-        Validate.notNull(parameters);
-        Validate.notNull(result);
-
         final Project project = this.getProject(parameters);
-        if (null == project) {
+
+        if (project == null) {
             return;
         }
+        result = result.caseInsensitive();
         final TSMetaModel typeSystemMeta = TSMetaModelAccess.getInstance(project).getTypeSystemMeta();
 
         typeSystemMeta.getMetaClassesStream()
                       .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
                       .forEach(result::addElement);
+        result.stopHere();
     }
 
     @Nullable
