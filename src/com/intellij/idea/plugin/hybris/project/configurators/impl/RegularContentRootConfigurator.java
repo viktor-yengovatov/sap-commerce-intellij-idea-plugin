@@ -161,7 +161,9 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
         final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
 
-        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore);
+        if (!isResourceDirExcluded(moduleDescriptor.getName())) {
+            addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore);
+        }
 
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
@@ -411,6 +413,10 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             rootType.createDefaultProperties(),
             dirsToIgnore
         );
+    }
+
+    protected boolean isResourceDirExcluded(final String moduleName) {
+        return HybrisConstants.EXCLUDED_RESOURCES_DIRECTORY_MODULES.contains(moduleName);
     }
 
     // /Users/Evgenii/work/upwork/test-projects/pawel-hybris/bin/ext-accelerator/acceleratorstorefrontcommons/testsrc
