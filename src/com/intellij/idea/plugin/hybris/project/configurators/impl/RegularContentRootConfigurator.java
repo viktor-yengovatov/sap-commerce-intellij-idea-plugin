@@ -22,11 +22,13 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.util.containers.ContainerUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.JpsElement;
@@ -159,13 +161,23 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             excludeTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory());
         }
 
+        configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore);
+
+        excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
+    }
+
+    protected void configureResourceDirectory(
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final List<File> dirsToIgnore
+    ) {
         final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
 
         if (!isResourceDirExcluded(moduleDescriptor.getName())) {
             addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore);
+        } else {
+            excludeDirectory(contentEntry, resourcesDirectory);
         }
-
-        excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
 
     protected void excludeCommonNeedlessDirs(
@@ -416,7 +428,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected boolean isResourceDirExcluded(final String moduleName) {
-        return HybrisConstants.EXCLUDED_RESOURCES_DIRECTORY_MODULES.contains(moduleName);
+        List<String> extensionsRescourcesToExcludeList = HybrisApplicationSettingsComponent.getInstance()
+                                                                                           .getState()
+                                                                                           .getExtensionsRescourcesToExcludeList();
+        return (CollectionUtils.isNotEmpty(extensionsRescourcesToExcludeList) && extensionsRescourcesToExcludeList
+            .contains(moduleName));
     }
 
     // /Users/Evgenii/work/upwork/test-projects/pawel-hybris/bin/ext-accelerator/acceleratorstorefrontcommons/testsrc

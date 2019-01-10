@@ -273,10 +273,6 @@ public interface HybrisConstants {
         "ybackoffice",
         "ybootstrap"
     );
-    Set<String> EXCLUDED_RESOURCES_DIRECTORY_MODULES = ImmutableSet.of(
-        "solrserver",
-        "npmancillary"
-    );
 
     interface IMPEX {
         String CATALOG_VERSION_ONLINE = "Online";
