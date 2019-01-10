@@ -60,18 +60,18 @@ public class HybrisApplicationSettingsForm {
     private JPanel typeSystemDiagramStopWords;
     private JCheckBox scanThroughExternalModule;
     private JCheckBox excludeTestSources;
-    private JPanel extensionsRescourcesToExclude;
+    private JPanel extensionsResourcesToExclude;
 
     private MyListPanel junkListPanel;
     private MyListPanel tsdListPanel;
-    private MyListPanel extensionsRescourcesToExcludeListPanel;
+    private MyListPanel extensionsResourcesToExcludeListPanel;
 
     public void setData(final HybrisApplicationSettings data) {
         enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
         useSmartFoldingCheckBox.setSelected(data.isUseSmartFolding());
         junkListPanel.setMyList(data.getJunkDirectoryList());
         tsdListPanel.setMyList(data.getTsdStopTypeList());
-        extensionsRescourcesToExcludeListPanel.setMyList(data.getExtensionsRescourcesToExcludeList());
+        extensionsResourcesToExcludeListPanel.setMyList(data.getExtensionsResourcesToExcludeList());
         groupModulesCheckBox.setSelected(data.isGroupModules());
         groupCustomTextField.setText(data.getGroupCustom());
         groupNonHybrisTextField.setText(data.getGroupNonHybris());
@@ -91,7 +91,7 @@ public class HybrisApplicationSettingsForm {
         data.setUseSmartFolding(useSmartFoldingCheckBox.isSelected());
         data.setJunkDirectoryList(junkListPanel.getMyList());
         data.setTsdStopTypeList(tsdListPanel.getMyList());
-        data.setExtensionsRescourcesToExcludeList(extensionsRescourcesToExcludeListPanel.getMyList());
+        data.setExtensionsResourcesToExcludeList(extensionsResourcesToExcludeListPanel.getMyList());
         data.setGroupModules(groupModulesCheckBox.isSelected());
         data.setGroupCustom(groupCustomTextField.getText());
         data.setGroupOtherCustom(groupCustomUnusedTextField.getText());
@@ -119,7 +119,7 @@ public class HybrisApplicationSettingsForm {
         if (!tsdListPanel.getMyList().equals(data.getTsdStopTypeList())) {
             return true;
         }
-        if (!extensionsRescourcesToExcludeListPanel.getMyList().equals(data.getExtensionsRescourcesToExcludeList())) {
+        if (!extensionsResourcesToExcludeListPanel.getMyList().equals(data.getExtensionsResourcesToExcludeList())) {
             return true;
         }
         if (groupModulesCheckBox.isSelected() != data.isGroupModules()) {
@@ -176,8 +176,8 @@ public class HybrisApplicationSettingsForm {
         junkDirectoriesPanel = junkListPanel;
         tsdListPanel = new MyListPanel("hybris.import.settings.tsv.diagram.name", "hybris.import.settings.tsv.diagram.popup.add.title", "hybris.import.settings.tsv.diagram.popup.add.text", "hybris.import.settings.tsv.diagram.popup.edit.title", "hybris.import.settings.tsv.diagram.popup.edit.text", new ArrayList<String>());
         typeSystemDiagramStopWords = tsdListPanel;
-        extensionsRescourcesToExcludeListPanel = new MyListPanel("hybris.import.settings.exclude.resources.name", "hybris.import.settings.exclude.resources.popup.add.title", "hybris.import.settings.exclude.resources.popup.add.text", "hybris.import.settings.exclude.resources.popup.edit.title", "hybris.import.settings.exclude.resources.popup.edit.text", new ArrayList<String>());
-        extensionsRescourcesToExclude = extensionsRescourcesToExcludeListPanel;
+        extensionsResourcesToExcludeListPanel = new MyListPanel("hybris.import.settings.exclude.resources.name", "hybris.import.settings.exclude.resources.popup.add.title", "hybris.import.settings.exclude.resources.popup.add.text", "hybris.import.settings.exclude.resources.popup.edit.title", "hybris.import.settings.exclude.resources.popup.edit.text", new ArrayList<String>());
+        extensionsResourcesToExclude = extensionsResourcesToExcludeListPanel;
 
         projectTreeViewSettingsLabel = new JBLabel();
         projectTreeViewSettingsLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(

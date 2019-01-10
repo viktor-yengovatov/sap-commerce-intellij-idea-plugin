@@ -77,8 +77,8 @@ public class HybrisApplicationSettings {
     @PropertyName("typeSystemDiagramStopTypes")
     private List<String> tsdStopTypeList = DEFAULT_TSD_STOP_TYPE_NAMES;
 
-    @PropertyName("extensionsRescourcesToExclude")
-    private List<String> extensionsRescourcesToExcludeList = DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE;
+    @PropertyName("extensionsResourcesToExclude")
+    private List<String> extensionsResourcesToExcludeList = DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE;
 
     @PropertyName("groupHybris")
     private String groupHybris = "Hybris";
@@ -321,12 +321,12 @@ public class HybrisApplicationSettings {
         this.excludeTestSources = excludeTestSources;
     }
 
-    public List<String> getExtensionsRescourcesToExcludeList() {
-        return extensionsRescourcesToExcludeList;
+    public List<String> getExtensionsResourcesToExcludeList() {
+        return extensionsResourcesToExcludeList;
     }
 
-    public void setExtensionsRescourcesToExcludeList(final List<String> extensionsRescourcesToExcludeList) {
-        this.extensionsRescourcesToExcludeList = extensionsRescourcesToExcludeList;
+    public void setExtensionsResourcesToExcludeList(final List<String> extensionsResourcesToExcludeList) {
+        this.extensionsResourcesToExcludeList = extensionsResourcesToExcludeList;
     }
 
     @Override
@@ -355,7 +355,7 @@ public class HybrisApplicationSettings {
             .append(sourceZipUsed)
             .append(developmentMode)
             .append(excludeTestSources)
-            .append(extensionsRescourcesToExcludeList)
+            .append(extensionsResourcesToExcludeList)
             .toHashCode();
     }
 
@@ -395,7 +395,7 @@ public class HybrisApplicationSettings {
             .append(sourceZipUsed, other.sourceZipUsed)
             .append(developmentMode, other.developmentMode)
             .append(excludeTestSources, other.excludeTestSources)
-            .append(extensionsRescourcesToExcludeList, other.extensionsRescourcesToExcludeList)
+            .append(extensionsResourcesToExcludeList, other.extensionsResourcesToExcludeList)
             .isEquals();
     }
 
@@ -407,7 +407,7 @@ public class HybrisApplicationSettings {
         sb.append(", groupModules=").append(groupModules);
         sb.append(", junkDirectoryList=").append(junkDirectoryList);
         sb.append(", tsdStopTypeList=").append(tsdStopTypeList);
-        sb.append(", extensionsRescourcesToExcludeList=").append(extensionsRescourcesToExcludeList);
+        sb.append(", extensionsResourcesToExcludeList=").append(extensionsResourcesToExcludeList);
         sb.append(", groupHybris='").append(groupHybris).append('\'');
         sb.append(", groupOtherHybris='").append(groupOtherHybris).append('\'');
         sb.append(", groupCustom='").append(groupCustom).append('\'');

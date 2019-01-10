@@ -208,7 +208,7 @@
         <border type="none"/>
         <children/>
       </grid>
-      <grid id="df227" binding="extensionsRescourcesToExclude" custom-create="true" layout-manager="BorderLayout" hgap="0" vgap="0">
+      <grid id="df227" binding="extensionsResourcesToExclude" custom-create="true" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints>
           <grid row="12" column="0" row-span="1" col-span="5" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="1" use-parent-layout="false"/>
         </constraints>
