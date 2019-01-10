@@ -46,8 +46,8 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
-        addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore);
+        configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore);
+        
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
 

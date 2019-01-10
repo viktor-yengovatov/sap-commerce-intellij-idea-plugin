@@ -57,6 +57,11 @@ public class HybrisApplicationSettings {
         "CronJob"
     );
 
+    public static final List<String> DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE = Lists.newArrayList(
+        "solrserver",
+        "npmancillary"
+    );
+
     @PropertyName("foldingEnabled")
     private boolean foldingEnabled = true;
 
@@ -71,6 +76,9 @@ public class HybrisApplicationSettings {
 
     @PropertyName("typeSystemDiagramStopTypes")
     private List<String> tsdStopTypeList = DEFAULT_TSD_STOP_TYPE_NAMES;
+
+    @PropertyName("extensionsResourcesToExclude")
+    private List<String> extensionsResourcesToExcludeList = DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE;
 
     @PropertyName("groupHybris")
     private String groupHybris = "Hybris";
@@ -313,6 +321,14 @@ public class HybrisApplicationSettings {
         this.excludeTestSources = excludeTestSources;
     }
 
+    public List<String> getExtensionsResourcesToExcludeList() {
+        return extensionsResourcesToExcludeList;
+    }
+
+    public void setExtensionsResourcesToExcludeList(final List<String> extensionsResourcesToExcludeList) {
+        this.extensionsResourcesToExcludeList = extensionsResourcesToExcludeList;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -339,6 +355,7 @@ public class HybrisApplicationSettings {
             .append(sourceZipUsed)
             .append(developmentMode)
             .append(excludeTestSources)
+            .append(extensionsResourcesToExcludeList)
             .toHashCode();
     }
 
@@ -378,6 +395,7 @@ public class HybrisApplicationSettings {
             .append(sourceZipUsed, other.sourceZipUsed)
             .append(developmentMode, other.developmentMode)
             .append(excludeTestSources, other.excludeTestSources)
+            .append(extensionsResourcesToExcludeList, other.extensionsResourcesToExcludeList)
             .isEquals();
     }
 
@@ -389,6 +407,7 @@ public class HybrisApplicationSettings {
         sb.append(", groupModules=").append(groupModules);
         sb.append(", junkDirectoryList=").append(junkDirectoryList);
         sb.append(", tsdStopTypeList=").append(tsdStopTypeList);
+        sb.append(", extensionsResourcesToExcludeList=").append(extensionsResourcesToExcludeList);
         sb.append(", groupHybris='").append(groupHybris).append('\'');
         sb.append(", groupOtherHybris='").append(groupOtherHybris).append('\'');
         sb.append(", groupCustom='").append(groupCustom).append('\'');
