@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.4.10</version>
+    <version>9.5.11</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="183"/>
@@ -102,14 +102,17 @@
 
     <change-notes>
         <![CDATA[
+            <h2>Story</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-524'>IIP-524</a>] - Unmark resource folder as&quot;Resources root&quot; for some extensions</li>
+            </ul>
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-521'>IIP-521</a>] - add FS and Groovy executor to corresponding file headers</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-495'>IIP-495</a>] - Improve FlexibleSearch completion</li>
             </ul>
-
-            <h2>Bug</h2>
+            <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-523'>IIP-523</a>] - KotlinNullPointerException in HybrisPopulatorLineMakerProvider</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-191'>IIPS-191</a>] - Unable to export ES analysis result to Excel due to UnsupportedOperationException</li>
             </ul>
         ]]>
     </change-notes>
