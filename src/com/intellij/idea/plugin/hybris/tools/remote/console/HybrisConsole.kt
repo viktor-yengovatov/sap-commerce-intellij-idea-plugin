@@ -9,6 +9,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERS
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERSION_STAGED
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessor
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -49,9 +50,15 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
     open fun printDefaultText() {
         setInputText("")
     }
+
+    abstract fun collectStatistics()
 }
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, IMPEX_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
+    override fun collectStatistics() {
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPEX_CONSOLE)
+    }
+
     object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
     private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
@@ -97,6 +104,10 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, IMPEX_CONSOL
 }
 
 class HybrisGroovyConsole(project: Project) : HybrisConsole(project, GROOVY_CONSOLE_TITLE, GroovyLanguage) {
+    override fun collectStatistics() {
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.GROOVY_CONSOLE)
+    }
+
     object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
 
     init {
@@ -110,6 +121,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, GROOVY_CONS
 
 
 class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, IMPEX_MONITOR_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
+    override fun collectStatistics() {
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPEX_MONITOR)
+    }
+
     object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
 
     private val panel = JPanel()

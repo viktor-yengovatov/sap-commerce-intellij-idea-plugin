@@ -35,16 +35,25 @@ public interface StatsCollector extends ApplicationComponent {
     void setOpenCollectiveContributor(boolean isOpenCollectiveContributor);
 
     enum ACTIONS {
-        IMPORT_PROJECT,
-        REFRESH_PROJECT,
-        OPEN_PROJECT,
         ANT,
-        OPEN_POTENTIAL_PROJECT,
-        BUSINESS_DIAGRAM,
-        DEPENDENCY_DIAGRAM,
-        IMPEX_TABLE_FORMAT,
         BUILD_PROJECT,
-        RUN_TESTS
+        BUSINESS_DIAGRAM,
+        CLASS_CONFLICT,
+        DEPENDENCY_DIAGRAM,
+        ES_ANALYSIS,
+        ES_ANALYSIS_EXPORT,
+        FLEXIBLE_SEARCH_CONSOLE,
+        GROOVY_CONSOLE,
+        IMPEX_CONSOLE,
+        IMPEX_MONITOR,
+        IMPEX_TABLE_FORMAT,
+        IMPORT_PROJECT,
+        OPEN_POTENTIAL_PROJECT,
+        OPEN_PROJECT,
+        REFRESH_PROJECT,
+        RUN_TESTS,
+        SOLR_CONSOLE,
+        TS_DIAGRAM
     }
 
     void collectStat(@NotNull ACTIONS action);
