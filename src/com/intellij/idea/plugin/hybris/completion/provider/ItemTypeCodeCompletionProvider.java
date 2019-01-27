@@ -61,7 +61,6 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
         typeSystemMeta.getMetaClassesStream()
                       .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
                       .forEach(result::addElement);
-        result.stopHere();
     }
 
     @Nullable
