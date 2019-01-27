@@ -19,12 +19,15 @@ repositories {
     mavenCentral()
 }
 
+//noinspection GroovyAssignabilityCheck
 allprojects {
     repositories {
+        //noinspection GroovyAssignabilityCheck
         maven {
             url "https://jcenter.bintray.com"
         }
     }
+
     apply plugin: "kotlin"
 
     // Set source version for Java code
@@ -65,7 +68,7 @@ allprojects {
         setType(intelijType)
         setVersion(intelijVersion)
         setUpdateSinceUntilBuild(intellijUpdateSinceUntilBuild.toBoolean())
-        setPlugins(intelijPlugins.split(", "))
+        setPlugins((intelijPlugins as String).split(", "))
 
         runIde {
             jvmArgs intellijJvmArgs
