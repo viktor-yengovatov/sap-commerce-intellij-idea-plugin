@@ -19,8 +19,9 @@ buildscript {
     repositories {
         mavenCentral()
 
+        //noinspection GroovyAssignabilityCheck
         maven {
-            setUrl("https://plugins.gradle.org/m2/")
+            url "https://plugins.gradle.org/m2/"
         }
     }
 
@@ -40,14 +41,14 @@ dependencies {
 
     compile "commons-codec:commons-codec:1.11"
     compile "commons-io:commons-io:2.6"
-    compile "com.google.guava:guava:26.0-jre"
+    compile "com.google.guava:guava:27.0.1-jre"
     compile "com.google.code.findbugs:jsr305:3.0.2"
     compile "org.apache.commons:commons-lang3:3.8.1"
     compile "org.apache.commons:commons-collections4:4.2"
-    compile "org.apache.maven:maven-model:3.5.4"
+    compile "org.apache.maven:maven-model:3.6.0"
     compile "com.wutka:dtdparser:1.21"
 
-    compile("org.apache.solr:solr-solrj:7.5.0") {
+    compile("org.apache.solr:solr-solrj:7.6.0") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
         exclude group: 'org.apache.httpcomponents', module: 'httpcore'
@@ -57,17 +58,17 @@ dependencies {
     compile "com.github.ben-manes.caffeine:caffeine:2.6.2"
     compile "org.jsoup:jsoup:1.11.3"
 
-    testCompile "org.mockito:mockito-core:2.23.0"
+    testCompile "org.mockito:mockito-core:2.23.4"
 
     compile project("common")
     compile project("rt-ant")
 }
 
 
+//noinspection GroovyAssignabilityCheck
 task addPsiViewerPlugin {
-    def slurper = new groovy.json.JsonSlurper()
-    def psiVersions = slurper.parseText(psiViewerVersions)
-    def psiVersion = psiVersions[intelijVersion.split("\\.").first()]
+    def majorIntellijVersion = (intelijVersion as String).split("\\.").first()
+    def psiVersion = findProperty("psiViewerVersions.$majorIntellijVersion")
     if (psiVersion != null) {
         intellij.plugins += "PsiViewer:$psiVersion"
     }
