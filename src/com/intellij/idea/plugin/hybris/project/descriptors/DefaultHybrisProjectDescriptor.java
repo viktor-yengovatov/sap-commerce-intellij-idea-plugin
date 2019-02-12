@@ -518,7 +518,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.hasVCS(rootProjectDirectory)) {
             LOG.info("Detected version control service " + rootProjectDirectory.getAbsolutePath());
-            vcs.add(rootProjectDirectory);
+            vcs.add(rootProjectDirectory.getCanonicalFile());
         }
 
         if (hybrisProjectService.isHybrisModule(rootProjectDirectory)) {

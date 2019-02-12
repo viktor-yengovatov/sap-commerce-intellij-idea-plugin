@@ -26,6 +26,7 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created 1:58 PM 20 June 2015.
@@ -47,48 +48,59 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
 
         final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
 
-        if (hybrisProjectService.isConfigModule(file)) {
-            LOG.info("Creating Config module for " + file.getAbsolutePath());
-            return new ConfigHybrisModuleDescriptor(file, rootProjectDescriptor);
+        String path = file.getAbsolutePath();
+        File resolvedFile;
+        try {
+            resolvedFile = file.getCanonicalFile();
+        } catch (IOException e) {
+            throw new HybrisConfigurationException(e);
+        }
+        String newPath = resolvedFile.getAbsolutePath();
+        if (!path.equals(newPath)) {
+            path = path + "(" + newPath + ")";
+        }
+        if (hybrisProjectService.isConfigModule(resolvedFile)) {
+            LOG.info("Creating Config module for " + path);
+            return new ConfigHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isPlatformModule(file)) {
-            LOG.info("Creating Platform module for " + file.getAbsolutePath());
-            return new PlatformHybrisModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isPlatformModule(resolvedFile)) {
+            LOG.info("Creating Platform module for " + path);
+            return new PlatformHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isCoreExtModule(file)) {
-            LOG.info("Creating Core EXT module for " + file.getAbsolutePath());
-            return new CoreHybrisModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isCoreExtModule(resolvedFile)) {
+            LOG.info("Creating Core EXT module for " + path);
+            return new CoreHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isPlatformExtModule(file)) {
-            LOG.info("Creating Platform EXT module for " + file.getAbsolutePath());
-            return new ExtHybrisModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isPlatformExtModule(resolvedFile)) {
+            LOG.info("Creating Platform EXT module for " + path);
+            return new ExtHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isOutOfTheBoxModule(file, rootProjectDescriptor)) {
-            LOG.info("Creating OOTB module for " + file.getAbsolutePath());
-            return new OotbHybrisModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isOutOfTheBoxModule(resolvedFile, rootProjectDescriptor)) {
+            LOG.info("Creating OOTB module for " + path);
+            return new OotbHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isHybrisModule(file)) {
-            LOG.info("Creating Custom hybris module for " + file.getAbsolutePath());
-            return new CustomHybrisModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isHybrisModule(resolvedFile)) {
+            LOG.info("Creating Custom hybris module for " + path);
+            return new CustomHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isGradleModule(file)) {
-            LOG.info("Creating gradle module for " + file.getAbsolutePath());
-            return new GradleModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isGradleModule(resolvedFile)) {
+            LOG.info("Creating gradle module for " + path);
+            return new GradleModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        if (hybrisProjectService.isMavenModule(file)) {
-            LOG.info("Creating maven module for " + file.getAbsolutePath());
-            return new MavenModuleDescriptor(file, rootProjectDescriptor);
+        if (hybrisProjectService.isMavenModule(resolvedFile)) {
+            LOG.info("Creating maven module for " + path);
+            return new MavenModuleDescriptor(resolvedFile, rootProjectDescriptor);
         }
 
-        LOG.info("Creating eclipse module for " + file.getAbsolutePath());
-        return new EclipseModuleDescriptor(file, rootProjectDescriptor);
+        LOG.info("Creating eclipse module for " + path);
+        return new EclipseModuleDescriptor(resolvedFile, rootProjectDescriptor);
     }
 
 }
