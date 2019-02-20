@@ -88,6 +88,8 @@ class AttributeHandlerReferenceConverter : CustomReferenceConverter<String> {
                 val springModels = com.intellij.spring.SpringManager.getInstance(project).getAllModels(module)
                 val pointer = findBean(springModels, name) ?: return ResolveResult.EMPTY_ARRAY
 
+                pointer.beanClass ?: return ResolveResult.EMPTY_ARRAY
+
                 return PsiElementResolveResult.createResults(pointer.beanClass)
             }
 
