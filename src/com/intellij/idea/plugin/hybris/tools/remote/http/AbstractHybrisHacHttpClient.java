@@ -6,6 +6,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -55,6 +56,7 @@ import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_MOVED_TEMPORARILY;
 import static org.apache.http.HttpStatus.SC_SERVICE_UNAVAILABLE;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
@@ -71,7 +73,7 @@ public abstract class AbstractHybrisHacHttpClient {
         String hostHacURL = getHostHacURL(project);
         sessionId = getSessionId(hostHacURL);
         if (sessionId == null) {
-            return "Unable to obtain sessionId";
+            return "Unable to obtain sessionId for "+hostHacURL;
         }
         final String csrfToken = getCsrfToken(hostHacURL, sessionId);
         List<BasicNameValuePair> params = new ArrayList<>();
@@ -80,6 +82,12 @@ public abstract class AbstractHybrisHacHttpClient {
         params.add(new BasicNameValuePair("_csrf", csrfToken));
         String loginURL = hostHacURL + "/j_spring_security_check";
         HttpResponse response = post(project, loginURL, params, false);
+        if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
+            Header location = response.getFirstHeader("Location");
+            if (location != null && location.getValue().contains("login_error")) {
+                return "Wrong username/password. Set your credentials in [y] tool window.";
+            }
+        }
         sessionId = CookieParser.getInstance().getSpecialCookie(response.getAllHeaders());
         if (sessionId != null) {
             return StringUtils.EMPTY;
@@ -105,10 +113,10 @@ public abstract class AbstractHybrisHacHttpClient {
     @NotNull
     public final HttpResponse post(@NotNull Project project, @NotNull String actionUrl, @NotNull List<BasicNameValuePair> params, boolean canReLoginIfNeeded) {
         if (sessionId == null) {
-            login(project);
-        }
-        if (sessionId == null) {
-            return createErrorResponse("Unable to get sessionId from "+actionUrl);
+            String errorMessage = login(project);
+            if (StringUtils.isNotBlank(errorMessage)) {
+                return createErrorResponse(errorMessage);
+            }
         }
         String csrfToken = getCsrfToken(getHostHacURL(project), sessionId);
         if (csrfToken == null) {
@@ -136,7 +144,15 @@ public abstract class AbstractHybrisHacHttpClient {
             return createErrorResponse(e.getMessage());
         }
 
-        if (response.getStatusLine().getStatusCode() == SC_FORBIDDEN) {
+        boolean needsLogin = response.getStatusLine().getStatusCode() == SC_FORBIDDEN;
+        if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
+            Header location = response.getFirstHeader("Location");
+            if (location != null && location.getValue().contains("login")) {
+                needsLogin = true;
+            }
+        }
+
+        if (needsLogin) {
             this.sessionId = null;
             if (canReLoginIfNeeded) {
                 return post(project, actionUrl, params, false);
