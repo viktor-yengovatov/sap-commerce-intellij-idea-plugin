@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.5.11</version>
+    <version>9.6.12</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="183"/>
@@ -104,15 +104,23 @@
         <![CDATA[
             <h2>Story</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-524'>IIP-524</a>] - Unmark resource folder as&quot;Resources root&quot; for some extensions</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-526'>IIP-526</a>] - confusing error message</li>
             </ul>
+
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-495'>IIP-495</a>] - Improve FlexibleSearch completion</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-525'>IIP-525</a>] - Add new actions to statistics</li>
             </ul>
+
+            <h2>Bug</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-487'>IIP-487</a>] - flexible search syntax error</li>
+            </ul>
+
             <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-191'>IIPS-191</a>] - Unable to export ES analysis result to Excel due to UnsupportedOperationException</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-193'>IIPS-193</a>] - Refresh project disables VCS (SVN) integration</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-195'>IIPS-195</a>] - NPE AttributeHandlerReferenceConverter</li>
             </ul>
         ]]>
     </change-notes>

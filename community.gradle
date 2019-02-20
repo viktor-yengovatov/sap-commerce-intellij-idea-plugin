@@ -80,6 +80,7 @@ allprojects {
     }
 
     // Remove Intellij build output directory
+    //noinspection GroovyAssignabilityCheck
     clean.doFirst {
         delete "out"
     }
