@@ -39,8 +39,12 @@ public abstract class TypeSystemReferenceBase<PSI extends PsiElement> extends Ps
         super(owner, false);
     }
 
+    public TypeSystemReferenceBase(final PSI element, final TextRange rangeInElement) {
+        super(element, rangeInElement, false);
+    }
+
     @Override
-    public final TextRange getRangeInElement() {
+    protected TextRange calculateDefaultRangeInElement() {
         return TextRange.from(0, getElement().getTextLength());
     }
 
