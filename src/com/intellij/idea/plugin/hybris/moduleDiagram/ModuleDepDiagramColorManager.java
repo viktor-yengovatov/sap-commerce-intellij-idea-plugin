@@ -23,7 +23,7 @@ import com.intellij.diagram.DiagramColorManagerBase;
 import com.intellij.diagram.DiagramEdge;
 import com.intellij.diagram.DiagramNode;
 import com.intellij.ui.JBColor;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -37,17 +37,19 @@ public class ModuleDepDiagramColorManager extends DiagramColorManagerBase {
         new Color(49, 66, 90)
     );
 
+    @NotNull
     @Override
-    public Color getNodeHeaderColor(final DiagramBuilder builder, @Nullable final DiagramNode node) {
+    public Color getNodeHeaderBackground(@NotNull final DiagramBuilder builder, @NotNull final DiagramNode node, Object element) {
         if (node instanceof ModuleDepDiagramNode &&
             !((ModuleDepDiagramNode) node).getIdentifyingElement().isCustomExtension()) {
             return NON_CUSTOM_EXTENSIONS_COLOR;
         }
-        return super.getNodeHeaderColor(builder, node);
+        return super.getNodeHeaderBackground(builder, node, element);
     }
 
+    @NotNull
     @Override
-    public Color getEdgeColor(DiagramEdge diagramEdge) {
+    public Color getEdgeColor(@NotNull DiagramBuilder builder, @NotNull DiagramEdge diagramEdge) {
         if (diagramEdge instanceof ModuleDepDiagramEdge) {
             ModuleDepDiagramEdge edge = (ModuleDepDiagramEdge) diagramEdge;
             if (edge.isCircular()) {
@@ -57,6 +59,6 @@ public class ModuleDepDiagramColorManager extends DiagramColorManagerBase {
                 return new Color(red, 0, 0);
             }
         }
-        return super.getEdgeColor(diagramEdge);
+        return super.getEdgeColor(builder, diagramEdge);
     }
 }
