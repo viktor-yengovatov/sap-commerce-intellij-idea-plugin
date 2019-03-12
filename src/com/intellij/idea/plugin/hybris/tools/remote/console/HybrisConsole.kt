@@ -21,6 +21,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil.toCanonicalPath
 import com.intellij.ui.ListCellRendererWrapper
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import org.apache.batik.ext.swing.GridBagConstants
 import org.apache.commons.lang.StringUtils
@@ -94,8 +95,8 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, IMPEX_CONSOL
         isEditable = true
     }
 
-    override fun execute(text: String): HybrisHttpResult {
-        return HybrisHacHttpClient.getInstance(project).importImpex(project, text)
+    override fun execute(query: String): HybrisHttpResult {
+        return HybrisHacHttpClient.getInstance(project).importImpex(project, query)
     }
 
     fun validate(text: String): HybrisHttpResult {
@@ -109,13 +110,26 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, GROOVY_CONS
     }
 
     object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
-
+    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val commitCheckbox = JBCheckBox()
+    private val commitLabel = JBLabel("Commit mode: ")
+    
     init {
+        createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.groovy.shell", this).install()
     }
 
-    override fun execute(text: String): HybrisHttpResult {
-        return HybrisHacHttpClient.getInstance(project).executeGroovyScript(project, text)
+    private fun createUI() {
+        commitLabel.border = EmptyBorder(0, 10, 0, 3)
+        commitCheckbox.border = EmptyBorder(0, 0, 0, 5)
+        panel.add(commitLabel)
+        panel.add(commitCheckbox)
+        add(panel, BorderLayout.NORTH)
+        isEditable = true
+    }
+
+    override fun execute(query: String): HybrisHttpResult {
+        return HybrisHacHttpClient.getInstance(project).executeGroovyScript(project, query, commitCheckbox.isSelected)
     }
 }
 
@@ -173,7 +187,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, IMPEX
 
     private fun workingDir() = obtainDataFolder(project)
 
-    override fun execute(text: String): HybrisHttpResult {
+    override fun execute(query: String): HybrisHttpResult {
         return monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
     }
 }
