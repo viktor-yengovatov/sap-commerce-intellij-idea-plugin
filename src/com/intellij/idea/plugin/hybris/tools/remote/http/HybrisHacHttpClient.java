@@ -155,7 +155,8 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
         if (json.get("exception") != null) {
             return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
-                                                           .errorMessage(((Map<String, Object>) json.get("exception")).get("message").toString())
+                                                           .errorMessage(((Map<String, Object>) json.get("exception")).get(
+                                                               "message").toString())
                                                            .build();
         } else {
             TableBuilder tableBuilder = new TableBuilder();
@@ -171,11 +172,13 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     }
 
     public @NotNull
-    HybrisHttpResult executeGroovyScript(final Project project, final String content) {
+    HybrisHttpResult executeGroovyScript(
+        final Project project, final String content, final boolean isCommitMode
+    ) {
 
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptType", "groovy"),
-            new BasicNameValuePair("commit", "false"),
+            new BasicNameValuePair("commit", String.valueOf(isCommitMode)),
             new BasicNameValuePair("script", content)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
