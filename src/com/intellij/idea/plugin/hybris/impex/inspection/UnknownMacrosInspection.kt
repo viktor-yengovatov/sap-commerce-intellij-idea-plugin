@@ -67,6 +67,6 @@ private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder) :
 
     private fun findMacrosDeclaration(file: PsiFile, macroName: String): ImpexMacroDeclaration? {
         val declarations = PsiTreeUtil.findChildrenOfAnyType(file, ImpexMacroDeclaration::class.java)
-        return declarations.find { it.firstChild.text == macroName }
+        return declarations.find { macroName.startsWith(it.firstChild.text) }
     }
 }
