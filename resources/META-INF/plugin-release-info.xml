@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>9.6.12</version>
+    <version>10.0</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="183"/>
@@ -102,25 +102,26 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Story</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-526'>IIP-526</a>] - confusing error message</li>
-            </ul>
-
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-525'>IIP-525</a>] - Add new actions to statistics</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-489'>IIP-489</a>] - Improve navigation in Flexible Search</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-527'>IIP-527</a>] - Fix compatibility issues with 2019.1</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-529'>IIP-529</a>] - Add toggle - &#39;commit&#39;/&#39;rollback&#39;to Hybris-Groovy console</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-530'>IIP-530</a>] - &quot;documentId&quot; color in impex files can be confused for an error</li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-487'>IIP-487</a>] - flexible search syntax error</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-528'>IIP-528</a>] - Word Select is syntax-highlighted even when it is as value in a string</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-531'>IIP-531</a>] - Impex macro should be evaluated as a prefix rather than a match</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-533'>IIP-533</a>] - Flexible Restriction recognized as Flexible Search</li>
             </ul>
 
             <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-193'>IIPS-193</a>] - Refresh project disables VCS (SVN) integration</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-195'>IIPS-195</a>] - NPE AttributeHandlerReferenceConverter</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-186'>IIPS-186</a>] - Impex $config property displayed as Unknown macros</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-198'>IIPS-198</a>] - DuplicateBeanDefinitionInspection has no description</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-200'>IIPS-200</a>] - Hybris plugin is generating an invalid rebel.xml in the classes folder for Backoffice</li>
             </ul>
         ]]>
     </change-notes>
