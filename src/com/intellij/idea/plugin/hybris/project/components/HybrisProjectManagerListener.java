@@ -25,18 +25,17 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.common.services.NotificationService;
+import com.intellij.idea.plugin.hybris.common.services.impl.DefaultNotificationService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.idea.plugin.hybris.project.wizard.PermissionToSendStatisticsDialog;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
@@ -52,10 +51,10 @@ import com.intellij.openapi.updateSettings.impl.UpdateChecker;
 import com.intellij.openapi.updateSettings.impl.UpdateInstaller;
 import com.intellij.openapi.updateSettings.impl.UpdateSettings;
 import com.intellij.spring.settings.SpringGeneralSettings;
-import com.intellij.util.Alarm;
 import com.intellij.util.text.DateFormatUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
@@ -78,8 +77,9 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectManagerListener.class);
     private static final String LAST_BUBBLE_INFO_TIME_PROPERTY = "LAST_BUBBLE_INFO_TIME";
+    public static final int NOTIFICATION_TIMEOUT_MILLISECONDS = 3000;
 
-    private final NotificationGroup notificationGroup = new NotificationGroup(
+    private static final NotificationGroup Y_PROJECT_NOTIFICATION_GROUP = new NotificationGroup(
         "[y] project",
         NotificationDisplayType.BALLOON,
         true,
@@ -87,25 +87,36 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         HybrisIcons.HYBRIS_ICON
     );
 
-    private final Alarm notificationClosingAlarm = new Alarm(this);
-
     @Override
-    public void projectOpened(final Project project) {
+    public void projectOpened(@NotNull final Project project) {
         StartupManager.getInstance(project).registerPostStartupActivity((DumbAwareRunnable) () -> {
             if (project.isDisposed()) {
                 return;
             }
 
+            final NotificationService notificationService = new DefaultNotificationService(
+                Y_PROJECT_NOTIFICATION_GROUP, project
+            );
+
             if (isOldHybrisProject(project)) {
-                showNotification(project);
+                notificationService.showImportantNotification(
+                    "hybris.project.open.outdated.title",
+                    "hybris.project.open.outdated.text",
+                    NotificationType.INFORMATION,
+                    (myNotification, myHyperlinkEvent) -> ProjectRefreshAction.triggerAction()
+                );
             }
 
             if (CommonIdeaService.getInstance().isFansTargetGroup()) {
-                showInfoBubble(project, "support.us.step.title", "support.us.step.text");
+                this.showImportantInfoNotificationWithCloseTimeoutIfItWasNotShownThisMonth(
+                    project, "support.us.step.title", "support.us.step.text"
+                );
             }
 
             if (CommonIdeaService.getInstance().isDiscountTargetGroup()) {
-                showInfoBubble(project, "discount.offer.bubble.title", "discount.offer.bubble.text");
+                this.showImportantInfoNotificationWithCloseTimeoutIfItWasNotShownThisMonth(
+                    project, "discount.offer.bubble.title", "discount.offer.bubble.text"
+                );
             }
 
             final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
@@ -126,7 +137,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         final String importedBy = settings.getImportedByVersion();
         final String hybrisVersion = settings.getHybrisVersion();
         final String pluginVersion = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
-        LOG.info("Opening hybris version "+hybrisVersion+" which was imported by "+importedBy+". Current plugin is "+pluginVersion);
+        LOG.info("Opening hybris version " + hybrisVersion + " which was imported by " + importedBy + ". Current plugin is " + pluginVersion);
     }
 
     private void continueOpening(final Project project) {
@@ -170,7 +181,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         if (commonIdeaService.shouldShowPermissionToSendStatisticsDialog()) {
             EventQueue.invokeLater(() -> {
                 if (new PermissionToSendStatisticsDialog(project).showAndGet()) {
-                   continueOpening(project);
+                    continueOpening(project);
                 }
             });
             return false;
@@ -213,41 +224,38 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         }
     }
 
-    private void showNotification(final Project project) {
-        final Notification notification = notificationGroup.createNotification(
-            HybrisI18NBundleUtils.message("hybris.project.open.outdated.title"),
-            HybrisI18NBundleUtils.message("hybris.project.open.outdated.text"),
-            NotificationType.INFORMATION,
-            (myNotification, myHyperlinkEvent) -> ProjectRefreshAction.triggerAction()
-        );
-        notification.setImportant(true);
-        Notifications.Bus.notify(notification, project);
+    private void showImportantInfoNotificationWithCloseTimeoutIfItWasNotShownThisMonth(
+        final Project project, String titleKey, String textKey
+    ) {
+        if (this.notificationWasNotAlreadyShownThisMonth()) {
+            this.persistCurrentTimeForNotificationShowTime();
+
+            final NotificationService notificationService = new DefaultNotificationService(
+                Y_PROJECT_NOTIFICATION_GROUP, project
+            );
+
+            notificationService.showImportantNotificationWithCloseTimeout(
+                titleKey,
+                textKey,
+                NotificationType.INFORMATION,
+                NOTIFICATION_TIMEOUT_MILLISECONDS,
+                (myNotification, myHyperlinkEvent) -> goToDiscountOffer(myHyperlinkEvent)
+            );
+        }
     }
 
-    private void showInfoBubble(final Project project, String titleKey, String textKey) {
+    private void persistCurrentTimeForNotificationShowTime() {
+        PropertiesComponent.getInstance().setValue(
+            LAST_BUBBLE_INFO_TIME_PROPERTY, String.valueOf(System.currentTimeMillis())
+        );
+    }
+
+    private boolean notificationWasNotAlreadyShownThisMonth() {
         final PropertiesComponent properties = PropertiesComponent.getInstance();
         final long lastNotificationTime = properties.getOrInitLong(LAST_BUBBLE_INFO_TIME_PROPERTY, 0);
         final long currentTime = System.currentTimeMillis();
 
-        if (currentTime - lastNotificationTime >= DateFormatUtil.MONTH) {
-            properties.setValue(LAST_BUBBLE_INFO_TIME_PROPERTY, String.valueOf(currentTime));
-
-            final Notification notification = notificationGroup.createNotification(
-                HybrisI18NBundleUtils.message(titleKey),
-                HybrisI18NBundleUtils.message(textKey),
-                NotificationType.INFORMATION,
-                (myNotification, myHyperlinkEvent) -> goToDiscountOffer(myHyperlinkEvent)
-            );
-            notification.setImportant(true);
-            Notifications.Bus.notify(notification, project);
-
-            ApplicationManager.getApplication().invokeLater(() -> {
-                if (!notificationClosingAlarm.isDisposed()) {
-                    notificationClosingAlarm.addRequest(notification::hideBalloon, 3000);
-                }
-            });
-
-        }
+        return currentTime - lastNotificationTime >= DateFormatUtil.MONTH;
     }
 
     private void goToDiscountOffer(final HyperlinkEvent myHyperlinkEvent) {
@@ -261,9 +269,10 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         if (jRebelPlugin == null || !jRebelPlugin.isEnabled()) {
             return;
         }
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+                                                                                          .getState();
         final File compilingXml = new File(toSystemDependentName(project.getBasePath() + "/" + hybrisProjectSettings.getHybrisDirectory() +
-                                           HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML));
+                                                                 HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML));
         if (!compilingXml.isFile()) {
             return;
         }
