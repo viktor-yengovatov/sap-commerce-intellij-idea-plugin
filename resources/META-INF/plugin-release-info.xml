@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>10.0</version>
+    <version>10.1</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="191"/>
@@ -102,26 +102,20 @@
 
     <change-notes>
         <![CDATA[
+            <h2>New Feature Request</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-201'>IIPS-201</a>] - Add Copyright support for impex files</li>
+            </ul>
+
             <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-489'>IIP-489</a>] - Improve navigation in Flexible Search</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-527'>IIP-527</a>] - Fix compatibility issues with 2019.1</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-529'>IIP-529</a>] - Add toggle - &#39;commit&#39;/&#39;rollback&#39;to Hybris-Groovy console</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-530'>IIP-530</a>] - &quot;documentId&quot; color in impex files can be confused for an error</li>
-            </ul>
-
-            <h2>Bug</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-528'>IIP-528</a>] - Word Select is syntax-highlighted even when it is as value in a string</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-531'>IIP-531</a>] - Impex macro should be evaluated as a prefix rather than a match</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-533'>IIP-533</a>] - Flexible Restriction recognized as Flexible Search</li>
-            </ul>
-
-            <h2>Fault</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-186'>IIPS-186</a>] - Impex $config property displayed as Unknown macros</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-198'>IIPS-198</a>] - DuplicateBeanDefinitionInspection has no description</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-200'>IIPS-200</a>] - Hybris plugin is generating an invalid rebel.xml in the classes folder for Backoffice</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-80'>IIP-80</a>] - Show a warning after opening a project or opening items.xml file when some attributes or classes from project items.xml are missing in current generated code base</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-488'>IIP-488</a>] - Add support for org.eclipse.jdt.core.JDTCompilerAdapter</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-525'>IIP-525</a>] - Add new actions to statistics</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-536'>IIP-536</a>] - 1905 compatibility</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-539'>IIP-539</a>] - Remove discount codes</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-540'>IIP-540</a>] - Disable html syntax validation inside of impex file</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-541'>IIP-541</a>] - ClassConflict detection doesn&#39;t work as expected</li>
             </ul>
         ]]>
     </change-notes>

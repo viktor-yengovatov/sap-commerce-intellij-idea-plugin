@@ -43,9 +43,9 @@ dependencies {
     compile "commons-io:commons-io:2.6"
     compile "com.google.guava:guava:27.1-jre"
     compile "com.google.code.findbugs:jsr305:3.0.2"
-    compile "org.apache.commons:commons-lang3:3.8.1"
+    compile "org.apache.commons:commons-lang3:3.9"
     compile "org.apache.commons:commons-collections4:4.3"
-    compile "org.apache.maven:maven-model:3.6.0"
+    compile "org.apache.maven:maven-model:3.6.1"
     compile "com.wutka:dtdparser:1.21"
 
     compile("org.apache.solr:solr-solrj:8.0.0") {
