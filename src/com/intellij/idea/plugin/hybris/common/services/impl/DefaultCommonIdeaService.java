@@ -96,6 +96,8 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
                        .map(HybrisProjectSettings::getCustomDirectory);
     }
 
+
+
     @Override
     public boolean isHybrisProject(@NotNull final Project project) {
         return HybrisProjectSettingsComponent.getInstance(project).getState().isHybrisProject();
@@ -250,6 +252,34 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         sb.append(port);
 
         return sb.toString();
+    }
+
+
+    private boolean is2019plus(final Project project) {
+        final String hybrisVersion = HybrisProjectSettingsComponent.getInstance(project).getState().getHybrisVersion();
+        if (hybrisVersion == null) {
+            return false;
+        }
+        final String[] splits = hybrisVersion.split("\\.");
+        if (splits.length == 0) {
+            return false;
+        }
+        try {
+            return Integer.parseInt(splits[0]) > 18;
+        }
+        catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+
+    @Override
+    public String getBackofficeWebInfLib(final Project project) {
+        return is2019plus(project) ? HybrisConstants.BACKOFFICE_WEB_INF_LIB_2019 : HybrisConstants.BACKOFFICE_WEB_INF_LIB;
+    }
+
+    @Override
+    public String getBackofficeWebInfClasses(final Project project) {
+        return is2019plus(project) ? HybrisConstants.BACKOFFICE_WEB_INF_CLASSES_2019 : HybrisConstants.BACKOFFICE_WEB_INF_CLASSES;
     }
 
     private Properties getLocalProperties(final Project project) {

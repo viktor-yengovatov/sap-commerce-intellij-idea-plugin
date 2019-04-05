@@ -243,6 +243,9 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
                 return this.groupHybris;
             }
 
+            if (!path.isEmpty() && path.get(0).equals("modules")) {
+                path.remove(0);
+            }
             return ArrayUtils.addAll(this.groupHybris, path.toArray(new String[0]));
         }
 

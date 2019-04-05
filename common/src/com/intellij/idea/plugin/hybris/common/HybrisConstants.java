@@ -47,7 +47,9 @@ public interface HybrisConstants {
     String HYBRIS_SERVER_SHELL_SCRIPT_NAME = toSystemDependentName("bin/platform/hybrisserver.sh");
     String PLATFORM_EXT_MODULE_PREFIX = toSystemDependentName("bin/platform/ext/");
     String PLATFORM_OOTB_MODULE_PREFIX = toSystemDependentName("bin/ext-");
+    String PLATFORM_OOTB_MODULE_PREFIX_2019 = toSystemDependentName("bin/modules/");
     String HYBRIS_OOTB_MODULE_PREFIX = toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX;
+    String HYBRIS_OOTB_MODULE_PREFIX_2019 = toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX_2019;
     String HYBRIS_DATA_DIRECTORY = "data";
     String HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar";
     String EXCLUDE_TMP_DIRECTORY = toSystemDependentName("/platform/tmp");
@@ -171,7 +173,9 @@ public interface HybrisConstants {
     String RULESET_XML = "ruleset.xml";
 
     String BACKOFFICE_WEB_INF_LIB = toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");
+    String BACKOFFICE_WEB_INF_LIB_2019 = toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/lib");
     String BACKOFFICE_WEB_INF_CLASSES = toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes");
+    String BACKOFFICE_WEB_INF_CLASSES_2019 = toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/classes");
     String HAC_WEB_INF_CLASSES = toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes");
 
     String DESCRIPTOR_TYPE = "descriptorType";

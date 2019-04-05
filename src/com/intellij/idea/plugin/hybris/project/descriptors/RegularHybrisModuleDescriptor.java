@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
@@ -303,17 +304,18 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         }
 
         if (this.hasBackofficeModule()) {
+
             libs.add(new DefaultJavaLibraryDescriptor(
                 new File(
                     this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                    HybrisConstants.BACKOFFICE_WEB_INF_LIB
+                    CommonIdeaService.getInstance().getBackofficeWebInfLib(getRootProjectDescriptor().getProject())
                 ),
                 false, false
             ));
             libs.add(new DefaultJavaLibraryDescriptor(
                 new File(
                     this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                    HybrisConstants.BACKOFFICE_WEB_INF_CLASSES
+                    CommonIdeaService.getInstance().getBackofficeWebInfClasses(getRootProjectDescriptor().getProject())
                 ),
                 false, true
             ));

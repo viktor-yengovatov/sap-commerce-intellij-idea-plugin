@@ -92,7 +92,9 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
                 return false;
             }
         }
-        return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX)
+        return (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX) ||
+                file.getAbsolutePath().contains(HybrisConstants.PLATFORM_OOTB_MODULE_PREFIX_2019)
+               )
                && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 

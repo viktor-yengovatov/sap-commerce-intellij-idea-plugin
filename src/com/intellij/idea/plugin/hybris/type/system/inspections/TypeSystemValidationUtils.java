@@ -74,6 +74,9 @@ public abstract class TypeSystemValidationUtils {
         if (itemsfilePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))) {
             return false;
         }
+        if (itemsfilePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019))) {
+            return false;
+        }
         if (itemsfilePath.contains(normalize(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX))) {
             return false;
         }
