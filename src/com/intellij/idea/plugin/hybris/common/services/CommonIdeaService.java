@@ -73,4 +73,8 @@ public interface CommonIdeaService {
     boolean isFansTargetGroup();
 
     String getHostSolrUrl(Project project, SolrConnectionSettings item);
+
+    String getBackofficeWebInfLib(Project project);
+
+    String getBackofficeWebInfClasses(Project project);
 }
