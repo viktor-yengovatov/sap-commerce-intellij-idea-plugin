@@ -27,5 +27,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface RunConfigurationConfigurator {
 
-    void configure(final HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final Project project);
+    void configure(
+        final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final Project project,
+        final HybrisConfiguratorCache cache
+    );
 }

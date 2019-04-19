@@ -77,6 +77,9 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultLoadedConfigurator"/>
 
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
+
     </extensions>
 
 </idea-plugin>

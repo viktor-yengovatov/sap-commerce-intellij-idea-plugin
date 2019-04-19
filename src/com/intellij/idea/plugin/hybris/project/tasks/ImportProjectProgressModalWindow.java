@@ -30,6 +30,7 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
@@ -37,6 +38,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
@@ -157,6 +159,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setIndeterminate(true);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.preparation"));
 
+        final HybrisConfiguratorCache cache = new HybrisConfiguratorCache();
         final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor
             .getModulesChosenForImport()
             .stream()
@@ -269,10 +272,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modulesDependenciesConfigurator.configure(hybrisProjectDescriptor, modifiableModelsProvider);
         springConfigurator.configureDependencies(hybrisProjectDescriptor, modifiableModelsProvider);
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.runconfigurations"));
-        debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+        debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache);
 
         if (testRunConfigurationConfigurator != null) {
-            testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project);
+            testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache);
         }
         indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(hybrisProjectDescriptor, project);
@@ -286,6 +289,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLoadedConfigurator().configure(
             project, hybrisProjectDescriptor.getModulesChosenForImport());
 
+        final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getCompilerConfigurator();
+
+        if (compilerConfigurator != null) {
+            indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.compiler"));
+            compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
+        }
         final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
 
         if (eclipseConfigurator != null) {
