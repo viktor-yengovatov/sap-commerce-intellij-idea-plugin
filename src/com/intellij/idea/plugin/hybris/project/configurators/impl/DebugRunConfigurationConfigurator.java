@@ -27,6 +27,7 @@ import com.intellij.execution.remote.RemoteConfigurationType;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.AbstractHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
@@ -38,11 +39,8 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Properties;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 17/10/2016.
@@ -52,16 +50,18 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
     @Override
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final Project project
+        @NotNull final Project project,
+        @NotNull final HybrisConfiguratorCache cache
     ) {
 
         final RunManager runManager = RunManager.getInstance(project);
-        createRemoteDebug(runManager, hybrisProjectDescriptor);
+        createRemoteDebug(runManager, hybrisProjectDescriptor, cache);
     }
 
     private void createRemoteDebug(
         @NotNull final RunManager runManager,
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final HybrisConfiguratorCache cache
     ) {
         final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(
             RemoteConfigurationType.class);
@@ -77,7 +77,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
             configurationFactory
         );
         final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
-        remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor);
+        remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache);
 
         ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
             runner.setSingleton(true);
@@ -87,10 +87,13 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         }));
     }
 
-    private String getDebugPort(@NotNull final HybrisProjectDescriptor hybrisProjectDescriptor) {
+    private String getDebugPort(
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull HybrisConfiguratorCache cache
+    ) {
         final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
         final ConfigHybrisModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
-        String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES);
+        String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES, cache);
 
         if (port != null) {
             return port;
@@ -99,7 +102,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
             hybrisProjectDescriptor);
 
         if (platformDescriptor != null) {
-            port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES);
+            port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES, cache);
 
             if (port != null) {
                 return port;
@@ -109,23 +112,18 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
     }
 
 
-    private String findPortProperty(final AbstractHybrisModuleDescriptor moduleDescriptor, final String fileName) {
+    private String findPortProperty(
+        final AbstractHybrisModuleDescriptor moduleDescriptor,
+        final String fileName,
+        HybrisConfiguratorCache cache
+    ) {
         if (moduleDescriptor == null) {
             return null;
         }
-        final File propertiesFile = new File(moduleDescriptor.getRootDirectory(), fileName);
-        if (!propertiesFile.exists()) {
-            return null;
-        }
-
-        final Properties properties = new Properties();
-        try (FileReader fr = new FileReader(propertiesFile)) {
-            properties.load(fr);
-        } catch (IOException e) {
-            return null;
-        }
-
-        final String debugOptions = (String) properties.get(HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS);
+        final String debugOptions = cache.findPropertyInFile(
+            new File(moduleDescriptor.getRootDirectory(), fileName),
+            HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS
+        );
         if (debugOptions == null) {
             return null;
         }
@@ -138,9 +136,6 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final Optional<String> address = Arrays.stream(transport.get().split(","))
                                                .filter(e -> e.startsWith(HybrisConstants.ADDRESS))
                                                .findAny();
-        if (!address.isPresent()) {
-            return null;
-        }
-        return address.get().split("=")[1];
+        return address.map(s -> s.split("=")[1]).orElse(null);
     }
 }

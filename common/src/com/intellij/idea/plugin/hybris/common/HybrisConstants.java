@@ -212,6 +212,7 @@ public interface HybrisConstants {
     String HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR";
     String IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties";
     String GROUP_OVERRIDE_KEY = "group.override";
+    String BUILD_COMPILER_KEY = "build.compiler";
 
     String ITEM_ROOT_CLASS = "de.hybris.platform.core.model.ItemModel";
     String ENUM_ROOT_CLASS = "de.hybris.platform.core.HybrisEnumValue";

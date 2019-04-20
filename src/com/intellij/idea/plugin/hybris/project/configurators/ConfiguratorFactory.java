@@ -87,4 +87,7 @@ public interface ConfiguratorFactory {
 
     @Nullable
     DataSourcesConfigurator getDataSourcesConfigurator();
+
+    @Nullable
+    JavaCompilerConfigurator getCompilerConfigurator();
 }
