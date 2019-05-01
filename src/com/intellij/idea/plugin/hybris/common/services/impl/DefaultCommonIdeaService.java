@@ -36,8 +36,6 @@ import com.intellij.openapi.editor.EditorBundle;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.LicensingFacade;
-import com.intellij.util.PlatformUtils;
 import com.intellij.util.proxy.ProtocolDefaultPorts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -299,18 +297,6 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
             LOG.info(e.getMessage(), e);
         }
         return null;
-    }
-
-    @Override
-    public boolean isDiscountTargetGroup() {
-        LicensingFacade licensingFacade = LicensingFacade.getInstance();
-        return licensingFacade == null || licensingFacade.isEvaluationLicense() || PlatformUtils.isIdeaCommunity();
-    }
-
-    @Override
-    public boolean isFansTargetGroup() {
-        LicensingFacade licensingFacade = LicensingFacade.getInstance();
-        return licensingFacade != null && !StringUtils.startsWith(licensingFacade.getLicensedToMessage(), "Licensed to SAP");
     }
 
     private boolean matchAllModuleNames(

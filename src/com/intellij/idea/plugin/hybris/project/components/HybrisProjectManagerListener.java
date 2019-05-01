@@ -107,17 +107,9 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
                 );
             }
 
-            if (CommonIdeaService.getInstance().isFansTargetGroup()) {
-                this.showImportantInfoNotificationWithCloseTimeoutIfItWasNotShownThisMonth(
-                    project, "support.us.step.title", "support.us.step.text"
-                );
-            }
-
-            if (CommonIdeaService.getInstance().isDiscountTargetGroup()) {
-                this.showImportantInfoNotificationWithCloseTimeoutIfItWasNotShownThisMonth(
-                    project, "discount.offer.bubble.title", "discount.offer.bubble.text"
-                );
-            }
+            this.showImportantInfoNotificationWithCloseTimeoutIfItWasNotShownThisMonth(
+                project, "support.us.step.title", "support.us.step.text"
+            );
 
             final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
             if (!commonIdeaService.isHybrisProject(project)) {

@@ -68,10 +68,6 @@ public interface CommonIdeaService {
 
     String getHostUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings settings);
 
-    boolean isDiscountTargetGroup();
-
-    boolean isFansTargetGroup();
-
     String getHostSolrUrl(Project project, SolrConnectionSettings item);
 
     String getBackofficeWebInfLib(Project project);
