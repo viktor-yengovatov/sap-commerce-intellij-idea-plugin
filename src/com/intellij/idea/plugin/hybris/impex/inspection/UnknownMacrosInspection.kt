@@ -44,19 +44,19 @@ private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder) :
     private val cachedMacros = ContainerUtilRt.newHashMap<String, Boolean>()
 
     override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {
-        if (usage.text == "\$config-") return
+        if (usage.text.startsWith("\$config-")) return
         val macroName = usage.text
 
         if (macroName.isNotEmpty()) {
             val isDeclarationExists = cachedMacros[macroName]
             if (isDeclarationExists == true) return
             if (isDeclarationExists != null && isDeclarationExists == false) {
-                problemsHolder.registerProblem(usage, "Unknown macros", ProblemHighlightType.ERROR)
+                problemsHolder.registerProblem(usage, "Unknown macro $macroName", ProblemHighlightType.ERROR)
             } else {
                 val declaration = findMacrosDeclaration(usage.containingFile, macroName)
                 if (declaration == null) {
                     cachedMacros[macroName] = false
-                    problemsHolder.registerProblem(usage, "Unknown macros", ProblemHighlightType.ERROR)
+                    problemsHolder.registerProblem(usage, "Unknown macro $macroName", ProblemHighlightType.ERROR)
                 } else {
                     cachedMacros[macroName] = true
                 }

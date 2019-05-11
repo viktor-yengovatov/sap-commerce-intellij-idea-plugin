@@ -1,15 +1,96 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.impex;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ALTERNATIVE_MAP_DELIMITER;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ALTERNATIVE_PATTERN;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ANY_ATTRIBUTE_NAME;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ANY_ATTRIBUTE_VALUE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ANY_HEADER_MODE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ANY_HEADER_PARAMETER_NAME;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ASSIGN_VALUE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ATTRIBUTE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ATTRIBUTE_NAME;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ATTRIBUTE_SEPARATOR;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ATTRIBUTE_VALUE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.BEAN_SHELL;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.BEAN_SHELL_BODY;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.BEAN_SHELL_MARKER;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.BOOLEAN;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.COMMA;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.COMMENT;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.COMMENT_BODY;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.COMMENT_MARKER;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.CRLF;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DEFAULT_KEY_VALUE_DELIMITER;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DEFAULT_PATH_DELIMITER;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DIGIT;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOT;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOUBLE_STRING;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FIELD_LIST_ITEM_SEPARATOR;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FIELD_VALUE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FIELD_VALUE_IGNORE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FIELD_VALUE_SEPARATOR;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FIELD_VALUE_URL;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FULL_HEADER_PARAMETER;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FULL_HEADER_TYPE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.FUNCTION;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_LINE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_MODE_INSERT;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_MODE_INSERT_UPDATE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_MODE_REMOVE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_MODE_UPDATE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_PARAMETER_NAME;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_TYPE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.HEADER_TYPE_NAME;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.LEFT_ROUND_BRACKET;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.LEFT_SQUARE_BRACKET;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MACRO_DECLARATION;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MACRO_NAME_DEC;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MACRO_NAME_DECLARATION;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MACRO_USAGE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MACRO_USAGE_DEC;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MACRO_VALUE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MACRO_VALUE_DEC;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.MODIFIERS;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.PARAMETER;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.PARAMETERS;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.PARAMETERS_SEPARATOR;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.RIGHT_ROUND_BRACKET;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.RIGHT_SQUARE_BRACKET;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ROOT_MACRO_USAGE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.SINGLE_STRING;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.STRING;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.SUB_PARAMETERS;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.VALUE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.VALUE_GROUP;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.VALUE_LINE;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.VALUE_SUBTYPE;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.Parser;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.TRUE_CONDITION;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils._COLLAPSE_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils._NONE_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils._NOT_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.adapt_builder_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.consumeToken;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.create_token_set_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.current_position_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.empty_element_parsed_guard_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.enter_section_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.eof;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.exit_section_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.nextTokenIs;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.recursion_guard_;
+import static com.intellij.idea.plugin.hybris.impex.utils.ImpexParserUtils.report_error_;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class ImpexParser implements PsiParser, LightPsiParser {
@@ -415,7 +496,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | HEADER_MODE_UPDATE
   //     | HEADER_MODE_INSERT_UPDATE
   //     | HEADER_MODE_REMOVE
-  //     )+
+  //     )?
   public static boolean macro_declaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "macro_declaration")) return false;
     if (!nextTokenIs(b, MACRO_NAME_DECLARATION)) return false;
@@ -448,19 +529,11 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | HEADER_MODE_UPDATE
   //     | HEADER_MODE_INSERT_UPDATE
   //     | HEADER_MODE_REMOVE
-  //     )+
+  //     )?
   private static boolean macro_declaration_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "macro_declaration_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = macro_declaration_2_0(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!macro_declaration_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "macro_declaration_2", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
+    macro_declaration_2_0(b, l + 1);
+    return true;
   }
 
   // macro_value_dec
@@ -1260,37 +1333,37 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  final static Parser not_line_break_or_parameters_separator_parser_ = new Parser() {
+  static final Parser not_line_break_or_parameters_separator_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return not_line_break_or_parameters_separator(b, l + 1);
     }
   };
-  final static Parser not_line_break_parser_ = new Parser() {
+  static final Parser not_line_break_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return not_line_break(b, l + 1);
     }
   };
-  final static Parser recover_header_type_parser_ = new Parser() {
+  static final Parser recover_header_type_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return recover_header_type(b, l + 1);
     }
   };
-  final static Parser recover_modifiers_parser_ = new Parser() {
+  static final Parser recover_modifiers_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return recover_modifiers(b, l + 1);
     }
   };
-  final static Parser recover_parameter_name_parser_ = new Parser() {
+  static final Parser recover_parameter_name_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return recover_parameter_name(b, l + 1);
     }
   };
-  final static Parser recover_parameters_parser_ = new Parser() {
+  static final Parser recover_parameters_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return recover_parameters(b, l + 1);
     }
   };
-  final static Parser recover_root_parser_ = new Parser() {
+  static final Parser recover_root_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return recover_root(b, l + 1);
     }

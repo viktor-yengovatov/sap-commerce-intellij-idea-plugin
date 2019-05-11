@@ -113,7 +113,7 @@ macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
     | HEADER_MODE_UPDATE
     | HEADER_MODE_INSERT_UPDATE
     | HEADER_MODE_REMOVE
-    )+
+    )?
 {pin = 2}
 
 

@@ -1,19 +1,19 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.impex.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface ImpexMacroDeclaration extends PsiElement {
 
   @NotNull
   ImpexMacroNameDec getMacroNameDec();
 
-  @NotNull
-  List<ImpexMacroUsageDec> getMacroUsageDecList();
+  @Nullable
+  ImpexMacroUsageDec getMacroUsageDec();
 
-  @NotNull
-  List<ImpexMacroValueDec> getMacroValueDecList();
+  @Nullable
+  ImpexMacroValueDec getMacroValueDec();
 
 }

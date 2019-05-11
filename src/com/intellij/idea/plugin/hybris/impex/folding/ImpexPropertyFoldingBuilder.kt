@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.impex.folding
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
+import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
@@ -28,7 +30,9 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.SmartList
 
@@ -94,11 +98,39 @@ class ImpexPropertyFoldingBuilder : FoldingBuilderEx() {
                     val children = declaration.children
                     if (children.any { it.text.contains("\$config") }) {
                         val configTextElement = children.find { it.text.contains("\$config") }
+
                         if (configTextElement != null) {
-                            val value = configTextElement.nextSibling
-                            if (value != null) {
-                                results.add(FoldingDescriptor(value.node, value.textRange, null))
+                            val propertyName = configTextElement.text.substring("\$config-".length)
+
+                            if (propertyName.isNotEmpty()) {
+                                val module = ModuleUtil.findModuleForPsiElement(configTextElement)
+                                val property = ProjectPropertiesUtils.findMacroProperty(module!!, propertyName)
+                                if (property != null) {
+                                    var textRange = configTextElement.textRange
+                                    val configLength = property.key!!.length + "\$config-".length;
+                                    if (configLength != configTextElement.textLength) {
+                                        textRange = TextRange(textRange.startOffset, textRange.startOffset+configLength);
+                                    }
+                                    results.add(FoldingDescriptor(configTextElement.node, textRange, null))
+                                }
                             }
+                        }
+                    }
+                }
+                override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {
+                    if (!usage.text.startsWith("\$config-")) return
+                    val propertyName = usage.text.substring("\$config-".length)
+
+                    if (propertyName.isNotEmpty()) {
+                        val module = ModuleUtil.findModuleForPsiElement(usage)
+                        val property = ProjectPropertiesUtils.findMacroProperty(module!!, propertyName)
+                        if (property != null) {
+                            var textRange = usage.textRange
+                            val configLength = property.key!!.length + "\$config-".length;
+                            if (configLength != usage.textLength) {
+                                textRange = TextRange(textRange.startOffset, textRange.startOffset+configLength);
+                            }
+                            results.add(FoldingDescriptor(usage.node, textRange, null))
                         }
                     }
                 }

@@ -42,6 +42,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.TokenSet;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -152,7 +153,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
-                .inside(psiElement().withElementType(ImpexTypes.MACRO_DECLARATION)),
+                .inside(psiElement().withElementType(TokenSet.create(ImpexTypes.MACRO_USAGE, ImpexTypes.MACRO_DECLARATION))),
             new ImpexMacrosConfigCompletionProvider()
         );
 

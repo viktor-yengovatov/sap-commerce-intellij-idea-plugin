@@ -23,11 +23,15 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
+import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.lang.properties.PropertiesImplUtil
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.containers.ContainerUtilRt
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -41,6 +45,29 @@ class UnknownConfigPropertyInspection : LocalInspectionTool() {
 
 
 private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+    private val cachedProperties = ContainerUtilRt.newHashMap<String, Boolean>()
+
+    override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {
+        if (!usage.text.startsWith("\$config-")) return
+        val propertyName = usage.text.substring("\$config-".length)
+
+        if (propertyName.isNotEmpty()) {
+            val isDeclarationExists = cachedProperties[propertyName]
+            if (isDeclarationExists == true) return
+            if (isDeclarationExists != null && isDeclarationExists == false) {
+                problemsHolder.registerProblem(usage, "Unknown config property $propertyName", ProblemHighlightType.ERROR)
+            } else {
+                val module = ModuleUtil.findModuleForPsiElement(usage)
+                val property = ProjectPropertiesUtils.findMacroProperty(module!!, propertyName)
+                if (property == null) {
+                    cachedProperties[propertyName] = false
+                    problemsHolder.registerProblem(usage, "Unknown config property $propertyName", ProblemHighlightType.ERROR)
+                } else {
+                    cachedProperties[propertyName] = true
+                }
+            }
+        }
+    }
 
     override fun visitMacroDeclaration(declaration: ImpexMacroDeclaration) {
         val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpexMacroValue::class.java)
