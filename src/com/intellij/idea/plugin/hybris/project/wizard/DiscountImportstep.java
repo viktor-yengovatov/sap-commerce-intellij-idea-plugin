@@ -1,7 +1,6 @@
 package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.projectImport.ProjectImportWizardStep;
@@ -34,15 +33,8 @@ public class DiscountImportstep extends ProjectImportWizardStep {
 
     @Override
     public void updateStep() {
-        if (CommonIdeaService.getInstance().isFansTargetGroup()) {
-            discountLabel.setText(HybrisI18NBundleUtils.message("support.us.step.title"));
-            discountEditorPane.setText(HybrisI18NBundleUtils.message("support.us.step.text"));
-        }
-    }
-
-    @Override
-    public boolean isStepVisible() {
-        return CommonIdeaService.getInstance().isFansTargetGroup() || CommonIdeaService.getInstance().isDiscountTargetGroup();
+        discountLabel.setText(HybrisI18NBundleUtils.message("support.us.step.title"));
+        discountEditorPane.setText(HybrisI18NBundleUtils.message("support.us.step.text"));
     }
 
     private void createUIComponents() {
