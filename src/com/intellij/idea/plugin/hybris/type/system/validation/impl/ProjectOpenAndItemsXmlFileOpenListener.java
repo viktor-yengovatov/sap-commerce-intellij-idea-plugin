@@ -18,16 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.type.system.validation.impl;
 
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.services.NotificationService;
 import com.intellij.idea.plugin.hybris.common.services.impl.DefaultNotificationService;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisXmlFileType;
 import com.intellij.idea.plugin.hybris.type.system.validation.ItemsFileValidation;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
@@ -55,6 +55,9 @@ public class ProjectOpenAndItemsXmlFileOpenListener implements ProjectManagerLis
 
     @Override
     public void projectOpened(@Nonnull final Project project) {
+        if (!ServiceManager.getService(CommonIdeaService.class).isHybrisProject(project)) {
+            return;
+        }
         final NotificationService notificationService = new DefaultNotificationService(NOTIFICATION_GROUP, project);
 
         project.getMessageBus().connect().subscribe(
