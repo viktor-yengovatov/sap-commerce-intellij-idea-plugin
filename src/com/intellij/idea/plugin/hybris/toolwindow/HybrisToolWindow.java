@@ -1,11 +1,15 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
+import com.intellij.idea.plugin.hybris.notifications.SolrConfigurationChangeListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
+import com.intellij.idea.plugin.hybris.tools.remote.http.SolrHttpClient;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -37,6 +41,7 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     private JTextField solrLocationTextField;
     private JTextField adminNameTextField;
     private JTextField adminPwdTextField;
+    private JButton testConnectionButton;
 
     private MyListPanel myListPanel;
 
@@ -73,6 +78,7 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         adminNameTextField.addFocusListener(focusListener);
         adminPwdTextField.addFocusListener(focusListener);
         solrLocationTextField.addFocusListener(focusListener);
+        testConnectionButton.addActionListener(action->testConnection());
     }
 
     @Override
@@ -187,5 +193,23 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         settings.setGeneratedURL(solrLocationTextField.getText());
     }
 
+    private void testConnection() {
+        final SolrConnectionSettings settings = HybrisDeveloperSpecificProjectSettingsComponent
+            .getInstance(myProject).getActiveSolrConnectionSettings(myProject);
+        final String[] cores = SolrHttpClient.getInstance(myProject).listOfCores(myProject);
+        myProject.getMessageBus().syncPublisher(SolrConfigurationChangeListener.TOPIC).configurationChanged();
+        String message;
+        NotificationType type;
+        if (cores.length > 0) {
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "SOLR" , settings.getGeneratedURL());
+            type = NotificationType.INFORMATION;
+        } else {
+            type = NotificationType.WARNING;
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", settings.getGeneratedURL(), "Unable to detect SOLR cores. Possibly wrong URL?");
+        }
 
+        NotificationUtil.NOTIFICATION_GROUP.createNotification(
+            HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type, null
+        ).notify(myProject);
+    }
 }

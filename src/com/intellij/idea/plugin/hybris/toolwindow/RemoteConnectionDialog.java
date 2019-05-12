@@ -89,7 +89,7 @@ public class RemoteConnectionDialog extends DialogWrapper {
         final NotificationType type;
         final String message;
         if (errorMessage.isEmpty()) {
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", testedHacURL);
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "hac", testedHacURL);
             type = NotificationType.INFORMATION;
         } else {
             type = NotificationType.WARNING;
