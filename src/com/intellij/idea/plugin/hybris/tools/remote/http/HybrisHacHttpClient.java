@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBui
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
@@ -123,14 +124,20 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     }
 
     public @NotNull
-    HybrisHttpResult executeFlexibleSearch(final Project project, final String content) {
+    HybrisHttpResult executeFlexibleSearch(
+        final Project project,
+        final boolean shouldCommit,
+        final boolean isPlainSQL,
+        final String maxRows,
+        final String content
+    ) {
 
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptType", "flexibleSearch"),
-            new BasicNameValuePair("commit", "false"),
-            new BasicNameValuePair("flexibleSearchQuery", content),
-            new BasicNameValuePair("sqlQuery", ""),
-            new BasicNameValuePair("maxCount", "100")
+            new BasicNameValuePair("commit", BooleanUtils.toStringTrueFalse(shouldCommit)),
+            new BasicNameValuePair("flexibleSearchQuery", isPlainSQL ? "": content),
+            new BasicNameValuePair("sqlQuery", isPlainSQL ? content : ""),
+            new BasicNameValuePair("maxCount", maxRows)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
         final String actionUrl = getHostHacURL(project) + "/console/flexsearch/execute";
