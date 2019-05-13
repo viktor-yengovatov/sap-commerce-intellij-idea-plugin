@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>10.1</version>
+    <version>10.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="191"/>
@@ -104,18 +104,7 @@
         <![CDATA[
             <h2>New Feature Request</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-201'>IIPS-201</a>] - Add Copyright support for impex files</li>
-            </ul>
-
-            <h2>Task</h2>
-            <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-80'>IIP-80</a>] - Show a warning after opening a project or opening items.xml file when some attributes or classes from project items.xml are missing in current generated code base</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-488'>IIP-488</a>] - Add support for org.eclipse.jdt.core.JDTCompilerAdapter</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-525'>IIP-525</a>] - Add new actions to statistics</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-536'>IIP-536</a>] - 1905 compatibility</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-539'>IIP-539</a>] - Remove discount codes</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-540'>IIP-540</a>] - Disable html syntax validation inside of impex file</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-541'>IIP-541</a>] - ClassConflict detection doesn&#39;t work as expected</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-203'>IIPS-203</a>] - Maximum number of rows in FS console should be configurable</li>
             </ul>
         ]]>
     </change-notes>
