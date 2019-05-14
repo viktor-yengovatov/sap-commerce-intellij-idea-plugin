@@ -9,6 +9,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERS
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX.CATALOG_VERSION_STAGED
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessor
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
@@ -50,6 +51,10 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
 
     open fun printDefaultText() {
         setInputText("")
+    }
+
+    open fun connectionType() : HybrisRemoteConnectionSettings.Type {
+        return HybrisRemoteConnectionSettings.Type.Hybris
     }
 
     abstract fun collectStatistics()

@@ -1,35 +1,34 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
-import com.intellij.idea.plugin.hybris.notifications.SolrConfigurationChangeListener;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
-import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
-import com.intellij.idea.plugin.hybris.tools.remote.http.SolrHttpClient;
-import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.IPopupChooserBuilder;
+import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.AddEditDeleteListPanel;
+import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ListUtil;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.intellij.util.ui.JBEmptyBorder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
@@ -38,48 +37,9 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     private Project myProject;
     private JPanel myToolWindowContent;
     private JPanel connectionPanel;
-    private JTextField solrLocationTextField;
-    private JTextField adminNameTextField;
-    private JTextField adminPwdTextField;
-    private JButton testConnectionButton;
-
     private MyListPanel myListPanel;
+    private ListCellRenderer myListCellRenderer = null;
 
-    public HybrisToolWindow() {
-        final DocumentListener listener = new DocumentListener() {
-
-            @Override
-            public void insertUpdate(final DocumentEvent e) {
-                saveSolrConnectionSettings();
-            }
-
-            @Override
-            public void removeUpdate(final DocumentEvent e) {
-                saveSolrConnectionSettings();
-            }
-
-            @Override
-            public void changedUpdate(final DocumentEvent e) {
-                saveSolrConnectionSettings();
-            }
-        };
-        final FocusListener focusListener = new FocusListener() {
-
-            @Override
-            public void focusGained(final FocusEvent e) {
-
-            }
-
-            @Override
-            public void focusLost(final FocusEvent e) {
-                saveSolrConnectionSettings();
-            }
-        };
-        adminNameTextField.addFocusListener(focusListener);
-        adminPwdTextField.addFocusListener(focusListener);
-        solrLocationTextField.addFocusListener(focusListener);
-        testConnectionButton.addActionListener(action->testConnection());
-    }
 
     @Override
     public void createToolWindowContent(
@@ -92,7 +52,12 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         toolWindow.getContentManager().addContent(content);
         project.getMessageBus().connect(project).subscribe(
             HybrisDeveloperSpecificProjectSettingsListener.TOPIC,
-            this::loadSettings
+            new HybrisDeveloperSpecificProjectSettingsListener(){
+                @Override
+                public void hacConnectionSettingsChanged() {
+                    loadSettings();
+                }
+            }
         );
         loadSettings();
     }
@@ -100,13 +65,8 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     private void loadSettings() {
         final HybrisDeveloperSpecificProjectSettingsComponent instance = HybrisDeveloperSpecificProjectSettingsComponent
             .getInstance(myProject);
-        List<HybrisRemoteConnectionSettings> currentList = instance.getState().getRemoteConnectionSettingsList();
-        myListPanel.setInitialList(currentList);
-
-        SolrConnectionSettings solrConnectionSettings = instance.getActiveSolrConnectionSettings(myProject);
-        adminNameTextField.setText(solrConnectionSettings.getAdminLogin());
-        adminPwdTextField.setText(solrConnectionSettings.getAdminPassword());
-        solrLocationTextField.setText(solrConnectionSettings.getGeneratedURL());
+        List<HybrisRemoteConnectionSettings> connectionList = instance.getState().getRemoteConnectionSettingsList();
+        myListPanel.setInitialList(connectionList);
     }
 
 
@@ -149,16 +109,88 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         @Nullable
         @Override
         protected HybrisRemoteConnectionSettings editSelectedItem(final HybrisRemoteConnectionSettings item) {
-            final boolean ok = new RemoteConnectionDialog(myProject, myListPanel, item).showAndGet();
+            boolean ok = false;
+            if (item.getType() == HybrisRemoteConnectionSettings.Type.SOLR) {
+                ok = new SolrConnectionDialog(myProject, myListPanel, item).showAndGet();
+                if (ok) {
+                    myProject.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
+                }
+            } else if (item.getType() == null || item.getType() == HybrisRemoteConnectionSettings.Type.Hybris) {
+                ok = new RemoteConnectionDialog(myProject, myListPanel, item).showAndGet();
+            }
             return ok ? item : null;
         }
 
         @Nullable
         @Override
         protected HybrisRemoteConnectionSettings findItemToAdd() {
-            HybrisRemoteConnectionSettings item = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getDefaultHybrisRemoteConnectionSettings(myProject);
-            final boolean ok = new RemoteConnectionDialog(myProject, myListPanel, item).showAndGet();
-            return ok ? item : null;
+            return null;
+        }
+
+        protected void showConfigTypePopup(AnActionButton button) {
+            List<HybrisRemoteConnectionSettings.Type> list = Arrays.asList(HybrisRemoteConnectionSettings.Type.values());
+            IPopupChooserBuilder<HybrisRemoteConnectionSettings.Type> builder = JBPopupFactory.getInstance().createPopupChooserBuilder(list);
+            builder.setRenderer(getListCellRenderer());
+            builder.setItemChosenCallback(it->{
+                boolean ok = false;
+                HybrisRemoteConnectionSettings item = null;
+                if (it == HybrisRemoteConnectionSettings.Type.SOLR) {
+                    item = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getDefaultSolrRemoteConnectionSettings(myProject);
+                    ok = new SolrConnectionDialog(myProject, myListPanel, item).showAndGet();
+                    if (ok) {
+                        myProject.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
+                    }
+                } else if (it == HybrisRemoteConnectionSettings.Type.Hybris) {
+                    item = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getDefaultHybrisRemoteConnectionSettings(myProject);
+                    ok = new RemoteConnectionDialog(myProject, myListPanel, item).showAndGet();
+                }
+                if (ok) {
+                    addElement(item);
+                    saveSettings();
+                }
+            });
+             JBPopup popup = builder.createPopup();
+             popup.showUnderneathOf(button.getContextComponent());
+        }
+
+        @Override
+        protected ListCellRenderer getListCellRenderer(){
+            if (myListCellRenderer == null) {
+                myListCellRenderer = new DefaultListCellRenderer() {
+                    @Override
+                    public Component getListCellRendererComponent(
+                        final JList list,
+                        final Object value,
+                        final int index,
+                        final boolean isSelected,
+                        final boolean cellHasFocus
+                    ) {
+                        final Component comp = super.getListCellRendererComponent(
+                            list,
+                            value.toString(),
+                            index,
+                            isSelected,
+                            cellHasFocus
+                        );
+                        ((JComponent)comp).setBorder(new JBEmptyBorder(5));
+                        HybrisRemoteConnectionSettings.Type type = null;
+                        if (value instanceof HybrisRemoteConnectionSettings.Type) {
+                            type = (HybrisRemoteConnectionSettings.Type) value;
+                        }
+                        if (value instanceof HybrisRemoteConnectionSettings) {
+                            type = ((HybrisRemoteConnectionSettings) value).getType();
+                        }
+                        if (type == HybrisRemoteConnectionSettings.Type.Hybris) {
+                            setIcon(HybrisIcons.HYBRIS_ICON);
+                        }
+                        if (type == HybrisRemoteConnectionSettings.Type.SOLR) {
+                            setIcon(HybrisIcons.Console.SOLR);
+                        }
+                        return comp;
+                    }
+                };
+            }
+            return myListCellRenderer;
         }
 
         public void setInitialList(final List<HybrisRemoteConnectionSettings> remoteConnectionSettingsList) {
@@ -167,6 +199,7 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         }
 
         protected void customizeDecorator(ToolbarDecorator decorator) {
+            decorator.setAddAction(this::showConfigTypePopup);
             super.customizeDecorator(decorator);
             decorator.setMoveUpAction(button -> ListUtil.moveSelectedItemsUp(myList));
             decorator.setMoveDownAction(button -> ListUtil.moveSelectedItemsDown(myList));
@@ -185,31 +218,4 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState().setRemoteConnectionSettingsList(myListPanel.getData());
     }
 
-    public void saveSolrConnectionSettings() {
-        final SolrConnectionSettings settings = HybrisDeveloperSpecificProjectSettingsComponent
-            .getInstance(myProject).getActiveSolrConnectionSettings(myProject);
-        settings.setAdminPassword(adminPwdTextField.getText());
-        settings.setAdminLogin(adminNameTextField.getText());
-        settings.setGeneratedURL(solrLocationTextField.getText());
-    }
-
-    private void testConnection() {
-        final SolrConnectionSettings settings = HybrisDeveloperSpecificProjectSettingsComponent
-            .getInstance(myProject).getActiveSolrConnectionSettings(myProject);
-        final String[] cores = SolrHttpClient.getInstance(myProject).listOfCores(myProject);
-        myProject.getMessageBus().syncPublisher(SolrConfigurationChangeListener.TOPIC).configurationChanged();
-        String message;
-        NotificationType type;
-        if (cores.length > 0) {
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "SOLR" , settings.getGeneratedURL());
-            type = NotificationType.INFORMATION;
-        } else {
-            type = NotificationType.WARNING;
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", settings.getGeneratedURL(), "Unable to detect SOLR cores. Possibly wrong URL?");
-        }
-
-        NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type, null
-        ).notify(myProject);
-    }
 }

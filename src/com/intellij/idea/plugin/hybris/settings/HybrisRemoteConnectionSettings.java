@@ -7,14 +7,20 @@ import java.util.Objects;
 
 public class HybrisRemoteConnectionSettings implements Serializable {
 
+    public enum Type {Hybris, SOLR}
+
     protected String uuid;
     protected String displayName;
     protected String hostIP;
     protected String port;
+    protected String solrWebroot;
+    protected String adminLogin;
+    protected String adminPassword;
     protected String hacWebroot;
     protected String hacLogin;
     protected String hacPassword;
     protected String generatedURL;
+    protected Type type;
 
     public String getUuid() {
         return uuid;
@@ -48,6 +54,30 @@ public class HybrisRemoteConnectionSettings implements Serializable {
         this.port = port;
     }
 
+    public String getSolrWebroot() {
+        return solrWebroot;
+    }
+
+    public void setSolrWebroot(final String solrWebroot) {
+        this.solrWebroot = solrWebroot;
+    }
+
+    public String getAdminLogin() {
+        return adminLogin;
+    }
+
+    public void setAdminLogin(final String adminLogin) {
+        this.adminLogin = adminLogin;
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public void setAdminPassword(final String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
+
     public String getHacWebroot() {
         return hacWebroot;
     }
@@ -78,6 +108,14 @@ public class HybrisRemoteConnectionSettings implements Serializable {
 
     public void setGeneratedURL(final String generatedURL) {
         this.generatedURL = generatedURL;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(final Type type) {
+        this.type = type;
     }
 
     @Override

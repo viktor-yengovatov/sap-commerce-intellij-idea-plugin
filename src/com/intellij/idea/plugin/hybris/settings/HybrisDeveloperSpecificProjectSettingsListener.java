@@ -5,6 +5,8 @@ import com.intellij.util.messages.Topic;
 public interface HybrisDeveloperSpecificProjectSettingsListener {
     Topic<HybrisDeveloperSpecificProjectSettingsListener> TOPIC = Topic.create("HybrisDeveloperSpecificProjectSettingsListener", HybrisDeveloperSpecificProjectSettingsListener.class);
 
-    void remoteConnectionSettingsChanged();
+    default void hacConnectionSettingsChanged() {};
+
+    default void solrConnectionSettingsChanged() {};
 
 }

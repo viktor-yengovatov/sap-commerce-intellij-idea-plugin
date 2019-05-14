@@ -61,7 +61,6 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         toolbarActions.add(executeAction)
         toolbarActions.add(HybrisSuspendAction(hybrisTabs, actionHandler))
         toolbarActions.add(HybrisImpexValidateAction(hybrisTabs, validateHandler))
-        toolbarActions.add(HybrisSolrUpdateConnectionAction(hybrisTabs))
 
         val actions = impexConsole.createConsoleActions()
         actions[5] = HybrisClearAllAction(hybrisTabs)
@@ -77,6 +76,10 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 
     fun setActiveConsole(console: HybrisConsole) {
         hybrisTabs.setActiveConsole(console)
+    }
+
+    fun getActiveConsole() : HybrisConsole {
+        return hybrisTabs.activeConsole()
     }
 
     fun findConsole(consoleTitle: String): HybrisConsole? {

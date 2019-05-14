@@ -30,7 +30,6 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
@@ -39,6 +38,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
+import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
@@ -63,7 +63,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSe
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
-import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -463,10 +462,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
         HybrisDeveloperSpecificProjectSettings state = developerSpecificSettings.getState();
         if (state != null) {
-            List<HybrisRemoteConnectionSettings> list = state.getRemoteConnectionSettingsList();
-            if (list.isEmpty()) {
+            List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
+            final List<HybrisRemoteConnectionSettings> remoteList = connectionList
+                .stream().filter(it -> it.getType() == HybrisRemoteConnectionSettings.Type.Hybris).collect(Collectors.toList());
+            if (remoteList.isEmpty()) {
                 HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(myProject);
-                list.add(newSettings);
+                connectionList.add(newSettings);
                 state.setActiveRemoteConnectionID(newSettings.getUuid());
             }
         }
@@ -478,7 +479,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
             final ToolWindowManager manager = ToolWindowManager.getInstance(project);
             final ToolWindow window = manager.getToolWindow("Hybris");
-            project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).remoteConnectionSettingsChanged();
+            project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).hacConnectionSettingsChanged();
+            project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
             window.show(null);
         });
     }
@@ -487,11 +489,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings,
         final HybrisDeveloperSpecificProjectSettings state
     ) {
-        List<SolrConnectionSettings> list = state.getSolrConnectionSettingsList();
-        if (list.isEmpty()) {
-            SolrConnectionSettings newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(project);
-            list.add(newSettings);
-            state.setActiveRemoteConnectionID(newSettings.getUuid());
+        List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
+        final List<HybrisRemoteConnectionSettings> solrList = connectionList
+            .stream().filter(it -> it.getType() == HybrisRemoteConnectionSettings.Type.SOLR).collect(Collectors.toList());
+        if (solrList.isEmpty()) {
+            HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(project);
+            connectionList.add(newSettings);
+            state.setActiveSolrConnectionID(newSettings.getUuid());
         }
     }
 

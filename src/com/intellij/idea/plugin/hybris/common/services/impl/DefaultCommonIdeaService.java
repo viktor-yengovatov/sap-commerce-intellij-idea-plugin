@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSe
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
-import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
@@ -198,13 +197,15 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     }
 
     @Override
-    public String getHostSolrUrl(final Project project, @Nullable SolrConnectionSettings settings) {
+    public String getHostSolrUrl(final Project project, @Nullable HybrisRemoteConnectionSettings settings) {
         final StringBuilder sb = new StringBuilder();
 
         if (settings == null) {
             settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project);
         }
-        sb.append("https://");
+        if (!settings.getHostIP().startsWith("http")) {
+            sb.append("https://");
+        }
         sb.append(settings.getHostIP());
         sb.append(":");
         sb.append(settings.getPort());
