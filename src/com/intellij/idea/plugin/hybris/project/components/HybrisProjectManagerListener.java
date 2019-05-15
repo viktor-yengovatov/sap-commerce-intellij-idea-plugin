@@ -139,6 +139,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         registerAntListener(project);
         resetSpringGeneralSettings(project);
         fixBackOfficeJRebelSupport(project);
+        CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
         checkForUpdates();
     }
 

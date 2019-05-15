@@ -28,6 +28,7 @@ import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
@@ -57,12 +58,9 @@ import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -459,22 +457,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                                .forEach(e -> completeSetOfHybrisModules.add(e.getName()));
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
         hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
-        HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
-        HybrisDeveloperSpecificProjectSettings state = developerSpecificSettings.getState();
-        if (state != null) {
-            List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
-            final List<HybrisRemoteConnectionSettings> remoteList = connectionList
-                .stream().filter(it -> it.getType() == HybrisRemoteConnectionSettings.Type.Hybris).collect(Collectors.toList());
-            if (remoteList.isEmpty()) {
-                HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(myProject);
-                connectionList.add(newSettings);
-                state.setActiveRemoteConnectionID(newSettings.getUuid());
-            }
-        }
 
-        if (state != null) {
-            fillSolrConnectionSettings(developerSpecificSettings, state);
-        }
+        CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
 
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
             final ToolWindowManager manager = ToolWindowManager.getInstance(project);
@@ -483,20 +467,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
             window.show(null);
         });
-    }
-
-    private void fillSolrConnectionSettings(
-        final HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings,
-        final HybrisDeveloperSpecificProjectSettings state
-    ) {
-        List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
-        final List<HybrisRemoteConnectionSettings> solrList = connectionList
-            .stream().filter(it -> it.getType() == HybrisRemoteConnectionSettings.Type.SOLR).collect(Collectors.toList());
-        if (solrList.isEmpty()) {
-            HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(project);
-            connectionList.add(newSettings);
-            state.setActiveSolrConnectionID(newSettings.getUuid());
-        }
     }
 
     private Set<String> createModulesOnBlackList() {

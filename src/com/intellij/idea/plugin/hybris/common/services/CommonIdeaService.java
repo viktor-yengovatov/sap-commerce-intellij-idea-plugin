@@ -72,4 +72,6 @@ public interface CommonIdeaService {
     String getBackofficeWebInfLib(Project project);
 
     String getBackofficeWebInfClasses(Project project);
+
+    void fixRemoteConnectionSettings(Project project);
 }
