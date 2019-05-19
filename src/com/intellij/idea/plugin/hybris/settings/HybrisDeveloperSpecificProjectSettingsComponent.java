@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_COMPONENT_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME;
@@ -44,7 +45,9 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
         if (state == null) {
             return getDefaultHybrisRemoteConnectionSettings(project);
         }
-        final List<HybrisRemoteConnectionSettings> remoteList = state.getRemoteConnectionSettingsList();
+        final List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
+        final List<HybrisRemoteConnectionSettings> remoteList = connectionList
+            .stream().filter(it -> it.getType() == HybrisRemoteConnectionSettings.Type.Hybris).collect(Collectors.toList());
         if (remoteList.isEmpty()) {
             return getDefaultHybrisRemoteConnectionSettings(project);
         }
@@ -53,12 +56,14 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
         return remoteList.stream().filter(e -> Objects.equals(id, e.getUuid())).findFirst().orElse(remoteList.get(0));
     }
 
-    public SolrConnectionSettings getActiveSolrConnectionSettings(final Project project) {
+    public HybrisRemoteConnectionSettings getActiveSolrConnectionSettings(final Project project) {
         final HybrisDeveloperSpecificProjectSettings state = getState();
         if (state == null) {
             return getDefaultSolrRemoteConnectionSettings(project);
         }
-        final List<SolrConnectionSettings> solrList = state.getSolrConnectionSettingsList();
+        final List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
+        final List<HybrisRemoteConnectionSettings> solrList = connectionList
+            .stream().filter(it -> it.getType() == HybrisRemoteConnectionSettings.Type.SOLR).collect(Collectors.toList());
         if (solrList.isEmpty()) {
             return getDefaultSolrRemoteConnectionSettings(project);
         }
@@ -70,6 +75,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
     @NotNull
     public HybrisRemoteConnectionSettings getDefaultHybrisRemoteConnectionSettings(final Project project) {
         final HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
+        item.setType(HybrisRemoteConnectionSettings.Type.Hybris);
         item.setUuid(UUID.randomUUID().toString());
         item.setHostIP("localhost");
         item.setPort(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
@@ -80,8 +86,9 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
     }
 
     @NotNull
-    public SolrConnectionSettings getDefaultSolrRemoteConnectionSettings(final Project project) {
-        final SolrConnectionSettings item = new SolrConnectionSettings();
+    public HybrisRemoteConnectionSettings getDefaultSolrRemoteConnectionSettings(final Project project) {
+        final HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
+        item.setType(HybrisRemoteConnectionSettings.Type.SOLR);
         item.setUuid(UUID.randomUUID().toString());
         item.setHostIP("localhost");
         item.setPort(HybrisConstants.DEFAULT_SOLR_TOMCAT_SSL_PORT);

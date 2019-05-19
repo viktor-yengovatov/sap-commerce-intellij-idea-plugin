@@ -3,10 +3,14 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_REMOTE_ICON
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.SOLR
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ui.Messages
+import kotlin.streams.toList
 
 
 class HybrisChooseInstanceAction : AnAction(
@@ -18,15 +22,27 @@ class HybrisChooseInstanceAction : AnAction(
         val project = getEventProject(e) ?: return
         val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state ?: return
         val list = state.remoteConnectionSettingsList
-        val options:Array<String> = list.stream().map { it.toString() }.toArray<String> { length -> arrayOfNulls(length)}
-        val active = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project)
+        val consoleType = HybrisConsolePanelView.getInstance(project).consolePanel.getActiveConsole().connectionType()
+        val currentList = list.stream().filter{it.type == consoleType}.toList()
+        val options:Array<String> = currentList.stream().map { it.toString() }.toArray<String> { length -> arrayOfNulls(length)}
+        val active = if (consoleType == SOLR) {
+            HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project)
+        } else {
+            HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project)
+        }
         val ret =  Messages.showChooseDialog(project,
                 message("action.choose.hybris.instance.message.text"),
                 message("action.choose.hybris.instance.message.title"),
                 HYBRIS_REMOTE_ICON, options, active.toString())
         if (ret == -1)
             return
-        state.activeRemoteConnectionID= list[ret].uuid
+        if (consoleType == SOLR) {
+            state.activeSolrConnectionID= currentList[ret].uuid
+            project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged()
+        } else {
+            state.activeRemoteConnectionID= currentList[ret].uuid
+        }
+
     }
 
     override fun update(e: AnActionEvent) {

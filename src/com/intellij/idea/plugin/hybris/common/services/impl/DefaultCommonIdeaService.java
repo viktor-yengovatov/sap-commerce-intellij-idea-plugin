@@ -24,11 +24,11 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
-import com.intellij.idea.plugin.hybris.settings.SolrConnectionSettings;
 import com.intellij.idea.plugin.hybris.statistics.StatsCollector;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
@@ -48,9 +48,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
+
+import static com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.Hybris;
+import static com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.SOLR;
 
 /**
  * Created 10:24 PM 10 February 2016.
@@ -198,13 +202,15 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     }
 
     @Override
-    public String getHostSolrUrl(final Project project, @Nullable SolrConnectionSettings settings) {
+    public String getHostSolrUrl(final Project project, @Nullable HybrisRemoteConnectionSettings settings) {
         final StringBuilder sb = new StringBuilder();
 
         if (settings == null) {
             settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project);
         }
-        sb.append("https://");
+        if (!settings.getHostIP().startsWith("http")) {
+            sb.append("https://");
+        }
         sb.append(settings.getHostIP());
         sb.append(":");
         sb.append(settings.getPort());
@@ -278,6 +284,34 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     @Override
     public String getBackofficeWebInfClasses(final Project project) {
         return is2019plus(project) ? HybrisConstants.BACKOFFICE_WEB_INF_CLASSES_2019 : HybrisConstants.BACKOFFICE_WEB_INF_CLASSES;
+    }
+
+    @Override
+    public void fixRemoteConnectionSettings(final Project project) {
+        HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
+        HybrisDeveloperSpecificProjectSettings state = developerSpecificSettings.getState();
+        if (state != null) {
+            List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
+            connectionList.stream().forEach(it->{
+                if (it.getType() == null) {
+                    it.setType(Hybris);
+                }
+            });
+            final List<HybrisRemoteConnectionSettings> remoteList = connectionList
+                .stream().filter(it -> it.getType() == Hybris).collect(Collectors.toList());
+            if (remoteList.isEmpty()) {
+                HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(project);
+                connectionList.add(newSettings);
+                state.setActiveRemoteConnectionID(newSettings.getUuid());
+            }
+            final List<HybrisRemoteConnectionSettings> solrList = connectionList
+                .stream().filter(it -> it.getType() == SOLR).collect(Collectors.toList());
+            if (solrList.isEmpty()) {
+                HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(project);
+                connectionList.add(newSettings);
+                state.setActiveSolrConnectionID(newSettings.getUuid());
+            }
+        }
     }
 
     private Properties getLocalProperties(final Project project) {
