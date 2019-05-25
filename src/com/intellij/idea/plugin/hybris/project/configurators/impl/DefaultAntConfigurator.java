@@ -225,7 +225,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         AntBuildFileImpl.VERBOSE.set(editPropertyContainer, false);
 
         final ListProperty<BuildFileProperty> properties = AntBuildFileImpl.ANT_PROPERTIES;
-        properties.clearList(editPropertyContainer);
+        properties.getModifiableList(editPropertyContainer).clear();
 
         final BuildFileProperty platformHomeProperty = new BuildFileProperty();
         platformHomeProperty.setPropertyName(HybrisConstants.ANT_PLATFORM_HOME);
