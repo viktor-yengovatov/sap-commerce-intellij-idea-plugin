@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>10.2</version>
+    <version>10.3</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="191"/>
@@ -102,9 +102,9 @@
 
     <change-notes>
         <![CDATA[
-            <h2>New Feature Request</h2>
+            <h2>Task</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-203'>IIPS-203</a>] - Maximum number of rows in FS console should be configurable</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-542'>IIP-542</a>] - Improve solr connection dialog</li>
             </ul>
         ]]>
     </change-notes>
