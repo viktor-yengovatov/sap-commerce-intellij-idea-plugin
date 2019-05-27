@@ -39,6 +39,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.util.proxy.ProtocolDefaultPorts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -261,19 +262,21 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     private boolean is2019plus(final Project project) {
         final String hybrisVersion = HybrisProjectSettingsComponent.getInstance(project).getState().getHybrisVersion();
-        if (hybrisVersion == null) {
+        if (StringUtils.isBlank(hybrisVersion)) {
             return false;
         }
-        final String[] splits = hybrisVersion.split("\\.");
-        if (splits.length == 0) {
-            return false;
-        }
+        String majorVersion = StringUtils.substring(hybrisVersion, 0, 2);
+
         try {
-            return Integer.parseInt(splits[0]) > 18;
+            if(NumberUtils.isCreatable(majorVersion)) {
+                return NumberUtils.createInteger(majorVersion) > 18;
+            }
         }
         catch (NumberFormatException nfe) {
-            return false;
+            LOG.error("Error parsing hybris version: " + hybrisVersion, nfe);
         }
+
+        return false;
     }
 
     @Override
