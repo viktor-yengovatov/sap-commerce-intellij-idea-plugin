@@ -32,7 +32,6 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.ui.LicensingFacade;
-import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -66,7 +65,7 @@ public class DefaultStatsCollector implements StatsCollector, PersistentStateCom
     private static final String TAG_ENTITY = "entity";
 
     private final Map<ACTIONS, Long> cache = new HashMap<>();
-    private final List<Entity> queue = ContainerUtil.newArrayList();
+    private final List<Entity> queue = new ArrayList<>();
     private final Object lock = new Object();
 
     private long lastFailureTime = 0;
@@ -106,7 +105,7 @@ public class DefaultStatsCollector implements StatsCollector, PersistentStateCom
                         return;
                     }
                 }
-                entitiesToFlush = ContainerUtil.newArrayList(queue);
+                entitiesToFlush = new ArrayList<>(queue);
             }
             if (disposed) {
                 return;

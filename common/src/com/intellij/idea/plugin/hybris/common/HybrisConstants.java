@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.common;
 
 import com.google.common.collect.ImmutableSet;
-import com.intellij.util.containers.ContainerUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -104,7 +104,7 @@ public interface HybrisConstants {
     String GEN_SRC_DIRECTORY = "gensrc";
     String TEST_SRC_DIRECTORY = "testsrc";
     String GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc";
-    List<String> TEST_SRC_DIR_NAMES = ContainerUtil.immutableList(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY);
+    List<String> TEST_SRC_DIR_NAMES = Arrays.asList(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY);
     String HMC_MODULE_DIRECTORY = "hmc";
     String HAC_MODULE_DIRECTORY = "hac";
     String HAC_MODULE_EXTENSION_NAME = "hac";

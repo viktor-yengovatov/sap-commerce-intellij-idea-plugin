@@ -30,7 +30,7 @@ import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getColumnForHea
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.util.containers.ContainerUtil.newHashSet
+import java.util.HashSet
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -45,7 +45,7 @@ class UniqueDocumentIdInspection : LocalInspectionTool() {
 private class ImpexDocumentIdVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
     override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
         if (isDocumentId(parameter.firstChild)) {
-            val set = newHashSet<String>()
+            val set = HashSet<String>()
             val column = getColumnForHeader(parameter.parent as ImpexFullHeaderParameter)
             column.forEach { value ->
                 if (!set.add(value.text)) {

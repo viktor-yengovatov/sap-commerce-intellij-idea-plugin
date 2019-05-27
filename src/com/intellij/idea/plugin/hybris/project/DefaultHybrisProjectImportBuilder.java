@@ -49,7 +49,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
-import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -184,7 +183,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final ModifiableArtifactModel artifactModel
     ) {
 
-        final List<Module> modules = ContainerUtil.newSmartList();
+        final List<Module> modules = new ArrayList<>();
 
         final HybrisProjectDescriptor hybrisProjectDescriptor = getHybrisProjectDescriptor();
         final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor.getModulesChosenForImport();

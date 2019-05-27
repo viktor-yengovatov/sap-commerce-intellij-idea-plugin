@@ -106,6 +106,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -119,7 +120,6 @@ import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SHOW_UNLINKED_GRADLE_POPUP;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
-import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 /**
  * Created by Martin Zdarsky-Jones on 2/11/16.
@@ -451,7 +451,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setModulesOnBlackList(createModulesOnBlackList());
         hybrisProjectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
         hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
-        final Set<String> completeSetOfHybrisModules = newHashSet();
+        final Set<String> completeSetOfHybrisModules = new HashSet<>();
         hybrisProjectDescriptor.getFoundModules().stream()
                                .filter(e -> e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
                                .forEach(e -> completeSetOfHybrisModules.add(e.getName()));

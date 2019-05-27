@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +45,6 @@ import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isImpexV
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsUserRightsMacros;
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
  * @author
@@ -75,7 +75,7 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
 
         PsiElement startGroupElement = foldingBlocks.isEmpty() ? null : foldingBlocks.get(0);
 
-        final List<FoldingDescriptor> descriptors = newArrayList();
+        final List<FoldingDescriptor> descriptors = new ArrayList<>();
          /* Avoid spawning a lot of unnecessary objects for each line break. */
         boolean groupIsNotFresh = false;
         final int size = foldingBlocks.size();
@@ -134,7 +134,7 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
             return Collections.emptyList();
         }
 
-        final List<PsiElement> foldingBlocks = newArrayList();
+        final List<PsiElement> foldingBlocks = new ArrayList<>();
         PsiTreeUtil.processElements(root, new CollectFilteredElements<>(
             new ImpexFoldingLinesFilter(), foldingBlocks));
 

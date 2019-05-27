@@ -30,9 +30,9 @@ import com.intellij.psi.search.scope.packageSet.NamedScope;
 import com.intellij.psi.search.scope.packageSet.NamedScopeManager;
 import com.intellij.psi.search.scope.packageSet.UnionPackageSet;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +57,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
                                                                             .getState()
                                                                             .getGroupNonHybris();
         final String platformGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupPlatform();
-        final List<NamedScope> newScopes = ContainerUtil.newArrayList();
+        final List<NamedScope> newScopes = new ArrayList<>();
         NamedScope customScope = null;
         NamedScope platformScope = null;
         NamedScope commerceScope = null;

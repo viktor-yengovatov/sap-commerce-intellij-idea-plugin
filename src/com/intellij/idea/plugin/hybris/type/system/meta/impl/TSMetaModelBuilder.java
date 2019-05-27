@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
@@ -31,7 +32,6 @@ import com.intellij.psi.search.ProjectScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.stubs.index.DomElementClassIndex;
@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,7 +53,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     private final Set<VirtualFile> myFilesToExclude;
 
     private TSMetaModelImpl myResult;
-    private final Set<PsiFile> myFiles = ContainerUtil.newHashSet();
+    private final Set<PsiFile> myFiles = new HashSet<>();
 
     public TSMetaModelBuilder(final @NotNull Project project) {
         this(project, Collections.emptyList());
@@ -64,7 +65,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     ) {
         myProject = project;
         myDomManager = DomManager.getDomManager(project);
-        myFilesToExclude = ContainerUtil.newHashSet(filesToExclude);
+        myFilesToExclude = new HashSet<>(filesToExclude);
     }
 
     @NotNull

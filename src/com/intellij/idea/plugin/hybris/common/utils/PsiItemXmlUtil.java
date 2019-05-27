@@ -37,12 +37,11 @@ import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
  * TODO Good solve will be a create index between items.xml and java classes
@@ -70,7 +69,7 @@ public final class PsiItemXmlUtil {
                          .filter(file -> file.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
                          .collect(Collectors.toList());
 
-        final List<XmlElement> result = newArrayList();
+        final List<XmlElement> result = new ArrayList<>();
 
         for (VirtualFile file : files) {
             final XmlFile xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(file);

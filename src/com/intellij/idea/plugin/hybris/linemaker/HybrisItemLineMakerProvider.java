@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.linemaker;
 
+import com.google.common.collect.Sets;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
@@ -27,9 +28,9 @@ import com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlElement;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import static com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil.ENUM_TYPE_TAG_NAME;
@@ -60,8 +61,10 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
                     createTargetsWithGutterIcon(result, psiClass, list);
                 }
             } else if (psiClass.getImplementsListTypes().length > 0) {
-                final boolean anyMatch = ContainerUtil.newHashSet(psiClass.getImplementsListTypes()).stream()
-                                                      .anyMatch(psiClassType -> "HybrisEnumValue".equals(psiClassType.getClassName()));
+                final boolean anyMatch = Arrays.stream(psiClass.getImplementsListTypes()).anyMatch(
+                    psiClassType -> "HybrisEnumValue".equals(psiClassType.getClassName())
+                );
+
                 if (anyMatch) {
                     final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
 

@@ -45,11 +45,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
  * Created 22:43 01 January 2015
@@ -398,7 +397,7 @@ public final class ImpexPsiUtils {
                 }
             }
 
-            final List<PsiElement> result = newArrayList();
+            final List<PsiElement> result = new ArrayList<>();
             PsiElement psiElement = getNextSiblingOfAnyType(
                 PsiTreeUtil.getParentOfType(headerParameter, ImpexHeaderLine.class),
                 ImpexValueLine.class,
@@ -441,7 +440,7 @@ public final class ImpexPsiUtils {
             }
         }
 
-        final List<PsiElement> result = newArrayList();
+        final List<PsiElement> result = new ArrayList<>();
         PsiElement psiElement = getNextSiblingOfAnyType(
             PsiTreeUtil.getParentOfType(headerParameter, ImpexHeaderLine.class),
             ImpexValueLine.class,
@@ -597,7 +596,7 @@ public final class ImpexPsiUtils {
 
         return -1;
     }
-    
+
     public static Optional<ImpexHeaderTypeName> findHeaderItemTypeName(final ImpexAnyHeaderParameterName parameter) {
         return Optional.ofNullable(PsiTreeUtil.getParentOfType(parameter, ImpexHeaderLine.class))
                        .map(ImpexHeaderLine::getFullHeaderType)

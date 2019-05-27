@@ -3,13 +3,13 @@ package com.intellij.idea.plugin.hybris.project.configurators;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -17,7 +17,7 @@ public class HybrisConfiguratorCache {
 
     private static final Logger LOG = Logger.getInstance(HybrisConfiguratorCache.class);
 
-    private final Map<String, Ref<Properties>> path2Properties = ContainerUtil.newHashMap();
+    private final Map<String, Ref<Properties>> path2Properties = new HashMap<>();
 
     @Nullable
     private Properties getParsedProperties(@NotNull String filePath) {

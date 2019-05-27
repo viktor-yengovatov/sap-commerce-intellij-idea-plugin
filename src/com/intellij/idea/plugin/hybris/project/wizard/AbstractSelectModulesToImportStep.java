@@ -32,17 +32,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
-import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 public abstract class AbstractSelectModulesToImportStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
 
@@ -74,7 +74,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
     @NotNull
     protected Set<HybrisModuleDescriptor> calculateSelectedModuleDuplicates() {
-        final Set<HybrisModuleDescriptor> duplicateModules = newHashSet();
+        final Set<HybrisModuleDescriptor> duplicateModules = new HashSet<>();
         final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<>();
 
         getAdditionalFixedElements().stream().forEach(e -> uniqueModules.put(e.getName(), e));
@@ -115,8 +115,8 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
     public void onStepLeaving() {
         super.onStepLeaving();
-        final List<HybrisModuleDescriptor> markedElements = newArrayList(this.fileChooser.getMarkedElements());
-        final List<HybrisModuleDescriptor> allElements = newArrayList(markedElements);
+        final List<HybrisModuleDescriptor> markedElements = new ArrayList<>(this.fileChooser.getMarkedElements());
+        final List<HybrisModuleDescriptor> allElements = new ArrayList<>(markedElements);
 
         for (int index = 0; index < this.fileChooser.getElementCount(); index++) {
             final HybrisModuleDescriptor element = fileChooser.getElementAt(index);
@@ -136,7 +136,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
     protected boolean validateCommon() throws ConfigurationException {
         final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
-        final Collection<String> moduleDuplicateNames = newHashSet(moduleDuplicates.size());
+        final Collection<String> moduleDuplicateNames = new HashSet<>(moduleDuplicates.size());
 
         for (HybrisModuleDescriptor moduleDuplicate : moduleDuplicates) {
             moduleDuplicateNames.add(this.getModuleNameAndPath(moduleDuplicate));

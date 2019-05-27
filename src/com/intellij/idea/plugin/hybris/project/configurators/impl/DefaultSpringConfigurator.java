@@ -31,7 +31,6 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.module.Module;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
-import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jdom.Document;
@@ -44,6 +43,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -63,7 +63,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     public void findSpringConfiguration(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 
-        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap = ContainerUtil.newHashMap();
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap = new HashMap<>();
         File localProperties = null;
         File advancedProperties = null;
         for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
@@ -95,7 +95,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
         final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        final Map<String, ModifiableFacetModel> modifiableFacetModelMap = ContainerUtil.newHashMap();
+        final Map<String, ModifiableFacetModel> modifiableFacetModelMap = new HashMap<>();
 
         for (Module module : modifiableModelsProvider.getModules()) {
             final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);

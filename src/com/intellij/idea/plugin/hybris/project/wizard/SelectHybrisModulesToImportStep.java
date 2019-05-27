@@ -42,7 +42,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
-import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImportStep implements NonGuiSupport {
 
@@ -84,8 +83,8 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             }
         }
         selectionMode = UNUSED;
-        Set<String> duplicateModules = newHashSet();
-        Set<String> uniqueModules = newHashSet();
+        Set<String> duplicateModules = new HashSet<>();
+        Set<String> uniqueModules = new HashSet<>();
         getContext().getList().forEach(e->{
             if (uniqueModules.contains(e.getName())) {
                 duplicateModules.add(e.getName());

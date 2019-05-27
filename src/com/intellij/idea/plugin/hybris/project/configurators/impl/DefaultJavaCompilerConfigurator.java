@@ -4,18 +4,22 @@ import com.intellij.compiler.CompilerConfiguration;
 import com.intellij.compiler.CompilerConfigurationImpl;
 import com.intellij.compiler.impl.javaCompiler.BackendCompiler;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
+import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.compiler.JavaCompilers;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyCollectionIfNull;
 
 public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator {
 
@@ -34,23 +38,22 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
             (CompilerConfigurationImpl) CompilerConfiguration.getInstance(project);
 
         if (buildCompilerPropValue.equals("org.eclipse.jdt.core.JDTCompilerAdapter")) {
-            final BackendCompiler eclipseCompiler = ContainerUtil.find(
-                configuration.getRegisteredJavaCompilers(),
-                it -> JavaCompilers.ECLIPSE_ID.equals(it.getId())
-            );
+            final Optional<BackendCompiler> eclipseCompiler = emptyCollectionIfNull(
+                configuration.getRegisteredJavaCompilers()
+            ).stream().filter(
+                    it -> JavaCompilers.ECLIPSE_ID.equals(it.getId())
+            ).findAny();
 
-            if (eclipseCompiler != null) {
-                configuration.setDefaultCompiler(eclipseCompiler);
-            }
+            eclipseCompiler.ifPresent(configuration::setDefaultCompiler);
+
         } else if (buildCompilerPropValue.equals("modern")) {
-            final BackendCompiler javac = ContainerUtil.find(
-                configuration.getRegisteredJavaCompilers(),
+            final Optional<BackendCompiler> javac = emptyCollectionIfNull(
+                configuration.getRegisteredJavaCompilers()
+            ).stream().filter(
                 it -> JavaCompilers.JAVAC_ID.equals(it.getId())
-            );
+            ).findAny();
 
-            if (javac != null) {
-                configuration.setDefaultCompiler(javac);
-            }
+            javac.ifPresent(configuration::setDefaultCompiler);
         }
     }
 
@@ -58,7 +61,7 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
         @NotNull final HybrisProjectDescriptor descriptor,
         @NotNull final HybrisConfiguratorCache cache
     ) {
-        final List<File> propertyFiles = ContainerUtil.newArrayList();
+        final List<File> propertyFiles = new ArrayList<>();
         final ConfigHybrisModuleDescriptor configDescriptor = descriptor.getConfigHybrisModuleDescriptor();
 
         if (configDescriptor != null) {

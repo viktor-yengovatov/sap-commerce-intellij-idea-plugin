@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.common.utils;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +33,18 @@ import java.util.Set;
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public class CollectionUtils {
+
+    @Nullable
+    @Contract(pure=true)
+    public static <T, L extends List<T>> T getLastItem(@Nullable L list, @Nullable T def) {
+        return org.apache.commons.collections.CollectionUtils.isEmpty(list) ? def : list.get(list.size() - 1);
+    }
+
+    @Nullable
+    @Contract(pure=true)
+    public static <T> T getFirstItem(@Nullable List<? extends T> items, @Nullable T def) {
+        return items == null || items.isEmpty() ? def : items.get(0);
+    }
 
     @NotNull
     public static <T> Iterable<T> emptyIfNull(@Nullable final Iterable<T> iterable) {

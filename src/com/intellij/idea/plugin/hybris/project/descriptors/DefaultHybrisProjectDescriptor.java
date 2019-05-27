@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
@@ -70,7 +71,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
-import static com.intellij.util.containers.ContainerUtil.newHashSet;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
@@ -145,7 +145,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
             if (hybrisModuleDescriptor instanceof PlatformHybrisModuleDescriptor) {
                 PlatformHybrisModuleDescriptor platformDescriptor = (PlatformHybrisModuleDescriptor) hybrisModuleDescriptor;
-                Set<HybrisModuleDescriptor> dependenciesTree = newHashSet(platformDescriptor.getDependenciesTree());
+                Set<HybrisModuleDescriptor> dependenciesTree = Sets.newHashSet(platformDescriptor.getDependenciesTree());
                 dependenciesTree.add(configHybrisModuleDescriptor);
                 platformDescriptor.setDependenciesTree(dependenciesTree);
             }
@@ -435,7 +435,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         } else {
             moduleRootMap.get(NON_HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
         }
-        return newHashSet(moduleRootDirectories.values());
+        return Sets.newHashSet(moduleRootDirectories.values());
     }
 
     private void addIfNotExists(final Map<String, File> moduleRootDirectories, final File file) {

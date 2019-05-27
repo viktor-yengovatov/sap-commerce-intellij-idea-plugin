@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManip
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.ElementManipulator;
-import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiFile;
@@ -31,7 +30,6 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -76,7 +74,7 @@ public class ImpexMacrosReferenceBase extends PsiReferenceBase.Poly<PsiElement> 
             );
 
         if (!macroDeclarations.isEmpty()) {
-            final ArrayList<PsiElement> references = ContainerUtil.newArrayList();
+            final ArrayList<PsiElement> references = new ArrayList<>();
             for (final ImpexMacroDeclaration declaration : macroDeclarations) {
                 if (getElement().textMatches(declaration.getFirstChild())) {
                     references.add(declaration.getFirstChild());

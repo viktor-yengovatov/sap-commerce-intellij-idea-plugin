@@ -32,10 +32,10 @@ import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +64,7 @@ class TSMetaModelImpl implements TSMetaModel {
     }
 
     public TSMetaModelImpl(@NotNull final Collection<TSMetaModelImpl> baseModels) {
-        myBaseModels = ContainerUtil.newArrayList(baseModels);
+        myBaseModels = new ArrayList<>(baseModels);
     }
 
     @NotNull

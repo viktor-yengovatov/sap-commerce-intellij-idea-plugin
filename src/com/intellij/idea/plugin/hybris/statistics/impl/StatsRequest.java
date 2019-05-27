@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.statistics.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.util.Ref;
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.net.IdeHttpClientHelpers;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -56,7 +56,7 @@ public class StatsRequest implements Callable<StatsResponse> {
     private final List<NameValuePair> urlParameters;
 
     public StatsRequest(@NotNull final List<NameValuePair> urlParameters) {
-        this.urlParameters = ContainerUtil.newArrayList(urlParameters);
+        this.urlParameters = new ArrayList<>(urlParameters);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class StatsRequest implements Callable<StatsResponse> {
         final RequestConfig config = builder.build();
         final HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
 
-        final List<NameValuePair> patchedUrlParameters = ContainerUtil.newArrayList(urlParameters);
+        final List<NameValuePair> patchedUrlParameters = new ArrayList<>(urlParameters);
         patchUrlParameters(patchedUrlParameters);
         final HttpPost post = new HttpPost(HybrisConstants.STATS_COLLECTOR_URL);
         post.setEntity(new UrlEncodedFormEntity(patchedUrlParameters, UTF_8));

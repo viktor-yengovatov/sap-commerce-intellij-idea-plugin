@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.constants;
 
-import com.intellij.util.containers.ContainerUtil;
+import com.google.common.collect.Sets;
 
 import java.util.Set;
 
@@ -37,7 +37,7 @@ public final class ImpexKeywords {
      * @return set of keywords.
      */
     public static Set<String> keywords() {
-        return ContainerUtil.newHashSet(
+        return Sets.newHashSet(
             "INSERT",
             "UPDATE",
             "INSERT_UPDATE",
@@ -49,7 +49,7 @@ public final class ImpexKeywords {
      * @return set of keywords.
      */
     public static Set<String> keywordMacros() {
-        return ContainerUtil.newHashSet(
+        return Sets.newHashSet(
             "$START_USERRIGHTS",
             "$END_USERRIGHTS"
         );

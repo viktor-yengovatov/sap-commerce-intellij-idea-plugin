@@ -32,12 +32,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 /**
  * Created 14:28 01 January 2015
@@ -71,7 +71,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
         /* Avoid spawning a lot of unnecessary objects for each line break. */
         boolean groupIsNotFresh = false;
 
-        final List<FoldingDescriptor> descriptors = newArrayList();
+        final List<FoldingDescriptor> descriptors = new ArrayList<>();
         for (final PsiElement psiElement : psiElements) {
 
             if (isLineBreak(psiElement)) {
@@ -101,7 +101,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
             return Collections.emptyList();
         }
 
-        final List<PsiElement> foldingBlocks = newArrayList();
+        final List<PsiElement> foldingBlocks = new ArrayList<>();
         PsiTreeUtil.processElements(root, new CollectFilteredElements<>(
             PsiElementFilterFactory.getPsiElementFilter(), foldingBlocks
         ));

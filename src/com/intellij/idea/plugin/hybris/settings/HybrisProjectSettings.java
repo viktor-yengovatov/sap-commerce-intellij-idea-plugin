@@ -21,9 +21,8 @@ package com.intellij.idea.plugin.hybris.settings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.HashSet;
 import java.util.Set;
-
-import static com.intellij.util.containers.ContainerUtil.newHashSet;
 
 /**
  * Created 6:51 PM 28 June 2015.
@@ -49,9 +48,9 @@ public class HybrisProjectSettings {
     protected boolean scanThroughExternalModule;
     protected boolean createBackwardCyclicDependenciesForAddOns = false;
     protected boolean excludeTestSources;
-    protected Set<String> completeSetOfAvailableExtensionsInHybris = newHashSet();
-    protected Set<String> unusedExtensions = newHashSet();
-    protected Set<String> modulesOnBlackList = newHashSet();
+    protected Set<String> completeSetOfAvailableExtensionsInHybris = new HashSet<>();
+    protected Set<String> unusedExtensions = new HashSet<>();
+    protected Set<String> modulesOnBlackList = new HashSet<>();
 
     public boolean isHybrisProject() {
         return hybrisProject;

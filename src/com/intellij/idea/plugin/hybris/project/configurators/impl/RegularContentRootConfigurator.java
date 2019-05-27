@@ -27,7 +27,6 @@ import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +38,8 @@ import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,6 +69,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSE
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIR_NAMES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 
 /**
@@ -78,10 +80,10 @@ import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDe
 public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     // module name -> relative paths
-    private static final Map<String, List<String>> ROOTS_TO_IGNORE = ContainerUtil.newHashMap();
+    private static final Map<String, List<String>> ROOTS_TO_IGNORE = new HashMap<>();
 
     static {
-        ROOTS_TO_IGNORE.put("acceleratorstorefrontcommons", ContainerUtil.list("commonweb/testsrc"));
+        ROOTS_TO_IGNORE.put("acceleratorstorefrontcommons", Collections.singletonList("commonweb/testsrc"));
     }
 
     @Override
@@ -96,8 +98,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getRootDirectory().getAbsolutePath()
         ));
 
-        final List<File> dirsToIgnore = ContainerUtil
-            .notNullize(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
+        final List<File> dirsToIgnore = emptyListIfNull(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
             .map(relPath -> new File(moduleDescriptor.getRootDirectory(), relPath))
             .collect(Collectors.toList());
 

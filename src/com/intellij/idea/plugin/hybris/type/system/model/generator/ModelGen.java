@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.type.system.model.generator;
 
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
 import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.XNIException;
 import org.apache.xerces.xni.parser.XMLEntityResolver;
@@ -34,6 +33,7 @@ import java.io.CharArrayReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +209,10 @@ public class ModelGen {
         };
         ArrayList<File> files = new ArrayList<File>();
         for (File root : modelRoots) {
-            ContainerUtil.addAll(files, root.listFiles());
+            if (null != root.listFiles()) {
+                //noinspection ConstantConditions
+                files.addAll(Arrays.asList(root.listFiles()));
+            }
         }
         loader.loadModel(model, files, resolver);
         Util.log(model.jtMap.size() + " java types loaded");

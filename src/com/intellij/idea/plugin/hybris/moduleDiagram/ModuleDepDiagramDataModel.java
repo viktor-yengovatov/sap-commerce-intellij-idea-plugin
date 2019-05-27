@@ -35,13 +35,13 @@ import com.intellij.uml.project.ModulesUmlEdge;
 import com.intellij.uml.project.ModulesUmlNode;
 import com.intellij.uml.project.ModulesUmlProvider;
 import com.intellij.uml.project.UmlModulesRelationshipHelper;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,9 +55,9 @@ import java.util.stream.Collectors;
 public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagramItem> {
 
     @NotNull
-    private Set<ModuleDepDiagramNode> myNodes = ContainerUtil.newHashSet();
+    private Set<ModuleDepDiagramNode> myNodes = new HashSet<>();
     @NotNull
-    private Set<ModuleDepDiagramEdge> myEdges = ContainerUtil.newHashSet();
+    private Set<ModuleDepDiagramEdge> myEdges = new HashSet<>();
 
     public ModuleDepDiagramDataModel(final Project project, final DiagramProvider<ModuleDepDiagramItem> provider) {
         super(project, provider);
@@ -163,7 +163,7 @@ public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagram
                 .filter(this::isOotbOrPlatformExtension)
                 .collect(Collectors.toList());
 
-            final Set<Module> result = ContainerUtil.newHashSet();
+            final Set<Module> result = new HashSet<>();
             result.addAll(customExtModules);
             result.addAll(dependencies);
             result.addAll(backwardDependencies);

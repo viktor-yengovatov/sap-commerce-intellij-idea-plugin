@@ -23,9 +23,9 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnumValue;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -44,13 +44,13 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
     @NotNull
     @Override
     public Stream<? extends TSMetaEnumValue> getValuesStream() {
-        return ContainerUtil.newArrayList(name2ValueObj.values()).stream();
+        return name2ValueObj.values().stream();
     }
 
     @NotNull
     @Override
     public Collection<? extends TSMetaEnumValue> findValueByName(@NotNull final String name) {
-        return ContainerUtil.newArrayList(name2ValueObj.get(name));
+        return new ArrayList<>(name2ValueObj.get(name));
     }
 
     void createValue(final @NotNull EnumValue domEnumValue) {
