@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>10.3.1</version>
+    <version>10.3.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="191"/>
@@ -104,7 +104,7 @@
         <![CDATA[
             <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-205'>IIPS-205</a>] - Project import broken for 2019.1.2 because of the error: &quot;java.lang.NoSuchMethodError: com.intellij.util.containers.ContainerUtil.newHashSet&quot;</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-207'>IIPS-207</a>] - Backoffice extensions in version 1811.5 are not imported correctly</li>
             </ul>
         ]]>
     </change-notes>
