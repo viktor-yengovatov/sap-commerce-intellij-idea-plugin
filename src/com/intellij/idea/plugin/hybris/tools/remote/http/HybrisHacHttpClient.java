@@ -38,7 +38,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
@@ -54,9 +56,9 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     }
 
     public @NotNull
-    HybrisHttpResult validateImpex(final Project project, final String content) {
-        final HttpResponse response = getHttpResponse(project, content, "/console/impex/import/validate");
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
+    HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
+        final HttpResponse response = getHttpResponse(project, "/console/impex/import/validate", requestParams);
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
         if (response.getStatusLine().getStatusCode() != SC_OK) {
             return resultBuilder.errorMessage(response.getStatusLine().getReasonPhrase()).build();
@@ -86,10 +88,26 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return resultBuilder.errorMessage("No data in response").build();
     }
 
+    private HttpResponse getHttpResponse(
+        final Project project,
+        final String urlSuffix,
+        Map<String, String> requestParams
+    ) {
+        final List<BasicNameValuePair> params = createParamsList(requestParams);
+        final String actionUrl = getHostHacURL(project) + urlSuffix;
+        return post(project, actionUrl, params, false);
+    }
+
+    private List<BasicNameValuePair> createParamsList(Map<String, String> requestParams) {
+        return requestParams.entrySet().stream()
+                            .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
+                            .collect(Collectors.toList());
+    }
+
     public @NotNull
-    HybrisHttpResult importImpex(final Project project, final String content) {
-        final HttpResponse response = getHttpResponse(project, content, "/console/impex/import");
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
+    HybrisHttpResult importImpex(final Project project, final Map<String, String> settings) {
+        final HttpResponse response = getHttpResponse(project, "/console/impex/import", settings);
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
         if (response.getStatusLine().getStatusCode() != SC_OK) {
             return resultBuilder.errorMessage(response.getStatusLine().getReasonPhrase()).build();
@@ -111,13 +129,13 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             if ("error".equals(impexResultStatus.attr("data-level"))) {
                 final String dataResult = impexResultStatus.attr("data-result");
                 final Element detailMessage = document.getElementsByClass("impexResult").first().children().first();
-                return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
-                                                               .errorMessage(dataResult)
-                                                               .detailMessage(detailMessage.text())
-                                                               .build();
+                return createResult()
+                    .errorMessage(dataResult)
+                    .detailMessage(detailMessage.text())
+                    .build();
             } else {
                 final String dataResult = impexResultStatus.attr("data-result");
-                return HybrisHttpResult.HybrisHttpResultBuilder.createResult().output(dataResult).build();
+                return createResult().output(dataResult).build();
             }
         }
         return resultBuilder.errorMessage("No data in response").build();
@@ -135,11 +153,11 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final List<BasicNameValuePair> params = asList(
             new BasicNameValuePair("scriptType", "flexibleSearch"),
             new BasicNameValuePair("commit", BooleanUtils.toStringTrueFalse(shouldCommit)),
-            new BasicNameValuePair("flexibleSearchQuery", isPlainSQL ? "": content),
+            new BasicNameValuePair("flexibleSearchQuery", isPlainSQL ? "" : content),
             new BasicNameValuePair("sqlQuery", isPlainSQL ? content : ""),
             new BasicNameValuePair("maxCount", maxRows)
         );
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = getHostHacURL(project) + "/console/flexsearch/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true);
@@ -161,10 +179,9 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         }
         final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
         if (json.get("exception") != null) {
-            return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
-                                                           .errorMessage(((Map<String, Object>) json.get("exception")).get(
-                                                               "message").toString())
-                                                           .build();
+            return createResult()
+                .errorMessage(((Map<String, Object>) json.get("exception")).get("message").toString())
+                .build();
         } else {
             TableBuilder tableBuilder = new TableBuilder();
 
@@ -188,7 +205,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             new BasicNameValuePair("commit", String.valueOf(isCommitMode)),
             new BasicNameValuePair("script", content)
         );
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult();
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = getHostHacURL(project) + "/console/scripting/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true);
@@ -210,9 +227,9 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         }
         final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
         if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
-            return HybrisHttpResult.HybrisHttpResultBuilder.createResult()
-                                                           .errorMessage(json.get("stacktraceText").toString())
-                                                           .build();
+            return createResult()
+                .errorMessage(json.get("stacktraceText").toString())
+                .build();
         } else {
             if (json.get("outputText") != null) {
                 resultBuilder.output(json.get("outputText").toString());
@@ -222,20 +239,5 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             }
             return resultBuilder.build();
         }
-    }
-
-    private HttpResponse getHttpResponse(final Project project, final String content, final String urlSuffix) {
-        final List<BasicNameValuePair> params = getParamList(content);
-        final String actionUrl = getHostHacURL(project) + urlSuffix;
-        return post(project, actionUrl, params, false);
-    }
-
-    private List<BasicNameValuePair> getParamList(String content) {
-        return asList(
-            new BasicNameValuePair("scriptContent", content),
-            new BasicNameValuePair("validationEnum", "IMPORT_STRICT"),
-            new BasicNameValuePair("encoding", "UTF-8"),
-            new BasicNameValuePair("maxThreads", "4")
-        );
     }
 }
