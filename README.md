@@ -77,4 +77,5 @@ This project exists thanks to all the people who contribute.
 * Roger Ye
 * Hector Longarte
 * Fabian Necci
+* Markus Perndorfer
 * FAIR Consulting Group
