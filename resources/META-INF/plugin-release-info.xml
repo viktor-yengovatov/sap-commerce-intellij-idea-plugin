@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>10.3.2</version>
+    <version>10.4</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="191"/>
@@ -95,6 +95,7 @@
               <li>Roger Ye</li>
               <li>Hector Longarte</li>
               <li>Fabian Necci</li>
+              <li>Markus Perndorfer</li>
               <li>FAIR Consulting Group</li>
           </ul>
       ]]>
@@ -102,9 +103,29 @@
 
     <change-notes>
         <![CDATA[
+            <h2>Story</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-550'>IIP-550</a>] - Support compilation for multiple storefronts</li>
+            </ul>
+
+            <h2>Task</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-545'>IIP-545</a>] - add &#39;legacy mode&#39;option support to the Impex console</li>
+            </ul>
+
+            <h2>Bug</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-548'>IIP-548</a>] - NPE macro folding when resolved value is blank</li>
+            </ul>
+
+            <h2>New Feature Request</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-204'>IIPS-204</a>] - Impex $config-xxx properties are not working</li>
+            </ul>
+
             <h2>Fault</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-207'>IIPS-207</a>] - Backoffice extensions in version 1811.5 are not imported correctly</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-209'>IIPS-209</a>] - Version parsing doesn&#39;t work for 6.x</li>
             </ul>
         ]]>
     </change-notes>
