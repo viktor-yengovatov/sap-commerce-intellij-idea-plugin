@@ -79,11 +79,14 @@
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingLinesBuilder"/>
 
-        <lang.foldingBuilder language="Impex"
-                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexPropertyFoldingBuilder"/>
+<!--        <lang.foldingBuilder language="Impex"-->
+<!--                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexPropertyFoldingBuilder"/>-->
+
+<!--        <lang.foldingBuilder language="Impex"-->
+<!--                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexMacrosFoldingBuilder"/>-->
 
         <lang.foldingBuilder language="Impex"
-                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexMacrosFoldingBuilder"/>
+                                     implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroFoldingBuilder"/>
 
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
 

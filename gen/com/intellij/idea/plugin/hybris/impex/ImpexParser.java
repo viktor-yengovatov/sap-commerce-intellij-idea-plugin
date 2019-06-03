@@ -7,6 +7,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.ALTERNATIVE_MAP_DELIMITER;
@@ -104,80 +105,11 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == ANY_ATTRIBUTE_NAME) {
-      r = any_attribute_name(b, 0);
-    }
-    else if (t == ANY_ATTRIBUTE_VALUE) {
-      r = any_attribute_value(b, 0);
-    }
-    else if (t == ANY_HEADER_MODE) {
-      r = any_header_mode(b, 0);
-    }
-    else if (t == ANY_HEADER_PARAMETER_NAME) {
-      r = any_header_parameter_name(b, 0);
-    }
-    else if (t == ATTRIBUTE) {
-      r = attribute(b, 0);
-    }
-    else if (t == BEAN_SHELL) {
-      r = bean_shell(b, 0);
-    }
-    else if (t == COMMENT) {
-      r = comment(b, 0);
-    }
-    else if (t == FULL_HEADER_PARAMETER) {
-      r = full_header_parameter(b, 0);
-    }
-    else if (t == FULL_HEADER_TYPE) {
-      r = full_header_type(b, 0);
-    }
-    else if (t == HEADER_LINE) {
-      r = header_line(b, 0);
-    }
-    else if (t == HEADER_TYPE_NAME) {
-      r = header_type_name(b, 0);
-    }
-    else if (t == MACRO_DECLARATION) {
-      r = macro_declaration(b, 0);
-    }
-    else if (t == MACRO_NAME_DEC) {
-      r = macro_name_dec(b, 0);
-    }
-    else if (t == MACRO_USAGE_DEC) {
-      r = macro_usage_dec(b, 0);
-    }
-    else if (t == MACRO_VALUE_DEC) {
-      r = macro_value_dec(b, 0);
-    }
-    else if (t == MODIFIERS) {
-      r = modifiers(b, 0);
-    }
-    else if (t == PARAMETER) {
-      r = parameter(b, 0);
-    }
-    else if (t == PARAMETERS) {
-      r = parameters(b, 0);
-    }
-    else if (t == ROOT_MACRO_USAGE) {
-      r = root_macro_usage(b, 0);
-    }
-    else if (t == STRING) {
-      r = string(b, 0);
-    }
-    else if (t == SUB_PARAMETERS) {
-      r = sub_parameters(b, 0);
-    }
-    else if (t == VALUE) {
-      r = value(b, 0);
-    }
-    else if (t == VALUE_GROUP) {
-      r = value_group(b, 0);
-    }
-    else if (t == VALUE_LINE) {
-      r = value_line(b, 0);
+    if (t instanceof IFileElementType) {
+      r = parse_root_(t, b, 0);
     }
     else {
-      r = parse_root_(t, b, 0);
+      r = false;
     }
     exit_section_(b, 0, m, t, r, true, TRUE_CONDITION);
   }

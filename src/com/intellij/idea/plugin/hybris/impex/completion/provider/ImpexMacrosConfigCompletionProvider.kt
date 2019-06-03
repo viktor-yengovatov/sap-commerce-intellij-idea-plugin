@@ -35,10 +35,11 @@ import com.intellij.util.ProcessingContext
  */
 class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParameters>() {
 
+    val configElement = "\$config-"
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val psiElementUnderCaret = parameters.position
         val prevLeaf = PsiTreeUtil.prevLeaf(psiElementUnderCaret)
-        if (prevLeaf != null && prevLeaf.text.contains("\$config")) {
+        if (prevLeaf != null && prevLeaf.text.contains(configElement)) {
             val position = parameters.position
             val query = getQuery(position)
             val module = ModuleUtil.findModuleForPsiElement(position)
@@ -47,7 +48,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             }
         }
 
-        if (psiElementUnderCaret.text.contains("\$config-")) {
+        if (psiElementUnderCaret.text.contains(configElement)) {
             val position = parameters.position
             val prefix = getPrefix(position)
             val query = position.text.substring(prefix.length).replace("IntellijIdeaRulezzz", "")
@@ -64,7 +65,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
     private fun getPrefix(position: PsiElement): String {
         var text = position.text
 
-        val index = text.indexOf("\$config-")
-        return text.substring(0, index)
+        val index = text.indexOf(configElement)
+        return text.substring(0, index + configElement.length)
     }
 }

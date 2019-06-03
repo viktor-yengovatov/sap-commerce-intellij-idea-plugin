@@ -54,9 +54,9 @@ double_string = [\"](([\"][\"])|[^\"])*[\"]
 
 macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
 root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
-macro_usage            = [$](config-)?(({dot})?({identifier})?)+
-macro_config_usage = [$](config-)(({dot})?({identifier})?)+
-macro_value       = ({not_crlf}|(({dot})?{identifier})+)
+macro_usage            = [$](config-)?({identifier}({dot})?)+
+macro_config_usage = [$](config-)({identifier}({dot})?)+
+macro_value       = ({not_crlf}|({identifier}({dot})?)+)
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]

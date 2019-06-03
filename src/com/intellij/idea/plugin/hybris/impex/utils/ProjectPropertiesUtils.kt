@@ -10,8 +10,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.GlobalSearchScope.everythingScope
-import com.intellij.psi.search.GlobalSearchScope.getScopeRestrictedByFileTypes
 import java.util.*
 
 object ProjectPropertiesUtils {
@@ -20,7 +18,8 @@ object ProjectPropertiesUtils {
     fun findAllProperties(module: Module): List<IProperty> {
         val result: MutableList<IProperty> = ArrayList()
         val configModule = obtainConfigModule(module)
-        val scope = createSearchScope(module, configModule)
+        val platformModule = obtainPlatformModule(module)
+        val scope = createSearchScope(module, configModule, platformModule)
         val files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
         for (virtualFile in files) {
             val file = PsiManager.getInstance(module.project).findFile(virtualFile) as PropertiesFile?
@@ -47,12 +46,23 @@ object ProjectPropertiesUtils {
         return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
-    fun createSearchScope(module: Module, configModule: Module) =
-        getScopeRestrictedByFileTypes(everythingScope(module.project), PropertiesFileType.INSTANCE)
-            .filter { it.name.contains("project") }.or(configModule.moduleContentScope)
+    private fun createSearchScope(module: Module, configModule: Module, platformModule: Module): GlobalSearchScope {
+// to enable project.properties in all extensions
+//        val projectPropertiesScope = getScopeRestrictedByFileTypes(everythingScope(module.project), PropertiesFileType.INSTANCE)
+//            .filter { it.name == "project.properties" }
 
-    fun obtainConfigModule(module: Module) =
+        val projectPropertiesScope = module.moduleContentScope.filter { it.name == "project.properties" }
+        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == "advanced.properties" }
+        val localPropertiesScope = configModule.moduleContentScope.filter { it.name == "local.properties" }
+
+        return projectPropertiesScope.or(advancedPropertiesScope).or(localPropertiesScope)
+    }
+
+    private fun obtainConfigModule(module: Module) =
         ModuleManager.getInstance(module.project).modules.first { it.name == "config" }
+
+    private fun obtainPlatformModule(module: Module) =
+        ModuleManager.getInstance(module.project).modules.first { it.name == "platform" }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {
