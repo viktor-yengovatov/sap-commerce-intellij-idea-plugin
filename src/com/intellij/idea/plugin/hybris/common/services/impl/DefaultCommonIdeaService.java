@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.services.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.Version;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
@@ -64,7 +65,10 @@ import static com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSet
  */
 public class DefaultCommonIdeaService implements CommonIdeaService {
     private static final Logger LOG = Logger.getInstance(DefaultCommonIdeaService.class);
+    private static final Version _1905 = Version.parseVersion("1905.0");
+
     private final CommandProcessor commandProcessor;
+
 
     public DefaultCommonIdeaService(@NotNull final CommandProcessor commandProcessor) {
         Validate.notNull(commandProcessor);
@@ -262,21 +266,12 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     private boolean is2019plus(final Project project) {
         final String hybrisVersion = HybrisProjectSettingsComponent.getInstance(project).getState().getHybrisVersion();
+
         if (StringUtils.isBlank(hybrisVersion)) {
             return false;
         }
-        String majorVersion = StringUtils.substring(hybrisVersion, 0, 2);
-
-        try {
-            if(NumberUtils.isCreatable(majorVersion)) {
-                return NumberUtils.createInteger(majorVersion) > 18;
-            }
-        }
-        catch (NumberFormatException nfe) {
-            LOG.error("Error parsing hybris version: " + hybrisVersion, nfe);
-        }
-
-        return false;
+        Version projectVersion = Version.parseVersion(hybrisVersion);
+        return projectVersion.compareTo(_1905) >= 0;
     }
 
     @Override
