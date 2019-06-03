@@ -81,8 +81,16 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
                 macroName = child.getText();
             } else {
                 if (child instanceof ImpexMacroUsageDec) {
-                    MacroDescriptor descriptor = cache.get(child.getText());
-                    sb.append(descriptor.getResolvedValue());
+                    MacroDescriptor descriptor = findInCache(cache, child.getText());
+                    if (descriptor != null) {
+                        sb.append(descriptor.getResolvedValue());
+                        int index = child.getText().length() - descriptor.getMacroName().length();
+                        if (index > 0) {
+                            sb.append(child.getText().substring(index));
+                        }
+                    } else {
+                        sb.append(child.getText());
+                    }
                 } else {
                     sb.append(child.getText());
                 }
@@ -155,6 +163,23 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         cache.put(macroUsage.getText(), descriptor);
     }
 
+    private MacroDescriptor findInCache(
+        final Map<String, MacroDescriptor> cache,
+        final String text
+    ) {
+        MacroDescriptor macroDescriptor = cache.get(text);
+        if (macroDescriptor != null) {
+            return macroDescriptor;
+        }
+        for (MacroDescriptor md: cache.values()) {
+            if (text.startsWith(md.getMacroName())) {
+                cache.put(text, md);
+                return md;
+            }
+        }
+        return null;
+    }
+
     private CachedValue<Map<String, MacroDescriptor>> getFileCache(PsiFile impexFile) {
         CachedValue<Map<String, MacroDescriptor>> fileModelCache = impexFile.getUserData(FILE_IMPEX_FOLDING_CACHE_KEY);
 
@@ -193,6 +218,13 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         public MacroDescriptor(final String macroName, final String resolvedValue) {
             this.macroName = macroName;
             this.resolvedValue = resolvedValue;
+            replaceBlank();
+        }
+
+        private void replaceBlank() {
+            if (resolvedValue == null || resolvedValue.isEmpty()) {
+                resolvedValue = "<blank>";
+            }
         }
 
         public String getMacroName() {
