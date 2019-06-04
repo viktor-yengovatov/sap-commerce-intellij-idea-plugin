@@ -1,33 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.impex.psi;
 
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyAttributeNameImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyAttributeValueImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyHeaderModeImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyHeaderParameterNameImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexBeanShellImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexCommentImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexFullHeaderParameterImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexFullHeaderTypeImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexHeaderLineImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexHeaderTypeNameImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroDeclarationImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroNameDecImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroUsageDecImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroValueDecImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexModifiersImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexParameterImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexParametersImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexRootMacroUsageImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexStringImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexSubParametersImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueGroupImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueImpl;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueLineImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.*;
 
 public interface ImpexTypes {
 
