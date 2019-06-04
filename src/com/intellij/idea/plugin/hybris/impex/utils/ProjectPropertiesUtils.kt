@@ -10,24 +10,52 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
-import java.util.*
+import com.intellij.psi.search.GlobalSearchScope.everythingScope
+import com.intellij.psi.search.GlobalSearchScope.getScopeRestrictedByFileTypes
 
 object ProjectPropertiesUtils {
 
 
     fun findAllProperties(module: Module): List<IProperty> {
-        val result: MutableList<IProperty> = ArrayList()
+        val result = LinkedHashMap<String, IProperty>()
         val configModule = obtainConfigModule(module)
         val platformModule = obtainPlatformModule(module)
         val scope = createSearchScope(module, configModule, platformModule)
         val files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
+        var advancedPropsFile: PropertiesFile? = null
+        var localPropsFile: PropertiesFile? = null
         for (virtualFile in files) {
             val file = PsiManager.getInstance(module.project).findFile(virtualFile) as PropertiesFile?
             if (file != null) {
-                result.addAll(file.properties)
+                if (file.name == "advanced.properties") {
+                    advancedPropsFile = file
+                } else if (file.name == "local.properties") {
+                    localPropsFile = file
+                } else {
+                    for (property in file.properties) {
+                        if (property.key != null) {
+                            result[property.key!!] = property
+                        }
+                    }
+                }
             }
         }
-        return result
+        if (advancedPropsFile != null) {
+            for (property in advancedPropsFile.properties) {
+                if (property.key != null) {
+                    result[property.key!!] = property
+                }
+            }
+        }
+        if (localPropsFile != null) {
+            for (property in localPropsFile.properties) {
+                if (property.key != null) {
+                    result[property.key!!] = property
+                }
+            }
+        }
+
+        return ArrayList(result.values)
     }
 
     fun findAutoCompleteProperties(module: Module, query: String): List<IProperty> =
@@ -47,11 +75,8 @@ object ProjectPropertiesUtils {
     }
 
     private fun createSearchScope(module: Module, configModule: Module, platformModule: Module): GlobalSearchScope {
-// to enable project.properties in all extensions
-//        val projectPropertiesScope = getScopeRestrictedByFileTypes(everythingScope(module.project), PropertiesFileType.INSTANCE)
-//            .filter { it.name == "project.properties" }
-
-        val projectPropertiesScope = module.moduleContentScope.filter { it.name == "project.properties" }
+        val projectPropertiesScope = getScopeRestrictedByFileTypes(everythingScope(module.project), PropertiesFileType.INSTANCE)
+            .filter { it.name == "project.properties" }
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == "advanced.properties" }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == "local.properties" }
 

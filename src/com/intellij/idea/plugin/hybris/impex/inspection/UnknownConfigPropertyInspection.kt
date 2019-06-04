@@ -31,7 +31,6 @@ import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.util.containers.ContainerUtilRt
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -45,7 +44,7 @@ class UnknownConfigPropertyInspection : LocalInspectionTool() {
 
 
 private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
-    private val cachedProperties = ContainerUtilRt.newHashMap<String, Boolean>()
+    private val cachedProperties = HashMap<String, Boolean>()
 
     override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {
         if (!usage.text.startsWith("\$config-")) return
