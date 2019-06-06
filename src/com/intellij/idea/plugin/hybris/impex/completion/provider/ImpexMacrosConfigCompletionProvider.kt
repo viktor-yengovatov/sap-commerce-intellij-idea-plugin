@@ -44,7 +44,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             val query = getQuery(position)
             val module = ModuleUtil.findModuleForPsiElement(position)
             ProjectPropertiesUtils.findAutoCompleteProperties(module!!, query).forEach {
-                result.addElement(LookupElementBuilder.create("${it.key}\n").withIcon(AllIcons.Nodes.Property))
+                result.addElement(LookupElementBuilder.create("${it.key}").withIcon(AllIcons.Nodes.Property))
             }
         }
 
@@ -54,7 +54,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             val query = position.text.substring(prefix.length).replace("IntellijIdeaRulezzz", "")
             val module = ModuleUtil.findModuleForPsiElement(position)
             ProjectPropertiesUtils.findAutoCompleteProperties(module!!, query).forEach {
-                result.addElement(LookupElementBuilder.create(prefix+"${it.key}\n").withIcon(AllIcons.Nodes.Property))
+                result.addElement(LookupElementBuilder.create(prefix+"${it.key}").withIcon(AllIcons.Nodes.Property))
             }
         }
     }
