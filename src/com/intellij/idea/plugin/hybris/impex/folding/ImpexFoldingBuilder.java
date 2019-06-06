@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 
@@ -80,7 +81,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
                     groupIsNotFresh = false;
                 }
             } else {
-                descriptors.add(new ImpexFoldingDescriptor(psiElement, currentLineGroup));
+                descriptors.add(new FoldingDescriptor(psiElement.getNode(), psiElement.getTextRange(), currentLineGroup));
                 groupIsNotFresh = true;
             }
         }
@@ -114,7 +115,19 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
     public String getPlaceholderText(@NotNull final ASTNode node) {
         Validate.notNull(node);
 
-        return ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(node.getPsi());
+        String text = ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(node.getPsi());
+        String resolvedMacro = text;
+        if (text.startsWith("$")) {
+            Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(node.getPsi().getContainingFile()).getValue();
+            ImpexMacroDescriptor descriptor = cache.get(text);
+            if (descriptor != null) {
+                resolvedMacro = descriptor.getResolvedValue();
+            }
+        }
+        if (resolvedMacro.length() <= text.length()) {
+            return resolvedMacro;
+        }
+        return text;
     }
 
     @Override

@@ -38,22 +38,6 @@ public class ImpexFoldingDescriptor extends FoldingDescriptor {
 
     public ImpexFoldingDescriptor(
         @NotNull final PsiElement psiElement,
-        @NotNull final FoldingGroup group
-    ) {
-        super(
-            psiElement.getNode(),
-            new TextRange(
-                psiElement.getTextRange().getStartOffset(),
-                psiElement.getTextRange().getEndOffset()
-            ),
-            group
-        );
-
-        placeholder = ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(psiElement);
-    }
-
-    public ImpexFoldingDescriptor(
-        @NotNull final PsiElement psiElement,
         final int startOffset, final int endOffset,
         @NotNull final FoldingGroup group,
         Function<PsiElement, String> placeholderFunction

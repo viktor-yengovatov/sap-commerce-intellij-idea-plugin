@@ -12,26 +12,18 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.lang.properties.IProperty;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.SmartList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +32,6 @@ import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
 public class ImpexMacroFoldingBuilder implements FoldingBuilder {
 
     private static final Logger LOG = Logger.getInstance(ImpexMacroFoldingBuilder.class);
-    private static final Key<CachedValue<Map<String, MacroDescriptor>>> FILE_IMPEX_FOLDING_CACHE_KEY = Key.create("FILE_IMPEX_FOLDING_CACHE");
     public static final String CONFIG_PREFIX = "$config-";
 
     @NotNull
@@ -80,7 +71,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         List<PsiElement> lineElements = getAllChildren(macroLine);
         String macroName = null;
         StringBuilder sb = new StringBuilder();
-        Map<String, MacroDescriptor> cache = getFileCache(macroLine.getContainingFile()).getValue();
+        Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroLine.getContainingFile()).getValue();
         for (PsiElement child: lineElements) {
             if (child instanceof LeafPsiElement) {
                 LeafPsiElement leafPsiElement = (LeafPsiElement) child;
@@ -92,7 +83,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
                 macroName = child.getText();
             } else {
                 if (child instanceof ImpexMacroUsageDec) {
-                    MacroDescriptor descriptor = findInCache(cache, child.getText());
+                    ImpexMacroDescriptor descriptor = findInCache(cache, child.getText());
                     if (descriptor != null) {
                         sb.append(descriptor.getResolvedValue());
                         int delta = child.getText().length() - descriptor.getMacroName().length();
@@ -108,7 +99,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             }
         }
 
-        cache.put(macroName, new MacroDescriptor(macroName, sb.toString()));
+        cache.put(macroName, new ImpexMacroDescriptor(macroName, sb.toString()));
     }
 
     private void resolveMacroUsage(
@@ -148,8 +139,8 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         if (text.length() <= CONFIG_PREFIX.length()) {
             return;
         }
-        Map<String, MacroDescriptor> cache = getFileCache(macroUsage.getContainingFile()).getValue();
-        MacroDescriptor descriptor = cache.get(text);
+        Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroUsage.getContainingFile()).getValue();
+        ImpexMacroDescriptor descriptor = cache.get(text);
         if (descriptor == null) {
             String propertyName = text.substring(CONFIG_PREFIX.length());
             Module module = ModuleUtil.findModuleForPsiElement(macroUsage);
@@ -160,9 +151,9 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             if (property == null) {
                 return;
             }
-            descriptor = new MacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue());
+            descriptor = new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue());
             cache.put(text, descriptor);
-            cache.put(CONFIG_PREFIX + property.getKey(), new MacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue()));
+            cache.put(CONFIG_PREFIX + property.getKey(), new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue()));
         }
         int start = macroUsage.getTextRange().getStartOffset();
         TextRange range = new TextRange(start, start + descriptor.getMacroName().length());
@@ -170,7 +161,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     }
 
     private void resolveLocalMacro(final ImpexMacroUsageDec macroUsage, final SmartList<FoldingDescriptor> results) {
-        Map<String, MacroDescriptor> cache = getFileCache(macroUsage.getContainingFile()).getValue();
+        Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroUsage.getContainingFile()).getValue();
         String currentKey = "";
         for (String key: cache.keySet()) {
             if (macroUsage.getText().startsWith(key)) {
@@ -182,7 +173,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         if (currentKey.isEmpty()) {
             return;
         }
-        MacroDescriptor descriptor = cache.get(currentKey);
+        ImpexMacroDescriptor descriptor = cache.get(currentKey);
         int start = macroUsage.getTextRange().getStartOffset();
         TextRange range = new TextRange(start, start + descriptor.getMacroName().length());
         results.add(new FoldingDescriptor(macroUsage.getNode(), range, null));
@@ -190,15 +181,15 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         cache.put(macroUsage.getText(), descriptor);
     }
 
-    private MacroDescriptor findInCache(
-        final Map<String, MacroDescriptor> cache,
+    private ImpexMacroDescriptor findInCache(
+        final Map<String, ImpexMacroDescriptor> cache,
         final String text
     ) {
-        MacroDescriptor macroDescriptor = cache.get(text);
-        if (macroDescriptor != null) {
-            return macroDescriptor;
+        ImpexMacroDescriptor impexMacroDescriptor = cache.get(text);
+        if (impexMacroDescriptor != null) {
+            return impexMacroDescriptor;
         }
-        for (MacroDescriptor md: cache.values()) {
+        for (ImpexMacroDescriptor md: cache.values()) {
             if (text.startsWith(md.getMacroName())) {
                 cache.put(text, md);
                 return md;
@@ -207,26 +198,11 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         return null;
     }
 
-    private CachedValue<Map<String, MacroDescriptor>> getFileCache(PsiFile impexFile) {
-        CachedValue<Map<String, MacroDescriptor>> fileModelCache = impexFile.getUserData(FILE_IMPEX_FOLDING_CACHE_KEY);
-
-        if (fileModelCache == null) {
-            fileModelCache = CachedValuesManager.getManager(impexFile.getProject()).createCachedValue(
-                () -> ApplicationManager.getApplication().runReadAction(
-                    (Computable<CachedValueProvider.Result<Map<String, MacroDescriptor>>>) () ->
-                        CachedValueProvider.Result.create(new HashMap<>(), impexFile)
-                    ), false);
-            impexFile.putUserData(FILE_IMPEX_FOLDING_CACHE_KEY, fileModelCache);
-        }
-
-        return fileModelCache;
-    }
-
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull final ASTNode node) {
-        Map<String, MacroDescriptor> cache = getFileCache(node.getPsi().getContainingFile()).getValue();
-        MacroDescriptor descriptor = cache.get(node.getText());
+        Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(node.getPsi().getContainingFile()).getValue();
+        ImpexMacroDescriptor descriptor = cache.get(node.getText());
         if (descriptor != null) {
             return descriptor.getResolvedValue();
         }
@@ -248,36 +224,4 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         return result;
     }
 
-    private class MacroDescriptor {
-        private String macroName;
-        private String resolvedValue;
-
-        public MacroDescriptor(final String macroName, final String resolvedValue) {
-            this.macroName = macroName;
-            this.resolvedValue = resolvedValue;
-            replaceBlank();
-        }
-
-        private void replaceBlank() {
-            if (resolvedValue == null || resolvedValue.isEmpty()) {
-                resolvedValue = "<blank>";
-            }
-        }
-
-        public String getMacroName() {
-            return macroName;
-        }
-
-        public void setMacroName(final String macroName) {
-            this.macroName = macroName;
-        }
-
-        public String getResolvedValue() {
-            return resolvedValue;
-        }
-
-        public void setResolvedValue(final String resolvedValue) {
-            this.resolvedValue = resolvedValue;
-        }
-    }
 }

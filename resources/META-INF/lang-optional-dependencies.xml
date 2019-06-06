@@ -79,12 +79,6 @@
         <lang.foldingBuilder language="Impex"
                              implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingLinesBuilder"/>
 
-<!--        <lang.foldingBuilder language="Impex"-->
-<!--                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexPropertyFoldingBuilder"/>-->
-
-<!--        <lang.foldingBuilder language="Impex"-->
-<!--                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexMacrosFoldingBuilder"/>-->
-
         <lang.foldingBuilder language="Impex"
                                      implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroFoldingBuilder"/>
 
