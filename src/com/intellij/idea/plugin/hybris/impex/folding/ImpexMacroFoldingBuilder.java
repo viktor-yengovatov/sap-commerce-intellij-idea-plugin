@@ -84,9 +84,9 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
                     MacroDescriptor descriptor = findInCache(cache, child.getText());
                     if (descriptor != null) {
                         sb.append(descriptor.getResolvedValue());
-                        int index = child.getText().length() - descriptor.getMacroName().length();
-                        if (index > 0) {
-                            sb.append(child.getText().substring(index));
+                        int delta = child.getText().length() - descriptor.getMacroName().length();
+                        if (delta > 0) {
+                            sb.append(child.getText().substring(descriptor.getMacroName().length()));
                         }
                     } else {
                         sb.append(child.getText());
