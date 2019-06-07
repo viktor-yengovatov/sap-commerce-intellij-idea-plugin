@@ -72,6 +72,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         String macroName = null;
         StringBuilder sb = new StringBuilder();
         Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroLine.getContainingFile()).getValue();
+        PsiElement anchor = macroLine;
         for (PsiElement child: lineElements) {
             if (child instanceof LeafPsiElement) {
                 LeafPsiElement leafPsiElement = (LeafPsiElement) child;
@@ -81,6 +82,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             }
             if (child instanceof ImpexMacroNameDec) {
                 macroName = child.getText();
+                anchor = child;
             } else {
                 if (child instanceof ImpexMacroUsageDec) {
                     ImpexMacroDescriptor descriptor = findInCache(cache, child.getText());
@@ -99,7 +101,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             }
         }
 
-        cache.put(macroName, new ImpexMacroDescriptor(macroName, sb.toString()));
+        cache.put(macroName, new ImpexMacroDescriptor(macroName, sb.toString(), anchor));
     }
 
     private void resolveMacroUsage(
@@ -151,9 +153,9 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             if (property == null) {
                 return;
             }
-            descriptor = new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue());
+            descriptor = new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue(), property.getPsiElement());
             cache.put(text, descriptor);
-            cache.put(CONFIG_PREFIX + property.getKey(), new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue()));
+            cache.put(CONFIG_PREFIX + property.getKey(), new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue(), property.getPsiElement()));
         }
         int start = macroUsage.getTextRange().getStartOffset();
         TextRange range = new TextRange(start, start + descriptor.getMacroName().length());

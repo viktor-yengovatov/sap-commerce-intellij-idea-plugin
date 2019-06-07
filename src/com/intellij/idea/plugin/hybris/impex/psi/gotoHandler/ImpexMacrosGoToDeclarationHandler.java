@@ -19,16 +19,16 @@
 package com.intellij.idea.plugin.hybris.impex.psi.gotoHandler;
 
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandlerBase;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration;
+import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroDescriptor;
+import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroUtils;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -50,18 +50,10 @@ public class ImpexMacrosGoToDeclarationHandler extends GotoDeclarationHandlerBas
 
         final PsiFile originalFile = sourceElement.getContainingFile();
 
-        final Collection<ImpexMacroDeclaration> macroDeclarations =
-            PsiTreeUtil.findChildrenOfType(
-                originalFile,
-                ImpexMacroDeclaration.class
-            );
-
-        if (!macroDeclarations.isEmpty()) {
-            for (final ImpexMacroDeclaration declaration : macroDeclarations) {
-                if (sourceElement.textMatches(declaration.getFirstChild())) {
-                    return declaration.getFirstChild();
-                }
-            }
+        Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(originalFile).getValue();
+        ImpexMacroDescriptor descriptor = cache.get(sourceElement.getText());
+        if (descriptor != null) {
+            return descriptor.getPsiElement();
         }
         return null;
     }

@@ -1,10 +1,14 @@
 package com.intellij.idea.plugin.hybris.impex.folding;
 
+import com.intellij.psi.PsiElement;
+
 public class ImpexMacroDescriptor {
     private String macroName;
     private String resolvedValue;
+    private PsiElement psiElement;
 
-    public ImpexMacroDescriptor(final String macroName, final String resolvedValue) {
+    public ImpexMacroDescriptor(final String macroName, final String resolvedValue, final PsiElement psiElement) {
+        this.psiElement = psiElement;
         this.macroName = macroName;
         this.resolvedValue = resolvedValue;
         replaceBlank();
@@ -20,15 +24,11 @@ public class ImpexMacroDescriptor {
         return macroName;
     }
 
-    public void setMacroName(final String macroName) {
-        this.macroName = macroName;
-    }
-
     public String getResolvedValue() {
         return resolvedValue;
     }
 
-    public void setResolvedValue(final String resolvedValue) {
-        this.resolvedValue = resolvedValue;
+    public PsiElement getPsiElement() {
+        return psiElement;
     }
 }
