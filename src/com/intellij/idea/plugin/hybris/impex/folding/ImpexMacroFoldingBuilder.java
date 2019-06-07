@@ -1,9 +1,11 @@
 package com.intellij.idea.plugin.hybris.impex.folding;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
 import com.intellij.lang.ASTNode;
@@ -20,6 +22,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -27,7 +30,9 @@ import com.intellij.util.SmartList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
@@ -72,11 +77,17 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         ImpexMacroDeclaration macroLine,
         final SmartList<FoldingDescriptor> results
     ) {
-        PsiElement[] lineElements = macroLine.getChildren();
+        List<PsiElement> lineElements = getAllChildren(macroLine);
         String macroName = null;
         StringBuilder sb = new StringBuilder();
         Map<String, MacroDescriptor> cache = getFileCache(macroLine.getContainingFile()).getValue();
         for (PsiElement child: lineElements) {
+            if (child instanceof LeafPsiElement) {
+                LeafPsiElement leafPsiElement = (LeafPsiElement) child;
+                if (leafPsiElement.getElementType() == ImpexTypes.ASSIGN_VALUE) {
+                    continue;
+                }
+            }
             if (child instanceof ImpexMacroNameDec) {
                 macroName = child.getText();
             } else {
@@ -110,10 +121,26 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             resolveProperty(macroUsage, results);
         } else {
             // local macro needs to be resolved later when evaluating macro declarations
-            if (!(macroUsage.getParent() instanceof ImpexMacroUsageDec)) {
-                localMacroList.add(macroUsage);
+            PsiElement parent = macroUsage.getParent();
+            if (parent instanceof ImpexMacroUsageDec) {
+                return;
             }
+            if (getRootPsi(parent) instanceof ImpexHeaderLine) {
+                return;
+            }
+            localMacroList.add(macroUsage);
         }
+    }
+
+    private PsiElement getRootPsi(final PsiElement psiElement) {
+        PsiElement root = psiElement;
+        while (root.getParent() != null) {
+            if (root.getParent() instanceof ImpexFile) {
+                return root;
+            }
+            root = root.getParent();
+        }
+        return root;
     }
 
     private void resolveProperty(final ImpexMacroUsageDec macroUsage, final SmartList<FoldingDescriptor> results) {
@@ -209,6 +236,16 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
         return true;
+    }
+
+    private List<PsiElement> getAllChildren(final ImpexMacroDeclaration psiElement) {
+        List<PsiElement> result = new ArrayList<>();
+        PsiElement psiChild = psiElement.getFirstChild();
+        while (psiChild != null) {
+            result.add(psiChild);
+            psiChild = psiChild.getNextSibling();
+        }
+        return result;
     }
 
     private class MacroDescriptor {
