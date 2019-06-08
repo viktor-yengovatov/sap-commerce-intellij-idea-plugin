@@ -12,9 +12,19 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScope.everythingScope
 import com.intellij.psi.search.GlobalSearchScope.getScopeRestrictedByFileTypes
+import java.util.HashMap
+import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
+import kotlin.collections.List
+import kotlin.collections.MutableMap
+import kotlin.collections.filter
+import kotlin.collections.first
+import kotlin.collections.reduce
+import kotlin.collections.set
 
 object ProjectPropertiesUtils {
-
+    val NESTED_PROPERTY_PREFIX = "\${"
+    val NESTED_PROPERTY_SUFFIX = "}"
 
     fun findAllProperties(module: Module): List<IProperty> {
         val result = LinkedHashMap<String, IProperty>()
@@ -72,6 +82,44 @@ object ProjectPropertiesUtils {
         }
 
         return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
+    }
+
+    fun resolvePropertyValue(module: Module, value: String?): String {
+        return resolvePropertyValue(module, value, HashMap())
+    }
+
+    private fun resolvePropertyValue(module: Module, value: String?, resolvedProperties: MutableMap<String, String>): String {
+        if (value == null) {
+            return ""
+        }
+        var index = 0
+        val sb = StringBuilder()
+        while (index != -1) {
+            val startIndex = value.indexOf(NESTED_PROPERTY_PREFIX, index)
+            val endIndex = value.indexOf(NESTED_PROPERTY_SUFFIX, startIndex)
+            if (startIndex != -1 && endIndex != -1) {
+                sb.append(value, index, startIndex)
+                val propertyKey = value.substring(startIndex + NESTED_PROPERTY_PREFIX.length, endIndex)
+                var resolvedValue: String? = resolvedProperties[propertyKey]
+                if (resolvedValue != null) {
+                    sb.append(resolvedValue)
+                } else {
+                    val property = findMacroProperty(module, propertyKey)
+                    if (property != null) {
+                        resolvedValue = resolvePropertyValue(module, property.value)
+                        sb.append(resolvedValue)
+                        resolvedProperties[propertyKey] = resolvedValue
+                    } else {
+                        sb.append(NESTED_PROPERTY_PREFIX).append(propertyKey).append(NESTED_PROPERTY_SUFFIX)
+                    }
+                }
+                index = endIndex + 1
+            } else {
+                sb.append(value, index, value.length)
+                index = startIndex
+            }
+        }
+        return sb.toString()
     }
 
     private fun createSearchScope(module: Module, configModule: Module, platformModule: Module): GlobalSearchScope {

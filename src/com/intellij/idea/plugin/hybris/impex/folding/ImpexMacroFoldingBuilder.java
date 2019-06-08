@@ -153,9 +153,10 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             if (property == null) {
                 return;
             }
-            descriptor = new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue(), property.getPsiElement());
+            String value = ProjectPropertiesUtils.INSTANCE.resolvePropertyValue(module, property.getValue());
+            descriptor = new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), value, property.getPsiElement());
             cache.put(text, descriptor);
-            cache.put(CONFIG_PREFIX + property.getKey(), new ImpexMacroDescriptor(CONFIG_PREFIX + property.getKey(), property.getValue(), property.getPsiElement()));
+            cache.put(CONFIG_PREFIX + property.getKey(), descriptor);
         }
         int start = macroUsage.getTextRange().getStartOffset();
         TextRange range = new TextRange(start, start + descriptor.getMacroName().length());
