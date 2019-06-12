@@ -2,7 +2,7 @@
 
     <id>ccom.intellij.idea.plugin.hybris.impex</id>
     <name>hybris integration</name>
-    <version>10.4.1</version>
+    <version>10.5</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="191"/>
@@ -103,15 +103,23 @@
 
     <change-notes>
         <![CDATA[
-            <h2>Fault</h2>
+            <h2>Story</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-212'>IIPS-212</a>] - Exception in plug in: "Assertion failed: descriptor and containing entity files should be the same"</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-555'>IIP-555</a>] - Add support of the nested properties in impex file</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-557'>IIP-557</a>] - Navigate to property location on click in impex files</li>
             </ul>
 
             <h2>Bug</h2>
             <ul>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-551'>IIP-551</a>] - Impex $config-xxx properties are not working (v.2)</li>
-                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-553'>IIP-553</a>] - Impex macro declaration shows an error for valid syntax</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-546'>IIP-546</a>] - Build is broken: UnsupportedOperationException</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-552'>IIP-552</a>] - false positive error in FS</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-560'>IIP-560</a>] - Impex double macro folding text wrong</li>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIP-561'>IIP-561</a>] - Impex macro folding ignores primitive types</li>
+            </ul>
+
+            <h2>New Feature Request</h2>
+            <ul>
+                <li>[<a href='https://hybris-integration.atlassian.net/browse/IIPS-194'>IIPS-194</a>] - Support &quot;#% impex.includeExternalData...&quot; in impex files</li>
             </ul>
         ]]>
     </change-notes>
