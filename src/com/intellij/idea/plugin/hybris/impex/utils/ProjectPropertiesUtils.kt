@@ -1,10 +1,13 @@
 package com.intellij.idea.plugin.hybris.impex.utils
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.OPTIONAL_CONFIG_DIR_KEY
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
@@ -12,19 +15,17 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScope.everythingScope
 import com.intellij.psi.search.GlobalSearchScope.getScopeRestrictedByFileTypes
-import java.util.HashMap
+import java.io.File
+import java.util.*
+import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
-import kotlin.collections.List
-import kotlin.collections.MutableMap
-import kotlin.collections.filter
-import kotlin.collections.first
-import kotlin.collections.reduce
 import kotlin.collections.set
 
 object ProjectPropertiesUtils {
-    val NESTED_PROPERTY_PREFIX = "\${"
-    val NESTED_PROPERTY_SUFFIX = "}"
+    private const val NESTED_PROPERTY_PREFIX = "\${"
+    private const val NESTED_PROPERTY_SUFFIX = "}"
+    private val OPTIONAL_PROPERTIES_FILE_PATTERN = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
     fun findAllProperties(module: Module): List<IProperty> {
         val result = LinkedHashMap<String, IProperty>()
@@ -50,20 +51,11 @@ object ProjectPropertiesUtils {
                 }
             }
         }
-        if (advancedPropsFile != null) {
-            for (property in advancedPropsFile.properties) {
-                if (property.key != null) {
-                    result[property.key!!] = property
-                }
-            }
-        }
-        if (localPropsFile != null) {
-            for (property in localPropsFile.properties) {
-                if (property.key != null) {
-                    result[property.key!!] = property
-                }
-            }
-        }
+        addPropertyFile(result, advancedPropsFile)
+        addPropertyFile(result, localPropsFile)
+
+        val optDir = result[OPTIONAL_CONFIG_DIR_KEY]
+        addOptionalConfiguration(module.project, result, optDir)
 
         return ArrayList(result.values)
     }
@@ -120,6 +112,42 @@ object ProjectPropertiesUtils {
             }
         }
         return sb.toString()
+    }
+
+    private fun addOptionalConfiguration(project: Project, result: java.util.LinkedHashMap<String, IProperty>, optDir: IProperty?) {
+        if (optDir == null) {
+            return
+        }
+        val dir = File(optDir.value)
+        if (!dir.isDirectory) {
+            return
+        }
+        val matchedFiles = dir.listFiles { dir1, name -> OPTIONAL_PROPERTIES_FILE_PATTERN.matcher(name).matches() }
+            ?: return
+        val propertyFiles = TreeMap<String, File>()
+        Arrays.stream(matchedFiles).forEach { file -> propertyFiles[file.name] = file }
+
+        propertyFiles.values.forEach { file ->
+            val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(file)
+            if (virtualFile == null || !virtualFile.exists()) {
+                return
+            }
+            val psiFile = PsiManager.getInstance(project).findFile(virtualFile)
+            if (psiFile is PropertiesFile) {
+                addPropertyFile(result, psiFile as PropertiesFile?)
+            }
+        }
+    }
+
+    private fun addPropertyFile(result: java.util.LinkedHashMap<String, IProperty>, propertiesFile: PropertiesFile?) {
+        if (propertiesFile == null) {
+            return
+        }
+        for (property in propertiesFile.properties) {
+            if (property.key != null) {
+                result[property.key!!] = property
+            }
+        }
     }
 
     private fun createSearchScope(module: Module, configModule: Module, platformModule: Module): GlobalSearchScope {

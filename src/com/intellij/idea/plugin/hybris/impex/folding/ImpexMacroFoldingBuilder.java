@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexString;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
@@ -14,15 +15,22 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.SmartList;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +64,70 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
                 super.visitMacroDeclaration(macroDeclaration);
                 resolveMacroDeclaration(macroDeclaration, results);
             }
+
+            @Override
+            public void visitString(@NotNull final ImpexString o) {
+                super.visitString(o);
+                resolveIncludeExternalData(o);
+            }
         });
 
         // resolve local macro last
         localMacroList.forEach(macroUsage->resolveLocalMacro(macroUsage, results));
 
         return results.toArray(FoldingDescriptor.EMPTY);
+    }
+
+    private void resolveIncludeExternalData(final ImpexString impexString) {
+        String text = impexString.getText();
+        int index = text.indexOf("impex.includeExternalData");
+        if (index == -1) {
+            return;
+        }
+        index = text.indexOf("getResourceAsStream");
+        if (index == -1) {
+            return;
+        }
+        int startIndex = text.indexOf("(", index);
+        if (startIndex == -1) {
+            return;
+        }
+        int endIndex = text.indexOf(")", startIndex);
+        if (endIndex == -1) {
+            return;
+        }
+        String resource = text.substring(startIndex+1, endIndex);
+        resource = StringUtils.strip(resource, "\"' ");
+        VirtualFile directory = impexString.getContainingFile().getContainingDirectory().getVirtualFile();
+        String dirPath = directory.getCanonicalPath();
+        VirtualFile referencedFile = LocalFileSystem.getInstance().findFileByIoFile(new File(dirPath, resource));
+        if (referencedFile == null || !referencedFile.exists()) {
+            return;
+        }
+        PsiFile referencedPsi = PsiManager.getInstance(impexString.getProject()).findFile(referencedFile);
+        if (!(referencedPsi instanceof ImpexFile)) {
+            return;
+        }
+        ;
+        Map<String, ImpexMacroDescriptor> referencedCache = ImpexMacroUtils.getFileCache(referencedPsi).getValue();
+        if (referencedCache.isEmpty()) {
+            Document document = FileDocumentManager.getInstance().getDocument(referencedFile);
+            if (document == null) {
+                return;
+            }
+            preventRecursion(impexString);
+            buildFoldRegions(referencedPsi.getNode(), document);
+            referencedCache = ImpexMacroUtils.getFileCache(referencedPsi).getValue();
+        }
+        Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(impexString.getContainingFile()).getValue();
+        cache.putAll(referencedCache);
+    }
+
+    private void preventRecursion(final ImpexString impexString) {
+        Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(impexString.getContainingFile()).getValue();
+        if (cache.isEmpty()) {
+            cache.put("!", new ImpexMacroDescriptor("!", "!", impexString));
+        }
     }
 
     private void resolveMacroDeclaration(

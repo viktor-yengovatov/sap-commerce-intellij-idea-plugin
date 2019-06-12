@@ -289,4 +289,5 @@ public interface HybrisConstants {
     }
 
     String TS_ITEMS_VALIDATION_WARN = "hybris.ts.items.validation.warn";
+    String OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir";
 }
