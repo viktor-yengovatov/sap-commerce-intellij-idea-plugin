@@ -24,6 +24,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Version implements Comparable<Version> {
+
+    private static final String SNAPSHOT = "-SNAPSHOT";
     private static final Pattern NEW_VERSION = Pattern.compile("(\\d\\d)(\\d\\d)(\\.([1-9]?\\d))?");
     private static final Pattern OLD_VERSION =
         Pattern.compile("(\\d)\\.(\\d)\\.(\\d)(\\.([1-9]?\\d))?");
@@ -53,8 +55,10 @@ public class Version implements Comparable<Version> {
             throw new IllegalArgumentException("version must not be empty");
         }
 
-        Matcher oldV = OLD_VERSION.matcher(v);
-        Matcher newV = NEW_VERSION.matcher(v);
+        final String fixedVersion = v.replace(SNAPSHOT, "");
+
+        Matcher oldV = OLD_VERSION.matcher(fixedVersion);
+        Matcher newV = NEW_VERSION.matcher(fixedVersion);
 
         if (newV.matches()) {
             int patch = 0;
@@ -62,16 +66,16 @@ public class Version implements Comparable<Version> {
                 patch = Integer.parseInt(newV.group(4));
             }
             return new Version(Integer.parseInt(newV.group(1)), Integer.parseInt(newV.group(2)), 0,
-                               patch, v);
+                               patch, fixedVersion);
         } else if (oldV.matches()) {
             int patch = 0;
             if (oldV.groupCount() > 4 && oldV.group(5) != null) {
                 patch = Integer.parseInt(oldV.group(5));
             }
             return new Version(Integer.parseInt(oldV.group(1)), Integer.parseInt(oldV.group(2)),
-                               Integer.parseInt(oldV.group(3)), patch, v);
+                               Integer.parseInt(oldV.group(3)), patch, fixedVersion);
         }
-        String[] split = v.split("\\.");
+        String[] split = fixedVersion.split("\\.");
         int major = 0, minor = 0, release = 0, patch = 0;
         switch (split.length) {
             case 4:
@@ -84,9 +88,9 @@ public class Version implements Comparable<Version> {
                 major = Integer.parseInt(split[0]);
                 break;
             default:
-                throw new IllegalArgumentException("Could not parse " + v);
+                throw new IllegalArgumentException("Could not parse " + fixedVersion);
         }
-        return new Version(major, minor, release, patch, v);
+        return new Version(major, minor, release, patch, fixedVersion);
     }
 
     @Override
