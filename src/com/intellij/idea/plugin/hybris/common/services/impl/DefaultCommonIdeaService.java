@@ -55,6 +55,8 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TYPING_EDITOR_ACTIONS;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.UNDO_REDO_EDITOR_ACTIONS;
 import static com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.Hybris;
 import static com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.SOLR;
 
@@ -78,9 +80,15 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
 
     @Override
     public boolean isTypingActionInProgress() {
-        return StringUtils.equals(
-            this.commandProcessor.getCurrentCommandName(), EditorBundle.message("typing.in.editor.command.name")
+        final boolean isTyping = StringUtils.equalsAnyIgnoreCase(
+            this.commandProcessor.getCurrentCommandName(), TYPING_EDITOR_ACTIONS
         );
+
+        final boolean isUndoOrRedo = StringUtils.startsWithAny(
+            this.commandProcessor.getCurrentCommandName(), UNDO_REDO_EDITOR_ACTIONS
+        );
+
+        return isTyping || isUndoOrRedo;
     }
 
     @Override

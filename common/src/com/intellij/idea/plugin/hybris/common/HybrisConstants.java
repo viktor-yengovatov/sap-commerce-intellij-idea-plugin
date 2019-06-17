@@ -290,4 +290,37 @@ public interface HybrisConstants {
 
     String TS_ITEMS_VALIDATION_WARN = "hybris.ts.items.validation.warn";
     String OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir";
+
+    // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/ActionsBundle.properties
+    // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/EditorBundle.properties
+    String[] UNDO_REDO_EDITOR_ACTIONS = {"Undo", "Redo"};
+
+    // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/ActionsBundle.properties
+    // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/EditorBundle.properties
+    String[] TYPING_EDITOR_ACTIONS = {
+        "Typing",
+        "Delete to Word Start",
+        "Delete to Word End",
+        "Duplicate Line or Selection",
+        "Duplicate Entire Lines",
+        "Backspace",
+        "Delete",
+        "Delete Line",
+        "Cut",
+        "Paste",
+        "Paste _without Formatting",
+        "Paste without formatting, autoimport, literal escaping etc.",
+        "Paste from X clipboard",
+        "Hungry Backspace",
+        "Acts as the Backspace except that removes all whitespace symbols before the caret (if any)",
+        "Move Line Up",
+        "Move Line Down",
+        "Move Statement Up",
+        "Move Statement Down",
+        "Move Element Left",
+        "Move Element Right",
+        "Reformat Code",
+        "Undo Reformat Code",
+        "Auto-Indent Lines"
+    };
 }
