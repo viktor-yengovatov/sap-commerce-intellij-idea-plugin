@@ -13,7 +13,7 @@ Feel free to fork and modify this plugin as you wish. If you don't plan on maint
 creating a pull request.
 
 I can not and would not want to change the license of this plugin so it will stay licensed under 
-GPL 3.0.
+LGPL v3.0.
 
 ### Building ###
 
