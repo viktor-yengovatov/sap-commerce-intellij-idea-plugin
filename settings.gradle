@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "Hybris-Integration"
+rootProject.name = "Integration-SAP-Commerce"
 
 include ":common"
 include ":rt-ant"
