@@ -4,8 +4,9 @@ This plugin is a privacy and open-source focused fork of [Hybris Integration plu
 who originally released it under GPL 3.0 license. If you want to support Alexander and use his relicensed closed source 
 version of the plugin, please visit the link above.
 
-*Built plugin that can be loaded into IntelliJ IDEA can be found in the releases section of this repository.*
+# Install this plugin from IntelliJ market https://plugins.jetbrains.com/plugin/12639-integration-for-sap-commerce #
 
+*Built plugin that can be loaded into IntelliJ IDEA can also be found in the releases section of this repository.*
 
 ## Contributing ##
 
