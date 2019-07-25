@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "Integration-SAP-Commerce"
+rootProject.name = "hybris Integration Plugin for IntelliJ IDEA"
 
 include ":common"
 include ":rt-ant"
