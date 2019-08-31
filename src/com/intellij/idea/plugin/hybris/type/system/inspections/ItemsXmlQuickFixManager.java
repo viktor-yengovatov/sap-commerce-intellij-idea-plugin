@@ -30,9 +30,10 @@ import java.util.TreeMap;
 
 public final class ItemsXmlQuickFixManager {
 
-    private static final String MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE = "MandatoryFieldMustHaveInitialValue";
     private static final String DEPLOYMENT_TABLE_MUST_EXIST_FOR_ITEM_EXTENDING_GENERIC_ITEM = "DeploymentTableMustExistForItemExtendingGenericItem";
-    public static final String IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE = "ImmutableFieldMustHaveInitialValue";
+    private static final String MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE = "MandatoryFieldMustHaveInitialValue";
+    private static final String IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE = "ImmutableFieldMustHaveInitialValue";
+    private static final String BOOLEAN_FIELD_CANNOT_BE_OPTIONAL = "BooleanFieldCannotBeOptional";
 
     private static final int START_RANGE_FOR_TYPECODE = 10001; // Typecodes 0-10000 are reserved by hybris
     private static final int END_RANGE_FOR_TYPECODE = 32767; // Typecode is type of short
@@ -51,6 +52,9 @@ public final class ItemsXmlQuickFixManager {
         } else if (ruleID.equalsIgnoreCase(DEPLOYMENT_TABLE_MUST_EXIST_FOR_ITEM_EXTENDING_GENERIC_ITEM)) {
             final SortedMap<String, String> attributes = getAttributesForDeploymentTableFix(problemNode);
             fixes[0] = new XmlAddTagQuickFix("deployment", null, attributes, "description");
+        } else if (ruleID.equalsIgnoreCase(BOOLEAN_FIELD_CANNOT_BE_OPTIONAL)) {
+            fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
+            fixes[1] = new XmlAddAttributeQuickFix("modifiers", "optional", "false");
         }
 
         return fixes;

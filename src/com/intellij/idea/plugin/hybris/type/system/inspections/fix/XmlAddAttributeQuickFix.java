@@ -39,7 +39,7 @@ public class XmlAddAttributeQuickFix implements LocalQuickFix {
             final String attributeName,
             final String attributeValue
     ) {
-        this.fixName = "Add " + attributeName + " attribute";
+        this.fixName = "Add/update attribute " + attributeName + "=" + attributeValue;
         this.tagName = tagName;
         this.attributeName = attributeName;
         this.attributeValue = attributeValue;
