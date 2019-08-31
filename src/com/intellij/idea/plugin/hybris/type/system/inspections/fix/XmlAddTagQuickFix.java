@@ -28,21 +28,37 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlTokenType;
 import com.intellij.util.PsiNavigateUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.SortedMap;
 
 public class XmlAddTagQuickFix implements LocalQuickFix {
 
     private final String fixName;
     private final String tagName;
     private final String tagBody;
+    // ? Maybe better to have tag name and before/after boolean?
+    // ? Or maybe better to have different impl of XmlAddTagQuickFix and use factory?
+    private SortedMap<String, String> attributes;
+    private final String insertAfterTag;
 
     public XmlAddTagQuickFix(
             final String tagName,
-            final String tagBody
+            final String tagBody,
+            final SortedMap<String, String> attributes,
+            final String insertAfterTag
     ) {
         this.fixName = "Add " + tagName + " tag";
         this.tagName = tagName;
         this.tagBody = tagBody;
+        if (attributes != null) {
+            this.attributes = Collections.unmodifiableSortedMap(attributes);
+        } else {
+            this.attributes = Collections.emptySortedMap();
+        }
+        this.insertAfterTag = insertAfterTag;
     }
 
 
@@ -59,17 +75,34 @@ public class XmlAddTagQuickFix implements LocalQuickFix {
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
 
+            // Create tag
             final XmlTag tagToInsert = currentTag.createChildTag(
                     tagName,
                     currentTag.getNamespace(),
                     tagBody,
                     false
             );
-            final XmlTag insertedTag = currentTag.addSubTag(tagToInsert, true);
 
+            // Insert tag
+            final XmlTag insertedTag;
+            if (StringUtils.isNotBlank(insertAfterTag)) {
+                XmlTag subTag = currentTag.findFirstSubTag(insertAfterTag);
+                insertedTag = (XmlTag) currentTag.addAfter(tagToInsert, subTag);
+            } else {
+                insertedTag = currentTag.addSubTag(tagToInsert, true);
+            }
+
+            // Add attributes
+            attributes.forEach(insertedTag::setAttribute);
+
+            // Change cursor position
             // ? Maybe there is a better default cursor placement than before end of tag?
             final ASTNode[] children = ((XmlTagImpl) insertedTag).getChildren(TokenSet.create(XmlTokenType.XML_END_TAG_START));
-            PsiNavigateUtil.navigate(children[0].getPsi());
+            if (children.length > 0) {
+                PsiNavigateUtil.navigate(children[0].getPsi());
+            } else {
+                PsiNavigateUtil.navigate(insertedTag);
+            }
         }
     }
 }

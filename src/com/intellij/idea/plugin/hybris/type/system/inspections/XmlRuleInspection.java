@@ -23,7 +23,6 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.ItemsXmlQuickFixFactory;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -152,7 +151,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final PsiElement problemPsi = context.mapNodeToPsi(problemNode);
         final ProblemHighlightType highlightType = this.computePriority(rule);
 
-        final LocalQuickFix[] fixes = ItemsXmlQuickFixFactory.getQuickFixes(rule, problemNode);
+        final LocalQuickFix[] fixes = ItemsXmlQuickFixManager.getQuickFixes(rule, problemNode);
         return context.getManager().createProblemDescriptor(
                 problemPsi,
                 rule.getDescription(),
