@@ -32,6 +32,7 @@ public final class ItemsXmlQuickFixManager {
 
     private static final String MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE = "MandatoryFieldMustHaveInitialValue";
     private static final String DEPLOYMENT_TABLE_MUST_EXIST_FOR_ITEM_EXTENDING_GENERIC_ITEM = "DeploymentTableMustExistForItemExtendingGenericItem";
+    public static final String IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE = "ImmutableFieldMustHaveInitialValue";
 
     private static final int START_RANGE_FOR_TYPECODE = 10001; // Typecodes 0-10000 are reserved by hybris
     private static final int END_RANGE_FOR_TYPECODE = 32767; // Typecode is type of short
@@ -44,7 +45,7 @@ public final class ItemsXmlQuickFixManager {
         final LocalQuickFix[] fixes = new LocalQuickFix[5];
         final String ruleID = rule.getID();
 
-        if (ruleID.equalsIgnoreCase(MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE)) {
+        if (ruleID.equalsIgnoreCase(MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE) || ruleID.equalsIgnoreCase(IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE)) {
             fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
             fixes[1] = new XmlAddAttributeQuickFix("modifiers", "initial", "true");
         } else if (ruleID.equalsIgnoreCase(DEPLOYMENT_TABLE_MUST_EXIST_FOR_ITEM_EXTENDING_GENERIC_ITEM)) {
