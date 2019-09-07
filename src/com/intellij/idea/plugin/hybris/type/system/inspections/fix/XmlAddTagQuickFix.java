@@ -39,9 +39,10 @@ public class XmlAddTagQuickFix implements LocalQuickFix {
     private final String fixName;
     private final String tagName;
     private final String tagBody;
+    private SortedMap<String, String> attributes;
+
     // ? Maybe better to have tag name and before/after boolean?
     // ? Or maybe better to have different impl of XmlAddTagQuickFix and use factory?
-    private SortedMap<String, String> attributes;
     private final String insertAfterTag;
 
     public XmlAddTagQuickFix(
