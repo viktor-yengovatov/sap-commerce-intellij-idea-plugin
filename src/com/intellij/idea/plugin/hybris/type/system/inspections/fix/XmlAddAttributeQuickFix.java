@@ -58,12 +58,22 @@ public class XmlAddAttributeQuickFix implements LocalQuickFix {
 
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
-            final XmlTag modifiersTag = currentTag.findFirstSubTag(tagName);
             final XmlAttribute xmlAttribute;
-            if (modifiersTag != null) {
-                xmlAttribute = modifiersTag.setAttribute(attributeName, attributeValue);
-                PsiNavigateUtil.navigate(xmlAttribute);
+            XmlTag modifiersTag = currentTag.findFirstSubTag(tagName);
+            if (modifiersTag == null) {
+                // Create tag
+                final XmlTag tagToInsert = currentTag.createChildTag(
+                        tagName,
+                        currentTag.getNamespace(),
+                        null,
+                        false
+                );
+
+                // Insert tag
+                modifiersTag = currentTag.addSubTag(tagToInsert, true);
             }
+            xmlAttribute = modifiersTag.setAttribute(attributeName, attributeValue);
+            PsiNavigateUtil.navigate(xmlAttribute);
         }
     }
 }
