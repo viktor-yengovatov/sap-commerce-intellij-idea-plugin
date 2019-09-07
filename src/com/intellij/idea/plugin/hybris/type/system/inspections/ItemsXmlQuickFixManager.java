@@ -46,15 +46,20 @@ public final class ItemsXmlQuickFixManager {
         final LocalQuickFix[] fixes = new LocalQuickFix[5];
         final String ruleID = rule.getID();
 
-        if (ruleID.equalsIgnoreCase(MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE) || ruleID.equalsIgnoreCase(IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE)) {
-            fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
-            fixes[1] = new XmlAddAttributeQuickFix("modifiers", "initial", "true");
-        } else if (ruleID.equalsIgnoreCase(DEPLOYMENT_TABLE_MUST_EXIST_FOR_ITEM_EXTENDING_GENERIC_ITEM)) {
-            final SortedMap<String, String> attributes = getAttributesForDeploymentTableFix(problemNode);
-            fixes[0] = new XmlAddTagQuickFix("deployment", null, attributes, "description");
-        } else if (ruleID.equalsIgnoreCase(BOOLEAN_FIELD_CANNOT_BE_OPTIONAL)) {
-            fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
-            fixes[1] = new XmlAddAttributeQuickFix("modifiers", "optional", "false");
+        switch (ruleID) {
+            case MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE:
+            case IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE:
+                fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
+                fixes[1] = new XmlAddAttributeQuickFix("modifiers", "initial", "true");
+                break;
+            case DEPLOYMENT_TABLE_MUST_EXIST_FOR_ITEM_EXTENDING_GENERIC_ITEM:
+                final SortedMap<String, String> attributes = getAttributesForDeploymentTableFix(problemNode);
+                fixes[0] = new XmlAddTagQuickFix("deployment", null, attributes, "description");
+                break;
+            case BOOLEAN_FIELD_CANNOT_BE_OPTIONAL:
+                fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
+                fixes[1] = new XmlAddAttributeQuickFix("modifiers", "optional", "false");
+                break;
         }
 
         return fixes;
