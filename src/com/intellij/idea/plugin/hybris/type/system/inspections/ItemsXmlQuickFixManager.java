@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.type.system.inspections;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddAttributeQuickFix;
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddTagQuickFix;
-import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Node;
 
@@ -34,9 +33,6 @@ public final class ItemsXmlQuickFixManager {
     private static final String MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE = "MandatoryFieldMustHaveInitialValue";
     private static final String IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE = "ImmutableFieldMustHaveInitialValue";
     private static final String BOOLEAN_FIELD_CANNOT_BE_OPTIONAL = "BooleanFieldCannotBeOptional";
-
-    private static final int START_RANGE_FOR_TYPECODE = 10001; // Typecodes 0-10000 are reserved by hybris
-    private static final int END_RANGE_FOR_TYPECODE = 32767; // Typecode is type of short
 
     private ItemsXmlQuickFixManager() {
     }
@@ -72,12 +68,9 @@ public final class ItemsXmlQuickFixManager {
         final String tableCode = problemNode.getAttributes().getNamedItem("code").getNodeValue();
         final SortedMap<String, String> attributes = new TreeMap<>();
         attributes.put("table", tableCode);
-        attributes.put("typecode", String.valueOf(RandomUtils.nextInt(
-                START_RANGE_FOR_TYPECODE,
-                END_RANGE_FOR_TYPECODE
-        )));
+        // @ToDo: add autogeneration of typecode
+        attributes.put("typecode", "");
         return attributes;
     }
-
 
 }
