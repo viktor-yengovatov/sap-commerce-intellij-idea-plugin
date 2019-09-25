@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
@@ -55,7 +56,6 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.event.HyperlinkEvent;
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -132,6 +132,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         resetSpringGeneralSettings(project);
         fixBackOfficeJRebelSupport(project);
         CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
+        ConsolePersistenceService.getInstance(project).loadPersistedQueries();
         checkForUpdates();
     }
 
@@ -264,4 +265,11 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
     @Override
     public void dispose() {
     }
+
+    @Override
+    public void projectClosing(@NotNull final Project project) {
+        ConsolePersistenceService.getInstance(project).persistQueryRegions();
+    }
+
+
 }

@@ -1,0 +1,119 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl;
+
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache;
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService;
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionPersistenceService;
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleNotificationUtil;
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryPanelEventManager;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
+import com.intellij.openapi.util.io.FileUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class DefaultConsolePersistenceService implements ConsolePersistenceService {
+
+    private static final Logger LOG = Logger.getInstance(ConsolePersistenceService.class);
+
+    private static final String SOLR = "SOLR";
+    private static final String FLEXIBLE_SEARCH = "FLEXIBLE_SEARCH";
+
+    private final Project project;
+    private final RegionPersistenceService regionPersistenceService;
+    private final HybrisConsoleRegionsCache hybrisConsoleRegionsCache;
+
+    public DefaultConsolePersistenceService(
+        final Project project,
+        final RegionPersistenceService regionPersistenceService,
+        final HybrisConsoleRegionsCache hybrisConsoleRegionsCache
+    ) {
+        this.project = project;
+        this.regionPersistenceService = regionPersistenceService;
+        this.hybrisConsoleRegionsCache = hybrisConsoleRegionsCache;
+    }
+
+    @Override
+    public void loadPersistedQueries() {
+        final Path directoryPath = Paths.get(getStoragePath());
+
+        if (Files.exists(directoryPath)) {
+            try {
+                loadEntitiesFromFile(regionPersistenceService, getStoragePath());
+            } catch (IOException e) {
+                LOG.error(e);
+            }
+            HybrisConsoleQueryPanelEventManager.getInstance(project).notifyListeners();
+            return;
+        }
+        FileUtil.createDirectory(new File(String.valueOf(directoryPath)));
+        HybrisConsoleQueryPanelEventManager.getInstance(project).notifyListeners();
+    }
+
+    @Override
+    public void persistQueryRegions() {
+        final String projectPath = getStoragePath();
+        regionPersistenceService.writeRegionData(getSolrRegionPath(projectPath), SOLR);
+        regionPersistenceService.writeRegionData(getFsRegionPath(projectPath), FLEXIBLE_SEARCH);
+    }
+
+    @NotNull
+    private String getStoragePath() {
+        return ProjectUtil.guessProjectDir(project).getPath() + HybrisConstants.QUERY_STORAGE_FOLDER_PATH;
+    }
+
+    private void loadEntitiesFromFile(final RegionPersistenceService loadService, final String path) throws
+                                                                                                     IOException {
+        loadEntityFromFile(loadService, getSolrRegionPath(path), SOLR);
+        loadEntityFromFile(loadService, getFsRegionPath(path), FLEXIBLE_SEARCH);
+    }
+
+    private void loadEntityFromFile(
+        final RegionPersistenceService loadService,
+        final Path path,
+        final String regionName
+    ) throws IOException {
+        try {
+            loadService.loadRegionData(path, regionName);
+        } catch (IllegalArgumentException e) {
+            final String notificationTitle = e.getMessage();
+            final String notificationName = "Only 'IMPEX', 'FLEXIBLE_SEARCH' or 'SOLR' are allowable regions.";
+            HybrisConsoleNotificationUtil.displayWarningNotification(notificationTitle, notificationName, project);
+        }
+    }
+
+    @NotNull
+    private Path getSolrRegionPath(final String path) {
+        return Paths.get(path + HybrisConstants.SOLR_REGION_FILE_PATH);
+    }
+
+    @NotNull
+    private Path getFsRegionPath(final String path) {
+        return Paths.get(path + HybrisConstants.FLEXIBLE_SEARCH_REGION_FILE_PATH);
+    }
+
+}

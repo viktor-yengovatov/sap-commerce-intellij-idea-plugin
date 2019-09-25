@@ -23,6 +23,7 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
@@ -53,6 +54,8 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     private val labelInsets = Insets(0, 10, 0, 1)
 
+    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "FLEXIBLE_SEARCH")
+
     init {
         createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
@@ -63,6 +66,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         initPlainSqlElements()
         initMaxRowsElements()
 
+        panel.add(queryConsolePanel)
         add(panel, BorderLayout.NORTH)
         isEditable = true
     }
