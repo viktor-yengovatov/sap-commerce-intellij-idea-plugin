@@ -22,7 +22,6 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.statistics.StatsCollector
 import com.intellij.idea.plugin.hybris.tools.remote.console.CatalogVersionOption
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
@@ -42,10 +41,6 @@ import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.IMPEX_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
-
-    override fun collectStatistics() {
-        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPEX_CONSOLE)
-    }
 
     object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 

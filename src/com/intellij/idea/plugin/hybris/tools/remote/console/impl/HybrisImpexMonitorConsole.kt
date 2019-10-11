@@ -23,7 +23,6 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.statistics.StatsCollector
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
@@ -44,10 +43,6 @@ import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
 class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, HybrisConstants.IMPEX_MONITOR_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
-
-    override fun collectStatistics() {
-        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPEX_MONITOR)
-    }
 
     object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
 

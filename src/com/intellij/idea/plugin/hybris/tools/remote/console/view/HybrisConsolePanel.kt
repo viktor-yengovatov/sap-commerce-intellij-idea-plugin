@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
@@ -32,6 +33,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     private val impexConsole = HybrisImpexConsole(project)
     private val groovyConsole = HybrisGroovyConsole(project)
     private val monitorConsole = HybrisImpexMonitorConsole(project)
+    private val flexibleSearchConsole = HybrisFlexibleSearchConsole(project)
 
     private val actionToolbar: ActionToolbar
     private val hybrisTabs: HybrisTabs
@@ -48,6 +50,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         hybrisTabs = HybrisTabs(impexConsole,
                 groovyConsole,
                 monitorConsole,
+                flexibleSearchConsole,
                 project, TOP)
 
         panel.add(hybrisTabs.component, BorderLayout.CENTER)
@@ -112,6 +115,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 class HybrisTabs(impexConsole: HybrisImpexConsole,
                  groovyConsole: HybrisGroovyConsole,
                  impexMonitorConsole: HybrisImpexMonitorConsole,
+                 flexibleSearchConsole: HybrisFlexibleSearchConsole,
                  project: Project,
                  tabPlacement: Int) : JBTabsPaneImpl(project, tabPlacement, Disposable { }) {
 
@@ -121,6 +125,7 @@ class HybrisTabs(impexConsole: HybrisImpexConsole,
         addConsoleTab("Impex", HybrisIcons.IMPEX_FILE, impexConsole, "Impex Console")
         addConsoleTab("Groovy Scripting", Groovy_16x16, groovyConsole, "Groovy Console")
         addConsoleTab("Impex Monitor", HybrisIcons.TYPE_SYSTEM, impexMonitorConsole, "Last imported Impex files")
+        addConsoleTab("Flexible Search", HybrisIcons.FS_FILE, flexibleSearchConsole, "Flexible Search Console")
 
         for (extension in HybrisConsoleProvider.EP_NAME.extensions) {
             val console = extension.createConsole(project)
