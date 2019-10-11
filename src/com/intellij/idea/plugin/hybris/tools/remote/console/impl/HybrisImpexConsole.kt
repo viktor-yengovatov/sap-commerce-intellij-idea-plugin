@@ -1,0 +1,121 @@
+/*
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.intellij.idea.plugin.hybris.tools.remote.console.impl
+
+import com.intellij.execution.console.ConsoleHistoryController
+import com.intellij.execution.console.ConsoleRootType
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.statistics.StatsCollector
+import com.intellij.idea.plugin.hybris.tools.remote.console.CatalogVersionOption
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.ListCellRendererWrapper
+import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.JBLabel
+import org.apache.commons.lang.StringUtils
+import java.awt.BorderLayout
+import java.awt.FlowLayout
+import javax.swing.JList
+import javax.swing.JPanel
+import javax.swing.border.EmptyBorder
+
+class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.IMPEX_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
+
+    override fun collectStatistics() {
+        StatsCollector.getInstance().collectStat(StatsCollector.ACTIONS.IMPEX_CONSOLE)
+    }
+
+    object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
+
+    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val catalogVersionLabel = JBLabel("Catalog Version")
+
+    val catalogVersionComboBox = ComboBox(arrayOf(
+            CatalogVersionOption("doesn't change", StringUtils.EMPTY),
+            CatalogVersionOption("changes to ${HybrisConstants.IMPEX.CATALOG_VERSION_STAGED}", HybrisConstants.IMPEX.CATALOG_VERSION_STAGED),
+            CatalogVersionOption("changes to ${HybrisConstants.IMPEX.CATALOG_VERSION_ONLINE}", HybrisConstants.IMPEX.CATALOG_VERSION_ONLINE)
+    ))
+
+    private val legacyModeCheckbox = JBCheckBox()
+    private val legacyModeLabel = JBLabel("Legacy mode: ")
+
+    override fun preProcessors() = listOf(HybrisConsolePreProcessorCatalogVersion())
+
+    init {
+        createUI()
+        ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
+    }
+
+    private fun createUI() {
+        catalogVersionComboBox.renderer = object : ListCellRendererWrapper<CatalogVersionOption>() {
+            override fun customize(list: JList<*>?, value: CatalogVersionOption, index: Int, selected: Boolean, hasFocus: Boolean) {
+                setText(value.name)
+            }
+        }
+        catalogVersionComboBox.addItemListener {
+            preProcessors().forEach { processor ->
+                ApplicationManager.getApplication().invokeLater { this.setInputText(processor.process(this)) }
+            }
+        }
+        catalogVersionLabel.border = EmptyBorder(0, 10, 0, 5)
+        panel.add(catalogVersionLabel)
+        panel.add(catalogVersionComboBox)
+        legacyModeLabel.border = EmptyBorder(0, 10, 0, 5)
+        legacyModeCheckbox.border = EmptyBorder(0, 0, 0, 5)
+        panel.add(legacyModeLabel)
+        panel.add(legacyModeCheckbox)
+
+        add(panel, BorderLayout.NORTH)
+        isEditable = true
+    }
+
+    override fun execute(query: String): HybrisHttpResult {
+        val settings = mutableMapOf(
+                "scriptContent" to query,
+                "validationEnum" to "IMPORT_STRICT",
+                "encoding" to "UTF-8",
+                "maxThreads" to "4",
+                "_legacyMode" to "on"
+        )
+        if (legacyModeCheckbox.isSelected) {
+            settings["legacyMode"] = "true"
+        }
+        return HybrisHacHttpClient.getInstance(project).importImpex(project, settings)
+    }
+
+    fun validate(text: String): HybrisHttpResult {
+        val settings = mutableMapOf(
+                "scriptContent" to text,
+                "validationEnum" to "IMPORT_STRICT",
+                "encoding" to "UTF-8",
+                "maxThreads" to "4",
+                "_legacyMode" to "on"
+        )
+        if (legacyModeCheckbox.isSelected) {
+            settings["legacyMode"] = "true"
+        }
+        return HybrisHacHttpClient.getInstance(project).validateImpex(project, settings)
+    }
+}

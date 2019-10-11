@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.preprocess
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.CatalogVersionOption
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>

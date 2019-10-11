@@ -5,6 +5,9 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.Project
@@ -23,7 +26,7 @@ import javax.swing.SwingConstants.TOP
 class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Disposable {
 
     override fun dispose() {
-
+        //NOP
     }
 
     private val impexConsole = HybrisImpexConsole(project)
@@ -32,6 +35,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 
     private val actionToolbar: ActionToolbar
     private val hybrisTabs: HybrisTabs
+
     init {
         layout = BorderLayout()
 
@@ -78,7 +82,7 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
         hybrisTabs.setActiveConsole(console)
     }
 
-    fun getActiveConsole() : HybrisConsole {
+    fun getActiveConsole(): HybrisConsole {
         return hybrisTabs.activeConsole()
     }
 
@@ -134,6 +138,6 @@ class HybrisTabs(impexConsole: HybrisImpexConsole,
 
     fun activeConsole() = consoles[selectedIndex]
     fun setActiveConsole(console: HybrisConsole) {
-        selectedIndex=consoles.indexOf(console);
+        selectedIndex = consoles.indexOf(console);
     }
 }

@@ -28,10 +28,13 @@ import com.intellij.idea.plugin.hybris.project.wizard.InformationStep;
 import com.intellij.idea.plugin.hybris.project.wizard.SelectHybrisModulesToImportStep;
 import com.intellij.idea.plugin.hybris.project.wizard.SelectOtherModulesToImportStep;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.projectImport.ProjectImportProvider;
+import com.intellij.projectImport.ProjectOpenProcessor;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
 
 /**
  * Created 12:31 AM 10 June 2015
@@ -40,19 +43,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class HybrisProjectImportProvider extends ProjectImportProvider {
 
-    private final HybrisProjectOpenProcessor myProcessor;
-
-    public HybrisProjectImportProvider(@NotNull final DefaultHybrisProjectImportBuilder builder) {
-        super(builder);
-
-        Validate.notNull(builder);
-
-        this.myProcessor = new HybrisProjectOpenProcessor(builder);
-    }
-
     @Override
     protected boolean canImportFromFile(final VirtualFile file) {
-        return this.myProcessor.canOpenProject(file);
+        return doGetProjectOpenProcessor().canOpenProject(file);
     }
 
     @Override
@@ -67,6 +60,16 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
             new SelectOtherModulesToImportStep(context),
             stepFactory.createProjectJdkStep(context)
         };
+    }
+
+    private HybrisProjectOpenProcessor doGetProjectOpenProcessor() {
+        return ProjectOpenProcessor.EXTENSION_POINT_NAME.findExtensionOrFail(HybrisProjectOpenProcessor.class);
+    }
+
+    @NotNull
+    @Override
+    protected DefaultHybrisProjectImportBuilder doGetBuilder() {
+        return ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(DefaultHybrisProjectImportBuilder.class);
     }
 
     @Nullable

@@ -25,8 +25,9 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.projectImport.ProjectOpenProcessorBase;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -38,10 +39,6 @@ import java.util.List;
 public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<DefaultHybrisProjectImportBuilder> {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectOpenProcessor.class);
-
-    public HybrisProjectOpenProcessor(final DefaultHybrisProjectImportBuilder builder) {
-        super(builder);
-    }
 
     @Override
     public boolean doQuickImport(final VirtualFile file, final WizardContext wizardContext) {
@@ -64,7 +61,6 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
         return true;
     }
 
-    @Nullable
     @Override
     public String[] getSupportedExtensions() {
         return new String[]{
@@ -74,4 +70,9 @@ public class HybrisProjectOpenProcessor extends ProjectOpenProcessorBase<Default
         };
     }
 
+    @NotNull
+    @Override
+    protected DefaultHybrisProjectImportBuilder doGetBuilder() {
+        return ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(DefaultHybrisProjectImportBuilder.class);
+    }
 }
