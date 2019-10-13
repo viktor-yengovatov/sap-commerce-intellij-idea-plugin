@@ -47,7 +47,7 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
     }
 
     private fun createUI() {
-        commitLabel.border = EmptyBorder(0, 10, 0, 3)
+        commitLabel.border = EmptyBorder(5, 10, 5, 3)
         commitCheckbox.border = EmptyBorder(0, 0, 0, 5)
         panel.add(commitLabel)
         panel.add(commitCheckbox)
