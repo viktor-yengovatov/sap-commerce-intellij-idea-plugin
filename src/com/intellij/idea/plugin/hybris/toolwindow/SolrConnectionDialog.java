@@ -4,7 +4,7 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
-import com.intellij.idea.plugin.hybris.tools.remote.http.SolrHttpClient;
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient;
 import com.intellij.idea.plugin.hybris.toolwindow.document.filter.UnsignedIntegerDocumentFilter;
 import com.intellij.idea.plugin.hybris.toolwindow.document.listener.SimpleDocumentListener;
 import com.intellij.notification.NotificationType;

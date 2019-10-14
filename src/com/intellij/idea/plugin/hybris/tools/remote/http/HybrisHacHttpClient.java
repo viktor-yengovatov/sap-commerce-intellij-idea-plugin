@@ -21,10 +21,13 @@ package com.intellij.idea.plugin.hybris.tools.remote.http;
 import com.google.gson.Gson;
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient;
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult;
@@ -239,5 +243,16 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             }
             return resultBuilder.build();
         }
+    }
+
+    @NotNull
+    public HybrisHttpResult executeSolrSearch(final Project project, final Optional<SolrQueryObject> queryObject) {
+        return queryObject.map(query -> SolrHttpClient.getInstance(project).executeSolrQuery(project, query))
+                          .orElseGet(() ->
+                                         HybrisHttpResult.HybrisHttpResultBuilder
+                                             .createResult()
+                                             .httpCode(HttpStatus.SC_BAD_GATEWAY)
+                                             .errorMessage("Unable to ... Please, check connection configuration")
+                                             .build());
     }
 }

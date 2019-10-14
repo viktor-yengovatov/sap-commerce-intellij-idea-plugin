@@ -21,62 +21,59 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.SolrConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
+import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.project.Project
-import com.intellij.ui.components.JBCheckBox
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.components.JBLabel
+import org.apache.commons.collections4.CollectionUtils
 import java.awt.BorderLayout
 import java.awt.FlowLayout
+import java.awt.Graphics
 import java.awt.Insets
+import java.util.*
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 import javax.swing.border.EmptyBorder
 
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE, FlexibleSearchLanguage.getInstance()) {
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.SOLR_SEARCH_CONSOLE_TITLE, PlainTextLanguage.INSTANCE), SolrConsole {
 
-    object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
+    object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
 
     private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
 
-    private val commitCheckbox = JBCheckBox()
-    private val commitLabel = JBLabel("Commit mode: ")
+    private val coresLabel = JBLabel("Select core: ")
+    override val coresComboBox = ComboBox(CollectionComboBoxModel(retrieveListOfCores()), 270)
 
-    private val plainSqlCheckbox = JBCheckBox()
-    private val plainSqlLabel = JBLabel("SQL: ")
-
-    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
     private val maxRowsLabel = JBLabel("Rows: ")
+    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 500, 1))
 
     private val labelInsets = Insets(0, 10, 0, 1)
 
     init {
         createUI()
-        ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
+        ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
     }
 
     private fun createUI() {
-        initCommitElements()
-        initPlainSqlElements()
+        initCoresElements()
         initMaxRowsElements()
 
         add(panel, BorderLayout.NORTH)
         isEditable = true
     }
 
-    private fun initCommitElements() {
-        commitLabel.border = EmptyBorder(labelInsets)
-        panel.add(commitLabel)
-        panel.add(commitCheckbox)
-    }
-
-    private fun initPlainSqlElements() {
-        plainSqlLabel.border = EmptyBorder(labelInsets)
-        panel.add(plainSqlLabel)
-        panel.add(plainSqlCheckbox)
+    private fun initCoresElements() {
+        coresLabel.border = EmptyBorder(labelInsets)
+        panel.add(coresLabel)
+        panel.add(coresComboBox)
     }
 
     private fun initMaxRowsElements() {
@@ -85,14 +82,27 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         panel.add(maxRowsSpinner)
     }
 
+    override fun printDefaultText() {
+        this.setInputText("*:*")
+    }
+
+//    private fun updateCores() {
+//        val cores = retrieveListOfCores()
+//        if (CollectionUtils.isNotEmpty(cores)) {
+//            coresComboBox.model = CollectionComboBoxModel(cores)
+//            coresComboBox.updateUI()
+//        }
+//    }
+
+    private fun retrieveListOfCores() = SolrHttpClient.getInstance(project).listOfCores(project).toList()
+
     override fun execute(query: String): HybrisHttpResult {
-        return HybrisHacHttpClient.getInstance(project)
-                .executeFlexibleSearch(
-                        project,
-                        commitCheckbox.isSelected,
-                        plainSqlCheckbox.isSelected,
-                        maxRowsSpinner.value.toString(),
-                        query
-                )
+        return HybrisHacHttpClient.getInstance(project).executeSolrSearch(project, buildSolrQueryObject(query))
+    }
+
+    private fun buildSolrQueryObject(query: String): Optional<SolrQueryObject> {
+        return Optional.ofNullable(coresComboBox.selectedItem)
+                .map { it as String }
+                .map { SolrQueryObject(query, it, maxRowsSpinner.value as Int) }
     }
 }
