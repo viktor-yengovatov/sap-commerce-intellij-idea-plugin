@@ -35,7 +35,6 @@ import com.intellij.ui.components.JBLabel
 import org.apache.commons.collections4.CollectionUtils
 import java.awt.BorderLayout
 import java.awt.FlowLayout
-import java.awt.Graphics
 import java.awt.Insets
 import java.util.*
 import javax.swing.JPanel
@@ -68,6 +67,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
         add(panel, BorderLayout.NORTH)
         isEditable = true
+        prompt = "q="
     }
 
     private fun initCoresElements() {
@@ -86,13 +86,14 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         this.setInputText("*:*")
     }
 
-//    private fun updateCores() {
-//        val cores = retrieveListOfCores()
-//        if (CollectionUtils.isNotEmpty(cores)) {
-//            coresComboBox.model = CollectionComboBoxModel(cores)
-//            coresComboBox.updateUI()
-//        }
-//    }
+    override fun onSelection() {
+        if (coresComboBox.selectedItem == null) {
+            val cores = retrieveListOfCores()
+            if (CollectionUtils.isNotEmpty(cores)) {
+                coresComboBox.model = CollectionComboBoxModel(cores)
+            }
+        }
+    }
 
     private fun retrieveListOfCores() = SolrHttpClient.getInstance(project).listOfCores(project).toList()
 

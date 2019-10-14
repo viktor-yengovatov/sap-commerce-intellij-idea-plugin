@@ -30,6 +30,7 @@ interface SolrHttpClient {
     fun listOfCores(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings): Array<String>
     fun listOfCores(project: Project): Array<String>
     fun executeSolrQuery(project: Project, queryObject: SolrQueryObject): HybrisHttpResult
+    fun executeSolrQuery(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings, queryObject: SolrQueryObject): HybrisHttpResult
 
     companion object {
         @JvmStatic

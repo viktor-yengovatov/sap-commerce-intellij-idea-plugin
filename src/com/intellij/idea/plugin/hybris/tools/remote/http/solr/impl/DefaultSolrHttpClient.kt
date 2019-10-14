@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl
 
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient
@@ -26,15 +27,29 @@ import com.intellij.openapi.project.Project
 
 class DefaultSolrHttpClient : SolrHttpClient {
 
+    val cores_path = "/admin/cores"
+
     override fun listOfCores(project: Project): Array<String> {
         return arrayOf("ONE", "TWO")
     }
 
-    override fun executeSolrQuery(project: Project, queryObject: SolrQueryObject): HybrisHttpResult {
+    override fun executeSolrQuery(project: Project,
+                                  queryObject: SolrQueryObject): HybrisHttpResult {
+        return HybrisHttpResult.HybrisHttpResultBuilder.createResult().output("Dummy result").build()
+    }
+
+    override fun executeSolrQuery(project: Project,
+                                  solrConnectionSettings: HybrisRemoteConnectionSettings,
+                                  queryObject: SolrQueryObject): HybrisHttpResult {
         return HybrisHttpResult.HybrisHttpResultBuilder.createResult().output("Dummy result").build()
     }
 
     override fun listOfCores(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings): Array<String> {
         return arrayOf("ONE", "TWO")
+    }
+
+    // active or default
+    private fun solrConnectionSettings(project: Project): HybrisRemoteConnectionSettings {
+        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project)
     }
 }

@@ -29,6 +29,10 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
         return HybrisRemoteConnectionSettings.Type.Hybris
     }
 
+    open fun onSelection() {
+        //NOP
+    }
+
 }
 
 

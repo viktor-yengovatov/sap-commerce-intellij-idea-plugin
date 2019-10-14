@@ -1,7 +1,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.remote.console.*
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleProvider
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.*
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
@@ -11,6 +12,8 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.JBTabsPaneImpl
+import com.intellij.ui.tabs.newImpl.JBEditorTabs
+import com.intellij.util.castSafelyTo
 import icons.JetgroovyIcons.Groovy.Groovy_16x16
 import java.awt.BorderLayout
 import javax.swing.Icon
@@ -134,6 +137,13 @@ class HybrisTabs(impexConsole: HybrisImpexConsole,
             if (console != null) {
                 addConsoleTab(extension.tabTitle, extension.icon, console, extension.tip)
             }
+        }
+
+        addChangeListener {
+            it.source.castSafelyTo<JBEditorTabs>()
+                    ?.selectedInfo
+                    ?.component.castSafelyTo<HybrisConsole>()
+                    ?.onSelection()
         }
     }
 
