@@ -24,13 +24,33 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
 import com.intellij.openapi.project.Project
+import org.apache.solr.client.solrj.impl.HttpSolrClient
+import org.apache.solr.client.solrj.request.CoreAdminRequest
+import org.apache.solr.common.params.CoreAdminParams
 
 class DefaultSolrHttpClient : SolrHttpClient {
 
-    val cores_path = "/admin/cores"
-
     override fun listOfCores(project: Project): Array<String> {
-        return arrayOf("ONE", "TWO")
+        return listOfCores(project, solrConnectionSettings(project))
+    }
+
+    override fun listOfCores(project: Project, connectionSettings: HybrisRemoteConnectionSettings): Array<String> {
+        //TODO add exception handlers, parse response
+        return CoreAdminRequest()
+                .apply {
+                    setBasicAuthCredentials(connectionSettings.adminLogin, connectionSettings.adminPassword)
+                    setAction(CoreAdminParams.CoreAdminAction.STATUS)
+                }.runCatching {
+                    process(HttpSolrClient.Builder(connectionSettings.generatedURL).build())
+                }.onFailure {
+
+                }.let {
+                    arrayOf("ONE", "TWO")
+                }
+    }
+
+    private fun getHttpSolrClient(url: String): HttpSolrClient {
+        return HttpSolrClient.Builder(url).build()
     }
 
     override fun executeSolrQuery(project: Project,
@@ -44,12 +64,8 @@ class DefaultSolrHttpClient : SolrHttpClient {
         return HybrisHttpResult.HybrisHttpResultBuilder.createResult().output("Dummy result").build()
     }
 
-    override fun listOfCores(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings): Array<String> {
-        return arrayOf("ONE", "TWO")
-    }
-
     // active or default
     private fun solrConnectionSettings(project: Project): HybrisRemoteConnectionSettings {
-        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project)
+        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getDefaultSolrRemoteConnectionSettings(project)
     }
 }
