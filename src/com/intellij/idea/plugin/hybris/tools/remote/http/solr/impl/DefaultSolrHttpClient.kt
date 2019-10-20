@@ -32,12 +32,12 @@ import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.SolrRequest
 import org.apache.solr.client.solrj.SolrServerException
 import org.apache.solr.client.solrj.impl.HttpSolrClient
+import org.apache.solr.client.solrj.impl.NoOpResponseParser
 import org.apache.solr.client.solrj.request.CoreAdminRequest
 import org.apache.solr.client.solrj.request.QueryRequest
 import org.apache.solr.client.solrj.response.CoreAdminResponse
 import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
-import org.noggit.JSONUtil
 
 class DefaultSolrHttpClient : SolrHttpClient {
 
@@ -87,7 +87,6 @@ class DefaultSolrHttpClient : SolrHttpClient {
     override fun executeSolrQuery(project: Project,
                                   solrConnectionSettings: HybrisRemoteConnectionSettings,
                                   queryObject: SolrQueryObject): HybrisHttpResult {
-
         return executeSolrRequest(
                 solrConnectionSettings,
                 queryObject,
@@ -100,7 +99,7 @@ class DefaultSolrHttpClient : SolrHttpClient {
     private fun executeSolrRequest(solrConnectionSettings: HybrisRemoteConnectionSettings, queryObject: SolrQueryObject, queryRequest: QueryRequest): HybrisHttpResult {
         return buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
                 .runCatching { request(queryRequest) }
-                .map { resultBuilder().output(JSONUtil.toJSON(it["response"])).build() }
+                .map { resultBuilder().output(it["response"] as String?).build() }
                 .getOrElse { resultBuilder().errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
     }
 
@@ -110,6 +109,9 @@ class DefaultSolrHttpClient : SolrHttpClient {
         return QueryRequest(solrQuery).apply {
             setBasicAuthCredentials(solrConnectionSettings.adminLogin, solrConnectionSettings.adminPassword)
             method = SolrRequest.METHOD.POST
+            // https://issues.apache.org/jira/browse/SOLR-5530
+            // https://stackoverflow.com/questions/28374428/return-solr-response-in-json-format/37212234#37212234
+            responseParser = NoOpResponseParser("json")
         }
     }
 
