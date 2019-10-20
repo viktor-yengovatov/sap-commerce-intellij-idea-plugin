@@ -20,7 +20,7 @@ See the GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-## SAP Commerce IntelliJ IDEA Plugin ##
+## SAP Commerce Developers Toolset ##
 
 This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 
