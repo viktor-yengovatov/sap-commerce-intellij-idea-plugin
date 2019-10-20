@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
 import com.intellij.openapi.fileTypes.PlainTextLanguage
@@ -31,6 +32,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.components.JBLabel
+import com.intellij.util.castSafelyTo
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
 import org.apache.commons.collections4.CollectionUtils
@@ -54,7 +56,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     private val docsLabel = JBLabel(docs)
     private val coresComboBox = ComboBox(CollectionComboBoxModel(retrieveListOfCores()), 270)
 
-    private val maxRowsLabel = JBLabel("Rows: ")
+    private val maxRowsLabel = JBLabel("Rows (max 500): ")
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 500, 1))
 
     private val labelInsets = Insets(0, 10, 0, 1)
@@ -89,7 +91,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     private fun initDocsElements() {
         docsLabel.border = EmptyBorder(labelInsets)
         panel.add(docsLabel)
-        coresComboBox.selectedItemProperty().adviseEternal { docsLabel.text = docs + it?.docs }
+        coresComboBox.selectedItemProperty().adviseEternal { setDocsLabelCount(it) }
     }
 
     override fun printDefaultText() {
@@ -101,8 +103,13 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
             val cores = retrieveListOfCores()
             if (CollectionUtils.isNotEmpty(cores)) {
                 coresComboBox.model = CollectionComboBoxModel(cores)
+                setDocsLabelCount(coresComboBox.selectedItem?.castSafelyTo<SolrCoreData>())
             }
         }
+    }
+
+    private fun setDocsLabelCount(data: SolrCoreData?) {
+        docsLabel.text = docs + data?.docs
     }
 
     private fun retrieveListOfCores() = SolrHttpClient.getInstance(project).coresData(project).toList()

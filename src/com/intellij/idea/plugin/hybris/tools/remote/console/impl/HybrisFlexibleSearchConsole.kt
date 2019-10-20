@@ -49,7 +49,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
     private val plainSqlLabel = JBLabel("SQL: ")
 
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
-    private val maxRowsLabel = JBLabel("Rows: ")
+    private val maxRowsLabel = JBLabel("Rows (max 100): ")
 
     private val labelInsets = Insets(0, 10, 0, 1)
 
