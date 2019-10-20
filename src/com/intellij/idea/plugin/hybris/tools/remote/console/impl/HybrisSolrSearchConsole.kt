@@ -119,8 +119,8 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     }
 
     private fun buildSolrQueryObject(query: String): Optional<SolrQueryObject> {
-        return Optional.ofNullable(coresComboBox.selectedItem)
-                .map { it as String }
+        return Optional.ofNullable(coresComboBox.selectedItem as SolrCoreData)
+                .map { it.core }
                 .map { SolrQueryObject(query, it, maxRowsSpinner.value as Int) }
     }
 }
