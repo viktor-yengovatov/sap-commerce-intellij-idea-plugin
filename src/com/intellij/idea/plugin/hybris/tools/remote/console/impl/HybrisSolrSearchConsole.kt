@@ -31,6 +31,7 @@ import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.CollectionComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.castSafelyTo
 import com.jetbrains.rd.swing.selectedItemProperty
@@ -78,6 +79,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     private fun initCoresElements() {
         coresLabel.border = EmptyBorder(labelInsets)
+        coresComboBox.renderer = SimpleListCellRenderer.create("...") { it.core }
         panel.add(coresLabel)
         panel.add(coresComboBox)
     }
