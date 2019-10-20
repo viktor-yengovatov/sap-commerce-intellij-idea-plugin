@@ -57,7 +57,7 @@ class AttributeReferenceConverter : CustomReferenceConverter<String> {
                 val project = element.project
                 val className = findItemTag(element).getAttributeValue("code")
                 val psiElements = mutableListOf<PsiElement>()
-                val searchFieldName = (element as XmlAttributeValueImpl).value!!
+                val searchFieldName = (element as XmlAttributeValueImpl).value
 
                 if (className != null) {
                     arrayListOf(className, "${className}Model").forEach { name ->

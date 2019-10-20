@@ -30,7 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.ui.ListCellRendererWrapper
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import org.apache.batik.ext.swing.GridBagConstants
 import java.awt.BorderLayout
@@ -38,7 +38,6 @@ import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.io.File
 import java.util.concurrent.TimeUnit
-import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
@@ -63,11 +62,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
     }
 
     private fun createUI() {
-        timeComboBox.renderer = object : ListCellRendererWrapper<TimeOption>() {
-            override fun customize(list: JList<*>?, value: TimeOption, index: Int, selected: Boolean, hasFocus: Boolean) {
-                setText(value.name)
-            }
-        }
+        timeComboBox.renderer = SimpleListCellRenderer.create("...") { it.name }
         isConsoleEditorEnabled = false
         panel.layout = GridBagLayout()
         val constraints = GridBagConstraints()

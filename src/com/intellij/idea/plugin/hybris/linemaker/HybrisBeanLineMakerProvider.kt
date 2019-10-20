@@ -46,7 +46,7 @@ class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
         if (element is PsiClass) {
             val project = element.project
 
-            val searchHelper = PsiSearchHelper.SERVICE.getInstance(project)
+            val searchHelper = PsiSearchHelper.getInstance(project)
             val module = ModuleUtil.findModuleForPsiElement(element) ?: return
 
             if (getDescriptorType(module) != HybrisModuleDescriptorType.PLATFORM) {

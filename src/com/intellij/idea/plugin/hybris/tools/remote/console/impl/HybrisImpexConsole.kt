@@ -30,13 +30,12 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.ListCellRendererWrapper
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import org.apache.commons.lang.StringUtils
 import java.awt.BorderLayout
 import java.awt.FlowLayout
-import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
@@ -64,11 +63,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     }
 
     private fun createUI() {
-        catalogVersionComboBox.renderer = object : ListCellRendererWrapper<CatalogVersionOption>() {
-            override fun customize(list: JList<*>?, value: CatalogVersionOption, index: Int, selected: Boolean, hasFocus: Boolean) {
-                setText(value.name)
-            }
-        }
+        catalogVersionComboBox.renderer = SimpleListCellRenderer.create("...") { it.name }
         catalogVersionComboBox.addItemListener {
             preProcessors().forEach { processor ->
                 ApplicationManager.getApplication().invokeLater { this.setInputText(processor.process(this)) }

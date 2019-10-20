@@ -122,7 +122,7 @@ object ProjectPropertiesUtils {
         if (!dir.isDirectory) {
             return
         }
-        val matchedFiles = dir.listFiles { dir1, name -> OPTIONAL_PROPERTIES_FILE_PATTERN.matcher(name).matches() }
+        val matchedFiles = dir.listFiles { _, name -> OPTIONAL_PROPERTIES_FILE_PATTERN.matcher(name).matches() }
             ?: return
         val propertyFiles = TreeMap<String, File>()
         Arrays.stream(matchedFiles).forEach { file -> propertyFiles[file.name] = file }

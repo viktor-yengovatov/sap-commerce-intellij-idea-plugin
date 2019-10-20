@@ -36,13 +36,13 @@ class HybrisClearAllAction(val hybrisTabs: HybrisTabs) :
     override fun update(e: AnActionEvent) {
         var enabled = hybrisTabs.activeConsole().contentSize > 0
         if (!enabled) {
-            enabled = e!!.getData(LangDataKeys.CONSOLE_VIEW) != null
+            enabled = e.getData(LangDataKeys.CONSOLE_VIEW) != null
             val editor = e.getData(CommonDataKeys.EDITOR)
             if (editor != null && editor.document.textLength == 0) {
                 enabled = false
             }
         }
-        e!!.presentation.isEnabled = enabled
+        e.presentation.isEnabled = enabled
     }
 
     override fun actionPerformed(e: AnActionEvent) {
