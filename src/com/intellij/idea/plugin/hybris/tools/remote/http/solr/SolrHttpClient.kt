@@ -29,6 +29,8 @@ interface SolrHttpClient {
     @Throws(Exception::class)
     fun listOfCores(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings): Array<String>
     fun listOfCores(project: Project): Array<String>
+    fun coresData(project: Project): Array<SolrCoreData>
+    fun coresData(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings): Array<SolrCoreData>
     fun executeSolrQuery(project: Project, queryObject: SolrQueryObject): HybrisHttpResult
     fun executeSolrQuery(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings, queryObject: SolrQueryObject): HybrisHttpResult
 

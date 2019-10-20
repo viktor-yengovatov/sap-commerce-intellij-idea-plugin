@@ -8,6 +8,7 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.SolrConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisSolrSearchConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
@@ -48,7 +49,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                                 console.clear()
                                 printSyntaxText(console, httpResult.output, ImpexFileType.getInstance())
                             }
-                            is SolrConsole -> {
+                            is HybrisSolrSearchConsole -> {
                                 console.clear()
                                 if (httpResult.hasError()) {
                                     printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)

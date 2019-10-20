@@ -22,7 +22,6 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.SolrConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient
@@ -32,6 +31,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.components.JBLabel
+import com.jetbrains.rd.swing.selectedItemProperty
+import com.jetbrains.rd.util.reactive.adviseEternal
 import org.apache.commons.collections4.CollectionUtils
 import java.awt.BorderLayout
 import java.awt.FlowLayout
@@ -42,14 +43,16 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 import javax.swing.border.EmptyBorder
 
-class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.SOLR_SEARCH_CONSOLE_TITLE, PlainTextLanguage.INSTANCE), SolrConsole {
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.SOLR_SEARCH_CONSOLE_TITLE, PlainTextLanguage.INSTANCE) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
 
     private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val docs = "Docs: "
 
     private val coresLabel = JBLabel("Select core: ")
-    override val coresComboBox = ComboBox(CollectionComboBoxModel(retrieveListOfCores()), 270)
+    private val docsLabel = JBLabel(docs)
+    private val coresComboBox = ComboBox(CollectionComboBoxModel(retrieveListOfCores()), 270)
 
     private val maxRowsLabel = JBLabel("Rows: ")
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 500, 1))
@@ -63,6 +66,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     private fun createUI() {
         initCoresElements()
+        initDocsElements()
         initMaxRowsElements()
 
         add(panel, BorderLayout.NORTH)
@@ -82,6 +86,12 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         panel.add(maxRowsSpinner)
     }
 
+    private fun initDocsElements() {
+        docsLabel.border = EmptyBorder(labelInsets)
+        panel.add(docsLabel)
+        coresComboBox.selectedItemProperty().adviseEternal { docsLabel.text = docs + it?.docs }
+    }
+
     override fun printDefaultText() {
         this.setInputText("*:*")
     }
@@ -95,7 +105,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         }
     }
 
-    private fun retrieveListOfCores() = SolrHttpClient.getInstance(project).listOfCores(project).toList()
+    private fun retrieveListOfCores() = SolrHttpClient.getInstance(project).coresData(project).toList()
 
     override fun execute(query: String): HybrisHttpResult {
         return HybrisHacHttpClient.getInstance(project).executeSolrSearch(project, buildSolrQueryObject(query))
