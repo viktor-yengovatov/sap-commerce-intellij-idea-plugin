@@ -29,6 +29,7 @@ import com.intellij.util.castSafelyTo
 import com.intellij.util.containers.mapSmartNotNull
 import org.apache.http.HttpStatus
 import org.apache.solr.client.solrj.SolrQuery
+import org.apache.solr.client.solrj.SolrRequest
 import org.apache.solr.client.solrj.SolrServerException
 import org.apache.solr.client.solrj.impl.HttpSolrClient
 import org.apache.solr.client.solrj.request.CoreAdminRequest
@@ -36,6 +37,7 @@ import org.apache.solr.client.solrj.request.QueryRequest
 import org.apache.solr.client.solrj.response.CoreAdminResponse
 import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
+import org.noggit.JSONUtil
 
 class DefaultSolrHttpClient : SolrHttpClient {
 
@@ -95,10 +97,10 @@ class DefaultSolrHttpClient : SolrHttpClient {
         )
     }
 
-    private fun executeSolrRequest(solrConnectionSettings: HybrisRemoteConnectionSettings, queryObject: SolrQueryObject, it: QueryRequest): HybrisHttpResult {
+    private fun executeSolrRequest(solrConnectionSettings: HybrisRemoteConnectionSettings, queryObject: SolrQueryObject, queryRequest: QueryRequest): HybrisHttpResult {
         return buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
-                .runCatching { request(it) }
-                .map { resultBuilder().output(it["response"] as String?).build() }
+                .runCatching { request(queryRequest) }
+                .map { resultBuilder().output(JSONUtil.toJSON(it["response"])).build() }
                 .getOrElse { resultBuilder().errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
     }
 
@@ -107,6 +109,7 @@ class DefaultSolrHttpClient : SolrHttpClient {
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: HybrisRemoteConnectionSettings): QueryRequest {
         return QueryRequest(solrQuery).apply {
             setBasicAuthCredentials(solrConnectionSettings.adminLogin, solrConnectionSettings.adminPassword)
+            method = SolrRequest.METHOD.POST
         }
     }
 
@@ -114,6 +117,7 @@ class DefaultSolrHttpClient : SolrHttpClient {
         return SolrQuery().apply {
             rows = queryObject.rows
             query = queryObject.query
+            setParam("wt", "json")
         }
     }
 
