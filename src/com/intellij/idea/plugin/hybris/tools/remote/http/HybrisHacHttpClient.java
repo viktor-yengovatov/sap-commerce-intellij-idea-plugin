@@ -252,7 +252,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
                                          HybrisHttpResult.HybrisHttpResultBuilder
                                              .createResult()
                                              .httpCode(HttpStatus.SC_BAD_GATEWAY)
-                                             .errorMessage("Unable to ... Please, check connection configuration")
+                                             .errorMessage("Unable to connect to Solr server. Please, check connection configuration")
                                              .build());
     }
 }
