@@ -33,7 +33,7 @@ public class HybrisConsoleInMemoryRegionsCache implements HybrisConsoleRegionsCa
     private Map<String, Region> regions;
 
     public HybrisConsoleInMemoryRegionsCache() {
-        this.regions = new HashMap<>(3);
+        this.regions = new HashMap<>(2);
 
         regions.put(SOLR, new Region(SOLR, 7));
         regions.put(FLEXIBLE_SEARCH, new Region(FLEXIBLE_SEARCH, 7));

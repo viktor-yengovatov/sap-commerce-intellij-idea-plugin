@@ -102,8 +102,6 @@ public interface HybrisConstants {
     String HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL = "https://help.hybris.com/%s/api/commercesuite/index.html";
 
     String QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + "/consolestorage";
-    String SOLR_REGION_FILE_PATH = "/solr_region.json";
-    String FLEXIBLE_SEARCH_REGION_FILE_PATH = "/fs_region.json";
 
     String SRC_DIRECTORY = "src";
     String GEN_SRC_DIRECTORY = "gensrc";

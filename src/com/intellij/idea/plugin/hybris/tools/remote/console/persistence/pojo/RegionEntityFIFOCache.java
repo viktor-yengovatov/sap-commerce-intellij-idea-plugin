@@ -21,18 +21,18 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class RegionEntityMap<T> extends LinkedHashMap<String, RegionEntity<T>> {
+public class RegionEntityFIFOCache<T> extends LinkedHashMap<String, RegionEntity<T>> {
 
     private static final long serialVersionUID = 2873734604163564844L;
     private static final int DEFAULT_VALUE = -1;
 
     private int maxNumberEntities;
 
-    public RegionEntityMap(){
+    public RegionEntityFIFOCache(){
         this.maxNumberEntities = DEFAULT_VALUE;
     }
 
-    public RegionEntityMap(int maxNumberEntities) {
+    public RegionEntityFIFOCache(int maxNumberEntities) {
         this.maxNumberEntities = maxNumberEntities;
     }
 

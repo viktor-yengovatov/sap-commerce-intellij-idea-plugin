@@ -77,8 +77,8 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
     @Override
     public void persistQueryRegions() {
         final String projectPath = getStoragePath();
-        regionPersistenceService.writeRegionData(getSolrRegionPath(projectPath), SOLR);
-        regionPersistenceService.writeRegionData(getFsRegionPath(projectPath), FLEXIBLE_SEARCH);
+        regionPersistenceService.writeRegionData(getRegionPath(projectPath, SOLR), SOLR);
+        regionPersistenceService.writeRegionData(getRegionPath(projectPath, FLEXIBLE_SEARCH), FLEXIBLE_SEARCH);
     }
 
     @NotNull
@@ -88,8 +88,8 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
 
     private void loadEntitiesFromFile(final RegionPersistenceService loadService, final String path) throws
                                                                                                      IOException {
-        loadEntityFromFile(loadService, getSolrRegionPath(path), SOLR);
-        loadEntityFromFile(loadService, getFsRegionPath(path), FLEXIBLE_SEARCH);
+        loadEntityFromFile(loadService, getRegionPath(path, SOLR), SOLR);
+        loadEntityFromFile(loadService, getRegionPath(path, FLEXIBLE_SEARCH), FLEXIBLE_SEARCH);
     }
 
     private void loadEntityFromFile(
@@ -101,19 +101,14 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
             loadService.loadRegionData(path, regionName);
         } catch (IllegalArgumentException e) {
             final String notificationTitle = e.getMessage();
-            final String notificationName = "Only 'IMPEX', 'FLEXIBLE_SEARCH' or 'SOLR' are allowable regions.";
+            final String notificationName = "Only 'FLEXIBLE_SEARCH' or 'SOLR' are allowable regions.";
             HybrisConsoleNotificationUtil.displayWarningNotification(notificationTitle, notificationName, project);
         }
     }
 
     @NotNull
-    private Path getSolrRegionPath(final String path) {
-        return Paths.get(path + HybrisConstants.SOLR_REGION_FILE_PATH);
-    }
-
-    @NotNull
-    private Path getFsRegionPath(final String path) {
-        return Paths.get(path + HybrisConstants.FLEXIBLE_SEARCH_REGION_FILE_PATH);
+    private Path getRegionPath(final String path, final String regionName) {
+        return Paths.get(path + '\\' + regionName.toLowerCase() + "_region.json");
     }
 
 }

@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo;
 public class Region<T> {
 
     private String name;
-    private RegionEntityMap<T> entities;
+    private RegionEntityFIFOCache<T> entities;
     private int maxNumberEntities;
 
     public Region() {
@@ -29,14 +29,14 @@ public class Region<T> {
 
     public Region(String name) {
         this.maxNumberEntities = -1;
-        this.entities = new RegionEntityMap<>(maxNumberEntities);
+        this.entities = new RegionEntityFIFOCache<>(maxNumberEntities);
         this.name = name;
     }
 
     public Region(String name, int maxNumberEntities) {
         this(name);
         this.maxNumberEntities = maxNumberEntities;
-        this.entities = new RegionEntityMap<>(maxNumberEntities);
+        this.entities = new RegionEntityFIFOCache<>(maxNumberEntities);
     }
 
     public String getName() {
@@ -47,11 +47,11 @@ public class Region<T> {
         this.name = name;
     }
 
-    public RegionEntityMap<T> getEntities() {
+    public RegionEntityFIFOCache<T> getEntities() {
         return entities;
     }
 
-    public void setEntities(final RegionEntityMap<T> entities) {
+    public void setEntities(final RegionEntityFIFOCache<T> entities) {
         this.entities = entities;
     }
 

@@ -29,9 +29,6 @@ public class HybrisConsoleQueryPanelEventManager {
 
     private List<HybrisConsoleEventListener> listeners = new ArrayList<>();
 
-    public HybrisConsoleQueryPanelEventManager(Project project) {
-    }
-
     public static HybrisConsoleQueryPanelEventManager getInstance(@NotNull Project project) {
         return ServiceManager.getService(project, HybrisConsoleQueryPanelEventManager.class);
     }
