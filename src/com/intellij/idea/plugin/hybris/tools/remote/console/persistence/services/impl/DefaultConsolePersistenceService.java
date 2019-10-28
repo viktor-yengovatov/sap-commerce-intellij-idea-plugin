@@ -108,7 +108,7 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
 
     @NotNull
     private Path getRegionPath(final String path, final String regionName) {
-        return Paths.get(path + '\\' + regionName.toLowerCase() + "_region.json");
+        return Paths.get(path + File.separator + regionName.toLowerCase() + "_region.json");
     }
 
 }

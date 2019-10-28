@@ -115,7 +115,11 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     }
 
     private fun setDocsLabelCount(data: SolrCoreData?) {
-        docsLabel.text = docs + data?.docs
+        if (data == null) {
+            docsLabel.text = "$docs ..."
+        } else {
+            docsLabel.text = docs + data.docs
+        }
     }
 
     private fun retrieveListOfCores() = SolrHttpClient.getInstance(project).coresData(project).toList()

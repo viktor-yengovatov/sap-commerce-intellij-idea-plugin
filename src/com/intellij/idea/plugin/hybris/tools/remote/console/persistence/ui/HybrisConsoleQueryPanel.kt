@@ -31,6 +31,7 @@ import com.intellij.openapi.util.IconLoader
 import java.awt.Dimension
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
+import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
@@ -45,7 +46,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
     private val regionService = RegionService.getInstance(project)
     private val region = regionService.findOrCreate(region)
 
-    private var regionEntitiesComboBox: ComboBox<RegionEntity<*>>? = null
+    private var regionEntitiesComboBox = ComboBox<RegionEntity<*>>(emptyArray(), 200)
 
     private val queryNamePlaceholder = "Query Name (max length: 25)"
 
@@ -65,13 +66,14 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
 
     private fun addComponentsToPanel() {
         HybrisConsoleQueryPanelEventManager.getInstance(project).addListener(HybrisConsoleQueryPanelListener())
+        addComboBox()
         saveLastQuery()
         loadQueryBodyToConsole()
         removeQuery()
     }
 
     private fun addComboBox() {
-        regionEntitiesComboBox = ComboBox(regionEntityService.getAll(this.region.name).values.toTypedArray(), 200)
+        regionEntitiesComboBox = ComboBox(regionEntityService.getAll(this.region.name).values.toTypedArray(), 150)
         regionEntitiesComboBox?.renderer = RegionEntityCellRenderer()
         add(regionEntitiesComboBox,0)
         regionEntitiesComboBox?.addActionListener {
@@ -80,6 +82,14 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
                 loadButton.isEnabled = regionEntitiesComboBox?.selectedIndex != -1
             }
         }
+        
+        addRegionEntitiesToComboBox()
+    }
+
+    private fun addRegionEntitiesToComboBox() {
+        if (regionEntitiesComboBox.itemCount == 0)
+            regionEntitiesComboBox.model = DefaultComboBoxModel<RegionEntity<*>>(regionEntityService.getAll(this.region.name).values.toTypedArray())
+
     }
 
     private fun saveLastQuery() {
@@ -91,7 +101,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
     private fun addQueryTextFieldAndSaveButton() {
         queryNameTextField.border = EmptyBorder(0, 0, 0, 0)
         queryNameTextField.setPlaceholder(queryNamePlaceholder, console, saveButton)
-        queryNameTextField.preferredSize = Dimension(200, 20)
+        queryNameTextField.preferredSize = Dimension(170, 20)
         queryNameTextField.addKeyListener(RemoveTextKeyAdapter())
         add(queryNameTextField)
         saveButton.border = EmptyBorder(0, 0, 0, 0)
@@ -168,7 +178,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
 
     private inner class HybrisConsoleQueryPanelListener() : HybrisConsoleEventListener {
         override fun update() {
-            addComboBox()
+            addRegionEntitiesToComboBox()
         }
     }
 
