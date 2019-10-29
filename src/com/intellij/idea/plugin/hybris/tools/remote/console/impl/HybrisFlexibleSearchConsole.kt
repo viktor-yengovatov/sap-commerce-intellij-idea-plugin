@@ -29,8 +29,8 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
+import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
-import java.awt.FlowLayout
 import java.awt.Insets
 import javax.swing.JPanel
 import javax.swing.JSpinner
@@ -41,7 +41,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
-    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val panel = JPanel(WrappedFlowLayout(0, 0))
 
     private val commitCheckbox = JBCheckBox()
     private val commitLabel = JBLabel("Commit mode: ")

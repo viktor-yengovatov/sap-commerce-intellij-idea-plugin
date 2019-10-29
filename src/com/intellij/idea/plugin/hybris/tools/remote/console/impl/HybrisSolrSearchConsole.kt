@@ -35,11 +35,11 @@ import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.castSafelyTo
+import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
 import org.apache.commons.collections4.CollectionUtils
 import java.awt.BorderLayout
-import java.awt.FlowLayout
 import java.awt.Insets
 import java.util.*
 import javax.swing.JPanel
@@ -51,7 +51,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
 
-    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val panel = JPanel(WrappedFlowLayout(0, 0))
     private val docs = "Docs: "
 
     private val coresLabel = JBLabel("Select core: ")
