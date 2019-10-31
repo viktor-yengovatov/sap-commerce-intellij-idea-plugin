@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.common;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -100,6 +101,8 @@ public interface HybrisConstants {
     String HYBRIS_VERSION_KEY = "version";
     String DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/%s/commercesuite";
     String HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL = "https://help.hybris.com/%s/api/commercesuite/index.html";
+
+    String QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + File.separator + "consolestorage";
 
     String SRC_DIRECTORY = "src";
     String GEN_SRC_DIRECTORY = "gensrc";

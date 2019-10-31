@@ -22,6 +22,7 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
@@ -34,11 +35,11 @@ import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.castSafelyTo
+import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
 import org.apache.commons.collections4.CollectionUtils
 import java.awt.BorderLayout
-import java.awt.FlowLayout
 import java.awt.Insets
 import java.util.*
 import javax.swing.JPanel
@@ -50,7 +51,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
 
-    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val panel = JPanel(WrappedFlowLayout(0, 0))
     private val docs = "Docs: "
 
     private val coresLabel = JBLabel("Select core: ")
@@ -62,6 +63,8 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     private val labelInsets = Insets(0, 10, 0, 1)
 
+    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "SOLR")
+
     init {
         createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
@@ -72,6 +75,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         initDocsElements()
         initMaxRowsElements()
 
+        panel.add(queryConsolePanel)
         add(panel, BorderLayout.NORTH)
         isEditable = true
         prompt = "q="
@@ -111,7 +115,11 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     }
 
     private fun setDocsLabelCount(data: SolrCoreData?) {
-        docsLabel.text = docs + data?.docs
+        if (data == null) {
+            docsLabel.text = "$docs ..."
+        } else {
+            docsLabel.text = docs + data.docs
+        }
     }
 
     private fun retrieveListOfCores() = SolrHttpClient.getInstance(project).coresData(project).toList()

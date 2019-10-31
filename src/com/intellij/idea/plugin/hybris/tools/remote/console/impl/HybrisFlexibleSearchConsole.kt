@@ -23,13 +23,14 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
+import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
-import java.awt.FlowLayout
 import java.awt.Insets
 import javax.swing.JPanel
 import javax.swing.JSpinner
@@ -40,7 +41,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
-    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+    private val panel = JPanel(WrappedFlowLayout(0, 0))
 
     private val commitCheckbox = JBCheckBox()
     private val commitLabel = JBLabel("Commit mode: ")
@@ -53,6 +54,8 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     private val labelInsets = Insets(0, 10, 0, 1)
 
+    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "FLEXIBLE_SEARCH")
+
     init {
         createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
@@ -63,6 +66,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         initPlainSqlElements()
         initMaxRowsElements()
 
+        panel.add(queryConsolePanel)
         add(panel, BorderLayout.NORTH)
         isEditable = true
     }
