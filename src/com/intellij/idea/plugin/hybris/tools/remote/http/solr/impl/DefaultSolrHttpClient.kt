@@ -125,6 +125,6 @@ class DefaultSolrHttpClient : SolrHttpClient {
 
     // active or default
     private fun solrConnectionSettings(project: Project): HybrisRemoteConnectionSettings {
-        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getDefaultSolrRemoteConnectionSettings(project)
+        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project)
     }
 }
