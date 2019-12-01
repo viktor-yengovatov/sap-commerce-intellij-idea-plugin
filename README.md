@@ -60,3 +60,4 @@ This project exists thanks to all the people who contribute.
 * Oleksandr Shkurat
 * Maxim Bilohay
 * Eugene Koryakin
+* Yevhenii Koshevyi

@@ -46,7 +46,7 @@ class ImpexMacrosRenameHandler : RenameHandler {
         return false
     }
 
-    override fun invoke(project: Project, editor: Editor?, file: PsiFile?, dataContext: DataContext?) = psiRenameHandler.invoke(project, editor, file, dataContext)
+    override fun invoke(project: Project, editor: Editor?, file: PsiFile?, dataContext: DataContext) = psiRenameHandler.invoke(project, editor, file, dataContext)
 
-    override fun invoke(project: Project, elements: Array<out PsiElement>, dataContext: DataContext?) = psiRenameHandler.invoke(project, elements, dataContext)
+    override fun invoke(project: Project, elements: Array<out PsiElement>, dataContext: DataContext) = psiRenameHandler.invoke(project, elements, dataContext)
 }

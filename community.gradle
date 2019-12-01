@@ -77,6 +77,7 @@ allprojects {
 
     patchPluginXml {
         sinceBuild intellijSinceBuild
+        untilBuild intellijUntilBuild
     }
 
     // Remove Intellij build output directory
