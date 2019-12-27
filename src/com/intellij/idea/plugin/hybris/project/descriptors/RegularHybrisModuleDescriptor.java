@@ -219,11 +219,13 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                     false, true
                 ));
 
-                libs.add(new DefaultJavaLibraryDescriptor(
-                    new File(this.getRootDirectory(), HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
-                    new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY),
-                    true, true
-                ));
+                for (String srcDirName : HybrisConstants.SRC_DIR_NAMES) {
+                    libs.add(new DefaultJavaLibraryDescriptor(
+                        new File(this.getRootDirectory(), HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                        new File(this.getRootDirectory(), srcDirName),
+                        true, true
+                    ));
+                }
 
                 libs.add(new DefaultJavaLibraryDescriptor(
                     new File(this.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY),
@@ -337,9 +339,11 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         if (serverJars == null || serverJars.length == 0) {
             return;
         }
-        final File srcDir = new File(this.getRootDirectory(), HybrisConstants.SRC_DIRECTORY);
-        for (File serverJar: serverJars) {
-            libs.add(new DefaultJavaLibraryDescriptor(serverJar, srcDir.isDirectory() ? srcDir : null, true, true));
+        for (String srcDirName : HybrisConstants.SRC_DIR_NAMES) {
+            final File srcDir = new File(this.getRootDirectory(), srcDirName);
+            for (File serverJar : serverJars) {
+                libs.add(new DefaultJavaLibraryDescriptor(serverJar, srcDir.isDirectory() ? srcDir : null, true, true));
+            }
         }
     }
 

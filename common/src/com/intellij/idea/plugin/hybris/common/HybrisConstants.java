@@ -105,10 +105,13 @@ public interface HybrisConstants {
     String QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + File.separator + "consolestorage";
 
     String SRC_DIRECTORY = "src";
+    String SCALA_SRC_DIRECTORY = "scalasrc";
+    List<String> SRC_DIR_NAMES = Arrays.asList(SRC_DIRECTORY, SCALA_SRC_DIRECTORY);
     String GEN_SRC_DIRECTORY = "gensrc";
     String TEST_SRC_DIRECTORY = "testsrc";
     String GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc";
-    List<String> TEST_SRC_DIR_NAMES = Arrays.asList(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY);
+    String SCALA_TEST_SRC_DIRECTORY = "scalatestsrc";
+    List<String> TEST_SRC_DIR_NAMES = Arrays.asList(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY);
     String HMC_MODULE_DIRECTORY = "hmc";
     String HAC_MODULE_DIRECTORY = "hac";
     String HAC_MODULE_EXTENSION_NAME = "hac";
