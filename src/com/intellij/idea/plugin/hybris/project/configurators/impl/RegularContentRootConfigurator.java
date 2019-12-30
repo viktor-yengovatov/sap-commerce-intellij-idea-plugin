@@ -481,6 +481,6 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     private boolean srcDirectoriesExists(final File webModuleDirectory) {
-        return TEST_SRC_DIR_NAMES.stream().map(s -> new File(webModuleDirectory, s).exists()).findAny().isPresent();
+        return TEST_SRC_DIR_NAMES.stream().anyMatch(s -> new File(webModuleDirectory, s).exists());
     }
 }
