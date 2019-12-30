@@ -64,7 +64,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TO
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIR_NAMES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIR_NAMES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
@@ -140,12 +140,14 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
 
-        addSourceFolderIfNotIgnored(
-            contentEntry,
-            new File(moduleDescriptor.getRootDirectory(), SRC_DIRECTORY),
-            JavaSourceRootType.SOURCE,
-            dirsToIgnore
-        );
+        for (String srcDirName : SRC_DIR_NAMES) {
+            addSourceFolderIfNotIgnored(
+                contentEntry,
+                new File(moduleDescriptor.getRootDirectory(), srcDirName),
+                JavaSourceRootType.SOURCE,
+                dirsToIgnore
+            );
+        }
 
         addSourceFolderIfNotIgnored(
             contentEntry,
@@ -233,11 +235,13 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             return;
         }
 
-        final File additionalSrcDirectory = new File(additionalModuleDirectory, SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(additionalSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE
-        );
+        for (String srcDirName : SRC_DIR_NAMES) {
+            final File additionalSrcDirectory = new File(additionalModuleDirectory, srcDirName);
+            contentEntry.addSourceFolder(
+                VfsUtil.pathToUrl(additionalSrcDirectory.getAbsolutePath()),
+                JavaSourceRootType.SOURCE
+            );
+        }
 
         final File additionalResourcesDirectory = new File(additionalModuleDirectory, RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -299,11 +303,13 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY
         );
 
-        final File backOfficeSrcDirectory = new File(backOfficeModuleDirectory, SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(backOfficeSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE
-        );
+        for (String srcDirName : SRC_DIR_NAMES) {
+            final File backOfficeSrcDirectory = new File(backOfficeModuleDirectory, srcDirName);
+            contentEntry.addSourceFolder(
+                VfsUtil.pathToUrl(backOfficeSrcDirectory.getAbsolutePath()),
+                JavaSourceRootType.SOURCE
+            );
+        }
 
         if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
                                                                                          .isExcludeTestSources()) {
@@ -360,11 +366,13 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     ) {
         Validate.notNull(moduleDescriptor);
 
-        final File webSrcDirectory = new File(webModuleDirectory, SRC_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(webSrcDirectory.getAbsolutePath()),
-            JavaSourceRootType.SOURCE
-        );
+        for (String srcDirName : SRC_DIR_NAMES) {
+            final File webSrcDirectory = new File(webModuleDirectory, srcDirName);
+            contentEntry.addSourceFolder(
+                VfsUtil.pathToUrl(webSrcDirectory.getAbsolutePath()),
+                JavaSourceRootType.SOURCE
+            );
+        }
 
         final File webGenSrcDirectory = new File(webModuleDirectory, GEN_SRC_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -466,9 +474,13 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         } else if (
             !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode() &&
-            new File(webModuleDirectory, SRC_DIRECTORY).exists()
+            srcDirectoriesExists(webModuleDirectory)
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         }
+    }
+
+    private boolean srcDirectoriesExists(final File webModuleDirectory) {
+        return TEST_SRC_DIR_NAMES.stream().anyMatch(s -> new File(webModuleDirectory, s).exists());
     }
 }
