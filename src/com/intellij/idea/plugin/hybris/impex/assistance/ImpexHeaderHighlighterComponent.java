@@ -19,7 +19,9 @@
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.CaretEvent;
@@ -44,7 +46,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
+public class ImpexHeaderHighlighterComponent implements BaseComponent {
 
     protected final CommonIdeaService commonIdeaService;
     protected final CaretListener caretListener = new ImpexHeaderHighlightingCaretListener();

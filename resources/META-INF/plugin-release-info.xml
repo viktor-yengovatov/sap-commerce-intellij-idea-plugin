@@ -2,7 +2,7 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>1908.5</version>
+    <version>2001.1</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="193" until-build="193.*"/>
@@ -25,14 +25,13 @@
           <ul>
               <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation and correct unit and integration tests execution.</li>
               <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
-              <li>Import your custom Eclise, Maven and Gradle extensions together with Hybris platform.</li>
-              <li>Custom editor for flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by single click of a button.</li>
-              <li>Custom editor for impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by single click of a button.</li>
+              <li>Import your custom Eclipse, Maven and Gradle extensions together with Hybris platform.</li>
+              <li>Custom editor for flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by a single click of a button.</li>
+              <li>Custom editor for impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
               <li>Custom editor for items.xml with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
               <li>Custom editor for beans.xml with custom automated Intellij refactorings actions.</li>
               <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
               <li>Enhanced project view tree.</li>
-              <li>JRebel and DCEVM support.</li>
               <li>Execution of Flexible Search queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
               <li>Execution of queries on remote Solr instances.</li>
               <li>And much more</li>

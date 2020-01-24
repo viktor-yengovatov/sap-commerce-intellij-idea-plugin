@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor
 import com.intellij.openapi.options.ConfigurationException;
 import icons.GradleIcons;
 import icons.MavenIcons;
+import icons.OpenapiIcons;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -58,7 +59,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
             return AllIcons.Actions.Cancel;
         }
         if (module instanceof MavenModuleDescriptor) {
-            return MavenIcons.MavenLogo;
+            return OpenapiIcons.RepositoryLibraryLogo;
         }
         if (module instanceof EclipseModuleDescriptor) {
             return AllIcons.Providers.Eclipse;

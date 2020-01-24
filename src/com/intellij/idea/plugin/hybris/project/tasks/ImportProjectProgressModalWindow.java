@@ -378,10 +378,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         if (StringUtils.isNotBlank(projectSdk.getVersionString())) {
-            final JavaSdkVersion sdkVersion = JdkVersionUtil.getVersion(projectSdk.getVersionString());
+            final JavaSdkVersion sdkVersion = JavaSdkVersion.fromVersionString(projectSdk.getVersionString());
             final LanguageLevelProjectExtension languageLevelExt = LanguageLevelProjectExtension.getInstance(project);
 
-            if (sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
+            if (sdkVersion != null && sdkVersion.getMaxLanguageLevel() != languageLevelExt.getLanguageLevel()) {
                 languageLevelExt.setLanguageLevel(sdkVersion.getMaxLanguageLevel());
             }
         }

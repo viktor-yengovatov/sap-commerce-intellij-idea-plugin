@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.validation;
 import com.intellij.idea.plugin.hybris.type.system.validation.impl.ProjectOpenAndItemsXmlFileOpenListener;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 import com.intellij.openapi.project.ProjectManager;
 
 
@@ -29,7 +30,7 @@ import com.intellij.openapi.project.ProjectManager;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class TypeSystemValidationComponent implements ApplicationComponent {
+public class TypeSystemValidationComponent implements BaseComponent {
 
     protected final ProjectOpenAndItemsXmlFileOpenListener itemsXMLFileOpenListener = new ProjectOpenAndItemsXmlFileOpenListener();
 

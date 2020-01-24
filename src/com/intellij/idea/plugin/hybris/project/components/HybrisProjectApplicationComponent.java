@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.components;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Disposer;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Martin zdarsky-Jones on 29/09/2016.
  */
-public class HybrisProjectApplicationComponent implements ApplicationComponent {
+public class HybrisProjectApplicationComponent implements BaseComponent {
 
     private HybrisProjectManagerListener projectManagerListener = new HybrisProjectManagerListener();
     private Disposable disposable;

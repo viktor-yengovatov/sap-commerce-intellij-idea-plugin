@@ -51,11 +51,11 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
 
     @NotNull
     public static HybrisWritingAccessProvider getInstance(@NotNull final Project project) {
-        return Arrays.stream(Extensions.getExtensions(EP_NAME, project))
-                     .map(o -> ObjectUtils.tryCast(o, HybrisWritingAccessProvider.class))
-                     .filter(Objects::nonNull)
-                     .findAny()
-                     .orElseThrow(IllegalStateException::new);
+        return EP.getExtensions(project).stream()
+                .map(o -> ObjectUtils.tryCast(o, HybrisWritingAccessProvider.class))
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElseThrow(IllegalStateException::new);
     }
 
     public HybrisWritingAccessProvider(@NotNull final Project project) {

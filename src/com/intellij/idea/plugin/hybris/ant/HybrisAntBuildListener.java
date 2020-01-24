@@ -51,9 +51,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODULE_PREFIX;
 
@@ -71,7 +70,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MO
 public class HybrisAntBuildListener implements AntExecutionListener {
 
     private static final Key<STATES> STATE = Key.create("hybrisAntStateMachine");
-    private static final String[] antCleanAll = new String[]{"clean", "all"};
+    private static final List<String> antCleanAll = Arrays.asList("clean", "all");
 
     public static void registerAntListener(@NotNull Project project) {
         project.getMessageBus().connect().subscribe(AntExecutionListener.TOPIC, new HybrisAntBuildListener());
@@ -159,41 +158,37 @@ public class HybrisAntBuildListener implements AntExecutionListener {
         if (xmlFile == null) {
             return;
         }
-        new WriteCommandAction.Simple(project, xmlFile) {
+        WriteCommandAction.writeCommandAction(project, xmlFile).run(() -> {
 
-            @Override
-            protected void run() throws Throwable {
-
-                final XmlTag hybrisconfig = xmlFile.getRootTag();
-                if (hybrisconfig == null) {
-                    return;
+            final XmlTag hybrisconfig = xmlFile.getRootTag();
+            if (hybrisconfig == null) {
+                return;
+            }
+            for (XmlTag extensions : hybrisconfig.getSubTags()) {
+                if (!extensions.getName().equals("extensions")) {
+                    continue;
                 }
-                for (XmlTag extensions : hybrisconfig.getSubTags()) {
-                    if (!extensions.getName().equals("extensions")) {
+                for (XmlTag extension : extensions.getSubTags()) {
+                    if (!extension.getName().equals("extension")) {
                         continue;
                     }
-                    for (XmlTag extension : extensions.getSubTags()) {
-                        if (!extension.getName().equals("extension")) {
-                            continue;
-                        }
-                        if (result.getExtensionsToRemove().contains(extension.getAttributeValue("name"))) {
-                            extension.delete();
-                        }
-                    }
-
-                    for (String newExtension : result.getExtensionsToAdd()) {
-                        final XmlTag newTag = extensions.createChildTag("extension", null, null, false);
-                        final String name = newExtension.substring(newExtension.lastIndexOf("/") + 1);
-                        final String dir = "${HYBRIS_BIN_DIR}" + newExtension.substring(newExtension.indexOf("/custom"));
-                        newTag.setAttribute("dir", dir);
-                        newTag.setAttribute("name", name);
-                        extensions.addSubTag(newTag, false);
+                    if (result.getExtensionsToRemove().contains(extension.getAttributeValue("name"))) {
+                        extension.delete();
                     }
                 }
 
-                FileDocumentManager.getInstance().saveAllDocuments();
+                for (String newExtension : result.getExtensionsToAdd()) {
+                    final XmlTag newTag = extensions.createChildTag("extension", null, null, false);
+                    final String name = newExtension.substring(newExtension.lastIndexOf("/") + 1);
+                    final String dir = "${HYBRIS_BIN_DIR}" + newExtension.substring(newExtension.indexOf("/custom"));
+                    newTag.setAttribute("dir", dir);
+                    newTag.setAttribute("name", name);
+                    extensions.addSubTag(newTag, false);
+                }
             }
-        }.execute();
+
+            FileDocumentManager.getInstance().saveAllDocuments();
+        });
     }
 
     private void triggerCleanAll(final Project project) {
