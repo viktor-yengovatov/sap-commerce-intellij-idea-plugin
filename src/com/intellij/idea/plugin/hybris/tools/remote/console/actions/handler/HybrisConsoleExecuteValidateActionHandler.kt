@@ -93,7 +93,9 @@ class HybrisConsoleExecuteValidateActionHandler(private val project: Project,
         val console = tabbedPane.activeConsole()
         val consoleHistoryModel = ConsoleHistoryController.getController(console)
 
-        execute(console, consoleHistoryModel)
+        if (consoleHistoryModel != null) {
+            execute(console, consoleHistoryModel)
+        }
     }
 
     private fun execute(console: HybrisConsole,

@@ -5,7 +5,7 @@
     <version>2001.1</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="193" until-build="193.*"/>
+    <idea-version since-build="201" until-build="201.*"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
