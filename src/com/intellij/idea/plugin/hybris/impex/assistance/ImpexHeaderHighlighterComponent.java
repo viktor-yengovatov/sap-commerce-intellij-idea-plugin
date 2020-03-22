@@ -36,6 +36,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
+import com.intellij.psi.util.PsiEditorUtil;
 import com.intellij.psi.util.PsiUtilBase;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -131,18 +132,16 @@ public class ImpexHeaderHighlighterComponent implements BaseComponent {
         }
     }
 
-    protected class ImpexProjectManagerListener extends ProjectManagerAdapter implements ProjectManagerListener {
+    protected class ImpexProjectManagerListener implements ProjectManagerListener {
 
         @Override
         public void projectOpened(final Project project) {
-            super.projectOpened(project);
             PsiManager.getInstance(project).addPsiTreeChangeListener(psiTreeChangeListener);
             EditorFactory.getInstance().addEditorFactoryListener(editorFactoryListener, project);
         }
 
         @Override
         public void projectClosed(final Project project) {
-            super.projectClosed(project);
             PsiManager.getInstance(project).removePsiTreeChangeListener(psiTreeChangeListener);
         }
 
@@ -157,7 +156,7 @@ public class ImpexHeaderHighlighterComponent implements BaseComponent {
                 return;
             }
 
-            final Editor editor = PsiUtilBase.findEditor(file);
+            final Editor editor = PsiEditorUtil.findEditor(file);
 
             if (null == editor) {
                 return;

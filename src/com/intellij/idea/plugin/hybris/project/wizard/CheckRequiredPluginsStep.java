@@ -18,8 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.wizard;
 
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.*;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.application.ApplicationManager;
@@ -27,6 +26,7 @@ import com.intellij.openapi.application.ex.ApplicationEx;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.projectImport.ProjectImportWizardStep;
+import com.intellij.ui.components.JBList;
 import com.intellij.util.PlatformUtils;
 
 import javax.swing.*;
@@ -90,7 +90,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     }
 
     private void checkDependentPlugins() {
-        final IdeaPluginDescriptor hybrisPlugin = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
+        final IdeaPluginDescriptor hybrisPlugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
         final PluginId[] dependentPluginIds = hybrisPlugin.getOptionalDependentPluginIds();
         Arrays.stream(dependentPluginIds).forEach(id -> {
             if (id.getIdString().startsWith(EXCLUDED_ID_PREFIX)) {
@@ -111,10 +111,10 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private void fillInGUI() {
         final DefaultListModel notInstalledModel = (DefaultListModel) notInstalledList.getModel();
         notInstalledModel.clear();
-        notInstalledPlugins.stream().forEach(id -> notInstalledModel.addElement(id));
+        notInstalledPlugins.forEach(notInstalledModel::addElement);
         final DefaultListModel notEnabledModel = (DefaultListModel) notEnabledList.getModel();
         notEnabledModel.clear();
-        notEnabledPlugins.stream().forEach(id -> {
+        notEnabledPlugins.forEach(id -> {
             final IdeaPluginDescriptor plugin = PluginManager.getPlugin(id);
             notEnabledModel.addElement(plugin.getName());
         });
@@ -136,8 +136,8 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     }
 
     private void createUIComponents() {
-        notInstalledList = new JList(new DefaultListModel());
-        notEnabledList = new JList(new DefaultListModel());
+        notInstalledList = new JBList(new DefaultListModel());
+        notEnabledList = new JBList(new DefaultListModel());
         enableButton = new JButton();
         enableButton.addActionListener(e -> enablePlugins());
     }
