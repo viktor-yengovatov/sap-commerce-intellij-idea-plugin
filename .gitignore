@@ -17,6 +17,13 @@
 /rt-ant/build/
 /.gradle/
 
-Hybris-Integration.zip
-
 **/.directory
+/.idea/consolestorage/
+/.idea/dictionaries/
+/.idea/inspectionProfiles/
+/.idea/compiler.xml
+/.idea/dataSources.xml
+/.idea/jarRepositories.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+/.idea/.gitignore

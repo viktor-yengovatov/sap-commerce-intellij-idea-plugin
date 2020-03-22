@@ -82,14 +82,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
             module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.ECLIPSE.name());
             modifiableModuleModel.setModuleGroupPath(module, eclipseGroupMapping.get(module.getName()));
         }
-        AccessToken token = null;
-        try {
-            token = ApplicationManager.getApplication().acquireWriteActionLock(getClass());
-            modifiableModuleModel.commit();
-        } finally {
-            if (token != null) {
-                token.finish();
-            }
-        }
+
+        ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);
     }
 }
