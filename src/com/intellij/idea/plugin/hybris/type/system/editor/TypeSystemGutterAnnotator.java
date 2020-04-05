@@ -78,7 +78,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
             final Collection<? extends PsiElement> alternativeDoms = findAlternativeDoms(itemType);
             if (!alternativeDoms.isEmpty()) {
                 NavigationGutterIconBuilder
-                    .create(AllIcons.Actions.Nextfile, TypeSystemGutterAnnotator::findAlternativeDoms)
+                    .create(AllIcons.Actions.Forward, TypeSystemGutterAnnotator::findAlternativeDoms)
                     .setTarget(itemType)
                     .setTooltipText(alternativeDoms.size() > 1
                                         ? "Alternative Definitions"

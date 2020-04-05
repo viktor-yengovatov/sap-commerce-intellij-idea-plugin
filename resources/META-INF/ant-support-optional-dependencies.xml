@@ -28,10 +28,4 @@
 
     </extensions>
 
-    <project-components>
-        <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.ant.AntTreeUpdatingHack</implementation-class>
-        </component>
-    </project-components>
-
 </idea-plugin>

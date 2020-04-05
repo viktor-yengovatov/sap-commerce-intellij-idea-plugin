@@ -19,7 +19,9 @@
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.CaretEvent;
@@ -34,6 +36,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
+import com.intellij.psi.util.PsiEditorUtil;
 import com.intellij.psi.util.PsiUtilBase;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
+public class ImpexHeaderHighlighterComponent implements BaseComponent {
 
     protected final CommonIdeaService commonIdeaService;
     protected final CaretListener caretListener = new ImpexHeaderHighlightingCaretListener();
@@ -129,18 +132,16 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
         }
     }
 
-    protected class ImpexProjectManagerListener extends ProjectManagerAdapter implements ProjectManagerListener {
+    protected class ImpexProjectManagerListener implements ProjectManagerListener {
 
         @Override
         public void projectOpened(final Project project) {
-            super.projectOpened(project);
             PsiManager.getInstance(project).addPsiTreeChangeListener(psiTreeChangeListener);
             EditorFactory.getInstance().addEditorFactoryListener(editorFactoryListener, project);
         }
 
         @Override
         public void projectClosed(final Project project) {
-            super.projectClosed(project);
             PsiManager.getInstance(project).removePsiTreeChangeListener(psiTreeChangeListener);
         }
 
@@ -155,7 +156,7 @@ public class ImpexHeaderHighlighterComponent implements ApplicationComponent {
                 return;
             }
 
-            final Editor editor = PsiUtilBase.findEditor(file);
+            final Editor editor = PsiEditorUtil.findEditor(file);
 
             if (null == editor) {
                 return;

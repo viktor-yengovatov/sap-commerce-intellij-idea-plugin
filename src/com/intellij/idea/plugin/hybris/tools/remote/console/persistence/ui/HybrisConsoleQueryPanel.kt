@@ -74,12 +74,12 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
 
     private fun addComboBox() {
         regionEntitiesComboBox = ComboBox(regionEntityService.getAll(this.region.name).values.toTypedArray(), 150)
-        regionEntitiesComboBox?.renderer = RegionEntityCellRenderer()
+        regionEntitiesComboBox.renderer = RegionEntityCellRenderer()
         add(regionEntitiesComboBox,0)
-        regionEntitiesComboBox?.addActionListener {
+        regionEntitiesComboBox.addActionListener {
             run {
-                removeButton.isEnabled = regionEntitiesComboBox?.selectedIndex != -1
-                loadButton.isEnabled = regionEntitiesComboBox?.selectedIndex != -1
+                removeButton.isEnabled = regionEntitiesComboBox.selectedIndex != -1
+                loadButton.isEnabled = regionEntitiesComboBox.selectedIndex != -1
             }
         }
         
@@ -130,9 +130,9 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
 
     private fun addQueryToComboBox() {
         val savedEntity = regionEntityService.save(region.name, queryNameTextField.text, console.editorDocument.text)
-        regionEntitiesComboBox?.addItem(savedEntity)
-        while (regionEntitiesComboBox?.itemCount!! > maxPossibleItemsNumber) {
-            regionEntitiesComboBox?.removeItemAt(0)
+        regionEntitiesComboBox.addItem(savedEntity)
+        while (regionEntitiesComboBox.itemCount > maxPossibleItemsNumber) {
+            regionEntitiesComboBox.removeItemAt(0)
         }
         queryNameTextField.setPlaceholder(queryNamePlaceholder, console, saveButton)
         saveButton.isEnabled = false
@@ -145,7 +145,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
         loadButton.isEnabled = false
         loadButton.addActionListener {
             run {
-                val selectedEntity = this.regionEntitiesComboBox?.selectedItem as RegionEntity<*>
+                val selectedEntity = this.regionEntitiesComboBox.selectedItem as RegionEntity<*>
                 console.setInputText(selectedEntity.body as String)
             }
         }
@@ -160,9 +160,9 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
         add(removeButton)
         removeButton.addActionListener {
             run {
-                val selectedEntity = this.regionEntitiesComboBox?.selectedItem as RegionEntity<*>
+                val selectedEntity = this.regionEntitiesComboBox.selectedItem as RegionEntity<*>
                 regionEntityService.remove(selectedEntity.id)
-                regionEntitiesComboBox?.removeItem(selectedEntity)
+                regionEntitiesComboBox.removeItem(selectedEntity)
             }
         }
     }

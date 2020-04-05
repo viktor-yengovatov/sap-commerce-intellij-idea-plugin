@@ -37,11 +37,11 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode>> {
+public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode<?>>> {
 
     public JunkProjectViewNode(
         final Project project,
-        final List<AbstractTreeNode> children,
+        final List<AbstractTreeNode<?>> children,
         final ViewSettings settings
     ) {
         super(project, children, settings);
@@ -49,7 +49,7 @@ public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode>>
 
     @Override
     @NotNull
-    public Collection<AbstractTreeNode> getChildren() {
+    public Collection<AbstractTreeNode<?>> getChildren() {
         return this.getValue();
     }
 

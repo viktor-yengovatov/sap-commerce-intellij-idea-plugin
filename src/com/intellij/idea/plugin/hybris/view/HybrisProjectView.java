@@ -82,9 +82,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     @Override
     @NotNull
-    public Collection<AbstractTreeNode> modify(
-        @NotNull final AbstractTreeNode parent,
-        @NotNull final Collection<AbstractTreeNode> children,
+    public Collection<AbstractTreeNode<?>> modify(
+        @NotNull final AbstractTreeNode<?> parent,
+        @NotNull final Collection<AbstractTreeNode<?>> children,
         final ViewSettings settings
     ) {
         Validate.notNull(parent);
@@ -108,7 +108,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             return this.modifyExternalLibrariesNodes(children);
         }
 
-        final Collection<AbstractTreeNode> childrenWithProcessedJunkFiles = this.processJunkFiles(children, settings);
+        final Collection<AbstractTreeNode<?>> childrenWithProcessedJunkFiles = this.processJunkFiles(children, settings);
 
         return this.isCompactEmptyMiddleFoldersEnabled(settings)
             ? this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
@@ -117,7 +117,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     private void modifyIcons(
         final ProjectViewModuleGroupNode parent,
-        final Collection<AbstractTreeNode> children
+        final Collection<AbstractTreeNode<?>> children
     ) {
         if (parent.getValue() != null) {
             ModuleGroup moduleGroup = parent.getValue();
@@ -164,14 +164,14 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     @NotNull
-    protected Collection<AbstractTreeNode> modifyExternalLibrariesNodes(
-        @NotNull final Collection<AbstractTreeNode> children
+    protected Collection<AbstractTreeNode<?>> modifyExternalLibrariesNodes(
+        @NotNull final Collection<AbstractTreeNode<?>> children
     ) {
         Validate.notNull(children);
 
-        final Collection<AbstractTreeNode> treeNodes = new ArrayList<AbstractTreeNode>();
+        final Collection<AbstractTreeNode<?>> treeNodes = new ArrayList<>();
 
-        for (AbstractTreeNode child : children) {
+        for (AbstractTreeNode<?> child : children) {
             if (child instanceof PsiDirectoryNode) {
                 final VirtualFile virtualFile = ((PsiDirectoryNode) child).getVirtualFile();
 
@@ -191,8 +191,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     @NotNull
-    protected Collection<AbstractTreeNode> processJunkFiles(
-        @NotNull final Collection<AbstractTreeNode> children,
+    protected Collection<AbstractTreeNode<?>> processJunkFiles(
+        @NotNull final Collection<AbstractTreeNode<?>> children,
         @Nullable final ViewSettings settings
     ) {
         Validate.notNull(children);
@@ -203,8 +203,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             return children;
         }
 
-        final List<AbstractTreeNode> junkTreeNodes = new ArrayList<AbstractTreeNode>();
-        final Collection<AbstractTreeNode> treeNodes = new ArrayList<AbstractTreeNode>();
+        final List<AbstractTreeNode<?>> junkTreeNodes = new ArrayList<>();
+        final Collection<AbstractTreeNode<?>> treeNodes = new ArrayList<>();
 
         for (AbstractTreeNode child : children) {
             if (child instanceof BasePsiNode) {
@@ -233,9 +233,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     @NotNull
-    protected Collection<AbstractTreeNode> compactEmptyMiddlePackages(
-        @NotNull final AbstractTreeNode parent,
-        @NotNull final Collection<AbstractTreeNode> children
+    protected Collection<AbstractTreeNode<?>> compactEmptyMiddlePackages(
+        @NotNull final AbstractTreeNode<?> parent,
+        @NotNull final Collection<AbstractTreeNode<?>> children
     ) {
         Validate.notNull(parent);
         Validate.notNull(children);
@@ -253,11 +253,11 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             }
         }
 
-        final Collection<AbstractTreeNode> compactedChildren = new ArrayList<AbstractTreeNode>();
+        final Collection<AbstractTreeNode<?>> compactedChildren = new ArrayList<>();
 
-        for (AbstractTreeNode child : children) {
+        for (AbstractTreeNode<?> child : children) {
 
-            final AbstractTreeNode compactedChild = this.recursivelyCompactEmptyMiddlePackages(
+            final AbstractTreeNode<?> compactedChild = this.recursivelyCompactEmptyMiddlePackages(
                 child, child.getChildren()
             );
 
@@ -268,9 +268,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     @Nullable
-    protected AbstractTreeNode recursivelyCompactEmptyMiddlePackages(
-        @NotNull final AbstractTreeNode parent,
-        @Nullable final Collection<AbstractTreeNode> children
+    protected AbstractTreeNode<?> recursivelyCompactEmptyMiddlePackages(
+        @NotNull final AbstractTreeNode<?> parent,
+        @Nullable final Collection<? extends AbstractTreeNode<?>> children
     ) {
         Validate.notNull(parent);
 
@@ -283,7 +283,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         }
 
         if ((parent instanceof PsiDirectoryNode) && (children.size() == 1)) {
-            final AbstractTreeNode onlyChild = Iterables.getOnlyElement(children);
+            final AbstractTreeNode<?> onlyChild = Iterables.getOnlyElement(children);
 
             if (onlyChild instanceof PsiDirectoryNode) {
                 final PsiDirectoryNode parentPsiDirectoryNode = (PsiDirectoryNode) parent;
@@ -384,7 +384,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     @Override
-    public Object getData(final Collection<AbstractTreeNode> selected, final String dataName) {
+    public Object getData(final Collection<AbstractTreeNode<?>> selected, final String dataName) {
         return null;
     }
 }

@@ -35,6 +35,10 @@ public class ImpexStructureViewModel extends TextEditorBasedStructureViewModel
         super(editor, file);
     }
 
+    protected ImpexStructureViewModel(final ImpexFile file) {
+        super(file);
+    }
+
     @NotNull
     @Override
     public StructureViewTreeElement getRoot() {

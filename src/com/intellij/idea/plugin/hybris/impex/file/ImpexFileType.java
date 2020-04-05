@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.file;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
+import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,10 +39,18 @@ public class ImpexFileType extends LanguageFileType {
         super(ImpexLanguage.getInstance());
     }
 
+    public ImpexFileType(@NotNull Language language) {
+        super(language);
+    }
+
+    public ImpexFileType(@NotNull Language language, boolean secondary) {
+        super(language, secondary);
+    }
+
     @NotNull
     @Override
     public String getName() {
-        return "Impex file";
+        return "Impex";
     }
 
     @NotNull
