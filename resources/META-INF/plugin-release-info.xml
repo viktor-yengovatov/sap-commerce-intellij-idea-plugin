@@ -5,7 +5,7 @@
     <version>2001.1</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="201.6487" until-build="201.*"/>
+    <idea-version since-build="201.6668"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -78,5 +78,15 @@
           </ul>
       ]]>
     </description>
+
+    <change-notes>
+        <![CDATA[
+            <ul>
+                <li> Bug fixing, refactoring. </li>
+                <li> Due to absence of the "Import project" option in the start wizard,
+                    properly importing of Hybris project with the current version of the plugin available through "File->New->Project from existing sources". </li>
+            </ul>
+          ]]>
+    </change-notes>
 
 </idea-plugin>
