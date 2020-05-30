@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils
 class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(psiClass: PsiElement,
-                                          result: MutableCollection<in RelatedItemLineMarkerInfo<PsiElement>>) {
+                                          result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         if (psiClass is PsiClass) {
             val project = psiClass.project
 

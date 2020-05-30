@@ -25,6 +25,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -51,12 +52,12 @@ public class HighlightMacrosHandler extends HighlightUsagesHandlerBase<PsiElemen
     }
 
     @Override
-    protected void selectTargets(final List<PsiElement> targets, final Consumer<List<PsiElement>> selectionConsumer) {
+    protected void selectTargets(final List<? extends PsiElement> targets, final Consumer<? super List<? extends PsiElement>> selectionConsumer) {
         selectionConsumer.consume(targets);
     }
 
     @Override
-    public void computeUsages(final List<PsiElement> targets) {
+    public void computeUsages(final List<? extends PsiElement> targets) {
         final PsiFile file = myTarget.getContainingFile();
 
         final PsiElement[] psiElements = PsiTreeUtil.collectElements(

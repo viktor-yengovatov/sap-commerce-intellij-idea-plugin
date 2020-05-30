@@ -24,9 +24,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -142,27 +140,26 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
     }
 
     private void moveMavenModulesToGroup(
-        final @NotNull Project project,
-        final @NotNull List<Module> mavenModules,
-        final @NotNull Map<String, String[]> mavenGroupMapping
+            final @NotNull Project project,
+            final @NotNull List<Module> mavenModules,
+            final @NotNull Map<String, String[]> mavenGroupMapping
     ) {
-        AccessToken token = null;
-        final ModifiableModuleModel modifiableModuleModel;
-        try {
-            token = ApplicationManager.getApplication().acquireReadActionLock();
-            modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
-
-            for (Module module : mavenModules) {
-                module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.MAVEN.name());
-                final String[] groupPath = modifiableModuleModel.getModuleGroupPath(module);
-                modifiableModuleModel.setModuleGroupPath(module, ArrayUtils.addAll(mavenGroupMapping.get(module.getName()), groupPath));
-            }
-        } finally {
-            if (token != null) {
-                token.finish();
-            }
-        }
+        final ModifiableModuleModel modifiableModuleModel = ReadAction.compute(
+                () -> getModifiableModuleModel(project, mavenModules, mavenGroupMapping)
+        );
         ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(modifiableModuleModel::commit));
+    }
+
+    @NotNull
+    private ModifiableModuleModel getModifiableModuleModel(Project project, List<Module> mavenModules, Map<String, String[]> mavenGroupMapping) {
+        final ModifiableModuleModel model = ModuleManager.getInstance(project).getModifiableModel();
+
+        for (Module module : mavenModules) {
+            module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.MAVEN.name());
+            final String[] groupPath = model.getModuleGroupPath(module);
+            model.setModuleGroupPath(module, ArrayUtils.addAll(mavenGroupMapping.get(module.getName()), groupPath));
+        }
+        return model;
     }
 
 

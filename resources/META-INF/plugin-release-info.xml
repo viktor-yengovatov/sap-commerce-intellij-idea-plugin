@@ -2,10 +2,10 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2001.1</version>
+    <version>2001.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="201.6668"/>
+    <idea-version since-build="202.5958.24"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -23,7 +23,7 @@
 
           <b>Features:</b>
           <ul>
-              <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation and correct unit and integration tests execution.</li>
+              <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
               <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
               <li>Import your custom Eclipse, Maven and Gradle extensions together with Hybris platform.</li>
               <li>Custom editor for flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by a single click of a button.</li>
@@ -83,8 +83,7 @@
         <![CDATA[
             <ul>
                 <li> Bug fixing, refactoring. </li>
-                <li> Due to absence of the "Import project" option in the start wizard,
-                    properly importing of Hybris project with the current version of the plugin available through "File->New->Project from existing sources". </li>
+                <li> Make plugin compatible with 2020.2 version of IntelliJ IDEA </li>
             </ul>
           ]]>
     </change-notes>

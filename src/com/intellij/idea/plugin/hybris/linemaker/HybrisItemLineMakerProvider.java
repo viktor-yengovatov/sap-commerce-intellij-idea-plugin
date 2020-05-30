@@ -18,15 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.linemaker;
 
-import com.google.common.collect.Sets;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.*;
 import com.intellij.psi.xml.XmlElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +44,7 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
     @Override
     protected void collectNavigationMarkers(
         @NotNull final PsiElement element,
-        final Collection<? super RelatedItemLineMarkerInfo> result
+        @NotNull final Collection<? super RelatedItemLineMarkerInfo<?>> result
     ) {
         if (element instanceof PsiClass) {
             final PsiClass psiClass = (PsiClass) element;
@@ -77,7 +75,7 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
     }
 
     private void createTargetsWithGutterIcon(
-        final Collection<? super RelatedItemLineMarkerInfo> result,
+        final Collection<? super RelatedItemLineMarkerInfo<?>> result,
         final PsiClass psiClass,
         final Collection<XmlElement> list
     ) {
@@ -85,17 +83,17 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
             = NavigationGutterIconBuilder.create(HybrisIcons.TYPE_SYSTEM).setTargets(list);
 
         builder.setEmptyPopupText(HybrisI18NBundleUtils.message(
-            "hybris.gutter.navigate.no.matching.beans",
-            new Object[0]
+            "hybris.gutter.navigate.no.matching.beans"
         ));
 
         builder.setPopupTitle(HybrisI18NBundleUtils.message(
-            "hybris.gutter.bean.class.navigate.choose.class.title",
-            new Object[0]
+            "hybris.gutter.bean.class.navigate.choose.class.title"
         ));
         builder.setTooltipText(HybrisI18NBundleUtils.message(
-            "hybris.gutter.item.class.tooltip.navigate.declaration", new Object[0]
+            "hybris.gutter.item.class.tooltip.navigate.declaration"
         ));
-        result.add(builder.createLineMarkerInfo(psiClass.getNameIdentifier()));
+        PsiIdentifier nameIdentifier = psiClass.getNameIdentifier();
+        RelatedItemLineMarkerInfo<?> lineMarkerInfo = builder.createLineMarkerInfo(nameIdentifier);
+        result.add(lineMarkerInfo);
     }
 }

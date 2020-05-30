@@ -42,7 +42,7 @@ import com.intellij.psi.xml.XmlAttributeValue
 class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(element: PsiElement,
-                                          result: MutableCollection<in RelatedItemLineMarkerInfo<PsiElement>>) {
+                                          result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         if (element is PsiClass) {
             val project = element.project
 
