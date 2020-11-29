@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const val sourceVersion="1.8"
+const val sourceVersion="11"
 const val kotlinApiVersion="1.4"
 
 
