@@ -10,8 +10,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import java.util.Optional
+import java.util.stream.Collectors
 import java.util.stream.Stream
-import kotlin.streams.toList
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -44,7 +44,7 @@ class TypeSystemItemRef(owner: FlexibleSearchTableName) : TypeSystemReferenceBas
                 .map { it.retrieveAllDomsStream() }
                 .orElse(Stream.empty())
                 .map { ItemTypeResolveResult(it) }
-                .toList()
+                .collect(Collectors.toList())
 
         val res1 = meta.findRelationByName(lookingForName)
                 .distinctBy { it.name }

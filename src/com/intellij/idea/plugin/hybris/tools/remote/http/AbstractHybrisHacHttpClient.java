@@ -250,6 +250,6 @@ public abstract class AbstractHybrisHacHttpClient {
         sc.init(null, trustAllCerts, new SecureRandom());
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());
-        return Jsoup.connect(url).validateTLSCertificates(false);
+        return Jsoup.connect(url);
     }
 }

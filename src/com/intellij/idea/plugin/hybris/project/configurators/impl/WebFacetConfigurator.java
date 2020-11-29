@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.javaee.DeploymentDescriptorsConstants;
 import com.intellij.javaee.web.facet.WebFacet;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -81,10 +82,15 @@ public class WebFacetConfigurator implements FacetConfigurator {
                 DeploymentDescriptorsConstants.WEB_XML_META_DATA
             );
         }
+        writeFacetData(moduleDescriptor, modifiableRootModel, webRoot, webFacet);
+    }
 
-        webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false));
-        webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(webRoot.getAbsolutePath())), "/");
-        this.setupFacetDeploymentDescriptor(webFacet, moduleDescriptor);
+    private void writeFacetData(HybrisModuleDescriptor moduleDescriptor, ModifiableRootModel modifiableRootModel, File webRoot, WebFacet webFacet) {
+        WriteAction.runAndWait(() -> {
+            webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false));
+            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(webRoot.getAbsolutePath())), "/");
+            setupFacetDeploymentDescriptor(webFacet, moduleDescriptor);
+        });
     }
 
     private void setupFacetDeploymentDescriptor(

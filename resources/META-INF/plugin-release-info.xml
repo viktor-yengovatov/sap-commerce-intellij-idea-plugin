@@ -2,10 +2,10 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2001.2</version>
+    <version>2001.3</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="202.5958.24"/>
+    <idea-version since-build="203.5784.10"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -82,8 +82,7 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Bug fixing, refactoring. </li>
-                <li> Make plugin compatible with 2020.2 version of IntelliJ IDEA </li>
+                <li> Make plugin compatible with 2020.3 version of IntelliJ IDEA </li>
             </ul>
           ]]>
     </change-notes>

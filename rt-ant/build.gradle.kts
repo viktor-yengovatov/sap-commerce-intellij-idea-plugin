@@ -16,7 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "SAP-Commerce-Developers-Toolset"
+plugins {
+    id("org.jetbrains.intellij")
+}
 
-include ":common"
-include ":rt-ant"
+// Should be 1.7 otherwise it will not work in Hybris 5.X which require java 1.7.
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+tasks {
+    buildSearchableOptions {
+        enabled = false
+    }
+}
+
+sourceSets.main {
+    java.srcDirs(
+        file("src")
+    )
+}
+
+dependencies {
+    compileOnly("org.apache.ant:ant:$antVersion")
+}
+
+val jar: Jar by tasks
+jar.archiveFileName.set("rt-ant.jar")

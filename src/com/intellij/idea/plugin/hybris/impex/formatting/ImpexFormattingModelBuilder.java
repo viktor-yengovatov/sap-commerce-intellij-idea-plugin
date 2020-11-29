@@ -18,12 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.Block;
-import com.intellij.formatting.FormattingModel;
-import com.intellij.formatting.FormattingModelBuilder;
-import com.intellij.formatting.FormattingModelProvider;
-import com.intellij.formatting.SpacingBuilder;
+import com.intellij.formatting.*;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.lang.ASTNode;
@@ -41,10 +36,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
 
-    @NotNull
     @Override
-    public FormattingModel createModel(final PsiElement element, final CodeStyleSettings settings) {
+    public @NotNull FormattingModel createModel(@NotNull FormattingContext formattingContext) {
+        return createModelInternally(formattingContext.getPsiElement(), formattingContext.getCodeStyleSettings());
+    }
 
+    @NotNull
+    private FormattingModel createModelInternally(final PsiElement element, final CodeStyleSettings settings) {
         final Block impexBlock = new ImpexBlock(
             element.getNode(),
             null,

@@ -10,7 +10,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ui.Messages
-import kotlin.streams.toList
 
 
 class HybrisChooseInstanceAction : AnAction(
@@ -23,7 +22,7 @@ class HybrisChooseInstanceAction : AnAction(
         val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state ?: return
         val list = state.remoteConnectionSettingsList
         val consoleType = HybrisConsolePanelView.getInstance(project).consolePanel.getActiveConsole().connectionType()
-        val currentList = list.stream().filter{it.type == consoleType}.toList()
+        val currentList = list.filter {it.type == consoleType}.toList()
         val options:Array<String> = currentList.stream().map { it.toString() }.toArray<String> { length -> arrayOfNulls(length)}
         val active = if (consoleType == SOLR) {
             HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project)

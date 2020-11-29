@@ -19,14 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.formatting;
 
 
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.FormattingModel;
-import com.intellij.formatting.FormattingModelBuilder;
-import com.intellij.formatting.FormattingModelProvider;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.SpacingBuilder;
-import com.intellij.formatting.Wrap;
-import com.intellij.formatting.WrapType;
+import com.intellij.formatting.*;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
@@ -52,9 +45,13 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 
 public class FlexibleSearchFormattingModelBuilder implements FormattingModelBuilder {
 
-    @NotNull
     @Override
-    public FormattingModel createModel(
+    public @NotNull FormattingModel createModel(@NotNull FormattingContext formattingContext) {
+        return createModelInternally(formattingContext.getPsiElement(), formattingContext.getCodeStyleSettings());
+    }
+
+    @NotNull
+    private FormattingModel createModelInternally(
         final PsiElement element, final CodeStyleSettings settings
     ) {
 

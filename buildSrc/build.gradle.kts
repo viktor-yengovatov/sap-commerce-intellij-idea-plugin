@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2020 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,19 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-jar.archiveName = "rt-ant.jar"
 
-// Should be 1.7 otherwise it will not work in Hybris 5.X which require java 1.7.
-compileJava {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+plugins {
+    `kotlin-dsl`
 }
+
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    //this should be pulled from <idea-home>/lib/ant/lib
-    compileOnly "org.apache.ant:ant:1.10.6"
+    val kotlin = "1.4.10"
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin")
 }

@@ -27,11 +27,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.notification.NotificationType;
@@ -82,18 +78,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
     protected volatile boolean refresh;
-    protected final VirtualFileSystemService virtualFileSystemService;
     private List<HybrisModuleDescriptor> moduleList;
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
 
-    public DefaultHybrisProjectImportBuilder(@NotNull final VirtualFileSystemService virtualFileSystemService) {
-        Validate.notNull(virtualFileSystemService);
-
-        this.virtualFileSystemService = virtualFileSystemService;
-    }
-
     public ConfiguratorFactory getConfiguratorFactory() {
-        if (!Extensions.getRootArea().hasExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID)) {
+        if (!ApplicationManager.getApplication().getExtensionArea().hasExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID)) {
             return ServiceManager.getService(DefaultConfiguratorFactory.class);
         }
 
@@ -317,7 +306,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         Collections.sort(alreadyExistingModuleFiles);
 
         try {
-            this.virtualFileSystemService.removeAllFiles(alreadyExistingModuleFiles);
+            ApplicationManager.getApplication().getService(VirtualFileSystemService.class).removeAllFiles(alreadyExistingModuleFiles);
         } catch (IOException e) {
             LOG.error("Can not remove old module files.", e);
         }
