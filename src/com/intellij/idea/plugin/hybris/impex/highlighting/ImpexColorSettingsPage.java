@@ -42,8 +42,7 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BEAN_SHELL_MARKER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BOOLEAN;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMA;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMENT_BODY;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMENT_MARKER;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PROPERTY_COMMENT;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_PATH_DELIMITER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DIGIT;
@@ -75,8 +74,7 @@ import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.FUNCT
 public class ImpexColorSettingsPage implements ColorSettingsPage {
 
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-        new AttributesDescriptor("Comment marker (#)", COMMENT_MARKER),
-        new AttributesDescriptor("Comment body", COMMENT_BODY),
+        new AttributesDescriptor("Comment line", PROPERTY_COMMENT),
         new AttributesDescriptor("Macro name declaration", MACRO_NAME_DECLARATION),
         new AttributesDescriptor("Macro value", MACRO_VALUE),
         new AttributesDescriptor("Macro usage", MACRO_USAGE),

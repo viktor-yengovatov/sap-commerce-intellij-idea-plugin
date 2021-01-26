@@ -37,8 +37,6 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BEAN_SHELL_MARKER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BOOLEAN;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMA;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMENT_BODY;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMENT_MARKER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_PATH_DELIMITER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DIGIT;
@@ -60,6 +58,7 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_USAGE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_VALUE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PARAMETERS_SEPARATOR;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PROPERTY_COMMENT;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ROUND_BRACKETS;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SINGLE_STRING;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SQUARE_BRACKETS;
@@ -67,8 +66,7 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 
 public class DefaultImpexSyntaxHighlighter extends ImpexSyntaxHighlighter {
 
-    public static final TextAttributesKey[] COMMENT_MARKER_KEYS = pack(COMMENT_MARKER);
-    public static final TextAttributesKey[] COMMENT_BODY_KEYS = pack(COMMENT_BODY);
+    public static final TextAttributesKey[] PROPERTY_COMMENT_KEYS = pack(PROPERTY_COMMENT);
     public static final TextAttributesKey[] MACRO_NAME_DECLARATION_KEYS = pack(MACRO_NAME_DECLARATION);
     public static final TextAttributesKey[] MACRO_VALUE_KEYS = pack(MACRO_VALUE);
     public static final TextAttributesKey[] MACRO_USAGE_KEYS = pack(MACRO_USAGE);
@@ -137,10 +135,8 @@ public class DefaultImpexSyntaxHighlighter extends ImpexSyntaxHighlighter {
             return BOOLEAN_KEYS;
         } else if (tokenType.equals(ImpexTypes.COMMA)) {
             return COMMA_KEYS;
-        } else if (tokenType.equals(ImpexTypes.COMMENT_BODY)) {
-            return COMMENT_BODY_KEYS;
-        } else if (tokenType.equals(ImpexTypes.COMMENT_MARKER)) {
-            return COMMENT_MARKER_KEYS;
+        } else if (tokenType.equals(ImpexTypes.LINE_COMMENT)) {
+            return PROPERTY_COMMENT_KEYS;
         } else if (tokenType.equals(ImpexTypes.DEFAULT_PATH_DELIMITER)) {
             return DEFAULT_PATH_DELIMITER_KEYS;
         } else if (tokenType.equals(ImpexTypes.DIGIT)) {

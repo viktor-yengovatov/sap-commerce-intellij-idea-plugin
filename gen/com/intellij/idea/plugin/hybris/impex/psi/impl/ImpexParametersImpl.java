@@ -21,6 +21,7 @@ public class ImpexParametersImpl extends ASTWrapperPsiElement implements ImpexPa
     visitor.visitParameters(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);

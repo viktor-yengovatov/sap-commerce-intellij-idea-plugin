@@ -62,7 +62,7 @@ private recover_root ::= !(
   |  HEADER_MODE_UPDATE
   |  VALUE_SUBTYPE
   |  FIELD_VALUE_SEPARATOR
-  |  COMMENT_MARKER
+  |  LINE_COMMENT
   |  macro_name_dec
   |  BEAN_SHELL_MARKER
   |  DOUBLE_STRING
@@ -88,7 +88,7 @@ header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_hea
 {pin = 1}
 
 
-comment ::= COMMENT_MARKER COMMENT_BODY?
+comment ::= LINE_COMMENT
 {pin = 1}
 
 macro_value_dec ::= MACRO_VALUE

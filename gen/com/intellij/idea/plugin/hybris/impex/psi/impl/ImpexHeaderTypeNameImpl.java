@@ -13,14 +13,15 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexHeaderTypeNameImpl extends ImpexHeaderTypeNameMixin implements ImpexHeaderTypeName {
 
-  public ImpexHeaderTypeNameImpl(@NotNull ASTNode node) {
-    super(node);
+  public ImpexHeaderTypeNameImpl(@NotNull ASTNode astNode) {
+    super(astNode);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
     visitor.visitHeaderTypeName(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
