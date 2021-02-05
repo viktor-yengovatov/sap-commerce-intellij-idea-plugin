@@ -124,7 +124,7 @@ public interface MavenUtils {
                 for (MavenProjectReaderResult mavenProjectReaderResult : mavenProjects) {
                     final MavenProjectsManager manager = MavenProjectsManager.getInstance(project);
 
-                    final MavenProgressIndicator indicator = new MavenProgressIndicator(manager::getSyncConsole);
+                    final MavenProgressIndicator indicator = new MavenProgressIndicator(project, manager::getSyncConsole);
                     indicator.setIndicator(progressIndicator);
                     final List<MavenArtifact> dependencies = mavenProjectReaderResult.mavenModel.getDependencies();
 

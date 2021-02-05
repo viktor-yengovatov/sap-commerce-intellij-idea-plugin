@@ -18,4 +18,3 @@
 
 rootProject.name = "SAP-Commerce-Developers-Toolset"
 include("rt-ant")
-

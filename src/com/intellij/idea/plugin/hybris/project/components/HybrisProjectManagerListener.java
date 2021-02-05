@@ -18,10 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.components;
 
-import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
@@ -50,12 +48,10 @@ import com.intellij.openapi.updateSettings.impl.UpdateChecker;
 import com.intellij.openapi.updateSettings.impl.UpdateInstaller;
 import com.intellij.openapi.updateSettings.impl.UpdateSettings;
 import com.intellij.spring.settings.SpringGeneralSettings;
-import com.intellij.util.text.DateFormatUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.event.HyperlinkEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -74,8 +70,6 @@ import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 public class HybrisProjectManagerListener implements ProjectManagerListener, Disposable {
 
     private static final Logger LOG = Logger.getInstance(HybrisProjectManagerListener.class);
-    private static final String LAST_BUBBLE_INFO_TIME_PROPERTY = "LAST_BUBBLE_INFO_TIME";
-    public static final int NOTIFICATION_TIMEOUT_MILLISECONDS = 3000;
 
     private static final NotificationGroup Y_PROJECT_NOTIFICATION_GROUP = new NotificationGroup(
         "[y] project",
@@ -147,17 +141,17 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
             }
             PluginDownloader pluginDownloader =
                 availableUpdates.stream()
-                                .filter(downloader -> HybrisConstants.PLUGIN_ID.equals(downloader.getPluginId()))
+                                .filter(downloader -> HybrisConstants.PLUGIN_ID.equals(downloader.getId().getIdString()))
                                 .findAny().orElse(null);
             if (pluginDownloader == null) {
-                LOG.info("Hybris integration plugin update not found");
+                LOG.info("SAP Commerce Developers Toolset plugin update not found");
                 return;
             }
-            LOG.info("Hybris integration plugin update available");
+            LOG.info("SAP Commerce Developers Toolset plugin update available");
             if (UpdateInstaller.installPluginUpdates(availableUpdates, new EmptyProgressIndicator())) {
-                LOG.info("Hybris integration plugin update succeeded");
+                LOG.info("SAP Commerce Developers Toolset plugin update succeeded");
             } else {
-                LOG.info("Hybris integration plugin update failed");
+                LOG.info("SAP Commerce Developers Toolset plugin update failed");
             }
         });
     }
@@ -189,44 +183,6 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
         } else {
             return commonIdeaService.isPotentiallyHybrisProject(project);
         }
-    }
-
-    private void showImportantInfoNotificationWithCloseTimeoutIfItWasNotShownThisMonth(
-        final Project project, String titleKey, String textKey
-    ) {
-        if (this.notificationWasNotAlreadyShownThisMonth()) {
-            this.persistCurrentTimeForNotificationShowTime();
-
-            final NotificationService notificationService = new DefaultNotificationService(
-                Y_PROJECT_NOTIFICATION_GROUP, project
-            );
-
-            notificationService.showImportantNotificationWithCloseTimeout(
-                titleKey,
-                textKey,
-                NotificationType.INFORMATION,
-                NOTIFICATION_TIMEOUT_MILLISECONDS,
-                (myNotification, myHyperlinkEvent) -> goToDiscountOffer(myHyperlinkEvent)
-            );
-        }
-    }
-
-    private void persistCurrentTimeForNotificationShowTime() {
-        PropertiesComponent.getInstance().setValue(
-            LAST_BUBBLE_INFO_TIME_PROPERTY, String.valueOf(System.currentTimeMillis())
-        );
-    }
-
-    private boolean notificationWasNotAlreadyShownThisMonth() {
-        final PropertiesComponent properties = PropertiesComponent.getInstance();
-        final long lastNotificationTime = properties.getOrInitLong(LAST_BUBBLE_INFO_TIME_PROPERTY, 0);
-        final long currentTime = System.currentTimeMillis();
-
-        return currentTime - lastNotificationTime >= DateFormatUtil.MONTH;
-    }
-
-    private void goToDiscountOffer(final HyperlinkEvent myHyperlinkEvent) {
-        BrowserUtil.browse(myHyperlinkEvent.getDescription());
     }
 
     private void fixBackOfficeJRebelSupport(final Project project) {

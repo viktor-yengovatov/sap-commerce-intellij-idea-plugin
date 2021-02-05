@@ -26,6 +26,6 @@ repositories {
 }
 
 dependencies {
-    val kotlin = "1.4.10"
+    val kotlin = "1.4.30"
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin")
 }

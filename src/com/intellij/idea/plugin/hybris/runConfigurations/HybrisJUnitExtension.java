@@ -42,7 +42,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA
 public class HybrisJUnitExtension extends RunConfigurationExtension {
 
     @Override
-    public <T extends RunConfigurationBase> void updateJavaParameters(
+    public <T extends RunConfigurationBase<?>> void updateJavaParameters(
         final T configuration, final JavaParameters params, final RunnerSettings runnerSettings
     ) throws ExecutionException {
         if (runnerSettings != null || !isApplicableFor(configuration)) {

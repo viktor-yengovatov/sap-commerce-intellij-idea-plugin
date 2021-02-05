@@ -2,10 +2,10 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2001.3</version>
+    <version>2021.1</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="203.5784.10"/>
+    <idea-version since-build="211.6222.4"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -75,6 +75,8 @@
               <li>Maxim Bilohay</li>
               <li>Eugene Koryakin</li>
               <li>Yevhenii Koshevyi</li>
+              <li>Mykhailo Lytvyn</li>
+              <li>Viktors Jengovatovs</li>
           </ul>
       ]]>
     </description>
@@ -82,7 +84,9 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Make plugin compatible with 2020.3 version of IntelliJ IDEA </li>
+                <li> Make plugin compatible with 2021.1 version of IntelliJ IDEA </li>
+                <li> Added Copyright plugin support for impex files </li>
+                <li> Added downloading and attaching maven artifacts' javadocs and sources to related extensions </li>
             </ul>
           ]]>
     </change-notes>

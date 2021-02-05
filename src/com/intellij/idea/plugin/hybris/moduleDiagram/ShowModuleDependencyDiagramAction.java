@@ -22,6 +22,7 @@ import com.intellij.diagram.DiagramProvider;
 import com.intellij.idea.plugin.hybris.actions.ActionUtils;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.uml.core.actions.ShowDiagram;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -34,9 +35,8 @@ public class ShowModuleDependencyDiagramAction extends ShowDiagram {
         e.getPresentation().setEnabledAndVisible(ActionUtils.isHybrisContext(e));
     }
 
-    @Nullable
     @Override
-    public DiagramProvider getProvider(final AnActionEvent e) {
+    public @Nullable DiagramProvider<?> getForcedProvider(@NotNull final AnActionEvent e) {
         return new ModuleDepDiagramProvider();
     }
 

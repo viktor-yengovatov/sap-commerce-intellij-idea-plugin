@@ -31,10 +31,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.projectImport.ProjectImportProvider;
 import com.intellij.projectImport.ProjectOpenProcessor;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
 
 /**
  * Created 12:31 AM 10 June 2015
