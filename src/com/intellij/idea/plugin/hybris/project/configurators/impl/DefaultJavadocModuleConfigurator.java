@@ -20,10 +20,14 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.JavaModuleExternalPaths;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sergey Aksenenko <serg.aksenenko@gmail.com> on 4/6/2016.
@@ -33,19 +37,29 @@ public class DefaultJavadocModuleConfigurator implements JavadocModuleConfigurat
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ProgressIndicator progressIndicator
     ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);
 
         final String javadocUrl = moduleDescriptor.getRootProjectDescriptor().getJavadocUrl();
 
-        if (null != javadocUrl) {
-            final JavaModuleExternalPaths javaModuleExternalPaths = modifiableRootModel.getModuleExtension(
-                JavaModuleExternalPaths.class
-            );
+        final List<String> javadocPathList = MavenUtils.resolveMavenJavadocs(modifiableRootModel, moduleDescriptor, progressIndicator);
+        final JavaModuleExternalPaths javaModuleExternalPaths = modifiableRootModel.getModuleExtension(
+            JavaModuleExternalPaths.class
+        );
 
-            javaModuleExternalPaths.setJavadocUrls(new String[]{javadocUrl});
+        final List<String> javadocRefList = new ArrayList<>();
+        for (final String javadocPath : javadocPathList) {
+            javadocRefList.add("jar://" + javadocPath + "!/");
         }
+        javadocRefList.sort(String::compareTo);
+
+        if (null != javadocUrl) {
+            javadocRefList.add(javadocUrl);
+        }
+
+        javaModuleExternalPaths.setJavadocUrls(javadocRefList.toArray(new String[0]));
     }
 }

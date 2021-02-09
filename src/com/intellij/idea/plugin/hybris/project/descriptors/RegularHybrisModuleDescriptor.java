@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
@@ -265,7 +266,8 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
 
         libs.add(new DefaultJavaLibraryDescriptor(
             new File(this.getRootDirectory(), HybrisConstants.LIB_DIRECTORY),
-            true
+            true,
+            LibraryDescriptorType.LIB
         ));
 
         libs.add(new DefaultJavaLibraryDescriptor(

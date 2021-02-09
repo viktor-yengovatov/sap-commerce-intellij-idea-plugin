@@ -57,6 +57,8 @@ public class HybrisApplicationSettingsForm {
     private JCheckBox defaultPlatformInReadOnly;
     private JTextField groupPlatformTextField;
     private JCheckBox followSymlink;
+    private JCheckBox withMavenSources;
+    private JCheckBox withMavenJavadocs;
     private JPanel typeSystemDiagramStopWords;
     private JCheckBox scanThroughExternalModule;
     private JCheckBox excludeTestSources;
@@ -83,6 +85,8 @@ public class HybrisApplicationSettingsForm {
         hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
         defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
         followSymlink.setSelected(data.isFollowSymlink());
+        withMavenSources.setSelected(data.isWithMavenSources());
+        withMavenJavadocs.setSelected(data.isWithMavenJavadocs());
         scanThroughExternalModule.setSelected(data.isScanThroughExternalModule());
         excludeTestSources.setSelected(data.isExcludeTestSources());
         warnIfGeneratedItemsAreOutOfDateCheckBox.setSelected(data.isWarnIfGeneratedItemsAreOutOfDate());
@@ -104,6 +108,8 @@ public class HybrisApplicationSettingsForm {
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
         data.setFollowSymlink(followSymlink.isSelected());
+        data.setWithMavenJavadocs(withMavenSources.isSelected());
+        data.setWithMavenJavadocs(withMavenJavadocs.isSelected());
         data.setScanThroughExternalModule(scanThroughExternalModule.isSelected());
         data.setExcludeTestSources(excludeTestSources.isSelected());
         data.setWarnIfGeneratedItemsAreOutOfDate(warnIfGeneratedItemsAreOutOfDateCheckBox.isSelected());
@@ -156,6 +162,12 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (followSymlink.isSelected() != data.isFollowSymlink()) {
+            return true;
+        }
+        if (withMavenSources.isSelected() != data.isWithMavenSources()) {
+            return true;
+        }
+        if (withMavenJavadocs.isSelected() != data.isWithMavenJavadocs()) {
             return true;
         }
         if (excludeTestSources.isSelected() != data.isExcludeTestSources()) {

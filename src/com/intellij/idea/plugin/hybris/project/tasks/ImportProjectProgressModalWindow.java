@@ -77,7 +77,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.JavaSdkVersion;
-import com.intellij.openapi.projectRoots.JdkVersionUtil;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.LanguageLevelProjectExtension;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -227,7 +226,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             modifiableRootModel.inheritSdk();
 
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.libs"));
-            libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider);
+            libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.content"));
 
             if (shouldBeTreatedAsReadOnly(moduleDescriptor)) {
@@ -238,7 +237,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.outputpath"));
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.javadoc"));
-            javadocModuleConfigurator.configure(modifiableRootModel, moduleDescriptor);
+            javadocModuleConfigurator.configure(modifiableRootModel, moduleDescriptor,indicator);
             indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.groups"));
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
