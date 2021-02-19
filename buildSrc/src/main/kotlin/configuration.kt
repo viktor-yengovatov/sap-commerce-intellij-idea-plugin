@@ -30,15 +30,15 @@ const val intellijUpdateSinceUntilBuild=true
 
 const val pluginName_ = "SAP-Commerce-Developers-Toolset"
 const val pluginVersion = "2001.3"
-const val pluginSinceBuild = "203.5981.41"
+const val pluginSinceBuild = "203.7148.101"
 const val pluginUntilBuild = "203.*"
 
-// Plugin Verifier integration -> https://github.com/JetBrains/gradle-intellij-plugin//plugin-verifier-dsl
+// Plugin Verifier integration -> https://github.com/JetBrains/intellij-plugin-verifier
 // See https://jb.gg/intellij-platform-builds-list for available build versions
 const val pluginVerifierIdeVersions = "IU-203.5981.114"
 
 const val platformType = "IU"
-const val platformVersion = "203.5981-EAP-CANDIDATE-SNAPSHOT"
+const val platformVersion = "203.7148-EAP-CANDIDATE-SNAPSHOT"
 const val platformDownloadSources = true
 // Plugin Dependencies -> https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
 // Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22
