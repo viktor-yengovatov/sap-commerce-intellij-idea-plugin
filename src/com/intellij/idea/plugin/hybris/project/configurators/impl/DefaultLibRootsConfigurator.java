@@ -19,13 +19,16 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CoreHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.DefaultJavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.DependencyScope;
 import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -41,6 +44,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
 
@@ -56,7 +61,8 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
-        @NotNull IdeModifiableModelsProvider modifiableModelsProvider
+        @NotNull IdeModifiableModelsProvider modifiableModelsProvider,
+        @NotNull final ProgressIndicator indicator
     ) {
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
@@ -69,15 +75,20 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
                     modifiableRootModel,
                     modifiableModelsProvider,
                     sourceCodeRoot,
-                    javaLibraryDescriptor
+                    javaLibraryDescriptor,
+                    moduleDescriptor,
+                    indicator
                 );
             } else {
                 this.addJarFolderToModuleLibs(
                     modifiableRootModel,
                     modifiableModelsProvider,
                     sourceCodeRoot,
-                    javaLibraryDescriptor
+                    javaLibraryDescriptor,
+                    moduleDescriptor,
+                    indicator
                 );
+
             }
         }
 
@@ -146,7 +157,9 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @Nullable final VirtualFile sourceCodeRoot,
-        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor
+        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ProgressIndicator progressIndicator
     ) {
         final Library library = modifiableRootModel.getModuleLibraryTable().createLibrary();
         final Library.ModifiableModel libraryModifiableModel = modifiableModelsProvider
@@ -164,9 +177,11 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             }
         }
 
-        if (sourceCodeRoot != null && !sourceDirAttached && javaLibraryDescriptor.getLibraryFile().getName().endsWith(HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)) {
+        if (sourceCodeRoot != null && !sourceDirAttached && javaLibraryDescriptor.getLibraryFile().getName().endsWith(
+            HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)) {
             libraryModifiableModel.addRoot(sourceCodeRoot, OrderRootType.SOURCES);
         }
+
 
         if (javaLibraryDescriptor.isExported()) {
             this.setLibraryEntryExported(modifiableRootModel, library);
@@ -178,7 +193,9 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @Nullable final VirtualFile sourceCodeRoot,
-        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor
+        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor,
+        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ProgressIndicator progressIndicator
     ) {
         final LibraryTable projectLibraryTable = modifiableRootModel.getModuleLibraryTable();
 
@@ -201,6 +218,32 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             this.setLibraryEntryExported(modifiableRootModel, library);
         }
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());
+
+        final List<String> resultLibs = resolveMavenSources(
+            modifiableRootModel,
+            javaLibraryDescriptor,
+            moduleDescriptor,
+            progressIndicator
+        );
+
+        for (String resultLib : resultLibs) {
+            libraryModifiableModel.addRoot("jar://" + resultLib + "!/", OrderRootType.SOURCES);
+        }
+    }
+
+    public static List<String> resolveMavenSources(
+        final @NotNull ModifiableRootModel modifiableRootModel,
+        final @NotNull JavaLibraryDescriptor javaLibraryDescriptor,
+        final @NotNull HybrisModuleDescriptor moduleDescriptor,
+        final @NotNull ProgressIndicator progressIndicator
+    ) {
+        if (javaLibraryDescriptor instanceof DefaultJavaLibraryDescriptor) {
+            final DefaultJavaLibraryDescriptor defaultJavaLibraryDescriptor = (DefaultJavaLibraryDescriptor) javaLibraryDescriptor;
+            if (LibraryDescriptorType.LIB == defaultJavaLibraryDescriptor.getDescriptorType()) {
+                return MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator);
+            }
+        }
+        return Collections.emptyList();
     }
 
     private void addLibsToModule(

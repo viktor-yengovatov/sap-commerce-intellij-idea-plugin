@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -47,9 +48,9 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     protected final HybrisProjectDescriptor rootProjectDescriptor;
     @NotNull
-    protected final Set<HybrisModuleDescriptor> dependenciesTree = new HashSet<HybrisModuleDescriptor>(0);
+    protected final Set<HybrisModuleDescriptor> dependenciesTree = new HashSet<>(0);
     @NotNull
-    protected Set<String> springFileSet = new HashSet<String>();
+    protected Set<String> springFileSet = new LinkedHashSet<>();
 
     private boolean inLocalExtensions;
     private IMPORT_STATUS importStatus = IMPORT_STATUS.UNUSED;

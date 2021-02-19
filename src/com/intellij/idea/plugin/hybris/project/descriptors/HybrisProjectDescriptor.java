@@ -135,4 +135,12 @@ public interface HybrisProjectDescriptor {
     String getHybrisVersion();
 
     Set<File> getDetectedVcs();
+
+    boolean isWithMavenSources();
+
+    void setWithMavenSources(boolean withMavenSources);
+
+    boolean isWithMavenJavadocs();
+
+    void setWithMavenJavadocs(boolean withMavenJavadocs);
 }

@@ -110,6 +110,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File externalConfigDirectory;
     @Nullable
     protected File externalDbDriversDirectory;
+    private boolean withMavenSources;
+    private boolean withMavenJavadocs;
     @Nullable
     protected String javadocUrl;
     @Nullable
@@ -900,6 +902,26 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setExternalDbDriversDirectory(@Nullable final File externalDbDriversDirectory) {
         this.externalDbDriversDirectory = externalDbDriversDirectory;
+    }
+
+    @Override
+    public boolean isWithMavenSources() {
+        return withMavenSources;
+    }
+
+    @Override
+    public void setWithMavenSources(final boolean withMavenSources) {
+        this.withMavenSources = withMavenSources;
+    }
+
+    @Override
+    public boolean isWithMavenJavadocs() {
+        return withMavenJavadocs;
+    }
+
+    @Override
+    public void setWithMavenJavadocs(final boolean withMavenJavadocs) {
+        this.withMavenJavadocs = withMavenJavadocs;
     }
 
     @Nullable

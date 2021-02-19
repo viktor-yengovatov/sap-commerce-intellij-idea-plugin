@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
 import com.intellij.openapi.roots.DependencyScope;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.lang3.Validate;
@@ -40,6 +41,8 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     private final File sourcesFile;
     private final boolean isExported;
     private final boolean isDirectoryWithClasses;
+    private final LibraryDescriptorType descriptorType;
+
     @NotNull
     private final DependencyScope scope;
 
@@ -54,6 +57,22 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isExported = isExported;
         this.isDirectoryWithClasses = false;
         this.scope = DependencyScope.COMPILE;
+        this.descriptorType = LibraryDescriptorType.UNKNOWN;
+    }
+
+    public DefaultJavaLibraryDescriptor(
+        @NotNull final File libraryFile,
+        final boolean isExported,
+        final LibraryDescriptorType descriptorType
+    ) {
+        Validate.notNull(libraryFile);
+
+        this.libraryFile = libraryFile;
+        this.sourcesFile = null;
+        this.isExported = isExported;
+        this.isDirectoryWithClasses = false;
+        this.scope = DependencyScope.COMPILE;
+        this.descriptorType = descriptorType;
     }
 
     public DefaultJavaLibraryDescriptor(
@@ -69,6 +88,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isExported = isExported;
         this.isDirectoryWithClasses = false;
         this.scope = DependencyScope.COMPILE;
+        descriptorType = LibraryDescriptorType.UNKNOWN;
     }
 
     public DefaultJavaLibraryDescriptor(
@@ -83,6 +103,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isExported = isExported;
         this.isDirectoryWithClasses = isDirectoryWithClasses;
         this.scope = DependencyScope.COMPILE;
+        descriptorType = LibraryDescriptorType.UNKNOWN;
     }
 
     public DefaultJavaLibraryDescriptor(
@@ -98,6 +119,7 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isExported = isExported;
         this.isDirectoryWithClasses = isDirectoryWithClasses;
         this.scope = DependencyScope.COMPILE;
+        descriptorType = LibraryDescriptorType.UNKNOWN;
     }
 
     @NotNull
@@ -136,6 +158,10 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
     @Override
     public int compareTo(@NotNull final JavaLibraryDescriptor o) {
         return FileUtil.compareFiles(this.libraryFile, o.getLibraryFile());
+    }
+
+    public LibraryDescriptorType getDescriptorType() {
+        return descriptorType;
     }
 
     @Override

@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.HashSet;
 import java.util.List;
 
 public class HybrisApplicationSettings {
@@ -105,6 +104,12 @@ public class HybrisApplicationSettings {
 
     @PropertyName("followSymlink")
     private boolean followSymlink = true;
+
+    @PropertyName("withMavenSources")
+    private boolean withMavenSources;
+
+    @PropertyName("withMavenJavadocs")
+    private boolean withMavenJavadocs;
 
     @PropertyName("allowedSendingPlainStatistics")
     private boolean allowedSendingPlainStatistics = false;
@@ -249,6 +254,22 @@ public class HybrisApplicationSettings {
         this.followSymlink = followSymlink;
     }
 
+    public boolean isWithMavenSources() {
+        return withMavenSources;
+    }
+
+    public void setWithMavenSources(final boolean withMavenSources) {
+        this.withMavenSources = withMavenSources;
+    }
+
+    public boolean isWithMavenJavadocs() {
+        return withMavenJavadocs;
+    }
+
+    public void setWithMavenJavadocs(final boolean withMavenJavadocs) {
+        this.withMavenJavadocs = withMavenJavadocs;
+    }
+
     public boolean isAllowedSendingPlainStatistics() {
         return allowedSendingPlainStatistics;
     }
@@ -346,6 +367,8 @@ public class HybrisApplicationSettings {
             .append(hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly)
             .append(followSymlink)
+            .append(withMavenSources)
+            .append(withMavenJavadocs)
             .append(scanThroughExternalModule)
             .append(allowedSendingPlainStatistics)
             .append(disallowedSendingStatistics)
@@ -386,6 +409,8 @@ public class HybrisApplicationSettings {
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
             .append(followSymlink, other.followSymlink)
+            .append(withMavenSources, other.withMavenSources)
+            .append(withMavenJavadocs, other.withMavenJavadocs)
             .append(scanThroughExternalModule, other.scanThroughExternalModule)
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
             .append(disallowedSendingStatistics, other.disallowedSendingStatistics)
@@ -417,6 +442,8 @@ public class HybrisApplicationSettings {
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
         sb.append(", followSymlink='").append(followSymlink).append('\'');
+        sb.append(", withMavenSources='").append(withMavenSources).append('\'');
+        sb.append(", withMavenJavadocs='").append(withMavenJavadocs).append('\'');
         sb.append(", scanThroughExternalModule='").append(scanThroughExternalModule).append('\'');
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
         sb.append(", disallowedSendingStatistics='").append(disallowedSendingStatistics).append('\'');
