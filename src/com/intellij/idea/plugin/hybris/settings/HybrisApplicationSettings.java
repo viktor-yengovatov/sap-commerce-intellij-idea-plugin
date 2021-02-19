@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.HashSet;
 import java.util.List;
 
 public class HybrisApplicationSettings {
@@ -107,10 +106,10 @@ public class HybrisApplicationSettings {
     private boolean followSymlink = true;
 
     @PropertyName("withMavenSources")
-    private boolean withMavenSources = true;
+    private boolean withMavenSources;
 
     @PropertyName("withMavenJavadocs")
-    private boolean withMavenJavadocs = true;
+    private boolean withMavenJavadocs;
 
     @PropertyName("allowedSendingPlainStatistics")
     private boolean allowedSendingPlainStatistics = false;

@@ -431,6 +431,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             appSettings.setExternalDbDriversDirectory("");
         }
 
+        appSettings.setWithMavenSources(hybrisProjectDescriptor.isWithMavenSources());
+        appSettings.setWithMavenJavadocs(hybrisProjectDescriptor.isWithMavenJavadocs());
+
         hybrisProjectSettings.setCreateBackwardCyclicDependenciesForAddOns(hybrisProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn());
         final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();
 

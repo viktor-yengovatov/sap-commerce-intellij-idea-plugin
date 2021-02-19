@@ -104,7 +104,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox scanThroughExternalModuleCheckbox;
     private JCheckBox excludeTestSourcesCheckBox;
     private JLabel excludeTestSourcesLabel;
+    private JCheckBox withMavenSources;
+    private JCheckBox withMavenJavadocs;
+    private JLabel withMavenJavadocsLabel;
+    private JLabel withMavenSourcesLabel;
     private String hybrisVersion;
+
     public HybrisWorkspaceRootStep(final WizardContext context) {
         super(context);
 
@@ -308,6 +313,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         this.getContext().getHybrisProjectDescriptor().setCreateBackwardCyclicDependenciesForAddOns(
             this.circularDependencyCheckBox.isSelected()
         );
+        this.getContext().getHybrisProjectDescriptor().setWithMavenSources(withMavenSources.isSelected());
+        this.getContext().getHybrisProjectDescriptor().setWithMavenJavadocs(withMavenJavadocs.isSelected());
 
         this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
             this.javadocUrlTextField.getText()
@@ -315,7 +322,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.getContext().getHybrisProjectDescriptor().setHybrisVersion(hybrisVersion);
 
-        LOG.info("importing a project with the following settings: "+this.getContext().getHybrisProjectDescriptor().toString());
+        LOG.info("importing a project with the following settings: " + this.getContext()
+                                                                           .getHybrisProjectDescriptor()
+                                                                           .toString());
 
         this.getContext().setRootProjectDirectory(toFile(this.getContext().getFileToImport()));
     }
