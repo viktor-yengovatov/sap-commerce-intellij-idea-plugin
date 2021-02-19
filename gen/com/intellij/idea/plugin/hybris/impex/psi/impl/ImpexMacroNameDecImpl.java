@@ -21,6 +21,7 @@ public class ImpexMacroNameDecImpl extends ImpexPsiNamedElementImpl implements I
     visitor.visitMacroNameDec(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);

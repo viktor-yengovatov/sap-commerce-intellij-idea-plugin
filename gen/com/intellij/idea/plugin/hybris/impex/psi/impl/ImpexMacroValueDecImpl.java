@@ -21,6 +21,7 @@ public class ImpexMacroValueDecImpl extends ImpexMacrosValueMixin implements Imp
     visitor.visitMacroValueDec(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);

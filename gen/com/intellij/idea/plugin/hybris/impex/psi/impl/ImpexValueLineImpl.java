@@ -21,6 +21,7 @@ public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexVal
     visitor.visitValueLine(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);

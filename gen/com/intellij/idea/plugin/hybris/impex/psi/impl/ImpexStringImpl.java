@@ -20,6 +20,7 @@ public class ImpexStringImpl extends ImpexStringMixin implements ImpexString {
     visitor.visitString(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);

@@ -13,6 +13,8 @@
 
 /out/
 /build/
+/buildsrc/build
+/buildsrc/.gradle
 /common/build/
 /rt-ant/build/
 /.gradle/

@@ -57,7 +57,7 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
                 PsiSearchHelper.getInstance(prevLeaf.project)
                         .processElementsWithWord({ element, _ ->
                             if (element.node.elementType != ImpexParserDefinition.FILE &&
-                                    element.node.elementType != ImpexTypes.COMMENT_BODY) {
+                                    element.node.elementType != ImpexTypes.LINE_COMMENT) {
                                 isExist = true
                             };true
                         }, GlobalSearchScope.fileScope(file),

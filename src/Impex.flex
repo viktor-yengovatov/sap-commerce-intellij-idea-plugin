@@ -42,8 +42,7 @@ crlf        = (([\n])|([\r])|(\r\n))
 not_crlf    = [^\r\n]
 white_space = [ \t\f]
 
-end_of_line_comment_marker = [#]
-end_of_line_comment_body   = {not_crlf}*
+line_comment = [#][^\r\n]*
 
 bean_shell_marker = [#][%]
 bean_shell_body = (({double_string})|{not_crlf}*)
@@ -98,7 +97,6 @@ field_value        = ({not_crlf}|{identifier}+)
 field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
 
-%state COMMENT
 %state WAITING_MACRO_VALUE
 %state MACRO_DECLARATION
 %state HEADER_TYPE
@@ -122,7 +120,7 @@ field_value_ignore = "<ignore>"
     {bean_shell_marker}                                     { yybegin(BEAN_SHELL); return ImpexTypes.BEAN_SHELL_MARKER; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 
-    {end_of_line_comment_marker}                            { yybegin(COMMENT); return ImpexTypes.COMMENT_MARKER; }
+    {line_comment}                                          { yybegin(YYINITIAL); return ImpexTypes.LINE_COMMENT; }
 
     {root_macro_usage}                                      { return ImpexTypes.MACRO_USAGE; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
@@ -149,10 +147,6 @@ field_value_ignore = "<ignore>"
     //$END_USERRIGHTS;;;;;
 //    {semicolon}                                             { return ImpexTypes.SEMICOLON; }
 //}
-
-<COMMENT> {
-    {end_of_line_comment_body}                              { return ImpexTypes.COMMENT_BODY; }
-}
 
 <BEAN_SHELL> {
     {bean_shell_body}                                       { return ImpexTypes.BEAN_SHELL_BODY; }

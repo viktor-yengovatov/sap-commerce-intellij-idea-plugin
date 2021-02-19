@@ -21,6 +21,7 @@ public class ImpexCommentImpl extends ASTWrapperPsiElement implements ImpexComme
     visitor.visitComment(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);

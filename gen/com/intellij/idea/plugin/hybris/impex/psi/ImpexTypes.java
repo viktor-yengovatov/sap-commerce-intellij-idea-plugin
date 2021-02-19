@@ -43,8 +43,6 @@ public interface ImpexTypes {
   IElementType BEAN_SHELL_MARKER = new ImpexTokenType("BEAN_SHELL_MARKER");
   IElementType BOOLEAN = new ImpexTokenType("BOOLEAN");
   IElementType COMMA = new ImpexTokenType("COMMA");
-  IElementType COMMENT_BODY = new ImpexTokenType("COMMENT_BODY");
-  IElementType COMMENT_MARKER = new ImpexTokenType("COMMENT_MARKER");
   IElementType CRLF = new ImpexTokenType("CRLF");
   IElementType DEFAULT_KEY_VALUE_DELIMITER = new ImpexTokenType("DEFAULT_KEY_VALUE_DELIMITER");
   IElementType DEFAULT_PATH_DELIMITER = new ImpexTokenType("DEFAULT_PATH_DELIMITER");
@@ -67,6 +65,7 @@ public interface ImpexTypes {
   IElementType HEADER_TYPE = new ImpexTokenType("HEADER_TYPE");
   IElementType LEFT_ROUND_BRACKET = new ImpexTokenType("LEFT_ROUND_BRACKET");
   IElementType LEFT_SQUARE_BRACKET = new ImpexTokenType("LEFT_SQUARE_BRACKET");
+  IElementType LINE_COMMENT = new ImpexTokenType("LINE_COMMENT");
   IElementType MACRO_NAME_DECLARATION = new ImpexTokenType("MACRO_NAME_DECLARATION");
   IElementType MACRO_USAGE = new ImpexTokenType("MACRO_USAGE");
   IElementType MACRO_VALUE = new ImpexTokenType("MACRO_VALUE");

@@ -37,13 +37,12 @@ import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.NUMBE
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STATIC_FIELD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STRING;
 
-public class ImpexHighlighterColors {
+public final class ImpexHighlighterColors {
 
     private ImpexHighlighterColors() {
     }
 
-    public static final TextAttributesKey COMMENT_MARKER = key("COMMENT_MARKER", LINE_COMMENT);
-    public static final TextAttributesKey COMMENT_BODY = key("COMMENT_BODY", LINE_COMMENT);
+    public static final TextAttributesKey PROPERTY_COMMENT = key("LINE_COMMENT", LINE_COMMENT);
     public static final TextAttributesKey MACRO_NAME_DECLARATION = key("MACRO_NAME_DECLARATION", INSTANCE_FIELD);
     public static final TextAttributesKey MACRO_VALUE = key("MACRO_VALUE", HighlighterColors.TEXT);
     public static final TextAttributesKey MACRO_USAGE = key("MACRO_USAGE", INSTANCE_FIELD);
