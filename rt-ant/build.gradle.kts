@@ -20,10 +20,6 @@ plugins {
     id("org.jetbrains.intellij")
 }
 
-intellij {
-    version = platformVersion
-}
-
 // Should be 1.7 otherwise it will not work in Hybris 5.X which require java 1.7.
 java {
     sourceCompatibility = JavaVersion.VERSION_1_7

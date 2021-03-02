@@ -30,11 +30,11 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.ModificationTracker;
-import com.intellij.uml.project.ModuleItem;
-import com.intellij.uml.project.ModulesUmlEdge;
-import com.intellij.uml.project.ModulesUmlNode;
-import com.intellij.uml.project.ModulesUmlProvider;
-import com.intellij.uml.project.UmlModulesRelationshipHelper;
+import com.intellij.uml.java.project.ModuleItem;
+import com.intellij.uml.java.project.ModulesUmlEdge;
+import com.intellij.uml.java.project.ModulesUmlNode;
+import com.intellij.uml.java.project.ModulesUmlProvider;
+import com.intellij.uml.java.project.UmlModulesRelationshipHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -204,7 +204,7 @@ public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagram
         @SuppressWarnings("unchecked")
         @NotNull
         private List<ModuleDepDiagramNode> createAdaptedNodes(@NotNull final Collection<ModuleItem> items) {
-            final DiagramProvider<ModuleDepDiagramItem> provider = getBuilder().getProvider();
+            final DiagramProvider<ModuleDepDiagramItem> provider = (DiagramProvider<ModuleDepDiagramItem>) getBuilder().getProvider();
 
             return items.stream()
                         .map(moduleItem -> new ModuleDepDiagramNode(

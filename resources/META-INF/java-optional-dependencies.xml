@@ -38,13 +38,9 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultCompilerOutputPathsConfigurator"/>
 
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator"
-            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator"/>
 
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator"
-            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultGroupModuleConfigurator"/>
@@ -58,8 +54,7 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavadocModuleConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleSettingsConfigurator"/>
@@ -67,12 +62,10 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultVersionControlSystemConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"/>
 
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator"
-            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSearchScopeConfigurator"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSearchScopeConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultLoadedConfigurator"/>

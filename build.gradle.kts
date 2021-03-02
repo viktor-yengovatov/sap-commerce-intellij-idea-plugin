@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "0.6.5"
+    id("org.jetbrains.intellij") version "0.7.2"
 }
 
 sourceSets.main {
@@ -39,7 +39,6 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven("https://jcenter.bintray.com")
     }
 
     java {
@@ -61,10 +60,6 @@ intellij {
 }
 
 tasks {
-
-    buildSearchableOptions {
-        enabled = false
-    }
 
     withType<KotlinCompile>().configureEach {
         kotlinOptions {
