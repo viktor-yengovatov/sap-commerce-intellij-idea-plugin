@@ -108,7 +108,7 @@ public class HybrisApplicationSettingsForm {
         data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
         data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
         data.setFollowSymlink(followSymlink.isSelected());
-        data.setWithMavenJavadocs(withMavenSources.isSelected());
+        data.setWithMavenSources(withMavenSources.isSelected());
         data.setWithMavenJavadocs(withMavenJavadocs.isSelected());
         data.setScanThroughExternalModule(scanThroughExternalModule.isSelected());
         data.setExcludeTestSources(excludeTestSources.isSelected());
