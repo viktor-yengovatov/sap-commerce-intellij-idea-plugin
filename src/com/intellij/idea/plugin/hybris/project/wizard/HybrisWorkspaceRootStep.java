@@ -371,6 +371,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setExcludeTestSources(
             appSettings.isExcludeTestSources()
         );
+        hybrisProjectDescriptor.setWithMavenSources(appSettings.isWithMavenSources());
+        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.isWithMavenJavadocs());
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
@@ -609,6 +611,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setFollowSymlink(settings.isFollowSymlink());
         hybrisProjectDescriptor.setExcludeTestSources(settings.isExcludeTestSources());
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.isScanThroughExternalModule());
+
+        final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        hybrisProjectDescriptor.setWithMavenSources(appSettings.isWithMavenSources());
+        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.isWithMavenJavadocs());
 
         final String ideModulesFilesDirectory = settings.getIdeModulesFilesDirectory();
         if (ideModulesFilesDirectory != null) {
