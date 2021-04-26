@@ -48,7 +48,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     protected final HybrisProjectDescriptor rootProjectDescriptor;
     @NotNull
-    protected final Set<HybrisModuleDescriptor> dependenciesTree = new HashSet<>(0);
+    protected final Set<HybrisModuleDescriptor> dependenciesTree = new LinkedHashSet<>(0);
     @NotNull
     protected Set<String> springFileSet = new LinkedHashSet<>();
 

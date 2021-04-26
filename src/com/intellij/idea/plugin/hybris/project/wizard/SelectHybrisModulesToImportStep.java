@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -157,6 +158,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         final List<HybrisModuleDescriptor> filteredModuleToImport = moduleToImport
             .stream()
             .filter(e->!modulesOnBlackList.contains(e.getRelativePath()))
+            .sorted(Comparator.nullsLast(Comparator.comparing(HybrisModuleDescriptor::getName)))
             .collect(Collectors.toList());
         try {
             this.getContext().setList(filteredModuleToImport);
