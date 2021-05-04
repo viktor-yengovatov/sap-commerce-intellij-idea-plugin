@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -67,6 +68,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
@@ -147,7 +150,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
             if (hybrisModuleDescriptor instanceof PlatformHybrisModuleDescriptor) {
                 PlatformHybrisModuleDescriptor platformDescriptor = (PlatformHybrisModuleDescriptor) hybrisModuleDescriptor;
-                Set<HybrisModuleDescriptor> dependenciesTree = Sets.newHashSet(platformDescriptor.getDependenciesTree());
+                Set<HybrisModuleDescriptor> dependenciesTree = Sets.newLinkedHashSet(platformDescriptor.getDependenciesTree());
                 dependenciesTree.add(configHybrisModuleDescriptor);
                 platformDescriptor.setDependenciesTree(dependenciesTree);
             }
@@ -167,8 +170,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         foundModules
             .stream()
             .filter(e -> e instanceof ConfigHybrisModuleDescriptor)
-            .map(e -> (ConfigHybrisModuleDescriptor)e)
-            .forEach(e->{
+            .map(e -> (ConfigHybrisModuleDescriptor) e)
+            .forEach(e -> {
                 if (!preselectedNames.contains(e.getName())) {
                     e.setPreselected(true);
                     preselectedNames.add(e.getName());
@@ -373,7 +376,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             LOG.info("Scanning for hybris modules out of the project");
             this.findModuleRoots(moduleRootMap, false, hybrisDistributionDirectory, progressListenerProcessor);
         }
-        Set<File> moduleRootDirectories = processDirectoriesByTypePriority(moduleRootMap, isScanThroughExternalModule(), progressListenerProcessor);
+        Set<File> moduleRootDirectories = processDirectoriesByTypePriority(
+            moduleRootMap,
+            isScanThroughExternalModule(),
+            progressListenerProcessor
+        );
 
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
         final List<File> pathsFailedToImport = new ArrayList<>();
@@ -418,7 +425,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     ) throws InterruptedException, IOException {
         final Map<String, File> moduleRootDirectories = new HashMap<>();
 
-        moduleRootMap.get(HYBRIS).forEach(file-> addIfNotExists(moduleRootDirectories, file));
+        moduleRootMap.get(HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
 
         if (scanThroughExternalModule) {
             LOG.info("Scanning for higher priority modules");
@@ -468,7 +475,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 }
             }
         } catch (IOException e) {
-            LOG.error("Unable to locate "+file.getAbsolutePath());
+            LOG.error("Unable to locate " + file.getAbsolutePath());
         }
     }
 
@@ -566,7 +573,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        scanSubrirectories(moduleRootMap, acceptOnlyHybrisModules, rootProjectDirectory.toPath(), progressListenerProcessor);
+        scanSubrirectories(
+            moduleRootMap,
+            acceptOnlyHybrisModules,
+            rootProjectDirectory.toPath(),
+            progressListenerProcessor
+        );
 
     }
 
@@ -632,13 +644,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
 
-            final Set<String> requiredExtensionNames = moduleDescriptor.getRequiredExtensionNames();
+            Set<String> requiredExtensionNames = moduleDescriptor.getRequiredExtensionNames();
 
             if (isEmpty(requiredExtensionNames)) {
                 continue;
             }
+            requiredExtensionNames = requiredExtensionNames.stream()
+                                                           .sorted()
+                                                           .collect(Collectors.toCollection(LinkedHashSet::new));
 
-            final Set<HybrisModuleDescriptor> dependencies = new HashSet<HybrisModuleDescriptor>(
+            final Set<HybrisModuleDescriptor> dependencies = new LinkedHashSet<>(
                 requiredExtensionNames.size()
             );
 
