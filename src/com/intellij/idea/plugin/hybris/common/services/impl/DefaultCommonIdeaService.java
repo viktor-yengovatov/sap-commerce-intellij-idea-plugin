@@ -23,8 +23,6 @@ import com.intellij.idea.plugin.hybris.common.Version;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -32,14 +30,12 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.EditorBundle;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.proxy.ProtocolDefaultPorts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,10 +67,9 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
     private final CommandProcessor commandProcessor;
 
 
-    public DefaultCommonIdeaService(@NotNull final CommandProcessor commandProcessor) {
+    public DefaultCommonIdeaService() {
+        this.commandProcessor = CommandProcessor.getInstance();
         Validate.notNull(commandProcessor);
-
-        this.commandProcessor = commandProcessor;
     }
 
     @Override

@@ -2,7 +2,7 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2021.1</version>
+    <version>2021.1.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="211.6222.4"/>
@@ -77,6 +77,8 @@
               <li>Yevhenii Koshevyi</li>
               <li>Mykhailo Lytvyn</li>
               <li>Viktors Jengovatovs</li>
+              <li>Oleksandr Dihtiar</li>
+              <li>Rustam Burmenskyi</li>
           </ul>
       ]]>
     </description>
@@ -84,9 +86,11 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Make plugin compatible with 2021.1 version of IntelliJ IDEA </li>
-                <li> Added Copyright plugin support for impex files </li>
-                <li> Added downloading and attaching maven artifacts' javadocs and sources to related extensions </li>
+                <li> Add plugin icons for both themes</li>
+                <li> Add SSL toggle to HAC/Solr connection settings </li>
+                <li> Fix issues related to HAC/Solr connectivity </li>
+                <li> Disable loading some UI components in non-hybris project </li>
+                <li> Attach standard backoffice sources for libraries </li>
             </ul>
           ]]>
     </change-notes>
