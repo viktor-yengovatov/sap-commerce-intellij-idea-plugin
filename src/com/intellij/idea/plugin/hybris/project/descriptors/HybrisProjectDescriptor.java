@@ -140,6 +140,10 @@ public interface HybrisProjectDescriptor {
 
     void setWithMavenSources(boolean withMavenSources);
 
+    boolean isWithStandardProvidedSources();
+
+    void setWithStandardProvidedSources(boolean withStandardProvidedSources);
+
     boolean isWithMavenJavadocs();
 
     void setWithMavenJavadocs(boolean withMavenJavadocs);

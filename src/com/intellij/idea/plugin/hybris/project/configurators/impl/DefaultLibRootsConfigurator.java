@@ -27,6 +27,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.DependencyScope;
@@ -43,9 +45,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
 
@@ -219,12 +223,20 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());
 
-        final List<String> resultLibs = resolveMavenSources(
+        final List<String> mavenSources = resolveMavenSources(
             modifiableRootModel,
             javaLibraryDescriptor,
             moduleDescriptor,
             progressIndicator
         );
+
+        final List<String> standardSources = resolveStandardProvidedSources(
+            javaLibraryDescriptor,
+            moduleDescriptor
+        );
+
+        final List<String> resultLibs = new ArrayList<>(mavenSources);
+        resultLibs.addAll(standardSources);
 
         for (String resultLib : resultLibs) {
             libraryModifiableModel.addRoot("jar://" + resultLib + "!/", OrderRootType.SOURCES);
@@ -238,9 +250,38 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final @NotNull ProgressIndicator progressIndicator
     ) {
         if (javaLibraryDescriptor instanceof DefaultJavaLibraryDescriptor) {
-            final DefaultJavaLibraryDescriptor defaultJavaLibraryDescriptor = (DefaultJavaLibraryDescriptor) javaLibraryDescriptor;
+            final var defaultJavaLibraryDescriptor = (DefaultJavaLibraryDescriptor) javaLibraryDescriptor;
             if (LibraryDescriptorType.LIB == defaultJavaLibraryDescriptor.getDescriptorType()) {
                 return MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    public static List<String> resolveStandardProvidedSources(
+        final @NotNull JavaLibraryDescriptor javaLibraryDescriptor,
+        final @NotNull HybrisModuleDescriptor moduleDescriptor
+    ) {
+        final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        if (!appSettings.isWithStandardProvidedSources()) {
+            return Collections.emptyList();
+        }
+
+        if (javaLibraryDescriptor instanceof DefaultJavaLibraryDescriptor) {
+            final var defaultJavaLibraryDescriptor = (DefaultJavaLibraryDescriptor) javaLibraryDescriptor;
+            if (LibraryDescriptorType.WEB_INF_LIB == defaultJavaLibraryDescriptor.getDescriptorType()) {
+                var sourcesDirectory = new File(
+                    moduleDescriptor.getRootDirectory(),
+                    HybrisConstants.DOC_SOURCES_JAR_DIRECTORY
+                );
+
+                final String[] filesArray = sourcesDirectory.list((file, name) -> name.endsWith("-sources.jar"));
+                if (filesArray == null) {
+                    return Collections.emptyList();
+                }
+                return Arrays.stream(filesArray)
+                             .map(fileName -> new File(sourcesDirectory,fileName).getAbsolutePath())
+                             .collect(Collectors.toList());
             }
         }
         return Collections.emptyList();
