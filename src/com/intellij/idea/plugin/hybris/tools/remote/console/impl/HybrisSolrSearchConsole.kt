@@ -23,6 +23,7 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.notifications.NotificationUtil
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -44,8 +45,10 @@ import com.jetbrains.rd.util.reactive.adviseEternal
 import org.apache.commons.collections4.CollectionUtils
 import org.apache.solr.client.solrj.SolrServerException
 import java.awt.BorderLayout
+import java.awt.Dimension
 import java.awt.Insets
 import java.util.*
+import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
@@ -61,6 +64,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     private val coresLabel = JBLabel("Select core: ")
     private val docsLabel = JBLabel(docs)
     private val coresComboBox = ComboBox(CollectionComboBoxModel(retrieveListOfCores()), 270)
+    private val reloadCoresButton = JButton("Reload")
 
     private val maxRowsLabel = JBLabel("Rows (max 500): ")
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 500, 1))
@@ -74,8 +78,13 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
     }
 
+    override fun connectionType(): HybrisRemoteConnectionSettings.Type {
+        return HybrisRemoteConnectionSettings.Type.SOLR
+    }
+
     private fun createUI() {
         initCoresElements()
+        initReloadCoresButton()
         initDocsElements()
         initMaxRowsElements()
 
@@ -90,6 +99,16 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         coresComboBox.renderer = SimpleListCellRenderer.create("...") { it.core }
         panel.add(coresLabel)
         panel.add(coresComboBox)
+    }
+
+    private fun initReloadCoresButton() {
+        reloadCoresButton.border = EmptyBorder(0, 0, 0, 0)
+        reloadCoresButton.toolTipText = HybrisI18NBundleUtils.message("hybris.solr.search.console.reload.cores.button.tooltip")
+        reloadCoresButton.preferredSize = Dimension(60, 25)
+        panel.add(reloadCoresButton)
+        reloadCoresButton.addActionListener {
+            coresComboBox.model = CollectionComboBoxModel(retrieveListOfCores())
+        }
     }
 
     private fun initMaxRowsElements() {
