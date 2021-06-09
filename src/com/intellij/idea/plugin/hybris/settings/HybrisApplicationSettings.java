@@ -111,6 +111,9 @@ public class HybrisApplicationSettings {
     @PropertyName("withMavenJavadocs")
     private boolean withMavenJavadocs;
 
+    @PropertyName("withStandardProvidedSources")
+    private boolean withStandardProvidedSources;
+
     @PropertyName("allowedSendingPlainStatistics")
     private boolean allowedSendingPlainStatistics = false;
 
@@ -270,6 +273,14 @@ public class HybrisApplicationSettings {
         this.withMavenJavadocs = withMavenJavadocs;
     }
 
+    public boolean isWithStandardProvidedSources() {
+        return withStandardProvidedSources;
+    }
+
+    public void setWithStandardProvidedSources(final boolean withStandardProvidedSources) {
+        this.withStandardProvidedSources = withStandardProvidedSources;
+    }
+
     public boolean isAllowedSendingPlainStatistics() {
         return allowedSendingPlainStatistics;
     }
@@ -369,6 +380,7 @@ public class HybrisApplicationSettings {
             .append(followSymlink)
             .append(withMavenSources)
             .append(withMavenJavadocs)
+            .append(withStandardProvidedSources)
             .append(scanThroughExternalModule)
             .append(allowedSendingPlainStatistics)
             .append(disallowedSendingStatistics)
@@ -411,6 +423,7 @@ public class HybrisApplicationSettings {
             .append(followSymlink, other.followSymlink)
             .append(withMavenSources, other.withMavenSources)
             .append(withMavenJavadocs, other.withMavenJavadocs)
+            .append(withStandardProvidedSources, other.withStandardProvidedSources)
             .append(scanThroughExternalModule, other.scanThroughExternalModule)
             .append(allowedSendingPlainStatistics, other.allowedSendingPlainStatistics)
             .append(disallowedSendingStatistics, other.disallowedSendingStatistics)
@@ -444,6 +457,7 @@ public class HybrisApplicationSettings {
         sb.append(", followSymlink='").append(followSymlink).append('\'');
         sb.append(", withMavenSources='").append(withMavenSources).append('\'');
         sb.append(", withMavenJavadocs='").append(withMavenJavadocs).append('\'');
+        sb.append(", withStandardProvidedSources='").append(withStandardProvidedSources).append('\'');
         sb.append(", scanThroughExternalModule='").append(scanThroughExternalModule).append('\'');
         sb.append(", allowedSendingPlainStatistics='").append(allowedSendingPlainStatistics).append('\'');
         sb.append(", disallowedSendingStatistics='").append(disallowedSendingStatistics).append('\'');

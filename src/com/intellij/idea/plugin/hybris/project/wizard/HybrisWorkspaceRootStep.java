@@ -108,6 +108,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox withMavenJavadocs;
     private JLabel withMavenJavadocsLabel;
     private JLabel withMavenSourcesLabel;
+    private JCheckBox withStandardProvidedSources;
+    private JLabel withStandardProvidedSourcesLabel;
     private String hybrisVersion;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
@@ -315,6 +317,8 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
         this.getContext().getHybrisProjectDescriptor().setWithMavenSources(withMavenSources.isSelected());
         this.getContext().getHybrisProjectDescriptor().setWithMavenJavadocs(withMavenJavadocs.isSelected());
+        this.getContext().getHybrisProjectDescriptor()
+            .setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
 
         this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
             this.javadocUrlTextField.getText()
@@ -373,6 +377,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
         hybrisProjectDescriptor.setWithMavenSources(appSettings.isWithMavenSources());
         hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.isWithMavenJavadocs());
+        hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.isWithStandardProvidedSources());
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
@@ -615,6 +620,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         hybrisProjectDescriptor.setWithMavenSources(appSettings.isWithMavenSources());
         hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.isWithMavenJavadocs());
+        hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.isWithStandardProvidedSources());
 
         final String ideModulesFilesDirectory = settings.getIdeModulesFilesDirectory();
         if (ideModulesFilesDirectory != null) {

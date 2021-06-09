@@ -68,7 +68,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
@@ -114,6 +113,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File externalDbDriversDirectory;
     private boolean withMavenSources;
+    private boolean withStandardProvidedSources;
     private boolean withMavenJavadocs;
     @Nullable
     protected String javadocUrl;
@@ -927,6 +927,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setWithMavenSources(final boolean withMavenSources) {
         this.withMavenSources = withMavenSources;
+    }
+
+    @Override
+    public boolean isWithStandardProvidedSources() {
+        return withStandardProvidedSources;
+    }
+
+    @Override
+    public void setWithStandardProvidedSources(final boolean withStandardProvidedSources) {
+        this.withStandardProvidedSources = withStandardProvidedSources;
     }
 
     @Override

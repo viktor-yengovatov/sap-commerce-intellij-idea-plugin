@@ -433,6 +433,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         appSettings.setWithMavenSources(hybrisProjectDescriptor.isWithMavenSources());
         appSettings.setWithMavenJavadocs(hybrisProjectDescriptor.isWithMavenJavadocs());
+        appSettings.setWithStandardProvidedSources(hybrisProjectDescriptor.isWithStandardProvidedSources());
 
         hybrisProjectSettings.setCreateBackwardCyclicDependenciesForAddOns(hybrisProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn());
         final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();

@@ -64,6 +64,7 @@ public class HybrisApplicationSettingsForm {
     private JCheckBox excludeTestSources;
     private JPanel extensionsResourcesToExclude;
     private JCheckBox warnIfGeneratedItemsAreOutOfDateCheckBox;
+    private JCheckBox withStandardProvidedSources;
 
     private MyListPanel junkListPanel;
     private MyListPanel tsdListPanel;
@@ -87,6 +88,7 @@ public class HybrisApplicationSettingsForm {
         followSymlink.setSelected(data.isFollowSymlink());
         withMavenSources.setSelected(data.isWithMavenSources());
         withMavenJavadocs.setSelected(data.isWithMavenJavadocs());
+        withStandardProvidedSources.setSelected(data.isWithStandardProvidedSources());
         scanThroughExternalModule.setSelected(data.isScanThroughExternalModule());
         excludeTestSources.setSelected(data.isExcludeTestSources());
         warnIfGeneratedItemsAreOutOfDateCheckBox.setSelected(data.isWarnIfGeneratedItemsAreOutOfDate());
@@ -110,6 +112,7 @@ public class HybrisApplicationSettingsForm {
         data.setFollowSymlink(followSymlink.isSelected());
         data.setWithMavenSources(withMavenSources.isSelected());
         data.setWithMavenJavadocs(withMavenJavadocs.isSelected());
+        data.setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
         data.setScanThroughExternalModule(scanThroughExternalModule.isSelected());
         data.setExcludeTestSources(excludeTestSources.isSelected());
         data.setWarnIfGeneratedItemsAreOutOfDate(warnIfGeneratedItemsAreOutOfDateCheckBox.isSelected());
@@ -168,6 +171,9 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (withMavenJavadocs.isSelected() != data.isWithMavenJavadocs()) {
+            return true;
+        }
+        if (withStandardProvidedSources.isSelected() != data.isWithStandardProvidedSources()) {
             return true;
         }
         if (excludeTestSources.isSelected() != data.isExcludeTestSources()) {
