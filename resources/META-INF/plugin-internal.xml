@@ -47,6 +47,7 @@
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
+        <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>
     </extensions>
 
     <project-components>
