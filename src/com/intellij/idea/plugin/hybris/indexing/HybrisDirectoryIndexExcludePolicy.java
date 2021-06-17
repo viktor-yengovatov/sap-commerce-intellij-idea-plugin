@@ -21,20 +21,21 @@ package com.intellij.idea.plugin.hybris.indexing;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootModel;
 import com.intellij.openapi.roots.impl.DirectoryIndexExcludePolicy;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class HybrisDirectoryIndexExcludePolicy implements DirectoryIndexExcludePolicy {
 
-    private static final Set<String> EXCLUDED_FOLDER_NAMES =
+    private static final Set<String> EXCLUDED_FOLDER_PATHS =
         Set.of("smartedit-custom-build", "smartedit-build");
     private static final VirtualFilePointerManager VIRTUAL_FILE_POINTER_MANAGER =
         VirtualFilePointerManager.getInstance();
@@ -57,14 +58,40 @@ public class HybrisDirectoryIndexExcludePolicy implements DirectoryIndexExcludeP
     }
 
     private List<VirtualFilePointer> getExcludedFoldersFromIndex(final VirtualFile contentRoot) {
-        final VirtualFile[] childFolders = contentRoot.getChildren();
-        return Arrays.stream(childFolders).filter(this::isFolderExcludedFromIndex)
-              .map(this::createVirtualFilePointer)
-              .collect(Collectors.toList());
-    }
+        final List<VirtualFilePointer> excludedFoldersFromIndex = new ArrayList<>();
+        for (String excludedFolderPath : EXCLUDED_FOLDER_PATHS) {
+            final String[] pathFragments = excludedFolderPath.split("/");
 
-    private boolean isFolderExcludedFromIndex(final VirtualFile folder) {
-        return EXCLUDED_FOLDER_NAMES.contains(folder.getName());
+            VfsUtilCore.visitChildrenRecursively(contentRoot,
+                new VirtualFileVisitor<VirtualFile>(VirtualFileVisitor.SKIP_ROOT) {
+
+                private int currentDepth;
+
+                @Override
+                public boolean visitFile(@NotNull final VirtualFile file) {
+                    return file.isDirectory() && pathFragments.length > currentDepth &&
+                       StringUtils.equals(file.getName(), pathFragments[currentDepth]);
+                }
+
+                @Override
+                public @NotNull Result visitFileEx(@NotNull final VirtualFile file) {
+                    if (visitFile(file)) {
+                        currentDepth++;
+                        return CONTINUE;
+                    }
+                    return SKIP_CHILDREN;
+                }
+
+                @Override
+                public void afterChildrenVisited(@NotNull final VirtualFile file) {
+                    if (StringUtils.equals(file.getName(), pathFragments[pathFragments.length - 1])) {
+                        final var excludedFolder = createVirtualFilePointer(file);
+                        excludedFoldersFromIndex.add(excludedFolder);
+                    }
+                }
+            });
+        }
+        return excludedFoldersFromIndex;
     }
 
     private VirtualFilePointer createVirtualFilePointer(final VirtualFile folder) {

@@ -43,4 +43,4 @@ const val platformVersion = "211.7442.40"
 const val platformDownloadSources = true
 // Plugin Dependencies -> https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
 // Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22
-const val platformPlugins = "ant, Spring, uml, junit, JavaEE, maven, eclipse, gradle, properties, Groovy, java-i18n, PersistenceSupport, CSS, java, gradle-java, PsiViewer:211.6305.21-EAP-SNAPSHOT, copyright"
+const val platformPlugins = "ant, Spring, uml, junit, JavaEE, maven, eclipse, gradle, properties, Groovy, java-i18n, PersistenceSupport, CSS, java, gradle-java, PsiViewer:211-SNAPSHOT, copyright"
