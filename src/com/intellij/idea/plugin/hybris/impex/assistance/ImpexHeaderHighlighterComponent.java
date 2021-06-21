@@ -19,8 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.BaseComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -30,14 +28,12 @@ import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.project.ProjectManagerAdapter;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.psi.util.PsiEditorUtil;
-import com.intellij.psi.util.PsiUtilBase;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,31 +45,25 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ImpexHeaderHighlighterComponent implements BaseComponent {
 
-    protected final CommonIdeaService commonIdeaService;
+    protected CommonIdeaService commonIdeaService;
     protected final CaretListener caretListener = new ImpexHeaderHighlightingCaretListener();
     protected final CaretListener caretColumnListener = new ImpexColumnHighlightingCaretListener();
     protected final ProjectManagerListener projectManagerListener = new ImpexProjectManagerListener();
     protected final PsiTreeChangeListener psiTreeChangeListener = new ImpexPsiTreeChangeListener();
     protected final EditorFactoryListener editorFactoryListener = new ImpexEditorFactoryListener();
-    protected final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService;
-    protected final ImpexColumnHighlighterService impexColumnHighlighterService;
+    protected ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService;
+    protected ImpexColumnHighlighterService impexColumnHighlighterService;
 
-    public ImpexHeaderHighlighterComponent(
-        final CommonIdeaService commonIdeaService,
-        final ImpexHeaderNameHighlighterService impexHeaderNameHighlighterService,
-        final ImpexColumnHighlighterService impexColumnHighlighterService
-    ) {
+    @Override
+    public void initComponent() {
+        this.commonIdeaService = CommonIdeaService.getInstance();
+        this.impexColumnHighlighterService = ImpexColumnHighlighterService.getInstance();
+        this.impexHeaderNameHighlighterService = ImpexHeaderNameHighlighterService.getInstance();
+
         Validate.notNull(commonIdeaService);
         Validate.notNull(impexHeaderNameHighlighterService);
         Validate.notNull(impexColumnHighlighterService);
 
-        this.commonIdeaService = commonIdeaService;
-        this.impexColumnHighlighterService = impexColumnHighlighterService;
-        this.impexHeaderNameHighlighterService = impexHeaderNameHighlighterService;
-    }
-
-    @Override
-    public void initComponent() {
         EditorFactory.getInstance().getEventMulticaster().addCaretListener(caretListener);
         EditorFactory.getInstance().getEventMulticaster().addCaretListener(caretColumnListener);
         ProjectManager.getInstance().addProjectManagerListener(this.projectManagerListener);

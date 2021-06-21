@@ -29,6 +29,8 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.xml.DomElement;
@@ -64,6 +66,10 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     @NotNull
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
+        final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
+        if (indicator.isCanceled()) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
         final TSMetaModel meta = getTypeSystemMeta();
         final String featureName = getElement().getText().trim();
 

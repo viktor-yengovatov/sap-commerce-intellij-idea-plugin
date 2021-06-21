@@ -150,6 +150,7 @@ public interface HybrisConstants {
     String HMC_LIB_DIRECTORY = toSystemDependentName("hmc/bin");
     String BACKOFFICE_LIB_DIRECTORY = toSystemDependentName("backoffice/bin");
     String BACKOFFICE_JAR_DIRECTORY = toSystemDependentName("resources/backoffice");
+    String DOC_SOURCES_JAR_DIRECTORY = toSystemDependentName("doc/sources");
 
     String PL_BOOTSTRAP_LIB_DIRECTORY = toSystemDependentName("bootstrap/bin");
     String PL_BOOTSTRAP_GEN_SRC_DIRECTORY = toSystemDependentName("bootstrap/gensrc");

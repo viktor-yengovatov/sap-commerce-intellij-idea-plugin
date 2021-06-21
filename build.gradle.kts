@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "0.7.2"
+    id("org.jetbrains.intellij") version "1.0"
 }
 
 sourceSets.main {
@@ -49,14 +49,14 @@ allprojects {
 }
 
 intellij {
-    type = platformType
-    version = platformVersion
-    pluginName = pluginName_
-    downloadSources = platformDownloadSources
-    updateSinceUntilBuild = intellijUpdateSinceUntilBuild
+    type.set(platformType)
+    version.set(platformVersion)
+    pluginName.set(pluginName_)
+    downloadSources.set(platformDownloadSources)
+    updateSinceUntilBuild.set(intellijUpdateSinceUntilBuild)
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-    setPlugins(*platformPlugins.split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
+    plugins.addAll(*platformPlugins.split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
 }
 
 tasks {
@@ -74,13 +74,13 @@ tasks {
     }
 
     patchPluginXml {
-        version(pluginVersion)
-        sinceBuild(pluginSinceBuild)
-        untilBuild(pluginUntilBuild)
+        version.set(pluginVersion)
+        sinceBuild.set(pluginSinceBuild)
+        untilBuild.set(pluginUntilBuild)
     }
 
     runPluginVerifier {
-        ideVersions(pluginVerifierIdeVersions)
+        ideVersions.addAll(pluginVerifierIdeVersions)
     }
 
     clean {
