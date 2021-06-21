@@ -30,7 +30,7 @@ const val intellijUpdateSinceUntilBuild=true
 
 const val pluginName_ = "SAP-Commerce-Developers-Toolset"
 const val pluginVersion = "2021.1.2"
-const val pluginSinceBuild = "211.7142.40"
+const val pluginSinceBuild = "211.7442.40"
 const val pluginUntilBuild = "211.*"
 
 // Plugin Verifier integration -> https://github.com/JetBrains/intellij-plugin-verifier
