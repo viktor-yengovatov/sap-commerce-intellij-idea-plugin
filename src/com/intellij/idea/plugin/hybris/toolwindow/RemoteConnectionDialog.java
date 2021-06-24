@@ -41,14 +41,17 @@ public class RemoteConnectionDialog extends DialogWrapper {
     private JTextField displayNameTextField;
     private OnOffButton sslButton;
     private JLabel sslLabel;
+    private JComboBox sslProtocol;
+    private JLabel sslProtocolLabel;
+
     private Project myProject;
     private HybrisRemoteConnectionSettings mySettings;
     private HybrisRemoteConnectionSettings setting;
 
     public RemoteConnectionDialog(
-            @Nullable final Project project,
-            @Nullable final Component parentComponent,
-            @NotNull final HybrisRemoteConnectionSettings settings
+        @Nullable final Project project,
+        @Nullable final Component parentComponent,
+        @NotNull final HybrisRemoteConnectionSettings settings
     ) {
         super(project, parentComponent, false, PROJECT);
         myProject = project;
@@ -62,10 +65,12 @@ public class RemoteConnectionDialog extends DialogWrapper {
         loginTextField.setText(mySettings.getHacLogin());
         passwordField.setText(mySettings.getHacPassword());
         sslButton.setSelected(mySettings.isSsl());
+        sslProtocol.setSelectedItem(mySettings.getSslProtocol());
         setting = new HybrisRemoteConnectionSettings();
         saveSettings(settings);
 
         final SimpleDocumentListener validateDocumentListener = new SimpleDocumentListener() {
+
             @Override
             public void update(final DocumentEvent e) {
                 validateParams();
@@ -93,7 +98,8 @@ public class RemoteConnectionDialog extends DialogWrapper {
         hacWebrootTextField.addActionListener(action->saveSettings(setting));
         loginTextField.addActionListener(action->saveSettings(setting));
         passwordField.addActionListener(action->saveSettings(setting));
-        sslButton.addActionListener(action->saveSettings(setting));
+        sslButton.addActionListener(action-> toggleSslButton(setting));
+        sslProtocol.addActionListener(action->saveSettings(setting));
 
         Objects.requireNonNull(getButton(getOKAction())).addActionListener(action->saveSettings(mySettings));
         testConnectionButton.addActionListener(action -> testConnection());
@@ -120,8 +126,14 @@ public class RemoteConnectionDialog extends DialogWrapper {
         ).notify(myProject);
     }
 
-    private void saveSettings(HybrisRemoteConnectionSettings mySettings) {
+    private void toggleSslButton(final HybrisRemoteConnectionSettings setting) {
+        sslProtocol.setEnabled(sslButton.isSelected());
+        saveSettings(setting);
+    }
+
+    private void saveSettings(final HybrisRemoteConnectionSettings mySettings) {
         mySettings.setSsl(sslButton.isSelected());
+        mySettings.setSslProtocol((String) sslProtocol.getSelectedItem());
         mySettings.setDisplayName(displayNameTextField.getText());
         mySettings.setHostIP(projectIpTextField.getText());
         mySettings.setPort(projectPortTextField.getText());

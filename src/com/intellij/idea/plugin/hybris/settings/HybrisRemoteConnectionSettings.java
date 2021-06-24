@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class HybrisRemoteConnectionSettings implements Serializable {
 
+
     public enum Type {Hybris, SOLR}
 
     protected String uuid;
@@ -19,6 +20,7 @@ public class HybrisRemoteConnectionSettings implements Serializable {
     protected String hacWebroot;
     protected String hacLogin;
     protected String hacPassword;
+    protected String sslProtocol;
     protected String generatedURL;
     protected Type type;
     protected boolean isSsl;
@@ -109,6 +111,14 @@ public class HybrisRemoteConnectionSettings implements Serializable {
 
     public void setHacPassword(final String hacPassword) {
         this.hacPassword = hacPassword;
+    }
+
+    public String getSslProtocol() {
+        return sslProtocol;
+    }
+
+    public void setSslProtocol(final String sslProtocol) {
+        this.sslProtocol = sslProtocol;
     }
 
     public String getGeneratedURL() {
