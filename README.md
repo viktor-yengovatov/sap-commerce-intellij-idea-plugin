@@ -61,3 +61,7 @@ This project exists thanks to all the people who contribute.
 * Maxim Bilohay
 * Eugene Koryakin
 * Yevhenii Koshevyi
+* Mykhailo Lytvyn
+* Viktors Jengovatovs
+* Rustam Burmenskyi
+* Oleksandr Dihtiar

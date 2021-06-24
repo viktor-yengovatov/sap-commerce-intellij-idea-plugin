@@ -18,11 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
+import com.intellij.openapi.application.ApplicationManager;
+
 /**
  * Created 19:46 11 January 2015
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
 public interface ImpexHeaderNameHighlighterService extends ImpexHighlighterService {
+
+    static ImpexHeaderNameHighlighterService getInstance() {
+        return ApplicationManager.getApplication().getService(ImpexHeaderNameHighlighterService.class);
+    }
 
 }
