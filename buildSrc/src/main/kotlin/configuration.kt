@@ -30,7 +30,7 @@ const val intellijUpdateSinceUntilBuild=true
 
 const val pluginName_ = "SAP-Commerce-Developers-Toolset"
 const val pluginVersion = "2021.2"
-const val pluginSinceBuild = "212.*"
+const val pluginSinceBuild = "212.4638.*"
 const val pluginUntilBuild = "212.*"
 
 // Plugin Verifier integration -> https://github.com/JetBrains/intellij-plugin-verifier
@@ -39,7 +39,7 @@ const val pluginUntilBuild = "212.*"
 const val pluginVerifierIdeVersions = "IIU-212.4416.7"
 
 const val platformType = "IU"
-const val platformVersion = "212.4416.7-EAP-SNAPSHOT"
+const val platformVersion = "212.4638.7-EAP-SNAPSHOT"
 const val platformDownloadSources = true
 // Plugin Dependencies -> https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
 // Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22
