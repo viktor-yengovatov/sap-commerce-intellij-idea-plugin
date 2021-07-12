@@ -22,6 +22,7 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
@@ -43,7 +44,8 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
     private val commitCheckbox = JBCheckBox()
     private val commitLabel = JBLabel("Commit mode: ")
 
-    private val timeoutSpinner = JSpinner(SpinnerNumberModel(15, 1, 3600, 60))
+    private val timeoutSpinner = JSpinner(SpinnerNumberModel(
+            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 60))
     private val timeoutLabel = JBLabel("Timeout (seconds): ")
 
     init {

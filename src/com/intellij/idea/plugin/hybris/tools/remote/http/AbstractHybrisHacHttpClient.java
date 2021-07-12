@@ -63,7 +63,7 @@ import static org.apache.http.HttpVersion.HTTP_1_1;
 public abstract class AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
-    public static final long DEFAULT_HAC_TIMEOUT = 6000L;
+    public static final int DEFAULT_HAC_TIMEOUT = 6000;
     protected String sessionId;
 
     public String login(Project project) {

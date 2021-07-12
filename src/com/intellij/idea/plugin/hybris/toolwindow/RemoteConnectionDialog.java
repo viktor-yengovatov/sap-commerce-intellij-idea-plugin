@@ -65,7 +65,9 @@ public class RemoteConnectionDialog extends DialogWrapper {
         loginTextField.setText(mySettings.getHacLogin());
         passwordField.setText(mySettings.getHacPassword());
         sslButton.setSelected(mySettings.isSsl());
-        sslProtocol.setSelectedItem(mySettings.getSslProtocol());
+        if (mySettings.getSslProtocol() != null) {
+            sslProtocol.setSelectedItem(mySettings.getSslProtocol());
+        }
         setting = new HybrisRemoteConnectionSettings();
         saveSettings(settings);
 
