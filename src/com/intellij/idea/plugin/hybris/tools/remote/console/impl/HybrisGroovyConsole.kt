@@ -45,7 +45,7 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
     private val commitLabel = JBLabel("Commit mode: ")
 
     private val timeoutSpinner = JSpinner(SpinnerNumberModel(
-            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 60))
+            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
     private val timeoutLabel = JBLabel("Timeout (seconds): ")
 
     init {
