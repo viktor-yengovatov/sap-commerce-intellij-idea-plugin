@@ -201,7 +201,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     public @NotNull
     HybrisHttpResult executeGroovyScript(
-        final Project project, final String content, final boolean isCommitMode
+        final Project project, final String content, final boolean isCommitMode, final int timeout
     ) {
 
         final List<BasicNameValuePair> params = asList(
@@ -212,7 +212,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = getHostHacURL(project) + "/console/scripting/execute";
 
-        final HttpResponse response = post(project, actionUrl, params, true);
+        final HttpResponse response = post(project, actionUrl, params, true, timeout);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {

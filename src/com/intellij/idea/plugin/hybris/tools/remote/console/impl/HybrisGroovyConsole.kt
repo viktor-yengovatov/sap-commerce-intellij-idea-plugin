@@ -22,6 +22,7 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
@@ -31,6 +32,8 @@ import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import javax.swing.JPanel
+import javax.swing.JSpinner
+import javax.swing.SpinnerNumberModel
 import javax.swing.border.EmptyBorder
 
 class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConstants.GROOVY_CONSOLE_TITLE, GroovyLanguage) {
@@ -40,6 +43,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
     private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
     private val commitCheckbox = JBCheckBox()
     private val commitLabel = JBLabel("Commit mode: ")
+
+    private val timeoutSpinner = JSpinner(SpinnerNumberModel(
+            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 60))
+    private val timeoutLabel = JBLabel("Timeout (seconds): ")
 
     init {
         createUI()
@@ -52,10 +59,18 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
         panel.add(commitLabel)
         panel.add(commitCheckbox)
         add(panel, BorderLayout.NORTH)
+        initTimeoutSpinner();
         isEditable = true
     }
 
+    private fun initTimeoutSpinner() {
+        commitLabel.border = EmptyBorder(5, 10, 5, 3)
+        panel.add(timeoutLabel)
+        panel.add(timeoutSpinner)
+    }
+
     override fun execute(query: String): HybrisHttpResult {
-        return HybrisHacHttpClient.getInstance(project).executeGroovyScript(project, query, commitCheckbox.isSelected)
+        val timeout = Integer.valueOf(timeoutSpinner.value.toString()) * 1000
+        return HybrisHacHttpClient.getInstance(project).executeGroovyScript(project, query, commitCheckbox.isSelected, timeout)
     }
 }
