@@ -2,10 +2,10 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2021.1.2</version>
+    <version>2021.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="211.7442.40"/>
+    <idea-version since-build="212.4746.2"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -86,12 +86,8 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Add plugin icons for both themes</li>
-                <li> Add SSL toggle to HAC/Solr connection settings </li>
-                <li> Fix issues related to HAC/Solr connectivity </li>
-                <li> Disable loading some UI components in non-hybris project </li>
-                <li> Attach standard backoffice sources for libraries </li>
-                <li> Non-index SmartEdit generated directories </li>
+                <li> Groovy Scripting timeout </li>
+                <li> Possibility to choose TLS version for SSL connections </li>
             </ul>
           ]]>
     </change-notes>
