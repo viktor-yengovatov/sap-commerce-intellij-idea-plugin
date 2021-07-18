@@ -68,4 +68,7 @@ public interface CommonIdeaService {
     String getBackofficeWebInfClasses(Project project);
 
     void fixRemoteConnectionSettings(Project project);
+
+    @NotNull
+    String getActiveSslProtocol(@NotNull Project project, @Nullable HybrisRemoteConnectionSettings settings);
 }

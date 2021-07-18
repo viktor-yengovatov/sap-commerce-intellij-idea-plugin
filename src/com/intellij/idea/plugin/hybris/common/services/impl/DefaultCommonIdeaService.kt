@@ -17,35 +17,27 @@
  */
 package com.intellij.idea.plugin.hybris.common.services.impl
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.Version
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
-import java.lang.NumberFormatException
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import java.lang.StringBuilder
-import com.intellij.idea.plugin.hybris.common.services.impl.DefaultCommonIdeaService
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.Validate
+import org.jetbrains.annotations.Nullable
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
 import java.util.*
 import java.util.function.Consumer
-import java.util.function.Supplier
 import java.util.stream.Collectors
-import kotlin.collections.ArrayList
 
 /**
  * Created 10:24 PM 10 February 2016.
@@ -126,6 +118,15 @@ class DefaultCommonIdeaService : CommonIdeaService {
                 .getInstance(project)
                 .getActiveHybrisRemoteConnectionSettings(project)
                 .let { getUrl(it) }
+    }
+
+    override fun getActiveSslProtocol(project: Project, settings: @Nullable HybrisRemoteConnectionSettings?): String {
+        var settings = settings
+        if (settings == null) {
+            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+                    .getActiveHybrisRemoteConnectionSettings(project)
+        }
+        return settings?.sslProtocol ?: "TLSv1"
     }
 
     override fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
