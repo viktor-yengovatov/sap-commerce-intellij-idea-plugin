@@ -24,28 +24,31 @@ import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
-import com.intellij.openapi.application.*;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
-import org.jetbrains.idea.maven.model.MavenExplicitProfiles;
 import org.jetbrains.idea.maven.project.MavenImportListener;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.jetbrains.idea.maven.wizards.MavenProjectBuilder;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
@@ -55,6 +58,8 @@ import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fet
  */
 public class DefaultMavenConfigurator implements MavenConfigurator {
 
+    private HybrisMavenImportListener mavenImportListener;
+
     @Override
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
@@ -62,50 +67,115 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         @NotNull final List<MavenModuleDescriptor> mavenModules,
         @NotNull final ConfiguratorFactory configuratorFactory
     ) {
-        final MavenProjectBuilder mavenProjectBuilder = new MavenProjectBuilder();
-        final List<VirtualFile> pomList = mavenModules
+        final List<VirtualFile> mavenProjectFiles = mavenModules
             .stream()
             .map(e -> new File(e.getRootDirectory(), MavenConstants.POM_XML))
             .map(e -> VfsUtil.findFileByIoFile(e, true))
             .collect(Collectors.toList());
-        mavenProjectBuilder.setFiles(pomList);
 
-        if (!mavenProjectBuilder.setSelectedProfiles(MavenExplicitProfiles.NONE)) {
-            return;
+        final var mavenProjectBuilders = mavenProjectFiles.stream()
+                                                          .map(mavenProjectBuilderFunction(project))
+                                                          .filter(isProjectPathValid(mavenModules))
+                                                          .collect(Collectors.toList());
+
+        if (mavenImportListener == null) {
+            mavenImportListener = new HybrisMavenImportListener(project);
+            project.getMessageBus().connect().subscribe(MavenImportListener.TOPIC, mavenImportListener);
         }
+        mavenImportListener.setMavenModulesConfig(mavenProjectFiles, mavenModules, configuratorFactory);
 
-        List<MavenProject> selectedProjects = new ArrayList<>();
-        for (MavenProject mavenProject : mavenProjectBuilder.getList()) {
-            final Optional<MavenModuleDescriptor> isPresent = mavenModules
-                .stream()
-                .filter(e -> e.getRootDirectory().getAbsolutePath().equals(mavenProject.getDirectory()))
-                .findAny();
-            if (isPresent.isPresent()) {
-                selectedProjects.add(mavenProject);
+        mavenProjectBuilders.forEach(builder -> {
+            try {
+                builder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
+            } finally {
+                builder.cleanup();
             }
-        }
-        mavenProjectBuilder.setList(selectedProjects);
+        });
 
-        project.getMessageBus().connect().subscribe(
-            MavenImportListener.TOPIC,
-            (importedProjects, newModules) -> ApplicationManager.getApplication().invokeLater(() -> {
+        MavenProjectsManager.getInstance(project).importProjects();
+    }
+
+    @NotNull
+    private Function<VirtualFile, MavenProjectBuilder> mavenProjectBuilderFunction(final @NotNull Project project) {
+        return mavenProjectFile -> {
+            final var builder = new MavenProjectBuilder();
+            builder.setUpdate(MavenProjectsManager.getInstance(project).isMavenizedProject());
+            builder.setFileToImport(mavenProjectFile);
+            return builder;
+        };
+    }
+
+    @NotNull
+    private Predicate<MavenProjectBuilder> isProjectPathValid(final @NotNull List<MavenModuleDescriptor> mavenModules) {
+        return builder -> {
+            final var path = builder.getRootPath()
+                                    .toAbsolutePath()
+                                    .toString();
+            return mavenModules.stream()
+                               .anyMatch(module -> module.getRootDirectory()
+                                                         .getAbsolutePath()
+                                                         .equals(path));
+        };
+    }
+
+    static class HybrisMavenImportListener implements MavenImportListener {
+
+        private final Project project;
+        private List<VirtualFile> pomList;
+        private List<MavenModuleDescriptor> mavenModules;
+        private ConfiguratorFactory configuratorFactory;
+
+        public HybrisMavenImportListener(final Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public void importFinished(
+            @NotNull final Collection<MavenProject> importedProjects, @NotNull final List<Module> newModules
+        ) {
+            ApplicationManager.getApplication().invokeLater(() -> {
                 if (!project.isDisposed()) {
                     moveMavenModulesToCorrectGroup(
-                        project,
-                        mavenModules,
-                        configuratorFactory,
-                        pomList,
+                        getProject(),
+                        getMavenModules(),
+                        getConfiguratorFactory(),
+                        getPomList(),
                         importedProjects,
                         newModules
                     );
                 }
-            })
-        );
-        mavenProjectBuilder.commit(project);
-        MavenProjectsManager.getInstance(project).importProjects();
+            });
+        }
+
+        private void setMavenModulesConfig(
+            final List<VirtualFile> pomList,
+            final List<MavenModuleDescriptor> mavenModules,
+            final ConfiguratorFactory configuratorFactory
+        ) {
+            this.pomList = pomList;
+            this.configuratorFactory = configuratorFactory;
+            this.mavenModules = Collections.unmodifiableList(mavenModules);
+        }
+
+
+        private Project getProject() {
+            return project;
+        }
+
+        private List<VirtualFile> getPomList() {
+            return Collections.unmodifiableList(pomList);
+        }
+
+        private List<MavenModuleDescriptor> getMavenModules() {
+            return Collections.unmodifiableList(mavenModules);
+        }
+
+        private ConfiguratorFactory getConfiguratorFactory() {
+            return configuratorFactory;
+        }
     }
 
-    private void moveMavenModulesToCorrectGroup(
+    private static void moveMavenModulesToCorrectGroup(
         final @NotNull Project project,
         final @NotNull List<MavenModuleDescriptor> mavenModules,
         final @NotNull ConfiguratorFactory configuratorFactory,
@@ -135,23 +205,30 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             )
             .collect(Collectors.toList());
 
-        Map<String, String[]> mavenGroupMapping = fetchGroupMapping(configuratorFactory.getGroupModuleConfigurator(), mavenModules);
+        final Map<String, String[]> mavenGroupMapping = fetchGroupMapping(
+            configuratorFactory.getGroupModuleConfigurator(),
+            mavenModules
+        );
         moveMavenModulesToGroup(project, newRootModules, mavenGroupMapping);
     }
 
-    private void moveMavenModulesToGroup(
-            final @NotNull Project project,
-            final @NotNull List<Module> mavenModules,
-            final @NotNull Map<String, String[]> mavenGroupMapping
+    private static void moveMavenModulesToGroup(
+        final @NotNull Project project,
+        final @NotNull List<Module> mavenModules,
+        final @NotNull Map<String, String[]> mavenGroupMapping
     ) {
         final ModifiableModuleModel modifiableModuleModel = ReadAction.compute(
-                () -> getModifiableModuleModel(project, mavenModules, mavenGroupMapping)
+            () -> getModifiableModuleModel(project, mavenModules, mavenGroupMapping)
         );
         ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(modifiableModuleModel::commit));
     }
 
     @NotNull
-    private ModifiableModuleModel getModifiableModuleModel(Project project, List<Module> mavenModules, Map<String, String[]> mavenGroupMapping) {
+    private static ModifiableModuleModel getModifiableModuleModel(
+        final Project project,
+        final List<Module> mavenModules,
+        final Map<String, String[]> mavenGroupMapping
+    ) {
         final ModifiableModuleModel model = ModuleManager.getInstance(project).getModifiableModel();
 
         for (Module module : mavenModules) {

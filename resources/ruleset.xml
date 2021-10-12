@@ -24,7 +24,7 @@
           description="A deployment table must be defined for all Items extending GenericItem"
           priority="H"
           selectionQuery="//itemtype[@extends='GenericItem' or not(@extends)]"
-          testQuery="count(./deployment) > 0 or (./@autocreate='false' and ./@generate='false')"
+          testQuery="count(./deployment) > 0 or (./@autocreate='false' and ./@generate='false') or ./@abstract='true'"
           nameQuery="./@code"/>
 
     <!-- The typecode must be unique across all items.xml files. That failes now -->

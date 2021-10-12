@@ -28,6 +28,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet;
 import com.intellij.psi.search.scope.packageSet.NamedScope;
 import com.intellij.psi.search.scope.packageSet.NamedScopeManager;
+import com.intellij.psi.search.scope.packageSet.PackageSet;
 import com.intellij.psi.search.scope.packageSet.UnionPackageSet;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
@@ -112,7 +113,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     }
 
     @NotNull
-    public static UnionPackageSet createCustomTsImpexBeansFilesPattern() {
+    public static PackageSet createCustomTsImpexBeansFilesPattern() {
         final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
         final FilePatternPackageSet tsFilePatternPackageSet = new FilePatternPackageSet(
             SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
@@ -126,11 +127,9 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
             "*//*.impex"
         );
-
-        return new UnionPackageSet(
-            new UnionPackageSet(tsFilePatternPackageSet, beansFilePatternPackageSet),
-            impexFilePatternPackageSet
-        );
+        return UnionPackageSet.create(
+            UnionPackageSet.create(tsFilePatternPackageSet, beansFilePatternPackageSet),
+            impexFilePatternPackageSet);
     }
 
     private static void addOrReplaceScopes(@NotNull Project project, @NotNull List<NamedScope> newScopes) {
@@ -179,7 +178,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             SEARCH_SCOPE_GROUP_PREFIX + secondGroupName,
             "*//*"
         );
-        final UnionPackageSet unionPackageSet = new UnionPackageSet(
+        final PackageSet unionPackageSet = UnionPackageSet.create(
             firstFilePatternPackageSet,
             secondFilePatternPackageSet
         );

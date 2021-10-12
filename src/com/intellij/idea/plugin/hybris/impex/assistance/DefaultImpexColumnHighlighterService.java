@@ -175,9 +175,7 @@ public class DefaultImpexColumnHighlighterService
             HighlightUsagesHandler.highlightRanges(
                 HighlightManager.getInstance(editor.getProject()),
                 editor,
-                EditorColorsManager.getInstance()
-                                   .getGlobalScheme()
-                                   .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES),
+                EditorColors.SEARCH_RESULT_ATTRIBUTES,
                 clear,
                 ranges
             );

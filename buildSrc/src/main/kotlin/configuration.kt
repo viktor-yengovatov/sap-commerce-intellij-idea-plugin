@@ -29,18 +29,18 @@ const val intellijJvmArgs="-Xmx2G"
 const val intellijUpdateSinceUntilBuild=true
 
 const val pluginName_ = "SAP-Commerce-Developers-Toolset"
-const val pluginVersion = "2021.2"
-const val pluginSinceBuild = "212.4746.2"
-const val pluginUntilBuild = "212.*"
+const val pluginVersion = "2021.3"
+const val pluginSinceBuild = "213.4631.20"
+const val pluginUntilBuild = "213.*"
 
 // Plugin Verifier integration -> https://github.com/JetBrains/intellij-plugin-verifier
 // https://github.com/JetBrains/gradle-intellij-plugin#plugin-verifier-dsl
 // See https://jb.gg/intellij-platform-builds-list for available build versions
-const val pluginVerifierIdeVersions = "IIU-212.4746.2"
+const val pluginVerifierIdeVersions = "IIU-213.4631.20"
 
 const val platformType = "IU"
-const val platformVersion = "212.4746-EAP-CANDIDATE-SNAPSHOT"
+const val platformVersion = "213-EAP-SNAPSHOT"
 const val platformDownloadSources = true
 // Plugin Dependencies -> https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
 // Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22
-const val platformPlugins = "ant, Spring, uml, junit, JavaEE, maven, eclipse, gradle, properties, Groovy, java-i18n, PersistenceSupport, CSS, java, gradle-java, PsiViewer:212-SNAPSHOT, copyright"
+const val platformPlugins = "ant, Spring, uml, junit, JavaEE, maven, eclipse, gradle, properties, Groovy, java-i18n, PersistenceSupport, CSS, java, gradle-java, PsiViewer:213-SNAPSHOT, copyright"

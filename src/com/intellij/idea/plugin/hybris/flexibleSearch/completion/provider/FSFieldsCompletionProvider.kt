@@ -36,7 +36,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.findSiblingBackward
-import com.intellij.util.JavaeeIcons.PARAMETER_ICON
+import com.intellij.javaee.JavaeeIcons.PARAMETER_ICON
 import com.intellij.util.ProcessingContext
 import java.util.Objects
 import java.util.Optional
