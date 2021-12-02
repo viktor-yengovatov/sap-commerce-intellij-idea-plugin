@@ -80,9 +80,6 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
                     gradleModule.getGradleFile().getPath(),
                     gradleProjectImportProvider
                 );
-                final GradleProjectSettings projectSettings = gradleProjectImportBuilder.getControl(project)
-                                                                                        .getProjectSettings();
-                projectSettings.setCreateEmptyContentRootDirectories(false);
                 if (wizard.getStepCount() > 0) {
                     final ModuleWizardStep step = wizard.getCurrentStepObject();
                     if (step.isStepVisible()) {

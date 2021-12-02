@@ -31,11 +31,13 @@ import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
 import com.intellij.openapi.extensions.Extensions;
+import com.intellij.openapi.extensions.ExtensionsArea;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
@@ -82,18 +84,16 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
 
     public ConfiguratorFactory getConfiguratorFactory() {
-        if (!ApplicationManager.getApplication().getExtensionArea().hasExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID)) {
-            return ServiceManager.getService(DefaultConfiguratorFactory.class);
+        final Application application = ApplicationManager.getApplication();
+        final ExtensionsArea extensionsArea = application.getExtensionArea();
+
+        if (!extensionsArea.hasExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID)) {
+            return application.getService(DefaultConfiguratorFactory.class);
         }
-
-        final ExtensionPoint ep = Extensions.getRootArea().getExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID);
-        final ConfiguratorFactory ultimateConfiguratorFactory = (ConfiguratorFactory) ep.getExtension();
-
-        if (ultimateConfiguratorFactory != null) {
-            return ultimateConfiguratorFactory;
-        }
-
-        return ServiceManager.getService(DefaultConfiguratorFactory.class);
+        final ExtensionPoint ep = extensionsArea.getExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID);
+        return (ConfiguratorFactory) ep.extensions()
+                                       .findFirst()
+                                       .orElseGet(() -> application.getService(DefaultConfiguratorFactory.class));
     }
 
     @Nullable

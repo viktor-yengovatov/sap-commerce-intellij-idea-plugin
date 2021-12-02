@@ -151,7 +151,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     private void createMetaTargets(final AntBuildFileBase buildFile) {
         Arrays.stream(metaTargets).forEach(meta -> {
-            final ExecuteCompositeTargetEvent event = new ExecuteCompositeTargetEvent(meta);
+            final ExecuteCompositeTargetEvent event = new ExecuteCompositeTargetEvent(Arrays.asList(meta));
             if (antConfiguration.getTargetForEvent(event) == null) {
                 antConfiguration.setTargetForEvent(buildFile, event.getMetaTargetName(), event);
             }

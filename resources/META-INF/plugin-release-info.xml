@@ -2,10 +2,10 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2021.2</version>
+    <version>2021.3</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="212.4746.2"/>
+    <idea-version since-build="213.4631.20"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -86,8 +86,7 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Groovy Scripting timeout </li>
-                <li> Possibility to choose TLS version for SSL connections </li>
+                <li> Bug fixing </li>
             </ul>
           ]]>
     </change-notes>
