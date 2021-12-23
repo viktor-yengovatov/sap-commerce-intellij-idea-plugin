@@ -88,7 +88,7 @@ public class Version implements Comparable<Version> {
                 major = Integer.parseInt(split[0]);
                 break;
             default:
-                throw new IllegalArgumentException("Could not parse " + fixedVersion);
+                return UNDEFINED;
         }
         return new Version(major, minor, release, patch, fixedVersion);
     }
