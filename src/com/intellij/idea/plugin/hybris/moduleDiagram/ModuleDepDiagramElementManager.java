@@ -39,7 +39,7 @@ public class ModuleDepDiagramElementManager extends AbstractDiagramElementManage
     @Nullable
     @Override
     public ModuleDepDiagramItem findInDataContext(final DataContext dataContext) {
-        return null;
+        return new ModuleDepDiagramItem(null, false);
     }
 
     @NotNull
