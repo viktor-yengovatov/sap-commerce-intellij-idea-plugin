@@ -77,19 +77,24 @@ public class Version implements Comparable<Version> {
         }
         String[] split = fixedVersion.split("\\.");
         int major = 0, minor = 0, release = 0, patch = 0;
-        switch (split.length) {
-            case 4:
-                patch = Integer.parseInt(split[3]);
-            case 3:
-                release = Integer.parseInt(split[2]);
-            case 2:
-                minor = Integer.parseInt(split[1]);
-            case 1:
-                major = Integer.parseInt(split[0]);
-                break;
-            default:
-                return UNDEFINED;
+        try {
+            switch (split.length) {
+                case 4:
+                    patch = Integer.parseInt(split[3]);
+                case 3:
+                    release = Integer.parseInt(split[2]);
+                case 2:
+                    minor = Integer.parseInt(split[1]);
+                case 1:
+                    major = Integer.parseInt(split[0]);
+                    break;
+                default:
+                    return UNDEFINED;
+            }
+        } catch (NumberFormatException exception) {
+            return UNDEFINED;
         }
+
         return new Version(major, minor, release, patch, fixedVersion);
     }
 
