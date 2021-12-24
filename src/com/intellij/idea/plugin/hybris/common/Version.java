@@ -91,7 +91,7 @@ public class Version implements Comparable<Version> {
                 default:
                     return UNDEFINED;
             }
-        } catch (Exception exception) {
+        } catch (NumberFormatException exception) {
             return UNDEFINED;
         }
 
