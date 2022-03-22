@@ -43,9 +43,8 @@ public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
         @NotNull final CodeStyleSettingsCustomizable consumer,
         @NotNull final SettingsType settingsType
     ) {
-       final var styleOptions = CodeStyleSettingsCustomizableOptions.getInstance();
-
         if (SettingsType.SPACING_SETTINGS == settingsType) {
+            final var styleOptions = CodeStyleSettingsCustomizableOptions.getInstance();
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "TABLIFY",
@@ -239,6 +238,6 @@ public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
                "               ; Hans      ; admin\n" +
                '\n' +
                "INSERT_UPDATE Media ; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslato r] ; mime[default = 'image/png']\n" +
-               "                    ;                                                                               ; $contentResource/images/logo .png\n" ;
+               "                    ;                                                                               ; $contentResource/images/logo .png\n";
     }
 }

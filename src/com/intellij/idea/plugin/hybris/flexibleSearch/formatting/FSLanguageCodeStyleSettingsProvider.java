@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.formatting;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.lang.Language;
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,23 +39,24 @@ public class FSLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettin
         @NotNull final SettingsType settingsType
     ) {
         if (SettingsType.SPACING_SETTINGS == settingsType) {
+            final var styleOptions = CodeStyleSettingsCustomizableOptions.getInstance();
             consumer.showCustomOption(
                 FSCodeStyleSettings.class,
                 "SPACE_AROUND_OP",
                 "Around comparision operator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
             consumer.showCustomOption(
                 FSCodeStyleSettings.class,
                 "SPACES_INSIDE_BRACES",
                 "Inside braces",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
             consumer.showCustomOption(
                 FSCodeStyleSettings.class,
                 "SPACES_INSIDE_DOUBLE_BRACES",
                 "Inside double braces",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
         } else if (settingsType == SettingsType.BLANK_LINES_SETTINGS) {
             consumer.showStandardOptions("KEEP_BLANK_LINES_IN_CODE");
