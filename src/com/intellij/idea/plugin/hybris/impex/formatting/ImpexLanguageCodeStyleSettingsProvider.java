@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.formatting;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.lang.Language;
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,105 +43,104 @@ public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
         @NotNull final CodeStyleSettingsCustomizable consumer,
         @NotNull final SettingsType settingsType
     ) {
-
         if (SettingsType.SPACING_SETTINGS == settingsType) {
-
+            final var styleOptions = CodeStyleSettingsCustomizableOptions.getInstance();
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "TABLIFY",
                 "Formatting in table-like style",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_FIELD_VALUE_SEPARATOR",
                 "After field value separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_FIELD_VALUE_SEPARATOR",
                 "Before field value separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_PARAMETERS_SEPARATOR",
                 "After parameters separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_PARAMETERS_SEPARATOR",
                 "Before parameters separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_COMMA",
                 "After comma",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_COMMA",
                 "Before comma",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_ATTRIBUTE_SEPARATOR",
                 "After attribute separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_ATTRIBUTE_SEPARATOR",
                 "Before attribute separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_FIELD_LIST_ITEM_SEPARATOR",
                 "After list item separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_FIELD_LIST_ITEM_SEPARATOR",
                 "Before list item separator",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_ASSIGN_VALUE",
                 "After assign value",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_ASSIGN_VALUE",
                 "Before assign value",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_LEFT_ROUND_BRACKET",
                 "After left round bracket",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
 //            consumer.showCustomOption(
@@ -161,14 +161,14 @@ public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_RIGHT_ROUND_BRACKET",
                 "Before right round bracket",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_LEFT_SQUARE_BRACKET",
                 "After left square bracket",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
 //            consumer.showCustomOption(
@@ -189,21 +189,21 @@ public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_RIGHT_SQUARE_BRACKET",
                 "Before right square bracket",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_AFTER_ALTERNATIVE_PATTERN",
                 "After alternative pattern",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
             consumer.showCustomOption(
                 ImpexCodeStyleSettings.class,
                 "SPACE_BEFORE_ALTERNATIVE_PATTERN",
                 "Before alternative pattern",
-                CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS
+                styleOptions.SPACES_AROUND_OPERATORS
             );
 
         } else if (settingsType == SettingsType.BLANK_LINES_SETTINGS) {
@@ -238,6 +238,6 @@ public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
                "               ; Hans      ; admin\n" +
                '\n' +
                "INSERT_UPDATE Media ; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslato r] ; mime[default = 'image/png']\n" +
-               "                    ;                                                                               ; $contentResource/images/logo .png\n" ;
+               "                    ;                                                                               ; $contentResource/images/logo .png\n";
     }
 }

@@ -83,7 +83,7 @@ public abstract class AbstractHybrisHacHttpClient {
         params.add(new BasicNameValuePair("j_password", settings.getHacPassword()));
         params.add(new BasicNameValuePair("_csrf", csrfToken));
         String loginURL = hostHacURL + "/j_spring_security_check";
-        HttpResponse response = post(project, loginURL, params, false);
+        HttpResponse response = post(project, loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings);
         if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
             Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login_error")) {
