@@ -30,7 +30,9 @@ import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager
 class HybrisDirectoryIndexExcludePolicy(val project : Project) : DirectoryIndexExcludePolicy {
 
     companion object {
-        private val EXCLUDED_FOLDER_PATHS = setOf("smartedit-custom-build", "smartedit-build")
+        private val EXCLUDED_FOLDER_PATHS = setOf("smartedit-custom-build", "smartedit-build", "node_modules")
+        private val EXCLUDED_FOLDER_PATHS_BY_KEY = mapOf(
+                "smartedit" to setOf("common/temp"))
     }
 
     override fun getExcludeRootsForModule(rootModel: ModuleRootModel): Array<VirtualFilePointer> {
@@ -44,6 +46,14 @@ class HybrisDirectoryIndexExcludePolicy(val project : Project) : DirectoryIndexE
 
     private fun getExcludedFoldersFromIndex(contentRoot : VirtualFile) : List<VirtualFilePointer>  {
         val excludedFoldersFromIndex = mutableListOf<VirtualFilePointer>()
+        EXCLUDED_FOLDER_PATHS_BY_KEY.forEach { excludedFolderPathMap ->
+            if (contentRoot.parent.name == excludedFolderPathMap.key) {
+                EXCLUDED_FOLDER_PATHS_BY_KEY[excludedFolderPathMap.key]?.forEach { excludedFolderPath ->
+                    VfsUtilCore.visitChildrenRecursively(contentRoot, HybrisExcludeFromIndexVirtualFileVisitor(project,
+                            excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT))
+                }
+            }
+        }
         EXCLUDED_FOLDER_PATHS.forEach { excludedFolderPath ->
             VfsUtilCore.visitChildrenRecursively(contentRoot, HybrisExcludeFromIndexVirtualFileVisitor(project,
                 excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT))
