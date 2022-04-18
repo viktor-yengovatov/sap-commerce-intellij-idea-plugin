@@ -26,13 +26,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager
+import org.apache.commons.lang3.StringUtils
 
-class HybrisDirectoryIndexExcludePolicy(val project : Project) : DirectoryIndexExcludePolicy {
+class HybrisDirectoryIndexExcludePolicy(val project: Project) : DirectoryIndexExcludePolicy {
 
     companion object {
-        private val EXCLUDED_FOLDER_PATHS = setOf("smartedit-custom-build", "smartedit-build", "node_modules")
-        private val EXCLUDED_FOLDER_PATHS_BY_KEY = mapOf(
-                "smartedit" to setOf("common/temp"))
+        private val EXCLUDED_FOLDER_PATHS = setOf("smartedit-custom-build", "smartedit-build", "apps/**/node_modules")
     }
 
     override fun getExcludeRootsForModule(rootModel: ModuleRootModel): Array<VirtualFilePointer> {
@@ -44,28 +43,20 @@ class HybrisDirectoryIndexExcludePolicy(val project : Project) : DirectoryIndexE
         return excludedFoldersFromIndex.toTypedArray()
     }
 
-    private fun getExcludedFoldersFromIndex(contentRoot : VirtualFile) : List<VirtualFilePointer>  {
+    private fun getExcludedFoldersFromIndex(contentRoot: VirtualFile): List<VirtualFilePointer> {
         val excludedFoldersFromIndex = mutableListOf<VirtualFilePointer>()
-        EXCLUDED_FOLDER_PATHS_BY_KEY.forEach { excludedFolderPathMap ->
-            if (contentRoot.parent.name == excludedFolderPathMap.key) {
-                EXCLUDED_FOLDER_PATHS_BY_KEY[excludedFolderPathMap.key]?.forEach { excludedFolderPath ->
-                    VfsUtilCore.visitChildrenRecursively(contentRoot, HybrisExcludeFromIndexVirtualFileVisitor(project,
-                            excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT))
-                }
-            }
-        }
         EXCLUDED_FOLDER_PATHS.forEach { excludedFolderPath ->
             VfsUtilCore.visitChildrenRecursively(contentRoot, HybrisExcludeFromIndexVirtualFileVisitor(project,
-                excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT))
+                    excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT))
         }
         return excludedFoldersFromIndex
     }
 
     class HybrisExcludeFromIndexVirtualFileVisitor(
-        private val project: Project,
-        excludedFolderPath: String,
-        private val excludedFoldersFromIndex: MutableList<VirtualFilePointer>,
-        vararg options: Option?
+            private val project: Project,
+            excludedFolderPath: String,
+            private val excludedFoldersFromIndex: MutableList<VirtualFilePointer>,
+            vararg options: Option?,
     ) : VirtualFileVisitor<VirtualFile>(*options) {
 
         companion object {
@@ -78,7 +69,7 @@ class HybrisDirectoryIndexExcludePolicy(val project : Project) : DirectoryIndexE
 
         override fun visitFile(file: VirtualFile): Boolean {
             return file.isDirectory && pathFragments.size > currentDepth &&
-                isFolderNameEqualToPathFragment(file, currentDepth)
+                    isFolderNameEqualToPathFragment(file, currentDepth)
         }
 
         override fun visitFileEx(file: VirtualFile): Result {
@@ -86,7 +77,19 @@ class HybrisDirectoryIndexExcludePolicy(val project : Project) : DirectoryIndexE
                 currentDepth++
                 return CONTINUE
             }
+            if (isFolderNameUndefined(currentDepth)) {
+                changeContentRoot(file)
+            }
             return SKIP_CHILDREN
+        }
+
+        private fun changeContentRoot(file: VirtualFile) {
+            var excludedFolderPath: String = StringUtils.EMPTY
+            pathFragments.drop(pathFragments.indexOf("**") + 1).forEach { folder ->
+                excludedFolderPath += "$folder/"
+            }
+            VfsUtilCore.visitChildrenRecursively(file, HybrisExcludeFromIndexVirtualFileVisitor(project,
+                    excludedFolderPath.removeRange(excludedFolderPath.length - 1, excludedFolderPath.length), excludedFoldersFromIndex, SKIP_ROOT))
         }
 
         override fun afterChildrenVisited(file: VirtualFile) {
@@ -97,6 +100,10 @@ class HybrisDirectoryIndexExcludePolicy(val project : Project) : DirectoryIndexE
 
         private fun isFolderNameEqualToPathFragment(file: VirtualFile, fragmentIndex: Int): Boolean {
             return file.name == pathFragments[fragmentIndex]
+        }
+
+        private fun isFolderNameUndefined(fragmentIndex: Int): Boolean {
+            return pathFragments.size > fragmentIndex && pathFragments[fragmentIndex] == "**"
         }
 
         private fun createVirtualFilePointer(folder: VirtualFile): VirtualFilePointer {
