@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.indexing
 
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootModel
 import com.intellij.openapi.roots.impl.DirectoryIndexExcludePolicy
@@ -28,10 +29,6 @@ import com.intellij.openapi.vfs.pointers.VirtualFilePointer
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager
 
 class HybrisDirectoryIndexExcludePolicy(val project: Project) : DirectoryIndexExcludePolicy {
-
-    companion object {
-        private val EXCLUDED_FOLDER_PATHS = setOf("smartedit-custom-build", "smartedit-build", "apps/**/node_modules", "common/temp/node_modules")
-    }
 
     override fun getExcludeRootsForModule(rootModel: ModuleRootModel): Array<VirtualFilePointer> {
         val contentRoots = rootModel.contentRoots
@@ -44,11 +41,17 @@ class HybrisDirectoryIndexExcludePolicy(val project: Project) : DirectoryIndexEx
 
     private fun getExcludedFoldersFromIndex(contentRoot: VirtualFile): List<VirtualFilePointer> {
         val excludedFoldersFromIndex = mutableListOf<VirtualFilePointer>()
-        EXCLUDED_FOLDER_PATHS.forEach { excludedFolderPath ->
+        getExcludedFromIndexList().forEach { excludedFolderPath ->
             VfsUtilCore.visitChildrenRecursively(contentRoot, HybrisExcludeFromIndexFileVisitor(project,
                     excludedFolderPath, excludedFoldersFromIndex, VirtualFileVisitor.SKIP_ROOT))
         }
         return excludedFoldersFromIndex
+    }
+
+    private fun getExcludedFromIndexList(): List<String> {
+        return HybrisApplicationSettingsComponent.getInstance()
+                .state
+                .excludedFromIndexList
     }
 
     class HybrisExcludeFromIndexFileVisitor(

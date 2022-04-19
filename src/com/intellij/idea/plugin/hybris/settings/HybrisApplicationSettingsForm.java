@@ -65,10 +65,12 @@ public class HybrisApplicationSettingsForm {
     private JPanel extensionsResourcesToExclude;
     private JCheckBox warnIfGeneratedItemsAreOutOfDateCheckBox;
     private JCheckBox withStandardProvidedSources;
+    private JPanel excludedFromIndexPanel;
 
     private MyListPanel junkListPanel;
     private MyListPanel tsdListPanel;
     private MyListPanel extensionsResourcesToExcludeListPanel;
+    private MyListPanel excludedFromIndexListPanel;
 
     public void setData(final HybrisApplicationSettings data) {
         enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
@@ -92,6 +94,7 @@ public class HybrisApplicationSettingsForm {
         scanThroughExternalModule.setSelected(data.isScanThroughExternalModule());
         excludeTestSources.setSelected(data.isExcludeTestSources());
         warnIfGeneratedItemsAreOutOfDateCheckBox.setSelected(data.isWarnIfGeneratedItemsAreOutOfDate());
+        excludedFromIndexListPanel.setMyList(data.getExcludedFromIndexList());
     }
 
     public void getData(final HybrisApplicationSettings data) {
@@ -116,6 +119,7 @@ public class HybrisApplicationSettingsForm {
         data.setScanThroughExternalModule(scanThroughExternalModule.isSelected());
         data.setExcludeTestSources(excludeTestSources.isSelected());
         data.setWarnIfGeneratedItemsAreOutOfDate(warnIfGeneratedItemsAreOutOfDateCheckBox.isSelected());
+        data.setExcludedFromIndexList(excludedFromIndexListPanel.getMyList());
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
@@ -126,6 +130,9 @@ public class HybrisApplicationSettingsForm {
             return true;
         }
         if (!junkListPanel.getMyList().equals(data.getJunkDirectoryList())) {
+            return true;
+        }
+        if (!excludedFromIndexListPanel.getMyList().equals(data.getExcludedFromIndexList())) {
             return true;
         }
         if (!tsdListPanel.getMyList().equals(data.getTsdStopTypeList())) {
@@ -202,6 +209,8 @@ public class HybrisApplicationSettingsForm {
         typeSystemDiagramStopWords = tsdListPanel;
         extensionsResourcesToExcludeListPanel = new MyListPanel("hybris.import.settings.exclude.resources.name", "hybris.import.settings.exclude.resources.popup.add.title", "hybris.import.settings.exclude.resources.popup.add.text", "hybris.import.settings.exclude.resources.popup.edit.title", "hybris.import.settings.exclude.resources.popup.edit.text", new ArrayList<String>());
         extensionsResourcesToExclude = extensionsResourcesToExcludeListPanel;
+        excludedFromIndexListPanel = new MyListPanel("hybris.import.settings.excludedFromIndex.directory.name", "hybris.import.settings.excludedFromIndex.directory.popup.add.title", "hybris.import.settings.excludedFromIndex.directory.popup.add.text", "hybris.import.settings.excludedFromIndex.directory.popup.edit.title", "hybris.import.settings.excludedFromIndex.directory.popup.edit.text", new ArrayList<String>());
+        excludedFromIndexPanel = excludedFromIndexListPanel;
 
         projectTreeViewSettingsLabel = new JBLabel();
         projectTreeViewSettingsLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
