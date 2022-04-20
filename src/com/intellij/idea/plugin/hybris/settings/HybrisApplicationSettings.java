@@ -60,6 +60,13 @@ public class HybrisApplicationSettings {
         "npmancillary"
     );
 
+    public static final List<String> DEFAULT_EXCLUDED_FROM_INDEX = Lists.newArrayList(
+        "smartedit-custom-build",
+        "smartedit-build",
+        "apps/**/node_modules",
+        "common/temp/node_modules"
+    );
+
     @PropertyName("foldingEnabled")
     private boolean foldingEnabled = true;
 
@@ -141,6 +148,9 @@ public class HybrisApplicationSettings {
     @PropertyName("warnIfGeneratedItemsAreOutOfDate")
     private boolean warnIfGeneratedItemsAreOutOfDate = true;
 
+    @PropertyName("excludedFromIndexList")
+    private List<String> excludedFromIndexList = DEFAULT_EXCLUDED_FROM_INDEX;
+
 
     public HybrisApplicationSettings() {
     }
@@ -167,6 +177,14 @@ public class HybrisApplicationSettings {
 
     public void setJunkDirectoryList(final List<String> junkDirectoryList) {
         this.junkDirectoryList = junkDirectoryList;
+    }
+
+    public List<String> getExcludedFromIndexList() {
+        return excludedFromIndexList;
+    }
+
+    public void setExcludedFromIndexList(final List<String> excludedFromIndexList) {
+        this.excludedFromIndexList = excludedFromIndexList;
     }
 
     public boolean isGroupModules() {
@@ -391,6 +409,7 @@ public class HybrisApplicationSettings {
             .append(excludeTestSources)
             .append(extensionsResourcesToExcludeList)
             .append(warnIfGeneratedItemsAreOutOfDate)
+            .append(excludedFromIndexList)
             .toHashCode();
     }
 
@@ -434,6 +453,7 @@ public class HybrisApplicationSettings {
             .append(excludeTestSources, other.excludeTestSources)
             .append(extensionsResourcesToExcludeList, other.extensionsResourcesToExcludeList)
             .append(warnIfGeneratedItemsAreOutOfDate, other.warnIfGeneratedItemsAreOutOfDate)
+            .append(excludedFromIndexList, other.excludedFromIndexList)
             .isEquals();
     }
 
@@ -467,6 +487,7 @@ public class HybrisApplicationSettings {
         sb.append(", developmentMode='").append(developmentMode).append('\'');
         sb.append(", excludeTestSources='").append(excludeTestSources).append('\'');
         sb.append(", warnIfGeneratedItemsAreOutOfDate='").append(warnIfGeneratedItemsAreOutOfDate).append('\'');
+        sb.append(", excludedFromIndexList='").append(excludedFromIndexList).append('\'');
         sb.append('}');
         return sb.toString();
     }
