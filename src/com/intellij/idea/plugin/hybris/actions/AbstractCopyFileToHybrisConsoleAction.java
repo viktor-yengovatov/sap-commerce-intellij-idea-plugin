@@ -18,15 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.actions;
 
+import com.intellij.execution.console.ConsoleExecutionEditor;
+import com.intellij.execution.console.LanguageConsoleImpl;
 import com.intellij.ide.projectView.ProjectView;
 import com.intellij.ide.projectView.impl.AbstractProjectViewPane;
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.tree.TreePath;
@@ -36,7 +41,7 @@ import java.util.Objects;
 
 public abstract class AbstractCopyFileToHybrisConsoleAction extends AnAction {
 
-    public static boolean isRequiredFileExtension(
+    public boolean isRequiredFileExtension(
         @NotNull final DataContext dataContext,
         final String fileExtension,
         final boolean oneFile
@@ -57,7 +62,7 @@ public abstract class AbstractCopyFileToHybrisConsoleAction extends AnAction {
         return isImpex;
     }
 
-    private static List<String> getFilesName(@NotNull final DataContext dataContext) {
+    private List<String> getFilesName(@NotNull final DataContext dataContext) {
         final Object[] files = getFiles(dataContext);
         final List<String> names = new ArrayList<>();
         if (files != null) {
@@ -69,7 +74,7 @@ public abstract class AbstractCopyFileToHybrisConsoleAction extends AnAction {
         return names;
     }
 
-    public static Object[] getFiles(@NotNull final DataContext dataContext) {
+    public Object[] getFiles(@NotNull final DataContext dataContext) {
         final Project project = CommonDataKeys.PROJECT.getData(dataContext);
         if (project != null) {
             final AbstractProjectViewPane currentProjectViewPane = ProjectView.getInstance(project)
@@ -79,14 +84,36 @@ public abstract class AbstractCopyFileToHybrisConsoleAction extends AnAction {
         return new Object[0];
     }
 
-    public static void copyToHybrisConsole(final Project project, final String consoleTitle, final String query) {
-        final HybrisConsolePanel hybrisConsolePanel = HybrisConsolePanelView.Companion.getInstance(Objects.requireNonNull(
+    public HybrisConsolePanel getHybrisConsolePanel(final Project project) {
+        return HybrisConsolePanelView.Companion.getInstance(Objects.requireNonNull(
             project)).getConsolePanel();
+    }
+
+    public String getTextFromHybrisConsole(final Project project, final HybrisConsole hybrisConsole) {
+        final LanguageConsoleImpl.Helper helper = new LanguageConsoleImpl.Helper(
+            project,
+            hybrisConsole.getVirtualFile()
+        );
+        final ConsoleExecutionEditor consoleExecutionEditor = new ConsoleExecutionEditor(helper);
+        return consoleExecutionEditor.getDocument().getText();
+    }
+
+    public void copyToHybrisConsole(
+        final Project project,
+        final String consoleTitle,
+        final String query
+    ) {
+        final HybrisConsolePanel hybrisConsolePanel = getHybrisConsolePanel(project);
         final HybrisConsole hybrisConsole = hybrisConsolePanel.findConsole(consoleTitle);
         if (hybrisConsole != null) {
             hybrisConsole.clear();
             hybrisConsole.setInputText(query);
             hybrisConsolePanel.setActiveConsole(hybrisConsole);
+            final ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow(
+                HybrisConsoleToolWindowFactory.ID);
+            if (toolWindow != null) {
+                toolWindow.activate(null);
+            }
         }
     }
 }
