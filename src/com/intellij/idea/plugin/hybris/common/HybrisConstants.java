@@ -331,4 +331,8 @@ public interface HybrisConstants {
         "Undo Reformat Code",
         "Auto-Indent Lines"
     };
+
+    String DIALOG_TITLE = "copy.file.dialog.";
+    String FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs";
+    String IMPEX_FILE_EXTENSION = "impex";
 }

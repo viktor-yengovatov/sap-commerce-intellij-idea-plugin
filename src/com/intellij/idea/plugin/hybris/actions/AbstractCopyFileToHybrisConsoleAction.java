@@ -21,38 +21,69 @@ package com.intellij.idea.plugin.hybris.actions;
 import com.intellij.execution.console.ConsoleExecutionEditor;
 import com.intellij.execution.console.LanguageConsoleImpl;
 import com.intellij.ide.projectView.ProjectView;
+import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.impl.AbstractProjectViewPane;
+import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
+import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog;
 import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
 public abstract class AbstractCopyFileToHybrisConsoleAction extends AnAction {
 
+    public void performed(final Project project, final String consoleTitle, final String dialogTitle) {
+        if (project != null) {
+            final TreePath[] paths = getPaths(project);
+            final StringBuilder query = new StringBuilder();
+            for (final TreePath treePath : paths) {
+                final DefaultMutableTreeNode lastPathNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                final PsiFileNode file = (PsiFileNode) lastPathNode.getUserObject();
+                query.append(file.getValue().getText()).append(System.lineSeparator());
+            }
+            final HybrisConsolePanel hybrisConsolePanel = getHybrisConsolePanel(project);
+            final HybrisConsole hybrisConsole = hybrisConsolePanel.findConsole(consoleTitle);
+            if (hybrisConsole != null) {
+                if (!getTextFromHybrisConsole(project, hybrisConsole).isEmpty()) {
+                    final CopyFileToHybrisConsoleDialog copyFileToHybrisConsoleDialog = new CopyFileToHybrisConsoleDialog(
+                        project);
+                    copyFileToHybrisConsoleDialog.setTitle(dialogTitle);
+                    if (copyFileToHybrisConsoleDialog.showAndGet()) {
+                        copyToHybrisConsole(project, consoleTitle, query.toString());
+                    }
+                } else {
+                    copyToHybrisConsole(project, consoleTitle, query.toString());
+                }
+            }
+        }
+    }
+
     public boolean isRequiredFileExtension(
-        @NotNull final DataContext dataContext,
+        @NotNull final Project project,
         final String fileExtension,
         final boolean oneFile
     ) {
         boolean isImpex = false;
-        final List<String> filesName = getFilesName(dataContext);
+        final List<String> fileExtensions = getFileExtensions(project);
         if (oneFile) {
-            return filesName.size() == 1 && filesName.get(0).contains(fileExtension);
+            return fileExtensions.size() == 1 && fileExtensions.get(0).equals(fileExtension);
         } else {
-            for (String name : filesName) {
-                if (name.contains(fileExtension)) {
+            for (String extension : fileExtensions) {
+                if (extension.equals(fileExtension)) {
                     isImpex = true;
                 } else {
                     return false;
@@ -62,31 +93,29 @@ public abstract class AbstractCopyFileToHybrisConsoleAction extends AnAction {
         return isImpex;
     }
 
-    private List<String> getFilesName(@NotNull final DataContext dataContext) {
-        final Object[] files = getFiles(dataContext);
+    private List<String> getFileExtensions(@NotNull final Project project) {
+        final TreePath[] paths = getPaths(project);
         final List<String> names = new ArrayList<>();
-        if (files != null) {
-            for (final Object file : files) {
-                final TreePath treePath = (TreePath) file;
-                names.add(treePath.getLastPathComponent().toString());
+        for (final TreePath treePath : paths) {
+            final DefaultMutableTreeNode lastPathNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+            final ProjectViewNode file = (ProjectViewNode) lastPathNode.getUserObject();
+            final VirtualFile virtualFile = file.getVirtualFile();
+            if (virtualFile != null && !virtualFile.isDirectory()) {
+                names.add(file.getVirtualFile().getExtension());
             }
         }
         return names;
     }
 
-    public Object[] getFiles(@NotNull final DataContext dataContext) {
-        final Project project = CommonDataKeys.PROJECT.getData(dataContext);
-        if (project != null) {
-            final AbstractProjectViewPane currentProjectViewPane = ProjectView.getInstance(project)
-                                                                              .getCurrentProjectViewPane();
-            return currentProjectViewPane.getSelectionPaths();
-        }
-        return new Object[0];
+    public TreePath[] getPaths(@NotNull final Project project) {
+        final AbstractProjectViewPane currentProjectViewPane = ProjectView.getInstance(project)
+                                                                          .getCurrentProjectViewPane();
+        final TreePath[] selectionPaths = currentProjectViewPane.getSelectionPaths();
+        return selectionPaths == null ? new TreePath[0] : selectionPaths;
     }
 
     public HybrisConsolePanel getHybrisConsolePanel(final Project project) {
-        return HybrisConsolePanelView.Companion.getInstance(Objects.requireNonNull(
-            project)).getConsolePanel();
+        return HybrisConsolePanelView.Companion.getInstance(project).getConsolePanel();
     }
 
     public String getTextFromHybrisConsole(final Project project, final HybrisConsole hybrisConsole) {
@@ -115,5 +144,9 @@ public abstract class AbstractCopyFileToHybrisConsoleAction extends AnAction {
                 toolWindow.activate(null);
             }
         }
+    }
+
+    public String getDialogTitle(final String fileExtension) {
+        return HybrisI18NBundleUtils.message(DIALOG_TITLE + fileExtension);
     }
 }
