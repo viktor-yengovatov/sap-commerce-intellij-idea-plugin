@@ -26,19 +26,27 @@ import javax.swing.*;
 
 import static com.intellij.openapi.ui.DialogWrapper.IdeModalityType.PROJECT;
 
-public class CopyFileToHybrisConsoleDialog extends DialogWrapper {
+public final class CopyFileToHybrisConsoleDialog extends DialogWrapper {
 
     private JPanel contentPane;
 
     public CopyFileToHybrisConsoleDialog(
-        @Nullable final Project project
+        @Nullable final Project project,
+        @Nullable final String dialogTitle
     ) {
         super(project, false, PROJECT);
+        setTitle(dialogTitle);
         init();
     }
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
         return contentPane;
+    }
+
+    public void show(final Runnable runnable) {
+        if(showAndGet()) {
+            runnable.run();
+        }
     }
 }
