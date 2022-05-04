@@ -24,8 +24,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.isRequiredFileExtension;
-import static com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.copySelectedFilesToHybris;
+import static com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.copySelectedFilesToHybrisConsole;
+import static com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.isRequiredSingleFileExtension;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
 public class CopyFlexibleSearchFileAction extends AnAction {
@@ -34,8 +34,9 @@ public class CopyFlexibleSearchFileAction extends AnAction {
     public void update(@NotNull final AnActionEvent event) {
         Project project = event.getProject();
         if (project != null) {
-            event.getPresentation().setEnabledAndVisible(ActionUtils.isHybrisContext(project) && isRequiredFileExtension(
-                project, FLEXIBLE_SEARCH_FILE_EXTENSION, true));
+            event.getPresentation()
+                 .setEnabledAndVisible(ActionUtils.isHybrisContext(project) && isRequiredSingleFileExtension(
+                     project, FLEXIBLE_SEARCH_FILE_EXTENSION));
         }
     }
 
@@ -43,7 +44,7 @@ public class CopyFlexibleSearchFileAction extends AnAction {
     public void actionPerformed(@NotNull final AnActionEvent event) {
         Project project = event.getProject();
         if (project != null) {
-            copySelectedFilesToHybris(project, FLEXIBLE_SEARCH_CONSOLE_TITLE, FLEXIBLE_SEARCH_FILE_EXTENSION);
+            copySelectedFilesToHybrisConsole(project, FLEXIBLE_SEARCH_CONSOLE_TITLE, FLEXIBLE_SEARCH_FILE_EXTENSION);
         }
     }
 }
