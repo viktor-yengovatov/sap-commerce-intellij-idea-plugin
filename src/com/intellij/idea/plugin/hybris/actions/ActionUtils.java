@@ -41,4 +41,8 @@ public final class ActionUtils {
         final Project project = CommonDataKeys.PROJECT.getData(dataContext);
         return project != null && CommonIdeaService.getInstance().isHybrisProject(project);
     }
+
+    public static boolean isHybrisContext(@NotNull final Project project) {
+        return CommonIdeaService.getInstance().isHybrisProject(project);
+    }
 }
