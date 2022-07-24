@@ -15,7 +15,6 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.xml.XmlAttributeDescriptor
 import com.intellij.xml.util.XmlUtil
-import java.io.FileWriter
 import java.util.*
 
 /**

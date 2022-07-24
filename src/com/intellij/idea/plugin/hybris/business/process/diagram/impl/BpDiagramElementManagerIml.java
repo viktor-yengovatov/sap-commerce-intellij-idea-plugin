@@ -95,12 +95,6 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
         return t.getGenericAction().getId();
     }
 
-    @Nullable
-    @Override
-    public SimpleColoredText getItemName(final Object o, final DiagramState diagramState) {
-        return null;
-    }
-
     @Override
     public String getNodeTooltip(final BpGraphNode t) {
         return t.getGenericAction().getId();

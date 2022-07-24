@@ -32,8 +32,7 @@ public class HybrisConsoleNotificationUtil {
         NotificationUtil.NOTIFICATION_GROUP.createNotification(
             notificationTitle,
             notificationName,
-            NotificationType.WARNING,
-            null
+            NotificationType.WARNING
         ).notify(project);
     }
 }

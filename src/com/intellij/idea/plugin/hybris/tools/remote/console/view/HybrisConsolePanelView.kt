@@ -19,7 +19,7 @@ import javax.swing.JPanel
 class HybrisConsolePanelView(val project: Project) : Disposable {
 
     companion object {
-        fun getInstance(project: Project): HybrisConsolePanelView = ServiceManager.getService(project, HybrisConsolePanelView::class.java)
+        fun getInstance(project: Project): HybrisConsolePanelView = project.getService(HybrisConsolePanelView::class.java)
     }
     
     val consolePanel = HybrisConsolePanel(project)
@@ -40,7 +40,7 @@ class HybrisConsolePanelView(val project: Project) : Disposable {
 
         val layoutComponent = layoutUi.component
         panel.add(layoutComponent, BorderLayout.CENTER)
-        val content = ContentFactory.SERVICE.getInstance().createContent(layoutComponent, null, true)
+        val content = ContentFactory.getInstance().createContent(layoutComponent, null, true)
         toolWindow.contentManager.addContent(content)
     }
 

@@ -65,7 +65,7 @@ class AttributeReferenceConverter : CustomReferenceConverter<String> {
                                 name, GlobalSearchScope.allScope(project)
                         )
                         psiClasses.forEach { psiClass ->
-                            val psiField = PsiClassImplUtil.findFieldByName(psiClass, searchFieldName.toUpperCase(), true)
+                            val psiField = PsiClassImplUtil.findFieldByName(psiClass, searchFieldName.uppercase(), true)
                             if (psiField != null) psiElements.add(psiField)
                             val psiGetterMethod = findGetter(psiClass, searchFieldName, true)
                             if (psiGetterMethod != null) psiElements.add(psiGetterMethod)

@@ -155,8 +155,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
                     "hybris.toolwindow.solr.test.connection.fail",
                     e.localizedMessage
                 ),
-                NotificationType.WARNING,
-                null
+                NotificationType.WARNING
             ).notify(project)
             emptyList()
         }

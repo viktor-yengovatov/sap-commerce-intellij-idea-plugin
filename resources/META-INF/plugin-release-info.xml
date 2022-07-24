@@ -2,10 +2,10 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2022.1</version>
+    <version>2022.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="221.5080.40" until-build="221.*"/>
+    <idea-version since-build="222.3345.118" until-build="222.*"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -79,6 +79,7 @@
               <li>Viktors Jengovatovs</li>
               <li>Oleksandr Dihtiar</li>
               <li>Rustam Burmenskyi</li>
+              <li>Vladyslav Yanytskyi</li>
           </ul>
       ]]>
     </description>
@@ -86,6 +87,8 @@
     <change-notes>
         <![CDATA[
             <ul>
+                <li> New action 'Copy to Hybris console' for impex/fxs files</li>
+                <li> Exclude directories from index in `Settings` </li>
                 <li> Bug fixing </li>
             </ul>
           ]]>

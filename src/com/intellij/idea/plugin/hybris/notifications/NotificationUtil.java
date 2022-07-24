@@ -2,6 +2,8 @@ package com.intellij.idea.plugin.hybris.notifications;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationGroupManager;
+import com.intellij.notification.impl.NotificationGroupEP;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.SystemNotifications;
@@ -17,8 +19,9 @@ public class NotificationUtil {
     private NotificationUtil() {
     }
 
-    public static final NotificationGroup NOTIFICATION_GROUP = NotificationGroup.balloonGroup(
-        HybrisI18NBundleUtils.message("hybris.notification.group"));
+    public static final NotificationGroup NOTIFICATION_GROUP = NotificationGroupManager.getInstance()
+                                                                                       .getNotificationGroup(
+                                                                                           "Hybris");
 
     public static void showSystemNotificationIfNotActive(
         @NotNull Project project,

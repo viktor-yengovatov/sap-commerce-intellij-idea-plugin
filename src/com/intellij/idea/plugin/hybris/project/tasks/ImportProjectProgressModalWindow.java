@@ -464,11 +464,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
 
         StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
-            final ToolWindowManager manager = ToolWindowManager.getInstance(project);
-            final ToolWindow window = manager.getToolWindow("Hybris");
             project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).hacConnectionSettingsChanged();
             project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
-            window.show(null);
         });
     }
 

@@ -269,8 +269,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         NotificationUtil.NOTIFICATION_GROUP.createNotification(
             notificationTitle,
             message("import.or.refresh.process.not.finished.yet"),
-            NotificationType.INFORMATION,
-            null
+            NotificationType.INFORMATION
         ).notify(project);
     }
 
@@ -287,8 +286,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         NotificationUtil.NOTIFICATION_GROUP.createNotification(
             notificationTitle,
             notificationName,
-            NotificationType.INFORMATION,
-            null
+            NotificationType.INFORMATION
         ).notify(project);
 
         showSystemNotificationIfNotActive(project, notificationName, notificationTitle, notificationName);

@@ -47,7 +47,7 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
     ) {
         myToolWindow = toolWindow;
         myProject = project;
-        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+        ContentFactory contentFactory = ContentFactory.getInstance();
         Content content = contentFactory.createContent(myToolWindowContent, "", false);
         toolWindow.getContentManager().addContent(content);
         project.getMessageBus().connect(project).subscribe(
@@ -218,4 +218,8 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState().setRemoteConnectionSettingsList(myListPanel.getData());
     }
 
+    @Override
+    public boolean isApplicable(@NotNull final Project project) {
+        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybrisProject();
+    }
 }

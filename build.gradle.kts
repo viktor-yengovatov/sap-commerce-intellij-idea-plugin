@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "1.5.2"
+    id("org.jetbrains.intellij") version "1.7.0"
 }
 
 sourceSets.main {
@@ -37,7 +37,6 @@ allprojects {
     }
 
     repositories {
-        jcenter()
         mavenCentral()
     }
 
