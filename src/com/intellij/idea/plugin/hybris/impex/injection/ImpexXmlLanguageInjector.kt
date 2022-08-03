@@ -43,7 +43,7 @@ class ImpexXmlLanguageInjector : LanguageInjector {
             injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
         if (host is ImpexStringImpl) {
-            val hostString = StringUtil.unquoteString(host.getText()).toLowerCase()
+            val hostString = StringUtil.unquoteString(host.getText()).lowercase()
             if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
                 val language = XMLLanguage.INSTANCE
                 try {

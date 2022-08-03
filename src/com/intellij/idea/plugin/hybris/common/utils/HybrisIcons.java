@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.utils;
 
 import com.intellij.openapi.util.IconLoader;
+import com.intellij.util.ReflectionUtil;
 
 import javax.swing.*;
 
@@ -29,35 +30,41 @@ import javax.swing.*;
  */
 public interface HybrisIcons {
 
-    Icon IMPEX_FILE = IconLoader.getIcon("/icons/fileTypes/impexFile.svg");
-    Icon FS_FILE = IconLoader.getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
-    Icon BEAN_FILE = IconLoader.getIcon("/icons/beanIcon.svg");
+    Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
+    Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
+    Icon BEAN_FILE = getIcon("/icons/beanIcon.svg");
     
-    Icon HYBRIS_ICON = IconLoader.getIcon("/icons/hybrisIcon.svg");
-    Icon HYBRIS_ICON_13x13 = IconLoader.getIcon("/icons/hybrisIcon_13x13.svg");
-    Icon HYBRIS_REMOTE_ICON = IconLoader.getIcon("/icons/hybrisRemoteIcon.svg");
+    Icon HYBRIS_ICON = getIcon("/icons/hybrisIcon.svg");
+    Icon HYBRIS_ICON_13x13 = getIcon("/icons/hybrisIcon_13x13.svg");
+    Icon HYBRIS_REMOTE_ICON = getIcon("/icons/hybrisRemoteIcon.svg");
     
-    Icon WAIT = IconLoader.getIcon("/icons/waitIcon.svg");
-    Icon END = IconLoader.getIcon("/icons/endIcon.svg");
-    Icon NOTIFY = IconLoader.getIcon("/icons/notifyIcon.svg");
-    Icon ACTION = IconLoader.getIcon("/icons/actionIcon.svg");
-    Icon SPLIT = IconLoader.getIcon("/icons/splitIcon.svg");
-    Icon JOIN = IconLoader.getIcon("/icons/joinIcon.svg");
-    Icon SCRIPT = IconLoader.getIcon("/icons/scriptIcon.svg");
+    Icon WAIT = getIcon("/icons/waitIcon.svg");
+    Icon END = getIcon("/icons/endIcon.svg");
+    Icon NOTIFY = getIcon("/icons/notifyIcon.svg");
+    Icon ACTION = getIcon("/icons/actionIcon.svg");
+    Icon SPLIT = getIcon("/icons/splitIcon.svg");
+    Icon JOIN = getIcon("/icons/joinIcon.svg");
+    Icon SCRIPT = getIcon("/icons/scriptIcon.svg");
     
     
-    Icon TYPE_SYSTEM = IconLoader.getIcon("/icons/typeSystem.svg");
-    Icon BEAN = IconLoader.getIcon("/icons/beanIcon.svg");
-    Icon LOCALIZED = IconLoader.getIcon("/icons/localized.svg");
+    Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
+    Icon BEAN = getIcon("/icons/beanIcon.svg");
+    Icon LOCALIZED = getIcon("/icons/localized.svg");
 
-    Icon MACROS = IconLoader.getIcon("/icons/macros.png");
+    Icon MACROS = getIcon("/icons/macros.png");
     
     
     interface Gutter {
-        Icon POPULATOR = IconLoader.getIcon("/icons/gutter/populator.svg");
+        Icon POPULATOR = getIcon("/icons/gutter/populator.svg");
     }
     
     interface Console {
-        Icon SOLR = IconLoader.getIcon("/icons/console/solr.svg");
+        Icon SOLR = getIcon("/icons/console/solr.svg");
+    }
+
+    static Icon getIcon(final String path) {
+        final Class<?> callerClass = ReflectionUtil.getGrandCallerClass();
+        assert callerClass != null : path;
+        return IconLoader.getIcon(path, callerClass);
     }
 }

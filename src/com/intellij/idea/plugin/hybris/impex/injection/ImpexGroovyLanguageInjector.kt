@@ -41,7 +41,7 @@ class ImpexGroovyLanguageInjector : LanguageInjector {
             injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
         if (host is ImpexStringImpl) {
-            val hostString = StringUtil.unquoteString(host.getText()).toLowerCase()
+            val hostString = StringUtil.unquoteString(host.getText()).lowercase()
             if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(GROOVY_MARKER)) {
                 val language = GroovyLanguage
                 try {

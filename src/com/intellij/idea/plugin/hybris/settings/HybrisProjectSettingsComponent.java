@@ -40,7 +40,7 @@ public class HybrisProjectSettingsComponent implements PersistentStateComponent<
     private final HybrisProjectSettings hybrisProjectSettings = new HybrisProjectSettings();
 
     public static HybrisProjectSettingsComponent getInstance(@NotNull final Project project) {
-        return ServiceManager.getService(project, HybrisProjectSettingsComponent.class);
+        return project.getService(HybrisProjectSettingsComponent.class);
     }
 
     @NotNull

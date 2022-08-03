@@ -28,19 +28,21 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.liste
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.IconLoader
+import com.intellij.util.ReflectionUtil
 import java.awt.Dimension
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import javax.swing.DefaultComboBoxModel
+import javax.swing.Icon
 import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
 class HybrisConsoleQueryPanel(private val project: Project, private val console: HybrisConsole, region: String) : JPanel() {
 
-    private val saveButton = JButton(IconLoader.getIcon("/icons/menu-saveall.svg"))
-    private val loadButton = JButton(IconLoader.getIcon("/icons/upload.svg"))
-    private val removeButton = JButton(IconLoader.getIcon("/icons/delete.png"))
+    private val saveButton = JButton(getIcon("/icons/menu-saveall.svg"))
+    private val loadButton = JButton(getIcon("/icons/upload.svg"))
+    private val removeButton = JButton(getIcon("/icons/delete.png"))
 
     private val regionEntityService = RegionEntityService.getInstance(project)
     private val regionService = RegionService.getInstance(project)
@@ -180,6 +182,11 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
         override fun update() {
             addRegionEntitiesToComboBox()
         }
+    }
+
+    fun getIcon(path: String?): Icon {
+        val callerClass = ReflectionUtil.getGrandCallerClass() ?: error(path!!)
+        return IconLoader.getIcon(path!!, callerClass)
     }
 
 }

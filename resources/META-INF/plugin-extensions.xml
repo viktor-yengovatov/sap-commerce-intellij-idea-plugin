@@ -6,8 +6,9 @@
             icon="/icons/grayHybrisIcon.svg"
             anchor="right"
             secondary="true"
-            conditionClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowCondition"
             factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindow"/>
+
+        <notificationGroup displayType="BALLOON" id="Hybris"/>
 
     </extensions>
 </idea-plugin>

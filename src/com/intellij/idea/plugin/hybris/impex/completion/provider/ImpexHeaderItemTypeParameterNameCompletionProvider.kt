@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
@@ -34,7 +34,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import org.apache.commons.lang3.Validate
-import java.util.Objects
+import java.util.*
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -123,7 +123,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
     companion object {
 
         val instance: CompletionProvider<CompletionParameters>
-            get() = ServiceManager.getService(ImpexHeaderItemTypeParameterNameCompletionProvider::class.java)
+            get() = ApplicationManager.getApplication().getService(ImpexHeaderItemTypeParameterNameCompletionProvider::class.java)
 
         private fun getTypePresentableText(type: String?): String {
             if (type == null) {

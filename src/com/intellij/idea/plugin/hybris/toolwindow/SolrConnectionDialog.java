@@ -121,7 +121,7 @@ public class SolrConnectionDialog extends DialogWrapper {
         }
 
         NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type, null
+            HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type
         ).notify(myProject);
     }
 
