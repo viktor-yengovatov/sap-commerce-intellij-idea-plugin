@@ -13,7 +13,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
-import com.intellij.util.castSafelyTo
+import com.intellij.util.asSafely
 import icons.JetgroovyIcons.Groovy.Groovy_16x16
 import java.awt.BorderLayout
 import javax.swing.Icon
@@ -140,9 +140,9 @@ class HybrisTabs(impexConsole: HybrisImpexConsole,
         }
 
         addChangeListener {
-            it.source.castSafelyTo<JBEditorTabs>()
+            it.source.asSafely<JBEditorTabs>()
                     ?.selectedInfo
-                    ?.component.castSafelyTo<HybrisConsole>()
+                    ?.component.asSafely<HybrisConsole>()
                     ?.onSelection()
         }
     }
