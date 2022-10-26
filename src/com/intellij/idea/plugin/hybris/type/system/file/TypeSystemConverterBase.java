@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -40,17 +39,13 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
     private final Class<? extends DOM> myResolvesToClass;
 
     protected abstract DOM searchForName(
-        @NotNull String name, @NotNull ConvertContext context, @NotNull TSMetaModel meta
+        @NotNull String name, @NotNull ConvertContext context, TSMetaModelAccess meta
     );
 
-    protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, @NotNull TSMetaModel meta);
+    protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, TSMetaModelAccess meta);
 
     public TypeSystemConverterBase(@NotNull final Class<? extends DOM> resolvesToClass) {
         myResolvesToClass = resolvesToClass;
-    }
-
-    public boolean canResolveTo(final @NotNull Object dom) {
-        return myResolvesToClass.isInstance(dom);
     }
 
     public Class<? extends DOM> getResolvesToClass() {
@@ -88,15 +83,17 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         if (StringUtil.isEmpty(s)) {
             return null;
         }
-        return searchForName(s, context, TSMetaModelAccess.getInstance(context.getProject()).
-            getTypeSystemMeta(context.getFile()));
+        return searchForName(s, context, getMetaService(context));
     }
 
     @NotNull
     @Override
     public final Collection<? extends DOM> getVariants(final ConvertContext context) {
-        return searchAll(context, TSMetaModelAccess.getInstance(context.getProject()).
-            getTypeSystemMeta(context.getFile()));
+        return searchAll(context, getMetaService(context));
+    }
+
+    protected TSMetaModelAccess getMetaService(final ConvertContext context) {
+        return TSMetaModelAccess.Companion.getInstance(context.getProject());
     }
 
     protected static <D extends DomElement> XmlAttributeValue navigateToValue(
@@ -104,12 +101,10 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         @NotNull final Function<? super D, GenericAttributeValue<?>> attribute
     ) {
 
-        return
-            Optional.ofNullable(dom)
+        return Optional.ofNullable(dom)
                     .map(attribute)
                     .map(GenericAttributeValue::getXmlAttributeValue)
                     .orElse(null);
-
     }
 
     protected static <D extends DomElement, R> R useAttributeValue(
@@ -117,11 +112,9 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         @NotNull final Function<? super D, GenericAttributeValue<R>> attribute
     ) {
 
-        return
-            Optional.ofNullable(dom)
+        return Optional.ofNullable(dom)
                     .map(attribute)
                     .map(GenericAttributeValue::getValue)
                     .orElse(null);
-
     }
 }

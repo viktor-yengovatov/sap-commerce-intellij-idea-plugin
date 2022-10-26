@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
-import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.Nullable;
 
 public interface TSMetaCollection extends TSMetaClassifier<CollectionType> {
@@ -29,9 +28,9 @@ public interface TSMetaCollection extends TSMetaClassifier<CollectionType> {
     Type getType();
 
     @Nullable
-    String getElementTypeName();
+    String getElementType();
 
-    @Nullable
-    TSMetaClassifier<? extends DomElement> getElementType();
+    boolean isAutoCreate();
 
+    boolean isGenerate();
 }

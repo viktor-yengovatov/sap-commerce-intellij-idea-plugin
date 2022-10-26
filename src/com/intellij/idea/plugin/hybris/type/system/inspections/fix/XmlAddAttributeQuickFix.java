@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.fix;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlAttribute;
@@ -29,27 +30,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class XmlAddAttributeQuickFix implements LocalQuickFix {
 
-    private final String fixName;
-    private final String tagName;
-    private final String attributeName;
-    private final String attributeValue;
+    private final String myFixName;
+    private final String myAttributeName;
 
     public XmlAddAttributeQuickFix(
-            final String tagName,
-            final String attributeName,
-            final String attributeValue
+        final String attributeName
     ) {
-        this.fixName = "Add/update attribute " + attributeName + "=" + attributeValue;
-        this.tagName = tagName;
-        this.attributeName = attributeName;
-        this.attributeValue = attributeValue;
-    }
 
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.AddAttribute", attributeName);
+        myAttributeName = attributeName;
+    }
 
     @NotNull
     @Override
     public String getFamilyName() {
-        return fixName;
+        return myFixName;
     }
 
     @Override
@@ -58,22 +53,8 @@ public class XmlAddAttributeQuickFix implements LocalQuickFix {
 
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
-            final XmlAttribute xmlAttribute;
-            XmlTag modifiersTag = currentTag.findFirstSubTag(tagName);
-            if (modifiersTag == null) {
-                // Create tag
-                final XmlTag tagToInsert = currentTag.createChildTag(
-                        tagName,
-                        currentTag.getNamespace(),
-                        null,
-                        false
-                );
-
-                // Insert tag
-                modifiersTag = currentTag.addSubTag(tagToInsert, true);
-            }
-            xmlAttribute = modifiersTag.setAttribute(attributeName, attributeValue);
-            PsiNavigateUtil.navigate(xmlAttribute);
+            final XmlAttribute xmlAttribute = currentTag.setAttribute(myAttributeName, "");
+            PsiNavigateUtil.navigate(xmlAttribute.getValueElement());
         }
     }
 }

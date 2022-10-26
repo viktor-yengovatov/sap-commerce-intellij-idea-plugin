@@ -20,13 +20,16 @@ package com.intellij.idea.plugin.hybris.type.system.editor;
 
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -41,12 +44,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.isTypeSystemXmlFile;
 
 
 /**
@@ -59,7 +62,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
         @NotNull final PsiElement psiElement, @NotNull final AnnotationHolder annotationHolder
     ) {
         if (!(psiElement instanceof XmlAttributeValue) ||
-            !isTypeSystemXmlFile(psiElement.getContainingFile())) {
+            !TypeSystemUtils.isTypeSystemXmlFile(psiElement.getContainingFile())) {
             return;
         }
         final XmlTag parentTag = PsiTreeUtil.getParentOfType(psiElement, XmlTag.class);
@@ -69,41 +72,42 @@ public class TypeSystemGutterAnnotator implements Annotator {
         }
         final DomElement dom = DomManager.getDomManager(parentTag.getProject()).getDomElement(parentTag);
 
-        if (dom instanceof ItemType) {
-            final ItemType itemType = (ItemType) dom;
-            if (!psiElement.equals(itemType.getCode().getXmlAttributeValue())) {
-                return;
-            }
+        if (!(dom instanceof ItemType)) {
+            return;
+        }
 
-            final Collection<? extends PsiElement> alternativeDoms = findAlternativeDoms(itemType);
-            if (!alternativeDoms.isEmpty()) {
-                NavigationGutterIconBuilder
-                    .create(AllIcons.Actions.Forward, TypeSystemGutterAnnotator::findAlternativeDoms)
-                    .setTarget(itemType)
-                    .setTooltipText(alternativeDoms.size() > 1
-                                        ? "Alternative Definitions"
-                                        : "Alternative Definition")
-                    .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-                    .install(annotationHolder, psiElement);
-            }
+        final ItemType itemType = (ItemType) dom;
+        if (!psiElement.equals(itemType.getCode().getXmlAttributeValue())) {
+            return;
+        }
 
-            final Optional<TSMetaClass> firstExtender = findFirstExtendingMetaClass(itemType);
-            if (firstExtender.isPresent()) {
-                NavigationGutterIconBuilder
-                    .create(
-                        AllIcons.Gutter.OverridenMethod,
-                        TypeSystemGutterAnnotator::findAllExtendingXmlAttributes
-                    )
-                    .setTarget(itemType)
-                    .setAlignment(GutterIconRenderer.Alignment.LEFT)
-                    .setTooltipText("Has subtypes")
-                    .install(annotationHolder, psiElement);
-            }
+        final Collection<? extends PsiElement> alternativeDoms = findAlternativeDoms(itemType);
+        if (!alternativeDoms.isEmpty()) {
+            NavigationGutterIconBuilder
+                // no recalculation for alternative doms
+                .create(AllIcons.Actions.Forward, it -> alternativeDoms)
+                .setTarget(itemType)
+                .setTooltipText(alternativeDoms.size() > 1
+                                    ? HybrisI18NBundleUtils.message("hybris.editor.typesystem.alternativeDefinitions")
+                                    : HybrisI18NBundleUtils.message("hybris.editor.typesystem.alternativeDefinition"))
+                .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+                .createGutterIcon(annotationHolder, psiElement);
+        }
+
+        final Optional<TSMetaItem> firstExtender = findFirstExtendingMetaClass(itemType);
+
+        if (firstExtender.isPresent()) {
+            NavigationGutterIconBuilder
+                .create(AllIcons.Gutter.OverridenMethod, this::findAllExtendingXmlAttributes)
+                .setTarget(itemType)
+                .setAlignment(GutterIconRenderer.Alignment.LEFT)
+                .setTooltipText("Has subtypes")
+                .createGutterIcon(annotationHolder, psiElement);
         }
     }
 
     @NotNull
-    private static Collection<XmlAttributeValue> findAlternativeDoms(@NotNull final ItemType source) {
+    private Collection<XmlAttributeValue> findAlternativeDoms(@NotNull final ItemType source) {
         final String code = source.getCode().getStringValue();
 
         if (StringUtil.isEmpty(code)) {
@@ -115,56 +119,67 @@ public class TypeSystemGutterAnnotator implements Annotator {
         if (psiFile == null) {
             return Collections.emptyList();
         }
-        final TSMetaModel externalModel = TSMetaModelAccess.getInstance(psiFile.getProject()).
-            getExternalTypeSystemMeta(psiFile);
 
-        return Optional.ofNullable(externalModel.findMetaClassForDom(source))
-                       .map(TSMetaClass::retrieveAllDomsStream)
+        final TSMetaItem metaItem = TSMetaModelAccess.Companion.getInstance(psiFile.getProject()).findMetaItemForDom(source);
+
+        if (metaItem == null) {
+            return Collections.emptyList();
+        }
+
+        return Optional.of(metaItem)
+                       .map(TSMetaItem::retrieveAllDomsStream)
                        .orElse(Stream.empty())
                        .filter(dom -> !dom.equals(source))
                        .map(ItemType::getCode)
+                       .sorted(compareByModuleName())
                        .map(GenericAttributeValue::getXmlAttributeValue)
                        .collect(Collectors.toList());
     }
 
     @NotNull
-    private static Optional<TSMetaClass> findFirstExtendingMetaClass(@NotNull final ItemType source) {
-        return getExtendingMetaClassNamesStream(source).findAny();
+    private Optional<TSMetaItem> findFirstExtendingMetaClass(@NotNull final ItemType source) {
+        return getExtendingMetaItemsNames(source).stream().findAny();
     }
 
     @NotNull
-    private static Collection<PsiElement> findAllExtendingXmlAttributes(@NotNull final ItemType source) {
-        return getExtendingMetaClassNamesStream(source)
-            .flatMap(TSMetaClass::retrieveAllDomsStream)
-            .map(ItemType::getCode)
-            .map(GenericAttributeValue::getXmlAttributeValue)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+    private Collection<PsiElement> findAllExtendingXmlAttributes(@NotNull final ItemType source) {
+        return getExtendingMetaItemsNames(source).stream()
+                                                 .flatMap(TSMetaItem::retrieveAllDomsStream)
+                                                 .map(ItemType::getCode)
+                                                 .sorted(compareByModuleName())
+                                                 .map(GenericAttributeValue::getXmlAttributeValue)
+                                                 .filter(Objects::nonNull)
+                                                 .collect(Collectors.toList());
     }
 
     @NotNull
-    private static Stream<TSMetaClass> getExtendingMetaClassNamesStream(@NotNull final ItemType source) {
+    private List<TSMetaItem> getExtendingMetaItemsNames(@NotNull final ItemType source) {
         final String code = source.getCode().getStringValue();
 
         if (StringUtil.isEmpty(code)) {
-            return Stream.empty();
+            return Collections.emptyList();
         }
         final XmlElement xmlElement = source.getXmlElement();
         final PsiFile psiFile = xmlElement == null ? null : xmlElement.getContainingFile();
 
         if (psiFile == null) {
-            return Stream.empty();
+            return Collections.emptyList();
         }
-        final TSMetaModel metaModel = TSMetaModelAccess.getInstance(psiFile.getProject()).getTypeSystemMeta(psiFile);
-        final TSMetaClass sourceMeta = metaModel.findMetaClassForDom(source);
+        final TSMetaModelAccess metaService = TSMetaModelAccess.Companion.getInstance(psiFile.getProject());
+        final TSMetaItem metaItem = metaService.findMetaItemForDom(source);
 
-        if (sourceMeta == null) {
-            return Stream.empty();
+        if (metaItem == null) {
+            return Collections.emptyList();
         }
-        return metaModel
-            .getMetaClassesStream()
-            .map(TSMetaClass.class::cast)
-            .filter(meta -> sourceMeta.getName().equals(meta.getExtendedMetaClassName()));
+
+        return metaService.<TSMetaItem>getAll(MetaType.META_ITEM).stream()
+                          .filter(meta -> metaItem.getName().equals(meta.getExtendedMetaItemName()))
+                          .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private static Comparator<GenericAttributeValue<String>> compareByModuleName() {
+        return (o1, o2) -> Comparing.compare(o1.getModule(), o2.getModule(), (m1, m2) -> m1.getName().compareToIgnoreCase(m2.getName()));
     }
 
 

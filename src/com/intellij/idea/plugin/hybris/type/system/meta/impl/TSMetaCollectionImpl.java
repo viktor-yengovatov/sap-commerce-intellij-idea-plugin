@@ -18,51 +18,50 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
-import com.intellij.util.xml.DomElement;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> implements TSMetaCollection {
 
-    private final TSMetaModelImpl myMetaModel;
+    private final boolean myAutoCreate;
+    private final boolean myGenerate;
+    private final String myElementType;
+    private final Type myType;
 
-    public TSMetaCollectionImpl(final TSMetaModelImpl model, final String name, final CollectionType dom) {
-        super(name, dom);
-        myMetaModel = model;
+    public TSMetaCollectionImpl(final Module module, final Project project, final String name, final CollectionType dom, final boolean custom) {
+        super(module, project, name, dom, custom);
+        myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+        myElementType = dom.getElementType().getStringValue();
+        myType = Optional.ofNullable(dom.getType().getValue())
+            .orElse(Type.COLLECTION);
     }
-
-    @Nullable
-    public static String extractName(final @NotNull CollectionType dom) {
-        return dom.getCode().getValue();
-    }
-
 
     @Nullable
     @Override
     public Type getType() {
-        return Optional.ofNullable(retrieveDom())
-            .map(dom -> dom.getType().getValue())
-            .orElse(null);
+        return myType;
     }
 
     @Nullable
     @Override
-    public String getElementTypeName() {
-        return Optional.ofNullable(retrieveDom())
-                       .map(dom -> dom.getElementType().getValue())
-                       .orElse(null);
+    public String getElementType() {
+        return myElementType;
     }
 
-    @Nullable
     @Override
-    public TSMetaClassifier<? extends DomElement> getElementType() {
-        final String typeName = getElementTypeName();
-        return typeName == null ? null : myMetaModel.findMetaClassifierByName(typeName);
+    public boolean isAutoCreate() {
+        return myAutoCreate;
+    }
+
+    @Override
+    public boolean isGenerate() {
+        return myGenerate;
     }
 }

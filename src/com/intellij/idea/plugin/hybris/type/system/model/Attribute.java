@@ -21,7 +21,6 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model;
 
-import com.intellij.idea.plugin.hybris.type.system.converter.AttributeHandlerReferenceConverter;
 import com.intellij.idea.plugin.hybris.type.system.converter.AttributeReferenceConverter;
 import com.intellij.idea.plugin.hybris.type.system.file.CompositeConverter;
 import com.intellij.util.xml.Convert;
@@ -46,6 +45,14 @@ import org.jetbrains.annotations.NotNull;
 @StubbedOccurrence
 public interface Attribute extends DomElement {
 
+    String REDECLARE = "redeclare";
+    String QUALIFIER = "qualifier";
+    String TYPE = "type";
+    String META_TYPE = "metatype";
+    String AUTO_CREATE = "autocreate";
+    String GENERATE = "generate";
+    String IS_SELECTION_OF = "isSelectionOf";
+
     /**
      * Returns the value of the redeclare child.
      * <pre>
@@ -56,7 +63,7 @@ public interface Attribute extends DomElement {
      * @return the value of the redeclare child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("redeclare")
+    @com.intellij.util.xml.Attribute(REDECLARE)
     GenericAttributeValue<Boolean> getRedeclare();
 
 
@@ -70,7 +77,7 @@ public interface Attribute extends DomElement {
      * @return the value of the qualifier child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("qualifier")
+    @com.intellij.util.xml.Attribute(QUALIFIER)
     @Required
     @Referencing(AttributeReferenceConverter.class)
     GenericAttributeValue<String> getQualifier();
@@ -86,7 +93,7 @@ public interface Attribute extends DomElement {
      * @return the value of the type child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("type")
+    @com.intellij.util.xml.Attribute(TYPE)
     @Required
     @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getType();
@@ -102,7 +109,7 @@ public interface Attribute extends DomElement {
      * @return the value of the metatype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("metatype")
+    @com.intellij.util.xml.Attribute(META_TYPE)
     GenericAttributeValue<String> getMetaType();
 
 
@@ -116,7 +123,7 @@ public interface Attribute extends DomElement {
      * @return the value of the autocreate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("autocreate")
+    @com.intellij.util.xml.Attribute(AUTO_CREATE)
     GenericAttributeValue<Boolean> getAutoCreate();
 
 
@@ -130,7 +137,7 @@ public interface Attribute extends DomElement {
      * @return the value of the generate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("generate")
+    @com.intellij.util.xml.Attribute(GENERATE)
     GenericAttributeValue<Boolean> getGenerate();
 
 
@@ -144,7 +151,7 @@ public interface Attribute extends DomElement {
      * @return the value of the isSelectionOf child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("isSelectionOf")
+    @com.intellij.util.xml.Attribute(IS_SELECTION_OF)
     GenericAttributeValue<String> getIsSelectionOf();
 
 

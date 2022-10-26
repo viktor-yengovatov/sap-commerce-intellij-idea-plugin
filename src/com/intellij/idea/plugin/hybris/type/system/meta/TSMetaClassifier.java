@@ -18,12 +18,19 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
+import com.intellij.openapi.module.Module;
+import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomElement;
 
 public interface TSMetaClassifier<DOM extends DomElement> {
 
+    Module getModule();
+
     String getName();
+
+    DomAnchor<DOM> getDomAnchor();
 
     DOM retrieveDom();
 
+    boolean isCustom();
 }

@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.type.system.inspections;
 
 import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddAttributeQuickFix;
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddTagQuickFix;
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddUpdateAttributeQuickFix;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Node;
 
@@ -37,16 +37,15 @@ public final class ItemsXmlQuickFixManager {
     private ItemsXmlQuickFixManager() {
     }
 
-    public static LocalQuickFix[] getQuickFixes(final XmlRule rule, final Node problemNode) {
+    public static LocalQuickFix[] getQuickFixes(final Node problemNode, final @NotNull String id) {
         // ! No sense to generate more than 5 quick fixes
         final LocalQuickFix[] fixes = new LocalQuickFix[5];
-        final String ruleID = rule.getID();
 
-        switch (ruleID) {
+        switch (id) {
             case MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE:
             case IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE:
                 fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
-                fixes[1] = new XmlAddAttributeQuickFix("modifiers", "initial", "true");
+                fixes[1] = new XmlAddUpdateAttributeQuickFix("modifiers", "initial", "true");
                 break;
             case DEPLOYMENT_TABLE_MUST_EXIST_FOR_ITEM_EXTENDING_GENERIC_ITEM:
                 final SortedMap<String, String> attributes = getAttributesForDeploymentTableFix(problemNode);
@@ -54,7 +53,7 @@ public final class ItemsXmlQuickFixManager {
                 break;
             case BOOLEAN_FIELD_CANNOT_BE_OPTIONAL:
                 fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);
-                fixes[1] = new XmlAddAttributeQuickFix("modifiers", "optional", "false");
+                fixes[1] = new XmlAddUpdateAttributeQuickFix("modifiers", "optional", "false");
                 break;
         }
 

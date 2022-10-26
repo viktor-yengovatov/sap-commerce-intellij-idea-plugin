@@ -18,8 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
@@ -42,10 +43,10 @@ public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
 
     @Override
     protected ItemType searchForName(
-        @NotNull final String name, @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
+        @NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
-        return Optional.ofNullable(meta.findMetaClassByName(name))
-                       .map(TSMetaClass::retrieveAllDomsStream)
+        return Optional.ofNullable(meta.findMetaItemByName(name))
+                       .map(TSMetaItem::retrieveAllDomsStream)
                        .orElse(Stream.empty())
                        .findFirst()
                        .orElse(null);
@@ -53,10 +54,10 @@ public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
 
     @Override
     protected Collection<? extends ItemType> searchAll(
-        @NotNull final ConvertContext context, @NotNull final TSMetaModel meta
+        @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
-        return meta.getMetaClassesStream()
-                   .map(TSMetaClass::retrieveAllDomsStream)
+        return meta.<TSMetaItem>getAll(MetaType.META_ITEM).stream()
+                   .map(TSMetaItem::retrieveAllDomsStream)
                    .map(Stream::findFirst)
                    .filter(Optional::isPresent)
                    .map(Optional::get)

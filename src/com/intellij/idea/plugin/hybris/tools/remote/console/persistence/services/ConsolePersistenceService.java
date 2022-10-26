@@ -18,14 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 public interface ConsolePersistenceService {
 
     static ConsolePersistenceService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, ConsolePersistenceService.class);
+        return project.getService(ConsolePersistenceService.class);
     }
 
     void loadPersistedQueries();

@@ -20,40 +20,18 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-class CaseInsensitive {
+public class CaseInsensitive {
 
     @NotNull
     public static String eraseCase(final @NotNull String key) {
         return key.toLowerCase();
-    }
-
-    public static class NoCaseMap<V> {
-
-        private final Map<String, V> myMap = new HashMap<>();
-
-        public void put(final @NotNull String key, final @Nullable V value) {
-            myMap.put(eraseCase(key), value);
-        }
-
-        public void putAll(@NotNull final NoCaseMap<V> map) {
-            myMap.putAll(map.myMap);
-        }
-
-        @Nullable
-        public V get(final @NotNull String key) {
-            return myMap.get(eraseCase(key));
-        }
-
-        @NotNull
-        public Collection<V> values() {
-            return myMap.values();
-        }
     }
 
     public static class NoCaseMultiMap<V> {
@@ -64,21 +42,77 @@ class CaseInsensitive {
             myMultiMap.putValue(eraseCase(key), value);
         }
 
+        @NotNull
+        public Collection<V> values() {
+            return myMultiMap.values();
+        }
+
         public void putAllValues(@NotNull final NoCaseMultiMap<V> map) {
             myMultiMap.putAllValues(map.myMultiMap);
         }
 
         @NotNull
-        public Collection<? extends V> values() {
-            return myMultiMap.values();
+        public Collection<V> get(final @NotNull String key) {
+            return myMultiMap.get(eraseCase(key));
         }
 
-        @NotNull
-        public Collection<? extends V> get(final @NotNull String key) {
-            return myMultiMap.get(eraseCase(key));
+        public void clear() {
+            myMultiMap.clear();
         }
 
     }
 
+    public static class CaseInsensitiveConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
+
+        private static final long serialVersionUID = 4394959693646791943L;
+        private final transient Object nullKey = new Object();
+
+        @Override
+        public V get(final Object key) {
+            return super.get(convertKey(key));
+        }
+
+        @Override
+        public void putAll(final Map<? extends K, ? extends V> map) {
+            for (Map.Entry<? extends K, ? extends V> e : map.entrySet()) {
+                put(e.getKey(), e.getValue());
+            }
+        }
+
+        @Override
+        public V put(@NotNull final K key, @NotNull final V value) {
+            return super.put(convertKey(key), value);
+        }
+
+        @Override
+        public V putIfAbsent(final K key, final V value) {
+            return super.putIfAbsent(convertKey(key), value);
+        }
+
+        @Override
+        public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
+            return super.computeIfAbsent(convertKey(key), mappingFunction);
+        }
+
+        @Override
+        public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+            return super.computeIfPresent(convertKey(key), remappingFunction);
+        }
+
+        @Override
+        public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+            return super.compute(convertKey(key), remappingFunction);
+        }
+
+        @SuppressWarnings("unchecked")
+        protected <T> T convertKey(final Object key) {
+            if (key != null) {
+                return (T) key.toString().toLowerCase();
+            }
+            return (T) nullKey;
+        }
+    }
+
 
 }
+

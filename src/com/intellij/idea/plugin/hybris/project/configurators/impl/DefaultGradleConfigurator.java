@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.ProjectDataManager;
 import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataImportListener;
@@ -55,7 +54,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         if (gradleModules.isEmpty()) {
             return;
         }
-        final ProjectDataManager projectDataManager = ServiceManager.getService(ProjectDataManager.class);
+        final ProjectDataManager projectDataManager = ApplicationManager.getApplication().getService(ProjectDataManager.class);
         final GradleProjectImportBuilder gradleProjectImportBuilder = new GradleProjectImportBuilder(projectDataManager);
         final GradleProjectImportProvider gradleProjectImportProvider = new GradleProjectImportProvider(
             gradleProjectImportBuilder);

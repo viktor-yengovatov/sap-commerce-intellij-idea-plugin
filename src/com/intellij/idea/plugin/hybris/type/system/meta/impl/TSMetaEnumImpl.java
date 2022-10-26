@@ -19,32 +19,48 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnumValue;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.util.xml.DomAnchor;
+import com.intellij.util.xml.DomService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMetaEnum {
 
-    private final NoCaseMultiMap<TSMetaEnumValueImpl> name2ValueObj = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaEnumValue> name2ValueObj = new NoCaseMultiMap<>();
+    private final Set<DomAnchor<EnumType>> myAllDoms = new LinkedHashSet<>();
+    private final boolean myAutoCreate;
+    private final boolean myGenerate;
+    private final boolean myDynamic;
+    private final String myDescription;
+    private final String myJaloClass;
 
-    public TSMetaEnumImpl(final String name, final EnumType dom) {
-        super(name, dom);
-    }
+    public TSMetaEnumImpl(final Module module, final Project project, final String name, final EnumType dom, final boolean custom) {
+        super(module, project, name, dom, custom);
+        myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+        myDynamic = Boolean.TRUE.equals(dom.getDynamic().getValue());
+        myDescription = dom.getDescription().getStringValue();
+        myJaloClass = dom.getJaloClass().getStringValue();
 
-    public static String extractName(@NotNull final EnumType domEnumType) {
-        return domEnumType.getCode().getValue();
+        myAllDoms.add(DomService.getInstance().createAnchor(dom));
     }
 
     @NotNull
     @Override
-    public Stream<? extends TSMetaEnumValue> getValuesStream() {
-        return name2ValueObj.values().stream();
+    public Collection<? extends TSMetaEnumValue> getValues() {
+        return name2ValueObj.values();
     }
 
     @NotNull
@@ -53,12 +69,86 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
         return new ArrayList<>(name2ValueObj.get(name));
     }
 
-    void createValue(final @NotNull EnumValue domEnumValue) {
-        final TSMetaEnumValueImpl result = new TSMetaEnumValueImpl(this, domEnumValue);
+    @Override
+    public void createValue(final @NotNull EnumValue domEnumValue) {
+        final TSMetaEnumValue result = new TSMetaEnumValueImpl(getModule(), getProject(), this, domEnumValue, isCustom());
 
         if (result.getName() != null) {
             name2ValueObj.putValue(result.getName(), result);
         }
     }
 
+    @Override
+    public boolean isAutoCreate() {
+        return myAutoCreate;
+    }
+
+    @Override
+    public boolean isGenerate() {
+        return myGenerate;
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return myDynamic;
+    }
+
+    @Override
+    public String getDescription() {
+        return myDescription;
+    }
+
+    @Override
+    public String getJaloClass() {
+        return myJaloClass;
+    }
+
+    @Override
+    public void merge(final TSMetaEnum another) {
+        another.getValues().stream()
+               .filter(anotherValue -> anotherValue.getName() != null)
+               .forEach(anotherValue -> name2ValueObj.putValue(anotherValue.getName(), anotherValue));
+
+        addDomRepresentation(another.retrieveDom());
+    }
+
+    @NotNull
+    @Override
+    public Stream<? extends EnumType> retrieveAllDomsStream() {
+        return myAllDoms.stream()
+                        .map(DomAnchor::retrieveDomElement)
+                        .filter(Objects::nonNull);
+    }
+
+    protected void addDomRepresentation(final @NotNull EnumType anotherDom) {
+        myAllDoms.add(DomService.getInstance().createAnchor(anotherDom));
+    }
+
+    public static class TSMetaEnumValueImpl extends TSMetaEntityImpl<EnumValue> implements TSMetaEnumValue {
+
+        private final TSMetaEnum myOwner;
+        private final String myDescription;
+
+        public TSMetaEnumValueImpl(final Module module, final Project project, final @NotNull TSMetaEnum owner, final @NotNull EnumValue dom, final boolean custom) {
+            super(module, project, extractEnumValueName(dom), dom, custom);
+            myOwner = owner;
+            myDescription = dom.getDescription().getStringValue();
+        }
+
+        @Nullable
+        private static String extractEnumValueName(@NotNull final EnumValue dom) {
+            return dom.getCode().getStringValue();
+        }
+
+        @Override
+        public String getDescription() {
+            return myDescription;
+        }
+
+        @NotNull
+        @Override
+        public TSMetaEnum getOwner() {
+            return myOwner;
+        }
+    }
 }

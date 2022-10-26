@@ -21,11 +21,11 @@ package com.intellij.idea.plugin.hybris.impex.psi.references;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
@@ -67,20 +67,21 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
-        if (indicator.isCanceled()) {
+        if (indicator == null || indicator.isCanceled()) {
             return ResolveResult.EMPTY_ARRAY;
         }
-        final TSMetaModel meta = getTypeSystemMeta();
+        final TSMetaModelAccess metaModelAccess = getMetaModelAccess();
+        final TSMetaItemService metaItemService = getMetaItemService();
         final String featureName = getElement().getText().trim();
 
-        List<ResolveResult> result = tryResolveForItemType(meta, featureName);
+        List<ResolveResult> result = tryResolveForItemType(metaModelAccess, metaItemService, featureName);
 
         if (result == null) {
-            result = tryResolveForRelationType(meta, featureName);
+            result = tryResolveForRelationType(metaModelAccess, featureName);
         }
 
         if (result == null) {
-            result = tryResolveForEnumType(meta, featureName);
+            result = tryResolveForEnumType(metaModelAccess, featureName);
         }
 
         if (result == null) {
@@ -90,7 +91,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         return result.toArray(new ResolveResult[0]);
     }
 
-    private List<ResolveResult> tryResolveForEnumType(final TSMetaModel meta, final String featureName) {
+    private List<ResolveResult> tryResolveForEnumType(final TSMetaModelAccess meta, final String featureName) {
         final Optional<TSMetaEnum> metaEnum = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
                                                                                   .map(meta::findMetaEnumByName);
         if (!metaEnum.isPresent()) {
@@ -106,52 +107,55 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         return null;
     }
 
-    private List<ResolveResult> tryResolveForItemType(final TSMetaModel meta, final String featureName) {
-        final Optional<TSMetaClass> metaClass = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
-                                                                                    .map(meta::findMetaClassByName);
-        if (!metaClass.isPresent()) {
+    private List<ResolveResult> tryResolveForItemType(final TSMetaModelAccess meta,
+                                                      final TSMetaItemService metaItemService,
+                                                      final String featureName) {
+        final Optional<TSMetaItem> metaItem = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
+                                                                                   .map(meta::findMetaItemByName);
+        if (!metaItem.isPresent()) {
             return null;
         }
 
-        final List<ResolveResult> result = metaClass.get()
-                                                    .findPropertiesByName(featureName, true)
-                                                    .stream()
-                                                    .map(TSMetaProperty::retrieveDom)
-                                                    .filter(Objects::nonNull)
-                                                    .map(AttributeResolveResult::new)
-                                                    .collect(Collectors.toCollection(LinkedList::new));
+        final List<ResolveResult> result = metaItemService
+                                                            .findAttributesByName(metaItem.get(), featureName, true)
+                                                            .stream()
+                                                            .map(TSMetaItem.TSMetaItemAttribute::retrieveDom)
+                                                            .filter(Objects::nonNull)
+                                                            .map(AttributeResolveResult::new)
+                                                            .collect(Collectors.toCollection(LinkedList::new));
 
-        metaClass.get().findReferenceEndsByRole(featureName, true)
-                 .stream()
-                 .map(TSMetaReference.ReferenceEnd::retrieveDom)
-                 .filter(Objects::nonNull)
-                 .map(RelationElementResolveResult::new)
-                 .collect(Collectors.toCollection(() -> result));
+        metaItemService.findReferenceEndsByRole(metaItem.get(), featureName, true)
+                         .stream()
+                         .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
+                         .filter(Objects::nonNull)
+                         .map(RelationElementResolveResult::new)
+                         .collect(Collectors.toCollection(() -> result));
 
         return result;
     }
 
-    private List<ResolveResult> tryResolveForRelationType(final TSMetaModel meta, final String featureName) {
-        final Optional<List<TSMetaReference>> metaReferences = findHeaderItemTypeName(getElement())
+    private List<ResolveResult> tryResolveForRelationType(final TSMetaModelAccess meta,
+                                                          final String featureName) {
+        final Optional<List<TSMetaRelation>> metaReferences = findHeaderItemTypeName(getElement())
             .map(PsiElement::getText)
             .map(meta::findRelationByName);
 
         if (!metaReferences.isPresent()) {
             return null;
         }
-        final Set<TSMetaReference> references = new HashSet<>(metaReferences.get());
+        final Set<TSMetaRelation> references = new HashSet<>(metaReferences.get());
         if (SOURCE_ATTRIBUTE_NAME.equals(featureName)) {
             return emptyIfNull(references).stream()
-                                          .map(TSMetaReference::getSource)
-                                          .map(TSMetaReference.ReferenceEnd::retrieveDom)
+                                          .map(TSMetaRelation::getSource)
+                                          .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
                                           .filter(Objects::nonNull)
                                           .map(RelationElementResolveResult::new)
                                           .collect(Collectors.toList());
         }
         if (TARGET_ATTRIBUTE_NAME.equals(featureName)) {
             return emptyIfNull(references).stream()
-                                          .map(TSMetaReference::getTarget)
-                                          .map(TSMetaReference.ReferenceEnd::retrieveDom)
+                                          .map(TSMetaRelation::getTarget)
+                                          .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
                                           .filter(Objects::nonNull)
                                           .map(RelationElementResolveResult::new)
                                           .collect(Collectors.toList());

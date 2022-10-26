@@ -24,22 +24,16 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchCorrelationName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchQuerySpecification
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableReference
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference
+import com.intellij.javaee.JavaeeIcons.PARAMETER_ICON
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.findSiblingBackward
-import com.intellij.javaee.JavaeeIcons.PARAMETER_ICON
 import com.intellij.util.ProcessingContext
-import java.util.Objects
-import java.util.Optional
+import java.util.*
 import java.util.stream.Stream
 
 /**
@@ -104,15 +98,14 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
             itemTypeCode: String,
             resultSet: CompletionResultSet
     ) {
-        val metaModel = TSMetaModelAccess.getInstance(project).typeSystemMeta
-        val metaClass = Optional.ofNullable(metaModel.findMetaClassByName(itemTypeCode))
+        val metaItem = Optional.ofNullable(TSMetaModelAccess.getInstance(project).findMetaItemByName(itemTypeCode))
 
         val currentPrefix = resultSet.prefixMatcher.prefix
         val delimiters = arrayOf('.', ':')
         val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
-        metaClass
-                .map { meta -> meta.getPropertiesStream(true) }
-                .orElse(Stream.empty<TSMetaProperty>())
+        metaItem
+                .map { meta -> TSMetaItemService.getInstance(project).getAttributes(meta,true).stream() }
+                .orElse(Stream.empty())
                 .map<LookupElementBuilder> { prop ->
                     val name = prop.name ?: return@map null
 
@@ -125,13 +118,13 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                 }
                 .filter { Objects.nonNull(it) }
                 .forEach { emptyPrefixResultSet.addElement(it) }
-        metaClass
-                .map { meta -> meta.getReferenceEndsStream(true) }
-                .orElse(Stream.empty<TSMetaReference.ReferenceEnd>())
+        metaItem
+                .map { meta -> TSMetaItemService.getInstance(project).getReferenceEndsStream(meta, true) }
+                .orElse(Stream.empty())
                 .map { ref ->
                     LookupElementBuilder
-                            .create(ref.role)
-                            .withTypeText(ref.typeName)
+                            .create(ref.qualifier)
+                            .withTypeText(ref.type)
                             .withIcon(HybrisIcons.TYPE_SYSTEM)
                 }
                 .forEach { emptyPrefixResultSet.addElement(it) }

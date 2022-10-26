@@ -39,6 +39,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface RelationElement extends DomElement {
 
+    String TYPE = "type";
+    String QUALIFIER = "qualifier";
+    String META_TYPE = "metatype";
+    String CARDINALITY = "cardinality";
+    String NAVIGABLE = "navigable";
+    String COLLECTION_TYPE = "collectiontype";
+    String ORDERED = "ordered";
+
     /**
      * Returns the value of the type child.
      * <pre>
@@ -49,7 +57,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the type child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("type")
+    @com.intellij.util.xml.Attribute(TYPE)
     @Convert(ItemTypeConverter.class)
     @Required
     GenericAttributeValue<String> getType();
@@ -65,7 +73,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the qualifier child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("qualifier")
+    @com.intellij.util.xml.Attribute(QUALIFIER)
     GenericAttributeValue<String> getQualifier();
 
 
@@ -79,7 +87,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the metatype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("metatype")
+    @com.intellij.util.xml.Attribute(META_TYPE)
     GenericAttributeValue<String> getMetaType();
 
 
@@ -93,7 +101,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the cardinality child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("cardinality")
+    @com.intellij.util.xml.Attribute(CARDINALITY)
     GenericAttributeValue<Cardinality> getCardinality();
 
 
@@ -107,7 +115,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the navigable child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("navigable")
+    @com.intellij.util.xml.Attribute(NAVIGABLE)
     GenericAttributeValue<Boolean> getNavigable();
 
 
@@ -121,8 +129,8 @@ public interface RelationElement extends DomElement {
      * @return the value of the collectiontype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("collectiontype")
-    GenericAttributeValue<String> getCollectionType();
+    @com.intellij.util.xml.Attribute(COLLECTION_TYPE)
+    GenericAttributeValue<Type> getCollectionType();
 
 
     /**
@@ -135,7 +143,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the ordered child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("ordered")
+    @com.intellij.util.xml.Attribute(ORDERED)
     GenericAttributeValue<Boolean> getOrdered();
 
 
