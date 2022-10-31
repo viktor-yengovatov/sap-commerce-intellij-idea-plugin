@@ -18,13 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public interface TSMetaItemService {
     
@@ -32,18 +35,18 @@ public interface TSMetaItemService {
         return project.getService(TSMetaItemService.class);
     }
 
-    List<? extends TSMetaItem.TSMetaItemAttribute> getAttributes(TSMetaItem meta, boolean includeInherited);
+    Collection<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> getAttributes(TSGlobalMetaItem meta, boolean includeInherited);
 
-    List<? extends TSMetaItem.TSMetaItemIndex> getIndexes(TSMetaItem meta, boolean includeInherited);
+    Collection<? extends TSMetaItem.TSMetaItemIndex> getIndexes(TSGlobalMetaItem meta, boolean includeInherited);
 
-    List<? extends TSMetaCustomProperty> getCustomProperties(TSMetaItem meta, boolean includeInherited);
+    Collection<? extends TSMetaCustomProperty> getCustomProperties(TSGlobalMetaItem meta, boolean includeInherited);
 
-    Collection<? extends TSMetaItem.TSMetaItemAttribute> findAttributesByName(TSMetaItem meta, String name, boolean includeInherited);
+    List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(TSGlobalMetaItem meta, String name, boolean includeInherited);
 
-    Set<TSMetaItem> getExtends(TSMetaItem meta);
+    Set<TSGlobalMetaItem> getExtends(TSGlobalMetaItem meta);
 
-    Stream<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEndsStream(TSMetaItem meta, boolean includeInherited);
+    List<? extends TSMetaRelation.TSMetaRelationElement> getRelationEnds(TSGlobalMetaItem meta, boolean includeInherited);
 
-    Collection<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(TSMetaItem meta, @NotNull String role, boolean includeInherited);
+    List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByQualifier(TSGlobalMetaItem meta, @NotNull String qualifier, boolean includeInherited);
 
 }

@@ -20,13 +20,15 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Disposable {
+class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
@@ -34,20 +36,25 @@ class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Dis
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(AllIcons.Nodes.Class)
-        presentation.locationString = "extends ${meta.extendedMetaItemName ?: TSMetaItem.IMPLICIT_SUPER_CLASS_NAME}"
+        presentation.locationString = "extends ${meta.extendedMetaItemName ?: HybrisConstants.TS_IMPLICIT_SUPER_CLASS_NAME}"
     }
 
     override fun getChildren(): Collection<TSNode> {
         val metaItemService = TSMetaItemService.getInstance(myProject)
+        val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
+
         val indexes = metaItemService.getIndexes(meta,false)
+            .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemIndexNode(this, it) }
             .sortedBy { it.name }
 
         val customProperties = metaItemService.getCustomProperties(meta,false)
+            .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemCustomPropertyNode(this, it) }
             .sortedBy { it.name }
 
         val attributes = metaItemService.getAttributes(meta, false)
+            .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemAttributeNode(this, it) }
             .sortedBy { it.name }
 

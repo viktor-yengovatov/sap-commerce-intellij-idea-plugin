@@ -17,14 +17,20 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.openapi.Disposable
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
-class TSGlobalMetaModel : AbstractTSMetaModel() {
+class TSGlobalMetaModel : Disposable {
 
-    private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment<*>>();
-    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment<*>>();
+    private val myMetaCache: MutableMap<MetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
+    private val myReferencesBySourceTypeName = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaRelation.TSMetaRelationElement>()
+    private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>();
+    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>();
 
     override fun dispose() {
         myMetaCache.clear()
@@ -32,56 +38,42 @@ class TSGlobalMetaModel : AbstractTSMetaModel() {
         myDeploymentTables.clear()
     }
 
-    fun getDeploymentForTable(table: String?) : TSMetaDeployment<*>? = if (table != null) myDeploymentTables[table] else null
-    fun getDeploymentForTypeCode(typeCode: Int?) : TSMetaDeployment<*>? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
-    fun getDeploymentForTypeCode(typeCode: String?) : TSMetaDeployment<*>? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
+    fun getDeploymentForTable(table: String?) : TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
+    fun getDeploymentForTypeCode(typeCode: Int?) : TSMetaDeployment? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
+    fun getDeploymentForTypeCode(typeCode: String?) : TSMetaDeployment? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
     fun getNextAvailableTypeCode(): Int = myDeploymentTypeCodes.keys
         .asSequence()
-        .filter { it < 32700 } // OOTB Processing extension
-        .filter { it !in 13200 .. 13299 } // OOTB Commons extension
-        .filter { it !in 10000 .. 10099 } // OOTB Processing extension
-        .filter { it !in 24400 .. 24599 } // OOTB XPrint extension
+        .filter { it < HybrisConstants.TS_TYPECODE_RANGE_PROCESSING.first }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
         .maxOf { it } + 1
 
-    fun merge(metaModels : List<TSMetaModel>): TSGlobalMetaModel {
-        metaModels.forEach { merge(it) }
-
-        return this
-    }
-
     @Suppress("UNCHECKED_CAST")
-    private fun merge(another: TSMetaModel) {
-        another.getMetaTypes().forEach { (metaType, cache) ->
-            run {
-                val globalCache = getMetaType<TSMetaClassifier<DomElement?>>(metaType)
+    fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: MetaType): ConcurrentMap<String, T> =
+        myMetaCache.computeIfAbsent(metaType) { CaseInsensitive.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
-                cache.forEach { (key, metaClassifier) ->
-                    val globalMetaClassifier = globalCache[key]
+    fun getMetaAtomic(name: String?) = getMetaType<TSGlobalMetaAtomic>(MetaType.META_ATOMIC)[name]
+    fun getMetaEnum(name: String?) = getMetaType<TSGlobalMetaEnum>(MetaType.META_ENUM)[name]
+    fun getMetaMap(name: String?) = getMetaType<TSGlobalMetaMap>(MetaType.META_MAP)[name]
+    fun getMetaRelation(name: String?) = getMetaType<TSGlobalMetaRelation>(MetaType.META_RELATION)[name]
+    fun getMetaItem(name: String?) = getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM)[name]
+    fun getMetaCollection(name: String?) = getMetaType<TSGlobalMetaCollection>(MetaType.META_COLLECTION)[name]
 
-                    if (globalMetaClassifier != null && globalMetaClassifier is TSMetaSelfMerge<*>) {
-                        (globalMetaClassifier as TSMetaSelfMerge<TSMetaClassifier<DomElement?>>).merge(metaClassifier)
-                    } else {
-                        globalCache[key] = metaClassifier
-                    }
+    fun getMetaTypes() = myMetaCache;
 
-                }
-            }
-        }
-        getReferences().putAllValues(another.getReferences());
+    fun getReference(name: String?): TSMetaRelation.TSMetaRelationElement? = name?.let { getReferences()[it] }
 
-        another.getMetaType<TSMetaItem>(MetaType.META_ITEM).values
-            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-            .forEach { mergeDeploymentInformation(it.deployment) }
-        another.getMetaType<TSMetaRelation>(MetaType.META_RELATION).values
-            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-            .forEach { mergeDeploymentInformation(it.deployment) }
-    }
+    fun getReferences() = myReferencesBySourceTypeName;
 
-    private fun mergeDeploymentInformation(deployment: TSMetaDeployment<*>) {
+    fun addDeployment(deployment: TSMetaDeployment) {
         myDeploymentTables[deployment.table] = deployment
         val typeCode = deployment.typeCode?.toIntOrNull()
         if (typeCode != null) {
             myDeploymentTypeCodes[typeCode] = deployment
         }
     }
+
 }

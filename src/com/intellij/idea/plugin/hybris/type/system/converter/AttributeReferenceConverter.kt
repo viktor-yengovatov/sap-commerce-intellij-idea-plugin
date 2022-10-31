@@ -18,19 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.type.system.converter
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.text.StringUtil.capitalize
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.PsiSubstitutor
-import com.intellij.psi.PsiType
-import com.intellij.psi.PsiTypeParameter
-import com.intellij.psi.ResolveResult
+import com.intellij.psi.*
 import com.intellij.psi.impl.PsiClassImplUtil
 import com.intellij.psi.impl.source.xml.XmlAttributeValueImpl
 import com.intellij.psi.search.GlobalSearchScope
@@ -45,7 +36,7 @@ import com.intellij.util.xml.GenericDomValue
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-class AttributeReferenceConverter : CustomReferenceConverter<String> {
+class AttributeReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
     override fun createReferences(value: GenericDomValue<String>?, element: PsiElement, context: ConvertContext?): Array<PsiReference> {
         val reference = object : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
             override fun resolve(): PsiElement? {
@@ -60,7 +51,7 @@ class AttributeReferenceConverter : CustomReferenceConverter<String> {
                 val searchFieldName = (element as XmlAttributeValueImpl).value
 
                 if (className != null) {
-                    arrayListOf(className, "${className}Model").forEach { name ->
+                    arrayListOf(className, "${className}${HybrisConstants.MODEL_SUFFIX}").forEach { name ->
                         val psiClasses = PsiShortNamesCache.getInstance(project).getClassesByName(
                                 name, GlobalSearchScope.allScope(project)
                         )
@@ -85,7 +76,7 @@ class AttributeReferenceConverter : CustomReferenceConverter<String> {
     }
 
     private fun findItemTag(element: PsiElement) =
-            findFirstParent(element, true, { e -> return@findFirstParent e is XmlTag && e.name == "itemtype" }) as XmlTag
+            findFirstParent(element, true) { e -> return@findFirstParent e is XmlTag && e.name == "itemtype" } as XmlTag
     
     private fun findGetter(psiClass: PsiClass, name: String, checkSuperClasses: Boolean): PsiMethod? {
         return if (!Comparing.strEqual(name, null as String?)) {
@@ -103,4 +94,6 @@ class AttributeReferenceConverter : CustomReferenceConverter<String> {
 
     private fun suggestGetterName(name: String) = "get${capitalize(name)}"
     private fun suggestSetterName(name: String) = "set${capitalize(name)}"
+
+    override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)
 }

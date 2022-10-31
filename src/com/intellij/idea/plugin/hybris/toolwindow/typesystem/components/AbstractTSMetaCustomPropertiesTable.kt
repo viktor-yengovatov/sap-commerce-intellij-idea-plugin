@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -47,12 +47,12 @@ abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) 
             ),
             createColumn(
                 name = COLUMN_NAME,
-                valueProvider = { attr -> attr.name ?: "" },
+                valueProvider = { attr -> attr.name },
                 columnClass = String::class.java,
             ),
             createColumn(
                 name = COLUMN_VALUE,
-                valueProvider = { attr -> attr.value ?: "" },
+                valueProvider = { attr -> attr.rawValue ?: "" },
                 tooltip = "Value"
             )
         )

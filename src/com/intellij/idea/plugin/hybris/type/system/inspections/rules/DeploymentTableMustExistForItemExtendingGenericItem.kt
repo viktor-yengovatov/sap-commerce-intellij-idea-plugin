@@ -19,20 +19,17 @@
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddTagQuickFix
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.apache.commons.lang3.StringUtils
-import java.util.stream.Collectors
 
 class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemInspection() {
 
@@ -43,7 +40,7 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream.forEach { check(it, project, holder, severity) }
+        items.itemTypes.all.forEach { check(it, project, holder, severity) }
     }
 
     private fun check(
@@ -55,27 +52,27 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
         // skip non-ComposedType
         if ("ViewType".equals(dom.metaType.stringValue, true) || "ComposedType".equals(dom.metaType.stringValue, true)) return
 
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
+        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(dom.code.stringValue)
             ?: return
 
         if (StringUtils.isNotBlank(metaItem.deployment.typeCode)) return
 
-        val otherDeclarationsWithDeploymentTable = metaItem.retrieveAllDomsStream().anyMatch { StringUtils.isNotBlank(it.deployment.typeCode.value) }
+        val otherDeclarationsWithDeploymentTable = metaItem.declarations.any { StringUtils.isNotBlank(it.deployment.typeCode) }
 
         if (otherDeclarationsWithDeploymentTable) return
 
-        val otherDeclarationsMarkedAsAbstract = metaItem.retrieveAllDomsStream().anyMatch { it.abstract.value == true }
+        val otherDeclarationsMarkedAsAbstract = metaItem.declarations.any { it.isAbstract }
 
         if (metaItem.isAbstract || otherDeclarationsMarkedAsAbstract) return
 
         val allExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
-            .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
+            .flatMap { it.declarations }
 
         // skip Descriptor declarations
-        if (allExtends.count { "Descriptor".equals(it.code.stringValue, true) } > 0) return
+        if (allExtends.count { "Descriptor".equals(it.name, true) } > 0) return
 
         val countDeploymentTablesInParents = allExtends
-            .count { StringUtils.isNotBlank(it.deployment.typeCode.value) }
+            .count { StringUtils.isNotBlank(it.deployment.typeCode) }
 
         if (countDeploymentTablesInParents > 0) return
 

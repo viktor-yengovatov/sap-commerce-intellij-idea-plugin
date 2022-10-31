@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
@@ -49,7 +49,7 @@ public class TSMetaCollectionView {
         myProject = project;
     }
 
-    private void initData(final TSMetaCollection myMeta) {
+    private void initData(final TSGlobalMetaCollection myMeta) {
         if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
             // same object, no need in re-init
             return;
@@ -62,7 +62,7 @@ public class TSMetaCollectionView {
         myGenerate.setSelected(myMeta.isGenerate());
     }
 
-    public JBPanel getContent(final TSMetaCollection meta) {
+    public JBPanel getContent(final TSGlobalMetaCollection meta) {
         initData(meta);
 
         return myContentPane;

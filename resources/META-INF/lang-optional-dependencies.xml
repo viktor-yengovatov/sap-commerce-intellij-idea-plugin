@@ -23,7 +23,7 @@
         <!--                                            Hybris Type System                                           -->
         <!-- ####################################################################################################### -->
 
-        <dom.fileDescription
+        <dom.fileMetaData rootTagName="items" stubVersion="22"
             implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
 
         <annotator language="XML"
@@ -31,6 +31,15 @@
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelProcessor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelProcessorImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelCollector"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelCollectorImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelMerger"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelMergerImpl"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaItemServiceImpl"/>
@@ -42,7 +51,7 @@
         <!--                                                Beans                                                    -->
         <!-- ####################################################################################################### -->
 
-        <dom.fileDescription
+        <dom.fileMetaData rootTagName="beans" stubVersion="7"
             implementation="com.intellij.idea.plugin.hybris.beans.BeansDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
@@ -226,6 +235,10 @@
         <applicationService
             serviceInterface="com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider"
             serviceImplementation="com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.completion.provider.EnumTypeCodeCompletionProvider"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.completion.provider.RelationTypeCodeCompletionProvider"/>
 
         <applicationService
             serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"

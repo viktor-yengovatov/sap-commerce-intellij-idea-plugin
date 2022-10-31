@@ -21,8 +21,10 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationTable;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.ToolbarDecorator;
@@ -30,7 +32,6 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
-import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,9 +47,10 @@ public class TSMetaItemView {
     private JBTextField myDeploymentTable;
     private JBTextField myDeploymentTypeCode;
     private JBTextField myCode;
-    private JBTable myAttributes;
-    private JBTable myCustomProperties;
-    private JBTable myIndexes;
+    private TSMetaItemAttributesTable myAttributes;
+    private TSMetaItemCustomPropertiesTable myCustomProperties;
+    private TSMetaItemIndexesTable myIndexes;
+    private TSMetaRelationTable myRelations;
     private JBCheckBox myAbstract;
     private JBCheckBox myAutoCreate;
     private JBCheckBox mySingleton;
@@ -62,20 +64,23 @@ public class TSMetaItemView {
     private JBPanel myDetailsPane;
     private JPanel myDeploymentPane;
     private JPanel myFlagsPane;
+    private JPanel myRelationsPane;
+    private JBCheckBox myCatalogAware;
 
     public TSMetaItemView(final Project project) {
         this.myProject = project;
     }
 
-    private void initData(final TSMetaItem myMeta) {
+    private void initData(final TSGlobalMetaItem myMeta) {
         if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
             // same object, no need in re-init
             return;
         }
 
-        ((TSMetaItemAttributesTable) myAttributes).updateModel(myMeta);
-        ((TSMetaItemCustomPropertiesTable) myCustomProperties).updateModel(myMeta);
-        ((TSMetaItemIndexesTable) myIndexes).updateModel(myMeta);
+        myAttributes.updateModel(myMeta);
+        myCustomProperties.updateModel(myMeta);
+        myIndexes.updateModel(myMeta);
+        myRelations.updateModel(myMeta);
 
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
@@ -83,6 +88,7 @@ public class TSMetaItemView {
         myDeploymentTable.setText(myMeta.getDeployment().getTable());
         myDeploymentTypeCode.setText(myMeta.getDeployment().getTypeCode());
         myAbstract.setSelected(myMeta.isAbstract());
+        myCatalogAware.setSelected(myMeta.isCatalogAware());
         myAutoCreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
         mySingleton.setSelected(myMeta.isSingleton());
@@ -90,7 +96,7 @@ public class TSMetaItemView {
         myExtends.setText(myMeta.getExtendedMetaItemName());
     }
 
-    public JBPanel getContent(final TSMetaItem meta) {
+    public JBPanel getContent(final TSGlobalMetaItem meta) {
         initData(meta);
 
         myScrollablePane.getVerticalScrollBar().setValue(0);
@@ -98,28 +104,28 @@ public class TSMetaItemView {
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaItem meta, final TSMetaItem.TSMetaItemIndex metaIndex) {
+    public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaItem.TSMetaItemIndex metaIndex) {
         initData(meta);
 
-        ((TSMetaItemIndexesTable) myIndexes).select(metaIndex);
+        myIndexes.select(metaIndex);
         myScrollablePane.getVerticalScrollBar().setValue(myIndexesPane.getLocation().y);
 
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaItem meta, final TSMetaItem.TSMetaItemAttribute metaAttribute) {
+    public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaItem.TSMetaItemAttribute metaAttribute) {
         initData(meta);
 
-        ((TSMetaItemAttributesTable) myAttributes).select(metaAttribute);
+        myAttributes.select(metaAttribute);
         myScrollablePane.getVerticalScrollBar().setValue(myAttributesPane.getLocation().y);
 
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaItem meta, final TSMetaCustomProperty metaCustomProperty) {
+    public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaCustomProperty metaCustomProperty) {
         initData(meta);
 
-        ((TSMetaItemCustomPropertiesTable) myCustomProperties).select(metaCustomProperty);
+        myCustomProperties.select(metaCustomProperty);
         myScrollablePane.getVerticalScrollBar().setValue(myCustomPropertiesPane.getLocation().y);
 
         return myContentPane;
@@ -129,6 +135,7 @@ public class TSMetaItemView {
         myAttributes = TSMetaItemAttributesTable.Companion.getInstance(myProject);
         myCustomProperties = TSMetaItemCustomPropertiesTable.Companion.getInstance(myProject);
         myIndexes = TSMetaItemIndexesTable.Companion.getInstance(myProject);
+        myRelations = TSMetaRelationTable.Companion.getInstance(myProject);
         myDetailsPane = new JBPanel();
         myDeploymentPane = new JBPanel();
         myFlagsPane = new JBPanel();
@@ -145,6 +152,10 @@ public class TSMetaItemView {
                                         .disableUpDownActions()
                                         .setPanelBorder(JBUI.Borders.empty())
                                         .createPanel();
+        myRelationsPane = ToolbarDecorator.createDecorator(myRelations)
+                                          .disableUpDownActions()
+                                          .setPanelBorder(JBUI.Borders.empty())
+                                          .createPanel();
 
         myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
         myDeploymentPane.setBorder(IdeBorderFactory.createTitledBorder("Deployment"));
@@ -152,5 +163,6 @@ public class TSMetaItemView {
         myAttributesPane.setBorder(IdeBorderFactory.createTitledBorder("Attributes"));
         myCustomPropertiesPane.setBorder(IdeBorderFactory.createTitledBorder("Custom Properties"));
         myIndexesPane.setBorder(IdeBorderFactory.createTitledBorder("Indexes"));
+        myRelationsPane.setBorder(IdeBorderFactory.createTitledBorder("Relations"));
     }
 }

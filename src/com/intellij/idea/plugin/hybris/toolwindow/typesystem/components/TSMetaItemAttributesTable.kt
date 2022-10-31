@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem.TSMetaItemAttribute
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem.TSMetaItemAttribute
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -35,12 +35,12 @@ private const val COLUMN_DESCRIPTION = "Description"
 private const val COLUMN_QUALIFIER = "Qualifier"
 private const val COLUMN_MODULE = "Module"
 
-class TSMetaItemAttributesTable private constructor(myProject: Project) : AbstractTSTable<TSMetaItem, TSMetaItemAttribute>(myProject) {
+class TSMetaItemAttributesTable private constructor(myProject: Project) : AbstractTSTable<TSGlobalMetaItem, TSMetaItemAttribute>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_DEPRECATED, COLUMN_REDECLARE, COLUMN_AUTO_CREATE, COLUMN_GENERATE)
     override fun select(meta: TSMetaItemAttribute) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
-    override fun getItems(meta: TSMetaItem): List<TSMetaItemAttribute> = TSMetaItemService.getInstance(myProject).getAttributes(meta, true)
+    override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getAttributes(meta, true)
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },
@@ -71,7 +71,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
                 name = COLUMN_AUTO_CREATE,
                 valueProvider = { attr -> attr.isAutoCreate },
                 columnClass = Boolean::class.java,
-                tooltip = "Autocreate"
+                tooltip = "AutoCreate"
             ),
             createColumn(
                 name = COLUMN_GENERATE,
@@ -85,7 +85,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
             ),
             createColumn(
                 name = COLUMN_QUALIFIER,
-                valueProvider = { attr -> attr.name ?: "" }
+                valueProvider = { attr -> attr.name }
             ),
             createColumn(
                 name = COLUMN_TYPE,

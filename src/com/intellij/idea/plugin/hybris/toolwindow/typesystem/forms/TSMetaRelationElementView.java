@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationElementCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
@@ -66,6 +66,7 @@ public class TSMetaRelationElementView {
     private JPanel myDetailsPane;
     private JPanel myFlagsPane;
     private JPanel myModifiersPane;
+    private JBCheckBox myDeprecated;
 
     public TSMetaRelationElementView(final Project project) {
         myProject = project;
@@ -84,6 +85,7 @@ public class TSMetaRelationElementView {
         myCollectionType.setSelectedItem(myMeta.getCollectionType());
         myMetaType.setText(myMeta.getMetaType());
         myOrdered.setSelected(myMeta.isOrdered());
+        myDeprecated.setSelected(myMeta.isDeprecated());
         myNavigable.setSelected(myMeta.isNavigable());
 
         final var modifiers = myMeta.getModifiers();

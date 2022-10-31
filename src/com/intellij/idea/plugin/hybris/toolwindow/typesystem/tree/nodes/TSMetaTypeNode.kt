@@ -22,7 +22,8 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
-import com.intellij.idea.plugin.hybris.type.system.meta.*
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -42,13 +43,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(pa
             MetaType.META_COLLECTION -> presentation.setIcon(AllIcons.Actions.GroupByPrefix)
             MetaType.META_MAP -> presentation.setIcon(AllIcons.Actions.GroupByPackage)
             MetaType.META_RELATION -> presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
-            else -> Unit
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
 
         val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
-        val entries = TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSMetaClassifier<DomElement>>(metaType).values
+        val entries = TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType).values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .size
         if (entries > 0) {
@@ -60,16 +60,16 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(pa
         val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
 
         return TSMetaModelAccess.getInstance(myProject).getMetaModel()
-            .getMetaType<TSMetaClassifier<DomElement>>(metaType).values
+            .getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType).values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map {
                 when (it) {
-                    is TSMetaItem -> TSMetaItemNode(this, it)
-                    is TSMetaEnum -> TSMetaEnumNode(this, it)
-                    is TSMetaRelation -> TSMetaRelationNode(this, it)
-                    is TSMetaCollection -> TSMetaCollectionNode(this, it)
-                    is TSMetaAtomic -> TSMetaAtomicNode(this, it)
-                    is TSMetaMap -> TSMetaMapNode(this, it)
+                    is TSGlobalMetaItem -> TSMetaItemNode(this, it)
+                    is TSGlobalMetaEnum -> TSMetaEnumNode(this, it)
+                    is TSGlobalMetaRelation -> TSMetaRelationNode(this, it)
+                    is TSGlobalMetaCollection -> TSMetaCollectionNode(this, it)
+                    is TSGlobalMetaAtomic -> TSMetaAtomicNode(this, it)
+                    is TSGlobalMetaMap -> TSMetaMapNode(this, it)
                     else -> null
                 }
             }
