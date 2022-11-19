@@ -6,7 +6,7 @@
     <version>2022.3.0</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="223.7171.58" until-build="223.*"/>
+    <idea-version since-build="223.7571.58" until-build="223.*"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
