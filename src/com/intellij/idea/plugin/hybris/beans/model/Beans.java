@@ -4,12 +4,18 @@
 package com.intellij.idea.plugin.hybris.beans.model;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * null:abstractPojos interface.
  */
-public interface AbstractPojos extends DomElement {
+@Stubbed
+@StubbedOccurrence
+public interface Beans extends DomElement {
 
     /**
      * Returns the list of bean children.
@@ -17,7 +23,7 @@ public interface AbstractPojos extends DomElement {
      * @return the list of bean children.
      */
     @NotNull
-    java.util.List<Bean> getBeans();
+    List<Bean> getBeans();
 
     /**
      * Adds new child to the list of bean children.
@@ -33,7 +39,7 @@ public interface AbstractPojos extends DomElement {
      * @return the list of enum children.
      */
     @NotNull
-    java.util.List<Enum> getEnums();
+    List<Enum> getEnums();
 
     /**
      * Adds new child to the list of enum children.

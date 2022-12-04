@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,8 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta.model;
+// Generated on Sun Jun 05 01:21:13 EEST 2016
+// DTD/Schema  :    null
 
-public enum MetaType {
-    META_ITEM, META_RELATION, META_ENUM, META_COLLECTION, META_ATOMIC, META_MAP
+package com.intellij.idea.plugin.hybris.beans.model;
+
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.SubTagList;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public interface Hints extends DomElement {
+
+    @NotNull
+    @SubTagList("hint")
+    List<Hint> getHints();
+
+    @SubTagList("hint")
+    Hint addHint();
+
 }

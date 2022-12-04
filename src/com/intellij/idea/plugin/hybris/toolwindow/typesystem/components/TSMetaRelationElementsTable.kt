@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation
@@ -35,7 +37,7 @@ private const val COLUMN_COLLECTION_TYPE = "Collection Type"
 private const val COLUMN_CARDINALITY = "Cardinality"
 private const val COLUMN_DESCRIPTION = "Description"
 
-class TSMetaRelationElementsTable private constructor(myProject: Project) : AbstractTSTable<TSGlobalMetaItem, TSMetaRelation.TSMetaRelationElement>(myProject) {
+class TSMetaRelationElementsTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaItem, TSMetaRelation.TSMetaRelationElement>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_ORDERED, COLUMN_DEPRECATED)
@@ -69,7 +71,7 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> attr.module.name }
+                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
             ),
             createColumn(
                 name = COLUMN_OWNER,
