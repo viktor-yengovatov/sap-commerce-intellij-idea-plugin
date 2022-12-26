@@ -34,10 +34,10 @@
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow"/>
 
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.beans.BeansToolWindow"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.beans.view.BeansViewSettings"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.TSToolWindow"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.BSToolWindow"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.TSToolWindow"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>
@@ -57,7 +57,7 @@
 
     <actions>
         <group id="HybrisToolsActions"
-               text="[y] SAP Commerce Cloud"
+               text="[y] SAP Commerce"
                icon="/icons/hybrisIcon.png"
                popup="true"
                class="com.intellij.idea.plugin.hybris.actions.HybrisToolsActionGroup">
@@ -65,7 +65,7 @@
         </group>
         <!--
         <action id="GenerateDomModel"
-                class="com.intellij.idea.plugin.hybris.type.system.file.dom.generator.GenerateDomModelAction"
+                class="com.intellij.idea.plugin.hybris.system.type.file.dom.generator.GenerateDomModelAction"
                 text="Generate DOM Model...">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
@@ -78,7 +78,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="[y] SAP Commerce Cloud" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
+        <toolWindow id="[y] SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
     </extensions>
 
