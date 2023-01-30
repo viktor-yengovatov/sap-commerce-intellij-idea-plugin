@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.psi.PsiElement
@@ -30,7 +31,7 @@ class CngActionDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<
 
     override fun multiResolve(incompleteCode: Boolean) = CngMetaModelAccess.getInstance(element.project).getMetaModel()
         .actionDefinitions[value]
-        ?.retrieveDom()
-        ?.let { arrayOf(ActionDefinitionResolveResult(it)) }
+        ?.let { PsiUtils.getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
         ?: emptyArray()
+
 }

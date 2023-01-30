@@ -18,10 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngMetaActionDefinition
 import com.intellij.psi.ResolveResult
 
-class ActionDefinitionResolveResult(private val myDom: ActionDefinition) : ResolveResult {
-    override fun getElement() = myDom.id.xmlAttributeValue
-    override fun isValidResult() = element != null
+class ActionDefinitionResolveResult(
+    meta: CngMetaActionDefinition
+) : ResolveResult {
+    private val myDom = meta.retrieveDom()
+    override fun getElement() = myDom?.id?.xmlAttributeValue
+    override fun isValidResult() = element != null && myDom?.isValid ?: false
 }

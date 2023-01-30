@@ -20,18 +20,18 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.model.Attribute
-import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.xml.DomElement
-import java.util.*
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -39,34 +39,36 @@ import java.util.*
 class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val indicator = ProgressManager.getInstance().progressIndicator
+        if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
+
+        var result = element.getUserData(ImpexParameterMixin.CACHE_KEY)
+
+        if (result != null) return PsiUtils.getValidResults(result)
+
         val metaService = TSMetaModelAccess.getInstance(project)
         val featureName = element.text.trim()
         val typeName = findItemTypeReference()
         val metaItem = metaService.findMetaItemByName(typeName)
 
         if (metaItem == null) {
-            // TODO: why call this method seconds time?
-            val metaEnum = metaService.findMetaEnumByName(findItemTypeReference())
-            if (metaEnum?.retrieveDom() != null) {
-                val result = metaEnum.retrieveDom()
-                return arrayOf(EnumResolveResult(result!!))
-            }
+            result = metaService.findMetaEnumByName(typeName)
+                ?.let { arrayOf(EnumResolveResult(it)) }
+                ?: ResolveResult.EMPTY_ARRAY
         } else {
-            val result = TSMetaItemService.getInstance(project)
-                    .findAttributesByName(metaItem, featureName, true)
-                    .map { it.retrieveDom() }
-                    .filter { Objects.nonNull(it) }
-                    .map { AttributeResolveResult(it!!) }
+            val attributes = TSMetaItemService.getInstance(project)
+                .findAttributesByName(metaItem, featureName, true)
+                .map { AttributeResolveResult(it) }
 
-            TSMetaItemService.getInstance(project).findRelationEndsByQualifier(metaItem, featureName, true)
-                    .map { it.retrieveDom() }
-                    .filter { Objects.nonNull(it) }
-                    .map { RelationElementResolveResult(it!!) }
+            val relations = TSMetaItemService.getInstance(project)
+                .findRelationEndsByQualifier(metaItem, featureName, true)
+                .map { RelationEndResolveResult(it) }
 
-            return result.toTypedArray()
+            result = (attributes + relations).toTypedArray()
         }
 
-        return ResolveResult.EMPTY_ARRAY
+        element.putUserData(ImpexParameterMixin.CACHE_KEY, result)
+        return PsiUtils.getValidResults(result!!)
     }
 
     private fun findItemTypeReference(): String {
@@ -83,40 +85,8 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
     }
 
     private fun obtainTypeName(reference: PsiElement?): String {
-        val typeTag = PsiTreeUtil.findFirstParent(reference, { value -> value is XmlTag })
+        val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }
         return if (typeTag != null) (typeTag as XmlTag).attributes.first { it.name == "type" }.value!! else ""
-    }
-    
-    private class AttributeResolveResult(private val myDomAttribute: Attribute) :
-        TSResolveResult {
-
-        override fun getElement(): PsiElement? {
-            return myDomAttribute.qualifier.xmlAttributeValue
-        }
-
-        override fun isValidResult(): Boolean {
-            return element != null
-        }
-
-        override fun getSemanticDomElement(): DomElement {
-            return myDomAttribute
-        }
-    }
-
-    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) :
-        TSResolveResult {
-
-        override fun getElement(): PsiElement? {
-            return myDomRelationEnd.qualifier.xmlAttributeValue
-        }
-
-        override fun isValidResult(): Boolean {
-            return element != null
-        }
-
-        override fun getSemanticDomElement(): DomElement {
-            return myDomRelationEnd
-        }
     }
 
 }
