@@ -19,21 +19,16 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult;
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult;
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem;
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
-import com.intellij.idea.plugin.hybris.system.type.model.Relation;
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult;
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult;
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -48,36 +43,30 @@ class TSItemReference extends TSReferenceBase<ImpexHeaderTypeName> {
     @NotNull
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
-        final TSMetaModelAccess metaService = getMetaModelAccess();
-        final String lookingForName = getElement().getText();
+        final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
+        if (indicator != null && indicator.isCanceled()) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
 
-        return Optional.ofNullable(metaService.findMetaItemByName(lookingForName))
-            .map(TSItemReference::resolveItem)
-            .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(lookingForName))
-                              .map(TSGlobalMetaEnum::retrieveDom)
-                              .map(TSItemReference::resolveEnum))
-            .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(lookingForName))
-                              .map(TSGlobalMetaRelation::retrieveDom)
-                              .map(TSItemReference::resolveRelation))
-            .orElse(ResolveResult.EMPTY_ARRAY);
-    }
+        final var cachedResolveResult = getElement().getUserData(ImpexHeaderTypeNameMixin.CACHE_KEY);
+        if (cachedResolveResult != null) {
+            return PsiUtils.getValidResults(cachedResolveResult);
+        }
 
-    private static ResolveResult[] resolveItem(final TSGlobalMetaItem metaItem) {
-        return metaItem.getDeclarations().stream()
-                       .map(TSMetaItem::retrieveDom)
-                       .filter(Objects::nonNull)
-                       .map(ItemResolveResult::new)
-                       .toArray(ResolveResult[]::new);
-    }
+        final var lookingForName = getValue();
+        final var metaService = getMetaModelAccess();
 
-    private static ResolveResult[] resolveEnum(final EnumType enumType) {
-        final var resolveResult = new EnumResolveResult(enumType);
-        return new ResolveResult[]{resolveResult};
-    }
-
-    private static ResolveResult[] resolveRelation(final Relation relationType) {
-        final var resolveResult = new RelationResolveResult(relationType);
-        return new ResolveResult[]{resolveResult};
+        final var resolvedResults = Optional.ofNullable(metaService.findMetaItemByName(lookingForName))
+                                            .map(it -> it.getDeclarations().stream()
+                                                         .map(ItemResolveResult::new)
+                                                         .toArray(ResolveResult[]::new))
+                                            .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(lookingForName))
+                                                              .map(it -> new ResolveResult[]{new EnumResolveResult(it)}))
+                                            .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(lookingForName))
+                                                              .map(it -> new ResolveResult[]{new RelationResolveResult(it)}))
+                                            .orElse(ResolveResult.EMPTY_ARRAY);
+        getElement().putUserData(ImpexHeaderTypeNameMixin.CACHE_KEY, resolvedResults);
+        return PsiUtils.getValidResults(resolvedResults);
     }
 
 }

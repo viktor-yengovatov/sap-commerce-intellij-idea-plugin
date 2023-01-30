@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.WidgetSettingResolveResult
 import com.intellij.psi.PsiElement
@@ -41,9 +42,9 @@ class CngWidgetSettingReference(element: PsiElement) : PsiReferenceBase.Poly<Psi
 
         return CngMetaModelAccess.getInstance(element.project).getMetaModel()
             .widgetDefinitions[widgetDefinitionId]
-            ?.settings?.get(lookingForName)
-            ?.retrieveDom()
-            ?.let { arrayOf(WidgetSettingResolveResult(it)) }
+            ?.settings
+            ?.get(lookingForName)
+            ?.let { PsiUtils.getValidResults(arrayOf(WidgetSettingResolveResult(it))) }
             ?: emptyArray()
     }
 

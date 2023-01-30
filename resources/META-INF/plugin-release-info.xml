@@ -103,6 +103,7 @@
                 <li><i>Feature:</i> Introduced automatic Plugin Update Checker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/127" target="_blank" rel="nofollow">#127</a>)</li>
                 <li><i>Feature:</i> Introduced flattened Types for Code Completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/153" target="_blank" rel="nofollow">#153</a>)</li>
                 <li><i>Feature:</i> Moved Remote Instances under Project settings, as well as Active Remote Instance selection (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/133" target="_blank" rel="nofollow">#133</a>)</li>
+                <li><i>Feature:</i> Added completion for Relations and Enums for FXS files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/200" target="_blank" rel="nofollow">#200</a>)</li>
                 <li><i>Feature:</i> Added completion for <code>required-extension</code> under <code>extensioninfo.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/149" target="_blank" rel="nofollow">#149</a>)</li>
                 <li><i>Feature:</i> Filter out already defined extension dependencies in the completion for <code>extensioninfo.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/150" target="_blank" rel="nofollow">#150</a>)</li>
                 <li><i>Feature:</i> Added possibility to change current Project settings (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/131" target="_blank" rel="nofollow">#131</a>)</li>
@@ -170,6 +171,7 @@
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/185" target="_blank" rel="nofollow">#185</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/186" target="_blank" rel="nofollow">#186</a>)
                 </li>
+                <li><i>Bug Fix:</i> Wrong range in reference in Impex/FlexibleSearch files in case of header Type or Columns changes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/196" target="_blank" rel="nofollow">#196</a>)</li>
                 <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>
@@ -180,6 +182,7 @@
                 <li><i>Bug Fix:</i> Platform module should not be identified as Gradle project (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/141" target="_blank" rel="nofollow">#141</a>)</li>
                 <li><i>Bug Fix:</i> Consoles are not disposable (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/142" target="_blank" rel="nofollow">#142</a>)</li>
                 <li><i>Bug Fix:</i> Exception on Copy to console if triggered on file without extension (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/157" target="_blank" rel="nofollow">#157</a>)</li>
+                <li><i>Bug Fix:</i> Adjusted FlexibleSearch icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/192" target="_blank" rel="nofollow">#192</a>)</li>
                 <li><i>Bug Fix:</i> Default values for Type System modifiers</li>
                 <li><i>Deprecation:</i> Decreased usage of the Deprecated API
                 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/107" target="_blank" rel="nofollow">#107</a>,

@@ -648,4 +648,5 @@ public final class ImpexPsiUtils {
 
         return parameterSeparators.get(columnNumber);
     }
+
 }
