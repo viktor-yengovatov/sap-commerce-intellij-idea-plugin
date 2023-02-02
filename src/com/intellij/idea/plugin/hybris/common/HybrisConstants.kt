@@ -27,15 +27,25 @@ import java.io.File
  */
 object HybrisConstants {
 
+    const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
+
+    const val IDEA_EDITION_ULTIMATE = "Ultimate Edition"
+    const val UPDATE_TIMESTAMP_PROPERTY = "sap.commerce.update.timestamp"
+
+    const val IMPEX_CONFIG_PREFIX = "\$config"
+    const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
     const val IMPEX_CATALOG_VERSION_ONLINE = "Online"
     const val IMPEX_CATALOG_VERSION_STAGED = "Staged"
-    const val IMPEX_CONSOLE_TITLE = "Hybris Impex Console"
-    const val IMPEX_MONITOR_CONSOLE_TITLE = "Hybris Monitor Console"
+    const val IMPEX_CONSOLE_TITLE = "[y] Impex Console"
+    const val IMPEX_MONITOR_CONSOLE_TITLE = "[y] Monitor Console"
+    const val IMPEX = "Impex"
     const val IMPEX_FILE_EXTENSION = "impex"
 
-    const val GROOVY_CONSOLE_TITLE = "Hybris Groovy Console"
-    const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "Hybris FS Console"
-    const val SOLR_SEARCH_CONSOLE_TITLE = "Hybris Solr search"
+    const val GROOVY_CONSOLE_TITLE = "[y] Groovy Console"
+    const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "[y] FS Console"
+    const val SOLR_SEARCH_CONSOLE_TITLE = "[y] Solr search"
+
+    const val BUSINESS_PROCESS_ROOT_TAG = "process"
 
     const val DOT_PROJECT = ".project"
     const val SETTINGS_GRADLE = "settings.gradle"
@@ -43,6 +53,10 @@ object HybrisConstants {
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
     const val EXTENSIONS_XML = "extensions.xml"
+    const val BUSINESS_PROCESS_XML = "process.xml"
+    const val COCKPIT_NG_CONFIG_XML = "-config.xml"
+    const val COCKPIT_NG_WIDGETS_XML = "-widgets.xml"
+    const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
 
     const val HYBRIS_DATA_DIRECTORY = "data"
     const val HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar"
@@ -51,10 +65,16 @@ object HybrisConstants {
     const val EXTENSION_NAME_CORE = "core"
     const val EXTENSION_NAME_CONFIG = "config"
     const val EXTENSION_NAME_HMC = "hmc"
-    const val EXTENSION_NAME_HAC_MODULE = "hac"
+    const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
 
-    const val BACKOFFICE_MODULE_META_KEY_NAME = "backoffice-module"
+    const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
+    const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
+    const val EXTENSION_META_KEY_CLASSPATHGEN = "classpathgen"
+    const val EXTENSION_META_KEY_DEPRECATED = "deprecated"
+    const val EXTENSION_META_KEY_EXT_GEN = "extgen-template-extension"
+    const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
+
     const val BACKOFFICE_MODULE_DIRECTORY = "backoffice"
     const val BACKOFFICE_LIBRARY_GROUP = "Backoffice Library"
 
@@ -64,8 +84,6 @@ object HybrisConstants {
     const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
 
     const val HMC_MODULE_DIRECTORY = "hmc"
-
-    const val HAC_MODULE_META_KEY_NAME = "hac-module"
     const val HAC_MODULE_DIRECTORY = "hac"
     const val HAC_WEBROOT_KEY = "hac.webroot"
 
@@ -95,11 +113,11 @@ object HybrisConstants {
     const val CONFIG_LICENCE_DIRECTORY = "licence"
     const val ECLIPSE_BIN_DIRECTORY = "eclipsebin"
     const val JAVA_COMPILER_FAKE_OUTPUT_PATH = ECLIPSE_BIN_DIRECTORY
-    const val HYBRIS_PROJECT_SETTINGS_FILE_NAME = "hybrisProjectSettings.xml"
-    const val HYBRIS_PROJECT_SETTINGS_COMPONENT_NAME = "HybrisProjectSettings"
-    const val HYBRIS_INTEGRATION_SETTINGS_FILE_NAME = "hybrisIntegrationSettings.xml"
-    const val HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME = "hybrisDeveloperSpecificProjectSettings.xml"
-    const val HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_COMPONENT_NAME = "HybrisDeveloperSpecificProjectSettings"
+    const val STORAGE_HYBRIS_PROJECT_SETTINGS = "hybrisProjectSettings.xml"
+    const val STORAGE_HYBRIS_INTEGRATION_SETTINGS = "hybrisIntegrationSettings.xml"
+    const val STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS = "hybrisDeveloperSpecificProjectSettings.xml"
+    const val STORAGE_HYBRIS_TS_VIEW = "hybrisTypeSystemViewSettings.xml"
+    const val STORAGE_HYBRIS_BS_VIEW = "hybrisBeanSystemViewSettings.xml"
     const val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files"
     const val PLUGIN_ID = "com.intellij.idea.plugin.sap.commerce"
     const val JREBEL_PLUGIN_ID = "JRebelPlugin"
@@ -110,16 +128,16 @@ object HybrisConstants {
     const val HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml"
     const val HYBRIS_IMPEX_XML_FILE_ENDING = ".$IMPEX_FILE_EXTENSION"
 
-    const val DESCRIPTOR_TYPE = "descriptorType"
-    const val READ_ONLY = "importedAsReadOnly"
     const val DEBUG_PORT = "8000"
 
     const val TOMCAT_SSL_PORT_KEY = "tomcat.ssl.port"
     const val TOMCAT_HTTP_PORT_KEY = "tomcat.http.port"
+    const val SOLR_DEFAULT_PORT_KEY = "solrserver.instances.default.port"
+    const val SOLR_DEFAULT_USER_KEY = "solrserver.instances.default.user"
+    const val SOLR_DEFAULT_PASSWORD_KEY = "solrserver.instances.default.password"
 
-    const val DEFAULT_TOMCAT_HTTP_PORT = "9001"
-    const val DEFAULT_TOMCAT_SSL_PORT = "9002"
-    const val DEFAULT_SOLR_TOMCAT_SSL_PORT = "8983"
+    const val DEFAULT_HOST_URL = "localhost"
+    const val DEFAULT_SSL_PROTOCOL = "TLSv1.2"
 
     const val HTTP_PROTOCOL = "http://"
     const val HTTPS_PROTOCOL = "https://"
@@ -141,11 +159,15 @@ object HybrisConstants {
     const val ANT_HEAP_SIZE_MB = 512
     const val ANT_STACK_SIZE_MB = 128
 
-    const val TS_ITEMS_VALIDATION_WARN = "hybris.ts.items.validation.warn"
     const val TS_TYPE_OBJECT = "java.lang.Object"
-    const val TS_TYPE_GENERIC_ITEM = "GenericItem"
+    const val TS_TYPE_ITEM = "GenericItem"
+    const val TS_TYPE_GENERIC_ITEM = "Item"
+    const val TS_TYPE_LOCALIZABLE_ITEM = "LocalizableItem"
+    const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
+    const val TS_TYPE_LINK = "Link"
     const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
+    const val TS_JAVA_LANG_PREFIX = "java.lang."
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
     const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
@@ -169,23 +191,30 @@ object HybrisConstants {
     val TS_TYPECODE_RANGE_PRINT = 23400 .. 23999
     val TS_TYPECODE_RANGE_PROCESSING = 32700 .. 32799
 
-    const val SEARCH_SCOPE_Y_PREFIX = "[y]"
+    val BP_NAVIGABLE_ELEMENTS = setOf("action", "end", "wait", "join", "notify", "split", "scriptAction")
+
+    const val HYBRIS = "[y]"
+    const val DEBUG_MODEL_RENDERER_PREFIX = HYBRIS
+    const val SEARCH_SCOPE_Y_PREFIX = HYBRIS
     const val SEARCH_SCOPE_GROUP_PREFIX = "group:"
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
     const val BUILD_COMPILER_KEY = "build.compiler"
-    const val ITEM_ROOT_CLASS = "de.hybris.platform.core.model.ItemModel"
-    const val ENUM_ROOT_CLASS = "de.hybris.platform.core.HybrisEnumValue"
+    const val CLASS_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
+    const val CLASS_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
+    const val CLASS_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
     const val MODEL_SUFFIX = "Model"
+    const val TYPECODE_FIELD_NAME = "_TYPECODE"
     const val SOURCE_ATTRIBUTE_NAME = "source"
     const val TARGET_ATTRIBUTE_NAME = "target"
     const val CODE_ATTRIBUTE_NAME = "code"
     const val NAME_ATTRIBUTE_NAME = "name"
     const val DICTIONARY_NAME = "hybris_integration"
     const val OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir"
-    const val DIALOG_TITLE = "copy.file.dialog."
+    const val DIALOG_TITLE = "hybris.copy.file.dialog."
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
+
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"
     const val RESOURCES_DIRECTORY = "resources"
@@ -197,17 +226,31 @@ object HybrisConstants {
     const val HYBRIS_CONFIG_DIR_KEY = "HYBRIS_CONFIG_DIR"
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
-    const val DEFAULT_JAVADOC_ROOT_URL = "https://download.hybris.com/api/%s/commercesuite"
-    const val HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL = "https://help.hybris.com/%s/api/commercesuite/index.html"
+    const val JAVADOC_FALLBACK_URL = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
+    const val JAVADOC_URL = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s"
+
+    const val QUOTE_LENGTH = 2
+
+    const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
+    const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
+    const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
 
     private const val SRC_DIRECTORY = "src"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
 
+    @JvmField val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
+    @JvmField val IMPEX_MODIFIER_MODE_VALUES = setOf("append", "remove")
+    const val IMPEX_CLASS_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
+    const val IMPEX_CLASS_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
+    const val IMPEX_CLASS_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
+
+    @JvmField val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
     @JvmField val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
     @JvmField val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
 
+    @JvmField val PLATFORM_MODULE = FileUtilRt.toSystemDependentName("hybris/bin/platform")
     @JvmField val PLATFORM_MODULE_PREFIX = FileUtilRt.toSystemDependentName("/bin/platform/")
     @JvmField val PLATFORM_EXT_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/platform/ext/")
     @JvmField val PLATFORM_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/ext-")

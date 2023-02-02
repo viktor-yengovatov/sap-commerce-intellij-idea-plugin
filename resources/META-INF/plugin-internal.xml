@@ -5,15 +5,7 @@
 
         <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"/>
-
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"
-            serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.CommonIdeaService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultCommonIdeaService"/>
@@ -21,36 +13,59 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
 
-        <psi.referenceContributor language="XML"
-                                  implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
-        <psi.referenceContributor language="XML"
-                                  implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisProcessReferenceContributor"/>
-
-
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBeanLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisPopulatorLineMarkerProvider"/>
-
-        <completion.contributor language="XML"
-                                implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
-
-        <localInspection shortName="DuplicateBeanDefinitionInspection" displayName="Duplicate bean definition in -beans.xml file"
-                         groupName="Bean Definition" level="ERROR" language="XML" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.inspections.DuplicateBeanDefinitionInspection"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisEnumItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisEnumLiteralItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisModelItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemAttributeReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngEditorDefinitionReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngActionDefinitionReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetDefinitionReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetSettingReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetConnectionWidgetIdReferenceProvider"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.psi.reference.contributor.HybrisItemsXmlReferenceContributor"/>
 
         <internalFileTemplate name="FlexibleSearch File"/>
         <internalFileTemplate name="Impex File"/>
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow"/>
 
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.TSToolWindow"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.BSToolWindow"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.TSToolWindow"/>
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionService"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionEntityService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionEntityService"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.impl.HybrisConsoleInMemoryRegionsCache"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionPersistenceService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultJsonRegionPersistenceService"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultConsolePersistenceService"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.JsonIOUtil"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryPanelEventManager"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>
+
+        <applicationConfigurable id="hybris.settings" parentId="root"
+                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsConfigurable"/>
+        <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
+                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisProjectImportApplicationSettingsConfigurable"/>
+        <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true" dynamic="true"
+                             provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsConfigurableProvider"/>
+        <projectConfigurable id="hybris.project.remote_instances.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
+                             provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider"/>
     </extensions>
 
     <project-components>
@@ -67,19 +82,17 @@
 
     <actions>
         <group id="HybrisToolsActions"
-               text="Hybris"
+               text="[y] SAP Commerce"
                icon="/icons/hybrisIcon.png"
                popup="true"
                class="com.intellij.idea.plugin.hybris.actions.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
-        <!--
         <action id="GenerateDomModel"
-                class="com.intellij.idea.plugin.hybris.type.system.file.dom.generator.GenerateDomModelAction"
+                class="com.intellij.idea.plugin.hybris.system.type.model.generator.GenerateDomModelAction"
                 text="Generate DOM Model...">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
-        -->
         <action id="Console.Execute.Immediately"
                 class="com.intellij.openapi.actionSystem.EmptyAction"
                 text="Execute Current Statement">
@@ -88,7 +101,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Hybris" icon="/icons/grayHybrisIcon.svg" anchor="bottom"
+        <toolWindow id="SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
     </extensions>
 

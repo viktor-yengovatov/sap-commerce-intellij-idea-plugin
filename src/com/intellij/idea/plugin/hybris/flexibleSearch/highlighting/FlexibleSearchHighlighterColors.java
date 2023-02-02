@@ -18,17 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting;
 
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-
-import static com.intellij.ide.highlighter.JavaHighlightingColors.CLASS_NAME_ATTRIBUTES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACKETS;
+import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.FUNCTION_DECLARATION;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_FIELD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.LINE_COMMENT;
@@ -52,18 +49,11 @@ public final class FlexibleSearchHighlighterColors {
     public static final TextAttributesKey FS_NUMBER = key("NUMBER", NUMBER);
 
     public static final TextAttributesKey FS_COLUMN = key("COLUMN", INSTANCE_FIELD);
-    public static final TextAttributesKey FS_TABLE = key("TABLE NAME", CLASS_NAME_ATTRIBUTES);
+    public static final TextAttributesKey FS_TABLE = key("TABLE NAME", FUNCTION_DECLARATION);
 
     public static final TextAttributesKey FS_COMMENT = key("COMMENT", LINE_COMMENT);
 
-    public static final TextAttributesKey FS_PARAMETER =
-        TextAttributesKey.createTextAttributesKey("FS_PARAMETER", new TextAttributes(
-            new JBColor(0x0D96D9, 0x0097C5),
-            null,
-            null,
-            null,
-            Font.PLAIN
-        ));
+    public static final TextAttributesKey FS_PARAMETER = key("FS_PARAMETER", DefaultLanguageHighlighterColors.PARAMETER);
 
 
     private static TextAttributesKey key(

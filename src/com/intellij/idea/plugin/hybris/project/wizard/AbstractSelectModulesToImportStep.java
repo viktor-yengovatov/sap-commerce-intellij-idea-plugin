@@ -26,7 +26,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.ui.UIUtil;
+import com.intellij.util.ui.ImageUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,7 +69,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
     }
 
     protected List<HybrisModuleDescriptor> getAdditionalFixedElements() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @NotNull
@@ -77,7 +77,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         final Set<HybrisModuleDescriptor> duplicateModules = new HashSet<>();
         final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<>();
 
-        getAdditionalFixedElements().stream().forEach(e -> uniqueModules.put(e.getName(), e));
+        getAdditionalFixedElements().forEach(e -> uniqueModules.put(e.getName(), e));
 
         for (HybrisModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 
@@ -133,7 +133,6 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
     protected abstract void setList(final List<HybrisModuleDescriptor> allElements);
 
-
     protected boolean validateCommon() throws ConfigurationException {
         final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
         final Collection<String> moduleDuplicateNames = new HashSet<>(moduleDuplicates.size());
@@ -166,22 +165,19 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         builder.append(moduleDescriptor.getName());
 
         final Font font = getComponent().getFont();
-        final BufferedImage img = UIUtil.createImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage img = ImageUtil.createImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         final FontMetrics fm = img.getGraphics().getFontMetrics(font);
 
         final int currentWidth = fm.stringWidth(builder.toString());
         final int spaceWidth = fm.charWidth(' ');
         final int spaceCount = (COLUMN_WIDTH - currentWidth) / spaceWidth;
 
-        for (int index = 0; index < spaceCount; index++) {
-            builder.append(' ');
-        }
-
-        builder.append(" (");
-        builder.append(moduleDescriptor.getRelativePath());
-        builder.append(')');
-
-        return builder.toString();
+        return builder
+            .append(" ".repeat(Math.max(0, spaceCount)))
+            .append(" (")
+            .append(moduleDescriptor.getRelativePath())
+            .append(')')
+            .toString();
     }
 
 }

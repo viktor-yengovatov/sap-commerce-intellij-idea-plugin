@@ -18,8 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.common.utils;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
+import icons.DvcsImplIcons;
 
 import javax.swing.*;
 
@@ -38,10 +40,19 @@ public final class HybrisIcons {
     public static final Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
     public static final Icon BEAN_FILE = getIcon("/icons/beanIcon.svg");
     
-    public static final Icon HYBRIS_ICON = getIcon("/icons/hybrisIcon.svg");
-    public static final Icon HYBRIS_ICON_13x13 = getIcon("/icons/hybrisIcon_13x13.svg");
-    public static final Icon HYBRIS_REMOTE_ICON = getIcon("/icons/hybrisRemoteIcon.svg");
-    
+    public static final Icon HYBRIS = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
+    public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitng_config.svg");
+    public static final Icon COCKPIT_NG_WIDGETS = getIcon("/icons/cockpitng_widgets.svg");
+    public static final Icon COCKPIT_NG_WIDGET = getIcon("/icons/cockpitng_widget.svg");
+    public static final Icon COCKPIT_NG_WIDGET_DEFINITION = getIcon("/icons/cockpitng_widget_definition.svg");
+    public static final Icon COCKPIT_NG_ACTION_DEFINITION = getIcon("/icons/cockpitng_action_definition.svg");
+    public static final Icon COCKPIT_NG_EDITOR_DEFINITION = getIcon("/icons/cockpitng_editor_definition.svg");
+    public static final Icon LOCAL_EXTENSIONS = getIcon("/icons/extensionInfo.svg");
+    public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
+    public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
+    public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
+
     public static final Icon WAIT = getIcon("/icons/waitIcon.svg");
     public static final Icon END = getIcon("/icons/endIcon.svg");
     public static final Icon NOTIFY = getIcon("/icons/notifyIcon.svg");
@@ -51,17 +62,35 @@ public final class HybrisIcons {
     public static final Icon SCRIPT = getIcon("/icons/scriptIcon.svg");
 
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
+    public static final Icon ENUM = AllIcons.Nodes.Enum;
+    public static final Icon ENUM_VALUE = AllIcons.Nodes.AnonymousClass;
     public static final Icon BEAN = getIcon("/icons/beanIcon.svg");
+    public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");
     public static final Icon LOCALIZED = getIcon("/icons/localized.svg");
 
     public static final Icon MACROS = getIcon("/icons/macros.png");
 
+    public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.png");
+
+    public static final Icon ATOMIC = AllIcons.Actions.GroupByModule;
+    public static final Icon ITEM = AllIcons.Nodes.Class;
+    public static final Icon MAP = AllIcons.Nodes.Plugin;
+    public static final Icon RELATION = AllIcons.Actions.GroupByModuleGroup;
+    public static final Icon IMPORT = AllIcons.ToolbarDecorator.Import;
+    public static final Icon ANNOTATION = AllIcons.Nodes.Annotationtype;
+    public static final Icon PROPERTY = AllIcons.Nodes.Property;
     public static final Icon ATTRIBUTE = getIcon("/icons/attribute.svg");
+    public static final Icon RELATION_SOURCE = DvcsImplIcons.Outgoing;
+    public static final Icon RELATION_TARGET = DvcsImplIcons.Incoming;
     public static final Icon COLLECTION = getIcon("/icons/collection.svg");
     public static final Icon INDEX = getIcon("/icons/index.svg");
     public static final Icon INDEX_UNIQUE = getIcon("/icons/indexUnique.svg");
     public static final Icon INDEX_FUN = getIcon("/icons/indexFun.svg");
     public static final Icon INDEX_CLUSTER = getIcon("/icons/indexCluster.svg");
+
+    public static final Icon GROUP_BY_BEAN_DTO = getIcon("/icons/groupByBeanDto.svg");
+    public static final Icon GROUP_BY_BEAN_EVENT = getIcon("/icons/groupByBeanEvent.svg");
+    public static final Icon GROUP_BY_BEAN_WS = getIcon("/icons/groupByBeanWS.svg");
 
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 

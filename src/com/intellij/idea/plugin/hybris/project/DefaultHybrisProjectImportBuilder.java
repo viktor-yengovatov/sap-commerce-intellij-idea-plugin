@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
+import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
@@ -35,6 +35,10 @@ import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -42,9 +46,11 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +72,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.notifications.NotificationUtil.showSystemNotificationIfNotActive;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
 
@@ -88,8 +93,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private List<HybrisModuleDescriptor> moduleList;
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
 
+    @Override
     @Nullable
-    public Project createProject(String name, String path) {
+    public Project createProject(final String name, final String path) {
         final Project project = super.createProject(name, path);
         getHybrisProjectDescriptor().setHybrisProject(project);
         return project;
@@ -180,22 +186,36 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final boolean[] finished = {false};
 
-        StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
-            finished[0] = true;
+        StartupManager.getInstance(project).runAfterOpened(() -> {
+            activateToolWindowAfterImport(project);
 
-            finishImport(
-                project,
-                hybrisProjectDescriptor,
-                allModules,
-                configuratorFactory,
-                () -> notifyImportFinished(project)
-            );
+            DumbService.getInstance(project).runWhenSmart(() -> {
+                finished[0] = true;
+
+                finishImport(
+                    project,
+                    hybrisProjectDescriptor,
+                    allModules,
+                    configuratorFactory,
+                    () -> notifyImportFinished(project)
+                );
+            });
         });
 
         if (!finished[0]) {
             notifyImportNotFinishedYet(project);
         }
         return modules;
+    }
+
+    private void activateToolWindowAfterImport(final Project project) {
+        final var yToolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID);
+        if (yToolWindow == null) return;
+
+        ApplicationManager.getApplication().invokeLater(() -> {
+            yToolWindow.setAvailable(true);
+            yToolWindow.activate(null, true);
+        });
     }
 
     private static void finishImport(
@@ -252,36 +272,37 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         });
     }
 
-    private void notifyImportNotFinishedYet(@NotNull Project project) {
+    private void notifyImportNotFinishedYet(@NotNull final Project project) {
 
         final String notificationTitle = refresh
-            ? message("project.refresh.notification.title")
-            : message("project.import.notification.title");
+            ? message("hybris.notification.project.refresh.title")
+            : message("hybris.notification.project.import.title");
 
-        NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            notificationTitle,
-            message("import.or.refresh.process.not.finished.yet"),
-            NotificationType.INFORMATION
-        ).notify(project);
+        Notifications.create(NotificationType.INFORMATION, notificationTitle,
+                             message("hybris.notification.import.or.refresh.process.not.finished.yet.content"))
+                     .notify(project);
     }
 
-    private void notifyImportFinished(@NotNull Project project) {
+    private void notifyImportFinished(@NotNull final Project project) {
 
-        final String notificationName = refresh
-            ? message("project.refresh.finished")
-            : message("project.import.finished");
+        final String notificationContent = refresh
+            ? message("hybris.notification.project.refresh.finished.content")
+            : message("hybris.notification.project.import.finished.content");
 
         final String notificationTitle = refresh
-            ? message("project.refresh.notification.title")
-            : message("project.import.notification.title");
+            ? message("hybris.notification.project.refresh.title")
+            : message("hybris.notification.project.import.title");
 
-        NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            notificationTitle,
-            notificationName,
-            NotificationType.INFORMATION
-        ).notify(project);
+        Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
+                     .notify(project);
 
-        showSystemNotificationIfNotActive(project, notificationName, notificationTitle, notificationName);
+        Notifications.showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent);
+
+        DumbService.getInstance(project).runReadActionInSmartMode(() -> {
+            TSMetaModelAccess.Companion.getInstance(project).getMetaModel();
+            BSMetaModelAccess.Companion.getInstance(project).getMetaModel();
+            CngMetaModelAccess.Companion.getInstance(project).getMetaModel();
+        });
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
@@ -326,7 +347,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public Icon getIcon() {
-        return HybrisIcons.HYBRIS_ICON;
+        return HybrisIcons.HYBRIS;
     }
 
     @Override

@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.vfs.listeners
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -31,9 +31,6 @@ import com.intellij.openapi.wm.WindowManager
 class TSBulkFileListener : BulkFileListener {
 
     private val logger = Logger.getInstance(TSBulkFileListener::class.java)
-
-    init {
-    }
 
     override fun after(events: MutableList<out VFileEvent>) {
         val project = getActiveProject() ?: return

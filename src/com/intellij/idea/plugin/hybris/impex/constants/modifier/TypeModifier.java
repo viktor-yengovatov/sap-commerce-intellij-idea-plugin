@@ -18,39 +18,36 @@
 
 package com.intellij.idea.plugin.hybris.impex.constants.modifier;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.ArrayUtils;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor;
+import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.BOOLEAN;
-import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.NONE;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * https://wiki.hybris.com/pages/viewpage.action?title=ImpEx+Syntax&spaceKey=release5
+ * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US
  */
 public enum TypeModifier implements ImpexModifier {
 
-    BATCH_MODE("batchmode", BOOLEAN),
-    CACHE_UNIQUE("cacheUnique", BOOLEAN),
-    IMPEX_LEGACY_MODE("impex.legacy.mode", BOOLEAN),
-    PROCESSOR("processor", NONE) {
+    BATCH_MODE("batchmode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    CACHE_UNIQUE("cacheUnique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    IMPEX_LEGACY_MODE("impex.legacy.mode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    PROCESSOR("processor") {
         @Override
-        public ImpexModifierValue[] getRawModifierValues() {
-            return ImpexProcessorModifier.values();
+        public @NotNull Set<LookupElement> getLookupElements(final Project project) {
+            return ImpexImplementationClassCompletionContributor.Companion.getInstance(project)
+                                                                          .getImplementationsForClass(HybrisConstants.IMPEX_CLASS_PROCESSOR);
         }
     };
-
-    private final String modifierName;
-    private final List<String> modifierValues;
-    private final ImpexModifierValue[] rawModifierValues;
 
     private static final Map<String, ImpexModifier> ELEMENTS_MAP = new HashMap<>(
         TypeModifier.values().length
@@ -62,30 +59,33 @@ public enum TypeModifier implements ImpexModifier {
         }
     }
 
-    @Nullable
-    public static ImpexModifier getByModifierName(@NotNull final String modifierName) {
-        Validate.notEmpty(modifierName);
+    private final String modifierName;
+    private final Set<LookupElement> lookupElements;
 
-        return ELEMENTS_MAP.get(modifierName);
+    TypeModifier(
+        @NotNull final String modifierName
+    ) {
+        this(modifierName, Collections.emptySet());
     }
 
     TypeModifier(
         @NotNull final String modifierName,
-        @NotNull final ImpexModifierValue[] modifierValues
+        @NotNull final Set<String> modifierValues
     ) {
         Validate.notEmpty(modifierName);
         Validate.notNull(modifierValues);
 
         this.modifierName = modifierName;
-        this.rawModifierValues = modifierValues;
-        
-        if (ArrayUtils.isEmpty(modifierValues)) {
-            this.modifierValues = Collections.emptyList();
-        } else {
-            this.modifierValues = Lists.transform(
-                Arrays.asList(modifierValues), ImpexModifierValueToStringConversionFunction.getInstance()
-            );
-        }
+        this.lookupElements = modifierValues.stream()
+                                            .map(LookupElementBuilder::create)
+                                            .collect(Collectors.toSet());
+    }
+
+    @Nullable
+    public static ImpexModifier getByModifierName(@NotNull final String modifierName) {
+        Validate.notEmpty(modifierName);
+
+        return ELEMENTS_MAP.get(modifierName);
     }
 
     @NotNull
@@ -94,13 +94,11 @@ public enum TypeModifier implements ImpexModifier {
         return this.modifierName;
     }
 
-    @NotNull
     @Override
-    public List<String> getModifierValues() {
-        return this.modifierValues;
+    @NotNull
+    public Set<LookupElement> getLookupElements(final Project project) {
+        return Collections.unmodifiableSet(lookupElements);
     }
 
-    public ImpexModifierValue[] getRawModifierValues() {
-        return rawModifierValues;
-    }
+
 }

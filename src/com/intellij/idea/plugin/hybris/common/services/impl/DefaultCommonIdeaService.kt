@@ -17,32 +17,34 @@
  */
 package com.intellij.idea.plugin.hybris.common.services.impl
 
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.Version
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.*
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.util.text.VersionComparatorUtil
 import org.apache.commons.lang3.StringUtils
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
 import java.util.*
 import java.util.function.Consumer
-import java.util.stream.Collectors
 
 /**
  * Created 10:24 PM 10 February 2016.
  *
  * @author Alexander Bartash <AlexanderBartash></AlexanderBartash>@gmail.com>
  */
+val regex = Regex("https?://")
+
 class DefaultCommonIdeaService : CommonIdeaService {
     private val commandProcessor: CommandProcessor = CommandProcessor.getInstance()
     override fun isTypingActionInProgress(): Boolean {
@@ -72,23 +74,11 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     override fun isOutDatedHybrisProject(project: Project): Boolean {
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                .state
-        val version = hybrisProjectSettings.importedByVersion ?: return true
-        val versionParts = version.split(".").toTypedArray()
-        if (versionParts.size < 2) {
-            return true
-        }
-        val majorVersion = versionParts[0]
-        val minorVersion = versionParts[1]
-        return try {
-            val majorVersionNumber = majorVersion.toInt()
-            val minorVersionNumber = minorVersion.toInt()
-            val versionNumber = majorVersionNumber * 100 + minorVersionNumber
-            versionNumber < 900
-        } catch (nfe: NumberFormatException) {
-            true
-        }
+        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
+        val lastImportVersion = hybrisProjectSettings.importedByVersion ?: return true
+        val currentVersion = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))?.version ?: return true
+
+        return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
     override fun isPotentiallyHybrisProject(project: Project): Boolean {
@@ -101,21 +91,23 @@ class DefaultCommonIdeaService : CommonIdeaService {
         if (matchAllModuleNames(acceleratorNames, moduleNames)) {
             return true
         }
-        val webservicesNames: Collection<String> = listOf("*hmc", "hmc", "platform")
+        val webservicesNames: Collection<String> = listOf(
+            "*${HybrisConstants.EXTENSION_NAME_HMC}",
+            HybrisConstants.EXTENSION_NAME_HMC,
+            HybrisConstants.EXTENSION_NAME_PLATFORM
+        )
         return matchAllModuleNames(webservicesNames, moduleNames)
     }
 
     override fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformHybrisModuleDescriptor {
         return hybrisProjectDescriptor.foundModules
                 .first { e: HybrisModuleDescriptor? -> e is PlatformHybrisModuleDescriptor } as PlatformHybrisModuleDescriptor
-
-
     }
 
     override fun getActiveHacUrl(project: Project): String {
         return HybrisDeveloperSpecificProjectSettingsComponent
                 .getInstance(project)
-                .getActiveHybrisRemoteConnectionSettings(project)
+                .getActiveHacRemoteConnectionSettings(project)
                 .let { getUrl(it) }
     }
 
@@ -123,16 +115,16 @@ class DefaultCommonIdeaService : CommonIdeaService {
         var mySettings = settings
         if (mySettings == null) {
             mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-                    .getActiveHybrisRemoteConnectionSettings(project)
+                    .getActiveHacRemoteConnectionSettings(project)
         }
-        return mySettings?.sslProtocol ?: "TLSv1"
+        return mySettings?.sslProtocol ?: HybrisConstants.DEFAULT_SSL_PROTOCOL
     }
 
     override fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
         var mySettings = settings
         if (mySettings == null) {
             mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-                    .getActiveHybrisRemoteConnectionSettings(project)
+                    .getActiveHacRemoteConnectionSettings(project)
         }
         return getUrl(mySettings)
     }
@@ -142,7 +134,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         val sb = StringBuilder()
         if (mySettings == null) {
             mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-                    .getActiveSolrConnectionSettings(project)
+                    .getActiveSolrRemoteConnectionSettings(project)
         }
         if (mySettings!!.isSsl) {
             sb.append(HybrisConstants.HTTPS_PROTOCOL)
@@ -177,30 +169,22 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     override fun fixRemoteConnectionSettings(project: Project) {
-        val developerSpecificSettings = HybrisDeveloperSpecificProjectSettingsComponent
-                .getInstance(project)
-        val state = developerSpecificSettings.state
+        val settingsComponent = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        val state = settingsComponent.state
         if (state != null) {
             val connectionList = state.remoteConnectionSettingsList
             connectionList.forEach(Consumer {
-                if (it.type == null) {
-                    it.type = HybrisRemoteConnectionSettings.Type.Hybris
-                }
                 prepareSslRemoteConnectionSettings(it)
             })
-            val remoteList = connectionList
-                    .stream().filter { it.type == HybrisRemoteConnectionSettings.Type.Hybris }.collect(Collectors.toList())
-            if (remoteList.isEmpty()) {
-                val newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(
-                        project)
+
+            if (settingsComponent.hacRemoteConnectionSettings.isEmpty()) {
+                val newSettings = settingsComponent.getDefaultHacRemoteConnectionSettings(project)
                 connectionList.add(newSettings)
                 state.activeRemoteConnectionID = newSettings.uuid
             }
-            val solrList = connectionList
-                    .stream().filter { it.type == HybrisRemoteConnectionSettings.Type.SOLR }.collect(Collectors.toList())
-            if (solrList.isEmpty()) {
-                val newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(
-                        project)
+
+            if (settingsComponent.solrRemoteConnectionSettings.isEmpty()) {
+                val newSettings = settingsComponent.getDefaultSolrRemoteConnectionSettings(project)
                 connectionList.add(newSettings)
                 state.activeSolrConnectionID = newSettings.uuid
             }
@@ -213,8 +197,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     private fun cleanUpRemoteConnectionSettingsHostIp(connectionSettings: HybrisRemoteConnectionSettings) {
-        val regex = Regex("https?://")
-        connectionSettings.hostIP = connectionSettings.hostIP.replace(regex, "")
+        connectionSettings.hostIP = connectionSettings.hostIP?.replace(regex, "")
     }
 
     private fun getLocalProperties(project: Project): Properties? {

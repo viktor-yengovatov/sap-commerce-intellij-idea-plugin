@@ -18,9 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.impex.constants.modifier;
 
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created 18:53 14 May 2016
@@ -33,5 +35,6 @@ public interface ImpexModifier {
     String getModifierName();
 
     @NotNull
-    List<String> getModifierValues();
+    Set<LookupElement> getLookupElements(Project project);
+
 }

@@ -72,12 +72,12 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(customScope);
 
             newScopes.add(new NamedScope(
-                SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.custom.ts.files"),
+                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.custom.ts.files"),
                 createCustomTSFilesPattern()
             ));
 
             newScopes.add(new NamedScope(
-                SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.custom.ts.beans.impex.files"),
+                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.custom.ts.beans.impex.files"),
                 createCustomTsImpexBeansFilesPattern()
             ));
         }
@@ -97,15 +97,19 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(createScope(nonHybrisGroupName));
         }
         newScopes.add(new NamedScope(
-            SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.all.ts.files"),
+            SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.all.ts.files"),
             new FilePatternPackageSet(null, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING)
+        ));
+        newScopes.add(new NamedScope(
+            SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.all.beans.files"),
+            new FilePatternPackageSet(null, "*//*" + HYBRIS_BEANS_XML_FILE_ENDING)
         ));
         ApplicationManager.getApplication().invokeLater(() -> addOrReplaceScopes(project, newScopes));
 
         NamedScope defaultScope = customScope != null ? customScope : hybrisScope != null ? hybrisScope : platformScope;
         if (defaultScope != null) {
-            FindSettings.getInstance().setCustomScope(defaultScope.getName());
-            FindSettings.getInstance().setDefaultScopeName(defaultScope.getName());
+            FindSettings.getInstance().setCustomScope(defaultScope.getPresentableName());
+            FindSettings.getInstance().setDefaultScopeName(defaultScope.getPresentableName());
         }
     }
 
@@ -135,10 +139,10 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             impexFilePatternPackageSet);
     }
 
-    private static void addOrReplaceScopes(@NotNull Project project, @NotNull List<NamedScope> newScopes) {
+    private static void addOrReplaceScopes(@NotNull final Project project, @NotNull final List<NamedScope> newScopes) {
         final Set<String> newScopeNames = newScopes
             .stream()
-            .map(NamedScope::getName)
+            .map(NamedScope::getPresentableName)
             .collect(Collectors.toSet());
 
         final NamedScopeManager namedScopeManager = NamedScopeManager.getInstance(project);
@@ -146,7 +150,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
         final NamedScope[] filteredScopes = Arrays
             .stream(existingScopes)
-            .filter(it -> !newScopeNames.contains(it.getName()))
+            .filter(it -> !newScopeNames.contains(it.getPresentableName()))
             .toArray(NamedScope[]::new);
 
         namedScopeManager.setScopes(ArrayUtil.mergeArrays(
@@ -155,7 +159,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         ));
     }
 
-    private static boolean groupExists(@NotNull ModifiableModuleModel model, final String groupName) {
+    private static boolean groupExists(@NotNull final ModifiableModuleModel model, final String groupName) {
         return Arrays
             .stream(model.getModules())
             .map(model::getModuleGroupPath)
@@ -168,7 +172,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             SEARCH_SCOPE_GROUP_PREFIX + groupName,
             "*//*"
         );
-        return new NamedScope(SEARCH_SCOPE_Y_PREFIX + " " + groupName, filePatternPackageSet);
+        return new NamedScope(SEARCH_SCOPE_Y_PREFIX + ' ' + groupName, filePatternPackageSet);
     }
 
     @NotNull
@@ -186,7 +190,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             secondFilePatternPackageSet
         );
         return new NamedScope(
-            SEARCH_SCOPE_Y_PREFIX + " " + firstGroupName + " " + secondGroupName,
+            SEARCH_SCOPE_Y_PREFIX + ' ' + firstGroupName + ' ' + secondGroupName,
             unionPackageSet
         );
     }

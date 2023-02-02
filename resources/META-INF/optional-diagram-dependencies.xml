@@ -1,0 +1,69 @@
+<!--
+  ~ This file is part of "hybris integration" plugin for Intellij IDEA.
+  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<idea-plugin>
+
+    <extensions defaultExtensionNs="com.intellij">
+
+        <diagram.Provider id="BusinessProcessDiagramProvider"
+                          implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramProvider"/>
+
+        <diagram.Provider id="HybrisModuleDependencies"
+                          implementation="com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider"/>
+
+<!--        <diagram.Provider id="HybrisTypeSystemDependencies"-->
+<!--                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>-->
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.jaxb.services.impl.DefaultBpJaxbService"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.common.BpGraphService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.common.impl.DefaultBpGraphService"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramProvider"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramElementManager"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramElementManagerIml"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramVfsResolver"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramVfsResolver"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColorManager"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramColorManagerIml"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramVisibilityManager"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramVisibilityManagerImpl"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramVfsResolver"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramVfsResolverImpl"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramNodeContentManager"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramNodeContentManagerImpl"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramElementManager"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramElementManagerImpl"/>
+    </extensions>
+
+    <actions>
+        <action id="ShowModuleDependencyDiagram"
+                class="com.intellij.idea.plugin.hybris.diagram.module.ShowModuleDependencyDiagramAction"
+                text="Show Module Dependency Diagram"
+                icon="AllIcons.FileTypes.Diagram">
+            <add-to-group group-id="HybrisToolsActions"/>
+        </action>
+    </actions>
+
+</idea-plugin>

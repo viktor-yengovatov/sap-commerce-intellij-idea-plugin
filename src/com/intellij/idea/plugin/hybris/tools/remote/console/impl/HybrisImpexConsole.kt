@@ -102,7 +102,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         return HybrisHacHttpClient.getInstance(project).importImpex(project, settings)
     }
 
-    override fun title(): String = "Impex"
+    override fun title(): String = HybrisConstants.IMPEX
 
     override fun tip(): String = "Impex Console"
 
@@ -120,5 +120,9 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
             settings["legacyMode"] = "true"
         }
         return HybrisHacHttpClient.getInstance(project).validateImpex(project, settings)
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = -8798339041999147739L
     }
 }

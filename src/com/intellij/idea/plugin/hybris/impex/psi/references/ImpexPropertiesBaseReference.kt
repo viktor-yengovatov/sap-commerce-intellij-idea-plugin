@@ -18,23 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.AbstractElementManipulator
-import com.intellij.psi.ElementManipulator
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
+import com.intellij.psi.*
 import com.intellij.util.IncorrectOperationException
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class ImpexPropertiesBaseReference(private val prev: PsiElement?, current: PsiElement) : PsiReferenceBase.Poly<PsiElement>(current, false) {
-    private val NO_VARIANTS = arrayOfNulls<Any>(0)
 
-    override fun getVariants() = NO_VARIANTS
+    override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val project = element.project
@@ -48,7 +43,7 @@ class ImpexPropertiesBaseReference(private val prev: PsiElement?, current: PsiEl
 
     private fun getKey(prev: PsiElement?) =
             if (prev != null)
-                prev.text.replace("\$config", "") + element.text.replace("-", "")
+                prev.text.replace(HybrisConstants.IMPEX_CONFIG_PREFIX, "") + element.text.replace("-", "")
             else
                 element.text.replace("-", "")
 
