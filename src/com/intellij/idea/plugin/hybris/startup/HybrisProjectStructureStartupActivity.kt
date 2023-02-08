@@ -49,24 +49,33 @@ class HybrisProjectStructureStartupActivity : ProjectPostStartupActivity {
     private val logger = Logger.getInstance(HybrisProjectStructureStartupActivity::class.java)
 
     override suspend fun execute(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
-            return
-        }
-
         if (project.isDisposed) return
 
-        if (isOldHybrisProject(project)) {
-            Notifications.create(NotificationType.INFORMATION,
-                HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
-                HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.text")
+        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        val isHybrisProject = commonIdeaService.isHybrisProject(project)
+
+        if (isHybrisProject) {
+            if (commonIdeaService.isOutDatedHybrisProject(project)) {
+                Notifications.create(
+                    NotificationType.INFORMATION,
+                    HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
+                    HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.text", HybrisProjectSettingsComponent.getInstance(project).state.importedByVersion)
+                )
+                    .important(true)
+                    .addAction(HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
+                    .notify(project)
+            }
+        } else if (commonIdeaService.isPotentiallyHybrisProject(project)) {
+            Notifications.create(
+                NotificationType.INFORMATION,
+                HybrisI18NBundleUtils.message("hybris.notification.project.open.potential.title"),
+                HybrisI18NBundleUtils.message("hybris.notification.project.open.potential.text")
             )
                 .important(true)
-                .addAction(HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
                 .notify(project)
         }
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
 
-        if (!commonIdeaService.isHybrisProject(project)) return
+        if (!isHybrisProject) return
 
         logVersion(project)
         continueOpening(project)
@@ -107,16 +116,6 @@ class HybrisProjectStructureStartupActivity : ProjectPostStartupActivity {
 
         if (commonIdeaService.isHybrisProject(project) && PluginCommon.isPluginActive(PluginCommon.ANT_SUPPORT_PLUGIN_ID)) {
             HybrisAntBuildListener.registerAntListener(project)
-        }
-    }
-
-    private fun isOldHybrisProject(project: Project): Boolean {
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
-
-        return if (commonIdeaService.isHybrisProject(project)) {
-            commonIdeaService.isOutDatedHybrisProject(project)
-        } else {
-            commonIdeaService.isPotentiallyHybrisProject(project)
         }
     }
 
