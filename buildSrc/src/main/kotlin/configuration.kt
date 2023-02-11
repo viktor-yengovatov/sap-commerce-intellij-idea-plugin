@@ -29,8 +29,8 @@ const val intellijJvmArgs="-ea -Xms512m -Xmx3G -XX:MaxMetaspaceSize=400m"
 const val intellijUpdateSinceUntilBuild=true
 
 const val pluginName_ = "SAP-Commerce-Developers-Toolset"
-const val pluginVersion = "2023.1.0"
-const val pluginSinceBuild = "231.4840.387"
+const val pluginVersion = "2023.1.1"
+const val pluginSinceBuild = "231.6890.12"
 const val pluginUntilBuild = "231.*"
 
 // Plugin Verifier integration -> https://github.com/JetBrains/intellij-plugin-verifier
