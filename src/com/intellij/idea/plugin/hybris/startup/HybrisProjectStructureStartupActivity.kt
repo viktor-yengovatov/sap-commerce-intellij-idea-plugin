@@ -32,8 +32,8 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
-import com.intellij.openapi.project.*
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.spring.settings.SpringGeneralSettings
 import org.apache.commons.io.IOUtils
@@ -44,29 +44,43 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-class HybrisProjectStructureStartupActivity : StartupActivity.DumbAware {
+class HybrisProjectStructureStartupActivity : ProjectActivity {
 
     private val logger = Logger.getInstance(HybrisProjectStructureStartupActivity::class.java)
 
-    override fun runActivity(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
-            return
-        }
-
+    override suspend fun execute(project: Project) {
         if (project.isDisposed) return
 
-        if (isOldHybrisProject(project)) {
-            Notifications.create(NotificationType.INFORMATION,
-                HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
-                HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.text")
+        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        val isHybrisProject = commonIdeaService.isHybrisProject(project)
+
+        if (isHybrisProject) {
+            commonIdeaService.refreshProjectSettings(project)
+
+            if (commonIdeaService.isOutDatedHybrisProject(project)) {
+                Notifications.create(
+                    NotificationType.INFORMATION,
+                    HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
+                    HybrisI18NBundleUtils.message(
+                        "hybris.notification.project.open.outdated.text",
+                        HybrisProjectSettingsComponent.getInstance(project).state.importedByVersion ?: "old"
+                    )
+                )
+                    .important(true)
+                    .addAction(HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
+                    .notify(project)
+            }
+        } else if (commonIdeaService.isPotentiallyHybrisProject(project)) {
+            Notifications.create(
+                NotificationType.INFORMATION,
+                HybrisI18NBundleUtils.message("hybris.notification.project.open.potential.title"),
+                HybrisI18NBundleUtils.message("hybris.notification.project.open.potential.text")
             )
                 .important(true)
-                .addAction(HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
                 .notify(project)
         }
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
 
-        if (!commonIdeaService.isHybrisProject(project)) return
+        if (!isHybrisProject) return
 
         logVersion(project)
         continueOpening(project)
@@ -110,16 +124,6 @@ class HybrisProjectStructureStartupActivity : StartupActivity.DumbAware {
         }
     }
 
-    private fun isOldHybrisProject(project: Project): Boolean {
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
-
-        return if (commonIdeaService.isHybrisProject(project)) {
-            commonIdeaService.isOutDatedHybrisProject(project)
-        } else {
-            commonIdeaService.isPotentiallyHybrisProject(project)
-        }
-    }
-
     private fun fixBackOfficeJRebelSupport(project: Project) {
         Validate.notNull(project)
         val jRebelPlugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.JREBEL_PLUGIN_ID))
@@ -128,11 +132,12 @@ class HybrisProjectStructureStartupActivity : StartupActivity.DumbAware {
 
         val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
         val compilingXml = File(
-            FileUtilRt.toSystemDependentName(project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
-                    + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
+            FileUtilRt.toSystemDependentName(
+                project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
+                        + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
             )
         )
-        if (!compilingXml.isFile)  return
+        if (!compilingXml.isFile) return
 
         var content = try {
             IOUtils.toString(FileInputStream(compilingXml), StandardCharsets.UTF_8)

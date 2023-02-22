@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.de/xsd/processdefinition:processElemType interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface Process extends DomElement {
 
 	/**
@@ -58,6 +60,7 @@ public interface Process extends DomElement {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute ("onError")
+	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getOnError();
 
 

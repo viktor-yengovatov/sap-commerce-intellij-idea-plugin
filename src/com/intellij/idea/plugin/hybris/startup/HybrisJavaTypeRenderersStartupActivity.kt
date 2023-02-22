@@ -21,17 +21,19 @@ import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.tree.render.CompoundReferenceRenderer
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
 import com.intellij.idea.plugin.hybris.debugger.ui.tree.render.ModelRenderer
+import com.intellij.openapi.startup.ProjectActivity
 
 /**
  * As for now IDEA does not save icon renderer and full value evaluator with CompoundReferenceRenderer
  * see writeExternal and readExternal methods
  * Due that we have to reset these fields after each start for possible custom [y] renderers
+ *
+ * related issue report: https://youtrack.jetbrains.com/issue/IDEA-312351
  */
-class HybrisJavaTypeRenderersStartupActivity : StartupActivity.DumbAware {
+class HybrisJavaTypeRenderersStartupActivity : ProjectActivity {
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         val rendererSettings = NodeRendererSettings.getInstance()
         val oldRenderers = arrayListOf<CompoundReferenceRenderer>()
         val newRenderers = rendererSettings.getAllRenderers(project)

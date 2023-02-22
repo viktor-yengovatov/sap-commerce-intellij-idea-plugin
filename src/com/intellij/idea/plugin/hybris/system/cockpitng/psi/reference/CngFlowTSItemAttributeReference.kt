@@ -19,9 +19,10 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.AbstractAttributeDeclarationReference
 import com.intellij.psi.PsiElement
 
-class CngFlowTSItemAttributeReference(element: PsiElement) : CngTSItemAttributeReference(element) {
+class CngFlowTSItemAttributeReference(element: PsiElement) : AbstractAttributeDeclarationReference(element) {
 
     override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
 

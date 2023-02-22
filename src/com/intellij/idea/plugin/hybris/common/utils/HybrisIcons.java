@@ -39,7 +39,10 @@ public final class HybrisIcons {
     public static final Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
     public static final Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
     public static final Icon BEAN_FILE = getIcon("/icons/beanIcon.svg");
-    
+
+    public static final Icon IMPEX = getIcon("/icons/impex.svg");
+    public static final Icon FLEXIBLE_SEARCH = getIcon("/icons/flexibleSearch.svg");
+
     public static final Icon HYBRIS = getIcon("/icons/hybrisIcon.svg");
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitng_config.svg");
@@ -52,6 +55,12 @@ public final class HybrisIcons {
     public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
     public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
+
+    public static final Icon EXTENSION_CLOUD = getIcon("/icons/extension-cloud.svg");
+    public static final Icon EXTENSION_PLATFORM = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon EXTENSION_CUSTOM = getIcon("/icons/extension-custom.svg");
+    public static final Icon EXTENSION_EXT = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon EXTENSION_OOTB = getIcon("/icons/hybrisIcon.svg");
 
     public static final Icon WAIT = getIcon("/icons/waitIcon.svg");
     public static final Icon END = getIcon("/icons/endIcon.svg");

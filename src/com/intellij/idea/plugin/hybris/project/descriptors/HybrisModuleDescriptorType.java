@@ -22,5 +22,5 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
  * @author Eugene.Kudelevsky
  */
 public enum HybrisModuleDescriptorType {
-    CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM, ECLIPSE, MAVEN, GRADLE
+    CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM, ECLIPSE, MAVEN, GRADLE, CCV2
 }

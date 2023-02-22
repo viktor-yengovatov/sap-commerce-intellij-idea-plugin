@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "1.12.0"
+    id("org.jetbrains.intellij") version "1.13.1-SNAPSHOT"
 }
 
 sourceSets.main {
@@ -68,8 +68,21 @@ tasks {
         }
     }
 
+    setupDependencies {
+        doLast {
+            // Fixes IDEA-298989.
+            fileTree("$buildDir/instrumented/instrumentCode") { include("**/*Form.class") }.files.forEach { delete(it) }
+        }
+    }
+
+    // TODO: remove before final commit
+    buildSearchableOptions {
+        enabled = false
+    }
+
     runIde {
         jvmArgs = listOf(intellijJvmArgs)
+        maxHeapSize = "3g"
     }
 
     patchPluginXml {
@@ -102,8 +115,8 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:$commonsLang3Version")
     implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
     implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
-    implementation("com.sun.xml.bind:jaxb-impl:4.0.1")
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api:$jakartaXmlBindApiVersion")
+    implementation("com.sun.xml.bind:jaxb-impl:$jaxbImplVersion")
 
     implementation("org.apache.solr:solr-solrj:$solrjVersion") {
         exclude("org.slf4j", "slf4j-api")
