@@ -15,22 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.type.validation
 
-package com.intellij.idea.plugin.hybris.system.type.validation;
-
-import com.intellij.idea.plugin.hybris.system.type.model.Relation;
-import com.intellij.psi.PsiClass;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 
 /**
- * @author Vlad Bozhenok <vladbozhenok@gmail.com>
+ * @author Vlad Bozhenok <vladbozhenok></vladbozhenok>@gmail.com>
  */
-public interface TSRelationsValidation {
+interface ItemsFileValidation {
 
-    boolean validateRelations(@Nullable List<Relation> relationsList, @NotNull Map<String, PsiClass> generatedClasses);
+    fun isFileOutOfDate(file: VirtualFile): Boolean
+    fun showNotification()
 
+    companion object {
+        fun getInstance(project: Project): ItemsFileValidation = project.getService(ItemsFileValidation::class.java)
+    }
 }

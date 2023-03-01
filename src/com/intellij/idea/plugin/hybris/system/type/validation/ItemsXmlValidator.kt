@@ -16,16 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.validation;
+package com.intellij.idea.plugin.hybris.system.type.validation
 
-import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiClass
+import com.intellij.util.xml.DomElement
 
-/**
- * @author Vlad Bozhenok <vladbozhenok@gmail.com>
- */
-public interface ItemsFileValidation {
+interface ItemsXmlValidator<T : DomElement> {
 
-    boolean isFileOutOfDate(@NotNull VirtualFile file);
+    fun validate(dom: List<T>?, psi: Map<String, PsiClass>): Boolean
 
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        fun <T : DomElement> getInstance(project: Project): ItemsXmlValidator<T> = project.getService(ItemsXmlValidator::class.java) as ItemsXmlValidator<T>
+    }
 }
