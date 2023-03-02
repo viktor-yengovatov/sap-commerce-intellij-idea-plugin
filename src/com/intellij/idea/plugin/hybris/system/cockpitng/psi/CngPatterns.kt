@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.MergeAttrTypeKnown
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
@@ -44,7 +46,7 @@ object CngPatterns {
         widgetPattern("targetWidgetId", "move")
     )
 
-    val WIDGET_CONNECTION_WIDGET_ID = XmlPatterns.or (
+    val WIDGET_CONNECTION_WIDGET_ID = XmlPatterns.or(
         widgetPattern("sourceWidgetId", "widget-connection"),
         widgetPattern("targetWidgetId", "widget-connection"),
         widgetPattern("sourceWidgetId", "widget-connection-remove"),
@@ -142,13 +144,35 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
 
+    val CONTEXT_PARENT_NON_ITEM_TYPE = XmlPatterns.xmlAttributeValue()
+        .withAncestor(6, XmlPatterns.xmlTag().withLocalName(CONFIG_ROOT))
+        .withParent(XmlPatterns.xmlAttribute("parent")
+            .withParent(XmlPatterns.xmlTag()
+                .withLocalName(CONFIG_CONTEXT)
+                .withoutAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.TYPE.value)
+                .withoutAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.MODULE.value)
+            )
+        )
+        .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase(Context.PARENT_AUTO, ".")))
+        .inFile(cngConfigFile)
+
+    val CONTEXT_MERGE_BY = PsiXmlUtils.tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, Context.MERGE_BY)
+        .inFile(cngConfigFile)
+
     val ITEM_TYPE = XmlPatterns.or(
-        PsiXmlUtils.tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, "type")
+        PsiXmlUtils.tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, Context.TYPE)
             .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
             .inFile(cngConfigFile),
 
-        PsiXmlUtils.tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, "parent")
-            .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("auto", ".")))
+        XmlPatterns.xmlAttributeValue()
+            .withAncestor(6, XmlPatterns.xmlTag().withLocalName(CONFIG_ROOT))
+            .withParent(XmlPatterns.xmlAttribute("parent")
+                .withParent(XmlPatterns.xmlTag()
+                    .withLocalName(CONFIG_CONTEXT)
+                    .withAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.TYPE.value)
+                )
+            )
+            .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase(Context.PARENT_AUTO, ".")))
             .inFile(cngConfigFile),
 
         attributeValue(

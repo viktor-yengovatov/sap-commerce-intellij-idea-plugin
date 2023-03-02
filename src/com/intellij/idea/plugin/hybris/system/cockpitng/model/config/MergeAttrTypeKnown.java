@@ -28,7 +28,8 @@ public enum MergeAttrTypeKnown implements com.intellij.util.xml.NamedEnum {
     AUTHORITY("authority"),
     PRINCIPAL("principal"),
     TYPE("type"),
-    MODULE("module");
+    MODULE("module"),
+    SOURCE("source");
 
     private final String value;
 

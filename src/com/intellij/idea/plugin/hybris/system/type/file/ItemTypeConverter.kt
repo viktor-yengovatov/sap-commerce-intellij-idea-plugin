@@ -22,13 +22,11 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.psi.PsiElement
 import com.intellij.util.xml.ConvertContext
 
-class ItemTypeConverter : TSConverterBase<ItemType>(ItemType::class.java) {
+open class ItemTypeConverter : TSConverterBase<ItemType>(ItemType::class.java) {
 
     override fun searchForName(name: String, context: ConvertContext, meta: TSMetaModelAccess) = meta.findMetaItemByName(name)
         ?.retrieveDom()
@@ -42,6 +40,6 @@ class ItemTypeConverter : TSConverterBase<ItemType>(ItemType::class.java) {
     override fun createLookupElement(dom: ItemType?) = dom?.code?.stringValue
         ?.let {
             LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.ITEM)
+                .withIcon(HybrisIcons.TS_ITEM)
         }
 }

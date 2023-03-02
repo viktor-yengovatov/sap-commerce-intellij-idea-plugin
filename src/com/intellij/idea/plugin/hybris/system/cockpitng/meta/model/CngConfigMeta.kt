@@ -23,14 +23,9 @@ import io.ktor.util.*
 
 class CngConfigMeta(
     private val myPsiFile: PsiFile,
-    myDom: Config
+    myDom: Config,
+    val contexts: List<CngContextMeta>
 ) : CngMeta<Config>(myPsiFile, myDom) {
-
-    private val myComponents = dom.contexts
-        .mapNotNull { it.component.stringValue }
-        .toSet()
-
-    fun getAllComponents() = myComponents.unmodifiable();
 
     override fun toString() = myPsiFile.name
 

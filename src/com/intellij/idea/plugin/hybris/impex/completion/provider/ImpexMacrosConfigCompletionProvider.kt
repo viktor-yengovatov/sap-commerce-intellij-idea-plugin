@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -46,7 +47,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
                 .mapNotNull { it.key }
                 .map {
                     LookupElementBuilder.create(it)
-                        .withIcon(HybrisIcons.PROPERTY)
+                        .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
                 }
                 .forEach { result.addElement(it) }
         }
@@ -56,20 +57,20 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             val prefix = getPrefix(position)
             val query = position.text
                 .substring(prefix.length)
-                .replace("IntellijIdeaRulezzz", "")
+                .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "")
             ProjectPropertiesUtils.findAutoCompleteProperties(position.project, query)
                 .mapNotNull { it.key }
                 .map { prefix + it }
                 .map {
                     LookupElementBuilder.create(it)
-                        .withIcon(HybrisIcons.PROPERTY)
+                        .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
                 }
                 .forEach { result.addElement(it) }
         }
     }
 
     private fun getQuery(position: PsiElement) = position.text.replace("-", "")
-        .replace("IntellijIdeaRulezzz", "")
+        .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "")
 
     private fun getPrefix(position: PsiElement): String {
         val text = position.text
