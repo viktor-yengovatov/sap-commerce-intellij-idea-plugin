@@ -15,24 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.services;
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramVfsResolver
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFileManager
 
-import com.intellij.idea.plugin.hybris.business.process.jaxb.Process;
-import jakarta.xml.bind.UnmarshalException;
-import org.jetbrains.annotations.NotNull;
+class DefaultBpDiagramVfsResolver : BpDiagramVfsResolver {
 
-import javax.annotation.Nonnull;
-import java.io.File;
+    override fun getQualifiedName(t: BpGraphNode?) = t
+        ?.virtualFile
+        ?.url
 
-/**
- * Created 9:12 PM 02 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface BpJaxbService {
-
-    @Nonnull
-    Process unmarshallBusinessProcessXml(@NotNull File file) throws UnmarshalException;
-
+    override fun resolveElementByFQN(s: String, project: Project) = BpGraphService.getInstance()
+        .buildRootNode(project, VirtualFileManager.getInstance().findFileByUrl(s))
 }

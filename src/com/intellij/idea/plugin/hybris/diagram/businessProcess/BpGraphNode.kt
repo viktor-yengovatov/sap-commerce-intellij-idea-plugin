@@ -15,17 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-package com.intellij.idea.plugin.hybris.diagram.businessProcess;
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.xml.DomElement
 
-import com.intellij.diagram.DiagramVfsResolver;
-import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
-
-/**
- * Created 10:29 PM 02 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface BpDiagramVfsResolver extends DiagramVfsResolver<BpGraphNode> {
-
+interface BpGraphNode {
+    val nodeName: String
+    val navigableElement: DomElement
+    val transitions: MutableMap<String, BpGraphNode>
+    val virtualFile: VirtualFile
+    val process: Process
 }
