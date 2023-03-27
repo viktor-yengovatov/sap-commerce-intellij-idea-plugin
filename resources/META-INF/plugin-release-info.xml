@@ -3,10 +3,10 @@
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
     <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
-    <version>2023.1.0</version>
+    <version>2023.1.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="231.6890.12" until-build="231.*"/>
+    <idea-version since-build="231.8109.90" until-build="231.*"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -24,14 +24,14 @@
 
             <h2>Features:</h2>
             <ul>
-                <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
+                <li>Import of SAP Commerce extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
                 <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
-                <li>Import your custom Eclipse, Maven and Gradle extensions together with Hybris platform.</li>
-                <li>Custom editor for Flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by a single click of a button.</li>
-                <li>Custom editor for Impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
+                <li>Import your custom Eclipse, Maven and Gradle extensions together with SAP Commerce platform.</li>
+                <li>Custom editor for Flexible Search queries with an ability to execute them on a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
+                <li>Custom editor for Impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
                 <li>Custom editor for <code>beans.xml</code> & <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
-                <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
+                <li>Visualization of Business Process, Type System and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
                 <li>Preview for Type and Bean Systems.</li>
                 <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
                 <li>Enhanced project view tree.</li>
@@ -48,7 +48,7 @@
                 <li><a href="https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html">How to Configure Project Environment For Plugin Developers</a></li>
                 <li>We are working with <a href="https://help.github.com/articles/about-pull-requests/">Pull Requests</a>. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.</li>
                 <li>Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name.</li>
-                <li>For additional questions you can send an <a href="mailto:hybrisideaplugin@epam.com">email</a></li>§
+                <li>For additional questions you can send an <a href="mailto:hybrisideaplugin@epam.com">email</a></li>
             </ul>
 
             <h3>Contributors and Developers</h3>
@@ -91,6 +91,74 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.1.2</h3>
+            <ul>
+                <li>Introduced Type System Diagram
+                <ul>
+                    <li><i>Feature:</i> Initial version (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270" target="_blank" rel="nofollow">#270</a>)</li>
+                    <li><i>Feature:</i> Added nodes removal &amp; Reset Exclusions Action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/271" target="_blank" rel="nofollow">#271</a>)</li>
+                    <li><i>Feature:</i> Added Type Name exclusion Node Action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/282" target="_blank" rel="nofollow">#282</a>)</li>
+                    <li><i>Feature:</i> Added Scope support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/272" target="_blank" rel="nofollow">#272</a>)</li>
+                    <li><i>Feature:</i> Added Transitive Dependencies support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/273" target="_blank" rel="nofollow">#273</a>)</li>
+                    <li><i>Feature:</i> Added PartOf edges support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/274" target="_blank" rel="nofollow">#274</a>)</li>
+                    <li><i>Feature:</i> Added Dependencies edges support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/276" target="_blank" rel="nofollow">#276</a>)</li>
+                    <li><i>Feature:</i> Added Node Collapse/Expand actions support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/278" target="_blank" rel="nofollow">#278</a>)</li>
+                    <li><i>Feature:</i> Added possibility to show non-transitive non-Item custom types (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/280" target="_blank" rel="nofollow">#280</a>)</li>
+                    <li><i>Feature:</i> Enhanced tooltip content of the Node (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/281" target="_blank" rel="nofollow">#281</a>)</li>
+                    <li><i>Feature:</i> Improved Diagram settings and added Stop Type names (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/277" target="_blank" rel="nofollow">#277</a>)</li>
+                    <li><i>Feature:</i> Different header background color for Custom Type Nodes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/275" target="_blank" rel="nofollow">#275</a>)</li>
+                    <li><i>Feature:</i> Added Legend MD file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/279" target="_blank" rel="nofollow">#279</a>)</li>
+                </ul>
+                </li>
+                <li>Business Process Diagrams Improvements
+                    <ul>
+                        <li><i>Feature:</i> Added node properties (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/267" target="_blank" rel="nofollow">#267</a>)</li>
+                        <li><i>Feature:</i> Added edge coloring (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265" target="_blank" rel="nofollow">#265</a>)</li>
+                        <li><i>Feature:</i> Added cycle edges coloring (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266" target="_blank" rel="nofollow">#266</a>)</li>
+                        <li><i>Feature:</i> Added Context Parameters node (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/283" target="_blank" rel="nofollow">#283</a>)</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Added node type specific icons for Business Process code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/296" target="_blank" rel="nofollow">#296</a>)</li>
+                <li><i>Feature:</i> Added navigation to generated Item and Enum classes from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/284" target="_blank" rel="nofollow">#284</a>)</li>
+                <li><i>Feature:</i> Added navigation to generated Enum Values fields from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/285" target="_blank" rel="nofollow">#285</a>)</li>
+                <li><i>Feature:</i> Improved PSI cache usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/258" target="_blank" rel="nofollow">#258</a>)</li>
+                <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
+                <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>
+                <li><i>Feature:</i> Added "collapse all"/"expand all" actions for TS and BS views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262" target="_blank" rel="nofollow">#262</a>)</li>
+                <li><i>Feature:</i> Added <code>sld.enabled</code> modifier support for Impex type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290" target="_blank" rel="nofollow">#290</a>)</li>
+                <li><i>Feature:</i> Added Line Marker Provider settings and unified API usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/294" target="_blank" rel="nofollow">#294</a>)</li>
+                <li><i>Feature:</i> Added navigation to Bean siblings in the <code>beans.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/295" target="_blank" rel="nofollow">#295</a>)</li>
+                <li><i>Feature:</i> Added new <strong>Flexible Search</strong> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264" target="_blank" rel="nofollow">#264</a>)
+                    <ul>
+                        <li>Item Type is not defined</li>
+                        <li>Attribute is not defined</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules
+                    <ul>
+                        <li>Type modifier is unknown (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/291" target="_blank" rel="nofollow">#291</a>)</li>
+                        <li>Attribute modifier is unknown (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/292" target="_blank" rel="nofollow">#292</a>)</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
+                    <ul>
+                        <li>Deployment tag must not be declared for one-to-many relation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/289" target="_blank" rel="nofollow">#289</a>)</li>
+                        <li>Deployment table name must not exceed max length <code>deployment.tablename.maxlength</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/293" target="_blank" rel="nofollow">#293</a>)</li>
+                    </ul>
+                </li>
+                <li><i>Bug Fix:</i> Console is not releasing Document on Project dispose (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/260" target="_blank" rel="nofollow">#260</a>)</li>
+                <li><i>Bug Fix:</i> Fixed Ant targets registration after Project Refresh</li>
+                <li><i>Bug Fix:</i> Fixed Type System Item extends identification</li>
+                <li><i>Other:</i> Improved cleanup on Project dispose</li>
+                <li><i>Other:</i> Added registration of the latest Ant targets</li>
+                <li><i>Other:</i> Added custom module icons</li>
+                <li><i>Other:</i> Removed Business Process JAXB mapping</li>
+                <li><i>Other:</i> Migrated Business Process Diagram generation to Kotlin</li>
+                <li><i>Other:</i> Migrated Module Dependencies Diagram generation to Kotlin</li>
+                <li><i>Other:</i> Updated to Kotlin 1.8</li>
+                <li><i>Other:</i> Updated to Gradle plugin to 1.13.2</li>
+                <li><i>Other:</i> Removed custom <code>rt-ant</code> support, it did not work at all</li>
+            </ul>
             <h3>2023.1.1</h3>
             <ul>
                 <li><i>Feature:</i> Added possibility to import CCv2 folders as modules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/238" target="_blank" rel="nofollow">#238</a>)</li>

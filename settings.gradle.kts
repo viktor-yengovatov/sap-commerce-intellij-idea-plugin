@@ -17,11 +17,10 @@
  */
 
 rootProject.name = "SAP-Commerce-Developers-Toolset"
-include("rt-ant")
 
-pluginManagement {
-    repositories {
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        gradlePluginPortal()
-    }
-}
+//pluginManagement {
+//    repositories {
+//        maven("https://oss.sonatype.org/content/repositories/snapshots/")
+//        gradlePluginPortal()
+//    }
+//}

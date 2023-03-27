@@ -21,10 +21,11 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.Version
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.*
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
@@ -49,24 +50,24 @@ class DefaultCommonIdeaService : CommonIdeaService {
     private val commandProcessor: CommandProcessor = CommandProcessor.getInstance()
     override fun isTypingActionInProgress(): Boolean {
         val isTyping = StringUtils.equalsAnyIgnoreCase(
-                commandProcessor.currentCommandName, *HybrisConstants.TYPING_EDITOR_ACTIONS
+            commandProcessor.currentCommandName, *HybrisConstants.TYPING_EDITOR_ACTIONS
         )
         val isUndoOrRedo = StringUtils.startsWithAny(
-                commandProcessor.currentCommandName, *HybrisConstants.UNDO_REDO_EDITOR_ACTIONS
+            commandProcessor.currentCommandName, *HybrisConstants.UNDO_REDO_EDITOR_ACTIONS
         )
         return isTyping || isUndoOrRedo
     }
 
     override fun getHybrisDirectory(project: Project): Optional<String> {
         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-                .map { it.state}
-                .map { it.hybrisDirectory }
+            .map { it.state }
+            .map { it.hybrisDirectory }
     }
 
     override fun getCustomDirectory(project: Project): Optional<String> {
         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-                .map { it.state }
-                .map { it.customDirectory }
+            .map { it.state }
+            .map { it.customDirectory }
     }
 
     override fun isHybrisProject(project: Project): Boolean {
@@ -76,7 +77,8 @@ class DefaultCommonIdeaService : CommonIdeaService {
     override fun isOutDatedHybrisProject(project: Project): Boolean {
         val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
         val lastImportVersion = hybrisProjectSettings.importedByVersion ?: return true
-        val currentVersion = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))?.version ?: return true
+        val currentVersion = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))?.version
+            ?: return true
 
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
@@ -99,23 +101,23 @@ class DefaultCommonIdeaService : CommonIdeaService {
         return matchAllModuleNames(webservicesNames, moduleNames)
     }
 
-    override fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformHybrisModuleDescriptor {
+    override fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformHybrisModuleDescriptor? {
         return hybrisProjectDescriptor.foundModules
-                .first { e: HybrisModuleDescriptor? -> e is PlatformHybrisModuleDescriptor } as PlatformHybrisModuleDescriptor
+            .firstNotNullOfOrNull { it as? PlatformHybrisModuleDescriptor }
     }
 
     override fun getActiveHacUrl(project: Project): String {
         return HybrisDeveloperSpecificProjectSettingsComponent
-                .getInstance(project)
-                .getActiveHacRemoteConnectionSettings(project)
-                .let { getUrl(it) }
+            .getInstance(project)
+            .getActiveHacRemoteConnectionSettings(project)
+            .let { getUrl(it) }
     }
 
     override fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?): String {
         var mySettings = settings
         if (mySettings == null) {
             mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-                    .getActiveHacRemoteConnectionSettings(project)
+                .getActiveHacRemoteConnectionSettings(project)
         }
         return mySettings?.sslProtocol ?: HybrisConstants.DEFAULT_SSL_PROTOCOL
     }
@@ -124,7 +126,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         var mySettings = settings
         if (mySettings == null) {
             mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-                    .getActiveHacRemoteConnectionSettings(project)
+                .getActiveHacRemoteConnectionSettings(project)
         }
         return getUrl(mySettings)
     }
@@ -134,7 +136,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         val sb = StringBuilder()
         if (mySettings == null) {
             mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-                    .getActiveSolrRemoteConnectionSettings(project)
+                .getActiveSolrRemoteConnectionSettings(project)
         }
         if (mySettings!!.isSsl) {
             sb.append(HybrisConstants.HTTPS_PROTOCOL)
@@ -171,23 +173,21 @@ class DefaultCommonIdeaService : CommonIdeaService {
     override fun fixRemoteConnectionSettings(project: Project) {
         val settingsComponent = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
         val state = settingsComponent.state
-        if (state != null) {
-            val connectionList = state.remoteConnectionSettingsList
-            connectionList.forEach(Consumer {
-                prepareSslRemoteConnectionSettings(it)
-            })
+        val connectionList = state.remoteConnectionSettingsList
+        connectionList.forEach(Consumer {
+            prepareSslRemoteConnectionSettings(it)
+        })
 
-            if (settingsComponent.hacRemoteConnectionSettings.isEmpty()) {
-                val newSettings = settingsComponent.getDefaultHacRemoteConnectionSettings(project)
-                connectionList.add(newSettings)
-                state.activeRemoteConnectionID = newSettings.uuid
-            }
+        if (settingsComponent.hacRemoteConnectionSettings.isEmpty()) {
+            val newSettings = settingsComponent.getDefaultHacRemoteConnectionSettings(project)
+            connectionList.add(newSettings)
+            state.activeRemoteConnectionID = newSettings.uuid
+        }
 
-            if (settingsComponent.solrRemoteConnectionSettings.isEmpty()) {
-                val newSettings = settingsComponent.getDefaultSolrRemoteConnectionSettings(project)
-                connectionList.add(newSettings)
-                state.activeSolrConnectionID = newSettings.uuid
-            }
+        if (settingsComponent.solrRemoteConnectionSettings.isEmpty()) {
+            val newSettings = settingsComponent.getDefaultSolrRemoteConnectionSettings(project)
+            connectionList.add(newSettings)
+            state.activeSolrConnectionID = newSettings.uuid
         }
     }
 
@@ -223,18 +223,18 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     private fun matchAllModuleNames(
-            namePatterns: Collection<String>,
-            moduleNames: Collection<String>
+        namePatterns: Collection<String>,
+        moduleNames: Collection<String>
     ): Boolean {
         return namePatterns.stream()
-                .allMatch { pattern: String -> matchModuleName(pattern, moduleNames) }
+            .allMatch { pattern: String -> matchModuleName(pattern, moduleNames) }
     }
 
     private fun matchModuleName(pattern: String, moduleNames: Collection<String>): Boolean {
         val regex = Regex("\\Q$pattern\\E".replace("*", "\\E.*\\Q"))
         return moduleNames.stream()
-                .parallel()
-                .anyMatch { p: String -> p.matches(regex) }
+            .parallel()
+            .anyMatch { p: String -> p.matches(regex) }
     }
 
     private fun getUrl(settings: HybrisRemoteConnectionSettings?): String {

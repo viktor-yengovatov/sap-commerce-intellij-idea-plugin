@@ -37,37 +37,30 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class ImpexUnknownTypeAttributeInspection : LocalInspectionTool() {
-    override fun getDefaultLevel(): HighlightDisplayLevel {
-        return HighlightDisplayLevel.ERROR
-    }
+    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder)
-}
 
-private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
-    override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
-        if (isNotMacros(parameter) && isNotDocumentId(parameter.firstChild)) {
-            val references = parameter.references
-            if (references.isNotEmpty()) {
-                val firstReference = references.first()
-                if (!firstReference.canonicalText.contains(".") && firstReference is TSReferenceBase<*>) {
-                    val result = firstReference.multiResolve(false)
+    private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+        override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
+            if (!isNotMacros(parameter) || !isNotDocumentId(parameter.firstChild)) return
 
-                    if (result.isEmpty()) {
-                        val typeName = findHeaderItemTypeName(parameter)
-                            .map { it.text }
-                            .orElse("")
-                        problemsHolder.registerProblem(
-                            parameter,
-                            message("hybris.inspections.impex.ImpexUnknownTypeAttributeInspection.key", parameter.text, typeName),
-                            ProblemHighlightType.ERROR)
-                    }
-                }
-            }
+            val firstReference = parameter.references.firstOrNull() ?: return
+
+            if (firstReference.canonicalText.contains(".")) return
+            if (firstReference !is TSReferenceBase<*>) return
+            if (firstReference.multiResolve(false).isNotEmpty()) return
+
+            val typeName = findHeaderItemTypeName(parameter)
+                ?.text
+                ?: "?"
+            problemsHolder.registerProblem(
+                parameter,
+                message("hybris.inspections.UnknownTypeAttributeInspection.key", parameter.text, typeName),
+                ProblemHighlightType.ERROR)
         }
+
+        private fun isNotMacros(parameter: ImpexAnyHeaderParameterName) = parameter.firstChild !is ImpexMacroUsageDec
+
+        private fun isNotDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType != DOCUMENT_ID
     }
-
-
-    private fun isNotMacros(parameter: ImpexAnyHeaderParameterName) = parameter.firstChild !is ImpexMacroUsageDec
-
-    private fun isNotDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType != DOCUMENT_ID
 }

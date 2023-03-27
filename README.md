@@ -1,5 +1,6 @@
 [![Email](https://img.shields.io/badge/Help-Contact%20us-blue)](mailto:hybrisideaplugin@epam.com)
 [![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)](https://plugins.jetbrains.com/docs/intellij)
+[![JetBrains IntelliJ Platform SDK Samples](https://img.shields.io/badge/JB-SDK%20samples-lightgreen)](https://github.com/JetBrains/intellij-sdk-code-samples)
 
 ![Rating](https://img.shields.io/jetbrains/plugin/r/rating/12867-sap-commerce-developers-toolset)
 ![Downloads](https://img.shields.io/jetbrains/plugin/d/12867-sap-commerce-developers-toolset)
@@ -8,6 +9,10 @@
 ## SAP Commerce Developers Toolset ##
 
 This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
+
+## Documentation
+
+* [Type System Diagram Legend](docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md)
 
 ## Contribution guidelines ##
 

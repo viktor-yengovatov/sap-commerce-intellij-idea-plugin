@@ -18,7 +18,10 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.system.type.meta.*
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelMerger
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
 import com.intellij.openapi.progress.ProgressManager
@@ -27,7 +30,9 @@ import com.intellij.util.xml.DomElement
 
 class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
-    override fun merge(localMetaModels: Collection<TSMetaModel>) = with(TSGlobalMetaModel()) {
+    override fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>) = with(globalMetaModel) {
+        globalMetaModel.clear()
+
         ProgressManager.getInstance().progressIndicator.text2 = message("hybris.ts.access.progress.subTitle.merging")
 
         localMetaModels
@@ -43,19 +48,25 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
         // after merging all different declarations of the same time we may need to process properties which can be overridden via extends
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
-            .filter { it is TSGlobalMetaItemSelfMerge<*, *>}
-            .forEach { (it as TSGlobalMetaItemSelfMerge<*, *>).postMerge(this) }
+            .forEach { (it as? TSGlobalMetaItemSelfMerge<*, *>)?.postMerge(this) }
 
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .flatMap { it.allAttributes }
             .filter { it.type != null }
             .forEach { it.flattenType = TSMetaHelper.flattenType(it.type!!, allTypes) }
 
+        // to properly propagate `isCustom` flag we need to check every relation end defined for non directly modified Item Types
+        // if at least one relation end is custom Item Type will be marked as custom too
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
-            .flatMap { it.allRelationEnds }
-            .forEach { it.flattenType = TSMetaHelper.flattenType(TSMetaHelper.flattenType(it), allTypes) }
+            .filterNot { it.isCustom }
+            .filter { it.allRelationEnds.any { relationEnd -> relationEnd.isCustom } }
+            .forEach { it.isCustom = true }
 
-        this
+        getMetaType<TSGlobalMetaRelation>(TSMetaType.META_RELATION).values
+            .forEach {
+                it.source.flattenType = TSMetaHelper.flattenType(TSMetaHelper.flattenType(it.source), allTypes)
+                it.target.flattenType = TSMetaHelper.flattenType(TSMetaHelper.flattenType(it.target), allTypes)
+            }
     }
 
     @Suppress("UNCHECKED_CAST")

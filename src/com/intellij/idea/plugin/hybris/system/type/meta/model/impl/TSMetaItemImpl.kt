@@ -23,7 +23,10 @@ import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive.Cas
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemIndex
-import com.intellij.idea.plugin.hybris.system.type.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
+import com.intellij.idea.plugin.hybris.system.type.model.CreationMode
+import com.intellij.idea.plugin.hybris.system.type.model.Index
+import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
@@ -33,7 +36,7 @@ internal class TSMetaItemImpl(
     dom: ItemType,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean,
+    override var isCustom: Boolean,
     override val attributes: Map<String, TSMetaItemAttribute>,
     override val indexes: Map<String, TSMetaItemIndex>,
     override val customProperties: Map<String, TSMetaCustomProperty>,
@@ -57,7 +60,7 @@ internal class TSMetaItemImpl(
         dom: Index,
         override val module: Module,
         override val name: String,
-        override val isCustom: Boolean
+        override var isCustom: Boolean
     ) : TSMetaItemIndex {
 
         override val domAnchor: DomAnchor<Index> = DomService.getInstance().createAnchor(dom)
@@ -79,7 +82,7 @@ internal class TSMetaItemImpl(
         dom: Attribute,
         override val module: Module,
         override val name: String,
-        override val isCustom: Boolean,
+        override var isCustom: Boolean,
         override val persistence: TSMetaPersistence,
         override val modifiers: TSMetaModifiers,
         override val customProperties: Map<String, TSMetaCustomProperty>
@@ -108,6 +111,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     override val attributes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
     override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
     override val indexes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemIndex>()
+    override val relationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
 
     override val allAttributes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
     override val allIndexes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemIndex>()
@@ -140,30 +144,28 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     @Suppress("UNCHECKED_CAST")
     private fun mergeAttributes(localMeta: TSMetaItem) = localMeta.attributes.values.forEach {
         val globalAttribute = this.attributes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemAttributeImpl(it)}
-        if (globalAttribute is TSMetaSelfMerge<*, *>) {
-            (globalAttribute as TSMetaSelfMerge<Attribute, TSMetaItemAttribute>).merge(it)
-        }
+        (globalAttribute as? TSMetaSelfMerge<Attribute, TSMetaItemAttribute>)?.merge(it)
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun mergeIndexes(localMeta: TSMetaItem) = localMeta.indexes.values.forEach {
         val globalIndex = this.indexes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemIndexImpl(it) }
-        if (globalIndex is TSMetaSelfMerge<*, *>) {
-            (globalIndex as TSMetaSelfMerge<Index, TSMetaItemIndex>).merge(it)
-        }
+        (globalIndex as? TSMetaSelfMerge<Index, TSMetaItemIndex>)?.merge(it)
     }
 
     private fun mergeCustomProperties(localMeta: TSMetaItem) = customProperties.putAll(localMeta.customProperties)
 
     override fun postMerge(globalMetaModel: TSGlobalMetaModel) {
         val extends = TSMetaHelper.getAllExtends(globalMetaModel, this)
-        val relationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)
+        val currentRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, emptySet())
+        val combinedRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)
 
         allExtends.addAll(extends)
         allAttributes.addAll(attributes.values + extends.flatMap { it.attributes.values })
         allCustomProperties.addAll(customProperties.values + extends.flatMap { it.customProperties.values })
         allIndexes.addAll(indexes.values + extends.flatMap { it.indexes.values })
-        allRelationEnds.addAll(relationEnds)
+        allRelationEnds.addAll(combinedRelationEnds)
+        relationEnds.addAll(currentRelationEnds)
 
         if (!isCatalogAware) {
             isCatalogAware = extends.any { it.isCatalogAware }

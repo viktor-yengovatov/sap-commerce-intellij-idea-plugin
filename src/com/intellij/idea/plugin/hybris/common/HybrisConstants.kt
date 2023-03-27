@@ -75,7 +75,6 @@ object HybrisConstants {
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
     const val EXTENSIONS_XML = "extensions.xml"
-    const val BUSINESS_PROCESS_XML = "process.xml"
     const val COCKPIT_NG_CONFIG_XML = "-config.xml"
     const val COCKPIT_NG_WIDGETS_XML = "-widgets.xml"
     const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
@@ -117,7 +116,6 @@ object HybrisConstants {
 
     const val HMC_MODULE_DIRECTORY = "hmc"
     const val HAC_MODULE_DIRECTORY = "hac"
-    const val HAC_WEBROOT_KEY = "hac.webroot"
 
     const val WEB_MODULE_DIRECTORY = "web"
     const val ADDON_SRC_DIRECTORY = "addonsrc"
@@ -150,7 +148,6 @@ object HybrisConstants {
     const val STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS = "hybrisDeveloperSpecificProjectSettings.xml"
     const val STORAGE_HYBRIS_TS_VIEW = "hybrisTypeSystemViewSettings.xml"
     const val STORAGE_HYBRIS_BS_VIEW = "hybrisBeanSystemViewSettings.xml"
-    const val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files"
     const val PLUGIN_ID = "com.intellij.idea.plugin.sap.commerce"
     const val JREBEL_PLUGIN_ID = "JRebelPlugin"
     const val CONFIGURATOR_FACTORY_ID = "$PLUGIN_ID.hybrisConfiguratorFactory"
@@ -162,11 +159,17 @@ object HybrisConstants {
 
     const val DEBUG_PORT = "8000"
 
-    const val TOMCAT_SSL_PORT_KEY = "tomcat.ssl.port"
-    const val TOMCAT_HTTP_PORT_KEY = "tomcat.http.port"
-    const val SOLR_DEFAULT_PORT_KEY = "solrserver.instances.default.port"
-    const val SOLR_DEFAULT_USER_KEY = "solrserver.instances.default.user"
-    const val SOLR_DEFAULT_PASSWORD_KEY = "solrserver.instances.default.password"
+    const val PROPERTY_HAC_WEBROOT = "hac.webroot"
+    const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
+    const val PROPERTY_TOMCAT_HTTP_PORT = "tomcat.http.port"
+    const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
+    const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
+    const val PROPERTY_SOLR_DEFAULT_PASSWORD = "solrserver.instances.default.password"
+    const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
+    const val PROPERTY_BUILD_COMPILER = "build.compiler"
+    const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
+
+    const val DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH = 24
 
     const val DEFAULT_HOST_URL = "localhost"
     const val DEFAULT_SSL_PROTOCOL = "TLSv1.2"
@@ -192,9 +195,10 @@ object HybrisConstants {
     const val ANT_STACK_SIZE_MB = 128
 
     const val TS_TYPE_OBJECT = "java.lang.Object"
-    const val TS_TYPE_ITEM = "GenericItem"
-    const val TS_TYPE_GENERIC_ITEM = "Item"
+    const val TS_TYPE_ITEM = "Item"
+    const val TS_TYPE_GENERIC_ITEM = "GenericItem"
     const val TS_TYPE_LOCALIZABLE_ITEM = "LocalizableItem"
+    const val TS_TYPE_EXTENSIBLE_ITEM = "ExtensibleItem"
     const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
     const val TS_TYPE_LINK = "Link"
@@ -232,10 +236,13 @@ object HybrisConstants {
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
-    const val BUILD_COMPILER_KEY = "build.compiler"
     const val CLASS_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
+    const val CLASS_ANNOTATION_ACCESSOR = "de.hybris.bootstrap.annotations.Accessor"
+    const val CLASS_CONFIG_IMPORT_PROCESSOR = "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor"
+    const val CLASS_CONVERTER = "de.hybris.platform.servicelayer.dto.converter.Converter"
+    const val CLASS_POPULATOR = "de.hybris.platform.converters.Populator"
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
     const val SOURCE_ATTRIBUTE_NAME = "source"
@@ -243,7 +250,6 @@ object HybrisConstants {
     const val CODE_ATTRIBUTE_NAME = "code"
     const val NAME_ATTRIBUTE_NAME = "name"
     const val DICTIONARY_NAME = "hybris_integration"
-    const val OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir"
     const val DIALOG_TITLE = "hybris.copy.file.dialog."
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
 
@@ -279,6 +285,9 @@ object HybrisConstants {
     const val IMPEX_CLASS_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
     const val IMPEX_CLASS_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
     const val IMPEX_CLASS_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
+
+    @JvmField
+    val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = FileUtilRt.toSystemDependentName("/.idea/idea-modules")
 
     @JvmField
     val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
@@ -325,7 +334,7 @@ object HybrisConstants {
     @JvmField
     val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
     @JvmField
-    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/$DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES")
+    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
     @JvmField
     val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
     @JvmField

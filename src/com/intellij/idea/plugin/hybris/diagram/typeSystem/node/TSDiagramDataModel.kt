@@ -19,86 +19,75 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 
 import com.intellij.diagram.DiagramDataModel
-import com.intellij.diagram.DiagramEdge
 import com.intellij.diagram.DiagramNode
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import org.jetbrains.annotations.Contract
 
-class TSDiagramDataModel(myProject: Project, val root: TSGraphItem, provider: TSDiagramProvider) :
-    DiagramDataModel<TSGraphItem>(myProject, provider) {
+/**
+ * We need to override addElement method to ensure that Node will be re-added when Type System Diagram generated from the DiagramState (2nd+ generation)
+ */
+class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
+    : DiagramDataModel<TSGraphNode>(myProject, provider) {
 
-    private val myNodes: MutableMap<String, TSGraphNode> = hashMapOf()
-    private val myEdges: MutableSet<TSDiagramEdge> = mutableSetOf()
+    private val edges: MutableCollection<TSDiagramEdge> = mutableSetOf()
+    private val nodesMap: MutableMap<String, TSDiagramNode> = mutableMapOf()
+    val everShownNodes: MutableSet<String> = mutableSetOf()
+    val removedNodes: MutableSet<String> = mutableSetOf()
+    val collapsedNodes: MutableSet<String> = mutableSetOf()
+
+    @Contract(pure = true)
+    override fun getModificationTracker() = createModificationTracker()
+    override fun isDependencyDiagramSupported() = true
+    override fun getNodes() = nodesMap.values
+    override fun getEdges() = edges
+    override fun collapseNode(node: DiagramNode<TSGraphNode>) {
+        collapsedNodes.add(node.identifyingElement.name)
+        node.identifyingElement.collapsed = true
+    }
+
+    override fun expandNode(node: DiagramNode<TSGraphNode>) {
+        collapsedNodes.remove(node.identifyingElement.name)
+        node.identifyingElement.collapsed = false
+    }
+
+    override fun getNodeName(diagramNode: DiagramNode<TSGraphNode>) = diagramNode.identifyingElement.name
+
+    override fun addElement(node: TSGraphNode?): DiagramNode<TSGraphNode>? {
+        removedNodes.remove(node?.name)
+
+        return nodesMap[node?.name]
+    }
+
+    override fun removeNode(node: DiagramNode<TSGraphNode>) {
+        val name = node.identifyingElement.name
+        if (nodesMap.containsKey(name)) {
+            removedNodes.add(name)
+        }
+    }
+
+    override fun refreshDataModel() = DumbService.getInstance(myProject).runReadActionInSmartMode {
+        TSDiagramRefresher.refresh(this, nodesMap, edges)
+        this.incModificationCount()
+    }
+
+    fun collapseAllNodes() {
+        collapsedNodes.clear()
+        nodes.forEach { collapseNode(it) }
+    }
+
+    fun expandAllNodes() {
+        nodes.forEach { expandNode(it) }
+    }
 
     override fun dispose() {
-        myEdges.clear()
-        myNodes.clear()
-    }
-
-    override fun getNodes(): Collection<TSGraphNode> = myNodes.values
-
-    override fun getEdges() = myEdges
-
-    override fun getModificationTracker() = this
-
-    override fun addElement(item: TSGraphItem?) = null
-
-    override fun createEdge(from: DiagramNode<TSGraphItem>, to: DiagramNode<TSGraphItem>): DiagramEdge<TSGraphItem>? {
-        return super.createEdge(from, to)
-    }
-
-    override fun getNodeName(node: DiagramNode<TSGraphItem>) = node.identifyingElement.meta?.name ?: "root node"
-
-    override fun refreshDataModel() {
-        myEdges.clear()
-        myNodes.clear()
-
-        TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .values
-            .filter { it.name != null }
-            .filter { it.isCustom }
-            .forEach {
-                myNodes[it.name!!.lowercase()] = TSGraphNode(TSGraphItem(it), provider)
-            }
-
-        myNodes.values
-            .filter { it.item.meta?.name != null }
-            .forEach { sourceNode ->
-                when (val meta = sourceNode.item.meta) {
-                    is TSGlobalMetaItem -> {
-                        processEdge(meta, sourceNode)
-                    }
-                }
-            }
-    }
-
-    private fun processEdge(
-        meta: TSGlobalMetaItem,
-        sourceNode: TSGraphNode
-    ) {
-        val extendsName = meta.extendedMetaItemName?.lowercase() ?: HybrisConstants.TS_TYPE_ITEM.lowercase()
-        var targetNode = myNodes[extendsName]
-
-        if (targetNode == null) {
-            val extendsMeta = TSMetaModelAccess.getInstance(project).findMetaItemByName(extendsName)
-
-            if (extendsMeta?.name != null) {
-                targetNode = TSGraphNode(TSGraphItem(extendsMeta), provider)
-                myNodes[extendsMeta.name!!.lowercase()] = targetNode
-
-                if (extendsName != HybrisConstants.TS_TYPE_ITEM.lowercase()) {
-                    processEdge(extendsMeta, targetNode)
-                }
-            }
-        }
-
-        if (targetNode != null) {
-            myEdges.add(TSDiagramEdge(sourceNode, targetNode, TSDiagramRelationship("extends")))
-        }
+        edges.clear()
+        nodesMap.clear()
+        removedNodes.clear()
+        collapsedNodes.clear()
+        everShownNodes.clear()
     }
 
     companion object {

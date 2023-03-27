@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
@@ -62,8 +63,12 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     private fun installToolbar() {
+        val actionsManager = CommonActionsManager.getInstance()
         val toolbar = with(DefaultActionGroup()) {
             add(myItemsViewActionGroup)
+            addSeparator()
+            add(actionsManager.createExpandAllHeaderAction(myTreePane.tree))
+            add(actionsManager.createCollapseAllHeaderAction(myTreePane.tree))
             ActionManager.getInstance().createActionToolbar("HybrisTSView", this, false)
         }
         toolbar.targetComponent = this
@@ -71,16 +76,18 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     private fun installSettingsListener() {
-        myProject.messageBus.connect(this).subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
-            override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
-                myTreePane.update(changeType)
-            }
-        })
-        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
-            override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                refreshContent()
-            }
-        })
+        with(myProject.messageBus.connect(this)) {
+            subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
+                override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
+                    myTreePane.update(changeType)
+                }
+            })
+            subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
+                override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
+                    refreshContent()
+                }
+            })
+        }
     }
 
     private fun refreshContent() {

@@ -33,6 +33,7 @@ import java.awt.Rectangle
 import javax.swing.JTable
 import javax.swing.table.TableColumn
 
+@Suppress("UNCHECKED_CAST")
 abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTable() {
 
     fun init() {
@@ -52,15 +53,18 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
             .forEach { setFixedColumnWidth(getColumn(it), this, it) }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun updateModel(owner: Owner) {
-        if (model is ListTableModel<*>) {
-            (model as ListTableModel<Item>).items = getItems(owner)
-        }
+        val listTableModel = model as? ListTableModel<Item> ?: return
+        listTableModel.items = getItems(owner)
     }
 
-    abstract fun select(meta: Item)
-    protected abstract fun getItems(meta: Owner): List<Item>
+    fun getItems(): List<Item> = (model as? ListTableModel<Item>)?.items
+        ?: emptyList()
+
+    fun getCastedModel() = model as? ListTableModel<Item>
+
+    abstract fun select(item: Item)
+    protected abstract fun getItems(owner: Owner): MutableList<Item>
     protected abstract fun createModel(): ListTableModel<Item>
     protected open fun getSearchableColumnNames(): List<String> = emptyList()
     protected open fun getFixedWidthColumnNames(): List<String> = emptyList()
@@ -82,16 +86,20 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
         name: String,
         valueProvider: (Item) -> Any?,
         columnClass: Class<*> = String::class.java,
-        tooltip: String? = null
+        tooltip: String? = null,
+        isCellEditable: Boolean = false,
+        valueSetter: ((Item, Any?) -> Unit)? = null,
     ) = object : ColumnInfo<Item, Any>(name) {
         override fun valueOf(item: Item) = valueProvider.invoke(item)
-        override fun isCellEditable(item: Item) = false
+        override fun isCellEditable(item: Item) = isCellEditable
         override fun getColumnClass(): Class<*> = columnClass
         override fun getTooltipText(): String? = tooltip
-//            override fun setValue(item: TSMetaAttribute, value: String) = property.set(item, value)
+        override fun setValue(item: Item, value: Any?) {
+            valueSetter?.invoke(item, value)
+        }
     }
 
-    private fun setFixedColumnWidth(column: TableColumn, table : JTable, text: String) = with(column) {
+    private fun setFixedColumnWidth(column: TableColumn, table: JTable, text: String) = with(column) {
         val width = table
             .getFontMetrics(table.font)
             .stringWidth(" $text ") + JBUIScale.scale(4)

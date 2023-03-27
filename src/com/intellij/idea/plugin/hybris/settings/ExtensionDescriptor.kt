@@ -21,13 +21,13 @@ package com.intellij.idea.plugin.hybris.settings
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 
 data class ExtensionDescriptor(
-        var name: String = "",
-        var type: HybrisModuleDescriptorType? = null,
-        var backofficeModule: Boolean = false,
-        var hacModule: Boolean = false,
-        var deprecated: Boolean = false,
-        var extGenTemplateExtension: Boolean = false,
-        var addon: Boolean = false,
-        var classPathGen: String? = null,
-        var moduleGenName: String? = null,
+    var name: String = "",
+    var type: HybrisModuleDescriptorType = HybrisModuleDescriptorType.NONE,
+    var backofficeModule: Boolean = false,
+    var hacModule: Boolean = false,
+    var deprecated: Boolean = false,
+    var extGenTemplateExtension: Boolean = false,
+    var addon: Boolean = false,
+    var classPathGen: String? = null,
+    var moduleGenName: String? = null,
 )

@@ -32,33 +32,27 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
-    override fun getDefaultLevel(): HighlightDisplayLevel {
-        return HighlightDisplayLevel.ERROR
-    }
-
+    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderTypeVisitor(holder)
-}
 
-private class ImpexHeaderTypeVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+    private class ImpexHeaderTypeVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
 
-    override fun visitHeaderTypeName(parameter: ImpexHeaderTypeName) {
-        if (isDocumentId(parameter.firstChild)) return
+        override fun visitHeaderTypeName(parameter: ImpexHeaderTypeName) {
+            if (isDocumentId(parameter.firstChild)) return
 
-        val references = parameter.references
-        if (references.isEmpty()) return
+            val firstReference = parameter.references.firstOrNull() ?: return
+            if (firstReference !is TSReferenceBase<*>) return
 
-        val firstReference = references.firstOrNull() ?: return
-        if (firstReference !is TSReferenceBase<*>) return
+            val result = firstReference.multiResolve(false)
+            if (result.isNotEmpty()) return
 
-        val result = firstReference.multiResolve(false)
-        if (result.isNotEmpty()) return
+            problemsHolder.registerProblem(
+                parameter,
+                HybrisI18NBundleUtils.message("hybris.inspections.UnknownTypeNameInspection.key", parameter.text),
+                ProblemHighlightType.ERROR
+            )
+        }
 
-        problemsHolder.registerProblem(
-            parameter,
-            HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexUnknownTypeNameInspection.key", parameter.text),
-            ProblemHighlightType.ERROR
-        )
+        private fun isDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType == ImpexTypes.DOCUMENT_ID
     }
-
-    private fun isDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType == ImpexTypes.DOCUMENT_ID
 }
