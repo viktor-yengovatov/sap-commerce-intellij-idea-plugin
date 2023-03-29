@@ -19,15 +19,14 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteAttributeQuickFix
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSListsInRelationShouldBeAvoided : AbstractTSInspection() {
-
+class TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse : AbstractTSInspection() {
     override fun inspect(
         project: Project,
         dom: Items,
@@ -35,26 +34,38 @@ class TSListsInRelationShouldBeAvoided : AbstractTSInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        dom.relations.elements.forEach { check(it, holder, severity) }
+        dom.relations.relations
+            .filter { it.sourceElement.cardinality === Cardinality.MANY && it.targetElement.cardinality === Cardinality.MANY }
+            .filter { !it.sourceElement.navigable || !it.targetElement.navigable }
+            .forEach {
+                checkNonNavigable(it.sourceElement, holder, severity)
+                checkNonNavigable(it.targetElement, holder, severity)
+            }
     }
 
-    private fun check(
-        relation: RelationElement,
+    private fun checkNonNavigable(
+        relationElement: RelationElement,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity
+        severity: HighlightSeverity,
     ) {
-        val collectionType = relation.collectionType.value ?: Type.COLLECTION
-        val xmlElement = relation.collectionType.xmlElement
-        if (xmlElement != null && relation.cardinality == Cardinality.MANY && collectionType == Type.LIST) {
+        if (relationElement.navigable) {
+            return
+        }
+
+        if (relationElement.qualifier.exists()) {
             holder.createProblem(
-                relation.collectionType,
+                relationElement.qualifier,
                 severity,
                 displayName,
-                XmlDeleteAttributeQuickFix(RelationElement.COLLECTION_TYPE),
-                XmlUpdateAttributeQuickFix(
-                    RelationElement.COLLECTION_TYPE,
-                    Type.SET.value
-                )
+                XmlDeleteAttributeQuickFix(relationElement.qualifier.value)
+            )
+        }
+        if (relationElement.modifiers.exists()) {
+            holder.createProblem(
+                relationElement.modifiers,
+                severity,
+                displayName,
+                XmlDeleteTagQuickFix()
             )
         }
     }
