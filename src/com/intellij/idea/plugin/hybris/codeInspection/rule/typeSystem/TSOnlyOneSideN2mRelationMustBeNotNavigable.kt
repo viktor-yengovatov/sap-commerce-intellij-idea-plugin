@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteAttributeQuickFix
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
@@ -28,7 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse : AbstractTSInspection() {
+class TSOnlyOneSideN2mRelationMustBeNotNavigable: AbstractTSInspection() {
     override fun inspect(
         project: Project,
         dom: Items,
@@ -38,37 +37,20 @@ class TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse : AbstractTSInsp
     ) {
         dom.relations.relations
             .filter { it.sourceElement.cardinality.value === Cardinality.MANY && it.targetElement.cardinality.value === Cardinality.MANY }
-            .filter { !it.sourceElement.navigable.value || !it.targetElement.navigable.value }
-            .forEach {
-                checkNonNavigable(it.sourceElement, holder, severity)
-                checkNonNavigable(it.targetElement, holder, severity)
+            .filter { !it.sourceElement.navigable.value && !it.targetElement.navigable.value }
+            .forEach{
+                holder.createProblem(
+                    it.sourceElement.navigable,
+                    severity,
+                    displayName,
+                    XmlDeleteAttributeQuickFix(RelationElement.NAVIGABLE)
+                )
+                holder.createProblem(
+                    it.targetElement.navigable,
+                    severity,
+                    displayName,
+                    XmlDeleteAttributeQuickFix(RelationElement.NAVIGABLE)
+                )
             }
-    }
-
-    private fun checkNonNavigable(
-        relationElement: RelationElement,
-        holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity,
-    ) {
-        if (relationElement.navigable.value) {
-            return
-        }
-
-        if (relationElement.qualifier.exists()) {
-            holder.createProblem(
-                relationElement.qualifier,
-                severity,
-                displayName,
-                XmlDeleteAttributeQuickFix(RelationElement.QUALIFIER)
-            )
-        }
-        if (relationElement.modifiers.exists()) {
-            holder.createProblem(
-                relationElement.modifiers,
-                severity,
-                displayName,
-                XmlDeleteTagQuickFix()
-            )
-        }
     }
 }
