@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
 import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisLineMarkerProvider
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
 abstract class AbstractItemsXmlLineMarkerProvider<T : PsiElement> : AbstractHybrisLineMarkerProvider<T>() {
 
-    final override fun canProcess(psi: PsiFile) = TSUtils.isTypeSystemXmlFile(psi)
+    final override fun canProcess(psi: PsiFile) = TSUtils.isTypeSystemFile(psi)
 
 }

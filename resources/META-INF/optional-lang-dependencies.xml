@@ -37,6 +37,12 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <!-- ####################################################################################################### -->
+        <!--                                        Run Contributors                                                 -->
+        <!-- ####################################################################################################### -->
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
+
         <!-- ####################################################################################################### -->
         <!--                                        Completion Providers                                             -->
         <!-- ####################################################################################################### -->
@@ -73,6 +79,8 @@
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.completion.ExtensionInfoCompletionContributor"/>
 
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.daemon.EiSExtensionLineMarkerProvider"/>
+
         <!-- ####################################################################################################### -->
         <!--                                            LocalExtensions                                              -->
         <!-- ####################################################################################################### -->
@@ -80,6 +88,8 @@
                           implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.completion.LocalExtensionsCompletionContributor"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon.LeSExtensionLineMarkerProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Cockpit NG                                                   -->
@@ -149,10 +159,14 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaItemServiceImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.DefaultItemsFileValidation"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemsFileValidation"/>
 
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.RelationValidation"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemTypeClassValidation"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider"/>
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.TSXmlStructureViewBuilderProvider" order="first"/>
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.BSXmlStructureViewBuilderProvider" order="first"/>

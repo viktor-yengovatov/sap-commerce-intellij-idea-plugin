@@ -1,10 +1,11 @@
 [![Email](https://img.shields.io/badge/Help-Contact%20us-blue)](mailto:hybrisideaplugin@epam.com)
-[![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)](https://plugins.jetbrains.com/docs/intellij)
-[![JetBrains IntelliJ Platform SDK Samples](https://img.shields.io/badge/JB-SDK%20samples-lightgreen)](https://github.com/JetBrains/intellij-sdk-code-samples)
-
 ![Rating](https://img.shields.io/jetbrains/plugin/r/rating/12867-sap-commerce-developers-toolset)
 ![Downloads](https://img.shields.io/jetbrains/plugin/d/12867-sap-commerce-developers-toolset)
 [![Version](https://img.shields.io/jetbrains/plugin/v/12867-sap-commerce-developers-toolset)](https://plugins.jetbrains.com/plugin/12867-sap-commerce-developers-toolset)
+
+[![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)](https://plugins.jetbrains.com/docs/intellij)
+[![JetBrains IntelliJ Platform SDK Samples](https://img.shields.io/badge/JB-SDK%20samples-lightgreen)](https://github.com/JetBrains/intellij-sdk-code-samples)
+[![JetBrains IntelliJ Platform UI Guidelines](https://img.shields.io/badge/JB-UI%20Guidelines-lightgreen)](https://jetbrains.github.io/ui/)
 
 ## SAP Commerce Developers Toolset ##
 
@@ -42,8 +43,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 ### Contributors and Developers
 
-This project exists thanks to all the people who contribute.
-
+This project exists thanks to all the people who <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/graphs/contributors" target="_blank">contribute</a>!
 
 <img src="https://img.shields.io/badge/-Alexander%20Bartash-grey"/> <img src="https://img.shields.io/badge/-Vlad%20Bozhenok-grey"/> 
 <img src="https://img.shields.io/badge/-Martin%20Zdarsky--Jones-grey"/> <img src="https://img.shields.io/badge/-Alexander%20Nosov-grey"/>

@@ -20,11 +20,11 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.rule.AbstractInspection
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 
 abstract class AbstractTSInspection : AbstractInspection<Items>(Items::class.java) {
 
-    override fun canProcess(project: Project, file: XmlFile) = TSUtils.isTsFile(file)
+    override fun canProcess(project: Project, file: XmlFile) = TSUtils.isTypeSystemFile(file)
 }

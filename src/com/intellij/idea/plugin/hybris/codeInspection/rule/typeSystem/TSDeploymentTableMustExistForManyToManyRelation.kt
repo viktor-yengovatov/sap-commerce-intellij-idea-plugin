@@ -42,8 +42,8 @@ class TSDeploymentTableMustExistForManyToManyRelation : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val sourceCardinality = dom.sourceElement.cardinality.value ?: Cardinality.MANY
-        val targetCardinality = dom.targetElement.cardinality.value ?: Cardinality.MANY
+        val sourceCardinality = dom.sourceElement.cardinality.value
+        val targetCardinality = dom.targetElement.cardinality.value
 
         if (sourceCardinality == Cardinality.MANY && targetCardinality == Cardinality.MANY && dom.deployment.typeCode.stringValue == null) {
             holder.createProblem(dom.deployment.typeCode, severity, displayName)

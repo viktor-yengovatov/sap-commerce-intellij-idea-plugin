@@ -22,7 +22,7 @@ import com.intellij.ide.structureView.xml.XmlStructureViewBuilderProvider
 import com.intellij.idea.plugin.hybris.system.type.model.Attributes
 import com.intellij.idea.plugin.hybris.system.type.model.CustomProperties
 import com.intellij.idea.plugin.hybris.system.type.model.Indexes
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.Function
 import com.intellij.util.xml.DomElement
@@ -31,7 +31,7 @@ import com.intellij.util.xml.DomService
 class TSXmlStructureViewBuilderProvider : XmlStructureViewBuilderProvider {
 
     override fun createStructureViewBuilder(xmlFile: XmlFile): StructureViewBuilder? {
-        if (!TSUtils.isTypeSystemXmlFile(xmlFile)) return null
+        if (!TSUtils.isTypeSystemFile(xmlFile)) return null
 
         return TSStructureViewBuilder(xmlFile, descriptor)
     }

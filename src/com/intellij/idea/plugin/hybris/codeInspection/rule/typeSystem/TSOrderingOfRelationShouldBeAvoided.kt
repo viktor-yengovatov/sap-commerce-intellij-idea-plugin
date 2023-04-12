@@ -45,8 +45,8 @@ class TSOrderingOfRelationShouldBeAvoided : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val cardinality = relation.cardinality.value ?: Cardinality.MANY
-        val ordered = relation.ordered.value ?: false
+        val cardinality = relation.cardinality.value
+        val ordered = relation.ordered.value
         if (relation.xmlElement != null && relation.ordered.xmlElement != null && cardinality == Cardinality.MANY && ordered) {
             holder.createProblem(
                 relation.ordered,
