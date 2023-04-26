@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.formatting
 import com.intellij.formatting.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinOperator
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
+import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
@@ -96,7 +97,16 @@ class FxSBlock internal constructor(
 
         SELECT_STATEMENT -> {
             if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
-                Indent.getNormalIndent()
+                Indent.getSpaceIndent("{{".length)
+            } else {
+                Indent.getNoneIndent()
+            }
+        }
+
+        SELECT_SUBQUERY_COMBINED,
+        COMPOUND_OPERATOR -> {
+            if (PsiTreeUtilExt.getPrevSiblingOfElementType(child.psi, LPAREN) != null) {
+                Indent.getSpaceIndent("(".length)
             } else {
                 Indent.getNoneIndent()
             }
@@ -123,6 +133,14 @@ class FxSBlock internal constructor(
             }
         }
 
+        RPAREN -> {
+            if (PsiTreeUtilExt.getPrevSiblingOfElementType(child.psi, SELECT_SUBQUERY_COMBINED) != null) {
+                Wrap.createWrap(WrapType.ALWAYS, true)
+            } else {
+                Wrap.createWrap(WrapType.NONE, false)
+            }
+        }
+
         LDBRACE,
         RDBRACE,
         CASE_EXPRESSION,
@@ -135,6 +153,14 @@ class FxSBlock internal constructor(
         COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
 
         JOIN_CONSTRAINT -> wrapIf(FxSCodeStyleSettings.WRAP_JOIN_CONSTRAINT)
+
+        SELECT_STATEMENT -> {
+            if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
+                wrapIf(FxSCodeStyleSettings.WRAP_SELECT_STATEMENT_IN_SUBQUERY)
+            } else {
+                Wrap.createWrap(WrapType.NONE, false)
+            }
+        }
 
         else -> Wrap.createWrap(WrapType.NONE, false)
     }

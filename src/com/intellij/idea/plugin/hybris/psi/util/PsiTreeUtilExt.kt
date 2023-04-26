@@ -15,17 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.action
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.actionSystem.impl.ActionButton
+package com.intellij.idea.plugin.hybris.psi.util
 
-class FlexibleSearchActionsGroup : DefaultActionGroup({ "FlexibleSearch" }, true) {
+import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.elementType
 
-    init {
-        templatePresentation.icon = HybrisIcons.FLEXIBLE_SEARCH
-        templatePresentation.putClientProperty(ActionButton.HIDE_DROPDOWN_ICON, true)
-        templatePresentation.isHideGroupIfEmpty = true
-    }
+object PsiTreeUtilExt {
+
+    fun getPrevSiblingOfElementType(sibling: PsiElement?, elementType: IElementType): PsiElement? = sibling
+        ?.let {
+            var prevSibling = sibling.prevSibling
+            while (prevSibling != null) {
+                if (prevSibling.elementType == elementType) {
+                    return@let prevSibling
+                }
+                prevSibling = prevSibling.prevSibling
+            }
+            null
+        }
 }

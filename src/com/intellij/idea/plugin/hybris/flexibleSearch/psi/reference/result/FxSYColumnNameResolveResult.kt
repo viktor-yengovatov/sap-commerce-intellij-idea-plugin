@@ -15,17 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.action
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.actionSystem.impl.ActionButton
+package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result
 
-class FlexibleSearchActionsGroup : DefaultActionGroup({ "FlexibleSearch" }, true) {
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
+import com.intellij.psi.ResolveResult
 
-    init {
-        templatePresentation.icon = HybrisIcons.FLEXIBLE_SEARCH
-        templatePresentation.putClientProperty(ActionButton.HIDE_DROPDOWN_ICON, true)
-        templatePresentation.isHideGroupIfEmpty = true
-    }
+class FxSYColumnNameResolveResult(private val ref: FlexibleSearchYColumnName?) : ResolveResult {
+    override fun getElement() = ref?.navigationElement
+    override fun isValidResult() = (ref?.isValid ?: false)
 }
