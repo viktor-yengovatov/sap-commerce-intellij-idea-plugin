@@ -19,14 +19,13 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem.TSGlobalMetaItemAttribute
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang.StringUtils
 import java.util.*
@@ -45,14 +44,44 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             ?: emptyList())
     }
 
+    override fun getCompletions(vararg types: TSMetaType) = with(TSMetaModelAccess.getInstance(project)) {
+        types
+            .map { metaType ->
+                when (metaType) {
+                    TSMetaType.META_ITEM -> this
+                        .getAll<TSGlobalMetaItem>(metaType)
+                        .mapNotNull { TSLookupElementFactory.build(it) }
+
+                    TSMetaType.META_ENUM -> this
+                        .getAll<TSGlobalMetaEnum>(metaType)
+                        .mapNotNull { TSLookupElementFactory.build(it, it.name) }
+
+                    TSMetaType.META_RELATION -> this
+                        .getAll<TSGlobalMetaRelation>(metaType)
+                        .mapNotNull { TSLookupElementFactory.build(it) }
+
+                    TSMetaType.META_COLLECTION -> this
+                        .getAll<TSGlobalMetaCollection>(metaType)
+                        .mapNotNull { TSLookupElementFactory.build(it) }
+
+                    TSMetaType.META_MAP -> this
+                        .getAll<TSGlobalMetaMap>(metaType)
+                        .mapNotNull { TSLookupElementFactory.build(it) }
+
+                    else -> emptyList()
+                }
+            }
+            .flatten()
+    }
+
     private fun getCompletions() = HybrisConstants.ENUM_ATTRIBUTES
         .map { TSLookupElementFactory.buildAttribute(it) }
 
     private fun getCompletions(metaRelation: TSGlobalMetaRelation, metaService: TSMetaModelAccess): List<LookupElementBuilder> {
         val linkMetaItem = metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK) ?: return emptyList()
-        val completions = LinkedList(getCompletions(linkMetaItem, setOf(SOURCE_ATTRIBUTE_NAME, TARGET_ATTRIBUTE_NAME)))
-        completions.add(TSLookupElementFactory.build(metaRelation.source, SOURCE_ATTRIBUTE_NAME))
-        completions.add(TSLookupElementFactory.build(metaRelation.target, TARGET_ATTRIBUTE_NAME))
+        val completions = LinkedList(getCompletions(linkMetaItem, setOf(ATTRIBUTE_SOURCE, ATTRIBUTE_TARGET)))
+        completions.add(TSLookupElementFactory.build(metaRelation.source, ATTRIBUTE_SOURCE))
+        completions.add(TSLookupElementFactory.build(metaRelation.target, ATTRIBUTE_TARGET))
         return completions
     }
 

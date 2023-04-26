@@ -23,10 +23,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 
 class RelationEndResolveResult(
-    myMeta: TSMetaRelation.TSMetaRelationElement
+    val meta: TSMetaRelation.TSMetaRelationElement
 ) : TSReferenceBase.TSResolveResult {
-    private val myDom: RelationElement? = myMeta.retrieveDom()
-    override fun getSemanticDomElement() = myDom
+    private val myDom: RelationElement? = meta.retrieveDom()
     override fun getElement() = myDom?.qualifier?.xmlAttributeValue
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

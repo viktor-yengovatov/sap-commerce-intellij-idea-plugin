@@ -33,7 +33,7 @@ import com.intellij.refactoring.rename.RenameHandler
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class ImpexMacrosRenameHandler : RenameHandler {
-    val psiRenameHandler = PsiElementRenameHandler()
+    private val psiRenameHandler = PsiElementRenameHandler()
 
     override fun isRenaming(dataContext: DataContext) = isAvailableOnDataContext(dataContext)
 

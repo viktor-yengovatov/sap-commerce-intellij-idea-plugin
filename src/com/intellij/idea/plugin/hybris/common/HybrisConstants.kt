@@ -171,6 +171,9 @@ object HybrisConstants {
     const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
     const val PROPERTY_BUILD_COMPILER = "build.compiler"
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
+    const val PROPERTY_LANG_PACKS = "lang.packs"
+
+    const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
     const val DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH = 24
 
@@ -254,16 +257,21 @@ object HybrisConstants {
 
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
-    const val SOURCE_ATTRIBUTE_NAME = "source"
-    const val TARGET_ATTRIBUTE_NAME = "target"
-    const val CODE_ATTRIBUTE_NAME = "code"
-    const val NAME_ATTRIBUTE_NAME = "name"
-    const val PK_ATTRIBUTE_NAME = "pk"
+    const val ATTRIBUTE_SOURCE = "source"
+    const val ATTRIBUTE_TARGET = "target"
+    const val ATTRIBUTE_CODE = "code"
+    const val ATTRIBUTE_NAME = "name"
+    const val ATTRIBUTE_PK = "pk"
     const val DICTIONARY_NAME = "hybris_integration"
     const val DIALOG_TITLE = "hybris.copy.file.dialog."
-    const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
 
-    val ENUM_ATTRIBUTES = listOf(PK_ATTRIBUTE_NAME, CODE_ATTRIBUTE_NAME, NAME_ATTRIBUTE_NAME)
+    val ENUM_ATTRIBUTES = listOf(ATTRIBUTE_PK, ATTRIBUTE_CODE, ATTRIBUTE_NAME)
+
+    const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
+    const val FXS_TABLE_ALIAS_SEPARATOR_DOT = "."
+    const val FXS_TABLE_ALIAS_SEPARATOR_COLON = ":"
+    const val FXS_TABLE_POSTFIX_EXCLAMATION_MARK = "!"
+    const val FXS_TABLE_POSTFIX_STAR = "*"
 
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"

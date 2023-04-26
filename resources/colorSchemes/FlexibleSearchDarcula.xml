@@ -23,9 +23,24 @@
             <option name="FOREGROUND" value="0097C5"/>
         </value>
     </option>
+    <option name="FS_OUTER_JOIN">
+        <value>
+            <option name="FOREGROUND" value="0097C5"/>
+        </value>
+    </option>
     <option name="COLUMN">
         <value>
             <option name="FOREGROUND" value="FFF9F1"/>
+        </value>
+    </option>
+    <option name="FS_TABLE_TRAIL">
+        <value>
+            <option name="FONT_TYPE" value="3"/>
+        </value>
+    </option>
+    <option name="FS_TABLE_ALIAS">
+        <value>
+            <option name="FOREGROUND" value="757575"/>
         </value>
     </option>
 </list>

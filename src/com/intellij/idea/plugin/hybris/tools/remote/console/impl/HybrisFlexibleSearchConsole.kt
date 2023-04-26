@@ -40,7 +40,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 import javax.swing.border.EmptyBorder
 
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE, FlexibleSearchLanguage.getInstance()) {
+class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE, FlexibleSearchLanguage.INSTANCE) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
@@ -107,7 +107,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     override fun tip(): String = "Flexible Search Console"
 
-    override fun icon(): Icon = HybrisIcons.FS_FILE
+    override fun icon(): Icon = HybrisIcons.FXS_FILE
 
     companion object {
         @Serial

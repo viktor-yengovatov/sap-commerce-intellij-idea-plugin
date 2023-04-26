@@ -1,89 +1,116 @@
-// This is a generated file. Not intended for manual editing.
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
 public class FlexibleSearchVisitor extends PsiElementVisitor {
 
-  public void visitAggregateFunction(@NotNull FlexibleSearchAggregateFunction o) {
+  public void visitAndExpression(@NotNull FlexibleSearchAndExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitBetweenExpression(@NotNull FlexibleSearchBetweenExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitBindParameter(@NotNull FlexibleSearchBindParameter o) {
     visitPsiElement(o);
   }
 
-  public void visitBetweenPredicate(@NotNull FlexibleSearchBetweenPredicate o) {
+  public void visitBitExpression(@NotNull FlexibleSearchBitExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitCaseExpression(@NotNull FlexibleSearchCaseExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitCastExpression(@NotNull FlexibleSearchCastExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitColumnAliasName(@NotNull FlexibleSearchColumnAliasName o) {
     visitPsiElement(o);
   }
 
-  public void visitBooleanFactor(@NotNull FlexibleSearchBooleanFactor o) {
+  public void visitColumnLocalizedName(@NotNull FlexibleSearchColumnLocalizedName o) {
     visitPsiElement(o);
   }
 
-  public void visitBooleanPredicand(@NotNull FlexibleSearchBooleanPredicand o) {
+  public void visitColumnName(@NotNull FlexibleSearchColumnName o) {
     visitPsiElement(o);
   }
 
-  public void visitBooleanPrimary(@NotNull FlexibleSearchBooleanPrimary o) {
+  public void visitColumnOuterJoinName(@NotNull FlexibleSearchColumnOuterJoinName o) {
     visitPsiElement(o);
   }
 
-  public void visitBooleanTerm(@NotNull FlexibleSearchBooleanTerm o) {
+  public void visitColumnRefExpression(@NotNull FlexibleSearchColumnRefExpression o) {
+    visitExpression(o);
+    // visitFoldablePsiElement(o);
+  }
+
+  public void visitColumnRefYExpression(@NotNull FlexibleSearchColumnRefYExpression o) {
+    visitExpression(o);
+    // visitFoldablePsiElement(o);
+  }
+
+  public void visitColumnSeparator(@NotNull FlexibleSearchColumnSeparator o) {
     visitPsiElement(o);
   }
 
-  public void visitBooleanTest(@NotNull FlexibleSearchBooleanTest o) {
+  public void visitComparisonExpression(@NotNull FlexibleSearchComparisonExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitCompoundOperator(@NotNull FlexibleSearchCompoundOperator o) {
     visitPsiElement(o);
   }
 
-  public void visitBooleanValueExpression(@NotNull FlexibleSearchBooleanValueExpression o) {
+  public void visitConcatExpression(@NotNull FlexibleSearchConcatExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitDefinedTableName(@NotNull FlexibleSearchDefinedTableName o) {
     visitPsiElement(o);
   }
 
-  public void visitCharacterLikePredicate(@NotNull FlexibleSearchCharacterLikePredicate o) {
+  public void visitEquivalenceExpression(@NotNull FlexibleSearchEquivalenceExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitExistsExpression(@NotNull FlexibleSearchExistsExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitExpression(@NotNull FlexibleSearchExpression o) {
     visitPsiElement(o);
   }
 
-  public void visitCharacterPattern(@NotNull FlexibleSearchCharacterPattern o) {
-    visitPsiElement(o);
-  }
-
-  public void visitCharacterStringLiteral(@NotNull FlexibleSearchCharacterStringLiteral o) {
-    visitPsiElement(o);
-  }
-
-  public void visitCharacterSubstringFunction(@NotNull FlexibleSearchCharacterSubstringFunction o) {
-    visitPsiElement(o);
-  }
-
-  public void visitCharacterValueFunction(@NotNull FlexibleSearchCharacterValueFunction o) {
-    visitPsiElement(o);
-  }
-
-  public void visitColumnLocalization(@NotNull FlexibleSearchColumnLocalization o) {
-    visitPsiElement(o);
-  }
-
-  public void visitColumnReference(@NotNull FlexibleSearchColumnReference o) {
-    visitPsiElement(o);
-  }
-
-  public void visitCommonValueExpression(@NotNull FlexibleSearchCommonValueExpression o) {
-    visitPsiElement(o);
-  }
-
-  public void visitCompOp(@NotNull FlexibleSearchCompOp o) {
-    visitPsiElement(o);
-  }
-
-  public void visitCorrelationName(@NotNull FlexibleSearchCorrelationName o) {
-    visitPsiElement(o);
-  }
-
-  public void visitDerivedColumn(@NotNull FlexibleSearchDerivedColumn o) {
-    visitPsiElement(o);
-  }
-
-  public void visitExistsPredicate(@NotNull FlexibleSearchExistsPredicate o) {
+  public void visitExtParameterName(@NotNull FlexibleSearchExtParameterName o) {
     visitPsiElement(o);
   }
 
@@ -91,11 +118,35 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitGeneralLiteral(@NotNull FlexibleSearchGeneralLiteral o) {
+  public void visitFromClauseExpression(@NotNull FlexibleSearchFromClauseExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitFromClauseSelect(@NotNull FlexibleSearchFromClauseSelect o) {
     visitPsiElement(o);
   }
 
-  public void visitGeneralSetFunction(@NotNull FlexibleSearchGeneralSetFunction o) {
+  public void visitFromClauseSelectQuery(@NotNull FlexibleSearchFromClauseSelectQuery o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFromClauseSimple(@NotNull FlexibleSearchFromClauseSimple o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFromClauseSubqueries(@NotNull FlexibleSearchFromClauseSubqueries o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFromTable(@NotNull FlexibleSearchFromTable o) {
+    visitFoldablePsiElement(o);
+  }
+
+  public void visitFunctionCallExpression(@NotNull FlexibleSearchFunctionCallExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitFunctionName(@NotNull FlexibleSearchFunctionName o) {
     visitPsiElement(o);
   }
 
@@ -103,160 +154,128 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitGroupingColumnReference(@NotNull FlexibleSearchGroupingColumnReference o) {
+  public void visitInExpression(@NotNull FlexibleSearchInExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitIsnullExpression(@NotNull FlexibleSearchIsnullExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitJoinConstraint(@NotNull FlexibleSearchJoinConstraint o) {
     visitPsiElement(o);
   }
 
-  public void visitGroupingColumnReferenceList(@NotNull FlexibleSearchGroupingColumnReferenceList o) {
+  public void visitJoinOperator(@NotNull FlexibleSearchJoinOperator o) {
     visitPsiElement(o);
   }
 
-  public void visitGroupingElement(@NotNull FlexibleSearchGroupingElement o) {
+  public void visitLikeExpression(@NotNull FlexibleSearchLikeExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitLimitClause(@NotNull FlexibleSearchLimitClause o) {
     visitPsiElement(o);
   }
 
-  public void visitGroupingElementList(@NotNull FlexibleSearchGroupingElementList o) {
+  public void visitLiteralExpression(@NotNull FlexibleSearchLiteralExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitMulExpression(@NotNull FlexibleSearchMulExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitMysqlFunctionExpression(@NotNull FlexibleSearchMysqlFunctionExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitOrExpression(@NotNull FlexibleSearchOrExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitOrderClause(@NotNull FlexibleSearchOrderClause o) {
     visitPsiElement(o);
   }
 
-  public void visitInPredicate(@NotNull FlexibleSearchInPredicate o) {
+  public void visitOrderingTerm(@NotNull FlexibleSearchOrderingTerm o) {
     visitPsiElement(o);
   }
 
-  public void visitJoinCondition(@NotNull FlexibleSearchJoinCondition o) {
+  public void visitParenExpression(@NotNull FlexibleSearchParenExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitResultColumn(@NotNull FlexibleSearchResultColumn o) {
     visitPsiElement(o);
   }
 
-  public void visitJoinSpecification(@NotNull FlexibleSearchJoinSpecification o) {
+  public void visitResultColumns(@NotNull FlexibleSearchResultColumns o) {
     visitPsiElement(o);
   }
 
-  public void visitJoinType(@NotNull FlexibleSearchJoinType o) {
+  public void visitSelectCoreSelect(@NotNull FlexibleSearchSelectCoreSelect o) {
+    visitFoldablePsiElement(o);
+  }
+
+  public void visitSelectStatement(@NotNull FlexibleSearchSelectStatement o) {
     visitPsiElement(o);
   }
 
-  public void visitJoinedTable(@NotNull FlexibleSearchJoinedTable o) {
+  public void visitSelectSubquery(@NotNull FlexibleSearchSelectSubquery o) {
     visitPsiElement(o);
   }
 
-  public void visitLikePredicate(@NotNull FlexibleSearchLikePredicate o) {
+  public void visitSelectSubqueryCombined(@NotNull FlexibleSearchSelectSubqueryCombined o) {
     visitPsiElement(o);
   }
 
-  public void visitNullOrdering(@NotNull FlexibleSearchNullOrdering o) {
+  public void visitSelectedTableName(@NotNull FlexibleSearchSelectedTableName o) {
+    visitPsiNamedElement(o);
+  }
+
+  public void visitSignedNumber(@NotNull FlexibleSearchSignedNumber o) {
     visitPsiElement(o);
   }
 
-  public void visitNullPredicate(@NotNull FlexibleSearchNullPredicate o) {
+  public void visitSubqueryParenExpression(@NotNull FlexibleSearchSubqueryParenExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitTableAliasName(@NotNull FlexibleSearchTableAliasName o) {
+    visitPsiNamedElement(o);
+  }
+
+  public void visitTableOrSubquery(@NotNull FlexibleSearchTableOrSubquery o) {
     visitPsiElement(o);
   }
 
-  public void visitOrderByClause(@NotNull FlexibleSearchOrderByClause o) {
+  public void visitTypeName(@NotNull FlexibleSearchTypeName o) {
     visitPsiElement(o);
   }
 
-  public void visitOrderingSpecification(@NotNull FlexibleSearchOrderingSpecification o) {
-    visitPsiElement(o);
-  }
-
-  public void visitOrdinaryGroupingSet(@NotNull FlexibleSearchOrdinaryGroupingSet o) {
-    visitPsiElement(o);
-  }
-
-  public void visitParameterReference(@NotNull FlexibleSearchParameterReference o) {
-    visitPsiElement(o);
-  }
-
-  public void visitPredicate(@NotNull FlexibleSearchPredicate o) {
-    visitPsiElement(o);
-  }
-
-  public void visitQuerySpecification(@NotNull FlexibleSearchQuerySpecification o) {
-    visitPsiElement(o);
-  }
-
-  public void visitRowValuePredicand(@NotNull FlexibleSearchRowValuePredicand o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSearchCondition(@NotNull FlexibleSearchSearchCondition o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSelectList(@NotNull FlexibleSearchSelectList o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSelectSublist(@NotNull FlexibleSearchSelectSublist o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSetFunctionType(@NotNull FlexibleSearchSetFunctionType o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSetQuantifier(@NotNull FlexibleSearchSetQuantifier o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSortKey(@NotNull FlexibleSearchSortKey o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSortSpecification(@NotNull FlexibleSearchSortSpecification o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSortSpecificationList(@NotNull FlexibleSearchSortSpecificationList o) {
-    visitPsiElement(o);
-  }
-
-  public void visitStringValueExpression(@NotNull FlexibleSearchStringValueExpression o) {
-    visitPsiElement(o);
-  }
-
-  public void visitStringValueFunction(@NotNull FlexibleSearchStringValueFunction o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSubquery(@NotNull FlexibleSearchSubquery o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTableExpression(@NotNull FlexibleSearchTableExpression o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTableName(@NotNull FlexibleSearchTableName o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTablePrimary(@NotNull FlexibleSearchTablePrimary o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTableReference(@NotNull FlexibleSearchTableReference o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTableReferenceList(@NotNull FlexibleSearchTableReferenceList o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTableSubquery(@NotNull FlexibleSearchTableSubquery o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTruthValue(@NotNull FlexibleSearchTruthValue o) {
-    visitPsiElement(o);
-  }
-
-  public void visitValueExpression(@NotNull FlexibleSearchValueExpression o) {
-    visitPsiElement(o);
+  public void visitUnaryExpression(@NotNull FlexibleSearchUnaryExpression o) {
+    visitExpression(o);
   }
 
   public void visitWhereClause(@NotNull FlexibleSearchWhereClause o) {
     visitPsiElement(o);
+  }
+
+  public void visitYColumnName(@NotNull FlexibleSearchYColumnName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitYFromClause(@NotNull FlexibleSearchYFromClause o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPsiNamedElement(@NotNull FlexibleSearchPsiNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFoldablePsiElement(@NotNull FoldablePsiElement o) {
+    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {
