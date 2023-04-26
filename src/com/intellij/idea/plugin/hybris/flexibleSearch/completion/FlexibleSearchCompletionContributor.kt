@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSKey
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSRootCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSTablesAliasCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
@@ -80,7 +80,6 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         .withParent(
                             psiElement(FROM_TABLE)
                                 .withText(
-
                                     StandardPatterns.or(
                                         // no idea how to make it case insensitive
                                         StandardPatterns.string().contains(" AS "),
