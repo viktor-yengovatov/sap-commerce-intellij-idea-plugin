@@ -31,14 +31,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClause {
+public class FlexibleSearchHavingClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchHavingClause {
 
-  public FlexibleSearchFromClauseImpl(@NotNull ASTNode node) {
+  public FlexibleSearchHavingClauseImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitFromClause(this);
+    visitor.visitHavingClause(this);
   }
 
   @Override
@@ -48,15 +48,9 @@ public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  @NotNull
-  public List<FlexibleSearchFromClauseExpr> getFromClauseExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchFromClauseExpr.class);
-  }
-
-  @Override
-  @NotNull
-  public List<FlexibleSearchJoinOperator> getJoinOperatorList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchJoinOperator.class);
+  @Nullable
+  public FlexibleSearchExpression getExpression() {
+    return findChildByClass(FlexibleSearchExpression.class);
   }
 
 }

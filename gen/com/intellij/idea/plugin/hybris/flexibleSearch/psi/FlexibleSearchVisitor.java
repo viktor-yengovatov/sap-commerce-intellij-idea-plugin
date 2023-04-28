@@ -118,12 +118,12 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitFromClauseExpression(@NotNull FlexibleSearchFromClauseExpression o) {
-    visitExpression(o);
+  public void visitFromClauseExpr(@NotNull FlexibleSearchFromClauseExpr o) {
+    visitPsiElement(o);
   }
 
   public void visitFromClauseSelect(@NotNull FlexibleSearchFromClauseSelect o) {
-    visitPsiElement(o);
+    visitFromClauseExpr(o);
   }
 
   public void visitFromClauseSelectQuery(@NotNull FlexibleSearchFromClauseSelectQuery o) {
@@ -151,6 +151,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitGroupByClause(@NotNull FlexibleSearchGroupByClause o) {
+    visitPsiElement(o);
+  }
+
+  public void visitHavingClause(@NotNull FlexibleSearchHavingClause o) {
     visitPsiElement(o);
   }
 
@@ -267,7 +271,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitYFromClause(@NotNull FlexibleSearchYFromClause o) {
-    visitPsiElement(o);
+    visitFromClauseExpr(o);
   }
 
   public void visitPsiNamedElement(@NotNull FlexibleSearchPsiNamedElement o) {

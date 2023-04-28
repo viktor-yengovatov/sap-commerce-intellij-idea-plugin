@@ -25,12 +25,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchFromClauseExpression extends FlexibleSearchExpression {
+public interface FlexibleSearchHavingClause extends PsiElement {
 
   @Nullable
-  FlexibleSearchFromClauseSelect getFromClauseSelect();
-
-  @Nullable
-  FlexibleSearchYFromClause getYFromClause();
+  FlexibleSearchExpression getExpression();
 
 }

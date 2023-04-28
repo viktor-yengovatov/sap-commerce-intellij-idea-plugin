@@ -51,24 +51,19 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.reference
         ?.resolve()
         ?.parent
-        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchColumnAliasName::class.java) }
-        ?.map { FxSLookupElementFactory.build(it) }
+        ?.let { fromClause ->
+            val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
+            val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
+
+            val aliases = findColumnAliasNames(fromClause) { true }
+                .map { FxSLookupElementFactory.build(it, addComma) }
+            val nonAliasedColumns = findYColumnNames(fromClause) { true }
+                .map { FxSLookupElementFactory.build(it, addComma) }
+
+            return@let aliases + nonAliasedColumns
+        }
         ?.toTypedArray()
-        ?: getNonAliasedVariants()
-
-    private fun getNonAliasedVariants(): Array<LookupElementBuilder> {
-        val separator = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
-            .completion
-            .defaultTableAliasSeparator
-
-        return getAlternativeVariants(element).entries
-            .flatMap { entry ->
-                entry.value.map {
-                    FxSLookupElementFactory.buildColumnLookup(entry.key, it.text.trim(), separator)
-                }
-            }
-            .toTypedArray()
-    }
+        ?: getAlternativeVariants(element)
 
     companion object {
         val CACHE_KEY =
@@ -83,12 +78,17 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                 ?.reference
                 ?.resolve()
                 ?.parent
-                ?.let {
-                    PsiTreeUtil.findChildrenOfType(it, FlexibleSearchColumnAliasName::class.java)
-                        .firstOrNull { alias -> alias.text.trim() == lookingForName }
+                ?.let { fromClause ->
+                    val aliases = findColumnAliasNames(fromClause) { alias -> alias.text.trim() == lookingForName }
+                        .map { FxSColumnAliasNameResolveResult(it) }
+                    if (aliases.isEmpty()) {
+                        return@let findYColumnNames(fromClause) { alias -> alias.text.trim() == lookingForName }
+                            .map { FxSYColumnNameResolveResult(it) }
+                    } else {
+                        return@let aliases
+                    }
                 }
-                ?.let { arrayOf(FxSColumnAliasNameResolveResult(it)) }
-                ?: resolveByAlternatives(ref, lookingForName)
+                ?.toTypedArray()
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
@@ -97,48 +97,54 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             )
         }
 
-        private fun resolveByAlternatives(ref: FxSColumnNameReference, lookingForName: String): Array<ResolveResult>? = getAlternativeVariants(ref.element).entries
-            .firstNotNullOfOrNull { entry ->
-                val found = entry.value.firstOrNull { it.text.trim() == lookingForName } != null
-                if (found) entry
-                else null
-            }
-            ?.let { entry ->
-                entry.value
-                    .firstOrNull { it -> it.text.trim() == lookingForName }
-                    ?.let {
-                        when (it) {
-                            is FlexibleSearchColumnAliasName -> FxSColumnAliasNameResolveResult(it)
-                            is FlexibleSearchYColumnName -> FxSYColumnNameResolveResult(it)
-                            else -> null
-                        }
-                    }
-            }
-            ?.let { arrayOf(it) }
+        private fun findColumnAliasNames(
+            fromClause: PsiElement,
+            filter: (FlexibleSearchColumnAliasName) -> Boolean
+        ) = PsiTreeUtil.findChildrenOfType(fromClause, FlexibleSearchColumnAliasName::class.java)
+            .filter { PsiTreeUtil.getParentOfType(it, FlexibleSearchWhereClause::class.java) == null }
+            .filter(filter)
 
-        private fun getAlternativeVariants(element: PsiElement): MutableMap<String?, MutableSet<PsiElement>> {
-            val map = mutableMapOf<String?, MutableSet<PsiElement>>()
-            PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                ?.childrenOfType<FlexibleSearchFromClause>()
-                ?.firstOrNull()
-                ?.fromClauseExpressionList
-                ?.mapNotNull { it.fromClauseSelect }
+        private fun findYColumnNames(
+            fromClause: PsiElement,
+            filter: (FlexibleSearchYColumnName) -> Boolean
+        ) = PsiTreeUtil.findChildrenOfType(fromClause, FlexibleSearchResultColumn::class.java)
+            .asSequence()
+            .filter { it.childrenOfType<FlexibleSearchColumnAliasName>().isEmpty() }
+            .filter { PsiTreeUtil.getParentOfType(it, FlexibleSearchWhereClause::class.java, FlexibleSearchHavingClause::class.java) == null }
+            .filter { it.expression is FlexibleSearchColumnRefYExpression }
+            .mapNotNull { PsiTreeUtil.findChildOfType(it, FlexibleSearchYColumnName::class.java) }
+            .filter(filter)
+            .toList()
+
+        private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
+            val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
+
+            val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
+
+            val selectCores = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+                ?.let { listOf(it) }
+                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java)
+                    ?.parentOfType<FlexibleSearchSelectStatement>()
+                    ?.selectCoreSelectList
+                ?: emptyList()
+
+            return selectCores
+                .firstNotNullOfOrNull { it.fromClause }
+                ?.fromClauseExprList
+                ?.filterIsInstance<FlexibleSearchFromClauseSelect>()
                 ?.mapNotNull { it.fromClauseSubqueries }
                 ?.map {
-                    val columns = map.computeIfAbsent(it.tableAliasName?.name) { mutableSetOf() }
-                    val foundColumns = it.selectSubqueryCombinedList
-                        .mapNotNull { subQuery -> subQuery.selectStatement }
-                        .flatMap { subSelect -> subSelect.selectCoreSelectList }
-                        .mapNotNull { subCoreSelect -> subCoreSelect.resultColumns }
-                        .flatMap { subResultColumns -> subResultColumns.resultColumnList }
-                        .mapNotNull { subResultColumn ->
-                            // if there is no column alias we may try to fallback to first [y] column name
-                            subResultColumn.columnAliasName
-                                ?: PsiTreeUtil.findChildOfType(subResultColumn.expression, FlexibleSearchYColumnName::class.java)
-                        }
-                    columns.addAll(foundColumns)
+                    val tableAliasName = it.tableAliasName
+                    if (tableAliasName != null) {
+                        return@map setOf(FxSLookupElementFactory.build(tableAliasName, addComma, fxsSettings))
+                    } else {
+                        // TODO: not sure what to do if there is no table alias
+                        return@map setOf<LookupElementBuilder>()
+                    }
                 }
-            return map
+                ?.flatten()
+                ?.toTypedArray()
+                ?: emptyArray()
         }
     }
 

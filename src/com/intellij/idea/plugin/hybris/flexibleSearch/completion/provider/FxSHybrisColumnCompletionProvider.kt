@@ -22,17 +22,27 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 
 class FxSHybrisColumnCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        result.addElement(FxSLookupElementFactory.buildYColumn())
+        val fxsSettings = HybrisProjectSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
+        val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(parameters.position, fxsSettings)
+
+        val parent = parameters.position.parentOfType<FlexibleSearchColumnRefExpression>()
+        if (parent == null || parent.selectedTableName == null) {
+            result.addElement(FxSLookupElementFactory.buildYColumn(addComma, parameters))
+        }
 
         PsiTreeUtil.getParentOfType(parameters.position, FlexibleSearchResultColumns::class.java)
             ?.let {
-                result.addElement(FxSLookupElementFactory.buildYColumnAll())
+                result.addElement(FxSLookupElementFactory.buildYColumnAll(addComma))
             }
     }
 }

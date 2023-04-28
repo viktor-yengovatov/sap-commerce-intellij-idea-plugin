@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSKey
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSRootCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSTablesAliasCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
@@ -43,6 +43,18 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         context.dummyIdentifier = DUMMY_IDENTIFIER
     }
 
+//    override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
+//        val position = parameters.position
+//
+//        if (position.prevSibling?.text in listOf(":")) {
+//            result.addElement(FxSLookupElementFactory.buildOuterJoin())
+//            val autoPopupController = AutoPopupController.getInstance(position.project)
+
+//            autoPopupController.autoPopupMemberLookup(parameters.editor, null)
+//            autoPopupController.scheduleAutoPopup(parameters.editor, CompletionType.BASIC, null)
+//        }
+//    }
+
     init {
         val fxsBasePattern = psiElement()
             .andNot(psiElement().inside(PsiComment::class.java))
@@ -57,6 +69,22 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
 //                }
 //            }
 //        )
+
+        extend(
+            CompletionType.BASIC,
+            fxsBasePattern
+                .withText(DUMMY_IDENTIFIER)
+                .afterLeafSkipping(
+                    psiElement(TokenType.WHITE_SPACE),
+                    psiElement(RBRACKET)
+                        .withParent(FlexibleSearchColumnRefYExpression::class.java),
+                ),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addElement(FxSLookupElementFactory.buildOuterJoin())
+                }
+            }
+        )
 
 //        extend(
 //            CompletionType.BASIC,
@@ -145,7 +173,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             FxSRootCompletionProvider()
         )
 
-        // <AS> and <.. JOIN> after `Identifier` leaf in the `Defined table name`
+        // <AS>, <ON>, <.. JOIN> after `Identifier` leaf in the `Defined table name`
         extend(
             CompletionType.BASIC,
             fxsBasePattern
@@ -156,22 +184,21 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         .withParent(psiElement(DEFINED_TABLE_NAME))
                 )
                 .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME))),
-            FxSKeywordsCompletionProvider(setOf("AS") + KEYWORDS_JOINS)
+            FxSKeywordsCompletionProvider(setOf("AS", "ON") + KEYWORDS_JOINS)
         )
 
-        // suggest different joins after `as` after `on`
+        // <ON>, <.. JOIN> after `AS`
         extend(
             CompletionType.BASIC,
             fxsBasePattern
                 .withText(DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
-                    psiElement(TokenType.WHITE_SPACE),
                     PlatformPatterns.or(
-                        psiElement()
-                            .withSuperParent(3, psiElement(JOIN_CONSTRAINT)),
-                        psiElement()
-                            .withParent(psiElement(TABLE_ALIAS_NAME))
-                    )
+                        psiElement(TokenType.WHITE_SPACE),
+                        psiElement(TokenType.ERROR_ELEMENT),
+                    ),
+                    psiElement(IDENTIFIER)
+                        .withParent(psiElement(TABLE_ALIAS_NAME))
                 ),
             FxSKeywordsCompletionProvider(setOf("ON") + KEYWORDS_JOINS)
         )

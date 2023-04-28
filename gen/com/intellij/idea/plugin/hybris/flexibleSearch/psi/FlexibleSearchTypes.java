@@ -52,7 +52,7 @@ public interface FlexibleSearchTypes {
   IElementType EXPRESSION = new FlexibleSearchElementType("EXPRESSION");
   IElementType EXT_PARAMETER_NAME = new FlexibleSearchElementType("EXT_PARAMETER_NAME");
   IElementType FROM_CLAUSE = new FlexibleSearchElementType("FROM_CLAUSE");
-  IElementType FROM_CLAUSE_EXPRESSION = new FlexibleSearchElementType("FROM_CLAUSE_EXPRESSION");
+  IElementType FROM_CLAUSE_EXPR = new FlexibleSearchElementType("FROM_CLAUSE_EXPR");
   IElementType FROM_CLAUSE_SELECT = new FlexibleSearchElementType("FROM_CLAUSE_SELECT");
   IElementType FROM_CLAUSE_SELECT_QUERY = new FlexibleSearchElementType("FROM_CLAUSE_SELECT_QUERY");
   IElementType FROM_CLAUSE_SIMPLE = new FlexibleSearchElementType("FROM_CLAUSE_SIMPLE");
@@ -61,6 +61,7 @@ public interface FlexibleSearchTypes {
   IElementType FUNCTION_CALL_EXPRESSION = new FlexibleSearchElementType("FUNCTION_CALL_EXPRESSION");
   IElementType FUNCTION_NAME = new FlexibleSearchElementType("FUNCTION_NAME");
   IElementType GROUP_BY_CLAUSE = new FlexibleSearchElementType("GROUP_BY_CLAUSE");
+  IElementType HAVING_CLAUSE = new FlexibleSearchElementType("HAVING_CLAUSE");
   IElementType IN_EXPRESSION = new FlexibleSearchElementType("IN_EXPRESSION");
   IElementType ISNULL_EXPRESSION = new FlexibleSearchElementType("ISNULL_EXPRESSION");
   IElementType JOIN_CONSTRAINT = new FlexibleSearchElementType("JOIN_CONSTRAINT");
@@ -245,9 +246,6 @@ public interface FlexibleSearchTypes {
       else if (type == FROM_CLAUSE) {
         return new FlexibleSearchFromClauseImpl(node);
       }
-      else if (type == FROM_CLAUSE_EXPRESSION) {
-        return new FlexibleSearchFromClauseExpressionImpl(node);
-      }
       else if (type == FROM_CLAUSE_SELECT) {
         return new FlexibleSearchFromClauseSelectImpl(node);
       }
@@ -271,6 +269,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == GROUP_BY_CLAUSE) {
         return new FlexibleSearchGroupByClauseImpl(node);
+      }
+      else if (type == HAVING_CLAUSE) {
+        return new FlexibleSearchHavingClauseImpl(node);
       }
       else if (type == IN_EXPRESSION) {
         return new FlexibleSearchInExpressionImpl(node);

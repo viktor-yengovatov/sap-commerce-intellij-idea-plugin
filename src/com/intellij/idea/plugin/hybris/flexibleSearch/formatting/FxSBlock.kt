@@ -80,7 +80,15 @@ class FxSBlock internal constructor(
     }
 
     private fun calculateIndent(child: ASTNode) = when (child.elementType) {
-        FROM_CLAUSE_EXPRESSION,
+        Y_FROM_CLAUSE,
+        FROM_CLAUSE_SELECT -> Indent.getSpaceIndent("FROM".length)
+
+        JOIN_OPERATOR -> if (child.treeParent.elementType == FROM_CLAUSE) {
+            Indent.getSpaceIndent("FROM".length)
+        } else {
+            Indent.getNoneIndent()
+        }
+
         WHEN,
         JOIN_CONSTRAINT,
         ELSE -> Indent.getNormalIndent()
@@ -98,6 +106,16 @@ class FxSBlock internal constructor(
         SELECT_STATEMENT -> {
             if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
                 Indent.getSpaceIndent("{{".length)
+            } else if (PsiTreeUtilExt.getPrevSiblingOfElementType(child.psi, LPAREN) != null) {
+                Indent.getSpaceIndent("(".length)
+            } else {
+                Indent.getNoneIndent()
+            }
+        }
+
+        FROM_CLAUSE_SIMPLE -> {
+            if (child.treeParent.elementType == Y_FROM_CLAUSE) {
+                Indent.getSpaceIndent("{".length)
             } else {
                 Indent.getNoneIndent()
             }
@@ -114,10 +132,16 @@ class FxSBlock internal constructor(
 
         TABLE_OR_SUBQUERY -> Indent.getSpaceIndent(spacingBuilder.longestJoinOperatorSpaces(child))
 
-        else -> if (PsiTreeUtil.skipWhitespacesAndCommentsBackward(child.psi)?.elementType == WHERE) {
-            Indent.getNormalIndent()
-        } else {
-            Indent.getNoneIndent()
+        RPAREN -> Indent.getNoneIndent()
+
+        else -> {
+            if (PsiTreeUtil.skipWhitespacesAndCommentsBackward(child.psi)?.elementType == WHERE) {
+                Indent.getNormalIndent()
+            } else if (child.treeParent.elementType == PAREN_EXPRESSION) {
+                Indent.getSpaceIndent("(".length)
+            } else {
+                Indent.getNoneIndent()
+            }
         }
     }
 
@@ -141,18 +165,27 @@ class FxSBlock internal constructor(
             }
         }
 
-        LDBRACE,
-        RDBRACE,
-        CASE_EXPRESSION,
-        WHEN,
-        THEN,
-        ELSE,
-        FROM_CLAUSE,
-        ORDER_CLAUSE,
-        JOIN_OPERATOR,
-        COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
-
+        COMPOUND_OPERATOR -> wrapIf(FxSCodeStyleSettings.WRAP_COMPOUND_OPERATOR)
+        FROM_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_FROM_CLAUSE)
+        WHERE_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_WHERE_CLAUSE)
+        ORDER_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_ORDER_CLAUSE)
+        GROUP_BY_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_GROUP_BY_CLAUSE)
+        HAVING_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_HAVING_CLAUSE)
         JOIN_CONSTRAINT -> wrapIf(FxSCodeStyleSettings.WRAP_JOIN_CONSTRAINT)
+
+        LDBRACE,
+        RDBRACE -> wrapIf(FxSCodeStyleSettings.WRAP_DBRACES)
+
+        CASE_EXPRESSION -> wrapIf(FxSCodeStyleSettings.WRAP_CASE)
+        THEN -> wrapIf(FxSCodeStyleSettings.WRAP_CASE_THEN)
+        WHEN -> wrapIf(FxSCodeStyleSettings.WRAP_CASE_WHEN)
+        ELSE -> wrapIf(FxSCodeStyleSettings.WRAP_CASE_ELSE)
+
+        JOIN_OPERATOR -> if (child.firstChildNode.elementType != COMMA) {
+            Wrap.createWrap(WrapType.ALWAYS, true)
+        } else {
+            Wrap.createWrap(WrapType.NONE, false)
+        }
 
         SELECT_STATEMENT -> {
             if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {

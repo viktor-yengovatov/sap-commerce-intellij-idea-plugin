@@ -152,7 +152,13 @@ isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= NOT? exists_expression_name from_clause_subqueries_statement ')' {pin=2}
 function_call_expression ::= function_call_expression_name ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')' {pin=1}
-column_ref_y_expression ::= '{' (selected_table_name column_separator)? y_column_name y_column_localized_name? column_outer_join_name? '}' {pin=1}
+column_ref_y_expression ::= '{' column_ref_y_expression_other '}' {
+    pin=1
+}
+private column_ref_y_expression_other ::= (selected_table_name column_separator)? y_column_name y_column_localized_name? column_outer_join_name? {
+    recoverWhile=column_ref_y_expression_recover
+}
+private column_ref_y_expression_recover ::= !'}'
 // We may not have { } in case of Combined SELECT with table alias
 /*
 SELECT x.PK FROM (
@@ -163,8 +169,10 @@ SELECT x.PK FROM (
 ) x
  */
 column_ref_expression ::=
- selected_table_name column_separator column_name
+ aliased_column_ref_expression
  | column_name
+
+private aliased_column_ref_expression ::= selected_table_name column_separator column_name {pin=2}
 
 private exists_expression_name ::= EXISTS '('
 private function_call_expression_name ::= function_name '('
@@ -181,31 +189,47 @@ select_statement ::= select_core_select (compound_operator select_core_select)* 
 
 limit_clause ::= LIMIT expression ( ( OFFSET | ',' ) expression )? {
   pin=1
+  recoverWhile=limit_clause_recover
 }
+private limit_clause_recover ::= !(<<eof>> | ')' | '}}')
 
-order_clause ::= order_clause_literal ordering_term ( ',' ordering_term )* {pin=1}
+order_clause ::= order_clause_literal ordering_term ( ',' ordering_term )* {
+    pin=1
+    recoverWhile=order_clause_recover
+}
+private order_clause_recover ::= !(<<eof>> | LIMIT | ')' | '}}')
 private order_clause_literal ::= ORDER BY
 
 select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause where_clause? group_by_clause? {pin=1}
 
-group_by_clause ::= group_by_literal expression ( ',' expression )* ( HAVING expression )? {pin=1}
+group_by_clause ::= group_by_literal expression ( ',' expression )* ( having_clause )? {
+    pin=1
+    recoverWhile=group_by_clause_recover
+}
+private group_by_clause_recover ::= !(<<eof>> | HAVING | order_clause_literal | ')' | '}}')
+having_clause ::= HAVING expression {pin=1}
 private group_by_literal ::= GROUP BY
 
 where_clause ::= WHERE expression {pin=1}
 
-from_clause ::= FROM from_clause_expression ( join_operator from_clause_expression )* {pin=1}
+from_clause ::= FROM from_clause_expr ( join_operator from_clause_expr )* {pin=1}
 
-from_clause_expression ::=
+from_clause_expr ::=
   y_from_clause
   | from_clause_select
 
-y_from_clause ::= '{' from_clause_simple '}' { pin=1}
-from_clause_select ::= ((from_clause_select_query ( ( AS )? table_alias_name)?) | from_clause_subqueries) join_constraint?
+y_from_clause ::= '{' from_clause_simple '}' {
+    pin=1
+    extends=from_clause_expr
+}
+from_clause_select ::= ((from_clause_select_query ( ( AS )? table_alias_name)?) | from_clause_subqueries) join_constraint? {
+    extends=from_clause_expr
+}
 
 from_clause_select_query ::= '(' &(SELECT) from_query_greedy ')' {pin=2}
 
 private from_query_greedy ::= select_statement {
-  recoverWhile=from_query_greedy_recover
+    recoverWhile=from_query_greedy_recover
 }
 private from_query_greedy_recover ::= !')'
 
@@ -214,18 +238,21 @@ from_clause_subqueries ::= '(' from_clause_subqueries_statement ')' ( ( AS )? ta
 
 private from_clause_subqueries_statement ::= ( select_subquery_combined compound_operator? )*
 
-result_columns ::= result_column ( following_result_column )* {pin=1}
+result_columns ::= result_column ( following_result_column )* {
+    recoverWhile=result_columns_recover
+}
 private following_result_column ::= ',' result_column {pin=1}
+private result_columns_recover ::= !(FROM)
 
 table_or_subquery ::= from_table | select_subquery | '(' table_or_subquery ')'
 
 from_table ::= defined_table_name ( ( AS )? table_alias_name )?
 
 select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' ( ( AS )? table_alias_name)? {
-  pin=3
+    pin=3
 }
 select_subquery_combined ::= "{{" &(SELECT) subquery_greedy "}}" {
-  pin=2
+    pin=2
 }
 private subquery_greedy ::= select_statement {
   recoverWhile=y_subquery_greedy_recover
@@ -239,7 +266,9 @@ result_column ::=
   | expression ( ( AS )? column_alias_name )?
   {
     methods=[getPresentationText]
+    recoverWhile=result_column_recover
   }
+private result_column_recover ::= !(FROM | ',')
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | RIGHT )? JOIN
 
@@ -254,8 +283,8 @@ compound_operator ::= UNION ALL?
 ext_parameter_name ::= ORDER | IDENTIFIER
 column_outer_join_name ::= OUTER_JOIN
 column_alias_name ::= name {
-   implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
-   methods=[getName setName getNameIdentifier]
+    implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+    methods=[getName setName getNameIdentifier]
 }
 private y_column_localized_name ::= '[' column_localized_name ']' {pin=1}
 column_localized_name ::= IDENTIFIER {
@@ -280,9 +309,9 @@ y_column_name ::= ORDER | IDENTIFIER {
     methods=[getTable getTableAliases]
 }
 column_name ::= ORDER | IDENTIFIER {
-   mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
-   implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
-   methods=[getName setName getNameIdentifier]
+    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
+    implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+    methods=[getName setName getNameIdentifier]
 }
 function_name ::= IDENTIFIER
 
