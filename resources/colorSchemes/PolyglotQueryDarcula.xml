@@ -18,35 +18,14 @@
   -->
 
 <list>
-    <option name="FXS_PARAMETER">
+    <option name="PGQ_PARAMETER">
         <value>
-            <option name="FOREGROUND" value="0D9DD9"/>
+            <option name="FOREGROUND" value="0097C5"/>
         </value>
     </option>
-    <option name="FXS_OUTER_JOIN">
+    <option name="PGQ_COLUMN">
         <value>
-            <option name="FOREGROUND" value="0D9DD9"/>
-        </value>
-    </option>
-    <option name="FXS_TABLE_TAIL">
-        <value>
-            <option name="FONT_TYPE" value="3"/>
-        </value>
-    </option>
-    <option name="FXS_TABLE_ALIAS">
-        <value>
-            <option name="FOREGROUND" value="757575"/>
-        </value>
-    </option>
-    <option name="FXS_COLUMN_ALIAS">
-        <value>
-            <option name="FOREGROUND" value="757575"/>
-            <option name="FONT_TYPE" value="2"/>
-        </value>
-    </option>
-    <option name="FXS_TABLE_NAME">
-        <value>
-            <option name="FOREGROUND" value="01A308"/>
+            <option name="FOREGROUND" value="FFF9F1"/>
         </value>
     </option>
 </list>

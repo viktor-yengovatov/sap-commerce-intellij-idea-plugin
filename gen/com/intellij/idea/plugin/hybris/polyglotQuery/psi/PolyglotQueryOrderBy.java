@@ -24,8 +24,9 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
-public interface PolyglotQueryOrderBy extends PsiElement {
+public interface PolyglotQueryOrderBy extends FoldablePsiElement {
 
   @NotNull
   List<PolyglotQueryOrderKey> getOrderKeyList();

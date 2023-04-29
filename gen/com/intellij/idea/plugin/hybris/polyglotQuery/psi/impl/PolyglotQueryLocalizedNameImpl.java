@@ -19,18 +19,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.*;
 
-public interface PolyglotQueryExpression extends PsiElement {
+public class PolyglotQueryLocalizedNameImpl extends ASTWrapperPsiElement implements PolyglotQueryLocalizedName {
 
+  public PolyglotQueryLocalizedNameImpl(@NotNull ASTNode node) {
+    super(node);
+  }
+
+  public void accept(@NotNull PolyglotQueryVisitor visitor) {
+    visitor.visitLocalizedName(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof PolyglotQueryVisitor) accept((PolyglotQueryVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
   @Nullable
-  PolyglotQueryExprOr getExprOr();
-
-  @Nullable
-  PolyglotQueryOrderBy getOrderBy();
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
+  }
 
 }
