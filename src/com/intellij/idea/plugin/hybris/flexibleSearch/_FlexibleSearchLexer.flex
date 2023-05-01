@@ -26,6 +26,7 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
 WHITE_SPACE=\s+
 
 NUMERIC_LITERAL=(([0-9]+(\.[0-9]*)?|\.[0-9]+)(E(\+|-)?[0-9]+)?)|(0x[0-9a-f]+)
+BOOLEAN_LITERAL=((true)|(false))
 SINGLE_QUOTE_STRING_LITERAL=X?'(''|[^'])*'
 DOUBLE_QUOTE_STRING_LITERAL=X?\"(\"\"|[^\"])*\"
 BACKTICK_LITERAL=`(``|[^`])*`
@@ -34,7 +35,7 @@ NAMED_PARAMETER=[?][:jletterdigit:]+
 COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
 LINE_COMMENT=--[^\r\n]*
 
-%state TRIPLE_BRACE
+%state LOCALIZED_STATE
 
 %%
 <YYINITIAL> {
@@ -43,7 +44,7 @@ LINE_COMMENT=--[^\r\n]*
   "?"                                { return QUESTION_MARK; }
   "!"                                { return EXCLAMATION_MARK; }
   "["                                { return LBRACKET; }
-  "]"                                { return RBRACKET; }
+  "]"                                { yybegin(LOCALIZED_STATE); return RBRACKET; }
   "{"                                { return LBRACE; }
   "}"                                { return RBRACE; }
   "{{"                               { return LDBRACE; }
@@ -74,7 +75,7 @@ LINE_COMMENT=--[^\r\n]*
   "*"                                { return STAR; }
   "~"                                { return TILDE; }
   "<>"                               { return UNEQ; }
-  ":o"                               { return OUTER_JOIN; }
+  //":o"                               { return OUTER_JOIN; }
   "FULL"                             { return FULL; }
   "INTERVAL"                         { return INTERVAL; }
   "AND"                              { return AND; }
@@ -91,7 +92,6 @@ LINE_COMMENT=--[^\r\n]*
   "ELSE"                             { return ELSE; }
   "END"                              { return END; }
   "LIKE"                             { return LIKE; }
-  "GLOB"                             { return GLOB; }
   "REGEXP"                           { return REGEXP; }
   "MATCH"                            { return MATCH; }
   "ESCAPE"                           { return ESCAPE; }
@@ -120,6 +120,7 @@ LINE_COMMENT=--[^\r\n]*
   "DESC"                             { return DESC; }
   "UNION"                            { return UNION; }
 
+  {BOOLEAN_LITERAL}                  { return BOOLEAN_LITERAL; }
   {NUMERIC_LITERAL}                  { return NUMERIC_LITERAL; }
   {SINGLE_QUOTE_STRING_LITERAL}      { return SINGLE_QUOTE_STRING_LITERAL; }
   {DOUBLE_QUOTE_STRING_LITERAL}      { return DOUBLE_QUOTE_STRING_LITERAL; }
@@ -128,6 +129,13 @@ LINE_COMMENT=--[^\r\n]*
   {LINE_COMMENT}                     { return LINE_COMMENT; }
   {NAMED_PARAMETER}                  { return NAMED_PARAMETER; }
   {COMMENT}                          { return COMMENT; }
+
+}
+<LOCALIZED_STATE> {
+  {WHITE_SPACE}                      { return WHITE_SPACE; }
+
+  ":o"                               { yybegin(YYINITIAL); return OUTER_JOIN; }
+  "}"                                { yybegin(YYINITIAL); return RBRACE; }
 
 }
 

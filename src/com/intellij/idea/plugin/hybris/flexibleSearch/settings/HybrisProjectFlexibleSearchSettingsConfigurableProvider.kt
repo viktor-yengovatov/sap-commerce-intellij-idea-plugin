@@ -87,6 +87,11 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                         .component
                 }
                 row {
+                    checkBox("Automatically inject space after keywords")
+                        .bindSelected(state.completion::injectSpaceAfterKeywords)
+                        .component
+                }
+                row {
                     checkBox("Suggest table alias name after AS keyword")
                         .bindSelected(state.completion::suggestTableAliasNames)
                         .component
@@ -102,7 +107,7 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                             }
                         }
                     )
-                        .label("Default separator")
+                        .label("Default [y] separator")
                         .bindItem(state.completion::defaultTableAliasSeparator.toNullableProperty())
                         .component
                 }

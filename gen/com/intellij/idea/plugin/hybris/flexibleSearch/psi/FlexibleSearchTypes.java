@@ -100,6 +100,7 @@ public interface FlexibleSearchTypes {
   IElementType BACKTICK_LITERAL = new FlexibleSearchTokenType("BACKTICK_LITERAL");
   IElementType BAR = new FlexibleSearchTokenType("|");
   IElementType BETWEEN = new FlexibleSearchTokenType("BETWEEN");
+  IElementType BOOLEAN_LITERAL = new FlexibleSearchTokenType("BOOLEAN_LITERAL");
   IElementType BRACKET_LITERAL = new FlexibleSearchTokenType("BRACKET_LITERAL");
   IElementType BY = new FlexibleSearchTokenType("BY");
   IElementType CASE = new FlexibleSearchTokenType("CASE");
@@ -120,9 +121,9 @@ public interface FlexibleSearchTypes {
   IElementType ESCAPE = new FlexibleSearchTokenType("ESCAPE");
   IElementType EXCLAMATION_MARK = new FlexibleSearchTokenType("!");
   IElementType EXISTS = new FlexibleSearchTokenType("EXISTS");
+  IElementType FALSE = new FlexibleSearchTokenType("FALSE");
   IElementType FROM = new FlexibleSearchTokenType("FROM");
   IElementType FULL = new FlexibleSearchTokenType("FULL");
-  IElementType GLOB = new FlexibleSearchTokenType("GLOB");
   IElementType GROUP = new FlexibleSearchTokenType("GROUP");
   IElementType GT = new FlexibleSearchTokenType(">");
   IElementType GTE = new FlexibleSearchTokenType(">=");
@@ -174,6 +175,7 @@ public interface FlexibleSearchTypes {
   IElementType STAR = new FlexibleSearchTokenType("*");
   IElementType THEN = new FlexibleSearchTokenType("THEN");
   IElementType TILDE = new FlexibleSearchTokenType("~");
+  IElementType TRUE = new FlexibleSearchTokenType("TRUE");
   IElementType UNEQ = new FlexibleSearchTokenType("<>");
   IElementType UNION = new FlexibleSearchTokenType("UNION");
   IElementType USING = new FlexibleSearchTokenType("USING");
