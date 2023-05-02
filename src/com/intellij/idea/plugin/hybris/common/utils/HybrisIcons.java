@@ -35,7 +35,8 @@ public final class HybrisIcons {
     }
 
     public static final Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
-    public static final Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
+    public static final Icon FXS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
+    public static final Icon PGQ_FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg");
     public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/beanIcon.svg");
 
     public static final Icon IMPEX = getIcon("/icons/impex.svg");
@@ -124,6 +125,17 @@ public final class HybrisIcons {
     public static final Icon TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object;
     public static final Icon TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg");
     public static final Icon TS_DIAGRAM_SETTINGS = getIcon("/icons/typeSystem/diagram/settings.svg");
+
+    public static final Icon FXS_TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg");
+    public static final Icon FXS_COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg");
+    public static final Icon FXS_OUTER_JOIN = getIcon("/icons/flexibleSearch/outerJoin.svg");
+    public static final Icon FXS_Y_COLUMN_PLACEHOLDER = AllIcons.Actions.PrettyPrint;
+    public static final Icon FXS_Y_FROM_PLACEHOLDER = AllIcons.Actions.PrettyPrint;
+    public static final Icon FXS_FROM_PARENS_PLACEHOLDER = getIcon("/icons/flexibleSearch/parens.svg");
+    public static final Icon FXS_KEYWORD = AllIcons.Nodes.Static;
+    public static final Icon FXS_Y_COLUMN_ALL = getIcon("/icons/flexibleSearch/star.svg");
+    public static final Icon FXS_TABLE_SUFFIX = AllIcons.General.Filter;
+    public static final Icon FXS_TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg");
 
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 

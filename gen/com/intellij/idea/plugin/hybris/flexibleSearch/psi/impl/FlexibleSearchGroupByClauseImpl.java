@@ -1,10 +1,14 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -15,13 +19,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-// This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
@@ -35,6 +41,7 @@ public class FlexibleSearchGroupByClauseImpl extends ASTWrapperPsiElement implem
     visitor.visitGroupByClause(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
     else super.accept(visitor);
@@ -42,14 +49,14 @@ public class FlexibleSearchGroupByClauseImpl extends ASTWrapperPsiElement implem
 
   @Override
   @NotNull
-  public FlexibleSearchGroupingElementList getGroupingElementList() {
-    return findNotNullChildByClass(FlexibleSearchGroupingElementList.class);
+  public List<FlexibleSearchExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExpression.class);
   }
 
   @Override
   @Nullable
-  public FlexibleSearchSetQuantifier getSetQuantifier() {
-    return findChildByClass(FlexibleSearchSetQuantifier.class);
+  public FlexibleSearchHavingClause getHavingClause() {
+    return findChildByClass(FlexibleSearchHavingClause.class);
   }
 
 }

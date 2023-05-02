@@ -17,12 +17,13 @@
  */
 
 fun properties(key: String) = providers.gradleProperty(key)
+fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-    idea
-    id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.20"
-    id("org.jetbrains.intellij") version "1.13.3"
+    id("java") // Java support
+    id("idea") // IDEA support
+    alias(libs.plugins.kotlin) // Kotlin support
+    alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
 }
 
 repositories {
@@ -39,47 +40,53 @@ kotlin {
 }
 
 intellij {
-    type.set(properties("intellij.type"))
-    version.set(properties("intellij.version"))
-    pluginName.set(properties("intellij.plugin.name"))
-    downloadSources.set(properties("intellij.download.sources").get().toBoolean())
-    updateSinceUntilBuild.set(properties("intellij.update.since.until.build").get().toBoolean())
+    type = properties("intellij.type")
+    version = properties("intellij.version")
+    pluginName = properties("intellij.plugin.name")
+    downloadSources = properties("intellij.download.sources").get().toBoolean()
+    updateSinceUntilBuild = properties("intellij.update.since.until.build").get().toBoolean()
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-    plugins.addAll(*properties("intellij.plugins").get().split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
+    plugins = properties("intellij.plugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
 }
 
-sourceSets.main {
-    java.srcDirs(
-        file("src"),
-        file("gen")
-    )
-    resources.srcDir(file("resources"))
+sourceSets {
+    main {
+        java.srcDirs("src", "gen")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
+
+idea {
+    module {
+        generatedSourceDirs.add(file("gen"))
+    }
 }
 
 tasks {
-
-//    setupDependencies {
-//        doLast {
-//            // Fixes IDEA-298989.
-//            fileTree("$buildDir/instrumented/instrumentCode") { include("**/*Form.class") }.files.forEach { delete(it) }
-//        }
-//    }
-//
-//    // TODO: remove before final commit
-//    buildSearchableOptions {
-//        enabled = false
-//    }
+    wrapper {
+        gradleVersion = properties("gradle.version").get()
+    }
 
     runIde {
         jvmArgs = listOf(properties("intellij.jvm.args").get())
         maxHeapSize = "3g"
+        /*
+        To be able to start IDEA Community edition one has to uncomment `ideDir` property and specify absolute path to the Application
+        references:
+         - issue > https://github.com/JetBrains/gradle-intellij-plugin/issues/578
+         - docs > https://plugins.jetbrains.com/docs/intellij/dev-alternate-products.html#configuring-gradle-build-script-using-the-intellij-idea-product-attribute
+         */
+//        ideDir = file("/Users/<user>/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-0/231.8770.65/IntelliJ IDEA CE.app/Contents")
     }
 
     patchPluginXml {
-        version.set(properties("intellij.plugin.version"))
-        sinceBuild.set(properties("intellij.plugin.since.build"))
-        untilBuild.set(properties("intellij.plugin.until.build"))
+        version = properties("intellij.plugin.version")
+        sinceBuild = properties("intellij.plugin.since.build")
+        untilBuild = properties("intellij.plugin.until.build")
     }
 
     runPluginVerifier {
@@ -93,25 +100,19 @@ tasks {
     }
 }
 
+// Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
 
-    implementation(kotlin("stdlib"))
-    implementation("org.jsoup:jsoup:1.15.3")
-    implementation("com.wutka:dtdparser:1.21")
-    implementation("commons-io:commons-io:2.11.0")
-    implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("org.apache.maven:maven-model:3.8.7")
-    implementation("commons-codec:commons-codec:1.15")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("org.apache.commons:commons-collections4:4.4")
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
-    implementation("com.sun.xml.bind:jaxb-impl:4.0.1")
-
-    implementation("org.apache.solr:solr-solrj:8.8.2") {
+    implementation(libs.bundles.commons)
+    implementation(libs.bundles.jaxb)
+    implementation(libs.jsr305)
+    implementation(libs.jsoup)
+    implementation(libs.dtdparser)
+    implementation(libs.maven.model)
+    implementation(libs.solr.solrj) {
         exclude("org.slf4j", "slf4j-api")
         exclude("org.apache.httpcomponents", "httpclient")
         exclude("org.apache.httpcomponents", "httpcore")
         exclude("org.apache.httpcomponents", "httpmime")
     }
 }
-

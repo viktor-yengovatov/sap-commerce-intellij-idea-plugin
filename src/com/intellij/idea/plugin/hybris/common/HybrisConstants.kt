@@ -67,7 +67,9 @@ object HybrisConstants {
     const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "[y] FS Console"
     const val SOLR_SEARCH_CONSOLE_TITLE = "[y] Solr search"
 
-    const val BUSINESS_PROCESS_ROOT_TAG = "process"
+    const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"
+    const val ROOT_TAG_ITEMS_XML = "items"
+    const val ROOT_TAG_EXTENSION_INFO_XML = "extensioninfo"
 
     const val DOT_PROJECT = ".project"
     const val SETTINGS_GRADLE = "settings.gradle"
@@ -169,6 +171,9 @@ object HybrisConstants {
     const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
     const val PROPERTY_BUILD_COMPILER = "build.compiler"
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
+    const val PROPERTY_LANG_PACKS = "lang.packs"
+
+    const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
     const val DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH = 24
 
@@ -200,6 +205,7 @@ object HybrisConstants {
     const val TS_TYPE_GENERIC_ITEM = "GenericItem"
     const val TS_TYPE_LOCALIZABLE_ITEM = "LocalizableItem"
     const val TS_TYPE_EXTENSIBLE_ITEM = "ExtensibleItem"
+    const val TS_TYPE_SCRIPT = "Script"
     const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
     const val TS_TYPE_LINK = "Link"
@@ -252,13 +258,21 @@ object HybrisConstants {
 
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
-    const val SOURCE_ATTRIBUTE_NAME = "source"
-    const val TARGET_ATTRIBUTE_NAME = "target"
-    const val CODE_ATTRIBUTE_NAME = "code"
-    const val NAME_ATTRIBUTE_NAME = "name"
+    const val ATTRIBUTE_SOURCE = "source"
+    const val ATTRIBUTE_TARGET = "target"
+    const val ATTRIBUTE_CODE = "code"
+    const val ATTRIBUTE_NAME = "name"
+    const val ATTRIBUTE_PK = "pk"
     const val DICTIONARY_NAME = "hybris_integration"
     const val DIALOG_TITLE = "hybris.copy.file.dialog."
+
+    val ENUM_ATTRIBUTES = listOf(ATTRIBUTE_PK, ATTRIBUTE_CODE, ATTRIBUTE_NAME)
+
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
+    const val FXS_TABLE_ALIAS_SEPARATOR_DOT = "."
+    const val FXS_TABLE_ALIAS_SEPARATOR_COLON = ":"
+    const val FXS_TABLE_POSTFIX_EXCLAMATION_MARK = "!"
+    const val FXS_TABLE_POSTFIX_STAR = "*"
 
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"
@@ -281,6 +295,38 @@ object HybrisConstants {
     const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
     const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
     const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
+
+    val DEFAULT_JUNK_FILE_NAMES = listOf(
+        ".classpath",
+        ".directory",
+        ".externalToolBuilders",
+        ".idea",
+        ".pmd",
+        ".project",
+        ".ruleset",
+        ".settings",
+        ".springBeans",
+        "beans.xsd",
+        "classes",
+        "eclipsebin",
+        "extensioninfo.xsd",
+        "items.xsd",
+        "platformhome.properties",
+        "ruleset.xml",
+        "testclasses"
+    )
+
+    val DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE = listOf(
+        "solrserver",
+        "npmancillary"
+    )
+
+    val DEFAULT_EXCLUDED_FROM_INDEX = listOf(
+        "smartedit-custom-build",
+        "smartedit-build",
+        "apps/**/node_modules",
+        "common/temp/node_modules"
+    );
 
     private const val SRC_DIRECTORY = "src"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"

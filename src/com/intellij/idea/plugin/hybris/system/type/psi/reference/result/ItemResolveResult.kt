@@ -23,10 +23,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 
 class ItemResolveResult(
-    myMeta: TSMetaItem
+    val meta: TSMetaItem
 ) : TSReferenceBase.TSResolveResult {
-    private val myDom: ItemType? = myMeta.retrieveDom()
-    override fun getSemanticDomElement() = myDom
+    private val myDom: ItemType? = meta.retrieveDom()
     override fun getElement() = myDom?.code?.xmlAttributeValue
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

@@ -21,12 +21,19 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
+import com.intellij.psi.PsiElement
 
 class RelationEndResolveResult(
-    myMeta: TSMetaRelation.TSMetaRelationElement
+    val meta: TSMetaRelation.TSMetaRelationElement
 ) : TSReferenceBase.TSResolveResult {
-    private val myDom: RelationElement? = myMeta.retrieveDom()
-    override fun getSemanticDomElement() = myDom
-    override fun getElement() = myDom?.qualifier?.xmlAttributeValue
+    private val myDom: RelationElement? = meta.retrieveDom()
+    override fun getElement(): PsiElement? = if (meta.isNavigable) myDom
+        ?.qualifier
+        ?.xmlAttributeValue else {
+        myDom
+            ?.type
+            ?.xmlAttributeValue
+    }
+
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }
