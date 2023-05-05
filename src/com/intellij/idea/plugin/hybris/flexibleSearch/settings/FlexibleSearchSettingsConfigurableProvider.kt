@@ -33,7 +33,7 @@ import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class FlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
@@ -72,29 +72,24 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                         .label("Default case for reserved words")
                         .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
-                        .component
                 }
             }
             group("Code Completion") {
                 row {
                     checkBox("Automatically inject separator after table alias")
                         .bindSelected(state.completion::injectTableAliasSeparator)
-                        .component
                 }
                 row {
                     checkBox("Automatically inject comma after expression")
                         .bindSelected(state.completion::injectCommaAfterExpression)
-                        .component
                 }
                 row {
                     checkBox("Automatically inject space after keywords")
                         .bindSelected(state.completion::injectSpaceAfterKeywords)
-                        .component
                 }
                 row {
                     checkBox("Suggest table alias name after AS keyword")
                         .bindSelected(state.completion::suggestTableAliasNames)
-                        .component
                 }
                 row {
                     comboBox(
@@ -109,7 +104,16 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                     )
                         .label("Default [y] separator")
                         .bindItem(state.completion::defaultTableAliasSeparator.toNullableProperty())
-                        .component
+                }
+            }
+            group("Code Folding") {
+                row {
+                    checkBox("Enable code folding")
+                        .bindSelected(state.folding::enabled)
+                }
+                row {
+                    checkBox("Show table alias")
+                        .bindSelected(state.folding::showSelectedTableName)
                 }
             }
         }
