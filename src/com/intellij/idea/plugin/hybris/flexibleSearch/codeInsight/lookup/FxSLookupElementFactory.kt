@@ -24,12 +24,11 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messageFallback
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
-import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.psi.ResolveResult
 
@@ -195,12 +194,5 @@ object FxSLookupElementFactory {
         .create(yColumnName.text.trim() + (if (addComma) "," else ""))
         .withPresentableText(yColumnName.text.trim())
         .withIcon(HybrisIcons.HYBRIS)
-
-    fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
-        .withTypeText(messageFallback("hybris.fxs.completion.column.language.${isoCode.lowercase()}", "")
-            ?.let { " $it" }
-        )
-        .withCaseSensitivity(false)
-        .withIcon(HybrisIcons.LOCALIZED)
 
 }

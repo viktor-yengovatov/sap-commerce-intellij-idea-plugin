@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRe
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
+import com.intellij.idea.plugin.hybris.patterns.CaseInsensitiveContainsPatternCondition
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns
@@ -71,7 +72,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(DUMMY_IDENTIFIER)
+                .withText(StandardPatterns.string().startsWith(DUMMY_IDENTIFIER))
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(RBRACKET)
@@ -95,13 +96,8 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         .withParent(
                             psiElement(FROM_TABLE)
                                 .withText(
-                                    StandardPatterns.or(
-                                        // no idea how to make it case insensitive
-                                        StandardPatterns.string().contains(" AS "),
-                                        StandardPatterns.string().contains(" as "),
-                                        StandardPatterns.string().contains(" As "),
-                                        StandardPatterns.string().contains(" aS "),
-                                    )
+                                    StandardPatterns.string()
+                                        .with(CaseInsensitiveContainsPatternCondition(" AS "))
                                 )
                         )
                 ),
@@ -230,16 +226,6 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         psiElement(IDENTIFIER)
                             .withParent(psiElement(COLUMN_NAME)),
                     )
-//                )
-//                .withParent(
-//                    psiElement(TokenType.ERROR_ELEMENT)
-//                        .afterSiblingSkipping(
-//                            psiElement(TokenType.WHITE_SPACE),
-//                            PlatformPatterns.or(
-//                                psiElement(FlexibleSearchColumnRefYExpression::class.java),
-//                                psiElement(FlexibleSearchColumnRefExpression::class.java)
-//                            ),
-//                        )
                 ),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

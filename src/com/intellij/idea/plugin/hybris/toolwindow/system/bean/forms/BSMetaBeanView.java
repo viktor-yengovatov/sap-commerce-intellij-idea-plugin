@@ -18,20 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms;
 
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean;
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaAnnotations;
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier;
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaHint;
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaImport;
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty;
-import com.intellij.idea.plugin.hybris.system.bean.model.Bean;
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.*;
+import com.intellij.idea.plugin.hybris.system.bean.psi.BSPsiHelper;
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaAnnotationsTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaHintsTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaImportsTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaPropertiesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -40,11 +36,12 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BSMetaBeanView {
 
     private final Project myProject;
-    private BSMetaClassifier<Bean> myMeta;
+    private BSGlobalMetaBean myMeta;
     private JPanel myContentPane;
     private JBTextField myDescription;
     private JBTextField myClass;
@@ -112,21 +109,41 @@ public class BSMetaBeanView {
         myAnnotations = BSMetaAnnotationsTable.Companion.getInstance(myProject);
 
         myPropertiesPane = ToolbarDecorator.createDecorator(myProperties)
-                                           .disableUpDownActions()
-                                           .setPanelBorder(JBUI.Borders.empty())
-                                           .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myProperties.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myProperties.getCurrentItem())
+                .map(BSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myHintsPane = ToolbarDecorator.createDecorator(myHints)
-                                           .disableUpDownActions()
-                                           .setPanelBorder(JBUI.Borders.empty())
-                                           .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myHints.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myHints.getCurrentItem())
+                .map(BSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myImportsPane = ToolbarDecorator.createDecorator(myImports)
-                                           .disableUpDownActions()
-                                           .setPanelBorder(JBUI.Borders.empty())
-                                           .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myImports.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myImports.getCurrentItem())
+                .map(BSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myAnnotationsPane = ToolbarDecorator.createDecorator(myAnnotations)
-                                           .disableUpDownActions()
-                                           .setPanelBorder(JBUI.Borders.empty())
-                                           .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myAnnotations.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myAnnotations.getCurrentItem())
+                .map(BSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myDetailsPane = new JBPanel();
         myFlagsPane = new JBPanel();
 
@@ -136,5 +153,10 @@ public class BSMetaBeanView {
         myHintsPane.setBorder(IdeBorderFactory.createTitledBorder("Hints"));
         myImportsPane.setBorder(IdeBorderFactory.createTitledBorder("Imports"));
         myAnnotationsPane.setBorder(IdeBorderFactory.createTitledBorder("Annotations"));
+
+        PopupHandler.installPopupMenu(myProperties, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myHints, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myImports, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myAnnotations, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
     }
 }

@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -34,8 +35,14 @@ import com.intellij.psi.util.CachedValuesManager
 
 class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
-    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> =
-        CachedValuesManager.getCachedValue(root) {
+    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+        val foldingSetting = HybrisProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding
+
+        if (!foldingSetting.enabled) {
+            return emptyArray()
+        }
+
+        return CachedValuesManager.getCachedValue(root) {
             val filter = PolyglotQueryFoldingBlocksFilter.instance
             val results = SyntaxTraverser.psiTraverser(root)
                 .filter { filter.isAccepted(it) }
@@ -48,14 +55,16 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
             CachedValueProvider.Result.create(
                 results,
                 root.containingFile,
-                ProjectRootModificationTracker.getInstance(root.project)
+                ProjectRootModificationTracker.getInstance(root.project),
+                foldingSetting
             )
         }
+    }
 
     override fun getPlaceholderText(node: ASTNode) = when (node.elementType) {
         PolyglotQueryTypes.COMMENT -> "/*...*/"
 
-        PolyglotQueryTypes.TYPE_KEY -> node.findChildByType(PolyglotQueryTypes.IDENTIFIER)
+        PolyglotQueryTypes.TYPE_KEY -> node.findChildByType(PolyglotQueryTypes.TYPE_KEY_NAME)
             ?.text
             ?.trim()
 
@@ -63,22 +72,27 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
         PolyglotQueryTypes.WHERE_CLAUSE -> "WHERE ..."
 
         PolyglotQueryTypes.ATTRIBUTE_KEY -> {
-            val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)
-                ?.let {
-                    it.findChildByType(PolyglotQueryTypes.IDENTIFIER)
-                        ?.text
-                        ?.trim()
-                        ?: "?"
-                }
-                ?.let { ":$it" }
-                ?: ""
 
-            val attribute = node.findChildByType(PolyglotQueryTypes.IDENTIFIER)
+            val attribute = node.findChildByType(PolyglotQueryTypes.ATTRIBUTE_KEY_NAME)
                 ?.text
                 ?.trim()
                 ?: "?"
 
-            attribute + language
+            if (HybrisProjectSettingsComponent.getInstance(node.psi.project).state.polyglotQuerySettings.folding.showLanguage) {
+                val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
+                    ?.let {
+                        it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)
+                            ?.text
+                            ?.trim()
+                            ?: "?"
+                    }
+                    ?.let { ":$it" }
+                    ?: ""
+
+                attribute + language
+            } else {
+                attribute
+            }
         }
 
         else -> FALLBACK_PLACEHOLDER

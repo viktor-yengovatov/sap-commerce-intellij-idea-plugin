@@ -3,7 +3,7 @@
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
     <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
-    <version>2023.1.5</version>
+    <version>2023.1.6</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="231.8770.65" until-build="231.*"/>
@@ -92,24 +92,87 @@
 
     <change-notes>
         <![CDATA[
-            <h3>2023.1.5</h3>
+            <h3>2023.1.6</h3>
             <ul>
-                <li><i>Feature:</i> Polyglot Query Language support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>)
+                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/373" target="_blank" rel="nofollow">#373</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/374" target="_blank" rel="nofollow">#374</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/375" target="_blank" rel="nofollow">#375</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/376" target="_blank" rel="nofollow">#376</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/377" target="_blank" rel="nofollow">#377</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/378" target="_blank" rel="nofollow">#378</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/379" target="_blank" rel="nofollow">#379</a>)
                     <ul>
-                        <li><i>Feature:</i> Create new file via context menu (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/353" target="_blank" rel="nofollow">#353</a>)</li>
+                        <li>Integration with Type System (references, code completion)</li>
+                        <li>Code suggestions for localized attributes</li>
+                        <li>Code formatting</li>
+                        <li>Improved Lexer to support <code>order</code> keyword as type and attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/380" target="_blank" rel="nofollow">#380</a>)</li>
+                        <li>Project specific settings</li>
+                        <li>Added possibility to unify case of keywords (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/381" target="_blank" rel="nofollow">#381</a>)</li>
+                        <li>Respect value of the `show language` flag (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/382" target="_blank" rel="nofollow">#382</a>)</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> FlexibleSearch 2.0 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>,
+                <li><i>Feature:</i> Type System preview enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/392" target="_blank" rel="nofollow">#392</a>,
+                    <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/395" target="_blank" rel="nofollow">#395</a>)
+                    <ul>
+                        <li>Improved synchronization of the Tree with Type System GlobalMetaModel</li>
+                        <li>Resolved "flickering" issue on any TypeSystem related changes</li>
+                        <li>Added possibility to remove Enum's values from the details pane</li>
+                        <li>Added possibility to remove Item's attributes/custom properties/indexes from the details pane</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Bean System preview enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/391" target="_blank" rel="nofollow">#391</a>)
+                    <ul>
+                        <li>Improved synchronization of the Tree with Bean System GlobalMetaModel</li>
+                        <li>Resolved "flickering" issue on any TypeSystem related changes</li>
+                        <li>Added possibility to remove Enum's values from the details pane</li>
+                        <li>Added possibility to remove Bean's properties/annotations/hints/imports from the details pane</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Project import/refresh will register <code>kotlinsrc</code>/<code>kotlintestsrc</code> as the source directory (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/403" target="_blank" rel="nofollow">#403</a>)
+                    <ul>
+                        <li>For details on <strong>Kotlin</strong> integration with SAP Commerce see <a href="https://github.com/mlytvyn/kotlinnature">Kotlin nature extension</a></li>
+                        <li>As for now - registration of the Kotlin library has to be done manually via IDE</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Project import/refresh will register <code>groovysrc</code> as the source directory (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/402" target="_blank" rel="nofollow">#402</a>)</li>
+                <li><i>Feature:</i> Added navigate to the Dynamic Handler class for <code>dynamic</code> inlay hint on Ctrl + click (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/396" target="_blank" rel="nofollow">#396</a>)</li>
+                <li><i>Feature:</i> Added possibility to Unify table alias separator for FlexibleSearch with a single click (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/389" target="_blank" rel="nofollow">#389</a>)</li>
+                <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tree (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/384" target="_blank" rel="nofollow">#384</a>)</li>
+                <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tables (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/385" target="_blank" rel="nofollow">#385</a>)</li>
+                <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Bean System preview Tree (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/386" target="_blank" rel="nofollow">#386</a>)</li>
+                <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Bean System preview Tables (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/387" target="_blank" rel="nofollow">#387</a>)</li>
+                <li><i>Feature:</i> Added new FlexibleSearch folding settings (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/383" target="_blank" rel="nofollow">#383</a>)</li>
+                <li><i>Other:</i> Improved FlexibleSearch color scheme (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/390" target="_blank" rel="nofollow">#390</a>)</li>
+                <li><i>Other:</i> Styled FlexibleSearch operation signs (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/394" target="_blank" rel="nofollow">#394</a>)</li>
+                <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
+                <li><i>Fix:</i> Suggest outer join after <code>]</code> symbol (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/388" target="_blank" rel="nofollow">#388</a>)</li>
+                <li><i>Fix:</i> Adjusted Polyglot language Parser (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/372" target="_blank" rel="nofollow">#372</a>)</li>
+            </ul>
+            <h3>2023.1.5</h3>
+            <ul>
+                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/356" target="_blank" rel="nofollow">#356</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/353" target="_blank" rel="nofollow">#353</a>)
+                    <ul>
+                        <li>Syntax highlighting</li>
+                        <li>Single and multi-line comments</li>
+                        <li>Several <code>GET</code> statements per file</li>
+                        <li>Braces matcher - opening and closing braces will be highlighted</li>
+                        <li>Custom configurable Color Schema</li>
+                        <li>Elements Folding</li>
+                        <li>Create new file via context menu</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> <strong>FlexibleSearch 2.0</strong> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/350" target="_blank" rel="nofollow">#350</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/351" target="_blank" rel="nofollow">#351</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/352" target="_blank" rel="nofollow">#352</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/357" target="_blank" rel="nofollow">#357</a>,
-                    <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/368" target="_blank" rel="nofollow">#368</a>
-                    )
+                    <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/368" target="_blank" rel="nofollow">#368</a>)
                     <ul>
                         <li>Rewritten from the Scratch</li>
                         <li>Folding support</li>
-                        <li>Brand new possibility to Unify case of the reserved words, change to upper or lowercase with single click</li>
+                        <li>Brand new possibility to Unify case of the reserved words, change to upper or lowercase with a single click</li>
                         <li>Added support of the multiline comment block <code>/**/</code></li>
                         <li>Added find usages for table & column aliases</li>
                         <li>Added support of the localized attributes</li>

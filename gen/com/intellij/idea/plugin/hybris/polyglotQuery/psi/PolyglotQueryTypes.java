@@ -31,28 +31,31 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl.*;
 public interface PolyglotQueryTypes {
 
   IElementType ATTRIBUTE_KEY = new PolyglotQueryElementType("ATTRIBUTE_KEY");
+  IElementType ATTRIBUTE_KEY_NAME = new PolyglotQueryElementType("ATTRIBUTE_KEY_NAME");
   IElementType BIND_PARAMETER = new PolyglotQueryElementType("BIND_PARAMETER");
   IElementType CMP_OPERATOR = new PolyglotQueryElementType("CMP_OPERATOR");
   IElementType EXPR_AND = new PolyglotQueryElementType("EXPR_AND");
   IElementType EXPR_ATOM = new PolyglotQueryElementType("EXPR_ATOM");
   IElementType EXPR_OR = new PolyglotQueryElementType("EXPR_OR");
+  IElementType LOCALIZED = new PolyglotQueryElementType("LOCALIZED");
   IElementType LOCALIZED_NAME = new PolyglotQueryElementType("LOCALIZED_NAME");
   IElementType NULL_OPERATOR = new PolyglotQueryElementType("NULL_OPERATOR");
   IElementType ORDER_BY = new PolyglotQueryElementType("ORDER_BY");
   IElementType ORDER_KEY = new PolyglotQueryElementType("ORDER_KEY");
   IElementType QUERY = new PolyglotQueryElementType("QUERY");
   IElementType TYPE_KEY = new PolyglotQueryElementType("TYPE_KEY");
+  IElementType TYPE_KEY_NAME = new PolyglotQueryElementType("TYPE_KEY_NAME");
   IElementType WHERE_CLAUSE = new PolyglotQueryElementType("WHERE_CLAUSE");
 
   IElementType AMP = new PolyglotQueryTokenType("&");
   IElementType AND = new PolyglotQueryTokenType("AND");
   IElementType ASC = new PolyglotQueryTokenType("ASC");
   IElementType BY = new PolyglotQueryTokenType("BY");
+  IElementType COMMA = new PolyglotQueryTokenType(",");
   IElementType COMMENT = new PolyglotQueryTokenType("COMMENT");
   IElementType DESC = new PolyglotQueryTokenType("DESC");
   IElementType DOT = new PolyglotQueryTokenType(".");
   IElementType EQ = new PolyglotQueryTokenType("=");
-  IElementType FROM = new PolyglotQueryTokenType("FROM");
   IElementType GET = new PolyglotQueryTokenType("GET");
   IElementType GT = new PolyglotQueryTokenType(">");
   IElementType GTE = new PolyglotQueryTokenType(">=");
@@ -81,6 +84,9 @@ public interface PolyglotQueryTypes {
       if (type == ATTRIBUTE_KEY) {
         return new PolyglotQueryAttributeKeyImpl(node);
       }
+      else if (type == ATTRIBUTE_KEY_NAME) {
+        return new PolyglotQueryAttributeKeyNameImpl(node);
+      }
       else if (type == BIND_PARAMETER) {
         return new PolyglotQueryBindParameterImpl(node);
       }
@@ -95,6 +101,9 @@ public interface PolyglotQueryTypes {
       }
       else if (type == EXPR_OR) {
         return new PolyglotQueryExprOrImpl(node);
+      }
+      else if (type == LOCALIZED) {
+        return new PolyglotQueryLocalizedImpl(node);
       }
       else if (type == LOCALIZED_NAME) {
         return new PolyglotQueryLocalizedNameImpl(node);
@@ -113,6 +122,9 @@ public interface PolyglotQueryTypes {
       }
       else if (type == TYPE_KEY) {
         return new PolyglotQueryTypeKeyImpl(node);
+      }
+      else if (type == TYPE_KEY_NAME) {
+        return new PolyglotQueryTypeKeyNameImpl(node);
       }
       else if (type == WHERE_CLAUSE) {
         return new PolyglotQueryWhereClauseImpl(node);

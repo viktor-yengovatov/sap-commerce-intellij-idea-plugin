@@ -21,10 +21,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum;
-import com.intellij.idea.plugin.hybris.system.bean.model.Enum;
+import com.intellij.idea.plugin.hybris.system.bean.psi.BSPsiHelper;
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaEnumValuesTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -33,11 +35,12 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BSMetaEnumView {
 
     private final Project myProject;
-    private BSMetaClassifier<Enum> myMeta;
+    private BSGlobalMetaEnum myMeta;
     private JPanel myContentPane;
     private JBTextField myDescription;
     private JBTextField myClass;
@@ -47,7 +50,7 @@ public class BSMetaEnumView {
     private JBPanel myDetailsPane;
     private JPanel myFlagsPane;
     private JBTextField myDeprecatedSince;
-    private BSMetaEnumValuesTable myEnumValues;
+    private AbstractTable<BSGlobalMetaEnum, BSMetaEnum.BSMetaEnumValue> myEnumValues;
 
     public BSMetaEnumView(final Project project) {
         this.myProject = project;
@@ -86,14 +89,21 @@ public class BSMetaEnumView {
     private void createUIComponents() {
         myEnumValues = BSMetaEnumValuesTable.Companion.getInstance(myProject);
         myValuesPane = ToolbarDecorator.createDecorator(myEnumValues)
-                                       .disableUpDownActions()
-                                       .setPanelBorder(JBUI.Borders.empty())
-                                       .createPanel();
+            .disableUpDownActions()
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myEnumValues.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myEnumValues.getCurrentItem())
+                .map(BSMetaClassifier::isCustom)
+                .orElse(false))
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myDetailsPane = new JBPanel();
         myFlagsPane = new JBPanel();
 
         myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
         myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
         myValuesPane.setBorder(IdeBorderFactory.createTitledBorder("Values"));
+
+        PopupHandler.installPopupMenu(myEnumValues, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
     }
 }

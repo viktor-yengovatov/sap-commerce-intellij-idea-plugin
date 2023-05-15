@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
+import com.intellij.idea.plugin.hybris.codeInsight.lookup.LookupElementFactory
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
@@ -43,7 +43,7 @@ class FxSColumnLocalizedNameReference(owner: FlexibleSearchColumnLocalizedName) 
         .let { PsiUtils.getValidResults(it) }
 
     override fun getVariants() = PropertiesService.getInstance(element.project).getLanguages()
-        .map { FxSLookupElementFactory.buildLanguage(it) }
+        .map { LookupElementFactory.buildLanguage(it) }
         .toTypedArray()
 
     companion object {

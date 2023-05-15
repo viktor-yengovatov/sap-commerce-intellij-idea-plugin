@@ -43,9 +43,11 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         private val STRING_KEYS = pack(FlexibleSearchHighlighterColors.FXS_STRING)
         private val SYMBOL_KEYS = pack(FlexibleSearchHighlighterColors.FXS_SYMBOL)
         private val BRACES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_BRACES)
+        private val DBRACES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_DBRACES)
+        private val STAR_KEYS = pack(FlexibleSearchHighlighterColors.FXS_STAR)
+        private val OPERATION_SIGNS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_OPERATION_SIGN)
         private val PARENS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARENS)
         private val BRACKETS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_BRACKETS)
-        private val PARENTHESES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARENTHESES)
         private val NUMBER_KEYS = pack(FlexibleSearchHighlighterColors.FXS_NUMBER)
         private val COLUMN_KEYS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN)
         private val TABLE_KEYS = pack(FlexibleSearchHighlighterColors.FXS_TABLE)
@@ -53,16 +55,16 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         private val OUTER_JOIN_KEYS = pack(FlexibleSearchHighlighterColors.FXS_OUTER_JOIN)
         private val FUNCTION_CALL_KEYS = pack(FlexibleSearchHighlighterColors.FXS_FUNCTION_CALL)
         private val LOCALIZED_KEYS = pack(FlexibleSearchHighlighterColors.FXS_LOCALIZED)
-        private val COLUMN_SEPARATOR = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_SEPARATOR)
-        private val TABLE_ALIAS = pack(FlexibleSearchHighlighterColors.FXS_TABLE_ALIAS)
-        private val COLUMN_ALIAS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_ALIAS)
-        private val BOOLEAN = pack(FlexibleSearchHighlighterColors.FXS_BOOLEAN)
+        private val COLUMN_SEPARATOR_KEYS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_SEPARATOR)
+        private val TABLE_ALIAS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_TABLE_ALIAS)
+        private val COLUMN_ALIAS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_ALIAS)
+        private val BOOLEAN_KEYS = pack(FlexibleSearchHighlighterColors.FXS_BOOLEAN)
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
             TokenType.BAD_CHARACTER to BAD_CHARACTER_KEYS,
 
-            FlexibleSearchTypes.BOOLEAN_LITERAL to BOOLEAN,
+            FlexibleSearchTypes.BOOLEAN_LITERAL to BOOLEAN_KEYS,
 
             FlexibleSearchTypes.COLUMN_OUTER_JOIN_NAME to OUTER_JOIN_KEYS,
             FlexibleSearchTypes.OUTER_JOIN to OUTER_JOIN_KEYS,
@@ -71,12 +73,12 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
 
             FlexibleSearchTypes.COLUMN_LOCALIZED_NAME to LOCALIZED_KEYS,
 
-            FlexibleSearchTypes.COLUMN_SEPARATOR to COLUMN_SEPARATOR,
+            FlexibleSearchTypes.COLUMN_SEPARATOR to COLUMN_SEPARATOR_KEYS,
 
-            FlexibleSearchTypes.TABLE_ALIAS_NAME to TABLE_ALIAS,
-            FlexibleSearchTypes.SELECTED_TABLE_NAME to TABLE_ALIAS,
+            FlexibleSearchTypes.TABLE_ALIAS_NAME to TABLE_ALIAS_KEYS,
+            FlexibleSearchTypes.SELECTED_TABLE_NAME to TABLE_ALIAS_KEYS,
 
-            FlexibleSearchTypes.COLUMN_ALIAS_NAME to COLUMN_ALIAS,
+            FlexibleSearchTypes.COLUMN_ALIAS_NAME to COLUMN_ALIAS_KEYS,
 
             FlexibleSearchTypes.SINGLE_QUOTE_STRING_LITERAL to STRING_KEYS,
             FlexibleSearchTypes.DOUBLE_QUOTE_STRING_LITERAL to STRING_KEYS,
@@ -93,9 +95,10 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.COMMENT to COMMENT_KEYS,
 
             FlexibleSearchTypes.LBRACE to BRACES_KEYS,
-            FlexibleSearchTypes.LDBRACE to BRACES_KEYS,
             FlexibleSearchTypes.RBRACE to BRACES_KEYS,
-            FlexibleSearchTypes.RDBRACE to BRACES_KEYS,
+
+            FlexibleSearchTypes.LDBRACE to DBRACES_KEYS,
+            FlexibleSearchTypes.RDBRACE to DBRACES_KEYS,
 
             FlexibleSearchTypes.LBRACKET to BRACKETS_KEYS,
             FlexibleSearchTypes.RBRACKET to BRACKETS_KEYS,
@@ -110,6 +113,22 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.DOT to SYMBOL_KEYS,
             FlexibleSearchTypes.COLON to SYMBOL_KEYS,
             FlexibleSearchTypes.COMMA to SYMBOL_KEYS,
+
+            FlexibleSearchTypes.STAR to STAR_KEYS,
+
+            FlexibleSearchTypes.UNEQ to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.EQ to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.EQEQ to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.NOT_EQ to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.GT to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.GTE to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.LT to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.LTE to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.SHL to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.SHR to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.MOD to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.CONCAT to OPERATION_SIGNS_KEYS,
+            FlexibleSearchTypes.BAR to OPERATION_SIGNS_KEYS,
 
             FlexibleSearchTypes.CASE to CASE_KEYS,
             FlexibleSearchTypes.WHEN to CASE_KEYS,

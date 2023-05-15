@@ -29,15 +29,19 @@ IDENTIFIER=([:letter:])([:letter:]|[:digit:]|_)*
 LINE_COMMENT=--[^r\n]*
 COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
 
+%state GET_STATE
+%state ATTRIBUTE_STATE
+
 %%
 <YYINITIAL> {
   {WHITE_SPACE}       { return WHITE_SPACE; }
 
   "?"                 { return QUESTION_MARK; }
   "."                 { return DOT; }
+  ","                 { return COMMA; }
   "["                 { return LBRACKET; }
   "]"                 { return RBRACKET; }
-  "{"                 { return LBRACE; }
+  "{"                 { yybegin(ATTRIBUTE_STATE); return LBRACE; }
   "}"                 { return RBRACE; }
   "&"                 { return AMP; }
   "="                 { return EQ; }
@@ -48,7 +52,7 @@ COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
   "<>"                { return UNEQ; }
   "("                 { return LPAREN; }
   ")"                 { return RPAREN; }
-  "GET"               { return GET; }
+  "GET"               { yybegin(GET_STATE); return GET; }
   "ASC"               { return ASC; }
   "DESC"              { return DESC; }
   "ORDER"             { return ORDER; }
@@ -64,6 +68,29 @@ COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
   {LINE_COMMENT}      { return LINE_COMMENT; }
   {COMMENT}           { return COMMENT; }
 
+}
+
+<GET_STATE> {
+  {WHITE_SPACE}       { return WHITE_SPACE; }
+
+  "{"                 { return LBRACE; }
+  "}"                 { yybegin(YYINITIAL); return RBRACE; }
+
+  {IDENTIFIER}        { return IDENTIFIER; }
+  {LINE_COMMENT}      { return LINE_COMMENT; }
+  {COMMENT}           { return COMMENT; }
+}
+
+<ATTRIBUTE_STATE> {
+  {WHITE_SPACE}       { return WHITE_SPACE; }
+
+  "}"                 { yybegin(YYINITIAL); return RBRACE; }
+  "["                 { return LBRACKET; }
+  "]"                 { return RBRACKET; }
+
+  {IDENTIFIER}        { return IDENTIFIER; }
+  {LINE_COMMENT}      { return LINE_COMMENT; }
+  {COMMENT}           { return COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

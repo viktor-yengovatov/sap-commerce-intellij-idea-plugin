@@ -56,38 +56,70 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' IDENTIFIER ( localized_name )? '}'
+  // '{' attribute_key_name ( localized )? '}'
   public static boolean attribute_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE_KEY, "<attribute key>");
-    r = consumeTokens(b, 1, LBRACE, IDENTIFIER);
+    r = consumeToken(b, LBRACE);
     p = r; // pin = 1
-    r = r && report_error_(b, attribute_key_2(b, l + 1));
+    r = r && report_error_(b, attribute_key_name(b, l + 1));
+    r = p && report_error_(b, attribute_key_2(b, l + 1)) && r;
     r = p && consumeToken(b, RBRACE) && r;
     exit_section_(b, l, m, r, p, PolyglotQueryParser::attribute_key_recover);
     return r || p;
   }
 
-  // ( localized_name )?
+  // ( localized )?
   private static boolean attribute_key_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_2")) return false;
     attribute_key_2_0(b, l + 1);
     return true;
   }
 
-  // ( localized_name )
+  // ( localized )
   private static boolean attribute_key_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = localized_name(b, l + 1);
+    r = localized(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // !(<<eof>>  | '&' | '=' | '>' | '>=' | '<' | '<=' | '<>'  | ')' | FROM |order_clause_literal | GET | ASC | DESC)
+  // IDENTIFIER
+  public static boolean attribute_key_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_name")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE_KEY_NAME, "<attribute key name>");
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, PolyglotQueryParser::attribute_key_name_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('[' | '}')
+  static boolean attribute_key_name_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_name_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !attribute_key_name_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // '[' | '}'
+  private static boolean attribute_key_name_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_name_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, LBRACKET);
+    if (!r) r = consumeToken(b, RBRACE);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | order_clause_literal | GET | ASC | DESC)
   static boolean attribute_key_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover")) return false;
     boolean r;
@@ -97,21 +129,17 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // <<eof>>  | '&' | '=' | '>' | '>=' | '<' | '<=' | '<>'  | ')' | FROM |order_clause_literal | GET | ASC | DESC
+  // <<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | order_clause_literal | GET | ASC | DESC
   private static boolean attribute_key_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = eof(b, l + 1);
     if (!r) r = consumeToken(b, AMP);
-    if (!r) r = consumeToken(b, EQ);
-    if (!r) r = consumeToken(b, GT);
-    if (!r) r = consumeToken(b, GTE);
-    if (!r) r = consumeToken(b, LT);
-    if (!r) r = consumeToken(b, LTE);
-    if (!r) r = consumeToken(b, UNEQ);
+    if (!r) r = consumeToken(b, COMMA);
+    if (!r) r = cmp_operator(b, l + 1);
+    if (!r) r = null_operator(b, l + 1);
     if (!r) r = consumeToken(b, RPAREN);
-    if (!r) r = consumeToken(b, FROM);
     if (!r) r = order_clause_literal(b, l + 1);
     if (!r) r = consumeToken(b, GET);
     if (!r) r = consumeToken(b, ASC);
@@ -323,21 +351,45 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '[' IDENTIFIER ']'
-  public static boolean localized_name(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "localized_name")) return false;
+  // '[' localized_name ']'
+  public static boolean localized(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "localized")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, LOCALIZED_NAME, "<localized name>");
-    r = consumeTokens(b, 1, LBRACKET, IDENTIFIER, RBRACKET);
+    Marker m = enter_section_(b, l, _NONE_, LOCALIZED, "<localized>");
+    r = consumeToken(b, LBRACKET);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, PolyglotQueryParser::localized_name_recover);
+    r = r && report_error_(b, localized_name(b, l + 1));
+    r = p && consumeToken(b, RBRACKET) && r;
+    exit_section_(b, l, m, r, p, PolyglotQueryParser::localized_recover);
     return r || p;
   }
 
   /* ********************************************************** */
-  // !('}')
+  // IDENTIFIER
+  public static boolean localized_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "localized_name")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, LOCALIZED_NAME, "<localized name>");
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, PolyglotQueryParser::localized_name_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(']')
   static boolean localized_name_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "localized_name_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, RBRACKET);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('}')
+  static boolean localized_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "localized_recover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
     r = !consumeToken(b, RBRACE);
@@ -397,7 +449,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "order_by_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ",");
+    r = consumeToken(b, COMMA);
     r = r && order_key(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -528,19 +580,43 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' IDENTIFIER '}'
+  // '{' type_key_name '}'
   public static boolean type_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_key")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, TYPE_KEY, "<type key>");
-    r = consumeTokens(b, 1, LBRACE, IDENTIFIER, RBRACE);
+    r = consumeToken(b, LBRACE);
     p = r; // pin = 1
+    r = r && report_error_(b, type_key_name(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
     exit_section_(b, l, m, r, p, PolyglotQueryParser::type_key_recover);
     return r || p;
   }
 
   /* ********************************************************** */
-  // !(<<eof>> | FROM | order_clause_literal | GET | WHERE)
+  // IDENTIFIER
+  public static boolean type_key_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_key_name")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TYPE_KEY_NAME, "<type key name>");
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, PolyglotQueryParser::type_key_name_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('}')
+  static boolean type_key_name_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_key_name_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, RBRACE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | order_clause_literal | GET | WHERE)
   static boolean type_key_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_key_recover")) return false;
     boolean r;
@@ -550,13 +626,12 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // <<eof>> | FROM | order_clause_literal | GET | WHERE
+  // <<eof>> | order_clause_literal | GET | WHERE
   private static boolean type_key_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_key_recover_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = eof(b, l + 1);
-    if (!r) r = consumeToken(b, FROM);
     if (!r) r = order_clause_literal(b, l + 1);
     if (!r) r = consumeToken(b, GET);
     if (!r) r = consumeToken(b, WHERE);
