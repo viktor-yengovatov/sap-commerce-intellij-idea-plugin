@@ -103,12 +103,9 @@
                         <li>Show different icon for <code>kotlinnature</code> extension (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408" target="_blank" rel="nofollow">#408</a>)</li>
                     </ul>
                 </li>
+                <li><i>Fix:</i> Check additional active plugin for java EE (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/406" target="_blank" rel="nofollow">#406</a>)</li>
                 <li><i>Fix:</i> IDEA 2023.2: the expensive method should not be called inside the Highlighting Pass (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/411" target="_blank" rel="nofollow">#411</a>)</li>
                 <li><i>Fix:</i> Flaky ProcessCanceledException during TS/BS files modification (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/412" target="_blank" rel="nofollow">#412</a>)</li>
-            </ul>
-            <h3>2023.1.6</h3>
-            <ul>
-                <li><i>Feature:</i> Added 2023.2 support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405" target="_blank" rel="nofollow">#405</a>)</li>
             </ul>
             <h3>2023.1.6</h3>
             <ul>
