@@ -25,16 +25,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpexUserRightsValueGroup extends ImpexUserRightsAwarePsiElement {
-
-  @Nullable
-  ImpexUserRightsValue getUserRightsValue();
-
-  @Nullable
-  ImpexUserRightsValueLine getValueLine();
-
-  @Nullable
-  Integer getColumnNumber();
+public interface ImpexUserRightsValue extends ImpexUserRightsAwarePsiElement {
 
   @Nullable
   ImpexUserRightsHeaderParameter getHeaderParameter();

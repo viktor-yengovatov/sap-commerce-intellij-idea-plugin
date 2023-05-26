@@ -18,12 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.Block;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Spacing;
-import com.intellij.formatting.SpacingBuilder;
-import com.intellij.formatting.Wrap;
+import com.intellij.formatting.*;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ApplicationManager;
@@ -72,16 +67,13 @@ public class ImpexBlock extends AbstractBlock {
         while (null != currentNode) {
             alignmentStrategy.processNode(currentNode);
 
-            if (isNotWhitespaceOrNewLine(currentNode)
-                && !isCurrentNodeHasParentValue(currentNode)) {
-
-                final Block block = new ImpexBlock(
+            if (isNotWhitespaceOrNewLine(currentNode) && !isCurrentNodeHasParentValue(currentNode)) {
+                final var block = new ImpexBlock(
                     currentNode,
                     null,
                     alignmentStrategy.getAlignment(currentNode),
                     spacingBuilder,
                     codeStyleSettings
-
                 );
 
                 blocks.add(block);
@@ -109,7 +101,7 @@ public class ImpexBlock extends AbstractBlock {
 
     private boolean isNotWhitespaceOrNewLine(final ASTNode currentNode) {
         return TokenType.WHITE_SPACE != currentNode.getElementType()
-               && ImpexTypes.CRLF != currentNode.getElementType();
+            && ImpexTypes.CRLF != currentNode.getElementType();
     }
 
     private boolean isCurrentNodeHasParentValue(final @NotNull ASTNode currentNode) {
