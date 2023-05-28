@@ -50,19 +50,20 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isDisposed) return
 
-        val commonIdeaService = CommonIdeaService.getInstance()
-        val isHybrisProject = commonIdeaService.isHybrisProject(project)
+        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        val settingsComponent = HybrisProjectSettingsComponent.getInstance(project)
+        val isHybrisProject = settingsComponent.isHybrisProject()
 
         if (isHybrisProject) {
-            commonIdeaService.refreshProjectSettings(project)
+            settingsComponent.registerCloudExtensions()
 
-            if (commonIdeaService.isOutDatedHybrisProject(project)) {
+            if (settingsComponent.isOutdatedHybrisProject()) {
                 Notifications.create(
                     NotificationType.INFORMATION,
                     HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
                     HybrisI18NBundleUtils.message(
                         "hybris.notification.project.open.outdated.text",
-                        HybrisProjectSettingsComponent.getInstance(project).state.importedByVersion ?: "old"
+                        settingsComponent.state.importedByVersion ?: "old"
                     )
                 )
                     .important(true)
@@ -100,14 +101,12 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         resetSpringGeneralSettings(project)
         fixBackOfficeJRebelSupport(project)
 
-        CommonIdeaService.getInstance().fixRemoteConnectionSettings(project)
+        CommonIdeaService.instance.fixRemoteConnectionSettings(project)
         ConsolePersistenceService.getInstance(project).loadPersistedQueries()
     }
 
     private fun resetSpringGeneralSettings(project: Project) {
-        val commonIdeaService = CommonIdeaService.getInstance()
-
-        if (commonIdeaService.isHybrisProject(project) && PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
+        if (HybrisProjectSettingsComponent.getInstance(project).isHybrisProject() && PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
             val springGeneralSettings = SpringGeneralSettings.getInstance(project)
             springGeneralSettings.isShowMultipleContextsPanel = false
             springGeneralSettings.isShowProfilesPanel = false
@@ -124,7 +123,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         val compilingXml = File(
             FileUtilRt.toSystemDependentName(
                 project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
-                        + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
+                    + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
             )
         )
         if (!compilingXml.isFile) return
