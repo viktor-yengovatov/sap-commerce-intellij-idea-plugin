@@ -30,6 +30,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 
 public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implements ImpexFullHeaderParameter {
 
@@ -74,6 +75,12 @@ public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implement
   @Override
   public int getColumnNumber() {
     return ImpexPsiUtil.getColumnNumber(this);
+  }
+
+  @Override
+  @Nullable
+  public ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier) {
+    return ImpexPsiUtil.getAttribute(this, attributeModifier);
   }
 
 }

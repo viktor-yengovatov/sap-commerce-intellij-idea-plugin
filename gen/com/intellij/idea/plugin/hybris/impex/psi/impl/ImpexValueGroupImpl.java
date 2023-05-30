@@ -70,4 +70,10 @@ public class ImpexValueGroupImpl extends ASTWrapperPsiElement implements ImpexVa
     return ImpexPsiUtil.getValueLine(this);
   }
 
+  @Override
+  @Nullable
+  public String computeValue() {
+    return ImpexPsiUtil.computeValue(this);
+  }
+
 }

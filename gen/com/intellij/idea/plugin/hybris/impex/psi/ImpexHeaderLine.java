@@ -24,6 +24,7 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import java.util.Collection;
 
 public interface ImpexHeaderLine extends PsiElement {
 
@@ -35,5 +36,11 @@ public interface ImpexHeaderLine extends PsiElement {
 
   @Nullable
   ImpexFullHeaderType getFullHeaderType();
+
+  @Nullable
+  ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
+
+  @NotNull
+  Collection<ImpexValueLine> getValueLines();
 
 }

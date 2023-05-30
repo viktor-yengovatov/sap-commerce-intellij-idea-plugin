@@ -111,6 +111,58 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitParameters(o);
   }
 
+  public void visitSubTypeName(@NotNull ImpexSubTypeName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRights(@NotNull ImpexUserRights o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsAttributeValue(@NotNull ImpexUserRightsAttributeValue o) {
+    visitUserRightsValue(o);
+  }
+
+  public void visitUserRightsEnd(@NotNull ImpexUserRightsEnd o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsFirstValueGroup(@NotNull ImpexUserRightsFirstValueGroup o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsHeaderLine(@NotNull ImpexUserRightsHeaderLine o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsHeaderParameter(@NotNull ImpexUserRightsHeaderParameter o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsMultiValue(@NotNull ImpexUserRightsMultiValue o) {
+    visitUserRightsValue(o);
+  }
+
+  public void visitUserRightsPermissionValue(@NotNull ImpexUserRightsPermissionValue o) {
+    visitUserRightsValue(o);
+  }
+
+  public void visitUserRightsSingleValue(@NotNull ImpexUserRightsSingleValue o) {
+    visitUserRightsValue(o);
+  }
+
+  public void visitUserRightsStart(@NotNull ImpexUserRightsStart o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueGroup(@NotNull ImpexUserRightsValueGroup o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueLine(@NotNull ImpexUserRightsValueLine o) {
+    visitPsiElement(o);
+  }
+
   public void visitValue(@NotNull ImpexValue o) {
     visitPsiElement(o);
   }
@@ -124,6 +176,10 @@ public class ImpexVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiNamedElement(@NotNull ImpexPsiNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValue(@NotNull ImpexUserRightsValue o) {
     visitPsiElement(o);
   }
 

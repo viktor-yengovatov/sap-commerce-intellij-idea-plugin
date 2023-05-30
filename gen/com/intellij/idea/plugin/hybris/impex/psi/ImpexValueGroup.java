@@ -38,4 +38,7 @@ public interface ImpexValueGroup extends PsiElement {
   @Nullable
   ImpexValueLine getValueLine();
 
+  @Nullable
+  String computeValue();
+
 }

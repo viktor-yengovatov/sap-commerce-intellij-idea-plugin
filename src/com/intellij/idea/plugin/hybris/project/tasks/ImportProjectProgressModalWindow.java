@@ -34,6 +34,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils;
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
@@ -94,11 +95,9 @@ import java.util.stream.Collectors;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.*;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_WEB_PLUGIN_ID;
 
-/**
- * Created by Martin Zdarsky-Jones on 2/11/16.
- */
 public class ImportProjectProgressModalWindow extends Task.Modal {
     private static final Logger LOG = Logger.getInstance(ImportProjectProgressModalWindow.class);
     private static final int COMMITTED_CHUNK_SIZE = 20;
@@ -108,7 +107,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private final ConfiguratorFactory configuratorFactory;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
     private final List<Module> modules;
-    @NotNull private IdeModifiableModelsProvider modifiableModelsProvider;
+    @NotNull
+    private IdeModifiableModelsProvider modifiableModelsProvider;
 
     public ImportProjectProgressModalWindow(
         final Project project,
@@ -134,9 +134,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final HybrisConfiguratorCache cache = new HybrisConfiguratorCache();
         final List<HybrisModuleDescriptor> allModules = getHybrisModuleDescriptors();
 
-        final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
+        final var springConfigurator = configuratorFactory.getSpringConfigurator();
         final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
-        final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
+        final var versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
 
         this.initializeHybrisProjectSettings(project);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
@@ -144,7 +144,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.saveCustomDirectoryLocation(project);
         this.saveImportedSettings(project);
         this.disableWrapOnType(ImpexLanguage.getInstance());
-        PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
+        PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
 
         processUltimateEdition(indicator);
 
@@ -184,7 +184,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getDebugRunConfigurationConfigurator().configure(hybrisProjectDescriptor, project, cache);
 
         Optional.ofNullable(configuratorFactory.getTestRunConfigurationConfigurator())
-                .ifPresent(testRunConfigurationConfigurator -> testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache));
+            .ifPresent(testRunConfigurationConfigurator -> testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache));
 
         indicator.setText(message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(hybrisProjectDescriptor, project);
@@ -202,6 +202,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLoadedConfigurator().configure(project, hybrisProjectDescriptor.getModulesChosenForImport());
 
         configureJavaCompiler(indicator, cache);
+        configureKotlinCompiler(indicator, cache);
         configureEclipseModules(indicator, groupModuleConfigurator);
         configureGradleModules(indicator, groupModuleConfigurator);
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
@@ -245,12 +246,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             indicator.setText(message("hybris.project.import.facets"));
-            if (isPluginActive(SPRING_PLUGIN_ID)) {
+            if (PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
             }
-            if (isPluginActive(JAVAEE_PLUGIN_ID)) {
-                this.excludeFrameworkDetection(project, WebFacet.ID);
+            if (PluginCommon.isPluginActive(JAVAEE_PLUGIN_ID)) {
                 this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
+            }
+            if (PluginCommon.isPluginActive(JAVAEE_WEB_PLUGIN_ID)) {
+                this.excludeFrameworkDetection(project, WebFacet.ID);
             }
         }
     }
@@ -260,8 +263,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final @NotNull ProgressIndicator indicator,
         final ModifiableModuleModel rootProjectModifiableModel,
         final HybrisModuleDescriptor moduleDescriptor,
-        final GroupModuleConfigurator groupModuleConfigurator
-    ) {
+        final GroupModuleConfigurator groupModuleConfigurator) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
         final Module javaModule = rootProjectModifiableModel.newModule(
@@ -296,7 +298,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText2(message("hybris.project.import.module.facet"));
         for (final FacetConfigurator facetConfigurator : configuratorFactory.getFacetConfigurators()) {
-            facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
+            facetConfigurator.configure(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
         }
         return javaModule;
     }
@@ -305,18 +307,27 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         return hybrisProjectDescriptor
             .getModulesChosenForImport().stream()
             .filter(e -> !(e instanceof MavenModuleDescriptor)
-                         && !(e instanceof EclipseModuleDescriptor)
-                         && !(e instanceof GradleModuleDescriptor)
+                && !(e instanceof EclipseModuleDescriptor)
+                && !(e instanceof GradleModuleDescriptor)
             )
             .collect(Collectors.toList());
     }
 
     private void configureJavaCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
-        final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getCompilerConfigurator();
+        final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getJavaCompilerConfigurator();
 
         if (compilerConfigurator == null) return;
 
-        indicator.setText(message("hybris.project.import.compiler"));
+        indicator.setText(message("hybris.project.import.compiler.java"));
+        compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
+    }
+
+    private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
+        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
+
+        if (compilerConfigurator == null) return;
+
+        indicator.setText(message("hybris.project.import.compiler.kotlin"));
         compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
     }
 
@@ -374,7 +385,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ProjectDictionary projectDictionary = dictionaryState.getProjectDictionary();
         projectDictionary.getEditableWords();//ensure dictionaries exist
         EditableDictionary hybrisDictionary = projectDictionary.getDictionaries().stream()
-                    .filter(e -> DICTIONARY_NAME.equals(e.getName())).findFirst().orElse(null);
+            .filter(e -> DICTIONARY_NAME.equals(e.getName())).findFirst().orElse(null);
         if (hybrisDictionary == null) {
             hybrisDictionary = new UserDictionary(DICTIONARY_NAME);
             projectDictionary.getDictionaries().add(hybrisDictionary);
@@ -382,9 +393,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisDictionary.addToDictionary(DICTIONARY_WORDS);
         hybrisDictionary.addToDictionary(project.getName().toLowerCase());
         final Set<String> moduleNames = modules.stream()
-                                               .map(HybrisModuleDescriptor::getName)
-                                               .map(String::toLowerCase)
-                                               .collect(Collectors.toSet());
+            .map(HybrisModuleDescriptor::getName)
+            .map(String::toLowerCase)
+            .collect(Collectors.toSet());
         hybrisDictionary.addToDictionary(moduleNames);
     }
 
@@ -392,7 +403,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         Validate.notNull(project);
 
         final @NotNull HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                                   .getState();
+            .getState();
         hybrisProjectSettings.setHybrisProject(true);
         final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
 
@@ -425,7 +436,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
     private void saveCustomDirectoryLocation(final Project project) {
         final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                          .getState();
+            .getState();
         final File customDirectory = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         final File hybrisDirectory = hybrisProjectDescriptor.getHybrisDistributionDirectory();
         final VirtualFile projectDir = ProjectUtil.guessProjectDir(project);
@@ -496,19 +507,19 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
         hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
         final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
-                               .filter(e -> !(e instanceof MavenModuleDescriptor)
-                                            && !(e instanceof EclipseModuleDescriptor)
-                                            && !(e instanceof GradleModuleDescriptor)
-                                            && !(e instanceof ConfigHybrisModuleDescriptor)
-                               )
-                               .collect(Collectors.toSet());
+            .filter(e -> !(e instanceof MavenModuleDescriptor)
+                && !(e instanceof EclipseModuleDescriptor)
+                && !(e instanceof GradleModuleDescriptor)
+                && !(e instanceof ConfigHybrisModuleDescriptor)
+            )
+            .collect(Collectors.toSet());
         hybrisSettingsComponent.setAvailableExtensions(completeSetOfHybrisModules);
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules.stream()
-                                                                              .map(HybrisModuleDescriptor::getName)
-                                                                              .collect(Collectors.toSet()));
+            .map(HybrisModuleDescriptor::getName)
+            .collect(Collectors.toSet()));
         hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
 
-        CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
+        CommonIdeaService.Companion.getInstance().fixRemoteConnectionSettings(project);
 
         project.putUserData(HybrisProjectImportStartupActivity.Companion.getSyncProjectSettingsKey(), true);
     }

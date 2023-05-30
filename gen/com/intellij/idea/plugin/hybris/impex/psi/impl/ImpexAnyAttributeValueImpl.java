@@ -28,7 +28,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAttributeValueMixin;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyAttributeValueImpl extends ImpexAttributeValueMixin implements ImpexAnyAttributeValue {

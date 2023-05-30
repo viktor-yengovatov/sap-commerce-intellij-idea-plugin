@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "hybris integration" plugin for Intellij IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -30,6 +30,7 @@
         <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
         <writingAccessProvider implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisWritingAccessProvider" />
 
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToJavaInjectorProvider"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorFactory"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisModuleDescriptorFactory"/>
 
@@ -89,7 +90,7 @@
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
 
         <codeInsight.declarativeInlayProvider language="JAVA"
                                               implementationClass="com.intellij.idea.plugin.hybris.codeInsight.hints.DynamicAttributeDeclarativeInlayProvider"

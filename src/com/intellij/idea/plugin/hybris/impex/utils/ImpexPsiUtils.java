@@ -329,11 +329,11 @@ public final class ImpexPsiUtils {
             return null;
         }
 
-        final ImpexValueGroup valueGroup = ImpexPsiUtils.getClosestSelectedValueGroupFromTheSameLine(
+        final ImpexValueGroup valueGroup = getClosestSelectedValueGroupFromTheSameLine(
             psiElementUnderCaret);
         if (null != valueGroup) {
 
-            final PsiElement header = ImpexPsiUtils.getHeaderForValueGroup(valueGroup);
+            final PsiElement header = getHeaderForValueGroup(valueGroup);
             if (null != header) {
 
                 return header;
@@ -486,13 +486,13 @@ public final class ImpexPsiUtils {
             return null;
         }
 
-        final int columnNumber = ImpexPsiUtils.getColumnNumber(valueGroup);
+        final int columnNumber = getColumnNumber(valueGroup);
 
         if (columnNumber < 0) {
             return null;
         }
 
-        final ImpexValueLine impexValueLine = PsiTreeUtil.getParentOfType(valueGroup, ImpexValueLine.class);
+        final ImpexValueLine impexValueLine = valueGroup.getValueLine();
         if (null == impexValueLine) {
             return null;
         }
@@ -506,13 +506,13 @@ public final class ImpexPsiUtils {
             return null;
         }
 
-        final ImpexFullHeaderParameter header = ImpexPsiUtils.getImpexFullHeaderParameterFromHeaderLineByNumber(
+        final ImpexFullHeaderParameter header = getImpexFullHeaderParameterFromHeaderLineByNumber(
             columnNumber,
             impexHeaderLine
         );
 
         if (null == header) {
-            return ImpexPsiUtils.getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
+            return getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
         } else {
             return header;
         }
@@ -581,15 +581,6 @@ public final class ImpexPsiUtils {
         return -1;
     }
 
-    public static @Nullable ImpexHeaderTypeName findHeaderItemTypeName(final ImpexAnyHeaderParameterName parameter) {
-        final var parent = PsiTreeUtil.getParentOfType(parameter, ImpexHeaderLine.class);
-        if (parent == null) return null;
-        final var fullHeader = parent.getFullHeaderType();
-        if (fullHeader == null) return null;
-
-        return fullHeader.getHeaderTypeName();
-    }
-
     @Nullable
     @Contract(pure = true)
     public static ImpexFullHeaderParameter getImpexFullHeaderParameterFromHeaderLineByNumber(
@@ -609,7 +600,7 @@ public final class ImpexPsiUtils {
 
         final PsiElement nextSibling = CommonPsiUtils.getNextNonWhitespaceElement(columnSeparator);
 
-        if (ImpexPsiUtils.isImpexFullHeaderParameter(nextSibling)) {
+        if (isImpexFullHeaderParameter(nextSibling)) {
             return (ImpexFullHeaderParameter) nextSibling;
         }
 

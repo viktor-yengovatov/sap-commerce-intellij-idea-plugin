@@ -20,12 +20,9 @@ package com.intellij.idea.plugin.hybris.common
 import com.intellij.openapi.util.io.FileUtilRt
 import java.io.File
 
-/**
- * Created 10:30 PM 07 June 2015
- *
- * @author Alexander Bartash <AlexanderBartash></AlexanderBartash>@gmail.com>
- */
 object HybrisConstants {
+
+    const val PLATFORM_VERSION_1905_0 = "1905.0"
 
     const val CCV2_MANIFEST_NAME = "manifest.json"
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
@@ -58,9 +55,9 @@ object HybrisConstants {
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
     const val IMPEX_CATALOG_VERSION_ONLINE = "Online"
     const val IMPEX_CATALOG_VERSION_STAGED = "Staged"
-    const val IMPEX_CONSOLE_TITLE = "[y] Impex Console"
+    const val IMPEX_CONSOLE_TITLE = "[y] ImpEx Console"
     const val IMPEX_MONITOR_CONSOLE_TITLE = "[y] Monitor Console"
-    const val IMPEX = "Impex"
+    const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
 
     const val GROOVY_CONSOLE_TITLE = "[y] Groovy Console"
@@ -91,6 +88,7 @@ object HybrisConstants {
     const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
     const val EXTENSION_NAME_ADDONSUPPORT = "addonsupport"
+    const val EXTENSION_NAME_KOTLIN_NATURE = "kotlinnature"
 
     const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
     const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
@@ -201,6 +199,7 @@ object HybrisConstants {
     const val ANT_HEAP_SIZE_MB = 512
     const val ANT_STACK_SIZE_MB = 128
 
+    const val TS_MAX_RECURSION_LEVEL = 2
     const val TS_TYPE_OBJECT = "java.lang.Object"
     const val TS_TYPE_ITEM = "Item"
     const val TS_TYPE_GENERIC_ITEM = "GenericItem"
@@ -210,6 +209,8 @@ object HybrisConstants {
     const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
     const val TS_TYPE_LINK = "Link"
+    const val TS_TYPE_SEARCH_RESTRICTION = "SearchRestriction"
+    const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
     const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
     const val TS_JAVA_LANG_PREFIX = "java.lang."
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
@@ -248,6 +249,7 @@ object HybrisConstants {
     const val CLASS_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_ENUM_NAME = "HybrisEnumValue"
+    const val CLASS_FLEXIBLE_SEARCH_SERVICE_NAME = "FlexibleSearchService"
     const val CLASS_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
     const val CLASS_ANNOTATION_ACCESSOR = "de.hybris.bootstrap.annotations.Accessor"
     const val CLASS_CONFIG_IMPORT_PROCESSOR = "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor"
@@ -257,17 +259,19 @@ object HybrisConstants {
     const val CLASS_IMPEX_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
     const val CLASS_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
 
+    const val METHOD_SEARCH_NAME = "search"
+
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
     const val ATTRIBUTE_SOURCE = "source"
     const val ATTRIBUTE_TARGET = "target"
+    const val ATTRIBUTE_KEY = "key"
+    const val ATTRIBUTE_VALUE = "value"
     const val ATTRIBUTE_CODE = "code"
     const val ATTRIBUTE_NAME = "name"
     const val ATTRIBUTE_PK = "pk"
     const val DICTIONARY_NAME = "hybris_integration"
     const val DIALOG_TITLE = "hybris.copy.file.dialog."
-
-    val ENUM_ATTRIBUTES = listOf(ATTRIBUTE_PK, ATTRIBUTE_CODE, ATTRIBUTE_NAME)
 
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
     const val FXS_TABLE_ALIAS_SEPARATOR_DOT = "."
@@ -329,12 +333,16 @@ object HybrisConstants {
         "common/temp/node_modules"
     );
 
+    const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SRC_DIRECTORY = "src"
     private const val GROOVY_SRC_DIRECTORY = "groovysrc"
-    private const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
+
+    // kotlinnature extension integration
+    const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
+    const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")

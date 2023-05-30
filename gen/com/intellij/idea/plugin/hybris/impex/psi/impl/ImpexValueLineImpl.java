@@ -48,6 +48,12 @@ public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexVal
   }
 
   @Override
+  @Nullable
+  public ImpexSubTypeName getSubTypeName() {
+    return findChildByClass(ImpexSubTypeName.class);
+  }
+
+  @Override
   @NotNull
   public List<ImpexValueGroup> getValueGroupList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexValueGroup.class);

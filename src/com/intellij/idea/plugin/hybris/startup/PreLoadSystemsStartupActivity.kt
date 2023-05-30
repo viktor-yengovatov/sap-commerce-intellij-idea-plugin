@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -29,26 +29,20 @@ import com.intellij.openapi.startup.ProjectActivity
 class PreLoadSystemsStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
-            return
-        }
+        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
-        try {
-            TSMetaModelAccess.getInstance(project).getMetaModel()
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        }
+        refreshSystem(project) { TSMetaModelAccess.getInstance(project).getMetaModel() }
+        refreshSystem(project) { BSMetaModelAccess.getInstance(project).getMetaModel() }
+        refreshSystem(project) { CngMetaModelAccess.getInstance(project).getMetaModel() }
+    }
 
-        try {
-            BSMetaModelAccess.getInstance(project).getMetaModel()
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        }
-
-        try {
-            CngMetaModelAccess.getInstance(project).getMetaModel()
-        } catch (e: ProcessCanceledException) {
-            // ignore
+    private fun refreshSystem(project: Project, refresher: (Project) -> Unit) {
+        ApplicationManager.getApplication().runReadAction {
+            try {
+                refresher.invoke(project)
+            } catch (e: ProcessCanceledException) {
+                // ignore
+            }
         }
     }
 }

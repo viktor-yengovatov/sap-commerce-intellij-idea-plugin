@@ -28,7 +28,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexParameterMixin;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexParameterImpl extends ImpexParameterMixin implements ImpexParameter {
@@ -63,6 +62,36 @@ public class ImpexParameterImpl extends ImpexParameterMixin implements ImpexPara
   @Nullable
   public ImpexSubParameters getSubParameters() {
     return findChildByClass(ImpexSubParameters.class);
+  }
+
+  @Override
+  @Nullable
+  public String getReferenceItemTypeName() {
+    return ImpexPsiUtil.getReferenceItemTypeName(this);
+  }
+
+  @Override
+  @Nullable
+  public String getReferenceName() {
+    return ImpexPsiUtil.getReferenceName(this);
+  }
+
+  @Override
+  @Nullable
+  public String getItemTypeName() {
+    return ImpexPsiUtil.getItemTypeName(this);
+  }
+
+  @Override
+  @Nullable
+  public String getInlineTypeName() {
+    return ImpexPsiUtil.getInlineTypeName(this);
+  }
+
+  @Override
+  @NotNull
+  public String getAttributeName() {
+    return ImpexPsiUtil.getAttributeName(this);
   }
 
 }

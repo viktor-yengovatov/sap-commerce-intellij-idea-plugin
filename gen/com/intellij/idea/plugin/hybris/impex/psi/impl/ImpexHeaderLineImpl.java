@@ -30,6 +30,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
+import java.util.Collection;
 
 public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHeaderLine {
 
@@ -63,6 +64,18 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
   @Nullable
   public ImpexFullHeaderType getFullHeaderType() {
     return findChildByClass(ImpexFullHeaderType.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName) {
+    return ImpexPsiUtil.getFullHeaderParameter(this, parameterName);
+  }
+
+  @Override
+  @NotNull
+  public Collection<ImpexValueLine> getValueLines() {
+    return ImpexPsiUtil.getValueLines(this);
   }
 
 }

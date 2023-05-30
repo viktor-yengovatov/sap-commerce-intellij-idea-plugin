@@ -33,6 +33,9 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexTokenType"
 
   classHeader="generatedFilesHeader.txt"
+  implements("user\_rights\_.*_value")="com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValue"
+
+  generate=[java='17']
 }
 
 impexFile ::= root*
@@ -41,7 +44,8 @@ private root ::= (CRLF | ( !<<eof>> root_group (CRLF | <<eof>> )))
 {recoverWhile = recover_root}
 
 private root_group ::= (
-      root_macro_usage
+      user_rights
+    | root_macro_usage
     | header_line
     | value_line
     | comment
@@ -59,11 +63,12 @@ private root_group ::= (
 
 private recover_root ::= !(
      CRLF
+  |  user_rights_start
   |  HEADER_MODE_INSERT
   |  HEADER_MODE_INSERT_UPDATE
   |  HEADER_MODE_REMOVE
   |  HEADER_MODE_UPDATE
-  |  VALUE_SUBTYPE
+  |  sub_type_name
   |  FIELD_VALUE_SEPARATOR
   |  LINE_COMMENT
   |  macro_name_dec
@@ -81,26 +86,101 @@ private recover_parameters ::= !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARAT
 private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET | LEFT_ROUND_BRACKET)
 
 /*#################################################################################*/
+/*                                     User Rights                                 */
+/*#################################################################################*/
+user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body user_rights_end {
+    pin=1
+    recoverWhile=recover_root
+    methods=[getValueGroups]
+}
+
+private user_rights_body ::= (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*
+// this mapping may enable multiple Header lines
+// ((user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*)*
+{
+    recoverWhile=user_rights_body_recover
+}
+private user_rights_body_recover ::= !(user_rights_end)
+
+user_rights_header_line ::= user_rights_header_parameter (PARAMETERS_SEPARATOR user_rights_header_parameter)*  {
+    pin=1
+    recoverWhile=not_line_break
+    methods=[getHeaderParameter]
+}
+user_rights_start ::= START_USERRIGHTS
+user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
+user_rights_header_parameter ::= TYPE
+ | UID
+ | MEMBEROFGROUPS
+ | PASSWORD
+ | TARGET
+ | PERMISSION
+{
+    recoverWhile=not_line_break_or_parameters_separator
+    methods=[getHeaderLine getColumnNumber getValueGroups]
+}
+
+user_rights_value_line ::= user_rights_first_value_group? user_rights_value_group+ {
+    recoverWhile=not_line_break
+    methods=[getValueGroup getHeaderLine]
+}
+
+user_rights_first_value_group ::= user_rights_value {
+    recoverWhile=user_rights_value_group_recover
+    methods=[getValueLine]
+}
+
+user_rights_value_group ::= FIELD_VALUE_SEPARATOR user_rights_value? {
+    pin=1
+    recoverWhile=user_rights_value_group_recover
+    methods=[getValueLine getColumnNumber getHeaderParameter]
+}
+private user_rights_value ::= user_rights_type_attribute_value
+    | user_rights_permission_value
+    | user_rights_multi_value
+    | user_rights_single_value {
+    recoverWhile=user_rights_value_recover
+}
+private user_rights_type_attribute_value ::= user_rights_single_value DOT user_rights_attribute_value {
+    pin=2
+}
+user_rights_permission_value ::= PERMISSION_DENIED | PERMISSION_ALLOWED | DOT {
+    methods=[getHeaderParameter]
+}
+user_rights_multi_value ::= FIELD_VALUE (COMMA FIELD_VALUE)+ {
+    methods=[getHeaderParameter]
+}
+user_rights_single_value ::= FIELD_VALUE {
+    methods=[getHeaderParameter]
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsSingleValueMixin"
+}
+user_rights_attribute_value ::= FIELD_VALUE {
+    methods=[getHeaderParameter]
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsAttributeValueMixin"
+}
+
+private user_rights_value_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
+private user_rights_value_group_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
+/*#################################################################################*/
 /*                                     Root                                        */
 /*#################################################################################*/
 
 root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 
-
 header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
-{pin = 1}
-
+{
+    pin = 1
+    methods=[getFullHeaderParameter getValueLines]
+}
 
 comment ::= LINE_COMMENT
 {pin = 1}
 
 macro_value_dec ::= MACRO_VALUE
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosValueMixin"}
 
 macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
       macro_value_dec
-    | SINGLE_STRING
-    | DOUBLE_STRING
+    | string
     | HEADER_SPECIAL_PARAMETER_NAME
     | macro_usage_dec
     | LEFT_ROUND_BRACKET
@@ -132,14 +212,14 @@ string ::= SINGLE_STRING | DOUBLE_STRING
 
 
 // Value line rules
-value_line ::= (VALUE_SUBTYPE value_group*) | (value_group+) {
+value_line ::= (sub_type_name value_group*) | (value_group+) {
     methods=[getHeaderLine getValueGroup]
 }
 
 value_group ::= FIELD_VALUE_SEPARATOR value?
 {
     pin=1
-    methods=[getFullHeaderParameter getColumnNumber getValueLine]
+    methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
 value ::= (((  FIELD_VALUE
@@ -158,16 +238,16 @@ value ::= (((  FIELD_VALUE
 
 macro_usage_dec::=MACRO_USAGE
 {
-    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiNamedElementImpl"
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroUsageDecMixin"
     implements="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement"
-    methods=[getName setName toString]
+    methods=[getName setName getNameIdentifier getConfigPropertyKey]
 }
 
 macro_name_dec ::= MACRO_NAME_DECLARATION
 {
     mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiNamedElementImpl"
     implements="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement"
-    methods=[getName setName toString]
+    methods=[getName setName getNameIdentifier toString]
 }
 /*#################################################################################*/
 /*                                 Header Line                                     */
@@ -183,20 +263,21 @@ full_header_type ::= header_type_name modifiers?
 header_type_name ::= HEADER_TYPE
 {
     recoverWhile = recover_header_type
-    mixin="com.intellij.idea.plugin.hybris.impex.psi.references.ImpexHeaderTypeNameMixin"
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexHeaderTypeNameMixin"
 }
 
 full_header_parameter ::= any_header_parameter_name parameters? modifiers* parameters?
 {
     pin=1
     recoverWhile=not_line_break_or_parameters_separator
-    methods=[getHeaderLine getColumnNumber]
+    methods=[getHeaderLine getColumnNumber getAttribute]
 }
 
 any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION
 {
     recoverWhile = recover_parameter_name
-    mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAnyHeaderParameterNameMixin"
+    mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyHeaderParameterNameMixin"
+    methods=[getHeaderItemTypeName]
 }
 
 /*#################################################################################*/
@@ -208,7 +289,11 @@ parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) para
 {pin = 1 recoverWhile = recover_parameters}
 
 parameter ::= (HEADER_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec))? modifiers*
-{pin = 1 mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexParameterMixin"}
+{
+    pin=1
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexParameterMixin"
+    methods=[getReferenceItemTypeName getReferenceName getItemTypeName getInlineTypeName getAttributeName]
+}
 
 sub_parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
 {pin = 1 extends = parameters}
@@ -233,4 +318,9 @@ any_attribute_value ::= (
   | string
   | macro_usage_dec
 )+
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAttributeValueMixin"}
+{mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeValueMixin"}
+
+sub_type_name ::= VALUE_SUBTYPE {
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexSubTypeNameMixin"
+    methods=[getValueLine getHeaderTypeName]
+}

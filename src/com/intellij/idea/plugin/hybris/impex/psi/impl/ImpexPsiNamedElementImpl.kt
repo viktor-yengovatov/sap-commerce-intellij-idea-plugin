@@ -20,33 +20,19 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.psi.util.getKey
+import com.intellij.idea.plugin.hybris.impex.psi.util.setName
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import java.io.Serial
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 open class ImpexPsiNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), ImpexPsiNamedElement {
 
-    override fun setName(newName: String): PsiElement = com.intellij.idea.plugin.hybris.impex.psi.util.setName(this, newName)
-
-    override fun getName(): String? {
-        return getKey()
-    }
-
-    fun getKey(): String? {
-        val keyNode = this.node.findChildByType(ImpexTypes.VALUE)
-        if (keyNode != null) {
-            // IMPORTANT: Convert embedded escaped spaces to simple spaces
-            return keyNode.text.replace("\\\\ ", " ")
-        } else {
-            return null
-        }
-    }
-
-    override fun toString() = text ?: super.toString()
+    override fun setName(newName: String): PsiElement = setName(this, newName)
+    override fun getNameIdentifier() = this
+    override fun getName() = getKey(node)
+    override fun toString() = text
+        ?: super.toString()
 
     companion object {
         @Serial

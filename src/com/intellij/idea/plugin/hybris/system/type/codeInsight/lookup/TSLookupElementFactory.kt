@@ -28,9 +28,13 @@ import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 
 object TSLookupElementFactory {
 
-    fun build(meta: TSGlobalMetaItem) = meta.name
+    fun build(
+        meta: TSGlobalMetaItem,
+        suffix: String = ""
+    ) = meta.name
         ?.let {
-            LookupElementBuilder.create(it)
+            LookupElementBuilder.create(it + suffix)
+                .withPresentableText(it)
                 .withTailText(if (meta.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
                 .withIcon(HybrisIcons.TS_ITEM)
         }
@@ -57,6 +61,7 @@ object TSLookupElementFactory {
         .withStrikeoutness(meta.isDeprecated)
         .withTypeText(meta.flattenType, true)
         .withIcon(HybrisIcons.TS_ATTRIBUTE)
+        .withCaseSensitivity(true)
 
     fun build(meta: TSMetaRelation.TSMetaRelationElement) = meta.qualifier
         ?.let {
@@ -72,29 +77,35 @@ object TSLookupElementFactory {
         }
 
     fun build(relationElement: TSMetaRelation.TSMetaRelationElement, lookupString: String) = LookupElementBuilder.create(lookupString)
-        .withIcon(when (relationElement.end) {
-            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
-            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
-        })
+        .withIcon(
+            when (relationElement.end) {
+                TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
+                TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
+            }
+        )
         .withStrikeoutness(relationElement.isDeprecated)
         .withTypeText(relationElement.flattenType, true)
+        .withCaseSensitivity(true)
 
     fun build(meta: TSGlobalMetaEnum, lookupString: String?) = lookupString
         ?.let {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
                 .withIcon(HybrisIcons.TS_ENUM)
+                .withCaseSensitivity(true)
         }
-
-    fun buildAttribute(lookupString: String) = LookupElementBuilder.create(lookupString)
-        .withIcon(HybrisIcons.TS_ATTRIBUTE)
-        .withTypeText("String", true)
 
     fun build(attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute, name: String) = LookupElementBuilder.create(name.trim { it <= ' ' })
         .withIcon(HybrisIcons.TS_ATTRIBUTE)
         .withTailText(if (attribute.isDynamic) " (" + message("hybris.ts.type.dynamic") + ')' else "", true)
         .withStrikeoutness(attribute.isDeprecated)
         .withTypeText(attribute.flattenType, true)
+        .withCaseSensitivity(true)
+
+    fun build(map: TSGlobalMetaMap, type: String?, lookupString: String) = LookupElementBuilder.create(lookupString)
+        .withTypeText(type, true)
+        .withIcon(HybrisIcons.TS_MAP)
+        .withCaseSensitivity(true)
 
     fun build(dom: EnumType) = dom.code.stringValue
         ?.let {
@@ -117,5 +128,6 @@ object TSLookupElementFactory {
 
     fun buildCustomProperty(lookupString: String) = LookupElementBuilder.create(lookupString)
         .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
+        .withCaseSensitivity(true)
 
 }

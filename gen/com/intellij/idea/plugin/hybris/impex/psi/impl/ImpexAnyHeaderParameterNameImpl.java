@@ -28,7 +28,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAnyHeaderParameterNameMixin;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyHeaderParameterNameImpl extends ImpexAnyHeaderParameterNameMixin implements ImpexAnyHeaderParameterName {
@@ -51,6 +50,12 @@ public class ImpexAnyHeaderParameterNameImpl extends ImpexAnyHeaderParameterName
   @Nullable
   public ImpexMacroUsageDec getMacroUsageDec() {
     return findChildByClass(ImpexMacroUsageDec.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexHeaderTypeName getHeaderItemTypeName() {
+    return ImpexPsiUtil.getHeaderItemTypeName(this);
   }
 
 }

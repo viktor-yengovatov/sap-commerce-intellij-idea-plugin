@@ -24,13 +24,17 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiNamedElementImpl;
 
 public interface ImpexMacroNameDec extends ImpexPsiNamedElement {
 
-  @Nullable
+  @NotNull
   String getName();
 
   @NotNull
   PsiElement setName(@NotNull String newName);
+
+  @NotNull
+  ImpexPsiNamedElementImpl getNameIdentifier();
 
 }

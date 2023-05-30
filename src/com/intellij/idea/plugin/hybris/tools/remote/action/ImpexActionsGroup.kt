@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.impl.ActionButton
 
-class ImpexActionsGroup : DefaultActionGroup({ "Impex" }, true) {
+class ImpexActionsGroup : DefaultActionGroup({ "ImpEx" }, true) {
 
     init {
         templatePresentation.icon = HybrisIcons.IMPEX

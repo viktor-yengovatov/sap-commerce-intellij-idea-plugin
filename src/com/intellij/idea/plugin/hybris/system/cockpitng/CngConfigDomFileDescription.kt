@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.openapi.module.Module
@@ -35,7 +35,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
         && file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
 
     override fun initializeFileDescription() {
@@ -61,7 +61,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
             NAMESPACE_COCKPIT_NG_CONFIG_AVAILABLE_LOCALES,
             NAMESPACE_COCKPIT_NG_CONFIG_DASHBOARD,
             NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST,
-            NAMESPACE_COCKPIT_NG_CONFIG_FULLT_EXT_SEARCH,
+            NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH,
             NAMESPACE_COCKPIT_NG_CONFIG_GRID_VIEW,
             NAMESPACE_COCKPIT_NG_CONFIG_COMMON,
             NAMESPACE_COCKPIT_NG_CONFIG_NOTIFICATIONS,
@@ -95,7 +95,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
         const val NAMESPACE_COCKPIT_NG_CONFIG_AVAILABLE_LOCALES = "http://www.hybris.com/cockpitng/config/availableLocales"
         const val NAMESPACE_COCKPIT_NG_CONFIG_DASHBOARD = "http://www.hybris.com/cockpitng/config/dashboard"
         const val NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST = "http://www.hybris.com/cockpitng/config/simplelist"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_FULLT_EXT_SEARCH = "http://www.hybris.com/cockpitng/config/fulltextsearch"
+        const val NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH = "http://www.hybris.com/cockpitng/config/fulltextsearch"
         const val NAMESPACE_COCKPIT_NG_CONFIG_GRID_VIEW = "http://www.hybris.com/cockpitng/config/gridView"
         const val NAMESPACE_COCKPIT_NG_CONFIG_COMMON = "http://www.hybris.com/cockpitng/config/common"
         const val NAMESPACE_COCKPIT_NG_CONFIG_NOTIFICATIONS = "http://www.hybris.com/cockpitng/config/notifications"

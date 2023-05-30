@@ -49,6 +49,19 @@ public interface ImpexTypes {
   IElementType ROOT_MACRO_USAGE = new ImpexElementType("ROOT_MACRO_USAGE");
   IElementType STRING = new ImpexElementType("STRING");
   IElementType SUB_PARAMETERS = new ImpexElementType("SUB_PARAMETERS");
+  IElementType SUB_TYPE_NAME = new ImpexElementType("SUB_TYPE_NAME");
+  IElementType USER_RIGHTS = new ImpexElementType("USER_RIGHTS");
+  IElementType USER_RIGHTS_ATTRIBUTE_VALUE = new ImpexElementType("USER_RIGHTS_ATTRIBUTE_VALUE");
+  IElementType USER_RIGHTS_END = new ImpexElementType("USER_RIGHTS_END");
+  IElementType USER_RIGHTS_FIRST_VALUE_GROUP = new ImpexElementType("USER_RIGHTS_FIRST_VALUE_GROUP");
+  IElementType USER_RIGHTS_HEADER_LINE = new ImpexElementType("USER_RIGHTS_HEADER_LINE");
+  IElementType USER_RIGHTS_HEADER_PARAMETER = new ImpexElementType("USER_RIGHTS_HEADER_PARAMETER");
+  IElementType USER_RIGHTS_MULTI_VALUE = new ImpexElementType("USER_RIGHTS_MULTI_VALUE");
+  IElementType USER_RIGHTS_PERMISSION_VALUE = new ImpexElementType("USER_RIGHTS_PERMISSION_VALUE");
+  IElementType USER_RIGHTS_SINGLE_VALUE = new ImpexElementType("USER_RIGHTS_SINGLE_VALUE");
+  IElementType USER_RIGHTS_START = new ImpexElementType("USER_RIGHTS_START");
+  IElementType USER_RIGHTS_VALUE_GROUP = new ImpexElementType("USER_RIGHTS_VALUE_GROUP");
+  IElementType USER_RIGHTS_VALUE_LINE = new ImpexElementType("USER_RIGHTS_VALUE_LINE");
   IElementType VALUE = new ImpexElementType("VALUE");
   IElementType VALUE_GROUP = new ImpexElementType("VALUE_GROUP");
   IElementType VALUE_LINE = new ImpexElementType("VALUE_LINE");
@@ -70,6 +83,7 @@ public interface ImpexTypes {
   IElementType DOCUMENT_ID = new ImpexTokenType("DOCUMENT_ID");
   IElementType DOT = new ImpexTokenType("DOT");
   IElementType DOUBLE_STRING = new ImpexTokenType("DOUBLE_STRING");
+  IElementType END_USERRIGHTS = new ImpexTokenType("END_USERRIGHTS");
   IElementType FIELD_LIST_ITEM_SEPARATOR = new ImpexTokenType("FIELD_LIST_ITEM_SEPARATOR");
   IElementType FIELD_VALUE = new ImpexTokenType("FIELD_VALUE");
   IElementType FIELD_VALUE_IGNORE = new ImpexTokenType("FIELD_VALUE_IGNORE");
@@ -89,10 +103,19 @@ public interface ImpexTypes {
   IElementType MACRO_NAME_DECLARATION = new ImpexTokenType("MACRO_NAME_DECLARATION");
   IElementType MACRO_USAGE = new ImpexTokenType("MACRO_USAGE");
   IElementType MACRO_VALUE = new ImpexTokenType("MACRO_VALUE");
+  IElementType MEMBEROFGROUPS = new ImpexTokenType("MEMBEROFGROUPS");
   IElementType PARAMETERS_SEPARATOR = new ImpexTokenType("PARAMETERS_SEPARATOR");
+  IElementType PASSWORD = new ImpexTokenType("PASSWORD");
+  IElementType PERMISSION = new ImpexTokenType("PERMISSION");
+  IElementType PERMISSION_ALLOWED = new ImpexTokenType("PERMISSION_ALLOWED");
+  IElementType PERMISSION_DENIED = new ImpexTokenType("PERMISSION_DENIED");
   IElementType RIGHT_ROUND_BRACKET = new ImpexTokenType("RIGHT_ROUND_BRACKET");
   IElementType RIGHT_SQUARE_BRACKET = new ImpexTokenType("RIGHT_SQUARE_BRACKET");
   IElementType SINGLE_STRING = new ImpexTokenType("SINGLE_STRING");
+  IElementType START_USERRIGHTS = new ImpexTokenType("START_USERRIGHTS");
+  IElementType TARGET = new ImpexTokenType("TARGET");
+  IElementType TYPE = new ImpexTokenType("TYPE");
+  IElementType UID = new ImpexTokenType("UID");
   IElementType VALUE_SUBTYPE = new ImpexTokenType("VALUE_SUBTYPE");
 
   class Factory {
@@ -160,6 +183,45 @@ public interface ImpexTypes {
       }
       else if (type == SUB_PARAMETERS) {
         return new ImpexSubParametersImpl(node);
+      }
+      else if (type == SUB_TYPE_NAME) {
+        return new ImpexSubTypeNameImpl(node);
+      }
+      else if (type == USER_RIGHTS) {
+        return new ImpexUserRightsImpl(node);
+      }
+      else if (type == USER_RIGHTS_ATTRIBUTE_VALUE) {
+        return new ImpexUserRightsAttributeValueImpl(node);
+      }
+      else if (type == USER_RIGHTS_END) {
+        return new ImpexUserRightsEndImpl(node);
+      }
+      else if (type == USER_RIGHTS_FIRST_VALUE_GROUP) {
+        return new ImpexUserRightsFirstValueGroupImpl(node);
+      }
+      else if (type == USER_RIGHTS_HEADER_LINE) {
+        return new ImpexUserRightsHeaderLineImpl(node);
+      }
+      else if (type == USER_RIGHTS_HEADER_PARAMETER) {
+        return new ImpexUserRightsHeaderParameterImpl(node);
+      }
+      else if (type == USER_RIGHTS_MULTI_VALUE) {
+        return new ImpexUserRightsMultiValueImpl(node);
+      }
+      else if (type == USER_RIGHTS_PERMISSION_VALUE) {
+        return new ImpexUserRightsPermissionValueImpl(node);
+      }
+      else if (type == USER_RIGHTS_SINGLE_VALUE) {
+        return new ImpexUserRightsSingleValueImpl(node);
+      }
+      else if (type == USER_RIGHTS_START) {
+        return new ImpexUserRightsStartImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP) {
+        return new ImpexUserRightsValueGroupImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_LINE) {
+        return new ImpexUserRightsValueLineImpl(node);
       }
       else if (type == VALUE) {
         return new ImpexValueImpl(node);
