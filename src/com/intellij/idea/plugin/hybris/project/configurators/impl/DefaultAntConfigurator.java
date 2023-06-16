@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,10 @@ import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
 import com.intellij.lang.ant.config.AntConfigurationBase;
@@ -54,9 +58,6 @@ import java.util.stream.Collectors;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ANT_OPTS;
 import static java.util.Arrays.asList;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/10/16.
- */
 public class DefaultAntConfigurator implements AntConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultAntConfigurator.class);
 
@@ -134,10 +135,10 @@ public class DefaultAntConfigurator implements AntConfigurator {
     };
 
     private HybrisProjectDescriptor hybrisProjectDescriptor;
-    private PlatformHybrisModuleDescriptor platformDescriptor;
-    private ConfigHybrisModuleDescriptor configDescriptor;
-    private List<ExtHybrisModuleDescriptor> extHybrisModuleDescriptorList;
-    private List<CustomHybrisModuleDescriptor> customHybrisModuleDescriptorList;
+    private PlatformModuleDescriptor platformDescriptor;
+    private ConfigModuleDescriptor configDescriptor;
+    private List<YPlatformExtModuleDescriptor> extHybrisModuleDescriptorList;
+    private List<YCustomRegularModuleDescriptor> customHybrisModuleDescriptorList;
     private AntInstallation antInstallation;
     private AntConfigurationBase antConfiguration;
     private List<AntClasspathEntry> classPaths;
@@ -145,7 +146,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
     @Override
     public void configure(
         @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final List<HybrisModuleDescriptor> allModules,
+        @NotNull final List<ModuleDescriptor> allModules,
         @NotNull final Project project
     ) {
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
@@ -153,18 +154,21 @@ public class DefaultAntConfigurator implements AntConfigurator {
         if (platformDescriptor == null) {
             return;
         }
-        final File platformDir = platformDescriptor.getRootDirectory();
+        final File platformDir = platformDescriptor.getModuleRootDirectory();
         createAntInstallation(platformDir);
         if (antInstallation == null) {
             return;
         }
         createAntClassPath(platformDir);
-        AntConfigurationBase.getInstance(project).setFilterTargets(true);
         antConfiguration = AntConfigurationBase.getInstance(project);
-        final AntBuildFileBase buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
-        customHybrisModuleDescriptorList.forEach(
-            e -> registerAntInstallation(platformDir, e.getRootDirectory(), desirableCustomTargets)
-        );
+        antConfiguration.setFilterTargets(true);
+        final var buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
+
+        if (hybrisProjectDescriptor.isImportCustomAntBuildFiles()) {
+            customHybrisModuleDescriptorList.forEach(
+                e -> registerAntInstallation(platformDir, e.getModuleRootDirectory(), desirableCustomTargets)
+            );
+        }
         saveAntInstallation(antInstallation);
         removeMake(project);
         createMetaTargets(buildFile);
@@ -179,23 +183,20 @@ public class DefaultAntConfigurator implements AntConfigurator {
         });
     }
 
-    private void parseModules(final List<HybrisModuleDescriptor> allModules) {
-        platformDescriptor = null;
-        configDescriptor = null;
+    private void parseModules(final List<ModuleDescriptor> allModules) {
+        platformDescriptor = hybrisProjectDescriptor.getPlatformHybrisModuleDescriptor();
+        configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         extHybrisModuleDescriptorList = new ArrayList<>();
         customHybrisModuleDescriptorList = new ArrayList<>();
-        for (HybrisModuleDescriptor descriptor : allModules) {
-            if (descriptor instanceof PlatformHybrisModuleDescriptor) {
-                platformDescriptor = (PlatformHybrisModuleDescriptor) descriptor;
-            }
-            if (descriptor instanceof ExtHybrisModuleDescriptor) {
-                extHybrisModuleDescriptorList.add((ExtHybrisModuleDescriptor) descriptor);
-            }
-            if (descriptor instanceof CustomHybrisModuleDescriptor) {
-                customHybrisModuleDescriptorList.add((CustomHybrisModuleDescriptor) descriptor);
-            }
-            if (descriptor instanceof ConfigHybrisModuleDescriptor) {
-                configDescriptor = (ConfigHybrisModuleDescriptor) descriptor;
+
+        if (hybrisProjectDescriptor.isImportCustomAntBuildFiles()) {
+            for (final var descriptor : allModules) {
+                if (descriptor instanceof final YPlatformExtModuleDescriptor myDescriptor) {
+                    extHybrisModuleDescriptorList.add(myDescriptor);
+                }
+                if (descriptor instanceof final YCustomRegularModuleDescriptor myDescriptor) {
+                    customHybrisModuleDescriptorList.add(myDescriptor);
+                }
             }
         }
     }
@@ -275,7 +276,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     private String getAntOpts() {
         if (configDescriptor != null) {
-            final File propertiesFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+            final File propertiesFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
             if (propertiesFile.exists()) {
                 final Properties properties = new Properties();
                 try (final InputStream in = new FileInputStream(propertiesFile)) {
@@ -299,7 +300,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         classPaths.addAll(
             extHybrisModuleDescriptorList
                 .parallelStream()
-                .map(e -> new AllJarsUnderDirEntry(new File(e.getRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
+                .map(e -> new AllJarsUnderDirEntry(new File(e.getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
                 .toList()
         );
         final File libDir = new File(platformDir, HybrisConstants.ANT_LIB_DIR);

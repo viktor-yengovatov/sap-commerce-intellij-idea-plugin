@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.common.utils;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
+import icons.GradleIcons;
+import icons.OpenapiIcons;
 
 import javax.swing.*;
 
@@ -44,7 +46,10 @@ public final class HybrisIcons {
 
     public static final Icon DECLARATION = getIcon("/icons/declaration.svg");
 
-    public static final Icon HYBRIS = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon Y_LOGO_BLUE = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon Y_LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg");
+    public static final Icon Y_LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg");
+    public static final Icon Y_FACET = Y_LOGO_GREEN;
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitNG/config.svg");
     public static final Icon COCKPIT_NG_WIDGETS = getIcon("/icons/cockpitNG/widgets.svg");
@@ -58,14 +63,27 @@ public final class HybrisIcons {
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
     public static final Icon EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg");
 
+    public static final Icon MODULE_ECLIPSE = AllIcons.Providers.Eclipse;
+    public static final Icon MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo;
+    public static final Icon MODULE_CONFLICT = AllIcons.Actions.Cancel;
+    public static final Icon MODULE_GRADLE = GradleIcons.Gradle;
     public static final Icon MODULE_CCV2 = getIcon("/icons/module/cloud.svg");
     public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg");
+    public static final Icon MODULE_COMMERCE_GROUP = Y_LOGO_GREEN;
+    public static final Icon MODULE_PLATFORM_GROUP = Y_LOGO_ORANGE;
 
+    public static final Icon EXTENSION_CONFIG = AllIcons.Nodes.ConfigFolder;
     public static final Icon EXTENSION_CLOUD = getIcon("/icons/extension/cloud.svg");
     public static final Icon EXTENSION_CUSTOM = getIcon("/icons/extension/custom.svg");
     public static final Icon EXTENSION_PLATFORM = getIcon("/icons/extension/platform.svg");
     public static final Icon EXTENSION_EXT = getIcon("/icons/extension/ext.svg");
-    public static final Icon EXTENSION_OOTB = HYBRIS;
+    public static final Icon EXTENSION_OOTB = getIcon("/icons/extension/ootb.svg");
+    public static final Icon EXTENSION_WEB = AllIcons.Nodes.WebFolder;
+    public static final Icon EXTENSION_COMMON_WEB = AllIcons.Nodes.WebFolder;
+    public static final Icon EXTENSION_ADDON = AllIcons.Nodes.WebFolder;
+    public static final Icon EXTENSION_BACKOFFICE = Y_LOGO_BLUE;
+    public static final Icon EXTENSION_HMC = Y_LOGO_BLUE;
+    public static final Icon EXTENSION_HAC = Y_LOGO_BLUE;
 
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
     public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");

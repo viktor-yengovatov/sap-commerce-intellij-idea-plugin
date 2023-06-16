@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,78 +21,60 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.ModifiableModuleModel;
-import com.intellij.openapi.module.Module;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 24/08/15.
- */
 public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);
 
-    private Set<HybrisModuleDescriptor> requiredHybrisModuleDescriptorList;
-    private boolean groupModules;
-    private String[] groupCustom;
-    private String[] groupNonHybris;
-    private String[] groupOtherCustom;
-    private String[] groupHybris;
-    private String[] groupPlatform;
-    private String[] groupOtherHybris;
-    private String[] groupCCv2;
-
-    public DefaultGroupModuleConfigurator() {
-        readSettings();
-    }
-
     @Override
-    public void findDependencyModules(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
-        readSettings();
-        if (!groupModules) {
+    public void processDependencyModules(@NotNull final List<ModuleDescriptor> modulesChosenForImport) {
+        final var applicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        if (!applicationSettings.getGroupModules()) {
             return;
         }
-        requiredHybrisModuleDescriptorList = new HashSet<>();
-        for (HybrisModuleDescriptor hybrisModuleDescriptor : modulesChosenForImport) {
-            if (hybrisModuleDescriptor.isPreselected()) {
-                requiredHybrisModuleDescriptorList.add(hybrisModuleDescriptor);
-                requiredHybrisModuleDescriptorList.addAll(hybrisModuleDescriptor.getDependenciesPlainList());
+        final var requiredYModuleDescriptorList = new HashSet<ModuleDescriptor>();
+
+        modulesChosenForImport.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .filter(ModuleDescriptor::isPreselected)
+            .forEach(it -> {
+                requiredYModuleDescriptorList.add(it);
+                requiredYModuleDescriptorList.addAll(it.getAllDependencies());
+            });
+
+        final var groups = Map.of(
+            "groupCustom", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCustom()),
+            "groupNonHybris", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupNonHybris()),
+            "groupOtherCustom", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherCustom()),
+            "groupHybris", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupHybris()),
+            "groupOtherHybris", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherHybris()),
+            "groupPlatform", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupPlatform()),
+            "groupCCv2", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCCv2())
+        );
+        modulesChosenForImport.forEach(it -> {
+            final @Nullable String[] groupNames = getGroupName(it, requiredYModuleDescriptorList, groups);
+            if (groupNames != null) {
+                it.setGroupNames(groupNames);
             }
-        }
-    }
-
-    @Override
-    public void configure(
-        @NotNull final ModifiableModuleModel modifiableModuleModel,
-        @NotNull final Module module,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
-    ) {
-        if (!groupModules) {
-            return;
-        }
-        String[] groupNamePath = getGroupName(moduleDescriptor);
-        modifiableModuleModel.setModuleGroupPath(module, groupNamePath);
+        });
     }
 
     @Nullable
-    @Override
-    public String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
-        if (!(moduleDescriptor instanceof ConfigHybrisModuleDescriptor)) {
+    private String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor, final Set<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+        if (!(moduleDescriptor instanceof ConfigModuleDescriptor)) {
             final String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
             if (groupPathOverride != null) {
                 return groupPathOverride.clone();
@@ -104,29 +86,29 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groupPathOverride.clone();
         }
 
-        String[] groupPath = getGroupPath(moduleDescriptor);
+        String[] groupPath = getGroupPath(moduleDescriptor, requiredYModuleDescriptorList, groups);
         if (groupPath == null) {
             return null;
         }
         return groupPath.clone();
     }
 
-    private String[] getGlobalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
-        final ConfigHybrisModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
+    private String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
+        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
         if (configDescriptor == null) {
             return null;
         }
-        final File groupFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+        final File groupFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         if (!groupFile.exists()) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
         }
-        return getGroupPathOverride(groupFile, moduleDescriptor.getName());
+        return getGroupPathOverride(groupFile, moduleDescriptor);
     }
 
 
-    private String[] getLocalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
-        final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
-        final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor.getName());
+    private String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
+        final File groupFile = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+        final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor);
         if (groupFile.exists() && pathOverride == null) {
             createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
         }
@@ -145,11 +127,14 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         }
     }
 
-    private String[] getGroupPathOverride(final File groupFile, final String moduleName) {
+    private String[] getGroupPathOverride(final File groupFile, final ModuleDescriptor moduleDescriptor) {
         if (!groupFile.exists()) {
             return null;
         }
-        String rawGroupText = null;
+        // take group override from owner module for sub-modules
+        final var moduleName = (moduleDescriptor instanceof final YSubModuleDescriptor subModuleDescriptor)
+            ? subModuleDescriptor.getOwner().getName()
+            : moduleDescriptor.getName();
         final Properties properties = new Properties();
         try (final InputStream in = new FileInputStream(groupFile)) {
             properties.load(in);
@@ -157,68 +142,72 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             LOG.error("Cannot read " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + " for module " + moduleName);
             return null;
         }
-        rawGroupText = properties.getProperty(GROUP_OVERRIDE_KEY);
+        String rawGroupText = properties.getProperty(GROUP_OVERRIDE_KEY);
         if (rawGroupText == null) {
             rawGroupText = properties.getProperty(moduleName + '.' + GROUP_OVERRIDE_KEY);
         }
         return HybrisApplicationSettingsComponent.toIdeaGroup(rawGroupText);
     }
 
-    private String[] getGroupPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
-        if (moduleDescriptor instanceof CCv2HybrisModuleDescriptor) {
-            return groupCCv2;
+    private String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor, final Set<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+        if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
+            return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList, groups);
         }
 
-        if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            return groupPlatform;
+        if (moduleDescriptor instanceof CCv2ModuleDescriptor) {
+            return groups.get("groupCCv2");
         }
 
-        if (moduleDescriptor instanceof ExtHybrisModuleDescriptor) {
-            return groupPlatform;
+        if (moduleDescriptor instanceof PlatformModuleDescriptor) {
+            return groups.get("groupPlatform");
         }
 
-        if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
-            return groupCustom;
+        if (moduleDescriptor instanceof YPlatformExtModuleDescriptor) {
+            return groups.get("groupPlatform");
+        }
+
+        if (moduleDescriptor instanceof ConfigModuleDescriptor) {
+            return groups.get("groupCustom");
         }
 
         if (moduleDescriptor instanceof RootModuleDescriptor) {
-            return groupNonHybris;
+            return groups.get("groupNonHybris");
         }
 
-        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
             File customDirectory = moduleDescriptor.getRootProjectDescriptor().getExternalExtensionsDirectory();
 
             if (null == customDirectory) {
                 customDirectory = new File(moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
             }
             if (!customDirectory.exists()) {
-                return this.groupCustom;
+                return groups.get("groupCustom");
             }
             customDirectory = toFile(customDirectory.getAbsolutePath());
 
             final List<String> path;
             try {
-                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getRootDirectory(), customDirectory);
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootDirectory(), customDirectory);
             } catch (IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for a custom module '%s' because its root directory '%s' is not under" +
-                    " custom directory  '%s'.",
-                    moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), customDirectory
+                        " custom directory  '%s'.",
+                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), customDirectory
                 ));
-                return this.groupCustom;
+                return groups.get("groupCustom");
             }
 
-            final boolean isCustomModuleInLocalExtensionsXml = this.requiredHybrisModuleDescriptorList.contains(
+            final boolean isCustomModuleInLocalExtensionsXml = requiredYModuleDescriptorList.contains(
                 moduleDescriptor
             );
 
             return ArrayUtils.addAll(
-                isCustomModuleInLocalExtensionsXml ? this.groupCustom : this.groupOtherCustom,
+                isCustomModuleInLocalExtensionsXml ? groups.get("groupCustom") : groups.get("groupOtherCustom"),
                 path.toArray(new String[0])
             );
         }
 
-        if (this.requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
+        if (requiredYModuleDescriptorList.contains(moduleDescriptor)) {
             final File hybrisBinDirectory = new File(
                 moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(),
                 HybrisConstants.BIN_DIRECTORY
@@ -226,36 +215,22 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
             final List<String> path;
             try {
-                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getRootDirectory(), hybrisBinDirectory);
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory);
             } catch (IOException e) {
                 LOG.warn(String.format(
-                    "Can not build group path for OOTB module '%s' because its root directory '%s' is not under" +
-                    "under Hybris bin directory  '%s'.",
-                    moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), hybrisBinDirectory
+                    "Can not build group path for OOTB module '%s' because its root directory '%s' is not under Hybris bin directory '%s'.",
+                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory
                 ));
-                return this.groupHybris;
+                return groups.get("groupHybris");
             }
 
             if (!path.isEmpty() && path.get(0).equals("modules")) {
                 path.remove(0);
             }
-            return ArrayUtils.addAll(this.groupHybris, path.toArray(new String[0]));
+            return ArrayUtils.addAll(groups.get("groupHybris"), path.toArray(new String[0]));
         }
 
-        return groupOtherHybris;
-    }
-
-    private void readSettings() {
-        final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance()
-                                                                                                      .getState();
-        groupModules = hybrisApplicationSettings.getGroupModules();
-        groupCustom = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupCustom());
-        groupNonHybris = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupNonHybris());
-        groupOtherCustom = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
-        groupHybris = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
-        groupOtherHybris = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
-        groupPlatform = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
-        groupCCv2 = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
+        return groups.get("groupOtherHybris");
     }
 
 }

@@ -24,7 +24,6 @@ import com.intellij.ide.util.newProjectWizard.StepSequence;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.gradle.GradleSupport;
@@ -54,10 +53,6 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
 
-
-/**
- * Created by Martin Zdarsky-Jones on 8/2/17.
- */
 public class ProjectRefreshAction extends AnAction {
 
     public static void triggerAction() {
@@ -120,7 +115,7 @@ public class ProjectRefreshAction extends AnAction {
             presentation.setVisible(false);
             return;
         }
-        presentation.setIcon(HybrisIcons.HYBRIS);
+        presentation.setIcon(HybrisIcons.Y_LOGO_BLUE);
         presentation.setVisible(HybrisProjectSettingsComponent.getInstance(project).isHybrisProject());
     }
 

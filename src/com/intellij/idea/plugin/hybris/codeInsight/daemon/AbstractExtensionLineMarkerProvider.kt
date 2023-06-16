@@ -21,7 +21,8 @@ package com.intellij.idea.plugin.hybris.codeInsight.daemon
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.EiSModelAccess
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -37,7 +38,7 @@ import javax.swing.Icon
 
 abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerProvider<XmlAttributeValue>() {
 
-    override fun getIcon(): Icon = HybrisIcons.HYBRIS
+    override fun getIcon(): Icon = HybrisIcons.Y_LOGO_BLUE
     override fun tryCast(psi: PsiElement) = psi as? XmlAttributeValue
     abstract fun getParentTagName(): String
     abstract fun getTooltipText(): String
@@ -51,7 +52,7 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
         val descriptor = HybrisProjectSettingsComponent.getInstance(psi.project).getAvailableExtensions()[psi.value]
             ?: return emptyList()
         val extensionInfoName = psi.project.modules
-            .find { it.name == psi.value }
+            .find { it.yExtensionName() == psi.value }
             ?.let { EiSModelAccess.getExtensionInfo(it) }
             ?.xmlTag
             ?: return emptyList()
@@ -59,11 +60,11 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
         val marker = NavigationGutterIconBuilder
             .create(
                 when (descriptor.type) {
-                    HybrisModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
-                    HybrisModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
-                    HybrisModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
-                    HybrisModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
-                    HybrisModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
+                    ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
+                    ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
+                    ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
+                    ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
+                    ModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
                     else -> icon
                 }
             )

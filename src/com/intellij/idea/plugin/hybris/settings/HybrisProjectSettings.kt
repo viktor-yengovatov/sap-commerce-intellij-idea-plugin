@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettings
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
@@ -42,16 +43,13 @@ data class HybrisProjectSettings(
     var hybrisProject: Boolean = false,
     var importOotbModulesInReadOnlyMode: Boolean = false,
     var followSymlink: Boolean = false,
-    var scanThroughExternalModule: Boolean = false,
+    var scanThroughExternalModule: Boolean = true,
     var excludeTestSources: Boolean = false,
-    var createBackwardCyclicDependenciesForAddOns: Boolean = false,
+    var importCustomAntBuildFiles: Boolean = false,
     var completeSetOfAvailableExtensionsInHybris: Set<String> = mutableSetOf(),
     var unusedExtensions: Set<String> = mutableSetOf(),
     var modulesOnBlackList: Set<String> = mutableSetOf(),
     var availableExtensions: MutableMap<String, ExtensionDescriptor> = TreeMap<String, ExtensionDescriptor> { a, b ->
         a.compareTo(b, true)
     },
-    var moduleSettings: MutableMap<String, ModuleSettings> = TreeMap<String, ModuleSettings> { a, b ->
-        a.compareTo(b, true)
-    }
 )

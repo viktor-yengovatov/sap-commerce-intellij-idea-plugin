@@ -1,5 +1,16 @@
 ## [2023.2.1]
 
+### `Project Import 2.0` 
+- Due mass API changes it is required to re-import the Project
+- Create new IDEA modules for each extension sub-module: `backoffice`, `acceleratoraddon`, `web`, `commonweb`, `hmc`, `hac`
+- Introduced new **SAP Commerce** module facet, which will contains all extension settings 
+- Module-type specific icons in the Project View
+- Module groups will always have correct custom icons
+- Show mandatory _Ext_ and _Platform_ extensions at the end of the Import Project Wizard
+- Improved compilation
+- Removed circular dependencies
+- Multiple other improvements [#477](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/477)
+
 ### `External Dependencies` enhancements
 - Added custom icon for `external-dependencies.xml` file [#470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/470)
 
@@ -349,7 +360,7 @@
 
 ### Features
 - Compatibility adjustments [#195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195)
-- Added CCv2 SAP Commerce Cloud `manifest.json` schema support [#225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/225)
+- Added CCv2 SAP Commerce `manifest.json` schema support [#225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/225)
 - Added CCv2 DataHub `manifest.json` schema support [#226](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/226)
 - Added CCv2 Javascript Storefront `manifest.json` schema support [#227](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/227)
 - Added completion of the available extensions for CCv2 SAP Commerce `manifest.json` file [#229](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/229)

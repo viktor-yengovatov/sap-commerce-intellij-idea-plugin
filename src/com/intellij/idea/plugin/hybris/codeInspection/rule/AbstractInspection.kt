@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,10 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule
 
-import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
@@ -66,22 +64,17 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
 
     open fun canProcess(dom: T): Boolean = true
 
-    protected fun getTextRange(dom: DomElement): TextRange? {
-        val xmlElement = dom.xmlElement ?: return null
+    protected fun getTextRange(dom: DomElement) = dom.xmlElement
+        ?.let { TextRange.from(0, it.textLength) }
 
-        return TextRange.from(0, xmlElement.textLength)
-    }
+    protected fun getTextRange(xmlElement: XmlElement?) = xmlElement
+        ?.let { TextRange.from(0, it.textLength) }
 
-    protected fun getTextRange(xmlElement: XmlElement?): TextRange? {
-        if (xmlElement == null) return null
-
-        return TextRange.from(0, xmlElement.textLength)
-    }
-
-    private fun getProblemHighlightType(file: PsiFile): HighlightDisplayLevel {
-        val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile
-        val inspectProfile = InspectionProfileWrapper(profile)
-        return inspectProfile.getErrorLevel(HighlightDisplayKey.find(shortName), file)
-    }
+    private fun getProblemHighlightType(file: PsiFile) = HighlightDisplayKey.find(shortName)
+        ?.let {
+            val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile
+            InspectionProfileWrapper(profile).getErrorLevel(it, file)
+        }
+        ?: defaultLevel
 
 }

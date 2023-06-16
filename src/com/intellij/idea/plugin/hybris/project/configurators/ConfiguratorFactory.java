@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,14 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
- */
 public interface ConfiguratorFactory {
 
     @NotNull
@@ -35,16 +33,13 @@ public interface ConfiguratorFactory {
     SpringConfigurator getSpringConfigurator();
 
     @NotNull
-    ModulesDependenciesConfigurator getModulesDependenciesConfigurator();
+    ModuleDependenciesConfigurator getModulesDependenciesConfigurator();
 
     @NotNull
     CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator();
 
     @NotNull
-    ContentRootConfigurator getRegularContentRootConfigurator();
-
-    @NotNull
-    ContentRootConfigurator getReadOnlyContentRootConfigurator();
+    ContentRootConfigurator getContentRootConfigurator(final ModuleDescriptor moduleDescriptor);
 
     @NotNull
     LibRootsConfigurator getLibRootsConfigurator();

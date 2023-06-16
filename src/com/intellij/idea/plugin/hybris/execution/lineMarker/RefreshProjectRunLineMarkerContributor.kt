@@ -20,7 +20,8 @@ package com.intellij.idea.plugin.hybris.execution.lineMarker
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.Extension
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
@@ -42,13 +43,13 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
         if (xmlAttributeValue.value == HybrisConstants.EXTENSION_NAME_PLATFORM) return null
         val descriptor = HybrisProjectSettingsComponent.getInstance(xmlFile.project).getAvailableExtensions()[xmlAttributeValue.value]
             ?: return null
-        if (descriptor.type != HybrisModuleDescriptorType.OOTB && descriptor.type != HybrisModuleDescriptorType.CUSTOM) return null
+        if (descriptor.type != ModuleDescriptorType.OOTB && descriptor.type != ModuleDescriptorType.CUSTOM) return null
         val parentTagName = PsiTreeUtil.getParentOfType(xmlAttributeValue, XmlTag::class.java)?.localName
             ?: return null
 
         val domManager = DomManager.getDomManager(xmlFile.project)
         val module = xmlFile.project.modules
-            .find { it.name == xmlAttributeValue.value }
+            .find { it.yExtensionName() == xmlAttributeValue.value }
 
         if (module != null) return null
 

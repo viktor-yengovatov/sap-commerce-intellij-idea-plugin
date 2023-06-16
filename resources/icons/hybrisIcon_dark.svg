@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 260 300" version="1.1">
-	<style>
+	<style type="text/css">
 		.std{
 		fill: #AFB1B3;
 		stroke: #AFB1B3;
 		stroke-width:0px;
 		}
 		.y{
-		fill: rgb(225, 166, 63);
-		stroke: rgb(225, 166, 63);
+		fill: #389FD6;
+		stroke: #389FD6;
 		stroke-width:5px;
 		}
 	</style>
