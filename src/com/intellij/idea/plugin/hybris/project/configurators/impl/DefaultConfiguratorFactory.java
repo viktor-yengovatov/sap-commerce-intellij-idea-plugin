@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
@@ -28,20 +28,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
- */
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
+
 public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @NotNull
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
+        final FacetConfigurator yFacetConfigurator = ApplicationManager.getApplication().getService(YFacetConfigurator.class);
         final FacetConfigurator springFacetConfigurator = ApplicationManager.getApplication().getService(SpringFacetConfigurator.class);
         final FacetConfigurator kotlinFacetConfigurator = ApplicationManager.getApplication().getService(KotlinFacetConfigurator.class);
         final FacetConfigurator webFacetConfigurator = ApplicationManager.getApplication().getService(WebFacetConfigurator.class);
 
-        final List<FacetConfigurator> facetConfigurators = new ArrayList<FacetConfigurator>(3);
+        final List<FacetConfigurator> facetConfigurators = new ArrayList<FacetConfigurator>(4);
+        facetConfigurators.add(yFacetConfigurator);
 
         if (null != springFacetConfigurator) {
             facetConfigurators.add(springFacetConfigurator);
@@ -68,8 +70,8 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @NotNull
     @Override
-    public ModulesDependenciesConfigurator getModulesDependenciesConfigurator() {
-        return ApplicationManager.getApplication().getService(ModulesDependenciesConfigurator.class);
+    public ModuleDependenciesConfigurator getModulesDependenciesConfigurator() {
+        return ModuleDependenciesConfigurator.Companion.getInstance();
     }
 
     @NotNull
@@ -80,20 +82,16 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @NotNull
     @Override
-    public ContentRootConfigurator getRegularContentRootConfigurator() {
-        return ApplicationManager.getApplication().getService(RegularContentRootConfigurator.class);
-    }
-
-    @NotNull
-    @Override
-    public ContentRootConfigurator getReadOnlyContentRootConfigurator() {
-        return ApplicationManager.getApplication().getService(ReadOnlyContentRootConfigurator.class);
+    public ContentRootConfigurator getContentRootConfigurator(final ModuleDescriptor moduleDescriptor) {
+        return shouldBeTreatedAsReadOnly(moduleDescriptor)
+            ? ContentRootConfigurator.Companion.getReadOnlyInstance()
+            : ContentRootConfigurator.Companion.getInstance();
     }
 
     @NotNull
     @Override
     public LibRootsConfigurator getLibRootsConfigurator() {
-        return ApplicationManager.getApplication().getService(LibRootsConfigurator.class);
+        return LibRootsConfigurator.Companion.getInstance();
     }
 
     @NotNull
@@ -111,25 +109,25 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public ModuleSettingsConfigurator getModuleSettingsConfigurator() {
-        return ApplicationManager.getApplication().getService(ModuleSettingsConfigurator.class);
+        return ModuleSettingsConfigurator.Companion.getInstance();
     }
 
     @NotNull
     @Override
     public VersionControlSystemConfigurator getVersionControlSystemConfigurator() {
-        return ApplicationManager.getApplication().getService(VersionControlSystemConfigurator.class);
+        return VersionControlSystemConfigurator.Companion.getInstance();
     }
 
     @NotNull
     @Override
     public RunConfigurationConfigurator getDebugRunConfigurationConfigurator() {
-        return ApplicationManager.getApplication().getService(DebugRunConfigurationConfigurator.class);
+        return RunConfigurationConfigurator.Companion.getDebugInstance();
     }
 
     @Nullable
     @Override
     public RunConfigurationConfigurator getTestRunConfigurationConfigurator() {
-        return ApplicationManager.getApplication().getService(TestRunConfigurationConfigurator.class);
+        return RunConfigurationConfigurator.Companion.getTestInstance();
     }
 
     @Nullable
@@ -185,16 +183,24 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
         return ApplicationManager.getApplication().getService(LoadedConfigurator.class);
     }
 
+    private boolean shouldBeTreatedAsReadOnly(final ModuleDescriptor moduleDescriptor) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
+            return false;
+        }
+        return moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();
+    }
+
     protected static class DummySpringConfigurator implements SpringConfigurator {
 
         @Override
-        public void findSpringConfiguration(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
+        public void processSpringConfiguration(final HybrisProjectDescriptor hybrisProjectDescriptor, final Map<String, ModuleDescriptor> moduleDescriptors) {
 
         }
 
         @Override
         public void configureDependencies(
             @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+            final Map<String, ModuleDescriptor> moduleDescriptors,
             @NotNull final IdeModifiableModelsProvider modifiableModelsProvider
         ) {
 

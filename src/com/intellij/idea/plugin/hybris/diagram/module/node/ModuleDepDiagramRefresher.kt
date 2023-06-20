@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramVisibilityManager
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
@@ -51,31 +51,31 @@ object ModuleDepDiagramRefresher {
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
                 .filter {
-                    val descriptor = projectSettings.getModuleSettings(it).descriptorType
+                    val descriptor = projectSettings.getModuleSettings(it).type
                     isCustomExtension(descriptor) || isOotbOrPlatformExtension(descriptor)
                 }
         }
         val customExtModules = allModules
-            .filter { isCustomExtension(projectSettings.getModuleSettings(it).descriptorType) }
+            .filter { isCustomExtension(projectSettings.getModuleSettings(it).type) }
 
         if (ModuleDepDiagramVisibilityManager.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
 
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }
-            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).descriptorType) }
+            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).type) }
         val backwardDependencies = allModules
             .filter {
                 ModuleRootManager.getInstance(it).dependencies
-                    .any { module: Module -> isCustomExtension(projectSettings.getModuleSettings(module).descriptorType) }
+                    .any { module: Module -> isCustomExtension(projectSettings.getModuleSettings(module).type) }
             }
-            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).descriptorType) }
+            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).type) }
         return customExtModules + dependencies + backwardDependencies
     }
 
-    private fun isCustomExtension(descriptorType: HybrisModuleDescriptorType) = descriptorType == HybrisModuleDescriptorType.CUSTOM
+    private fun isCustomExtension(descriptorType: ModuleDescriptorType) = descriptorType == ModuleDescriptorType.CUSTOM
 
-    private fun isOotbOrPlatformExtension(descriptorType: HybrisModuleDescriptorType) = with(descriptorType) {
-        this == HybrisModuleDescriptorType.OOTB || this == HybrisModuleDescriptorType.PLATFORM || this == HybrisModuleDescriptorType.EXT
+    private fun isOotbOrPlatformExtension(descriptorType: ModuleDescriptorType) = with(descriptorType) {
+        this == ModuleDescriptorType.OOTB || this == ModuleDescriptorType.PLATFORM || this == ModuleDescriptorType.EXT
     }
 
     private fun createAdaptedEdges(model: ModuleDepDiagramDataModel, edges: Collection<ModulesUmlEdge>): List<ModuleDepDiagramEdge> = edges

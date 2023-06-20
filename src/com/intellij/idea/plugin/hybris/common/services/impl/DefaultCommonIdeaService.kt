@@ -19,8 +19,9 @@ package com.intellij.idea.plugin.hybris.common.services.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.command.CommandProcessor
@@ -44,7 +45,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         if (modules.isEmpty()) return false
 
         val moduleNames = modules
-            .map { it.name }
+            .map { it.yExtensionName() }
 
         val acceleratorNames = listOf("*cockpits", "*core", "*facades", "*storefront")
         if (matchAllModuleNames(acceleratorNames, moduleNames)) return true
@@ -63,7 +64,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
 
     override fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor) = hybrisProjectDescriptor
         .foundModules
-        .firstNotNullOfOrNull { it as? PlatformHybrisModuleDescriptor }
+        .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
 
     override fun getActiveHacUrl(project: Project) = getActiveHacRemoteConnectionSettings(project)
         .let { getUrl(it) }

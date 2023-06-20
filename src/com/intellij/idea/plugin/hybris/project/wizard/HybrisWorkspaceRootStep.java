@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -36,7 +36,6 @@ import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
-import com.intellij.ui.JBColor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -61,9 +60,6 @@ import static java.lang.Character.getNumericValue;
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
 
-/**
- * @author Vlad Bozhenok <VladBozhenok@gmail.com>
- */
 public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements OpenSupport, RefreshSupport {
 
     private static final Logger LOG = Logger.getInstance(HybrisWorkspaceRootStep.class);
@@ -85,9 +81,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JLabel sourceCodeLabel;
     private JLabel importOotbModulesInReadOnlyModeLabel;
     private JLabel externalExtensionsPresentLabel;
-    private JCheckBox circularDependencyCheckBox;
-    private JTextPane circularDependencyIsNeededTextPane;
-    private JLabel circularDependencyIsNeededLabel;
     private JCheckBox configOverrideCheckBox;
     private JLabel configOverrideLabel;
     private JPanel configOverridePanel;
@@ -111,6 +104,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox customProjectIconCheckBox;
     private JLabel customProjectIconLabel;
     private TextFieldWithBrowseButton customProjectIconChooser;
+    private JCheckBox importCustomAntBuildFilesCheckBox;
     private String hybrisVersion;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
@@ -224,18 +218,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             }
         });
 
-        this.circularDependencyIsNeededTextPane.setVisible(false);
-        this.circularDependencyIsNeededTextPane.setDisabledTextColor(JBColor.RED);
-        this.circularDependencyCheckBox.addActionListener(e -> circularDependencyIsNeededTextPane.setVisible(((JCheckBox) e
-            .getSource()).isVisible()));
-        this.circularDependencyIsNeededLabel.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-                circularDependencyCheckBox.doClick();
-            }
-        });
-
         sourceCodeFilesInChooser.addActionListener(new MyChooserActionListener(
             FileChooserDescriptorFactory.createSingleLocalFileDescriptor(),
             sourceCodeFilesInChooser,
@@ -307,7 +289,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             ? FileUtils.toFile(this.dbDriversDirOverrideFileChooser.getText())
             : null
         );
-        projectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(this.circularDependencyCheckBox.isSelected());
         projectDescriptor.setWithMavenSources(withMavenSources.isSelected());
         projectDescriptor.setWithMavenJavadocs(withMavenJavadocs.isSelected());
         projectDescriptor.setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
@@ -317,6 +298,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         projectDescriptor.setImportOotbModulesInReadOnlyMode(this.importOotbModulesInReadOnlyModeCheckBox.isSelected());
         projectDescriptor.setFollowSymlink(this.followSimplinkCheckbox.isSelected());
         projectDescriptor.setExcludeTestSources(this.excludeTestSourcesCheckBox.isSelected());
+        projectDescriptor.setImportCustomAntBuildFiles(this.importCustomAntBuildFilesCheckBox.isSelected());
         projectDescriptor.setScanThroughExternalModule(this.scanThroughExternalModuleCheckbox.isSelected());
         projectDescriptor.setSourceCodeFile(getValidSourceCode());
         projectDescriptor.setProjectIconFile(getProjectIcon());
@@ -374,24 +356,16 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setScanThroughExternalModule(
             appSettings.getScanThroughExternalModule()
         );
-        hybrisProjectDescriptor.setExcludeTestSources(
-            appSettings.getExcludeTestSources()
-        );
+        hybrisProjectDescriptor.setExcludeTestSources(appSettings.getExcludeTestSources());
+        hybrisProjectDescriptor.setImportCustomAntBuildFiles(appSettings.getImportCustomAntBuildFiles());
         hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
         hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
         hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
-        this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
-            hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
-        );
-        this.scanThroughExternalModuleCheckbox.setSelected(
-            hybrisProjectDescriptor.isScanThroughExternalModule()
-        );
-        this.followSimplinkCheckbox.setSelected(
-            hybrisProjectDescriptor.isFollowSymlink()
-        );
-        this.excludeTestSourcesCheckBox.setSelected(
-            hybrisProjectDescriptor.isExcludeTestSources()
-        );
+        this.importOotbModulesInReadOnlyModeCheckBox.setSelected(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
+        this.scanThroughExternalModuleCheckbox.setSelected(hybrisProjectDescriptor.isScanThroughExternalModule());
+        this.followSimplinkCheckbox.setSelected(hybrisProjectDescriptor.isFollowSymlink());
+        this.excludeTestSourcesCheckBox.setSelected(hybrisProjectDescriptor.isExcludeTestSources());
+        this.importCustomAntBuildFilesCheckBox.setSelected(hybrisProjectDescriptor.isImportCustomAntBuildFiles());
 
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
 
@@ -467,8 +441,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         if (StringUtils.isBlank(this.sourceCodeFilesInChooser.getText())) {
             sourceCodeFilesInChooser.setText(this.hybrisDistributionDirectoryFilesInChooser.getText());
         }
-
-        circularDependencyCheckBox.setSelected(false);
 
     }
 
@@ -614,10 +586,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setExternalExtensionsDirectory(FileUtils.toFile(settings.getExternalExtensionsDirectory(), true));
         hybrisProjectDescriptor.setExternalConfigDirectory(FileUtils.toFile(settings.getExternalConfigDirectory(), true));
         hybrisProjectDescriptor.setExternalDbDriversDirectory(FileUtils.toFile(settings.getExternalDbDriversDirectory(), true));
-        hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.getCreateBackwardCyclicDependenciesForAddOns());
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
         hybrisProjectDescriptor.setFollowSymlink(settings.getFollowSymlink());
         hybrisProjectDescriptor.setExcludeTestSources(settings.getExcludeTestSources());
+        hybrisProjectDescriptor.setImportCustomAntBuildFiles(settings.getImportCustomAntBuildFiles());
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.getScanThroughExternalModule());
 
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();

@@ -18,13 +18,17 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
+import java.io.File
 
 /**
  * Kotlin Facets will be configured only if `kotlinnature` extension is available and
@@ -34,22 +38,28 @@ class KotlinFacetConfigurator : FacetConfigurator {
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
-        moduleDescriptor: HybrisModuleDescriptor,
+        moduleDescriptor: ModuleDescriptor,
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
-        // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
-        modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
-            ?.takeUnless { moduleDescriptor.hasKotlinSourceDirectories() }
-            ?.let { modifiableFacetModel.removeFacet(it) }
+        if (moduleDescriptor !is YModuleDescriptor) return
 
-        if (!moduleDescriptor.hasKotlinSourceDirectories()) return
-        if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return
+        val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
 
-        val facet = KotlinFacet.get(javaModule)
-            ?: createFacet(javaModule)
+        WriteAction.runAndWait<RuntimeException> {
+            // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
+            modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
+                ?.takeUnless { hasKotlinDirectories }
+                ?.let { modifiableFacetModel.removeFacet(it) }
 
-        modifiableFacetModel.addFacet(facet)
+            if (!hasKotlinDirectories) return@runAndWait
+            if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return@runAndWait
+
+            val facet = KotlinFacet.get(javaModule)
+                ?: createFacet(javaModule)
+
+            modifiableFacetModel.addFacet(facet)
+        }
     }
 
     private fun createFacet(javaModule: Module) = with(KotlinFacetType.INSTANCE) {
@@ -60,5 +70,8 @@ class KotlinFacetConfigurator : FacetConfigurator {
             null
         )
     }
+
+    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
+        || File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
 }

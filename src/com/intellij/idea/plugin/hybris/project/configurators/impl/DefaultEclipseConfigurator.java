@@ -19,35 +19,25 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.AbstractHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.module.ModuleWithNameAlreadyExists;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/11/16.
- */
 public class DefaultEclipseConfigurator implements EclipseConfigurator {
 
     @Override
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<EclipseModuleDescriptor> eclipseModules,
-        @NotNull final Map<String,String[]> eclipseGroupMapping
+        @NotNull final List<EclipseModuleDescriptor> eclipseModules
     ) {
         if (eclipseModules.isEmpty()) {
             return;
@@ -55,7 +45,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         final EclipseImportBuilder eclipseImportBuilder = new EclipseImportBuilder();
         final List<String> projectList = eclipseModules
             .stream()
-            .map(AbstractHybrisModuleDescriptor::getRootDirectory)
+            .map(AbstractModuleDescriptor::getModuleRootDirectory)
             .map(File::getPath)
             .collect(Collectors.toList());
         if (hybrisProjectDescriptor.getModulesFilesDirectory() != null) {
@@ -64,34 +54,8 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         }
         eclipseImportBuilder.setList(projectList);
         ApplicationManager.getApplication().invokeAndWait(() -> {
-            final List<Module> newRootModules = eclipseImportBuilder.commit(project);
-            updateSettings(project, newRootModules, eclipseGroupMapping);
+            eclipseImportBuilder.commit(project);
         });
 
-    }
-
-    private void updateSettings(
-        @NotNull final Project project,
-        @NotNull final List<Module> eclipseModules,
-        @NotNull final Map<String, String[]> eclipseGroupMapping
-    ) {
-        final var modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
-        final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
-
-        eclipseModules.forEach(module -> {
-            settingsComponent.getModuleSettings(module).setDescriptorType(HybrisModuleDescriptorType.ECLIPSE);
-            try {
-                final String[] groups = eclipseGroupMapping.get(module.getName());
-
-                if (groups != null && groups.length > 0) {
-                    final var newName = String.join(".", groups) + '.' + module.getName();
-                    modifiableModuleModel.renameModule(module, newName);
-                }
-            } catch (final ModuleWithNameAlreadyExists e) {
-                // skip renaming
-            }
-        });
-
-        ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);
     }
 }

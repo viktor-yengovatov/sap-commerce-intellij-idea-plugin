@@ -18,19 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Sergey Aksenenko <serg.aksenenko@gmail.com> on 4/6/2016.
- */
 public interface JavadocModuleConfigurator {
 
     void configure(
         @NotNull ModifiableRootModel modifiableRootModel,
-        @NotNull HybrisModuleDescriptor moduleDescriptor,
+        @NotNull ModuleDescriptor moduleDescriptor,
         final @NotNull ProgressIndicator indicator
     );
 }

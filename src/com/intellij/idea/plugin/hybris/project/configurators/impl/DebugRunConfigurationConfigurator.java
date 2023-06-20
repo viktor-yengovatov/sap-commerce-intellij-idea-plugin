@@ -29,10 +29,10 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.AbstractHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +41,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 17/10/2016.
- */
 public class DebugRunConfigurationConfigurator implements RunConfigurationConfigurator {
 
     @Override
@@ -93,13 +90,13 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         @NotNull HybrisConfiguratorCache cache
     ) {
         final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
-        final ConfigHybrisModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
+        final ConfigModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES, cache);
 
         if (port != null) {
             return port;
         }
-        final PlatformHybrisModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(hybrisProjectDescriptor);
+        final PlatformModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(hybrisProjectDescriptor);
 
         if (platformDescriptor != null) {
             port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES, cache);
@@ -113,7 +110,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
 
 
     private String findPortProperty(
-        final AbstractHybrisModuleDescriptor moduleDescriptor,
+        final AbstractModuleDescriptor moduleDescriptor,
         final String fileName,
         HybrisConfiguratorCache cache
     ) {
@@ -121,7 +118,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
             return null;
         }
         final String debugOptions = cache.findPropertyInFile(
-            new File(moduleDescriptor.getRootDirectory(), fileName),
+            new File(moduleDescriptor.getModuleRootDirectory(), fileName),
             HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS
         );
         if (debugOptions == null) {

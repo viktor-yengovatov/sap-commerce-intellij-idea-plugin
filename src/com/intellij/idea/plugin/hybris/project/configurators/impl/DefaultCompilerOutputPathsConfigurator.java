@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -29,17 +29,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created 12:18 AM 25 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPathsConfigurator {
 
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
+        @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);
@@ -49,7 +44,7 @@ public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPat
         );
 
         final File outputDirectory = new File(
-            moduleDescriptor.getRootDirectory(),
+            moduleDescriptor.getModuleRootDirectory(),
             HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH
         );
 

@@ -1,3 +1,43 @@
+## [2023.2.1]
+
+### Features
+- Added folding for `items.xml` files [#478](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/478)
+- Added folding for `-backoffice-config.xml` files [#479](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/479)
+
+### `Project Import 2.0` 
+- Due mass API changes it is required to re-import the Project
+- Create new IDEA modules for each extension sub-module: `backoffice`, `acceleratoraddon`, `web`, `commonweb`, `hmc`, `hac`
+- Introduced new **SAP Commerce** module facet, which will contains all extension settings 
+- Module-type specific icons in the Project View
+- Module groups will always have correct custom icons
+- Show mandatory _Ext_ and _Platform_ extensions at the end of the Import Project Wizard
+- Improved compilation
+- Removed circular dependencies
+- Multiple other improvements [#477](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/477)
+
+### `External Dependencies` enhancements
+- Added custom icon for `external-dependencies.xml` file [#470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/470)
+
+### `ImpEx` enhancements
+- Only `UPDATE` allowed for non-dynamic enum inspection [#474](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/474)
+
+### Fixes
+- NPE in manifest files [#469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/469)
+- Add locale to JAVADOC_URL [#472](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/472)
+
+### Other
+- Navigate to the extension tag, not `name` attribute [#475](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/475)
+- Updated Gradle plugin to 1.14.0 [#471](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/471)
+- Added priority for project root tag [#473](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/473)
+- [Gradle](https://gradle.org/releases/): 8.1 -> 8.1.1
+- [jsoup](https://jsoup.org/): 1.15.4 -> 1.16.1
+- [Apache commons-io](https://commons.apache.org/proper/commons-io/): 2.11.0 -> 2.12.0
+- [Apache Maven model](https://maven.apache.org/): 3.8.7 -> 3.9.2
+- [Jakarta XML Binding](https://eclipse-ee4j.github.io/jaxb-ri/): 4.0.1 -> 4.0.2
+- [Apache Solr Java client](https://solr.apache.org/): 8.8.2 -> 8.11.2
+- [Kotlin plugins for Gradle](https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm): 1.8.20 -> 1.8.21
+- Added links for quick check of new versions availability
+
 ## [2023.2.0]
 
 ### Features
@@ -224,7 +264,7 @@
 ### Other
 - Added Project icon for Plugin repository [#302](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/302)
 - Replaced Caffeine cache with IDEA user data [#304](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/304)
-- Updated to Gradle plugin to 1.13.3
+- Updated Gradle plugin to 1.13.3
 - Improved default XML values handling
 
 ## [2023.1.3]
@@ -293,7 +333,7 @@
 - Migrated Business Process Diagram generation to Kotlin
 - Migrated Module Dependencies Diagram generation to Kotlin
 - Updated to Kotlin 1.8
-- Updated to Gradle plugin to 1.13.2
+- Updated Gradle plugin to 1.13.2
 - Removed custom `rt-ant` support, it did not work at all
 
 ## [2023.1.1]
@@ -324,7 +364,7 @@
 
 ### Features
 - Compatibility adjustments [#195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195)
-- Added CCv2 SAP Commerce Cloud `manifest.json` schema support [#225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/225)
+- Added CCv2 SAP Commerce `manifest.json` schema support [#225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/225)
 - Added CCv2 DataHub `manifest.json` schema support [#226](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/226)
 - Added CCv2 Javascript Storefront `manifest.json` schema support [#227](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/227)
 - Added completion of the available extensions for CCv2 SAP Commerce `manifest.json` file [#229](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/229)

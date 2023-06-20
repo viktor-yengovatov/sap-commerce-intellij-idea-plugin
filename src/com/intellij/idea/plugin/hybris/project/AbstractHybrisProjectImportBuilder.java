@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.projectImport.ProjectImportBuilder;
@@ -28,12 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.List;
 
-/**
- * Created 5:20 PM 13 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<HybrisModuleDescriptor> {
+public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<ModuleDescriptor> {
 
     public abstract void setRootProjectDirectory(@NotNull final File directory);
 
@@ -42,15 +37,15 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
 
     public abstract void setAllModuleList();
 
-    public abstract List<HybrisModuleDescriptor> getBestMatchingExtensionsToImport(@Nullable HybrisProjectSettings settings);
+    public abstract List<ModuleDescriptor> getBestMatchingExtensionsToImport(@Nullable HybrisProjectSettings settings);
 
     public abstract void setCoreStepModuleList();
 
     public abstract void setExternalStepModuleList();
 
-    public abstract void setHybrisModulesToImport(final List<HybrisModuleDescriptor> hybrisModules);
+    public abstract void setHybrisModulesToImport(final List<ModuleDescriptor> hybrisModules);
 
-    public abstract List<HybrisModuleDescriptor> getHybrisModulesToImport();
+    public abstract List<ModuleDescriptor> getHybrisModulesToImport();
 
     public abstract void setRefresh(boolean refresh);
 }

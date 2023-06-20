@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.view
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
@@ -25,7 +24,8 @@ import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.roots.ProjectRootManager
@@ -44,14 +44,22 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         val vf = node.virtualFile ?: return
         if (node.parent !is ProjectViewModuleGroupNode || node.parent == null) return
         val module = ProjectRootManager.getInstance(node.project).fileIndex.getModuleForFile(vf) ?: return
-        val descriptorType = HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType
+
+        val descriptorType = HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).type
+
+        if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
+            data.setIcon(KotlinIcons.SMALL_LOGO)
+            return
+        }
 
         when (descriptorType) {
-            HybrisModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.MODULE_CCV2_GROUP)
-            HybrisModuleDescriptorType.CONFIG -> data.setIcon(AllIcons.Nodes.ConfigFolder)
-            else -> if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.name && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
-                data.setIcon(KotlinIcons.SMALL_LOGO)
-            }
+            ModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.MODULE_CCV2_GROUP)
+            ModuleDescriptorType.CONFIG -> data.setIcon(HybrisIcons.EXTENSION_CONFIG)
+            ModuleDescriptorType.CUSTOM -> data.setIcon(HybrisIcons.EXTENSION_CUSTOM)
+            ModuleDescriptorType.EXT -> data.setIcon(HybrisIcons.EXTENSION_EXT)
+            ModuleDescriptorType.OOTB -> data.setIcon(HybrisIcons.EXTENSION_OOTB)
+            ModuleDescriptorType.PLATFORM -> data.setIcon(HybrisIcons.EXTENSION_PLATFORM)
+            else -> return
         }
     }
 }

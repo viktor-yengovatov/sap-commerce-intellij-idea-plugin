@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -27,11 +29,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created 1:48 PM 14 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface HybrisProjectDescriptor {
 
     void setProject(@Nullable Project project);
@@ -42,25 +39,25 @@ public interface HybrisProjectDescriptor {
     Project getProject();
 
     @NotNull
-    List<HybrisModuleDescriptor> getFoundModules();
+    List<ModuleDescriptor> getFoundModules();
 
     @NotNull
-    List<HybrisModuleDescriptor> getModulesChosenForImport();
+    List<ModuleDescriptor> getModulesChosenForImport();
 
-    void setModulesChosenForImport(@NotNull List<HybrisModuleDescriptor> moduleDescriptors);
+    void setModulesChosenForImport(@NotNull List<ModuleDescriptor> moduleDescriptors);
 
     // convenience method for configurators
     @Nullable
-    ConfigHybrisModuleDescriptor getConfigHybrisModuleDescriptor();
+    ConfigModuleDescriptor getConfigHybrisModuleDescriptor();
 
     // convenience method for configurators
     @NotNull
-    PlatformHybrisModuleDescriptor getPlatformHybrisModuleDescriptor();
+    PlatformModuleDescriptor getPlatformHybrisModuleDescriptor();
 
-    @Nullable HybrisModuleDescriptor getKotlinNatureModuleDescriptor();
+    @Nullable ModuleDescriptor getKotlinNatureModuleDescriptor();
 
     @NotNull
-    Set<HybrisModuleDescriptor> getAlreadyOpenedModules();
+    Set<ModuleDescriptor> getAlreadyOpenedModules();
 
     @Nullable
     File getRootDirectory();
@@ -121,10 +118,6 @@ public interface HybrisProjectDescriptor {
 
     void setJavadocUrl(@Nullable String javadocUrl);
 
-    void setCreateBackwardCyclicDependenciesForAddOns(boolean selected);
-
-    boolean isCreateBackwardCyclicDependenciesForAddOn();
-
     void setFollowSymlink(boolean followSymlink);
 
     boolean isFollowSymlink();
@@ -132,6 +125,10 @@ public interface HybrisProjectDescriptor {
     void setExcludeTestSources(boolean excludeTestSources);
 
     boolean isExcludeTestSources();
+
+    void setImportCustomAntBuildFiles(boolean importCustomAntBuildFiles);
+
+    boolean isImportCustomAntBuildFiles();
 
     void setScanThroughExternalModule(boolean scanThroughExternalModule);
 
