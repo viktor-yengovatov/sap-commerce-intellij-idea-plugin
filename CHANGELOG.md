@@ -1,3 +1,8 @@
+## [2023.2.2]
+
+### `FlexibleSearch` enhancements
+- Add case-insensitive suggestion support in FxS query for attribute parameters [#484](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/484)
+
 ## [2023.2.1]
 
 ### Features
