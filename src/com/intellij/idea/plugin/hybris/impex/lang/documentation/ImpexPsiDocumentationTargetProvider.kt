@@ -15,33 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
-// Generated on Wed Jan 18 00:35:54 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpitng/config/common
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.platform.backend.documentation.PsiDocumentationTargetProvider
+import com.intellij.psi.PsiElement
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
+class ImpexPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
 
-/**
- * http://www.hybris.com/cockpitng/config/common:merge-mode enumeration.
- * <pre>
- * <h3>Enumeration http://www.hybris.com/cockpitng/config/common:merge-mode documentation</h3>
- * This type is deprecated since version 2005. Please use mergeMode instead
- * </pre>
- */
-public enum MergeMode implements com.intellij.util.xml.NamedEnum {
-    MERGE("MERGE"),
-    REMOVE("REMOVE"),
-    REPLACE("REPLACE");
-
-    private final String value;
-
-    MergeMode(final String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
+    override fun documentationTarget(element: PsiElement, originalElement: PsiElement?) =
+        if (element.language == ImpexLanguage.getInstance()) ImpexDocumentationTarget(element, originalElement)
+        else null
 
 }

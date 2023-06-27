@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,15 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.action
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+package com.intellij.idea.plugin.hybris.impex.assistance;
 
-class ImportImpexAction : AbstractExecuteAction() {
+import com.intellij.openapi.editor.Editor;
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
-    override fun getExtension() = ImpexFileType.INSTANCE.defaultExtension
-    override fun getConsoleName() = HybrisConstants.IMPEX_CONSOLE_TITLE
+interface ImpexHighlighterService {
+
+    fun highlight(editor: Editor)
+
+    fun releaseEditorData(editor: Editor)
 }

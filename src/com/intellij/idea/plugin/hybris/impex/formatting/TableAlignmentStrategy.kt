@@ -16,32 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Wed Jan 18 00:35:54 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpitng/config/common
+package com.intellij.idea.plugin.hybris.impex.formatting;
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.lang.ASTNode
+import org.jetbrains.annotations.Contract
 
-/**
- * http://www.hybris.com/cockpitng/config/common:merge-mode enumeration.
- * <pre>
- * <h3>Enumeration http://www.hybris.com/cockpitng/config/common:merge-mode documentation</h3>
- * This type is deprecated since version 2005. Please use mergeMode instead
- * </pre>
- */
-public enum MergeMode implements com.intellij.util.xml.NamedEnum {
-    MERGE("MERGE"),
-    REMOVE("REMOVE"),
-    REPLACE("REPLACE");
+class TableAlignmentStrategy : ColumnsAlignmentStrategy() {
 
-    private final String value;
+    @Contract(pure = true)
+    override fun isNewLine(currentNode: ASTNode) = super.isNewLine(currentNode)
+        || isHeaderLine(currentNode)
 
-    MergeMode(final String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
-
+    @Contract(pure = true)
+    override fun isNewColumn(currentNode: ASTNode) = super.isNewColumn(currentNode)
+        || ImpexTypes.PARAMETERS_SEPARATOR == currentNode.elementType
 }

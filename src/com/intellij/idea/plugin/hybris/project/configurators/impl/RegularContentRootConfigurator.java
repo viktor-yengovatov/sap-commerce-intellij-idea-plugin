@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -41,8 +42,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
-import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
-import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
 
 public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
@@ -62,7 +61,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getModuleRootDirectory().getAbsolutePath()
         ));
 
-        final List<File> dirsToIgnore = emptyListIfNull(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
+        final List<File> dirsToIgnore = CollectionUtils.emptyIfNull(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
             .map(relPath -> new File(moduleDescriptor.getModuleRootDirectory(), relPath))
             .collect(Collectors.toList());
 
@@ -155,8 +154,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         ));
 
         if (
-            moduleDescriptor.getDescriptorType() == CUSTOM ||
-            !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
+            moduleDescriptor.getDescriptorType() == ModuleDescriptorType.CUSTOM ||
+                !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
         ) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), CLASSES_DIRECTORY));
         }
@@ -304,8 +303,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     protected boolean isResourceDirExcluded(final String moduleName) {
         List<String> extensionsResourcesToExcludeList = HybrisApplicationSettingsComponent.getInstance()
-                                                                                           .getState()
-                                                                                           .getExtensionsResourcesToExclude();
+            .getState()
+            .getExtensionsResourcesToExclude();
         return (CollectionUtils.isNotEmpty(extensionsResourcesToExcludeList) && extensionsResourcesToExcludeList
             .contains(moduleName));
     }
@@ -335,9 +334,9 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     ) {
         final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
 
-        if (moduleDescriptor.getDescriptorType() == CUSTOM
+        if (moduleDescriptor.getDescriptorType() == ModuleDescriptorType.CUSTOM
             || (!moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
-            && srcDirectoriesExists(rootDirectory))
+                && srcDirectoriesExists(rootDirectory))
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEBROOT_WEBINF_CLASSES_PATH));
         }
