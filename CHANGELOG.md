@@ -1,3 +1,8 @@
+## [2023.2.3]
+
+### Fixes
+- Java single characters are not respected when copying `FlexibleSearch` query  [#495](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/495)
+
 ## [2023.2.2]
 
 ### `ImpEx` enhancements
