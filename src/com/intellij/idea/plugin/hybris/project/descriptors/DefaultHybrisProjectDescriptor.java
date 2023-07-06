@@ -113,6 +113,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private boolean withMavenSources;
     private boolean withStandardProvidedSources;
     private boolean withMavenJavadocs;
+    private boolean ignoreNonExistingSourceDirectories;
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
     @NotNull
@@ -1016,6 +1017,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setWithMavenJavadocs(final boolean withMavenJavadocs) {
         this.withMavenJavadocs = withMavenJavadocs;
+    }
+
+    @Override
+    public boolean isIgnoreNonExistingSourceDirectories() {
+        return ignoreNonExistingSourceDirectories;
+    }
+
+    @Override
+    public void setIgnoreNonExistingSourceDirectories(final boolean ignoreNonExistingSourceDirectories) {
+        this.ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories;
     }
 
     @Nullable

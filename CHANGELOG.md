@@ -1,3 +1,8 @@
+## [2023.2.4]
+
+### Features
+- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)
+
 ## [2023.2.3]
 
 ### Features

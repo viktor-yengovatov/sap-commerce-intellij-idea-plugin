@@ -32,6 +32,7 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.JpsElement;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
@@ -300,6 +301,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final JpsModuleSourceRootType<P> rootType,
         @NotNull final List<File> dirsToIgnore
     ) {
+
         addSourceFolderIfNotIgnored(
             contentEntry,
             testSrcDir,
@@ -328,6 +330,10 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final List<File> dirsToIgnore
     ) {
         if (dirsToIgnore.stream().noneMatch(it -> FileUtil.isAncestor(it, testSrcDir, false))) {
+            final boolean ignoreEmpty = HybrisApplicationSettingsComponent.getInstance().getState().getIgnoreNonExistingSourceDirectories();
+            if (BooleanUtils.isTrue(ignoreEmpty) && !testSrcDir.exists()) {
+                return;
+            }
             contentEntry.addSourceFolder(
                 VfsUtil.pathToUrl(testSrcDir.getAbsolutePath()),
                 rootType,
