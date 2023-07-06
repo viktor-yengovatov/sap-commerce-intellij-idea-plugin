@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,6 @@ import com.intellij.facet.FacetTypeId
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.facet.YFacetType
 import com.intellij.openapi.util.io.FileUtilRt
-import java.io.File
 
 object HybrisConstants {
 
@@ -85,6 +84,7 @@ object HybrisConstants {
     const val COCKPIT_NG_WIDGETS_XML = "widgets.xml"
     const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
 
+    const val HYBRIS_DIRECTORY = "hybris"
     const val HYBRIS_DATA_DIRECTORY = "data"
     const val HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar"
 
@@ -145,6 +145,7 @@ object HybrisConstants {
     const val PLATFORM_TOMCAT_6_DIRECTORY = "tomcat-6"
     const val PLATFORM_TOMCAT_DIRECTORY = "tomcat"
     const val PLATFORM_LIBRARY_GROUP = "Platform Bootstrap"
+    const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
     const val NODE_MODULES_DIRECTORY = "node_modules"
     const val JS_TARGET_DIRECTORY = "jsTarget"
@@ -410,6 +411,8 @@ object HybrisConstants {
     @JvmField
     val EXCLUDE_GIT_DIRECTORY = FileUtilRt.toSystemDependentName("/.git")
     @JvmField
+    val EXCLUDE_GITHUB_DIRECTORY = FileUtilRt.toSystemDependentName("/.github")
+    @JvmField
     val EXCLUDE_GRADLE_DIRECTORY = FileUtilRt.toSystemDependentName("/.gradle")
     @JvmField
     val EXCLUDE_TEMP_DIRECTORY = FileUtilRt.toSystemDependentName("/temp")
@@ -476,7 +479,7 @@ object HybrisConstants {
     val BACKOFFICE_WEB_INF_CLASSES_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/classes")
 
     @JvmField
-    val QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + File.separator + "consolestorage"
+    val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
     @JvmField
     val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
     @JvmField

@@ -1,3 +1,33 @@
+## [2023.2.3]
+
+### Features
+- Automatically configure Database based on project settings during project import/refresh [#508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/508) 
+- Show modifiers and persistence information for Items in the Type System preview [#505](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/505)
+- Import CCv2 `core-customize` as a separate module [#498](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/498)
+- Don't scan CCv2 `js-storefront` and `datahub` sub-folders during project import/refresh [#497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/497) 
+
+### `ImpEx` enhancements
+- Added documentation for Header type name [#506](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/506)
+- Added documentation for sub-type in the Value line [#507](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/507)
+- Improved substitution of the `$config-xxx` properties [#496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/496)
+- New documentation settings added to the Project Settings 
+
+### `FlexibleSearch` enhancements
+- Added documentation for type name in the `FROM` statement [#508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/508)
+- New documentation settings added to the Project Settings
+
+### Fixes
+- Fix UI freeze due new Intellij IDEA startup activity API [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
+- Improve disposing of the `ImpEx` Editor listeners [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
+- Ensure that console storage is under `.idea` folder [#503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/503)
+- Fix UI freeze due legacy `items.xml` analysis [#502](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/502)
+- Use DPI-aware borders [#501](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/501)
+- Fixed single character header column width in TS/BS Systems previews [#500](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/500)
+- Java single characters are not respected when copying `FlexibleSearch` query [#495](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/495)
+
+### Other
+- Updated Gradle plugin to 1.14.2
+
 ## [2023.2.2]
 
 ### `ImpEx` enhancements

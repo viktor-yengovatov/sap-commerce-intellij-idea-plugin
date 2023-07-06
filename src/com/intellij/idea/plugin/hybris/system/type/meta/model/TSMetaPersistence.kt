@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -24,4 +24,25 @@ interface TSMetaPersistence : TSMetaClassifier<Persistence> {
     val type: PersistenceType?
     val qualifier: String?
     val attributeHandler: String?
+
+    override fun inlineDocumentation() = when (type) {
+        PersistenceType.CMP -> "C"
+        PersistenceType.DYNAMIC -> "D"
+        PersistenceType.PROPERTY -> "P"
+        PersistenceType.JALO -> "J"
+        null -> "?"
+    }
+
+    companion object {
+
+        val tableHeaderTooltip = """
+                <strong>Persistence</strong>
+                <table>
+                    <tr><td>C</td><td>cmp</td></tr>
+                    <tr><td>D</td><td>dynamic</td></tr>
+                    <tr><td>P</td><td>property</td></tr>
+                    <tr><td>J</td><td>jalo</td></tr>
+                </table>
+            """.trimIndent()
+    }
 }

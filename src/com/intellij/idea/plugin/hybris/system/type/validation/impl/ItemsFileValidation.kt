@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -46,6 +47,7 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
         if (!HybrisApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return false
         if (!file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)) return false
         if (!ModuleUtil.projectContainsFile(project, file, false)) return false
+        if (DumbService.isDumb(project)) return false
 
         return isFileOutOfDateWithGeneratedClasses(file)
     }
@@ -82,18 +84,18 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
 
             val inheritedEnumClasses = findAllInheritClasses(project, HybrisConstants.CLASS_ENUM_ROOT)
             val enumTypes = items.enumTypes.enumTypes
-            if (enumTypeClassValidation.validate(enumTypes, inheritedEnumClasses)) return true
+            if (enumTypeClassValidation.validate(project, enumTypes, inheritedEnumClasses)) return true
 
             val inheritedItemClasses = findAllInheritClasses(project, HybrisConstants.CLASS_ITEM_ROOT)
             val filteredItemTypes = getItemTypesExcludeRelations(items)
-            if (itemTypeClassValidation.validate(filteredItemTypes, inheritedItemClasses)) return true
+            if (itemTypeClassValidation.validate(project, filteredItemTypes, inheritedItemClasses)) return true
 
             items.itemTypes.typeGroups
-                .find { itemTypeClassValidation.validate(it.itemTypes, inheritedItemClasses) }
+                .find { itemTypeClassValidation.validate(project, it.itemTypes, inheritedItemClasses) }
                 ?.let { return true }
 
             val relations = items.relations.relations
-            if (relationValidation.validate(relations, inheritedItemClasses)) return true
+            if (relationValidation.validate(project, relations, inheritedItemClasses)) return true
         } catch (ignore: IndexNotReadyException) {
             //do not validate Items.xml until index is not ready
         } catch (e: Exception) {
