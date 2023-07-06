@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators
 import com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator
 import com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -30,7 +31,8 @@ interface ContentRootConfigurator {
     fun configure(
         indicator: ProgressIndicator,
         modifiableRootModel: ModifiableRootModel,
-        moduleDescriptor: ModuleDescriptor
+        moduleDescriptor: ModuleDescriptor,
+        appSettings: HybrisApplicationSettings
     )
 
     companion object {

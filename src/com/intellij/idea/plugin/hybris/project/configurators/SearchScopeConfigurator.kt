@@ -18,6 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
@@ -28,6 +29,7 @@ interface SearchScopeConfigurator {
     fun configure(
         indicator: ProgressIndicator,
         project: Project,
+        applicationSettings: HybrisApplicationSettings,
         model: ModifiableModuleModel
     )
 

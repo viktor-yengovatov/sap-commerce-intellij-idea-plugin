@@ -23,6 +23,7 @@ import com.intellij.find.FindSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -45,16 +46,14 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
     @Override
     public void configure(
-        final @NotNull ProgressIndicator indicator, @NotNull final Project project,
-        @NotNull final ModifiableModuleModel model
+        @NotNull final ProgressIndicator indicator, @NotNull final Project project,
+        @NotNull final HybrisApplicationSettings appSettings, @NotNull final ModifiableModuleModel model
     ) {
         indicator.setText(message("hybris.project.import.search.scope"));
-        final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
-        final String commerceGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupHybris();
-        final String nonHybrisGroupName = HybrisApplicationSettingsComponent.getInstance()
-                                                                            .getState()
-                                                                            .getGroupNonHybris();
-        final String platformGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupPlatform();
+        final String customGroupName = appSettings.getGroupCustom();
+        final String commerceGroupName = appSettings.getGroupHybris();
+        final String nonHybrisGroupName = appSettings.getGroupNonHybris();
+        final String platformGroupName = appSettings.getGroupPlatform();
         final List<NamedScope> newScopes = new ArrayList<>();
         NamedScope customScope = null;
         NamedScope platformScope = null;
@@ -75,7 +74,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
             newScopes.add(new NamedScope(
                 SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.editable.custom.ts.beans.impex.files"),
-                createCustomTsImpexBeansFilesPattern()
+                createCustomTsImpexBeansFilesPattern(appSettings)
             ));
         }
         if (groupExists(model, platformGroupName)) {
@@ -111,8 +110,8 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     }
 
     @NotNull
-    public static PackageSet createCustomTsImpexBeansFilesPattern() {
-        final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
+    public static PackageSet createCustomTsImpexBeansFilesPattern(final @NotNull HybrisApplicationSettings appSettings) {
+        final String customGroupName = appSettings.getGroupCustom();
         final FilePatternPackageSet tsFilePatternPackageSet = new FilePatternPackageSet(
             customGroupName + '*',
             "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING
