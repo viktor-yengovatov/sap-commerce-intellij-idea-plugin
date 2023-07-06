@@ -471,6 +471,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         appSettings.setWithMavenSources(hybrisProjectDescriptor.isWithMavenSources());
         appSettings.setWithMavenJavadocs(hybrisProjectDescriptor.isWithMavenJavadocs());
+        appSettings.setIgnoreNonExistingSourceDirectories(hybrisProjectDescriptor.isIgnoreNonExistingSourceDirectories());
         appSettings.setWithStandardProvidedSources(hybrisProjectDescriptor.isWithStandardProvidedSources());
 
         final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();

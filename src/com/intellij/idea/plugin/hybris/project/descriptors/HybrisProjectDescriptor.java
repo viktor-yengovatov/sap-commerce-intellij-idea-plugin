@@ -113,6 +113,10 @@ public interface HybrisProjectDescriptor {
 
     void setExternalDbDriversDirectory(@Nullable File dbDriversDir);
 
+    boolean isIgnoreNonExistingSourceDirectories();
+
+    void setIgnoreNonExistingSourceDirectories(boolean ignoreNonExistingSourceDirectories);
+
     @Nullable
     String getJavadocUrl();
 

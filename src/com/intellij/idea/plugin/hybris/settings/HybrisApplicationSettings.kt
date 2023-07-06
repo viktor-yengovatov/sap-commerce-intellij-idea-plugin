@@ -30,6 +30,7 @@ data class HybrisApplicationSettings(
     var warnIfGeneratedItemsAreOutOfDate: Boolean = true,
     var withMavenSources: Boolean = false,
     var withMavenJavadocs: Boolean = false,
+    var ignoreNonExistingSourceDirectories: Boolean = false,
     var withStandardProvidedSources: Boolean = false,
     var scanThroughExternalModule: Boolean = true,
     var excludeTestSources: Boolean = false,
