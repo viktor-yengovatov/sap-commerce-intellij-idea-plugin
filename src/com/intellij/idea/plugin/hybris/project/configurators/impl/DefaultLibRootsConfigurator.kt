@@ -199,7 +199,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         moduleDescriptor: ModuleDescriptor,
         progressIndicator: ProgressIndicator
     ) = if (LibraryDescriptorType.LIB == javaLibraryDescriptor.descriptorType) {
-        MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator)
+        MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator, HybrisApplicationSettingsComponent.getInstance().getState())
     } else emptyList()
 
     private fun resolveStandardProvidedSources(

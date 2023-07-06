@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.vfs.VfsUtil;
 import org.jetbrains.annotations.NotNull;
@@ -37,9 +39,10 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     protected void configureCommonRoots(
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
-        @NotNull final List<File> dirsToIgnore
+        @NotNull final List<File> dirsToIgnore,
+        @NotNull final HybrisApplicationSettings appSettings
     ) {
-        configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore);
+        configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore, appSettings);
 
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
@@ -48,7 +51,8 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     protected void configureSubModule(
         @NotNull final YBackofficeSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
-        @NotNull final List<File> dirsToIgnore
+        @NotNull final List<File> dirsToIgnore,
+        @NotNull final HybrisApplicationSettings appSettings
     ) {
         final File classesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(classesDirectory.getAbsolutePath()));

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -62,9 +61,8 @@ public interface MavenUtils {
      static List<String> resolveMavenJavadocs(
         final @NotNull ModifiableRootModel modifiableRootModel,
         final @NotNull ModuleDescriptor moduleDescriptor,
-        final @NotNull ProgressIndicator progressIndicator
+        final @NotNull ProgressIndicator progressIndicator, final HybrisApplicationSettings appSettings
     ) {
-        final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         if (appSettings.getWithMavenJavadocs()) {
             return resolveMavenDependencies(modifiableRootModel, moduleDescriptor, progressIndicator, false, true);
         }
@@ -72,12 +70,11 @@ public interface MavenUtils {
     }
 
      static List<String> resolveMavenSources(
-        final @NotNull ModifiableRootModel modifiableRootModel,
-        final @NotNull ModuleDescriptor moduleDescriptor,
-        final @NotNull ProgressIndicator progressIndicator
-    ) {
-        final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        if (appSettings.getWithMavenSources()) {
+         final @NotNull ModifiableRootModel modifiableRootModel,
+         final @NotNull ModuleDescriptor moduleDescriptor,
+         final @NotNull ProgressIndicator progressIndicator, final HybrisApplicationSettings appSettings
+     ) {
+         if (appSettings.getWithMavenSources()) {
             return resolveMavenDependencies(modifiableRootModel, moduleDescriptor, progressIndicator, true, false);
         }
         return Collections.emptyList();
