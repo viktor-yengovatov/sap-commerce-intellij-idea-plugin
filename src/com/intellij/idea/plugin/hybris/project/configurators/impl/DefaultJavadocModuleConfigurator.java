@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.JavaModuleExternalPaths;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -37,13 +38,14 @@ public class DefaultJavadocModuleConfigurator implements JavadocModuleConfigurat
     public void configure(
         @NotNull ProgressIndicator indicator,
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final ModuleDescriptor moduleDescriptor
+        @NotNull final ModuleDescriptor moduleDescriptor,
+        @NotNull final HybrisApplicationSettings appSettings
     ) {
         indicator.setText2(message("hybris.project.import.module.javadoc"));
 
         final String javadocUrl = moduleDescriptor.getRootProjectDescriptor().getJavadocUrl();
 
-        final List<String> javadocPathList = MavenUtils.resolveMavenJavadocs(modifiableRootModel, moduleDescriptor, indicator);
+        final List<String> javadocPathList = MavenUtils.resolveMavenJavadocs(modifiableRootModel, moduleDescriptor, indicator, appSettings);
         final JavaModuleExternalPaths javaModuleExternalPaths = modifiableRootModel.getModuleExtension(
             JavaModuleExternalPaths.class
         );
