@@ -60,6 +60,10 @@ class HybrisApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                     .bindSelected(state::withMavenJavadocs)
             }
             row {
+                checkBox(message("hybris.project.import.ignore.non.existing.sources"))
+                    .bindSelected(state::ignoreNonExistingSourceDirectories)
+            }
+            row {
                 checkBox(message("hybris.project.attach.standard.sources"))
                     .bindSelected(state::withStandardProvidedSources)
             }

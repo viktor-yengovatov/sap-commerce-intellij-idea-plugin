@@ -105,6 +105,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JLabel customProjectIconLabel;
     private TextFieldWithBrowseButton customProjectIconChooser;
     private JCheckBox importCustomAntBuildFilesCheckBox;
+    private JCheckBox ignoreNonExistingSourceDirectories;
     private String hybrisVersion;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
@@ -291,6 +292,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
         projectDescriptor.setWithMavenSources(withMavenSources.isSelected());
         projectDescriptor.setWithMavenJavadocs(withMavenJavadocs.isSelected());
+        projectDescriptor.setIgnoreNonExistingSourceDirectories(ignoreNonExistingSourceDirectories.isSelected());
         projectDescriptor.setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
         projectDescriptor.setJavadocUrl(this.javadocUrlTextField.getText());
         projectDescriptor.setHybrisVersion(hybrisVersion);
@@ -360,6 +362,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setImportCustomAntBuildFiles(appSettings.getImportCustomAntBuildFiles());
         hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
         hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
+        hybrisProjectDescriptor.setIgnoreNonExistingSourceDirectories(appSettings.getIgnoreNonExistingSourceDirectories());
         hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
         this.scanThroughExternalModuleCheckbox.setSelected(hybrisProjectDescriptor.isScanThroughExternalModule());
@@ -595,6 +598,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         final var appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
         hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
+        hybrisProjectDescriptor.setIgnoreNonExistingSourceDirectories(appSettings.getIgnoreNonExistingSourceDirectories());
         hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
 
         final var ideModulesFilesDirectory = settings.getIdeModulesFilesDirectory();
