@@ -24,8 +24,8 @@
 ## [2023.2.3]
 
 ### Features
-- Automatically configure Database based on project settings during project import/refresh [#508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/508) 
-- Show modifiers and persistence information for Items in the Type System preview [#505](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/505)
+- Automatically configure Database based on project settings during project import/refresh [#509](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/509) 
+- Show modifiers and persistence information for Items in the Type System preview [#505](psi_https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/505)
 - Import CCv2 `core-customize` as a separate module [#498](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/498)
 - Don't scan CCv2 `js-storefront` and `datahub` sub-folders during project import/refresh [#497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/497) 
 
@@ -116,7 +116,7 @@
 
 ### `Kotlin` language support
 - Integration with [kotlinnature](https://github.com/mlytvyn/kotlinnature) extension
-- Inject FlexibleSearch language into not concatenated Strings and String Templates without params [#433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/432)
+- Inject FlexibleSearch language into not concatenated Strings and String Templates without params [#432](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/432)
 - Register Kotlin Facet for extensions with `kotlinsrc` / `kotlintestsrc` directories [#407](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/407)
 - Automatically adjust Kotlin Compiler based on `kotlinnature` settings and project JDK [#409](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/409)
 - Show different icon for `kotlinnature` extension [#408](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408)
@@ -312,7 +312,7 @@
 - Added possibility to specify custom Project Icon, if not selected default one will be used [#323](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/323)
 - Added navigation to the Extension declaration via Gutter icons for `localextensions.xml` [#320](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/320)
 - Added navigation to the Extension declaration via Gutter icons for `extensioninfo.xml` [#321](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/321)
-- Added completion and navigation for `typeCode` Interceptor property within the Spring XML file [#324](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/324)
+- Added completion and navigation for `typeCode` Interceptor property within the Spring XML file [#326](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/326)
 - Added Project Refresh Action for not yet imported extensions declared as dependencies via `extensioninfo.xml` and `localextensions.xml` [#322](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/322)
 - Improved support of the custom DOM files [#301](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/301)
 - Enabled selection of the CCv2 modules during Project import [#303](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/303)
@@ -343,9 +343,9 @@
 ## [2023.1.2]
 
 ### Features
-- Added node type specific icons for Business Process code completion [#296](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/296)
+- Added node type specific icons for Business Process code completion [#297](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/297)
 - Added navigation to generated Item and Enum classes from the `items.xml` [#284](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/284)
-- Added navigation to generated Enum Values fields from the `items.xml` [#285](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/285)
+- Added navigation to generated Enum Values fields from the `items.xml` [#286](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/286)
 - Added "collapse all"/"expand all" actions for TS and BS views [#262](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262)
 - Added `sld.enabled` modifier support for ImpEx type [#290](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290)
 - Added Line Marker Provider settings and unified API usage [#294](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/294)
@@ -374,7 +374,7 @@
 - Added node properties [#267](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/267)
 - Added edge coloring [#265](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265)
 - Added cycle edges coloring [#266](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266)
-- Added Context Parameters node [#283](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/283)
+- Added Context Parameters node [#287](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/287)
  
 ### `FlexibleSearch` inspection rules 
 - `Item Type` is not defined [#264](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264)
