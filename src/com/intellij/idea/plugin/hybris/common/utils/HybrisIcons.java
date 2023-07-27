@@ -41,6 +41,8 @@ public final class HybrisIcons {
     public static final Icon PGQ_FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg");
     public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/beanIcon.svg");
 
+    public static final Icon PLUGIN_SETTINGS = getIcon("/icons/pluginSettings.svg");
+
     public static final Icon IMPEX = getIcon("/icons/impex.svg");
     public static final Icon FLEXIBLE_SEARCH = getIcon("/icons/flexibleSearch.svg");
 
@@ -107,6 +109,7 @@ public final class HybrisIcons {
     public static final Icon TS_RELATION = getIcon("/icons/typeSystem/relation.svg");
     public static final Icon TS_CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg");
     public static final Icon TS_ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg");
+    public static final Icon TS_ORDERING_ATTRIBUTE = getIcon("/icons/typeSystem/orderingAttribute.svg");
     public static final Icon TS_RELATION_SOURCE = getIcon("/icons/typeSystem/relationSource.svg");
     public static final Icon TS_RELATION_TARGET = getIcon("/icons/typeSystem/relationTarget.svg");
     public static final Icon TS_COLLECTION = getIcon("/icons/typeSystem/collection.svg");

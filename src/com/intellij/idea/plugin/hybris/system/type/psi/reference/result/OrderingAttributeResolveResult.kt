@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,19 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.codeInsight.hints
 
-import com.intellij.codeInsight.hints.declarative.InlayHintsProvider
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiFile
+package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
-class DynamicAttributeDeclarativeInlayProvider : InlayHintsProvider {
+import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 
-    private val collector by lazy {
-        DynamicAttributeDeclarativeInlayHintsCollector()
-    }
-
-    override fun createCollector(file: PsiFile, editor: Editor) = if (HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()) collector
-    else null
+class OrderingAttributeResolveResult(
+    val meta: TSMetaRelation.TSMetaOrderingAttribute
+) : TSReferenceBase.TSResolveResult {
+    private val myDom: RelationElement? = meta.retrieveDom()
+    override fun getElement() = myDom?.qualifier?.xmlAttributeValue
+    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

@@ -1,3 +1,22 @@
+## [2023.2.5]
+
+### Features
+- Added ordering attributes support for 1-to-m relations (those ending with `POS`) [#523](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/523)
+
+### `FlexibleSearch` enhancements
+- Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
+
+### Fixes
+- Do not register DataSource in Intellij Community [#530](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/530)
+- Unable to import project from existing sources since upgrading to Idea 2023.2 [#526](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/526)
+- Unable to import project in Intellij 2023.2 Community Version [#527](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/527)
+
+### Other
+- Added custom icon for `hybris4intellij.properties` file [#525](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/525)
+- Do not mark `ExtensibleItem`, `LocalizableItem` & `GenericItem` as not generated in `items.xml` [#522](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/522)
+- Improve performance of the inlay for `DynamicAttributeHandler` [#521](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/521) 
+- Improve performance of the widely used `ModelsUtils` [#520](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/520)
+
 ## [2023.2.4]
 
 ### `FlexibleSearch` enhancements
