@@ -265,7 +265,17 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             ? settings.getModulesOnBlackList()
             : Collections.emptySet();
 
-        return moduleToImport.stream()
+        final List<YSubModuleDescriptor> submodules = moduleToImport.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .map(YModuleDescriptor::getSubModules)
+            .flatMap(Collection::stream)
+            .toList();
+
+        final LinkedHashSet<ModuleDescriptor> modulesWithSubmodules = new LinkedHashSet<>(moduleToImport);
+        modulesWithSubmodules.addAll(submodules);
+
+        return modulesWithSubmodules.stream()
                              .filter(e -> !modulesOnBlackList.contains(e.getRelativePath()))
                              .sorted(Comparator.nullsLast(Comparator.comparing(ModuleDescriptor::getName)))
                              .collect(Collectors.toList());

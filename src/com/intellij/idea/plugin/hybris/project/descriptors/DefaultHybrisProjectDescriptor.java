@@ -429,10 +429,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         Collections.sort(moduleDescriptors);
 
+        addCustomSubmoduleAddons(moduleDescriptors);
         buildDependencies(moduleDescriptors);
         final var addons = processAddons(moduleDescriptors);
         removeNotInstalledAddons(moduleDescriptors, addons);
-
         foundModules.addAll(moduleDescriptors);
     }
 
@@ -479,6 +479,26 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         notInstalledAddons.forEach(it -> it.getOwner().removeSubModule(it));
         moduleDescriptors.removeAll(notInstalledAddons);
+    }
+    private void addCustomSubmoduleAddons(final List<ModuleDescriptor> moduleDescriptors) {
+        final Set<YAcceleratorAddonSubModuleDescriptor> addonSubmodules = moduleDescriptors.stream()
+            .filter(YCustomRegularModuleDescriptor.class::isInstance)
+            .map(YCustomRegularModuleDescriptor.class::cast)
+            .map(YCustomRegularModuleDescriptor::getSubModules)
+            .flatMap(Collection::stream)
+            .filter(YAcceleratorAddonSubModuleDescriptor.class::isInstance)
+            .map(YAcceleratorAddonSubModuleDescriptor.class::cast)
+            .collect(Collectors.toSet());
+        moduleDescriptors.addAll(addonSubmodules);
+        final Set<YCommonWebSubModuleDescriptor> customSubmodules = moduleDescriptors.stream()
+            .filter(YCustomRegularModuleDescriptor.class::isInstance)
+            .map(YCustomRegularModuleDescriptor.class::cast)
+            .map(YCustomRegularModuleDescriptor::getSubModules)
+            .flatMap(Collection::stream)
+            .filter(YCommonWebSubModuleDescriptor.class::isInstance)
+            .map(YCommonWebSubModuleDescriptor.class::cast)
+            .collect(Collectors.toSet());
+        moduleDescriptors.addAll(customSubmodules);
     }
 
     // scan through eclipse module for hybris custom mudules in its subdirectories
