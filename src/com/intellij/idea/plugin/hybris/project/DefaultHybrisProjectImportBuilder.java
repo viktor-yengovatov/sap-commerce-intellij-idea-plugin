@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractYModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
@@ -84,7 +85,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     public void setRootProjectDirectory(@NotNull final File directory) {
         Validate.notNull(directory);
 
-        LOG.info("setting RootProjectDirectory to "+directory.getAbsolutePath());
+        LOG.info("setting RootProjectDirectory to " + directory.getAbsolutePath());
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
             directory, this.getHybrisProjectDescriptor()
         ));
@@ -237,13 +238,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Override
     public List<ModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable HybrisProjectSettings settings) {
         final List<ModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
-        final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
+        final Set<ModuleDescriptor> moduleToImport = new LinkedHashSet<>();
         final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();
         for (ModuleDescriptor moduleDescriptor : allModules) {
             if (moduleDescriptor.isPreselected()) {
-                moduleToImport.add(moduleDescriptor);
                 moduleDescriptor.setImportStatus(MANDATORY);
                 moduleToCheck.add(moduleDescriptor);
+                resolveSubModules(moduleDescriptor, moduleToImport, MANDATORY, moduleToCheck);
             }
         }
         resolveDependency(moduleToImport, moduleToCheck, MANDATORY);
@@ -255,9 +256,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         allModules.stream()
             .filter(e -> unusedExtensionNameSet.contains(e.getName()))
             .forEach(e -> {
-                moduleToImport.add(e);
                 e.setImportStatus(UNUSED);
                 moduleToCheck.add(e);
+                resolveSubModules(e, moduleToImport, UNUSED, moduleToCheck);
             });
         resolveDependency(moduleToImport, moduleToCheck, UNUSED);
 
@@ -334,7 +335,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     private void resolveDependency(
-        final List<ModuleDescriptor> moduleToImport,
+        final Set<ModuleDescriptor> moduleToImport,
         final Set<ModuleDescriptor> moduleToCheck,
         final ModuleDescriptorImportStatus selectionMode
     ) {
@@ -346,6 +347,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                         moduleToImport.add(moduleDescriptor);
                         moduleDescriptor.setImportStatus(selectionMode);
                         moduleToCheck.add(moduleDescriptor);
+                        resolveSubModules(moduleDescriptor, moduleToImport, MANDATORY, moduleToCheck);
                     }
                 }
             }
@@ -353,4 +355,16 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         }
     }
 
+    private static void resolveSubModules(final ModuleDescriptor moduleDescriptor, final Set<ModuleDescriptor> moduleToImport, final ModuleDescriptorImportStatus mandatory, final Set<ModuleDescriptor> moduleToCheck) {
+        if (moduleDescriptor instanceof final AbstractYModuleDescriptor yModule) {
+            for (final var subModule : yModule.getSubModules()) {
+                if (moduleToImport.contains(subModule)) {
+                    continue;
+                }
+                moduleToImport.add(subModule);
+                subModule.setImportStatus(mandatory);
+                moduleToCheck.add(subModule);
+            }
+        }
+    }
 }
