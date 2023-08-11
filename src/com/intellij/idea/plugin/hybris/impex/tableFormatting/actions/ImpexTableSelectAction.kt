@@ -16,14 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.liveTemplates
+package com.intellij.idea.plugin.hybris.impex.tableFormatting.actions
 
-import com.intellij.codeInsight.template.FileTypeBasedContextType
-import com.intellij.codeInsight.template.TemplateActionContext
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableEditor
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.handler.ImpexTableActionHandler
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.operation.SelectImpexTableOperation
+import com.intellij.openapi.editor.Editor
 
-class ImpexContextType : FileTypeBasedContextType("ImpEx", ImpexFileType.INSTANCE) {
+class ImpexTableSelectAction : AbstractImpexTableFormatAction(object : ImpexTableActionHandler() {
 
-    override fun isInContext(templateActionContext: TemplateActionContext) = templateActionContext.file is ImpexFile
+    override fun action(editor: Editor) = SelectImpexTableOperation(ImpexTableEditor(editor))
+}) {
+
+    init {
+        with(templatePresentation) {
+            text = "Select ImpEx Statement"
+            description = "Select ImpEx statement"
+            icon = HybrisIcons.TABLE_SELECT
+        }
+    }
 }
