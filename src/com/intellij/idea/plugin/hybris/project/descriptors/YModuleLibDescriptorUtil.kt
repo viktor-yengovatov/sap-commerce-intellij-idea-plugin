@@ -292,21 +292,20 @@ object YModuleLibDescriptorUtil {
         addServerLibs(descriptor, libs)
         addRootLib(descriptor, libs)
 
-        val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
-
         val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
             .toMutableList()
         File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY)
             .takeIf { it.isDirectory }
-            ?.let { sourceFiles.add(it) }
+            ?.listFiles { it: File -> it.isDirectory }
+            ?.forEach { sourceFiles.add(it) }
+
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - $libName Classes",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
-                sourceFiles = if (attachSources) sourceFiles
-                else emptyList(),
+                sourceFiles = sourceFiles,
                 exported = true,
                 directoryWithClasses = true
             )
