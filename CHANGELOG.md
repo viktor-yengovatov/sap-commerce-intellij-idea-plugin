@@ -47,7 +47,7 @@
 - Fixed `ImpEx` context actions [#551](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/551) 
 - Reset `ImpEx` highlighting cache on moving columns [#567](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/567) 
 - Fixed Compact Middle Packages in the Project View [#568](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/568) 
-- Fixed `commonweb` sources attaching [#572](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/572) 
+- Fixed `commonweb` sources attaching [#572](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/572), [#573](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/573) 
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
