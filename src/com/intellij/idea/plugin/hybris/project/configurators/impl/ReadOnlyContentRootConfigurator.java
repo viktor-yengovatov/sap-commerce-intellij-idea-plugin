@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.vfs.VfsUtil;
 import org.jetbrains.annotations.NotNull;
@@ -75,8 +74,5 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
 
         final File webTestClassesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), TEST_CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath()));
-
-        final File commonWebSrcDirectory = new File(moduleDescriptor.getModuleRootDirectory(), COMMON_WEB_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath()));
     }
 }
