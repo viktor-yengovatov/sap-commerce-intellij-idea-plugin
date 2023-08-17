@@ -24,6 +24,15 @@ import com.intellij.util.xml.DomElement
 import java.util.*
 
 object BSMetaHelper {
+    val flattenTypeRegex = Regex("""\w+\.""")
+
+    fun flattenType(meta: BSMetaProperty) = meta.type
+        ?.replace(flattenTypeRegex, "")
+        ?.replace("&lt;", "<")
+        ?.replace("&gt;", ">")
+        ?.replace(" ", "")
+        ?.replace(",", ", ")
+
 
     fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
     fun getNameWithGeneric(name: String?, generic: String?) = (name ?: "") + (generic?.let { "<$it>" } ?: "")
