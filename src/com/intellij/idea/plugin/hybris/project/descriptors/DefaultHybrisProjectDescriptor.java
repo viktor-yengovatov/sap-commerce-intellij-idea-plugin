@@ -161,6 +161,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 && yModuleDescriptor instanceof final YRegularModuleDescriptor yRegularModuleDescriptor
             ) {
                 yRegularModuleDescriptor.setInLocalExtensions(true);
+                yRegularModuleDescriptor.getDirectDependencies()
+                    .stream()
+                    .filter(YCustomRegularModuleDescriptor.class::isInstance)
+                    .map(YCustomRegularModuleDescriptor.class::cast)
+                    .forEach(module -> module.setNeededDependency(true));
             }
         }
         preselectConfigModules(configHybrisModuleDescriptor, foundModules);
