@@ -93,6 +93,7 @@
 - DB Datasource cannot be configured due backslash [#584](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/584) 
 - Some classes are not visible from `storefrontcommons` if searchable class is in read-only storefrontcommons [#579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/579)
 - Properties defined in the `advanced.properties` are not available [#612](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/612)
+- Dependant modules are not imported [#614](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/614)
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
