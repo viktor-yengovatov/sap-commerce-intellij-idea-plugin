@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,9 +30,9 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
+import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
-import java.awt.Insets
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
@@ -40,7 +40,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 import javax.swing.border.EmptyBorder
 
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE, FlexibleSearchLanguage.INSTANCE) {
+class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage.INSTANCE) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
@@ -55,7 +55,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
     private val maxRowsLabel = JBLabel("Rows (max 100): ")
 
-    private val labelInsets = Insets(0, 10, 0, 1)
+    private val labelInsets = JBUI.insets(0, 10, 0, 1)
 
     private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "FLEXIBLE_SEARCH")
 
@@ -104,9 +104,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
     }
 
     override fun title(): String = "FlexibleSearch"
-
     override fun tip(): String = "FlexibleSearch Console"
-
     override fun icon(): Icon = HybrisIcons.FXS_FILE
 
     companion object {

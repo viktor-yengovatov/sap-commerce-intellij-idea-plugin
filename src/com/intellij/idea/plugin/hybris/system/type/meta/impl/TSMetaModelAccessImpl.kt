@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -110,6 +110,8 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         }
     }
 
+    override fun isInitialized() = initialized
+
     override fun initMetaModel() {
         building = true
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
@@ -128,7 +130,13 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     }
 
     override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values
-    override fun getAll(): Collection<TSGlobalMetaClassifier<*>> = TSMetaType.values()
+    override fun getAllOf(vararg metaTypes: TSMetaType): Collection<TSGlobalMetaClassifier<*>> = (metaTypes
+        .takeIf { it.isNotEmpty() }
+        ?: TSMetaType.entries.toTypedArray()
+        )
+        .flatMap { getAll(it) }
+
+    override fun getAll(): Collection<TSGlobalMetaClassifier<*>> = TSMetaType.entries
         .flatMap { getAll(it) }
 
     override fun findMetaForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))

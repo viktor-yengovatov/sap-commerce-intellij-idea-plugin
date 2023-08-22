@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -130,7 +131,18 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
-        return new File(file, HybrisConstants.SETTINGS_GRADLE).isFile();
+        return new File(file, HybrisConstants.GRADLE_SETTINGS).isFile()
+            || new File(file, HybrisConstants.GRADLE_BUILD).isFile();
+    }
+
+    @Override
+    public boolean isGradleKtsModule(final File file) {
+        Validate.notNull(file);
+        if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+            return false;
+        }
+        return new File(file, HybrisConstants.GRADLE_SETTINGS_KTS).isFile()
+            || new File(file, HybrisConstants.GRADLE_BUILD_KTS).isFile();
     }
 
     @Override

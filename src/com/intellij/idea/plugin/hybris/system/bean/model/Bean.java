@@ -1,3 +1,21 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // Generated on Fri Nov 17 20:45:54 CET 2017
 // DTD/Schema  :    null
 
@@ -12,7 +30,28 @@ import java.util.List;
 /**
  * null:bean interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface Bean extends DomElement, AbstractPojo {
+
+    String SUPER_EQUALS = "superEquals";
+    String ABSTRACT = "abstract";
+    String TYPE = "type";
+    String EXTENDS = "extends";
+    String PROPERTY = "property";
+    String HINTS = "hints";
+
+    /**
+     * Returns the value of the class child.
+     *
+     * @return the value of the class child.
+     */
+    @NotNull
+    @Attribute(CLASS)
+    @Required
+    @Stubbed
+    @NameValue
+    GenericAttributeValue<String> getClazz();
 
     /**
      * Returns the value of the extends child.
@@ -20,6 +59,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the extends child.
      */
     @NotNull
+    @Attribute(EXTENDS)
     GenericAttributeValue<String> getExtends();
 
 
@@ -33,6 +73,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the type child.
      */
     @NotNull
+    @Attribute(TYPE)
     GenericAttributeValue<BeanType> getType();
 
 
@@ -46,10 +87,11 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the deprecated child.
      */
     @NotNull
+    @Attribute(DEPRECATED)
     FalseAttributeValue getDeprecated();
 
     @NotNull
-    @Attribute("deprecatedSince")
+    @Attribute(DEPRECATED_SINCE)
     GenericAttributeValue<String> getDeprecatedSince();
 
 
@@ -59,6 +101,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the abstract child.
      */
     @NotNull
+    @Attribute(ABSTRACT)
     FalseAttributeValue getAbstract();
 
 
@@ -68,32 +111,12 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the superEquals child.
      */
     @NotNull
-    @Attribute("superEquals")
+    @Attribute(SUPER_EQUALS)
     FalseAttributeValue getSuperEquals();
 
     @NotNull
-    @SubTag("hints")
+    @SubTag(HINTS)
     Hints getHints();
-
-    /**
-     * Returns the value of the class child.
-     *
-     * @return the value of the class child.
-     */
-    @NotNull
-    @Attribute("class")
-    @Required
-    GenericAttributeValue<String> getClazz();
-
-
-    /**
-     * Returns the value of the template child.
-     *
-     * @return the value of the template child.
-     */
-    @NotNull
-    GenericAttributeValue<String> getTemplate();
-
 
     /**
      * Returns the value of the description child.

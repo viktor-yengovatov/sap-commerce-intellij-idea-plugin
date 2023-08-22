@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -179,8 +180,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             : message("hybris.notification.project.import.title");
 
         Notifications.create(NotificationType.INFORMATION, notificationTitle,
-                             message("hybris.notification.import.or.refresh.process.not.finished.yet.content"))
-                     .notify(project);
+                message("hybris.notification.import.or.refresh.process.not.finished.yet.content"))
+            .notify(project);
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<ModuleDescriptor> modulesChosenForImport) {
@@ -266,27 +267,27 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             : Collections.emptySet();
 
         return moduleToImport.stream()
-                             .filter(e -> !modulesOnBlackList.contains(e.getRelativePath()))
-                             .sorted(Comparator.nullsLast(Comparator.comparing(ModuleDescriptor::getName)))
-                             .collect(Collectors.toList());
+            .filter(e -> !modulesOnBlackList.contains(e.getRelativePath()))
+            .sorted(Comparator.nullsLast(Comparator.comparing(ModuleDescriptor::getName)))
+            .collect(Collectors.toList());
     }
 
     @Override
     public void setCoreStepModuleList() {
         moduleList = this.getHybrisProjectDescriptor()
-                         .getFoundModules()
-                         .stream()
-                         .filter(Predicate.not(RootModuleDescriptor.class::isInstance))
-                         .collect(Collectors.toList());
+            .getFoundModules()
+            .stream()
+            .filter(Predicate.not(RootModuleDescriptor.class::isInstance))
+            .collect(Collectors.toList());
     }
 
     @Override
     public void setExternalStepModuleList() {
         moduleList = this.getHybrisProjectDescriptor()
-                         .getFoundModules()
-                         .stream()
-                         .filter(RootModuleDescriptor.class::isInstance)
-                         .collect(Collectors.toList());
+            .getFoundModules()
+            .stream()
+            .filter(RootModuleDescriptor.class::isInstance)
+            .collect(Collectors.toList());
     }
 
     @Override

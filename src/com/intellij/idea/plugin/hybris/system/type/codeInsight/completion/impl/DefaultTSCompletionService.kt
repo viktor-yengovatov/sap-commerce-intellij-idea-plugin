@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl
 
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_KEY
@@ -24,6 +26,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
@@ -76,7 +79,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             .flatten()
     }
 
-    override fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElementBuilder> {
+    override fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElement> {
         val completion = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings.completion
         if (!completion.showInlineTypes) return emptyList()
 
@@ -93,14 +96,30 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
 
         return metaModelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
             .filter { meta ->
-                meta.allExtends.find { it.name == referenceItemTypeName } != null
+                meta.allExtends.find { it.name.equals(referenceItemTypeName, true) } != null
                     // or itself, it will be highlighted as unnecessary via Inspection
-                    || meta.name == referenceItemTypeName
+                    || meta.name.equals(referenceItemTypeName, true)
             }
             .mapNotNull {
                 TSLookupElementFactory.build(it, suffix)
+                    ?.withTypeText(" child of $referenceItemTypeName", true)
             }
+            .map { PrioritizedLookupElement.withPriority(it, 2.0) }
+            .map { PrioritizedLookupElement.withGrouping(it, 2) }
     }
+
+    override fun getHeaderAbbreviationCompletions(project: Project) = PropertiesService.getInstance(project)
+        ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+        ?.mapNotNull { it.value }
+        ?.mapNotNull { abbreviation ->
+            abbreviation
+                .split("...")
+                .takeIf { it.size == 2 }
+                ?.map { it.trim() }
+        }
+        ?.mapNotNull { it.firstOrNull() }
+        ?.map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
+        ?: emptyList()
 
     private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
         if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()

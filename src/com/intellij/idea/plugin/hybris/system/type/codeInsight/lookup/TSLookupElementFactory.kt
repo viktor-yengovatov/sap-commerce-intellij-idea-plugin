@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.InsertionContext
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
@@ -37,24 +41,28 @@ object TSLookupElementFactory {
                 .withPresentableText(it)
                 .withTailText(if (meta.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
                 .withIcon(HybrisIcons.TS_ITEM)
+                .withCaseSensitivity(false)
         }
 
     fun build(meta: TSGlobalMetaRelation) = meta.name?.let {
         LookupElementBuilder.create(it)
             .withTypeText(meta.flattenType)
             .withIcon(HybrisIcons.TS_RELATION)
+            .withCaseSensitivity(false)
     }
 
     fun build(meta: TSGlobalMetaCollection) = meta.name?.let {
         LookupElementBuilder.create(it)
             .withTypeText(meta.flattenType)
             .withIcon(HybrisIcons.TS_COLLECTION)
+            .withCaseSensitivity(false)
     }
 
     fun build(meta: TSGlobalMetaMap) = meta.name?.let {
         LookupElementBuilder.create(it)
             .withTypeText(meta.flattenType)
             .withIcon(HybrisIcons.TS_MAP)
+            .withCaseSensitivity(false)
     }
 
     fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute) = LookupElementBuilder.create(meta.name)
@@ -137,4 +145,27 @@ object TSLookupElementFactory {
         .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
         .withCaseSensitivity(false)
 
+    fun buildHeaderAbbreviation(lookupString: String) = PrioritizedLookupElement.withPriority(
+        LookupElementBuilder.create(lookupString)
+            .withTypeText("Header Abbreviation", true)
+            .withIcon(HybrisIcons.TS_HEADER_ABBREVIATION)
+            .withInsertHandler(lookupString.contains('@')
+                .takeIf { it }
+                ?.let {
+                    object : AutoPopupInsertHandler() {
+                        override fun handle(context: InsertionContext, item: LookupElement) {
+                            lookupString.indexOf('@')
+                                .takeIf { it >= 0 }
+                                ?.let { index ->
+                                    val cursorOffset = context.editor.caretModel.offset
+                                    val moveBackTo = lookupString.length - index - 1
+                                    val offset = cursorOffset - moveBackTo
+                                    context.editor.caretModel.moveToOffset(offset)
+                                    context.editor.selectionModel.setSelection(offset, offset + moveBackTo)
+                                }
+                        }
+                    }
+                }
+            ), 2.0
+    )
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,16 +19,12 @@ package com.intellij.idea.plugin.hybris.view
 
 import com.intellij.ide.projectView.TreeStructureProvider
 import com.intellij.ide.projectView.ViewSettings
-import com.intellij.ide.projectView.impl.nodes.BasePsiNode
-import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
-import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
+import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.project.DumbAware
@@ -53,6 +49,13 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,
         commerceGroupName to HybrisIcons.MODULE_COMMERCE_GROUP,
         ccv2GroupName to HybrisIcons.MODULE_CCV2_GROUP,
+    )
+    private val hideModuleLibraries = setOf(
+        "- Backoffice Classes",
+        "- Web Classes",
+        "- Common Web Classes",
+        "- Addon's Target Classes",
+        "- HAC Web Classes"
     )
 
     override fun modify(
@@ -142,13 +145,24 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         val treeNodes = mutableListOf<AbstractTreeNode<*>>()
 
         for (child in children) {
-            if (child is PsiDirectoryNode) {
-                val virtualFile = child.virtualFile ?: continue
-                if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)) {
-                    treeNodes.add(child)
+            when (child) {
+                is PsiDirectoryNode -> {
+                    val virtualFile = child.virtualFile ?: continue
+                    if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true) &&
+                        !HybrisConstants.RESOURCES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)
+                    ) {
+                        treeNodes.add(child)
+                    }
                 }
-            } else {
-                treeNodes.add(child)
+
+                is NamedLibraryElementNode -> {
+                    val libraryName = child.value.name
+                    if (hideModuleLibraries.none { libraryName.endsWith(it) }) {
+                        treeNodes.add(child)
+                    }
+                }
+
+                else -> treeNodes.add(child)
             }
         }
         return treeNodes
@@ -237,25 +251,14 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         onlyChildPsiDirectoryNode: PsiDirectoryNode,
         onlyChildVirtualFile: VirtualFile
     ) {
-        if (parentPsiDirectoryNode.presentation.coloredText.isNotEmpty()) {
-            val coloredFragment = PresentableNodeDescriptor.ColoredFragment(
-                parentVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
-            )
-            onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
+        if (parentPsiDirectoryNode.presentation.coloredText.isEmpty()) {
+            onlyChildPsiDirectoryNode.presentation.addText(parentVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         } else {
             parentPsiDirectoryNode.presentation.coloredText
                 .forEach { onlyChildPsiDirectoryNode.presentation.addText(it) }
         }
-
-        val coloredFragment = PresentableNodeDescriptor.ColoredFragment(
-            File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES
-        )
-        val childColoredFragment = PresentableNodeDescriptor.ColoredFragment(
-            onlyChildVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
-        )
-
-        onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
-        onlyChildPsiDirectoryNode.presentation.addText(childColoredFragment)
+        onlyChildPsiDirectoryNode.presentation.addText(File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        onlyChildPsiDirectoryNode.presentation.addText(onlyChildVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
     private fun isFileInRoots(file: VirtualFile): Boolean {

@@ -34,6 +34,7 @@ abstract class YRegularModuleDescriptor protected constructor(
 ) {
 
     var isInLocalExtensions = false
+    var isNeededDependency = false
 
     val hasHmcModule = extensionInfo.extension.hmcmodule != null
     val isHacAddon = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
@@ -44,7 +45,7 @@ abstract class YRegularModuleDescriptor protected constructor(
     val hasWebModule = extensionInfo.extension.webmodule != null
         && File(moduleRootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
 
-    override fun isPreselected() = isInLocalExtensions
+    override fun isPreselected() = isInLocalExtensions || isNeededDependency
 
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val extension = extensionInfo.extension

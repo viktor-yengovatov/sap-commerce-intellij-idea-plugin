@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -60,6 +60,10 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextParentIsNotValid.key"
                          shortName="CngContextParentIsNotValid" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextParentIsNotValid"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.CngContextMergeByTypeParentIsNotValid.key"
+                         shortName="CngContextMergeByTypeParentIsNotValid" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextMergeByTypeParentIsNotValid"/>
 
         <!-- Impex -->
         <localInspection groupPath="SAP Commerce" shortName="ImpexLanguageIsNotSupportedInspection" displayName="[y] Language is not supported"
@@ -123,6 +127,10 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpExIncompleteHeaderAbbreviationUsageInspection" displayName="[y] Incomplete header abbreviation usage"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExIncompleteHeaderAbbreviationUsageInspection"/>
+
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDeclaration.key"
@@ -141,6 +149,10 @@
 
         <!-- Bean System  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="BSDomElementsInspection" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDomElementsInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanDeclaration.key"
                          shortName="DuplicateBeanDefinition" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateBeanDefinition"/>
@@ -156,6 +168,26 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDeclaration.key"
                          shortName="DuplicateEnumValueDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateEnumValueDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSKeywordIsNotAllowedAsBeanPropertyName.key"
+                         shortName="BSKeywordIsNotAllowedAsBeanPropertyName" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSKeywordIsNotAllowedAsBeanPropertyName"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType.key"
+                         shortName="BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType.key"
+                         shortName="BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType" level="WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass.key"
+                         shortName="BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass" level="WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.key"
+                         shortName="BSOmitJavaLangPackageInBeanPropertyType" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSOmitJavaLangPackageInBeanPropertyType"/>
 
         <!-- Type System  -->
         <!-- Weak Warnings -->

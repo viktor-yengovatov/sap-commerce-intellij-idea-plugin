@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -112,6 +112,7 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller"/>
     </extensions>
 
 
@@ -122,49 +123,44 @@
         </action>
 
         <group>
-            <action id="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    class="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.Y_LOGO_BLUE"
-                    text="Copy to ImpEx Console" description="Copy ImpEx file to SAP Commerce Console">
-            </action>
+            <action id="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"
+                    class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
 
-        <group id="ImpExTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
-            <!-- This feature not ready for production. Temporary disabled.  -->
-            <!--<action id="ImpExTableFormatter.FormatAllTables"-->
-            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
-            <!--text="Format All"-->
-            <!--description="Formats table with pipe delimiters">-->
-            <!--</action>-->
-            <!--<action id="ImpExTableFormatter.AddColumnBefore"-->
-            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
-            <!--text="Add Column Before"-->
-            <!--description="Add Column Before">-->
-            <!--</action>-->
-            <action id="ImpExTableFormatter.SelectTable"
-                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
-                    text="Select ImpEx"
-                    icon="/icons/hybrisIcon.svg"
-                    description="Select ImpEx">
-                <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
-            </action>
+        <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
+        <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
+        <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
+        <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction"/>
+        <action id="hybris.impex.selectTable" class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction">
+            <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
+        </action>
 
-            <action id="ImpExRemoteControl.Validate"
-                    text="Validate ImpEx"
-                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
-                    icon="/icons/hybrisIcon.svg">
-            </action>
+        <group id="hybris.impex.table.actions">
+            <reference id="hybris.impex.selectTable"/>
+            <separator/>
+            <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction"/>
+            <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction"/>
+            <separator/>
+            <action id="hybris.impex.table.column.add.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertLeftAction"/>
+            <action id="hybris.impex.table.column.add.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertRightAction"/>
+            <separator/>
+            <action id="hybris.impex.table.column.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnRemoveAction"/>
+            <action id="hybris.impex.table.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableRemoveAction"/>
+        </group>
 
-            <action id="ImpExRemoteControl.Import"
-                    text="Import ImpEx"
-                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ImportImpexAction"
-                    icon="/icons/hybrisIcon.svg">
-            </action>
-
-            <add-to-group group-id="CodeMenu" anchor="last"/>
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        <group id="hybris.impex.toolbar.left">
+            <reference id="hybris.impex.import"/>
+            <reference id="hybris.impex.openQuery"/>
+            <reference id="hybris.impex.validate"/>
+            <separator/>
+            <reference id="hybris.impex.table.actions"/>
+            <separator/>
+            <reference id="hybris.impex.openSettings"/>
+        </group>
+        <group id="hybris.impex.toolbar.right">
+            <reference id="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 

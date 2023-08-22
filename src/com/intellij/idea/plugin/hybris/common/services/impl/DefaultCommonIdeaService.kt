@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.common.services.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
+import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
@@ -132,23 +132,27 @@ class DefaultCommonIdeaService : CommonIdeaService {
     private fun matchModuleName(pattern: String, moduleNames: Collection<String>) = moduleNames
         .any { it.matches(Regex("\\Q$pattern\\E".replace("*", "\\E.*\\Q"))) }
 
-    private fun getUrl(settings: HybrisRemoteConnectionSettings) =
-        buildString {
-            if (settings.isSsl) append(HybrisConstants.HTTPS_PROTOCOL) else append(HybrisConstants.HTTP_PROTOCOL)
-            append(settings.hostIP)
-            append(HybrisConstants.URL_PORT_DELIMITER)
-            append(settings.port)
+    private fun getUrl(settings: HybrisRemoteConnectionSettings) = buildString {
+        if (settings.isSsl) append(HybrisConstants.HTTPS_PROTOCOL) else append(HybrisConstants.HTTP_PROTOCOL)
+        append(settings.hostIP)
 
-            settings.hacWebroot
-                ?.takeUnless { it.isBlank() }
-                ?.let {
-                    append('/')
-                    append(
-                        it.trimStart(' ', '/')
-                            .trimEnd(' ', '/')
-                    )
-                }
-        }
+        settings.port
+            ?.takeIf { it.isNotBlank() }
+            ?.let {
+                append(HybrisConstants.URL_PORT_DELIMITER)
+                append(settings.port)
+            }
+
+        settings.hacWebroot
+            ?.takeUnless { it.isBlank() }
+            ?.let {
+                append('/')
+                append(
+                    it.trimStart(' ', '/')
+                        .trimEnd(' ', '/')
+                )
+            }
+    }
 
     companion object {
         private val regex = Regex("https?://")

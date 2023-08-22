@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,9 @@ import com.intellij.openapi.util.io.FileUtilRt
 
 object HybrisConstants {
 
-    const val PLATFORM_VERSION_1905_0 = "1905.0"
+    const val PLATFORM_VERSION_1811 = "1811"
+    const val PLATFORM_VERSION_5_0 = "5.0"
+    const val PLATFORM_VERSION_5_2 = "5.2"
 
     const val CCV2_MANIFEST_NAME = "manifest.json"
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
@@ -59,23 +61,25 @@ object HybrisConstants {
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
     const val IMPEX_CATALOG_VERSION_ONLINE = "Online"
     const val IMPEX_CATALOG_VERSION_STAGED = "Staged"
-    const val IMPEX_CONSOLE_TITLE = "[y] ImpEx Console"
-    const val IMPEX_MONITOR_CONSOLE_TITLE = "[y] Monitor Console"
     const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
 
-
-    const val GROOVY_CONSOLE_TITLE = "[y] Groovy Console"
-    const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "[y] FS Console"
-    const val SOLR_SEARCH_CONSOLE_TITLE = "[y] Solr search"
+    const val CONSOLE_TITLE_IMPEX = "[y] ImpEx Console"
+    const val CONSOLE_TITLE_IMPEX_MONITOR = "[y] Monitor Console"
+    const val CONSOLE_TITLE_GROOVY = "[y] Groovy Console"
+    const val CONSOLE_TITLE_FLEXIBLE_SEARCH = "[y] FS Console"
+    const val CONSOLE_TITLE_SOLR_SEARCH = "[y] Solr search"
+    const val CONSOLE_TITLE_POLYGLOT_QUERY = "[y] PolyglotQuery"
 
     const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"
     const val ROOT_TAG_ITEMS_XML = "items"
     const val ROOT_TAG_EXTENSION_INFO_XML = "extensioninfo"
 
     const val DOT_PROJECT = ".project"
-    const val SETTINGS_GRADLE = "settings.gradle"
-    const val BUILD_GRADLE = "build.gradle"
+    const val GRADLE_SETTINGS = "settings.gradle"
+    const val GRADLE_SETTINGS_KTS = "settings.gradle.kts"
+    const val GRADLE_BUILD = "build.gradle"
+    const val GRADLE_BUILD_KTS = "build.gradle.kts"
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val EXTERNAL_DEPENDENCIES_XML = "external-dependencies.xml"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
@@ -159,7 +163,6 @@ object HybrisConstants {
     const val STORAGE_HYBRIS_TS_VIEW = "hybrisTypeSystemViewSettings.xml"
     const val STORAGE_HYBRIS_BS_VIEW = "hybrisBeanSystemViewSettings.xml"
     const val PLUGIN_ID = "com.intellij.idea.plugin.sap.commerce"
-    const val JREBEL_PLUGIN_ID = "JRebelPlugin"
 
     const val NEW_IDEA_MODULE_FILE_EXTENSION = ".iml"
     const val HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml"
@@ -178,6 +181,7 @@ object HybrisConstants {
     const val PROPERTY_BUILD_COMPILER = "build.compiler"
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
     const val PROPERTY_LANG_PACKS = "lang.packs"
+    const val PROPERTY_IMPEX_HEADER_REPLACEMENT = "impex.header.replacement"
 
     const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
@@ -206,6 +210,15 @@ object HybrisConstants {
     const val ANT_HEAP_SIZE_MB = 512
     const val ANT_STACK_SIZE_MB = 128
 
+    private const val JAVA_LANG_PREFIX = "java.lang."
+
+    const val BS_TYPE_OBJECT = "java.lang.Object"
+    const val BS_SIGN_LESS_THAN = "<"
+    const val BS_SIGN_GREATER_THAN = ">"
+    const val BS_SIGN_LESS_THAN_ESCAPED = "&lt;"
+    const val BS_SIGN_GREATER_THAN_ESCAPED = "&gt;"
+    const val BS_JAVA_LANG_PREFIX = JAVA_LANG_PREFIX
+
     const val TS_MAX_RECURSION_LEVEL = 2
     const val TS_TYPE_OBJECT = "java.lang.Object"
     const val TS_RELATION_ORDERING_POSTFIX = "POS"
@@ -220,7 +233,7 @@ object HybrisConstants {
     const val TS_TYPE_SEARCH_RESTRICTION = "SearchRestriction"
     const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
     const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
-    const val TS_JAVA_LANG_PREFIX = "java.lang."
+    const val TS_JAVA_LANG_PREFIX = JAVA_LANG_PREFIX
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
     const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
@@ -351,6 +364,8 @@ object HybrisConstants {
     const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
     const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
+    val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
+
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
     @JvmField
@@ -470,14 +485,6 @@ object HybrisConstants {
     val BACKOFFICE_LIB_PATH = FileUtilRt.toSystemDependentName("backoffice/bin")
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
-    @JvmField
-    val BACKOFFICE_WEB_INF_LIB = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib")
-    @JvmField
-    val BACKOFFICE_WEB_INF_LIB_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/lib")
-    @JvmField
-    val BACKOFFICE_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes")
-    @JvmField
-    val BACKOFFICE_WEB_INF_CLASSES_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/classes")
 
     @JvmField
     val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
@@ -506,6 +513,8 @@ object HybrisConstants {
         """.trimIndent()
     @JvmField
     val DICTIONARY_WORDS = setOf(
+            "creationtime",
+            "modifiedtime",
             "argumenttype",
             "atomictype",
             "autocreate",

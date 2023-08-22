@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -160,6 +161,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 && yModuleDescriptor instanceof final YRegularModuleDescriptor yRegularModuleDescriptor
             ) {
                 yRegularModuleDescriptor.setInLocalExtensions(true);
+                yRegularModuleDescriptor.getDirectDependencies()
+                    .stream()
+                    .filter(YCustomRegularModuleDescriptor.class::isInstance)
+                    .map(YCustomRegularModuleDescriptor.class::cast)
+                    .forEach(module -> module.setNeededDependency(true));
             }
         }
         preselectConfigModules(configHybrisModuleDescriptor, foundModules);
@@ -432,6 +438,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         buildDependencies(moduleDescriptors);
         final var addons = processAddons(moduleDescriptors);
         removeNotInstalledAddons(moduleDescriptors, addons);
+        removeHmcSubModules(moduleDescriptors);
 
         foundModules.addAll(moduleDescriptors);
     }
@@ -467,6 +474,30 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             });
 
         return addons;
+    }
+
+    private void removeHmcSubModules(final List<ModuleDescriptor> moduleDescriptors) {
+        final var hmcSubModules = new HashMap<YModuleDescriptor, YHmcSubModuleDescriptor>();
+        ModuleDescriptor hmcModule = null;
+
+        for (final var module : moduleDescriptors) {
+            if (HybrisConstants.EXTENSION_NAME_HMC.equals(module.getName())) {
+                hmcModule = module;
+            }
+            if (module instanceof final YModuleDescriptor yModule) {
+                yModule.getSubModules().stream()
+                    .filter(YHmcSubModuleDescriptor.class::isInstance)
+                    .map(YHmcSubModuleDescriptor.class::cast)
+                    .findAny()
+                    .ifPresent(hmcSubModule -> hmcSubModules.put(yModule, hmcSubModule));
+
+            }
+        }
+
+        if (hmcModule == null) {
+            hmcSubModules.forEach((yModule, yHmcSubModule) -> yModule.removeSubModule(yHmcSubModule));
+            moduleDescriptors.removeAll(hmcSubModules.values());
+        }
     }
 
     private void removeNotInstalledAddons(
@@ -611,7 +642,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (!acceptOnlyHybrisModules) {
-            if (hybrisProjectService.isGradleModule(rootProjectDirectory)
+            if (hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory)
                 && !rootProjectDirectory.getAbsolutePath().endsWith(HybrisConstants.PLATFORM_MODULE)
                 && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)) {
                 LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
@@ -801,8 +832,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.modulesChosenForImport.clear();
         this.modulesChosenForImport.addAll(moduleDescriptors);
         moduleDescriptors.forEach(module -> {
-            if (module instanceof ConfigModuleDescriptor) {
-                configHybrisModuleDescriptor = (ConfigModuleDescriptor) module;
+            if (module instanceof final ConfigModuleDescriptor configModuleDescriptor && configModuleDescriptor.isMainConfig()) {
+                configHybrisModuleDescriptor = (ConfigModuleDescriptor) configModuleDescriptor;
             }
             if (module instanceof PlatformModuleDescriptor) {
                 platformHybrisModuleDescriptor = (PlatformModuleDescriptor) module;

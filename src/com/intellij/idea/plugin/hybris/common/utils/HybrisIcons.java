@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import javax.swing.*;
 
 /**
  * Please follow Intellij Platform UI style and naming convention for icons.
+ *
  * @see <a href="https://jetbrains.design/intellij/principles/icons/#style">styleguide</a>
  */
 public final class HybrisIcons {
@@ -51,6 +52,8 @@ public final class HybrisIcons {
     public static final Icon Y_LOGO_BLUE = getIcon("/icons/hybrisIcon.svg");
     public static final Icon Y_LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg");
     public static final Icon Y_LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg");
+    public static final Icon Y_REMOTE = getIcon("/icons/hybrisRemote.svg");
+    public static final Icon Y_REMOTE_GREEN = getIcon("/icons/hybrisRemoteGreen.svg");
     public static final Icon Y_FACET = Y_LOGO_GREEN;
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitNG/config.svg");
@@ -61,9 +64,9 @@ public final class HybrisIcons {
     public static final Icon COCKPIT_NG_EDITOR_DEFINITION = getIcon("/icons/cockpitNG/editorDefinition.svg");
     public static final Icon LOCAL_EXTENSIONS = getIcon("/icons/extensionInfo.svg");
     public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
-    public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
     public static final Icon EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg");
+    public static final Icon SETTINGS = getIcon("/icons/settings.svg");
 
     public static final Icon MODULE_ECLIPSE = AllIcons.Providers.Eclipse;
     public static final Icon MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo;
@@ -83,9 +86,9 @@ public final class HybrisIcons {
     public static final Icon EXTENSION_WEB = AllIcons.Nodes.WebFolder;
     public static final Icon EXTENSION_COMMON_WEB = AllIcons.Nodes.WebFolder;
     public static final Icon EXTENSION_ADDON = AllIcons.Nodes.WebFolder;
-    public static final Icon EXTENSION_BACKOFFICE = Y_LOGO_BLUE;
-    public static final Icon EXTENSION_HMC = Y_LOGO_BLUE;
-    public static final Icon EXTENSION_HAC = Y_LOGO_BLUE;
+    public static final Icon EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder;
+    public static final Icon EXTENSION_HMC = AllIcons.Nodes.Folder;
+    public static final Icon EXTENSION_HAC = AllIcons.Nodes.Folder;
 
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
     public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");
@@ -94,6 +97,13 @@ public final class HybrisIcons {
     public static final Icon MACROS = getIcon("/icons/macros.svg");
 
     public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.svg");
+
+    public static final Icon TYPE_PRIMITIVE = getIcon("/icons/typePrimitive.svg");
+    public static final Icon TYPE_BOXED = getIcon("/icons/typeBoxed.svg");
+    public static final Icon TYPE_OBJECT = getIcon("/icons/typeObject.svg");
+    public static final Icon TYPE_COLLECTION = getIcon("/icons/typeCollection.svg");
+    public static final Icon TYPE_MAP = getIcon("/icons/typeMap.svg");
+    public static final Icon TYPE_GENERIC = AllIcons.Nodes.AbstractClass;
 
     public static final Icon TS_GROUP_ATOMIC = getIcon("/icons/typeSystem/groupByAtomic.svg");
     public static final Icon TS_GROUP_ENUM = getIcon("/icons/typeSystem/groupByEnum.svg");
@@ -119,15 +129,20 @@ public final class HybrisIcons {
     public static final Icon TS_INDEX_REMOVE = getIcon("/icons/typeSystem/indexRemove.svg");
     public static final Icon TS_IMPORT = AllIcons.ToolbarDecorator.Import;
     public static final Icon TS_ANNOTATION = AllIcons.Nodes.Annotationtype;
+    public static final Icon TS_HEADER_ABBREVIATION = getIcon("/icons/typeSystem/headerAbbreviation.svg");
 
     public static final Icon BS_GROUP_BY_BEAN_DTO = getIcon("/icons/beanSystem/groupByDTO.svg");
     public static final Icon BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg");
     public static final Icon BS_GROUP_BY_BEAN_WS = getIcon("/icons/beanSystem/groupByWS.svg");
     public static final Icon BS_GROUP_BY_ENUM = getIcon("/icons/beanSystem/groupByEnum.svg");
     public static final Icon BS_BEAN = getIcon("/icons/beanSystem/beanIcon.svg");
+    public static final Icon BS_EVENT_BEAN = BS_BEAN;
+    public static final Icon BS_WS_BEAN = BS_BEAN;
+    public static final Icon BS_WS_HINT = AllIcons.Actions.QuickfixOffBulb;
     public static final Icon BS_PROPERTY = getIcon("/icons/beanSystem/property.svg");
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
     public static final Icon BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg");
+    public static final Icon BS_LEVEL_MAPPING = getIcon("/icons/beanSystem/levelMapping.svg");
 
     public static final Icon BP_DIAGRAM_WAIT = getIcon("/icons/businessProcess/diagram/wait.svg");
     public static final Icon BP_DIAGRAM_END = getIcon("/icons/businessProcess/diagram/end.svg");
@@ -148,7 +163,7 @@ public final class HybrisIcons {
     public static final Icon TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property;
     public static final Icon TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object;
     public static final Icon TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg");
-    public static final Icon TS_DIAGRAM_SETTINGS = getIcon("/icons/typeSystem/diagram/settings.svg");
+    public static final Icon TS_DIAGRAM_SETTINGS = SETTINGS;
 
     public static final Icon FXS_TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg");
     public static final Icon FXS_COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg");
@@ -161,9 +176,21 @@ public final class HybrisIcons {
     public static final Icon FXS_TABLE_SUFFIX = AllIcons.General.Filter;
     public static final Icon FXS_TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg");
 
+    public static final Icon IMX_VALIDATE = getIcon("/icons/impex/validate.svg");
+
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");
+    public static final Icon CONSOLE_OPEN = getIcon("/icons/console/open.svg");
+    public static final Icon CONSOLE_EXECUTE = AllIcons.Actions.Execute;
+
+    public static final Icon TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg");
+    public static final Icon TABLE_COLUMN_INSERT_RIGHT = getIcon("/icons/table/columnInsertRight.svg");
+    public static final Icon TABLE_COLUMN_MOVE_LEFT = getIcon("/icons/table/columnMoveLeft.svg");
+    public static final Icon TABLE_COLUMN_MOVE_RIGHT = getIcon("/icons/table/columnMoveRight.svg");
+    public static final Icon TABLE_COLUMN_REMOVE = getIcon("/icons/table/columnRemove.svg");
+    public static final Icon TABLE_REMOVE = getIcon("/icons/table/tableRemove.svg");
+    public static final Icon TABLE_SELECT = getIcon("/icons/table/tableSelect.svg");
 
     static Icon getIcon(final String path) {
         final Class<?> callerClass = ReflectionUtil.getGrandCallerClass();

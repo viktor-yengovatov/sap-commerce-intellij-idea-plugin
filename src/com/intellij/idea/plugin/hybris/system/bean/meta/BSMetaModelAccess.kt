@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,13 +34,16 @@ interface BSMetaModelAccess {
         fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
     }
 
+    fun isInitialized(): Boolean
     fun initMetaModel()
     fun getMetaModel(): BSGlobalMetaModel
     fun findMetaEnumByName(name: String?): BSGlobalMetaEnum?
     fun findMetaForDom(dom: Enum): BSGlobalMetaEnum?
     fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean>
+    fun findMetaBeanByName(name: String?): BSGlobalMetaBean?
     fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean>
     fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>>
+    fun getAllBeans(): Collection<BSGlobalMetaBean>
+    fun getAllEnums(): Collection<BSGlobalMetaEnum>
     fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T>
-
 }

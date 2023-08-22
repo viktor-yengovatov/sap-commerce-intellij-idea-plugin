@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,7 +33,7 @@ object YModuleLibDescriptorUtil {
     fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> = when (descriptor) {
         is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor, "Web")
-        is YCommonWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor, "Common Web")
+        is YCommonWebSubModuleDescriptor -> getCommonWebSubModuleDescriptor(descriptor)
         is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor, allYModules)
         is YHacSubModuleDescriptor -> getLibraryDescriptors(descriptor)
@@ -125,7 +125,7 @@ object YModuleLibDescriptorUtil {
     ) {
         libs.add(
             JavaLibraryDescriptor(
-                name = "Bin",
+                name = "${descriptor.name} - HMC Bin",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BIN_DIRECTORY),
                 exported = true
             )
@@ -136,7 +136,7 @@ object YModuleLibDescriptorUtil {
             ?.let {
                 libs.add(
                     JavaLibraryDescriptor(
-                        name = "Web Classes",
+                        name = "${descriptor.name} - Web Classes",
                         libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
                         directoryWithClasses = true
                     )
@@ -225,7 +225,7 @@ object YModuleLibDescriptorUtil {
 
         libs.add(
             JavaLibraryDescriptor(
-                name = "HAC Web Classes",
+                name = "${descriptor.name} - HAC Web Classes",
                 libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
                 directoryWithClasses = true
             )
@@ -292,17 +292,20 @@ object YModuleLibDescriptorUtil {
         addServerLibs(descriptor, libs)
         addRootLib(descriptor, libs)
 
-        val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
-
         val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
+            .toMutableList()
+        File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY)
+            .takeIf { it.isDirectory }
+            ?.listFiles { it: File -> it.isDirectory }
+            ?.forEach { sourceFiles.add(it) }
+
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - $libName Classes",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
-                sourceFiles = if (attachSources) sourceFiles
-                else emptyList(),
+                sourceFiles = sourceFiles,
                 exported = true,
                 directoryWithClasses = true
             )
@@ -322,6 +325,31 @@ object YModuleLibDescriptorUtil {
             )
         )
 
+        return libs
+    }
+
+    private fun getCommonWebSubModuleDescriptor(
+        descriptor: YSubModuleDescriptor,
+        libName: String = "Common Web"
+    ): MutableList<JavaLibraryDescriptor> {
+        val libs = getWebLibraryDescriptors(descriptor, libName)
+
+        (descriptor as? YCommonWebSubModuleDescriptor)
+            ?.dependantWebExtensions
+            ?.forEach {
+                val webSourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
+                    .map { File(descriptor.moduleRootDirectory, it) }
+                    .filter { it.isDirectory }
+                libs.add(
+                    JavaLibraryDescriptor(
+                        name = "${it.name} - $libName Classes",
+                        libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
+                        sourceFiles = webSourceFiles,
+                        exported = true,
+                        directoryWithClasses = true
+                    )
+                )
+            }
         return libs
     }
 
