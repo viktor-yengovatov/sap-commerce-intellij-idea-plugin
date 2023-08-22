@@ -25,7 +25,7 @@
     <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
 
     <vendor email="hybrisideaplugin@epam.com" url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
-        EPAM Systems
+        EPAM_Systems
     </vendor>
 
     <depends optional="true" config-file="optional-junit-dependencies.xml">JUnit</depends>
