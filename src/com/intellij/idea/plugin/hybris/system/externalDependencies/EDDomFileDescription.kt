@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,10 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
-import com.intellij.util.xml.DomElement
-import com.intellij.util.xml.DomFileDescription
+import org.jetbrains.idea.maven.dom.MavenDomProjectModelDescription
 import javax.swing.Icon
 
-class EDDomFileDescription : DomFileDescription<DomElement>(DomElement::class.java, "project") {
+class EDDomFileDescription : MavenDomProjectModelDescription() {
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.EXTERNAL_DEPENDENCIES
 

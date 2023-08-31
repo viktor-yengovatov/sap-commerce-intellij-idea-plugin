@@ -39,6 +39,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.PropertiesUtil;
 import com.intellij.openapi.util.io.FileUtil;
@@ -69,6 +70,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.*;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
@@ -427,6 +429,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
+        if (moduleDescriptors.stream().noneMatch(PlatformModuleDescriptor.class::isInstance)) {
+            ApplicationManager.getApplication().invokeLater(() -> Messages.showErrorDialog(
+                message("hybris.project.import.scan.platform.not.found"),
+                message("hybris.project.error")
+            ));
+
+            throw new InterruptedException("Unable to find Platform module.");
+        }
+
         if (null != errorsProcessor) {
             if (errorsProcessor.shouldContinue(pathsFailedToImport)) {
                 throw new InterruptedException("Modules scanning has been interrupted.");
@@ -642,18 +653,19 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (!acceptOnlyHybrisModules) {
-            if (hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory)
-                && !rootProjectDirectory.getAbsolutePath().endsWith(HybrisConstants.PLATFORM_MODULE)
-                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)) {
+            if (!rootProjectDirectory.getAbsolutePath().endsWith(HybrisConstants.PLATFORM_MODULE)
+                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
+                && (hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory))
+                && !hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
                 LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
                 return;
             }
 
-            if (hybrisProjectService.isMavenModule(rootProjectDirectory) && !FileUtil.filesEqual(
-                rootProjectDirectory,
-                rootDirectory
-            )) {
+            if (hybrisProjectService.isMavenModule(rootProjectDirectory)
+                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
+                && !hybrisProjectService.isCCv2Module(rootProjectDirectory)
+            ) {
                 LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
                 return;
@@ -662,10 +674,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
                 LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
-            } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
-                rootProjectDirectory,
-                rootDirectory
-            )) {
+            } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory)
+                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
+            ) {
                 LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
                 return;
@@ -833,7 +844,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.modulesChosenForImport.addAll(moduleDescriptors);
         moduleDescriptors.forEach(module -> {
             if (module instanceof final ConfigModuleDescriptor configModuleDescriptor && configModuleDescriptor.isMainConfig()) {
-                configHybrisModuleDescriptor = (ConfigModuleDescriptor) configModuleDescriptor;
+                configHybrisModuleDescriptor = configModuleDescriptor;
             }
             if (module instanceof PlatformModuleDescriptor) {
                 platformHybrisModuleDescriptor = (PlatformModuleDescriptor) module;

@@ -1,3 +1,33 @@
+## [2023.2.7]
+
+### `items.xml` enhancements
+- Added configurable table-like folding for various tags [#660](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/660) 
+
+### `beans.xml` enhancements
+- Added configurable table-like folding for Bean properties [#659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/659) 
+
+### `ImpEx` inspection rules
+- Add missing value groups for value lines [#641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/641)
+- Delete blank header parameter [#642](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/642)
+- Delete orphan value group [#643](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/643)
+
+### `External Dependencies` inspection rules
+- Inspect is declared dependency downloaded [#644](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/644)
+
+### Fixes
+- Bus is already disposed for consoles [#645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/645)
+- Compact middle packages not working [#646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/646)
+- Remove required sub-tags validation for Business Process `wait` node [#649](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/649)
+- Unable to load the Plugin when Gradle plugin is disabled [#652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/652)
+- Block project import if `Platform` module is not detected [#654](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/654)
+- Distinct modules to import by name [#656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/656)
+- Unable to import project in some circumstances [#657](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/657)
+- Do not identify `core-customize`, `js-storefront` and `datahub` CCv2 folders as Gradle or Maven modules [#658](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/658)
+
+### Other
+- Added custom icons Bean System [#648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/648)
+- Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
+
 ## [2023.2.6]
 
 ### `OCC` enhancements

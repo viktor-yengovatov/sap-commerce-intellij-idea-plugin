@@ -23,16 +23,17 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import org.jetbrains.plugins.groovy.GroovyFileType
 
-class GroovyExecuteAction : AbstractExecuteAction() {
+class GroovyExecuteAction : AbstractExecuteAction(
+    GroovyFileType.GROOVY_FILE_TYPE.defaultExtension,
+    HybrisConstants.CONSOLE_TITLE_GROOVY
+) {
 
     init {
-        with (templatePresentation) {
+        with(templatePresentation) {
             text = "Execute Groovy Script"
             description = "Execute Groovy Script on a remote SAP Commerce instance"
             icon = HybrisIcons.CONSOLE_EXECUTE
         }
     }
 
-    override val extension = GroovyFileType.GROOVY_FILE_TYPE.defaultExtension
-    override val consoleName = HybrisConstants.CONSOLE_TITLE_GROOVY
 }

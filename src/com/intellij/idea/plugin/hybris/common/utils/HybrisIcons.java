@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.utils;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
 import icons.GradleIcons;
@@ -40,7 +41,7 @@ public final class HybrisIcons {
     public static final Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
     public static final Icon FXS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
     public static final Icon PGQ_FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg");
-    public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/beanIcon.svg");
+    public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/bean.svg");
 
     public static final Icon PLUGIN_SETTINGS = getIcon("/icons/pluginSettings.svg");
 
@@ -66,12 +67,15 @@ public final class HybrisIcons {
     public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
     public static final Icon EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg");
+    public static final Icon UNMANAGED_DEPENDENCIES = getIcon("/icons/unmanagedDependencies.svg");
     public static final Icon SETTINGS = getIcon("/icons/settings.svg");
 
     public static final Icon MODULE_ECLIPSE = AllIcons.Providers.Eclipse;
     public static final Icon MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo;
     public static final Icon MODULE_CONFLICT = AllIcons.Actions.Cancel;
-    public static final Icon MODULE_GRADLE = GradleIcons.Gradle;
+    public static final Icon MODULE_GRADLE = PluginCommon.isPluginActive(PluginCommon.GRADLE_PLUGIN_ID)
+        ? GradleIcons.Gradle
+        : AllIcons.Nodes.Module;
     public static final Icon MODULE_CCV2 = getIcon("/icons/module/cloud.svg");
     public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg");
     public static final Icon MODULE_COMMERCE_GROUP = Y_LOGO_GREEN;
@@ -135,9 +139,9 @@ public final class HybrisIcons {
     public static final Icon BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg");
     public static final Icon BS_GROUP_BY_BEAN_WS = getIcon("/icons/beanSystem/groupByWS.svg");
     public static final Icon BS_GROUP_BY_ENUM = getIcon("/icons/beanSystem/groupByEnum.svg");
-    public static final Icon BS_BEAN = getIcon("/icons/beanSystem/beanIcon.svg");
-    public static final Icon BS_EVENT_BEAN = BS_BEAN;
-    public static final Icon BS_WS_BEAN = BS_BEAN;
+    public static final Icon BS_BEAN = getIcon("/icons/beanSystem/bean.svg");
+    public static final Icon BS_EVENT_BEAN = getIcon("/icons/beanSystem/eventBean.svg");
+    public static final Icon BS_WS_BEAN = getIcon("/icons/beanSystem/wsBean.svg");
     public static final Icon BS_WS_HINT = AllIcons.Actions.QuickfixOffBulb;
     public static final Icon BS_PROPERTY = getIcon("/icons/beanSystem/property.svg");
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
