@@ -20,14 +20,20 @@ package com.intellij.idea.plugin.hybris.impex.file
 
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.project.Project
 
 class ImpExFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.impex.console",
     "hybris.impex.toolbar.left",
-    "hybris.impex.toolbar.right"
+    "hybris.impex.toolbar.right",
+    ImpexFileType.INSTANCE
 ) {
 
     companion object {
         val instance: ImpExFileToolbarInstaller = ApplicationManager.getApplication().getService(ImpExFileToolbarInstaller::class.java)
     }
+
+    override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
 }

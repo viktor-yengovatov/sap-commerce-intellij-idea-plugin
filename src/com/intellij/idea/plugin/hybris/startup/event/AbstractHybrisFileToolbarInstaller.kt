@@ -23,11 +23,21 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.editor.impl.EditorHeaderComponent
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 import com.intellij.util.containers.JBIterable
 
-abstract class AbstractHybrisFileToolbarInstaller(private val toolbarId: String, private val leftGroupId: String, private val rightGroupId: String) {
+abstract class AbstractHybrisFileToolbarInstaller(
+    private val toolbarId: String,
+    private val leftGroupId: String,
+    private val rightGroupId: String,
+    internal val fileType: FileType
+) {
+
+    abstract fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean
 
     fun install(project: Project, editor: EditorEx) {
         val actionManager = ActionManager.getInstance()
@@ -51,5 +61,29 @@ abstract class AbstractHybrisFileToolbarInstaller(private val toolbarId: String,
             JBIterable.of(headerComponent),
             null as Boolean?
         )
+    }
+
+    fun toggleToolbarForAllEditors(project: Project) {
+        FileEditorManager.getInstance(project).allEditors
+            .filter { fileType == it.file.fileType }
+            .mapNotNull { EditorUtil.getEditorEx(it) }
+            .forEach {
+                toggleToolbar(project, it)
+            }
+    }
+
+    fun toggleToolbar(project: Project, editor: EditorEx) {
+        if (isToolbarEnabled(project, editor)) enableToolbar(project, editor)
+        else toggle(editor, false)
+    }
+
+    private fun enableToolbar(project: Project, editor: EditorEx) {
+        if (editor.permanentHeaderComponent == null) install(project, editor)
+        else toggle(editor, true)
+    }
+
+    private fun toggle(editor: EditorEx, visible: Boolean) = with(editor) {
+        permanentHeaderComponent?.isVisible = visible
+        headerComponent?.isVisible = visible
     }
 }
