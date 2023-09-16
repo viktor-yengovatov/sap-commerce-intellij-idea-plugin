@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -79,11 +78,6 @@ public final class ImpexPsiUtils {
     @Contract(value = "null -> false", pure = true)
     public static boolean isParameterSeparator(@Nullable final PsiElement psiElement) {
         return ImpexTypes.PARAMETERS_SEPARATOR == CommonPsiUtils.getNullSafeElementType(psiElement);
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isImpexFullHeaderParameter(@Nullable final PsiElement psiElement) {
-        return ImpexTypes.FULL_HEADER_PARAMETER == CommonPsiUtils.getNullSafeElementType(psiElement);
     }
 
     @Contract(value = "null -> false", pure = true)
@@ -319,81 +313,26 @@ public final class ImpexPsiUtils {
     public static PsiElement getHeaderOfValueGroupUnderCaret(@NotNull final Editor editor) {
         Validate.notNull(editor);
 
-        final PsiElement psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
-        if (null == psiElementUnderCaret) {
-            return null;
-        }
+        final var psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
+        if (null == psiElementUnderCaret) return null;
 
-        final ImpexValueGroup valueGroup = getClosestSelectedValueGroupFromTheSameLine(
-            psiElementUnderCaret);
-        if (null != valueGroup) {
+        final var valueGroup = getClosestSelectedValueGroupFromTheSameLine(psiElementUnderCaret);
 
-            final PsiElement header = getHeaderForValueGroup(valueGroup);
-            if (null != header) {
-                return header;
-            }
-        }
+        if (valueGroup == null) return null;
 
-        return null;
+        return getHeaderForValueGroup(valueGroup);
     }
 
-    public static List<PsiElement> getColumnOfHeaderUnderCaret(@NotNull final Editor editor) {
-        Validate.notNull(editor);
+    public static @Nullable ImpexFullHeaderParameter getFullHeaderParameterUnderCaret(@NotNull final Editor editor) {
+        final var psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
+        if (psiElementUnderCaret == null) return null;
 
-        final PsiElement psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
-        if (null == psiElementUnderCaret) {
-            return null;
-        }
-
-        final ImpexFullHeaderParameter headerParameter = PsiTreeUtil.getParentOfType(
-            psiElementUnderCaret,
-            ImpexFullHeaderParameter.class
-        );
-        if (null != headerParameter) {
-            return getColumnForHeader(headerParameter);
-        }
-
-        return null;
+        return PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexFullHeaderParameter.class);
     }
 
     @NotNull
-    public static List<PsiElement> getColumnForHeader(@NotNull final ImpexFullHeaderParameter headerParameter) {
-        final PsiElement[] children = headerParameter.getParent().getChildren();
-        int i = -2;
-        for (final PsiElement child : children) {
-            if (!child.equals(headerParameter)) {
-                i++;
-            } else {
-                break;
-            }
-        }
-
-        final List<PsiElement> result = new ArrayList<>();
-        PsiElement psiElement = getNextSiblingOfAnyType(
-            PsiTreeUtil.getParentOfType(headerParameter, ImpexHeaderLine.class),
-            ImpexValueLine.class,
-            ImpexHeaderLine.class,
-            ImpexRootMacroUsage.class
-        );
-
-        while (psiElement != null && !isHeaderLine(psiElement) && !isUserRightsMacros(psiElement)) {
-            if (isImpexValueLine(psiElement)) {
-                final PsiElement[] elements = psiElement.getChildren();
-                if (elements.length > i) {
-                    result.add(elements[i]);
-                }
-            }
-
-
-            psiElement = getNextSiblingOfAnyType(
-                psiElement,
-                ImpexValueLine.class,
-                ImpexHeaderLine.class,
-                ImpexRootMacroUsage.class
-            );
-        }
-
-        return result;
+    public static List<ImpexValueGroup> getColumnForHeader(@NotNull final ImpexFullHeaderParameter headerParameter) {
+        return headerParameter.getValueGroups();
     }
 
     @Nullable
@@ -440,40 +379,28 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static PsiElement getHeaderForValueGroup(@Nullable final ImpexValueGroup valueGroup) {
-        if (null == valueGroup) {
-            return null;
-        }
+        if (null == valueGroup) return null;
 
-        final int columnNumber = getColumnNumber(valueGroup);
+        final var columnNumber = valueGroup.getColumnNumber();
 
-        if (columnNumber < 0) {
-            return null;
-        }
+        if (columnNumber < 0) return null;
 
-        final ImpexValueLine impexValueLine = valueGroup.getValueLine();
-        if (null == impexValueLine) {
-            return null;
-        }
+        final var impexValueLine = valueGroup.getValueLine();
+        if (impexValueLine == null) return null;
 
-        if (prevElementIsUserRightsMacros(impexValueLine)) {
-            return null;
-        }
+        if (prevElementIsUserRightsMacros(impexValueLine)) return null;
 
-        final ImpexHeaderLine impexHeaderLine = PsiTreeUtil.getPrevSiblingOfType(impexValueLine, ImpexHeaderLine.class);
-        if (null == impexHeaderLine) {
-            return null;
-        }
+        final var impexHeaderLine = impexValueLine.getHeaderLine();
+        if (impexHeaderLine == null) return null;
 
-        final ImpexFullHeaderParameter header = getImpexFullHeaderParameterFromHeaderLineByNumber(
+        final var header = getImpexFullHeaderParameterFromHeaderLineByNumber(
             columnNumber,
             impexHeaderLine
         );
 
-        if (null == header) {
-            return getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
-        } else {
-            return header;
-        }
+        return header != null
+            ? header
+            : getHeaderParametersSeparatorFromHeaderLineByNumber(columnNumber, impexHeaderLine);
     }
 
     @Nullable
@@ -548,21 +475,21 @@ public final class ImpexPsiUtils {
         Validate.isTrue(columnNumber >= 0);
         Validate.notNull(impexHeaderLine);
 
-        final PsiElement columnSeparator = getHeaderParametersSeparatorFromHeaderLineByNumber(
+        final var columnSeparator = getHeaderParametersSeparatorFromHeaderLineByNumber(
             columnNumber,
             impexHeaderLine
         );
-        if (null == columnSeparator) {
-            return null;
+        if (columnSeparator == null) return null;
+
+        var nextSibling = CommonPsiUtils.getNextNonWhitespaceElement(columnSeparator);
+
+        if (ImpexTypes.MULTILINE_SEPARATOR == CommonPsiUtils.getNullSafeElementType(nextSibling)) {
+            nextSibling = CommonPsiUtils.getNextNonWhitespaceElement(nextSibling);
         }
 
-        final PsiElement nextSibling = CommonPsiUtils.getNextNonWhitespaceElement(columnSeparator);
-
-        if (isImpexFullHeaderParameter(nextSibling)) {
-            return (ImpexFullHeaderParameter) nextSibling;
-        }
-
-        return null;
+        return ImpexTypes.FULL_HEADER_PARAMETER == CommonPsiUtils.getNullSafeElementType(nextSibling)
+            ? (ImpexFullHeaderParameter) nextSibling
+            : null;
     }
 
     @Nullable

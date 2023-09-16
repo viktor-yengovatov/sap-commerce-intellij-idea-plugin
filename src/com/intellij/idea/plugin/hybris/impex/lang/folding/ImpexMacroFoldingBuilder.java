@@ -280,19 +280,46 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             final var resolvedValue = descriptor.resolvedValue();
 
             if (resolvedValue.startsWith("jar:")) {
-                final var blocks = resolvedValue.split("&");
+                final var blocks = resolvedValue.substring("jar:".length()).split("&");
                 if (blocks.length == 2) {
                     final var loaderClass = blocks[0];
                     return "jar:"
                         + loaderClass.substring(loaderClass.lastIndexOf('.') + 1)
                         + '&'
-                        + blocks[1];
+                        + getFileName(blocks[1]);
+                }
+            } else if (resolvedValue.startsWith("zip:")) {
+                final var blocks = resolvedValue.substring("zip:".length()).split("&");
+                if (blocks.length == 2) {
+                    final var zipName = getFileName(blocks[0]);
+                    return "zip:" + zipName + '&' + blocks[1];
+                }
+            } else if (resolvedValue.startsWith("file:")) {
+                final var blocks = resolvedValue.split(":");
+                if (blocks.length == 2) {
+                    final var fileName = getFileName(blocks[1]);
+                    return "file:" + fileName;
                 }
             }
 
             return resolvedValue;
         }
         return node.getText();
+    }
+
+    @NotNull
+    private static String getFileName(final String fileName) {
+        var name = fileName;
+
+        if (StringUtils.countMatches(name, '\\') <= 1 && StringUtils.countMatches(name, '/') <= 1) {
+            return name;
+        }
+
+        final var backslashIndex = name.lastIndexOf('\\');
+        if (backslashIndex >= 0) name = name.substring(backslashIndex);
+        final var slashIndex = name.lastIndexOf('/');
+        if (slashIndex >= 0) name = name.substring(slashIndex);
+        return ".." + name;
     }
 
     @Override

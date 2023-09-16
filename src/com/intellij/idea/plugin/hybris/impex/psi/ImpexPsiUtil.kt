@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
@@ -33,6 +34,8 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
 import org.jetbrains.kotlin.utils.addToStdlib.indexOfOrNull
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
@@ -74,8 +77,51 @@ fun getValueLines(element: ImpexHeaderLine): Collection<ImpexValueLine> {
     return valueLines
 }
 
+fun getUniqueFullHeaderParameters(element: ImpexHeaderLine) = element.fullHeaderParameterList
+    .filter { it.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.textMatches("true") ?: false }
+
+fun getTableRange(element: ImpexHeaderLine): TextRange {
+    val tableElements = ArrayDeque<PsiElement>()
+    var next = element.nextSibling
+
+    while (next != null) {
+        if (next is ImpexHeaderLine || next is ImpexUserRightsStart) {
+
+            // once all lines processed, we have to go back till last value line
+            var lastElement = tableElements.lastOrNull()
+            while (lastElement != null && lastElement !is ImpexValueLine) {
+                tableElements.removeLastOrNull()
+                lastElement = tableElements.lastOrNull()
+            }
+
+            next = null
+        } else {
+            // skip User Rights inside ImpEx statement
+            if (next !is ImpexUserRights) {
+                tableElements.add(next)
+            }
+            next = next.nextSibling
+        }
+    }
+
+    val endOffset = tableElements.lastOrNull()
+        ?.endOffset
+        ?: element.endOffset
+
+    return TextRange.create(element.startOffset, endOffset)
+}
+
+fun addValueGroups(element: ImpexValueLine, groupsToAdd: Int) {
+    if (groupsToAdd <= 0) return
+
+    repeat(groupsToAdd) {
+        ImpExElementFactory.createValueGroup(element.project)
+            ?.let { element.addAfter(it, element.valueGroupList.lastOrNull()) }
+    }
+}
+
 /**
- * This method will get value of the value group and if it's empty will check for value in default attribute
+ * This method will get value of the value group and if it's empty will check for value in the default attribute
  */
 fun computeValue(element: ImpexValueGroup): String? {
     val computedValue = element
@@ -84,9 +130,11 @@ fun computeValue(element: ImpexValueGroup): String? {
         ?: element.fullHeaderParameter
             ?.getAttribute(AttributeModifier.DEFAULT)
             ?.anyAttributeValue
-            ?.stringList
-            ?.firstOrNull()
-            ?.text
+            ?.let {
+                it.stringList.firstOrNull()
+                    ?.text
+                    ?: it.text
+            }
     return computedValue
         ?.let { StringUtil.unquoteString(it) }
         ?.trim()

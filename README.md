@@ -11,19 +11,25 @@
 ## SAP Commerce Developers Toolset ##
 
 <!-- Plugin description -->
-This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
+This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [IntelliJ IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
+
+## References
+- Overview of the releases [2022.2.0 - 2022.3.1](https://hybrismart.com/2023/05/08/sap-commerce-dev-toolset-2022-3-1-updates).
+- Overview of the releases [2022.3.1 - 2023.1.0](https://hybrismart.com/2023/08/24/part-ii-sap-commerce-developers-toolset-v-2023-1-0-intellij-idea-plugin).
+- Overview of the releases [2023.1.0 - 2023.2.7](https://hybrismart.com/2023/09/04/part-iii-sap-commerce-developers-toolset-v-2023-1-0-intellij-idea-plugin/).
+- Complete change log can be found [here](https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md).
 
 ## Features
 
-- Import of SAP Commerce extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.
-- Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.
+- Import of SAP Commerce extensions to IntelliJ IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.
+- Automatic configuration of Spring, Web, Ant, Database Connector IntelliJ IDEA plugins.
 - Import your custom Eclipse, Maven and Gradle extensions together with SAP Commerce platform.
 - Tight integration with [kotlinnature](https://github.com/mlytvyn/kotlinnature) which will enhance SAP Commerce with **Kotlin** language support
 - Custom editor for [Polyglot Query.](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/651d603ed81247c2be1708f22baed11b.html)
 - Custom editor for [FlexibleSearch](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bc399c186691014b8fce25e96614547.html) queries with an ability to execute them on a remote SAP Commerce instance right from your IDE by a single click of a button.
 - Custom editor for [ImpEx](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bee24e986691014b97bcd2c7e6ff732.html) files with automatic formatting, find usages and go to declaration actions, validation and import of ImpEx files into a remote SAP Commerce instance right from your IDE by a single click of a button.
 - Custom editor for `items.xml` with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.
-- Custom editor for `beans.xml` & `cockpitng` with custom automated Intellij refactorings actions.
+- Custom editor for `beans.xml` & `cockpitng` with custom automated IntelliJ refactorings actions.
 - Visualization of Business Process, [Type System](https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md) and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).
 - Preview for Type and Bean Systems.
 - Enhanced Debugger for Model classes with lazy evaluation.
@@ -52,7 +58,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 * Refresh gradle dependencies
 * Execute gradle task `buildPlugin` which can be found under `intellij` Tasks group
   * it will create <i>The Plugin</i> zip file under `build/distributions`
-  * try to execute this step every time before starting the Intellij IDEA
+  * try to execute this step every time before starting the IntelliJ IDEA
 * Execute gradle task `runIde` under the same `intellij` Task group
   * it can be executed in both Run and Debug mode
 * Manually install <i>The Plugin</i> from the local file located in the `build/distributions` in case of

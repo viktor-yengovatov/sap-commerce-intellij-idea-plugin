@@ -24,7 +24,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.*
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
@@ -51,13 +50,12 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
 
                     val keyAttrsGroupedByName = fullParametersList.filter { keyAttrPredicate(it) }.groupBy { it.anyHeaderParameterName.text }
 
-                    val dataMap = mutableMapOf<String, List<PsiElement>>()
-                    keyAttrsGroupedByName.forEach { (name, attrs) ->
-                        dataMap[name] = attrs
-                            .flatMap { it ->
-                                ImpexPsiUtils.getColumnForHeader(it).map { it.lastChild }
-                            }
-                    }
+                    val dataMap =keyAttrsGroupedByName.entries
+                        .associate { (name, attrs) ->
+                            name to attrs
+                                .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
+                                .mapNotNull { it.value }
+                        }
 
                     if (distinctCommonAttrsNames.isEmpty()) {
                         val attrsNames = fullParametersList

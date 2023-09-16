@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.impex.assistance;
 import com.intellij.codeInsight.folding.impl.FoldingUtil;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
@@ -28,11 +30,11 @@ import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.SmartPointerManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,7 @@ public class DefaultImpexColumnHighlighterService
     extends AbstractImpexHighlighterService
     implements ImpexColumnHighlighterService {
 
-    private final static Key<List<PsiElement>> CACHE_KEY = Key.create("IMPEX_COLUMN_HIGHLIGHT_CACHE");
+    private final static Key<List<ImpexValue>> CACHE_KEY = Key.create("IMPEX_COLUMN_HIGHLIGHT_CACHE");
 
     @Override
     @Contract
@@ -54,23 +56,31 @@ public class DefaultImpexColumnHighlighterService
 
     @Contract
     protected void highlightColumnOfValueUnderCaret(@NotNull final Editor editor) {
-        final List<PsiElement> columns = ImpexPsiUtils.getColumnOfHeaderUnderCaret(editor);
-
-        if (null == columns || columns.isEmpty()) {
+        final var headerParameter = ImpexPsiUtils.getFullHeaderParameterUnderCaret(editor);
+        if (headerParameter == null) {
             clearHighlightedArea(editor);
-        } else {
-            highlightArea(editor, columns);
+            return;
+        }
+
+        final var values = headerParameter.getValueGroups().stream()
+            .map(ImpexValueGroup::getValue)
+            .filter(Objects::nonNull)
+            .toList();
+
+        if (values.isEmpty()) {
+            clearHighlightedArea(editor);
+        } else if (editor.getProject() != null) {
+            final var pointerManager = SmartPointerManager.getInstance(editor.getProject());
+            highlightArea(editor, values);
         }
     }
 
     @Contract
     protected void highlightArea(
         @NotNull final Editor editor,
-        @NotNull final List<PsiElement> column
+        final List<ImpexValue> values
     ) {
-        Validate.notNull(column);
-
-        if (isAlreadyHighlighted(editor, column)) {
+        if (isAlreadyHighlighted(editor, values)) {
             return;
         }
 
@@ -81,8 +91,8 @@ public class DefaultImpexColumnHighlighterService
                 modifyHighlightedArea(editor, currentHighlightedElement, true);
             }
 
-            editor.putUserData(CACHE_KEY, column);
-            modifyHighlightedArea(editor, column, false);
+            editor.putUserData(CACHE_KEY, values);
+            modifyHighlightedArea(editor, values, false);
         });
     }
 
@@ -98,15 +108,15 @@ public class DefaultImpexColumnHighlighterService
     @Contract
     protected boolean isAlreadyHighlighted(
         @NotNull final Editor editor,
-        @Nullable final List<PsiElement> column
+        final List<ImpexValue> ranges
     ) {
-        return Objects.equals(editor.getUserData(CACHE_KEY), column);
+        return Objects.equals(editor.getUserData(CACHE_KEY), ranges);
     }
 
     @Contract
     protected void modifyHighlightedArea(
         @NotNull final Editor editor,
-        @NotNull final List<PsiElement> column,
+        final List<ImpexValue> column,
         final boolean clear
     ) {
         Validate.notNull(column);

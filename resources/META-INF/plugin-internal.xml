@@ -37,9 +37,9 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTypeReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemAttributeReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowPropertyQualifierReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngEditorDefinitionReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngActionDefinitionReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetDefinitionReferenceProvider"/>
@@ -95,24 +95,16 @@
                              key="hybris.settings.project.remote_instances.title"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider"/>
 
-        <toolWindow id="SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
+        <toolWindow id="SAP Commerce" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DummySpringConfigurator"/>
         <iconProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.DefaultSolrHttpClient"/>
     </extensions>
-
-    <project-components>
-        <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient</implementation-class>
-        </component>
-
-        <component>
-            <interface-class>com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient</interface-class>
-            <implementation-class>com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.DefaultSolrHttpClient</implementation-class>
-        </component>
-
-    </project-components>
 
     <actions>
         <group id="HybrisToolsActions"

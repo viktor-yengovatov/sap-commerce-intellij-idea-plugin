@@ -79,7 +79,7 @@ private recover_root ::= !(
 )
 
 private not_line_break ::= !(CRLF)
-private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR)
+private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR)
 private recover_parameter_name ::= !(LEFT_SQUARE_BRACKET | LEFT_ROUND_BRACKET | PARAMETERS_SEPARATOR | CRLF)
 private recover_header_type ::= !(LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | CRLF)
 private recover_parameters ::= !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR)
@@ -167,10 +167,10 @@ private user_rights_value_group_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
 
 root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 
-header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
+header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
 {
     pin = 1
-    methods=[getFullHeaderParameter getValueLines]
+    methods=[getFullHeaderParameter getValueLines getTableRange getUniqueFullHeaderParameters]
 }
 
 comment ::= LINE_COMMENT
@@ -188,9 +188,10 @@ macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
     | LEFT_SQUARE_BRACKET
     | RIGHT_SQUARE_BRACKET
     | ASSIGN_VALUE
-    | BOOLEAN
     | DIGIT
+    | BOOLEAN
     | FIELD_VALUE_IGNORE
+    | FIELD_VALUE_NULL
     | COMMA
     | HEADER_MODE_INSERT
     | HEADER_MODE_UPDATE
@@ -213,28 +214,31 @@ string ::= SINGLE_STRING | DOUBLE_STRING
 
 // Value line rules
 value_line ::= (sub_type_name value_group*) | (value_group+) {
-    methods=[getHeaderLine getValueGroup]
+    methods=[getHeaderLine getValueGroup addValueGroups]
 }
 
-value_group ::= FIELD_VALUE_SEPARATOR value?
+value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
 {
     pin=1
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
-value ::= (((  FIELD_VALUE
-             | FIELD_VALUE_URL
-             | BOOLEAN
-             | DIGIT
-             | string
-             | macro_usage_dec
-             | FIELD_LIST_ITEM_SEPARATOR
-             | DEFAULT_PATH_DELIMITER
-             | DEFAULT_KEY_VALUE_DELIMITER
-             | ALTERNATIVE_MAP_DELIMITER
-            )+
-           ) | FIELD_VALUE_IGNORE
-         )
+value ::= (MULTILINE_SEPARATOR? value_dec)+
+    | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
+
+private value_dec ::= FIELD_VALUE
+    | FIELD_VALUE_URL
+    | BOOLEAN
+    | DIGIT
+    | string
+    | macro_usage_dec
+    | FIELD_LIST_ITEM_SEPARATOR
+    | DEFAULT_PATH_DELIMITER
+    | DEFAULT_KEY_VALUE_DELIMITER
+    | ALTERNATIVE_MAP_DELIMITER
+    | COLLECTION_APPEND_PREFIX
+    | COLLECTION_REMOVE_PREFIX
+    | COLLECTION_MERGE_PREFIX
 
 macro_usage_dec::=MACRO_USAGE
 {
@@ -313,8 +317,8 @@ any_attribute_name ::= (ATTRIBUTE_NAME | string)+
 
 any_attribute_value ::= (
   ATTRIBUTE_VALUE
-  | BOOLEAN
   | DIGIT
+  | BOOLEAN
   | string
   | macro_usage_dec
 )+

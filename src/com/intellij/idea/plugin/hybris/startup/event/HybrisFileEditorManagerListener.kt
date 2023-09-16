@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -38,23 +37,20 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        if (!projectSettings.isHybrisProject()) return
 
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
         val toolbarInstaller = when (file.fileType) {
             is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
             is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.instance
             is ImpexFileType -> ImpExFileToolbarInstaller.instance
-            else -> {
-                if (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID) && file.fileType is GroovyFileType && settings.groovySettings.enableActionsToolbar) GroovyFileToolbarInstaller.instance
-                else null
-            }
-
+            is GroovyFileType -> GroovyFileToolbarInstaller.instance
+            else -> null
         } ?: return
 
         FileEditorManager.getInstance(project).getAllEditors(file)
             .firstNotNullOfOrNull { EditorUtil.getEditorEx(it) }
             ?.takeIf { it.permanentHeaderComponent == null }
-            ?.let { toolbarInstaller.install(project, it) }
+            ?.let { toolbarInstaller.toggleToolbar(project, it) }
     }
-
 }

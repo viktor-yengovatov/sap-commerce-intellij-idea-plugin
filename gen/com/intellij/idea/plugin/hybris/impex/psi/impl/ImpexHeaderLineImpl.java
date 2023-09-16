@@ -1,6 +1,10 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +30,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
+import com.intellij.openapi.util.TextRange;
 import java.util.Collection;
 
 public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHeaderLine {
@@ -72,6 +77,18 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
   @NotNull
   public Collection<ImpexValueLine> getValueLines() {
     return ImpexPsiUtil.getValueLines(this);
+  }
+
+  @Override
+  @NotNull
+  public TextRange getTableRange() {
+    return ImpexPsiUtil.getTableRange(this);
+  }
+
+  @Override
+  @NotNull
+  public List<ImpexFullHeaderParameter> getUniqueFullHeaderParameters() {
+    return ImpexPsiUtil.getUniqueFullHeaderParameters(this);
   }
 
 }

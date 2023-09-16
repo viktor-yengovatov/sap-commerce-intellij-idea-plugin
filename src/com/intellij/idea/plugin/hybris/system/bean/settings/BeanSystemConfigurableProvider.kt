@@ -49,10 +49,12 @@ class BeanSystemConfigurableProvider(val project: Project) : ConfigurableProvide
                         .bindSelected(settings.folding::enabled)
                         .component
                 }
-                row {
-                    checkBox("Use table-like folding for properties")
-                        .bindSelected(settings.folding::tablifyProperties)
-                        .enabledIf(foldingEnableCheckBox.selected)
+                group("Table-Like Folding", true) {
+                    row {
+                        checkBox("Properties")
+                            .bindSelected(settings.folding::tablifyProperties)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                    }
                 }
             }
         }

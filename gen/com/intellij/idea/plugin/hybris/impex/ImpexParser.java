@@ -83,8 +83,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // (
   //   ATTRIBUTE_VALUE
-  //   | BOOLEAN
   //   | DIGIT
+  //   | BOOLEAN
   //   | string
   //   | macro_usage_dec
   // )+
@@ -103,16 +103,16 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // ATTRIBUTE_VALUE
-  //   | BOOLEAN
   //   | DIGIT
+  //   | BOOLEAN
   //   | string
   //   | macro_usage_dec
   private static boolean any_attribute_value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_attribute_value_0")) return false;
     boolean r;
     r = consumeToken(b, ATTRIBUTE_VALUE);
-    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = string(b, l + 1);
     if (!r) r = macro_usage_dec(b, l + 1);
     return r;
@@ -263,7 +263,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
+  // any_header_mode full_header_type ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
   public static boolean header_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line")) return false;
     boolean r, p;
@@ -276,7 +276,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
+  // ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
   private static boolean header_line_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line_2")) return false;
     while (true) {
@@ -287,7 +287,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR
+  // (PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR
   private static boolean header_line_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line_2_0")) return false;
     boolean r;
@@ -298,15 +298,23 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // PARAMETERS_SEPARATOR full_header_parameter
+  // PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter
   private static boolean header_line_2_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line_2_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, PARAMETERS_SEPARATOR);
+    r = r && header_line_2_0_0_1(b, l + 1);
     r = r && full_header_parameter(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // MULTILINE_SEPARATOR?
+  private static boolean header_line_2_0_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "header_line_2_0_0_1")) return false;
+    consumeToken(b, MULTILINE_SEPARATOR);
+    return true;
   }
 
   /* ********************************************************** */
@@ -343,9 +351,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
   //     | ASSIGN_VALUE
-  //     | BOOLEAN
   //     | DIGIT
+  //     | BOOLEAN
   //     | FIELD_VALUE_IGNORE
+  //     | FIELD_VALUE_NULL
   //     | COMMA
   //     | HEADER_MODE_INSERT
   //     | HEADER_MODE_UPDATE
@@ -375,9 +384,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
   //     | ASSIGN_VALUE
-  //     | BOOLEAN
   //     | DIGIT
+  //     | BOOLEAN
   //     | FIELD_VALUE_IGNORE
+  //     | FIELD_VALUE_NULL
   //     | COMMA
   //     | HEADER_MODE_INSERT
   //     | HEADER_MODE_UPDATE
@@ -403,9 +413,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
   //     | ASSIGN_VALUE
-  //     | BOOLEAN
   //     | DIGIT
+  //     | BOOLEAN
   //     | FIELD_VALUE_IGNORE
+  //     | FIELD_VALUE_NULL
   //     | COMMA
   //     | HEADER_MODE_INSERT
   //     | HEADER_MODE_UPDATE
@@ -423,9 +434,10 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, LEFT_SQUARE_BRACKET);
     if (!r) r = consumeToken(b, RIGHT_SQUARE_BRACKET);
     if (!r) r = consumeToken(b, ASSIGN_VALUE);
-    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, FIELD_VALUE_IGNORE);
+    if (!r) r = consumeToken(b, FIELD_VALUE_NULL);
     if (!r) r = consumeToken(b, COMMA);
     if (!r) r = consumeToken(b, HEADER_MODE_INSERT);
     if (!r) r = consumeToken(b, HEADER_MODE_UPDATE);
@@ -547,7 +559,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(CRLF | PARAMETERS_SEPARATOR)
+  // !(CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR)
   static boolean not_line_break_or_parameters_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_line_break_or_parameters_separator")) return false;
     boolean r;
@@ -557,12 +569,13 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // CRLF | PARAMETERS_SEPARATOR
+  // CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR
   private static boolean not_line_break_or_parameters_separator_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_line_break_or_parameters_separator_0")) return false;
     boolean r;
     r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, PARAMETERS_SEPARATOR);
+    if (!r) r = consumeToken(b, MULTILINE_SEPARATOR);
     return r;
   }
 
@@ -1504,39 +1517,19 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ((  FIELD_VALUE
-  //              | FIELD_VALUE_URL
-  //              | BOOLEAN
-  //              | DIGIT
-  //              | string
-  //              | macro_usage_dec
-  //              | FIELD_LIST_ITEM_SEPARATOR
-  //              | DEFAULT_PATH_DELIMITER
-  //              | DEFAULT_KEY_VALUE_DELIMITER
-  //              | ALTERNATIVE_MAP_DELIMITER
-  //             )+
-  //            ) | FIELD_VALUE_IGNORE
+  // (MULTILINE_SEPARATOR? value_dec)+
+  //     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, VALUE, "<value>");
     r = value_0(b, l + 1);
-    if (!r) r = consumeToken(b, FIELD_VALUE_IGNORE);
+    if (!r) r = value_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // (  FIELD_VALUE
-  //              | FIELD_VALUE_URL
-  //              | BOOLEAN
-  //              | DIGIT
-  //              | string
-  //              | macro_usage_dec
-  //              | FIELD_LIST_ITEM_SEPARATOR
-  //              | DEFAULT_PATH_DELIMITER
-  //              | DEFAULT_KEY_VALUE_DELIMITER
-  //              | ALTERNATIVE_MAP_DELIMITER
-  //             )+
+  // (MULTILINE_SEPARATOR? value_dec)+
   private static boolean value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_0")) return false;
     boolean r;
@@ -1551,18 +1544,49 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FIELD_VALUE
-  //              | FIELD_VALUE_URL
-  //              | BOOLEAN
-  //              | DIGIT
-  //              | string
-  //              | macro_usage_dec
-  //              | FIELD_LIST_ITEM_SEPARATOR
-  //              | DEFAULT_PATH_DELIMITER
-  //              | DEFAULT_KEY_VALUE_DELIMITER
-  //              | ALTERNATIVE_MAP_DELIMITER
+  // MULTILINE_SEPARATOR? value_dec
   private static boolean value_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = value_0_0_0(b, l + 1);
+    r = r && value_dec(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // MULTILINE_SEPARATOR?
+  private static boolean value_0_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_0_0_0")) return false;
+    consumeToken(b, MULTILINE_SEPARATOR);
+    return true;
+  }
+
+  // FIELD_VALUE_IGNORE | FIELD_VALUE_NULL
+  private static boolean value_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_1")) return false;
+    boolean r;
+    r = consumeToken(b, FIELD_VALUE_IGNORE);
+    if (!r) r = consumeToken(b, FIELD_VALUE_NULL);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // FIELD_VALUE
+  //     | FIELD_VALUE_URL
+  //     | BOOLEAN
+  //     | DIGIT
+  //     | string
+  //     | macro_usage_dec
+  //     | FIELD_LIST_ITEM_SEPARATOR
+  //     | DEFAULT_PATH_DELIMITER
+  //     | DEFAULT_KEY_VALUE_DELIMITER
+  //     | ALTERNATIVE_MAP_DELIMITER
+  //     | COLLECTION_APPEND_PREFIX
+  //     | COLLECTION_REMOVE_PREFIX
+  //     | COLLECTION_MERGE_PREFIX
+  static boolean value_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_dec")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE);
     if (!r) r = consumeToken(b, FIELD_VALUE_URL);
@@ -1574,11 +1598,14 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, DEFAULT_PATH_DELIMITER);
     if (!r) r = consumeToken(b, DEFAULT_KEY_VALUE_DELIMITER);
     if (!r) r = consumeToken(b, ALTERNATIVE_MAP_DELIMITER);
+    if (!r) r = consumeToken(b, COLLECTION_APPEND_PREFIX);
+    if (!r) r = consumeToken(b, COLLECTION_REMOVE_PREFIX);
+    if (!r) r = consumeToken(b, COLLECTION_MERGE_PREFIX);
     return r;
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR value?
+  // FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
   public static boolean value_group(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group")) return false;
     if (!nextTokenIs(b, FIELD_VALUE_SEPARATOR)) return false;
@@ -1586,7 +1613,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, VALUE_GROUP, null);
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
-    r = r && value_group_1(b, l + 1);
+    r = r && report_error_(b, value_group_1(b, l + 1));
+    r = p && value_group_2(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -1595,6 +1623,13 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   private static boolean value_group_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group_1")) return false;
     value(b, l + 1);
+    return true;
+  }
+
+  // MULTILINE_SEPARATOR?
+  private static boolean value_group_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_group_2")) return false;
+    consumeToken(b, MULTILINE_SEPARATOR);
     return true;
   }
 

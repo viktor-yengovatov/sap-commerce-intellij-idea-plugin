@@ -180,13 +180,15 @@ public final class HybrisIcons {
     public static final Icon FXS_TABLE_SUFFIX = AllIcons.General.Filter;
     public static final Icon FXS_TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg");
 
-    public static final Icon IMX_VALIDATE = getIcon("/icons/impex/validate.svg");
+    public static final Icon IMPEX_VALIDATE = getIcon("/icons/impex/validate.svg");
+    public static final Icon IMPEX_MODE = AllIcons.Nodes.Function;
 
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");
     public static final Icon CONSOLE_OPEN = getIcon("/icons/console/open.svg");
     public static final Icon CONSOLE_EXECUTE = AllIcons.Actions.Execute;
+    public static final Icon CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg");
 
     public static final Icon TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg");
     public static final Icon TABLE_COLUMN_INSERT_RIGHT = getIcon("/icons/table/columnInsertRight.svg");
@@ -195,6 +197,7 @@ public final class HybrisIcons {
     public static final Icon TABLE_COLUMN_REMOVE = getIcon("/icons/table/columnRemove.svg");
     public static final Icon TABLE_REMOVE = getIcon("/icons/table/tableRemove.svg");
     public static final Icon TABLE_SELECT = getIcon("/icons/table/tableSelect.svg");
+    public static final Icon TABLE_SPLIT_VERTICALLY = getIcon("/icons/table/tableSplitVertically.svg");
 
     static Icon getIcon(final String path) {
         final Class<?> callerClass = ReflectionUtil.getGrandCallerClass();

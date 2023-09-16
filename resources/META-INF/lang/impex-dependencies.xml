@@ -33,6 +33,7 @@
 
         <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider" />
         <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
+
         <lang.parserDefinition language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
         <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
         <lang.commenter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>
@@ -47,19 +48,6 @@
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartFoldingBlocksFilter"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
 
         <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
         <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
@@ -108,6 +96,25 @@
         <postStartupActivity order="after hybrisProjectImport"
                              implementation="com.intellij.idea.plugin.hybris.startup.ImpexHeaderHighlighterStartupActivity"/>
         <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiTreeChangeListener"/>
+
+        <codeInsight.declarativeInlayProvider language="ImpEx"
+                                              implementationClass="com.intellij.idea.plugin.hybris.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.ImpEx.defaultValue"
+                                              bundle="i18n/HybrisBundle"
+                                              nameKey="hybris.editor.impex.inlay_provider.default_value.name"
+                                              descriptionKey="hybris.editor.impex.inlay_provider.default_value.description"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingBlocksFilter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingBlocksFilter"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiManager"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener"/>
@@ -115,30 +122,29 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller"/>
     </extensions>
 
-
     <actions>
         <action id="ImpEx.NewImpExFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
                 text="ImpEx File" description="Create new ImpEx file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group>
-            <action id="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"
-                    class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
-            <separator/>
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
-        </group>
-
+        <action id="hybris.impex.openFileInConsole"
+                class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
         <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
         <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
         <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction"/>
-        <action id="hybris.impex.selectTable" class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction">
+        <action id="hybris.impex.table.select" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSelectAction">
             <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
         </action>
 
+        <group id="hybris.impex.context.actions">
+            <reference id="hybris.impex.openFileInConsole"/>
+            <separator/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
+        </group>
         <group id="hybris.impex.table.actions">
-            <reference id="hybris.impex.selectTable"/>
+            <reference id="hybris.impex.table.select"/>
             <separator/>
             <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction"/>
             <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction"/>
@@ -148,6 +154,7 @@
             <separator/>
             <action id="hybris.impex.table.column.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnRemoveAction"/>
             <action id="hybris.impex.table.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableRemoveAction"/>
+            <action id="hybris.impex.table.split" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSplitVerticallyAction"/>
         </group>
 
         <group id="hybris.impex.toolbar.left">

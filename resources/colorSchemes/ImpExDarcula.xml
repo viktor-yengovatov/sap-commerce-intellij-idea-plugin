@@ -73,6 +73,12 @@
             <option name="FOREGROUND" value="FFF9F1"/>
         </value>
     </option>
+    <option name="HEADER_UNIQUE_PARAMETER_NAME">
+        <value>
+            <option name="FOREGROUND" value="FFF9F1"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
     <option name="IMPEX_ATTRIBUTE_NAME">
         <value>
             <option name="FOREGROUND" value="757575"/>
@@ -137,6 +143,29 @@
         <value>
             <option name="FOREGROUND" value="22E5B8"/>
             <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
+    <option name="IMPEX_VALUE_LINE_EVEN">
+        <value>
+            <option name="BACKGROUND" value="2E2E31"/>
+        </value>
+    </option>
+    <option name="IMPEX_COLLECTION_APPEND_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="94ECBD"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_COLLECTION_REMOVE_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="F87773"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_COLLECTION_MERGE_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="82CAD3"/>
+            <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
 </list>

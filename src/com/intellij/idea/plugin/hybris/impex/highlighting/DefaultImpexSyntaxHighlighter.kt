@@ -49,6 +49,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.FIELD_LIST_ITEM_SEPARATOR -> FIELD_LIST_ITEM_SEPARATOR_KEYS
             ImpexTypes.FIELD_VALUE -> FIELD_VALUE_KEYS
             ImpexTypes.FIELD_VALUE_IGNORE -> FIELD_VALUE_IGNORE_KEYS
+            ImpexTypes.FIELD_VALUE_NULL -> FIELD_VALUE_NULL_KEYS
             ImpexTypes.FIELD_VALUE_SEPARATOR -> FIELD_VALUE_SEPARATOR_KEYS
             ImpexTypes.HEADER_MODE_INSERT -> HEADER_MODE_INSERT_KEYS
             ImpexTypes.HEADER_MODE_INSERT_UPDATE -> HEADER_MODE_INSERT_UPDATE_KEYS
@@ -87,6 +88,10 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.PERMISSION_ALLOWED -> USER_RIGHTS_PERMISSION_ALLOWED_KEYS
             ImpexTypes.PERMISSION_DENIED -> USER_RIGHTS_PERMISSION_DENIED_KEYS
 
+            ImpexTypes.COLLECTION_APPEND_PREFIX -> COLLECTION_APPEND_PREFIX
+            ImpexTypes.COLLECTION_REMOVE_PREFIX -> COLLECTION_REMOVE_PREFIX
+            ImpexTypes.COLLECTION_MERGE_PREFIX -> COLLECTION_MERGE_PREFIX
+
             TokenType.BAD_CHARACTER -> BAD_CHARACTER_KEYS
             else -> EMPTY_KEYS
         }
@@ -96,6 +101,9 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val instance: DefaultImpexSyntaxHighlighter = ApplicationManager.getApplication().getService(DefaultImpexSyntaxHighlighter::class.java)
 
         val PROPERTY_COMMENT_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.PROPERTY_COMMENT)
+        val COLLECTION_APPEND_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_APPEND_PREFIX)
+        val COLLECTION_REMOVE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX)
+        val COLLECTION_MERGE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_MERGE_PREFIX)
         val MACRO_NAME_DECLARATION_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_NAME_DECLARATION)
         val MACRO_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_VALUE)
         val MACRO_USAGE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_USAGE)
@@ -113,6 +121,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val SINGLE_STRING_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SINGLE_STRING)
         val DOUBLE_STRING_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DOUBLE_STRING)
         val FIELD_VALUE_IGNORE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
+        val FIELD_VALUE_NULL_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
         val BEAN_SHELL_MARKER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BEAN_SHELL_MARKER)
         val BEAN_SHELL_BODY_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BEAN_SHELL_BODY)
         val SQUARE_BRACKETS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SQUARE_BRACKETS)

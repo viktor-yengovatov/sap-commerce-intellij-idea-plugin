@@ -99,6 +99,7 @@ object HybrisConstants {
     const val EXTENSION_NAME_HMC = "hmc"
     const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
+    const val EXTENSION_NAME_PLATFORM_SERVICES = "platformservices"
     const val EXTENSION_NAME_ADDONSUPPORT = "addonsupport"
     const val EXTENSION_NAME_KOTLIN_NATURE = "kotlinnature"
 
@@ -369,8 +370,6 @@ object HybrisConstants {
 
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
-    @JvmField
-    val IMPEX_MODIFIER_MODE_VALUES = setOf("append", "remove")
 
     @JvmField
     val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = FileUtilRt.toSystemDependentName("/.idea/idea-modules")

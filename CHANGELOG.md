@@ -1,3 +1,83 @@
+## [2023.2.8]
+
+### Features
+- Introduced pre-built `log4j2` and `slf4j` live templates for Java [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
+- Introduced pre-built `log4j2` and `slf4j` live templates for Kotlin [#700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/700)
+
+### `Project Import` enhancements
+- Register `platformservices` source directories to improve compilation due missing `bin/<>.jar` [#715](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/715)
+
+### `CCv2` enhancements
+- Improved CCv2 SAP Commerce Cloud `manifest.json` schema support [#685](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/685)
+- Added code completion for `addons` and `storefronts` in the `manifest.json` schema [#686](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/686)
+- Enabled extension name inspection for `addons` and `storefronts` elements [#687](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/687)
+
+### `ImpEx` enhancements
+- Introduced inlay hint to display default value in value lines [#670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/670)
+- Added new column-based `Split Table` action [#691](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/691)
+- Added colorization for `odd` and `even` value lines [#667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/667)
+- Added inline collection merge modes: `(+)`, `(-)`, `(+?)` [#671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/671)
+- Added colorization for `(+)`, `(-)` and `(+?)` inline collection merge modes [#672](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/672)
+- Added colorization for unique header parameter name [#683](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/683)
+- Improved colorization for `odd` and `even` value lines [#710](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/710)
+- Added support of the `<null>` special value [#673](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/673)
+- Automatically add `=` after type and attribute modifier and trigger code completion [#674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/674)
+- Automatically trigger code completion after choosing the mode [#675](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/675)
+- Detect all allowed by `AtomicValueTranslator` boolean tokens [#676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/676)
+- Added support of the multi-line ` \ ` separator for **macro declarations** [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
+- Added support of the multi-line ` \ ` separator for **macro values** [#678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/678)
+- Added support of the multi-line ` \ ` separator for **header parameters** [#679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/679)
+- Added support of the multi-line ` \ ` separator for **value groups** [#680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/680)
+- Allow multi-line ` \ ` separator for **value groups** as a last character [#714](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/714)
+- Adjusted Table selection logic [#689](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/689)
+- Improved Column highlighting logic [#690](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/690)
+- Added folding for `zip:` file load translator prefix [#692](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/692)
+- Added folding for `file:` file load translator prefix [#693](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/693)
+- Adjusted folding for `jar:` file load translator prefix [#694](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/694)
+- Improved folding for all file load translator prefixes [#695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/695)
+
+### `ImpEx` inspection rules
+- Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
+- Added local fix for missing Config import processor [#711](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/711)
+
+### `Groovy Script` enhancements
+- Disable actions toolbar for the test `.groovy` files [#704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/704)
+- Dynamically toggle the actions toolbar for the opened `.groovy` files in case of settings change [#705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/705)
+- Replace the action 'Execute Groovy Script' by two actions `Execute: Commit Mode ON` and `Execute: Commit Mode OFF` [#713](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/713)
+
+### `items.xml` enhancements
+- Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)
+- Improved folding for `index`:`key` tags [#663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/663)
+- Improved folding for `custom-properties`:`property` tags [#664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/664)
+
+### `Business Process` enhancements
+- Added folding for business process files [#698](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/698)
+- Added folding configuration [#701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/701)
+
+### `Bean System` enhancements
+- Added folding configuration [#701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/701)
+
+### `Cockpit NG` enhancements
+- Added folding configuration [#701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/701)
+- Added table-like folding for `type-node` [#702](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/702)
+- Added table-like folding for `list`:`column`, `parameter`, `search`:`field` [#703](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/703)
+- Adjusted reference resolution for wizards using POJO [#706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/706)
+- Enabled field level reference resolution for wizards using POJO [#707](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/707)
+- Enabled field level reference resolution for wizards using Java 14 Record [#708](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/708)
+- Added field level code contribution for wizards using POJO & Java 14 Record [#709](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/709)
+
+### Fixes
+- Disable reference and code completion for `order` property of the Spring Interceptor bean declaration [#697](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/697)
+- Fixed preview of the inlay hint for Dynamic attributes [#668](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/668)
+- Enable custom action toolbars only for SAP Commerce projects [#669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/669)
+- Fixed `ImpEx` unique value inspection to support multi-line ` \ ` separator [#681](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/681)
+- Fixed `ImpEx` macro-declaration Annotator to support multi-line ` \ ` separator [#682](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/682)
+
+### Other
+- Do not activate on start SAP Commerce toolwindow [#696](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/696)
+- Added VCS issue navigation for IntelliJ [#665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/665)
+- New UI Tool Window Icons ([sdk docs](https://plugins.jetbrains.com/docs/intellij/work-with-icons-and-images.html#new-ui-tool-window-icons)) [#688](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/688)
+
 ## [2023.2.7]
 
 ### `items.xml` enhancements
@@ -75,14 +155,14 @@
 - Do not inspect special parameter for uniqueness [#621](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/621)
 - Ignore case for parameter for unique column without an index inspection [#637](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/637)
 
-### `CockpitNG` enhancements
+### `Cockpit NG` enhancements
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)
 - Improved `qualifier` reference handling in case of set `spring-bean` for `lv:column` [#628](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/628)
 - Added code completion and reference resolution for Enum attributes [#629](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/629)
 - Improved code completion for `context` tag by boosting most suitable types [#632](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/632)
 - Improved code completion boosting for `context` tag for Enum type [#633](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/633)
 
-### `CockpitNG` inspection rules
+### `Cockpit NG` inspection rules
 - Validate `parent` value according to `type` value of the `context` tag in case of `merge-by="type"` mode [#631](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/631)
 - Adjusted DOM inspection fpr `AbstractActionType` tag [#626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/626)
 - Adjusted DOM inspection for `Essentials` tag [#627](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/627)
@@ -127,7 +207,7 @@
 
 ### Fixes
 - Type and Bean System preview is not always displayed [#611](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/611) 
-- Type is not detected for CockpitNG Wizard when there is no `initialize` section [#602](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/602) 
+- Type is not detected for Cockpit NG Wizard when there is no `initialize` section [#602](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/602) 
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
 - `ImpEx` Code Style Formatter is not configurable [#540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/540) 
@@ -166,9 +246,9 @@
 - Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
 
 ### Fixes
-- Do not register DataSource in Intellij Community [#530](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/530)
+- Do not register DataSource in IntelliJ Community [#530](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/530)
 - Unable to import project from existing sources since upgrading to Idea 2023.2 [#526](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/526)
-- Unable to import project in Intellij 2023.2 Community Version [#527](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/527)
+- Unable to import project in IntelliJ 2023.2 Community Version [#527](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/527)
 
 ### Other
 - Added custom icon for `hybris4intellij.properties` file [#525](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/525)
@@ -218,7 +298,7 @@
 - New documentation settings added to the Project Settings
 
 ### Fixes
-- Fix UI freeze due new Intellij IDEA startup activity API [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
+- Fix UI freeze due new IntelliJ IDEA startup activity API [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
 - Improve disposing of the `ImpEx` Editor listeners [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
 - Ensure that console storage is under `.idea` folder [#503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/503)
 - Fix UI freeze due legacy `items.xml` analysis [#502](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/502)
@@ -287,7 +367,7 @@
 ## [2023.2.0]
 
 ### Features
-- Added 2023.2 Intellij IDEA support [#405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405)
+- Added 2023.2 IntelliJ IDEA support [#405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405)
 - Improved code completion and reference resolution for Enum attributes in impex/fxs/pgq files [#414](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/414)
 - Added Node.js version 18 to the CCv2 js-storefront manifest file [#413](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/413)
 - Migrated change log to `gradle-changelog-plugin` [#429](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/429)
@@ -478,7 +558,7 @@
 - Navigate to Model will filter out non platform classes [#358](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/358)
 - Non-navigable relation ends will be correctly resolved as `source` or `target` [#359](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/359)
 - NPE for items file validation [#360](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/360)
-- NPE during building CockpitNG [#367](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/367)
+- NPE during building Cockpit NG [#367](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/367)
 
 ### Other
 - Updated to Gradle 8.1 and added GitHub Actions [#337](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/337)
@@ -592,12 +672,12 @@
 - Added inspection for `items.xml` - `metatype` attribute [#243](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/243)
 - Added possibility to identify if extension is an addon (project refresh required) [#245](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/245)
 - Improved Inlay hints for `dynamic` attributes [#250](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/250)
-- CockpitNG: added `merge-by` dependant contribution for `parent` [#247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/247)
-- CockpitNG: added `merge-by` dependant complex contribution &amp; inspections for `parent` [#248](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/248)
+- Cockpit NG: added `merge-by` dependant contribution for `parent` [#247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/247)
+- Cockpit NG: added `merge-by` dependant complex contribution &amp; inspections for `parent` [#248](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/248)
 - Updated custom icons for Business Process diagrams [#246](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/246)
 - Show progress of the Type System Global Meta Model creation [#252](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/252)
 - Show progress of the Bean System Global Meta Model creation [#253](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/253)
-- Show progress of the CockpitNG Global Meta Model creation [#254](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/254)
+- Show progress of the Cockpit NG Global Meta Model creation [#254](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/254)
 - Improved project startup and shutdown, show `items.xml` validation progress [#255](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/255)
 
 ### Fixes
@@ -621,7 +701,7 @@
 - Added completion and navigation for Index attributes within `items.xml` [#207](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/207)
 - Added completion for meta tags within `extensioninfo.xml` [#230](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/230)
 - Added listing of references for `id` attribute within Business Process definition [#214](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/214)
-- Added listing of references for multiple CockpitNG definitions [#216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/216)
+- Added listing of references for multiple Cockpit NG definitions [#216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/216)
 - Added completion and navigation for `onError` attribute within Business Process definition [#215](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/215)
 - Improved representation of the available extensions listing [#234](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/234)
 - Improved project startup performance [#210](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/210)
@@ -642,7 +722,7 @@
 
 ### Features - IDEA Ultimate
 - Added navigation to TypeCode Interceptor declaration(s) [#188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/188)
-- Added code completion and navigation for CockpitNG 'spring-bean' element [#184](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/184)
+- Added code completion and navigation for Cockpit NG 'spring-bean' element [#184](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/184)
 - Added highlighting if Spring bean used in Business Process is not available [#170](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/170)
 - Register `-backoffice-spring.xml` files, Project re-import is required [#183](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/183)
 - Introduced new `items.xml` Annotator for Attribute Handler [#117](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/117)
@@ -674,7 +754,7 @@
 - Added navigation to `beans.xml` Enum values declaration from generated classes [#111](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/111)
 - Added navigation to `beans.xml` Bean property declaration from generated classes [#112](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/112)
 - Added navigation to alternative declarations of the beans within `beans.xml` [#78](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/78)
-- Added navigation to `items.xml` for Types used in the CockpitNG configuration files [#166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/166)
+- Added navigation to `items.xml` for Types used in the Cockpit NG configuration files [#166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/166)
 - Added code completion for ImpEx `translator` modifier [#158](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/158)
 - Added code completion for ImpEx `cell-decorator` modifier [#159](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/159)
 - Added code completion and enriched navigation within Business Process [#171](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/171)
@@ -686,7 +766,7 @@
 - Added `localextensions.xml` DOM model and custom Icon [#155](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/155)
 - Added `extensioninfo.xml` DOM model and custom Icon [#147](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/147)
 - Added `process.xml` DOM model and custom Icon [#148](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/148)
-- Added CockpitNG files (widgets, config, definition) support, Model, completion and navigation [#165](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165),
+- Added Cockpit NG files (widgets, config, definition) support, Model, completion and navigation [#165](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165),
 [#174](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/174),
 [#169](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/169),
 [#172](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172),
@@ -750,7 +830,7 @@
 ## [2022.3.0]
 
 ### Features
-- Added 2022.3 Intellij IDEA support
+- Added 2022.3 IntelliJ IDEA support
 - Introduction the Type System Management - the powerful tool to observe SAP Commerce type system [#62](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62),
 [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
 - Added support of the Enum completion in ImpEx/FSQ
@@ -769,6 +849,6 @@
 ## [2022.2]
 
 ### Features
-- Added 2022.2 Intellij IDEA support
+- Added 2022.2 IntelliJ IDEA support
 - Feature Add inline actions for ImpEx & FlexibleSearch files [#53](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/53)
 - Do not index `node_modules` directories [#52](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/52)

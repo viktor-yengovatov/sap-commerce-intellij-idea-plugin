@@ -19,15 +19,20 @@ package com.intellij.idea.plugin.hybris.impex.lang.annotation
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
+import org.jetbrains.kotlin.idea.codeinsight.utils.findExistingEditor
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance) {
 
@@ -49,6 +54,24 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
+            ImpexTypes.VALUE_LINE -> {
+                element.findExistingEditor()
+                    ?.let {
+                        val valueLine = element as? ImpexValueLine ?: return
+                        val valueLineIndex = valueLine.headerLine
+                            ?.valueLines
+                            ?.indexOf(valueLine)
+                            ?: return
+                        val lineNumber = it.document.getLineNumber(valueLine.textOffset)
+
+                        if ((valueLineIndex + 1) % 2 == 0) {
+                            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_EVEN, lineNumber, HighlighterLayer.SYNTAX)
+                        } else {
+                            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_ODD, lineNumber, HighlighterLayer.SYNTAX)
+                        }
+                    }
+            }
+
             ImpexTypes.USER_RIGHTS_HEADER_PARAMETER -> {
                 val headerParameter = element as? ImpexUserRightsHeaderParameter ?: return
                 val elementType = headerParameter.firstChild.elementType ?: return
@@ -155,7 +178,9 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                 } else if (element.text.startsWith("$")) {
                     val textLength = element.parent.reference
                         ?.resolve()
-                        ?.textLength
+                        ?.text
+                        ?.let { ImpexMacroReference.escapeName(it) }
+                        ?.length
                         ?: element.textLength
                     highlight(
                         ImpexHighlighterColors.MACRO_USAGE_DEC,
@@ -173,6 +198,18 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                         holder,
                         element,
                     )
+                } else {
+                    element.parentOfType<ImpexFullHeaderParameter>()
+                        ?.getAttribute(AttributeModifier.UNIQUE)
+                        ?.anyAttributeValue
+                        ?.takeIf { it.textMatches("true") }
+                        ?.let {
+                            highlight(
+                                ImpexHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME,
+                                holder,
+                                element
+                            )
+                        }
                 }
             }
         }

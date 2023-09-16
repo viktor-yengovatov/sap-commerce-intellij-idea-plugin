@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,71 +17,135 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.lang.folding
 
-import ai.grazie.utils.toDistinctTypedArray
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.Field
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.FieldList
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Parameter
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Attribute
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Section
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListColumn
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListView
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.ExplorerTree
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.TypeNode
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.AdditionalParam
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.ComposedHandler
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Property
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.PropertyList
+import com.intellij.idea.plugin.hybris.system.cockpitng.settings.CngFoldingSettings
 import com.intellij.lang.ASTNode
-import com.intellij.lang.folding.FoldingBuilderEx
-import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.openapi.project.DumbAware
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.SyntaxTraverser
-import com.intellij.psi.xml.XmlFile
+import com.intellij.openapi.project.Project
+import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.xml.DomManager
 
-class CngConfigFoldingBuilder : FoldingBuilderEx(), DumbAware {
+class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, Config>(Config::class.java), DumbAware {
 
-    private val filter = CngConfigFilter()
+    override val filter = PsiElementFilter {
+        when (it) {
+            is XmlTag -> when (it.localName) {
+                FieldList.FIELD,
+                Section.ATTRIBUTE,
+                ExplorerTree.TYPE_NODE,
+                ListView.COLUMN,
+                PropertyList.PROPERTY,
+                Property.EDITOR_PARAMETER,
+                ComposedHandler.ADDITIONAL_PARAMS,
+                Parameter.TAG_NAME -> true
 
-    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!HybrisProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
-        if (root !is XmlFile) return emptyArray()
-        DomManager.getDomManager(root.project).getFileElement(root, Config::class.java)
-            ?: return emptyArray()
-
-        return SyntaxTraverser.psiTraverser(root)
-            .filter { filter.isAccepted(it) }
-            .mapNotNull {
-                if (it is PsiErrorElement || it.textRange.isEmpty) return@mapNotNull null
-                FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME))
+                else -> false
             }
-            .toDistinctTypedArray()
+
+            else -> false
+        }
     }
+
+    override fun initSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+        .cngSettings
+        .folding
 
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
-            FieldList.FIELD -> psi.getAttributeValue(Field.NAME)
-            ListView.COLUMN -> psi.getAttributeValue(ListColumn.QUALIFIER)
-
-            Section.ATTRIBUTE -> psi.getAttributeValue(Attribute.QUALIFIER) + (
-                psi.getAttributeValue(Attribute.READONLY)
-                    ?.takeIf { "true".equals(it, true) }
-                    ?.let { " : readonly" }
+            ComposedHandler.ADDITIONAL_PARAMS -> fold(psi, ComposedHandler.ADDITIONAL_PARAMS, AdditionalParam.KEY,
+                getCachedFoldingSettings(psi)?.tablifyParameters,
+                psi.getAttributeValue(AdditionalParam.VALUE)
+                    ?.let { " = $it" }
                     ?: ""
-                ) + (
-                psi.getAttributeValue(Attribute.VISIBLE)
-                    ?.takeIf { "false".equals(it, true) }
-                    ?.let { " : non-visible" }
-                    ?: ""
-                )
+            )
 
-            ExplorerTree.TYPE_NODE -> psi.getAttributeValue(TypeNode.ID) + (
+            Parameter.TAG_NAME,
+            Property.EDITOR_PARAMETER -> {
+                val subTags = psi.subTags.associateBy { it.localName }
+
+                // TODO : add tablify
+
+                val name = subTags[Parameter.NAME]
+                    ?.value
+                    ?.trimmedText
+                    ?: "?"
+                val value = subTags[Parameter.VALUE]
+                    ?.value
+                    ?.trimmedText
+                    ?.let { " = $it"}
+                    ?: " ?"
+
+                name + value
+            }
+
+            FieldList.FIELD -> fold(psi, FieldList.FIELD, Field.NAME,
+                getCachedFoldingSettings(psi)?.tablifySearchFields,
+                computeExtraAttributes(
+                    psi.getAttributeValue(Field.MERGE_MODE)?.lowercase(),
+                    psi.getAttributeValue(Field.OPERATOR),
+                    psi.getAttributeValue(Field.SELECTED)
+                        ?.takeIf { it == "true" }
+                        ?.let { "pre-selected" }
+                ))
+
+            ListView.COLUMN -> fold(psi, ListView.COLUMN, ListColumn.QUALIFIER,
+                getCachedFoldingSettings(psi)?.tablifyListColumns,
+                computeExtraAttributes(
+                    psi.getAttributeValue(ListColumn.SPRING_BEAN),
+                    psi.getAttributeValue(ListColumn.SORTABLE)
+                        ?.takeIf { it == "true" }
+                        ?.let { "sortable" }
+                ))
+
+            Section.ATTRIBUTE -> fold(psi, Section.ATTRIBUTE, Attribute.QUALIFIER,
+                getCachedFoldingSettings(psi)?.tablifyListColumns,
+                computeExtraAttributes(
+                    psi.getAttributeValue(Attribute.READONLY)
+                        ?.takeIf { "true".equals(it, true) }
+                        ?.let { "readonly" },
+                    psi.getAttributeValue(Attribute.VISIBLE)
+                        ?.takeIf { "false".equals(it, true) }
+                        ?.let { "non-visible" }
+                ))
+
+            ExplorerTree.TYPE_NODE -> fold(psi, ExplorerTree.TYPE_NODE, TypeNode.ID,
+                getCachedFoldingSettings(psi)?.tablifyNavigationNodes,
                 psi.getAttributeValue(TypeNode.CODE)
-                    ?.let { " : $it" }
+                    ?.let { TYPE_SEPARATOR + it }
                     ?: ""
-                )
+            )
+
+            PropertyList.PROPERTY -> fold(psi, PropertyList.PROPERTY, Property.QUALIFIER,
+                getCachedFoldingSettings(psi)?.tablifyWizardProperties,
+                (psi.getAttributeValue(Property.TYPE)
+                    ?.let { TYPE_SEPARATOR + it }
+                    ?: "") +
+                    (computeExtraAttributes(
+                        psi.getAttributeValue(Property.POSITION),
+                        psi.getAttributeValue(Property.MERGE_MODE)?.lowercase(),
+                        psi.getAttributeValue(Property.READONLY)
+                            ?.takeIf { "true".equals(it, true) }
+                            ?.let { "readonly" },
+                    )
+                        .takeIf { it.isNotEmpty() }
+                        ?.let { " $it" }
+                        ?: "")
+            )
 
             else -> FALLBACK_PLACEHOLDER
         }
@@ -89,22 +153,39 @@ class CngConfigFoldingBuilder : FoldingBuilderEx(), DumbAware {
         else -> FALLBACK_PLACEHOLDER
     }
 
+    private fun fold(psi: XmlTag, wrapperTagName: String, tagName: String, tablify: Boolean?, extraAttributes: String) = fallbackAttributeValue(psi, tagName)
+        .let {
+            if (extraAttributes.isNotEmpty()) tablify(psi, it, tablify, wrapperTagName, tagName)
+            else it
+        } + extraAttributes
+
+    private fun fallbackAttributeValue(psi: XmlTag, fieldName: String, fallback: String = "?"): String = psi.getAttributeValue(fieldName)
+        ?.takeIf { it.isNotEmpty() }
+        ?: fallback
+
+    private fun computeExtraAttributes(vararg extraAttributes: String?) = extraAttributes
+        .filterNotNull()
+        .filter { it.isNotEmpty() }
+        .takeIf { it.isNotEmpty() }
+        ?.joinToString(" | ", "[", "]")
+        ?.let { " $it" }
+        ?: ""
+
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
             FieldList.FIELD,
             Section.ATTRIBUTE,
             ExplorerTree.TYPE_NODE,
-            ListView.COLUMN -> true
+            ListView.COLUMN,
+            PropertyList.PROPERTY,
+            Property.EDITOR_PARAMETER,
+            ComposedHandler.ADDITIONAL_PARAMS,
+            Parameter.TAG_NAME -> true
 
             else -> false
         }
 
         else -> false
-    }
-
-    companion object {
-        private const val GROUP_NAME = "CngConfigXml"
-        private const val FALLBACK_PLACEHOLDER = "..."
     }
 
 }

@@ -71,6 +71,9 @@ public interface ImpexTypes {
   IElementType BEAN_SHELL_BODY = new ImpexTokenType("BEAN_SHELL_BODY");
   IElementType BEAN_SHELL_MARKER = new ImpexTokenType("BEAN_SHELL_MARKER");
   IElementType BOOLEAN = new ImpexTokenType("BOOLEAN");
+  IElementType COLLECTION_APPEND_PREFIX = new ImpexTokenType("COLLECTION_APPEND_PREFIX");
+  IElementType COLLECTION_MERGE_PREFIX = new ImpexTokenType("COLLECTION_MERGE_PREFIX");
+  IElementType COLLECTION_REMOVE_PREFIX = new ImpexTokenType("COLLECTION_REMOVE_PREFIX");
   IElementType COMMA = new ImpexTokenType("COMMA");
   IElementType CRLF = new ImpexTokenType("CRLF");
   IElementType DEFAULT_KEY_VALUE_DELIMITER = new ImpexTokenType("DEFAULT_KEY_VALUE_DELIMITER");
@@ -83,6 +86,7 @@ public interface ImpexTypes {
   IElementType FIELD_LIST_ITEM_SEPARATOR = new ImpexTokenType("FIELD_LIST_ITEM_SEPARATOR");
   IElementType FIELD_VALUE = new ImpexTokenType("FIELD_VALUE");
   IElementType FIELD_VALUE_IGNORE = new ImpexTokenType("FIELD_VALUE_IGNORE");
+  IElementType FIELD_VALUE_NULL = new ImpexTokenType("FIELD_VALUE_NULL");
   IElementType FIELD_VALUE_SEPARATOR = new ImpexTokenType("FIELD_VALUE_SEPARATOR");
   IElementType FIELD_VALUE_URL = new ImpexTokenType("FIELD_VALUE_URL");
   IElementType FUNCTION = new ImpexTokenType("FUNCTION");
@@ -100,6 +104,7 @@ public interface ImpexTypes {
   IElementType MACRO_USAGE = new ImpexTokenType("MACRO_USAGE");
   IElementType MACRO_VALUE = new ImpexTokenType("MACRO_VALUE");
   IElementType MEMBEROFGROUPS = new ImpexTokenType("MEMBEROFGROUPS");
+  IElementType MULTILINE_SEPARATOR = new ImpexTokenType("MULTILINE_SEPARATOR");
   IElementType PARAMETERS_SEPARATOR = new ImpexTokenType("PARAMETERS_SEPARATOR");
   IElementType PASSWORD = new ImpexTokenType("PASSWORD");
   IElementType PERMISSION = new ImpexTokenType("PERMISSION");

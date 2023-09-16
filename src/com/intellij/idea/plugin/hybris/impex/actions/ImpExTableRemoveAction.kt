@@ -20,14 +20,11 @@ package com.intellij.idea.plugin.hybris.impex.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsStart
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.refactoring.suggested.endOffset
-import com.intellij.refactoring.suggested.startOffset
 
 class ImpExTableRemoveAction : AbstractImpExTableAction() {
 
@@ -53,35 +50,9 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
             else -> return
         }
 
-        val tableElements = ArrayDeque<PsiElement>()
-        var next = header.nextSibling
+        val tableRange = header.tableRange
 
-        while (next != null) {
-            if (next is ImpexHeaderLine || next is ImpexUserRightsStart) {
-
-                // once all lines processed, we have to go back till last value line
-                var lastElement = tableElements.lastOrNull()
-                while (lastElement != null && lastElement !is ImpexValueLine) {
-                    tableElements.removeLastOrNull()
-                    lastElement = tableElements.lastOrNull()
-                }
-
-                next = null
-            } else {
-                // skip User Rights inside ImpEx statement
-                if (next !is ImpexUserRights) {
-                    tableElements.add(next)
-                }
-                next = next.nextSibling
-            }
-        }
-
-        val startOffset = header.startOffset
-        val endOffset = tableElements.lastOrNull()
-            ?.endOffset
-            ?: header.endOffset
-
-        editor.document.deleteString(startOffset, endOffset)
+        editor.document.deleteString(tableRange.startOffset, tableRange.endOffset)
     }
 
     override fun getSuitableElement(element: PsiElement) = PsiTreeUtil

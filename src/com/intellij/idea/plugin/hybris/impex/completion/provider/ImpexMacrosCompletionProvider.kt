@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
@@ -38,12 +38,9 @@ class ImpexMacrosCompletionProvider : CompletionProvider<CompletionParameters>()
 
         PsiTreeUtil.findChildrenOfType(originalFile, ImpexMacroDeclaration::class.java)
             .map { it.firstChild }
-            .map { it.text }
-            .map {
-                LookupElementBuilder.create(it)
-                    .withIcon(HybrisIcons.MACROS)
-            }
-            .forEach { result.addElement(it) }
+            .map { ImpexMacroReference.escapeName(it.text) }
+            .map { ImpExLookupElementFactory.buildMacro(it) }
+            .let { result.addAllElements(it) }
     }
 
     companion object {
