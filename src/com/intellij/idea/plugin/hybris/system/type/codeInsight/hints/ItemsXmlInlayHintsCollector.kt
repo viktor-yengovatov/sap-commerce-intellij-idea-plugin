@@ -24,6 +24,7 @@ import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumTypes
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
@@ -81,15 +82,24 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
     }
 
     private fun retrievePresentation(parent: XmlTag, attribute: String, project: Project, element: XmlToken): InlayPresentation? {
+        val name = element.text
         if (parent.name == EnumTypes.ENUMTYPE && attribute == EnumType.CODE) {
-            return finEnumClass(project, element.text)
+            return finEnumClass(project, name)
                 .takeIf { it.isNotEmpty() }
                 ?.let { inlayPresentation(HybrisIcons.TS_ENUM, it) }
                 ?: unknown
-        } else if (parent.name == ItemTypes.ITEMTYPE && attribute == ItemType.CODE && !excludedItemTypes.contains(element.text)) {
-            return findItemClass(project, element.text)
-                .takeIf { it.isNotEmpty() }
-                ?.let { inlayPresentation(HybrisIcons.TS_ITEM, it) }
+        } else if (parent.name == ItemTypes.ITEMTYPE && attribute == ItemType.CODE && !excludedItemTypes.contains(name)) {
+            // It is possible to declare many-to-many Relation as Item to add new index
+            return TSMetaModelAccess.getInstance(project).findMetaRelationByName(name)
+                ?.takeIf { it.deployment != null }
+                ?.retrieveDom()
+                ?.code
+                ?.xmlAttributeValue
+                ?.let { it as? Navigatable }
+                ?.let { inlayPresentation(HybrisIcons.TS_RELATION, arrayOf(it), "Navigate to Relation declaration") }
+                ?: findItemClass(project, name)
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { inlayPresentation(HybrisIcons.TS_ITEM, it) }
                 ?: unknown
         } else if (parent.name == "value") {
             val enumName = parent.parentOfType<XmlTag>()
@@ -99,7 +109,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
 
             return finEnumClass(project, enumName)
                 .takeIf { it.isNotEmpty() }
-                ?.mapNotNull { it.allFields.find { field -> field.name.equals(element.text, true) } }
+                ?.mapNotNull { it.allFields.find { field -> field.name.equals(name, true) } }
                 ?.toTypedArray()
                 ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it) }
                 ?: unknown
@@ -107,10 +117,10 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         return null
     }
 
-    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>): InlayPresentation {
+    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>, tooltipText: String = "Navigate to the Generated File"): InlayPresentation {
         val icon = factory.icon(i)
         val inset = factory.inset(icon, right = 5, top = 3)
-        val tooltip = factory.withTooltip("Navigate to the Generated File", inset)
+        val tooltip = factory.withTooltip(tooltipText, inset)
 
         return factory.referenceOnHover(tooltip) { _, _ -> OpenSourceUtil.navigate(*navigatables) }
     }

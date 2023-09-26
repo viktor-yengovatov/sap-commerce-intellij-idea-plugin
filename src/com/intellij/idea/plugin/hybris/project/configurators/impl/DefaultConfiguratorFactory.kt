@@ -18,10 +18,8 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.*
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 
 class DefaultConfiguratorFactory : ConfiguratorFactory {
 
@@ -36,10 +34,7 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getSpringConfigurator(): SpringConfigurator = SpringConfigurator.instance
         ?: SpringConfigurator.dummyInstance
 
-    override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator =
-        if (shouldBeTreatedAsReadOnly(moduleDescriptor)) ContentRootConfigurator.readOnlyInstance
-        else ContentRootConfigurator.instance
-
+    override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator = ContentRootConfigurator.instance
     override fun getModulesDependenciesConfigurator(): ModuleDependenciesConfigurator = ModuleDependenciesConfigurator.instance
     override fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = CompilerOutputPathsConfigurator.instance
     override fun getLibRootsConfigurator(): LibRootsConfigurator = LibRootsConfigurator.instance
@@ -57,8 +52,4 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getJavaCompilerConfigurator(): JavaCompilerConfigurator = JavaCompilerConfigurator.instance
     override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.instance
     override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.instance
-
-    private fun shouldBeTreatedAsReadOnly(moduleDescriptor: ModuleDescriptor) = if (moduleDescriptor.descriptorType === ModuleDescriptorType.CUSTOM
-        || HybrisConstants.EXTENSION_NAME_PLATFORM_SERVICES == moduleDescriptor.name) false
-    else moduleDescriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()
 }

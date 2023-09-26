@@ -21,7 +21,9 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
 import com.intellij.openapi.vfs.VfsUtil
@@ -32,7 +34,7 @@ object YModuleLibDescriptorUtil {
 
     fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> = when (descriptor) {
         is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is YWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor, "Web")
+        is YWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor)
         is YCommonWebSubModuleDescriptor -> getCommonWebSubModuleDescriptor(descriptor)
         is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor, allYModules)
@@ -44,23 +46,24 @@ object YModuleLibDescriptorUtil {
         else -> emptyList()
     }
 
-    fun createGlobalLibrary(
+    fun addRootProjectLibrary(
         modifiableModelsProvider: IdeModifiableModelsProvider,
         libraryDirRoot: File,
-        libraryName: String
+        libraryName: String,
+        addJarDirectory: Boolean = true
     ) {
         val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
         val library = libraryTableModifiableModel.getLibraryByName(libraryName)
             ?: libraryTableModifiableModel.createLibrary(libraryName)
 
         if (libraryTableModifiableModel is LibrariesModifiableModel) {
-            libraryTableModifiableModel
-                .getLibraryEditor(library)
-                .addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true, OrderRootType.CLASSES)
+            val libraryEditor = libraryTableModifiableModel.getLibraryEditor(library)
+            if (addJarDirectory) libraryEditor.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true, OrderRootType.CLASSES)
+            else libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
         } else {
-            modifiableModelsProvider
-                .getModifiableLibraryModel(library)
-                .addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
+            val libraryModel = modifiableModelsProvider.getModifiableLibraryModel(library)
+            if (addJarDirectory) libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
+            else libraryModel.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
         }
     }
 
@@ -85,7 +88,8 @@ object YModuleLibDescriptorUtil {
                             libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
                             sourceFiles = if (attachSources) sourceFiles
                             else emptyList(),
-                            directoryWithClasses = true
+                            directoryWithClasses = true,
+                            scope = DependencyScope.PROVIDED
                         )
                     )
                 }
@@ -186,12 +190,17 @@ object YModuleLibDescriptorUtil {
         val sourceFiles = sourceDirNames
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
+            .toMutableList()
+
+        // Attach standard sources to server jar
+        val sourceJarDirectories = getStandardSourceJarDirectory(descriptor)
 
         for (serverJar in serverJars) {
             libs.add(
                 JavaLibraryDescriptor(
                     libraryFile = serverJar,
                     sourceFiles = sourceFiles,
+                    sourceJarDirectories = sourceJarDirectories,
                     exported = true,
                     directoryWithClasses = true
                 )
@@ -292,6 +301,7 @@ object YModuleLibDescriptorUtil {
         addServerLibs(descriptor, libs)
         addRootLib(descriptor, libs)
 
+        val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
         val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
@@ -301,29 +311,30 @@ object YModuleLibDescriptorUtil {
             ?.listFiles { it: File -> it.isDirectory }
             ?.forEach { sourceFiles.add(it) }
 
-        libs.add(
-            JavaLibraryDescriptor(
-                name = "${descriptor.name} - $libName Classes",
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
-                sourceFiles = sourceFiles,
-                exported = true,
-                directoryWithClasses = true
+        if (descriptor.owner.name != HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
+            libs.add(
+                JavaLibraryDescriptor(
+                    name = "${descriptor.name} - $libName Classes",
+                    libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
+                    sourceFiles = sourceFiles,
+                    exported = true,
+                    directoryWithClasses = true
+                )
             )
-        )
 
-        val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
-
-        libs.add(
-            JavaLibraryDescriptor(
-                name = "${descriptor.name} - $libName Library",
-                libraryFile = libFolder,
-                jarFiles = libFolder.listFiles { _, name: String -> name.endsWith(".jar") }
-                    ?.toSet()
-                    ?: emptySet(),
-                exported = true,
-                descriptorType = LibraryDescriptorType.WEB_INF_LIB
+            libs.add(
+                JavaLibraryDescriptor(
+                    name = "${descriptor.name} - $libName Library",
+                    libraryFile = libFolder,
+                    jarFiles = libFolder.listFiles { _, name: String -> name.endsWith(".jar") }
+                        ?.toSet()
+                        ?: emptySet(),
+                    sourceJarDirectories = getStandardSourceJarDirectory(descriptor),
+                    exported = true,
+                    descriptorType = LibraryDescriptorType.WEB_INF_LIB
+                )
             )
-        )
+        }
 
         return libs
     }
@@ -371,4 +382,13 @@ object YModuleLibDescriptorUtil {
 
     private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
         ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
+
+    private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (HybrisApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+        val rootDescriptor = if (descriptor is YSubModuleDescriptor) descriptor.owner
+        else descriptor
+
+        val sourcesDirectory = File(rootDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_JAR_PATH)
+        if (sourcesDirectory.exists() && sourcesDirectory.isDirectory) arrayListOf(sourcesDirectory)
+        else emptyList()
+    } else emptyList()
 }

@@ -20,28 +20,32 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-abstract class AbstractAttributeDeclarationReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), HighlightedReference {
+abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<PsiElement>, HighlightedReference {
+
+    constructor(element: PsiElement) : super(element, false)
+    constructor(element: PsiElement, textRange: TextRange) : super(element, textRange, false)
 
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()
         else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
@@ -51,14 +55,18 @@ abstract class AbstractAttributeDeclarationReference(element: PsiElement) : TSRe
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractAttributeDeclarationReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AbstractAttributeDeclarationReference> { ref ->
-            val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
-            val metaItemService = TSMetaItemService.getInstance(ref.project)
+            val project = ref.element.project
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
+            val metaItemService = TSMetaItemService.getInstance(project)
             val metaModel = metaModelAccess.getMetaModel()
 
             val type = ref.resolveType(ref.element) ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
 
             val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
                 is TSGlobalMetaItem -> meta
+                is TSGlobalMetaRelation -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
+                    ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
+
                 is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
                     ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
 

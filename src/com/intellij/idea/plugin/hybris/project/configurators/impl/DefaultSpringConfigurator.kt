@@ -33,6 +33,7 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.util.io.FileUtilRt
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.spring.facet.SpringFacet
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
@@ -43,6 +44,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import java.util.regex.Pattern
+import java.util.zip.ZipFile
 
 class DefaultSpringConfigurator : SpringConfigurator {
 
@@ -144,9 +146,19 @@ class DefaultSpringConfigurator : SpringConfigurator {
                             .dropLastWhile { it.isEmpty() }
                             .toTypedArray()
                             .filterNot { addSpringXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(relevantModule), it) }
-                            .forEach {
+                            .forEach { fileName ->
                                 val dir = hackGuessLocation(relevantModule)
-                                addSpringXmlFile(moduleDescriptorMap, relevantModule, dir, it)
+                                if (!addSpringXmlFile(moduleDescriptorMap, relevantModule, dir, fileName)) {
+                                    // otherwise we can scan in all other extensions, HybrisContextFactory does the same in the getResource() methods
+                                    // it is the case for `common` extension which has `common-spring.xml` in the `platformservices` extension
+
+                                    moduleDescriptorMap.entries
+                                        .filter { it.key != moduleName }
+                                        .firstOrNull {
+                                            val anotherModule = it.value
+                                            addSpringXmlFile(moduleDescriptorMap, anotherModule, getResourceDir(anotherModule), fileName)
+                                        }
+                                }
                             }
                     }
             }
@@ -198,6 +210,31 @@ class DefaultSpringConfigurator : SpringConfigurator {
             .map { File(webModuleDir, it) }
             .filter { it.exists() }
             .forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
+
+        // In addition to plain xml files also scan jars in the WEB-INF/lib
+        val webInfLibDir = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
+        VfsUtil.findFileByIoFile(webInfLibDir, true)
+            ?.children
+            ?.filter { it.extension == "jar" }
+            ?.forEach { it ->
+                val file = VfsUtil.virtualToIoFile(it)
+                val zipFile = ZipFile(file)
+                val entries = zipFile.entries()
+                while (entries.hasMoreElements()) {
+                    val entry = entries.nextElement()
+                    val name = entry.name
+                    if (name.startsWith("META-INF") && name.endsWith(".xml")) {
+                        zipFile.getInputStream(entry).use { inputStream ->
+                            val element = JDOMUtil.load(inputStream)
+                            if (!element.isEmpty && element.name == "beans") {
+                                // as for now, imports are not scanned
+                                val springFile = "jar://${file.absolutePath}!/$name"
+                                moduleDescriptor.addSpringFile(springFile)
+                            }
+                        }
+                    }
+                }
+            }
     }
 
     @Throws(IOException::class, JDOMException::class)
@@ -279,9 +316,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
         moduleDescriptor: ModuleDescriptor,
         resourceDirectory: File,
         file: String
-    ) = if (StringUtils.startsWith(file, "/")) {
-        addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, getResourceDir(moduleDescriptor), file)
-    } else addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, file)
+    ) = if (StringUtils.startsWith(file, "/")) addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, getResourceDir(moduleDescriptor), file)
+    else addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, file)
 
     private fun getResourceDir(moduleToSearch: ModuleDescriptor) = File(
         moduleToSearch.moduleRootDirectory,

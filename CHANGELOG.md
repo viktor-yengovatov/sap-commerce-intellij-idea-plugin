@@ -1,8 +1,52 @@
+## [2023.2.9]
+
+### Features
+- Introduced pre-built `ysri` live template for **Java** [#730](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/730)
+
+### `ImpEx` enhancements
+- Added custom color setting for multi-line ` \ ` separator [#727](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/727)
+
+### `Cockpit NG` enhancements
+- Resolve Spring reference declared via `wz:initialize` : `template-bean` [#739](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/739)
+- Enable code completion and reference resolution for `wz:content` : `wz:property` [#740](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/740)
+- Ignore code completion and reference resolution in case of `wz:initialize` : `template-bean` [#742](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/742)
+- Added reference resolution for `wz:property-list` : `root` [#743](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/743)
+- Added code completion for `wz:property-list` : `root` [#744](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/744)
+- Added reference resolution for `wz:content` : `wz:property` : `qualifier` [#746](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/746)
+- Added code completion for `wz:content` : `wz:property` : `qualifier` init part [#747](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/747)
+- Added code completion and reference resolution for `wz:content` : `wz:property` : `qualifier` attr part [#748](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/748)
+
+### `Spring Framework` enhancements
+- Resolve Spring xml configuration files defined in `META-INF` directory in jar files located in the`WEB-INF/lib` [#737](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/737)
+
+### `items.xml` enhancements
+- Resolve `many-to-many` Relation in item declaration [#720](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/720)
+- Skip `many-to-many` Relation declared as Item type [#721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/721)
+- Resolve Index attributes for `many-to-many` Relation declared as Item type [#722](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/722)
+- Added code completion of the Index attributes for `many-to-many` Relation declared as Item type [#723](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/723)
+
+### `Project Import` enhancements
+- Register spring xml files set via properties file, but available in another extension (see `HybrisContextFactory`) [#735](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/735)
+- Register `bootstrap/gensrc` and other `src` directories as source directories with respect of readonly state [#718](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/718)
+- Register jar sources in the `doc/sources` for module libraries [#724](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/724)
+- Improved IDE compilation and navigation in the Platform code [#726](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/726)
+- Change scope to `provided` for `Backoffice Classes` library [#731](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/731)
+- Attach standard sources in the `doc/sources` for web inf libraries [#732](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/732)
+- Include `backoffice.web` classes in the `Backoffice Library` (**depends** on [IDEA-332845](https://youtrack.jetbrains.com/issue/IDEA-332845/Project-Library-ignores-classes-in-the-folders)) [#733](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/733)
+- Include `backoffice.web` libraries in the `Backoffice Library` [#734](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/734)
+
+### Fixes
+- `SAP Commerce` tool window sometimes appears without any content [#725](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/725)
+- Register sub-modules source directories for custom modules [#728](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/728)
+- Register test source directories for custom backoffice modules [#736](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/736)
+- Not all custom search scopes registered [#738](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/738)
+- Do not validate `items.xml` for non-SAP Commerce projects [#745](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/745)
+
 ## [2023.2.8]
 
 ### Features
-- Introduced pre-built `log4j2` and `slf4j` live templates for Java [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
-- Introduced pre-built `log4j2` and `slf4j` live templates for Kotlin [#700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/700)
+- Introduced pre-built `log4j2` and `slf4j` live templates for **Java** [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
+- Introduced pre-built `log4j2` and `slf4j` live templates for **Kotlin** [#700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/700)
 
 ### `Project Import` enhancements
 - Register `platformservices` source directories to improve compilation due missing `bin/<>.jar` [#715](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/715)

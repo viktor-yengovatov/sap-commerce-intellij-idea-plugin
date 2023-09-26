@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -126,10 +126,19 @@ object CngPatterns {
             .inFile(cngConfigFile)
     )
 
-    val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = attributeValue(
+    val FLOW_STEP_CONTENT_PROPERTY_LIST_PROPERTY_QUALIFIER = attributeValue(
         "qualifier",
         "property",
         "property-list",
+        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+        .inFile(cngConfigFile)
+
+    val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = attributeValueExact(
+        "qualifier",
+        "property",
+        "content",
         CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
     )
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
@@ -144,14 +153,25 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
 
+    val FLOW_PROPERTY_LIST_ROOT = attributeValue(
+        "root",
+        "property-list",
+        "content",
+        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+        .inFile(cngConfigFile)
+
     val CONTEXT_PARENT_NON_ITEM_TYPE = XmlPatterns.xmlAttributeValue()
         .withAncestor(6, XmlPatterns.xmlTag().withLocalName(CONFIG_ROOT))
-        .withParent(XmlPatterns.xmlAttribute("parent")
-            .withParent(XmlPatterns.xmlTag()
-                .withLocalName(CONFIG_CONTEXT)
-                .withoutAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.TYPE.value)
-                .withoutAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.MODULE.value)
-            )
+        .withParent(
+            XmlPatterns.xmlAttribute("parent")
+                .withParent(
+                    XmlPatterns.xmlTag()
+                        .withLocalName(CONFIG_CONTEXT)
+                        .withoutAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.TYPE.value)
+                        .withoutAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.MODULE.value)
+                )
         )
         .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase(Context.PARENT_AUTO, ".")))
         .inFile(cngConfigFile)
@@ -166,11 +186,13 @@ object CngPatterns {
 
         XmlPatterns.xmlAttributeValue()
             .withAncestor(6, XmlPatterns.xmlTag().withLocalName(CONFIG_ROOT))
-            .withParent(XmlPatterns.xmlAttribute("parent")
-                .withParent(XmlPatterns.xmlTag()
-                    .withLocalName(CONFIG_CONTEXT)
-                    .withAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.TYPE.value)
-                )
+            .withParent(
+                XmlPatterns.xmlAttribute("parent")
+                    .withParent(
+                        XmlPatterns.xmlTag()
+                            .withLocalName(CONFIG_CONTEXT)
+                            .withAttributeValue(Context.MERGE_BY, MergeAttrTypeKnown.TYPE.value)
+                    )
             )
             .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase(Context.PARENT_AUTO, ".")))
             .inFile(cngConfigFile),
@@ -215,10 +237,11 @@ object CngPatterns {
                 )
         )
 
-    private fun attributeValue(
+    private fun attributeValueExact(
         attribute: String,
         tag: String,
         wrappingTag: String,
+        namespace: String
     ) = XmlPatterns.xmlAttributeValue()
         .withParent(
             XmlPatterns.xmlAttribute()
@@ -226,8 +249,9 @@ object CngPatterns {
                 .withParent(
                     XmlPatterns.xmlTag()
                         .withLocalName(tag)
-                        .inside(
+                        .withParent(
                             XmlPatterns.xmlTag()
+                                .withNamespace(namespace)
                                 .withLocalName(wrappingTag)
                         )
                 )
