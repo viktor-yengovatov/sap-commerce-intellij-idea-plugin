@@ -1,3 +1,38 @@
+## [2023.2.10]
+
+### `Project Import` enhancements
+- Register web spring files available due `ext.?.extension.webmodule.webroot` property [#776](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/776)
+- Do not register SAP javadocs for custom extensions [#763](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/763)
+- Use custom library names for all custom libraries [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
+- Ignore non-`[y]` project roots if they will affect project import [#774](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/774)
+
+### `items.xml` inspection rules
+- Improved detailed message for `TSDeploymentTableMustNotBeRedeclaredInChildTypes` [#772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/772)
+
+### `ImpEx` enhancements
+- Use single space after Header Mode [#761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/761)
+- Added shortcut `control + alt + backspace` for remove column action [#775](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/775)
+
+### `OCC` enhancements
+- Added code completion `dtoClass` Level Mapping tags [#777](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/777)
+
+### `Cockpit NG` enhancements
+- Improved detection of the `config` files [#760](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/760)
+- Improved detection of the `widgets` files [#759](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/759)
+- Added code completion and reference resolution for `wz:property` : `editor` [#769](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/769)
+
+### Other
+- Upgraded Gradle `8.2.1` -> `8.4` [#758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/758)
+- Make the Plugin incompatible with other plugins [#757](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/757)
+- Migrate to [Light Services](https://plugins.jetbrains.com/docs/intellij/plugin-services.html#light-services) [#768](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/768)
+- Index project root files at `All Scope` [#770](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/770)
+- Do not rely on grazie API [#771](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/771)
+- Use `@JvmStatic` for Companion methods [#773](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/773)
+
+### Fixes
+- Fixed NPE during project import [#765](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/765)
+- Fixed possibility to attach sources and javadocs to jars in the custom library [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
+
 ## [2023.2.9.1]
 
 ### Fixes
@@ -29,6 +64,7 @@
 - Skip `many-to-many` Relation declared as Item type [#721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/721)
 - Resolve Index attributes for `many-to-many` Relation declared as Item type [#722](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/722)
 - Added code completion of the Index attributes for `many-to-many` Relation declared as Item type [#723](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/723)
+- Suggest a getter method for a boolean property (starts with 'is') in the `*-items.xml` files [#755](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/755)
 
 ### `Project Import` enhancements
 - Register spring xml files set via properties file, but available in another extension (see `HybrisContextFactory`) [#735](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/735)
@@ -319,6 +355,7 @@
 - Fixed deadlock when ItemType name equals to its extends [#513](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/513)
 - Refactored `ImportProjectProgressModalWindow` so that is calls so that project state retrieved only once [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
 - Changed generated `*.iml` file name when grouping is not selected so file name does not start with a dot [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
+- Updated Gradle plugin to 1.16.0 due to the exception NoClassDefFoundError: org/gradle/api/publish/ivy/internal/publication/DefaultIvyPublicationIdentity in Gradle 8.4 [#767](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/767)
 
 ### Other
 - Updated Kotlin to 1.9.0

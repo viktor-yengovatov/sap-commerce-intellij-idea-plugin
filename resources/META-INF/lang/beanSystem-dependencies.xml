@@ -22,7 +22,8 @@
         <dom.fileMetaData rootTagName="beans" stubVersion="9"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionContributor"/>
+        <completion.contributor language="XML" order="before javaClassReference"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionContributor"/>
 
         <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.lang.folding.BeansXmlFoldingBuilder"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
@@ -51,14 +52,7 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.impl.DefaultBSCompletionService"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.OccBeanPropertyReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.BSBeanReferenceProvider"/>
-
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSClassCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanClassCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSEnumClassCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanPropertyTypeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSHintNameCompletionProvider"/>
     </extensions>
 
     <actions>

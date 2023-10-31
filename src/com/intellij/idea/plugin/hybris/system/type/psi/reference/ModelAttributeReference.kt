@@ -19,7 +19,8 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.util.Comparing
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.model.ItemTypes
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.*
 import com.intellij.psi.impl.PsiClassImplUtil
@@ -33,60 +34,61 @@ import com.intellij.psi.xml.XmlTag
 class ModelAttributeReference(
     element: PsiElement
 ) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
+
+    private val checkSuperClasses = true
+
     override fun resolve(): PsiElement? {
         val resolveResults = multiResolve(false)
         return if (resolveResults.size == 1) resolveResults.first().element else null
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val project = element.project
-        val className = findItemTag(element).getAttributeValue("code")
-        val psiElements = mutableListOf<PsiElement>()
+        val itemName = findItemTag(element).getAttributeValue("code")
+            ?.takeIf { it.isNotEmpty() } ?: return ResolveResult.EMPTY_ARRAY
         val searchFieldName = (element as XmlAttributeValueImpl).value
+        val project = element.project
 
-        if (className != null) {
-            arrayListOf(className, "${className}${HybrisConstants.MODEL_SUFFIX}").forEach { name ->
-                val psiClasses = PsiShortNamesCache.getInstance(project).getClassesByName(
-                    name, GlobalSearchScope.allScope(project)
-                )
-                psiClasses.forEach { psiClass ->
-                    val psiField = PsiClassImplUtil.findFieldByName(psiClass, searchFieldName.uppercase(), true)
-                    if (psiField != null) psiElements.add(psiField)
-                    val psiGetterMethod = findGetter(psiClass, searchFieldName, true)
-                    if (psiGetterMethod != null) psiElements.add(psiGetterMethod)
-                    val psiSetterMethod = findSetter(psiClass, searchFieldName, true)
-                    if (psiSetterMethod != null) psiElements.add(psiSetterMethod)
-                }
+        return arrayOf(itemName, "$itemName${HybrisConstants.MODEL_SUFFIX}")
+            .flatMap { className ->
+                PsiShortNamesCache.getInstance(project)
+                    .getClassesByName(className, GlobalSearchScope.allScope(project))
+                    .flatMap { psiClass ->
+                        listOfNotNull(
+                            PsiClassImplUtil.findFieldByName(psiClass, searchFieldName.uppercase(), true),
+                            findGetter(psiClass, itemName, searchFieldName),
+                            findSetter(psiClass, searchFieldName)
+                        )
+                    }
             }
-        }
-
-        return PsiElementResolveResult.createResults(psiElements)
+            .let { PsiElementResolveResult.createResults(it) }
     }
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
-    private fun findItemTag(element: PsiElement) =
-        PsiTreeUtil.findFirstParent(element, true) { e -> return@findFirstParent e is XmlTag && e.name == "itemtype" } as XmlTag
+    private fun findItemTag(element: PsiElement) = PsiTreeUtil.findFirstParent(element, true)
+    { e -> return@findFirstParent e is XmlTag && e.name == ItemTypes.ITEMTYPE } as XmlTag
 
-    private fun findGetter(psiClass: PsiClass, name: String, checkSuperClasses: Boolean): PsiMethod? {
-        return if (!Comparing.strEqual(name, null as String?)) {
-            val methodSignature = MethodSignatureUtil.createMethodSignature(
-                suggestGetterName(name),
-                PsiType.EMPTY_ARRAY,
-                PsiTypeParameter.EMPTY_ARRAY,
-                PsiSubstitutor.EMPTY
-            )
-            return MethodSignatureUtil.findMethodBySignature(psiClass, methodSignature, checkSuperClasses)
-        } else {
-            null
-        }
+    private fun findGetter(psiClass: PsiClass, itemName: String, searchFieldName: String): PsiMethod? {
+        val methodName = if (isBooleanProperty(itemName, searchFieldName))
+            "is${StringUtil.capitalize(searchFieldName)}"
+        else "get${StringUtil.capitalize(searchFieldName)}"
+
+        val methodSignature = MethodSignatureUtil.createMethodSignature(
+            methodName,
+            PsiType.EMPTY_ARRAY,
+            PsiTypeParameter.EMPTY_ARRAY,
+            PsiSubstitutor.EMPTY
+        )
+        return MethodSignatureUtil.findMethodBySignature(psiClass, methodSignature, checkSuperClasses)
     }
 
-    private fun findSetter(psiClass: PsiClass, name: String, checkSuperClasses: Boolean): PsiMethod? {
-        val methods = psiClass.findMethodsByName(suggestSetterName(name), checkSuperClasses)
-        return if (methods.isEmpty()) null else methods.first()
-    }
+    private fun findSetter(psiClass: PsiClass, name: String) = psiClass.findMethodsByName("set${StringUtil.capitalize(name)}", checkSuperClasses)
+        .firstOrNull()
 
-    private fun suggestGetterName(name: String) = "get${StringUtil.capitalize(name)}"
-    private fun suggestSetterName(name: String) = "set${StringUtil.capitalize(name)}"
+    private fun isBooleanProperty(itemName: String, name: String) = TSMetaModelAccess.getInstance(element.project)
+        .findMetaItemByName(itemName)
+        ?.allAttributes
+        ?.get(name)
+        ?.let { it.type == HybrisConstants.TS_PRIMITIVE_BOOLEAN }
+        ?: false
 }

@@ -24,9 +24,11 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
+@Service
 class ImpexHeaderItemTypeAttributeNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
@@ -50,6 +52,7 @@ class ImpexHeaderItemTypeAttributeNameCompletionProvider : CompletionProvider<Co
     }
 
     companion object {
+        @JvmStatic
         val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ImpexHeaderItemTypeAttributeNameCompletionProvider::class.java)
     }
 }

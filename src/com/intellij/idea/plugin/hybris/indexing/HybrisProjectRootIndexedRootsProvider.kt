@@ -15,17 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.indexing
 
-package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.isFile
+import com.intellij.util.indexing.IndexableSetContributor
+import java.nio.file.Path
 
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
-import java.util.*
+class HybrisProjectRootIndexedRootsProvider : IndexableSetContributor() {
 
-@Service
-class BSBeanClassCompletionProvider : BSClassCompletionProvider(EnumSet.of(BSMetaType.META_BEAN, BSMetaType.META_WS_BEAN, BSMetaType.META_EVENT)) {
-    companion object {
-        val instance: BSBeanClassCompletionProvider = ApplicationManager.getApplication().getService(BSBeanClassCompletionProvider::class.java)
-    }
+    override fun getAdditionalProjectRootsToIndex(project: Project) = project.basePath
+        ?.let { Path.of(it) }
+        ?.let { LocalFileSystem.getInstance().findFileByNioFile(it) }
+        ?.let { VfsUtil.getChildren(it) { child -> child.isFile } }
+        ?.toSet()
+        ?: emptySet()
+
+    override fun getAdditionalRootsToIndex() = emptySet<VirtualFile>()
 }
