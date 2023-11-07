@@ -1,3 +1,36 @@
+## [2023.2.11]
+
+### `Project Import` enhancements
+- Introduced customization of the XSD schema for `y` namespace [#786](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/786)
+- Improved classpath configuration for OOTB modules and readonly mode [#783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/783)
+- Adjusted `platformservices` source directories in readonly mode [#792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/792)
+- Register `web.addonsrc` as source directories for `?.web - Web Classes` library [#796](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/796)
+- Ignore `addontestsrc` directory for `web` sub-module [#797](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/797)
+- Ignore only `testclasses` directory for `web` sub-module [#798](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/798)
+
+### `Cockpit NG` enhancements
+- Extend config schema namespace with `editors` type [#784](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/784)
+- Added code completion and reference resolution for `y:property` : `editor` [#787](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/787)
+- Added code completion and reference resolution for `cv:attribute` : `editor` [#788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/788)
+- Added code completion and reference resolution for `fs:field` : `editor` [#790](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/790)
+- Added code completion and reference resolution for `cv:attribute` : `qualifier` [#789](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/789)
+
+### `Kotlin` enhancements
+- Automatically configure `KotlinJavaRuntime` and register it for dependant modules [#793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/793)
+- Introduced `ysri` live template for Spring `@Resource` declaration [#780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/780)
+- Adjusted `log4j2` live template [#781](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/781)
+- Adjusted `slf4j` live template [#782](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/782)
+
+### `OCC` enhancements
+- Exclude nested properties from the reference resolution [#799](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/799)
+
+### Other
+- Allow modification of the non-project root files [#794](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/794)
+- Adjust type system merge for `Product` type (it extends both `GenericItem` and `LocalizableItem`) [#785](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/785)
+
+### Fixes
+- OOTB `commonweb` sub-modules are not re-imported on project refresh [#795](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/795)
+
 ## [2023.2.10]
 
 ### `Project Import` enhancements

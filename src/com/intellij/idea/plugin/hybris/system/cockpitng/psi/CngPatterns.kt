@@ -91,6 +91,33 @@ object CngPatterns {
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "editor",
+            "property",
+            "editors",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "editor",
+            "attribute",
+            "compare-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "editor",
+            "field",
+            "fulltext-search",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
     )
 
@@ -130,6 +157,15 @@ object CngPatterns {
             "field",
             "simple-search",
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_SEARCH
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "qualifier",
+            "attribute",
+            "compare-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)

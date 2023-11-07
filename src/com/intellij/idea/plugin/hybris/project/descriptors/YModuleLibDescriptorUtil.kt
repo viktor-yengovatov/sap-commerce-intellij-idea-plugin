@@ -158,7 +158,7 @@ object YModuleLibDescriptorUtil {
         if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
         if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
-        val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
+        val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
 
@@ -190,11 +190,9 @@ object YModuleLibDescriptorUtil {
             ?.takeIf { it.isNotEmpty() }
             ?: return
 
-        val sourceDirNames = HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES
-        val sourceFiles = sourceDirNames
+        val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
-            .toMutableList()
 
         // Attach standard sources to server jar
         val sourceJarDirectories = getStandardSourceJarDirectory(descriptor)
@@ -311,10 +309,18 @@ object YModuleLibDescriptorUtil {
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
             .toMutableList()
-        File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY)
-            .takeIf { it.isDirectory }
-            ?.listFiles { it: File -> it.isDirectory }
-            ?.forEach { sourceFiles.add(it) }
+
+        listOf(
+            File(descriptor.moduleRootDirectory, HybrisConstants.ADDON_SRC_DIRECTORY),
+            File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY),
+        )
+            .filter { it.isDirectory }
+            .mapNotNull { srcDir ->
+                srcDir.listFiles { it: File -> it.isDirectory }
+                    ?.toList()
+            }
+            .flatten()
+            .forEach { sourceFiles.add(it) }
 
         if (descriptor.owner.name != HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
             libs.add(
@@ -345,17 +351,17 @@ object YModuleLibDescriptorUtil {
     }
 
     private fun getCommonWebSubModuleDescriptor(
-        descriptor: YSubModuleDescriptor,
+        descriptor: YCommonWebSubModuleDescriptor,
         libName: String = "Common Web"
     ): MutableList<JavaLibraryDescriptor> {
         val libs = getWebLibraryDescriptors(descriptor, libName)
 
-        (descriptor as? YCommonWebSubModuleDescriptor)
-            ?.dependantWebExtensions
-            ?.forEach {
+        descriptor
+            .dependantWebExtensions
+            .forEach {
                 val webSourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
-                    .map { File(descriptor.moduleRootDirectory, it) }
-                    .filter { it.isDirectory }
+                    .map { dir -> File(descriptor.moduleRootDirectory, dir) }
+                    .filter { dir -> dir.isDirectory }
                 libs.add(
                     JavaLibraryDescriptor(
                         name = "${it.name} - $libName Classes",

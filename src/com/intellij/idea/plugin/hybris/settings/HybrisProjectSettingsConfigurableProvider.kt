@@ -68,7 +68,12 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
             group(message("hybris.settings.project.refresh.title")) {
                 row {
                     checkBox(message("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                        .comment(message("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
                         .bindSelected(state::importOotbModulesInReadOnlyMode)
+                }
+                row {
+                    checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
+                        .bindSelected(state::excludeTestSources)
                 }
                 row {
                     checkBox(message("hybris.project.import.followSymlink"))
@@ -77,10 +82,6 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                 row {
                     checkBox(message("hybris.project.import.scanExternalModules"))
                         .bindSelected(state::scanThroughExternalModule)
-                }
-                row {
-                    checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
-                        .bindSelected(state::excludeTestSources)
                 }
                 row {
                     checkBox(message("hybris.project.import.importCustomAntBuildFiles"))
