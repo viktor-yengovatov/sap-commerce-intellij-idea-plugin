@@ -35,25 +35,29 @@ class DefaultXsdSchemaConfigurator : XsdSchemaConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: List<ModuleDescriptor>,
     ) {
-        val cockpitConfigurationHybrisXsd = moduleDescriptors
+        val cockpitCoreJarFileSystem = moduleDescriptors
             .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE }
             ?.moduleRootDirectory
             ?.toPath()
             ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))
             ?.takeIf { it.exists() }
             ?.toFile()
-            ?.listFiles { _, name -> name.startsWith("cockpitcore-") }
+            ?.listFiles { _, name -> name.startsWith("cockpitcore-", true) && name.endsWith(".jar", true) }
             ?.firstOrNull()
             ?.absolutePath
-            ?.let { "$it!/schemas/config/hybris/cockpit-configuration-hybris.xsd" }
             ?: return
 
         runWriteAction {
-            ExternalResourceManagerEx.getInstanceEx().addResource(
-                CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS,
-                cockpitConfigurationHybrisXsd,
-                project
-            )
+            val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
+
+            mapOf(
+                CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS to "$cockpitCoreJarFileSystem!/schemas/config/hybris/cockpit-configuration-hybris.xsd",
+                "http://www.hybris.com/schema/cockpitng/editor-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/editor-definition.xsd",
+                "http://www.hybris.com/schema/cockpitng/widget-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/widget-definition.xsd",
+                "http://www.hybris.com/schema/cockpitng/action-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/action-definition.xsd"
+            ).forEach { (namespace, xsdLocation) ->
+                externalResourceManager.addResource(namespace, xsdLocation, project)
+            }
         }
     }
 

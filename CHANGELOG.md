@@ -1,3 +1,16 @@
+## [2023.2.12]
+
+### `Project Import` enhancements
+- Auto-registration of the XSD namespace for `action-definition.xsd` [#806](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/806)
+- Auto-registration of the XSD namespace for `widget-definition.xsd` [#805](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/805)
+- Auto-registration of the XSD namespace for `editor-definition.xsd` [#804](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/804)
+
+### `ImpEx` enhancements
+- Added colorization for `odd` and `even` user rights value lines [#802](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/802)
+
+### Fixes
+- Fixed type system Item's `extends` identification [#803](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/803)
+
 ## [2023.2.11]
 
 ### `Project Import` enhancements
