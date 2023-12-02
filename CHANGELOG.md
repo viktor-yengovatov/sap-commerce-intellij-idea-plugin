@@ -9,6 +9,9 @@
 ### `Cockpit NG` enhancements
 - Added Spring bean reference resolution for `wz:custom`:`handler` [#809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/809)
 
+### `CCv2` enhancements
+- Updated commerce and js-storefront manifest [#816](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/816)
+
 ### Fixes
 - NPE on copy to console [#815](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/815)
 
