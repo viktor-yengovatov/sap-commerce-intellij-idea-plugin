@@ -15,24 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.injection
+package com.intellij.idea.plugin.hybris.polyglotQuery.injection
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider
-import com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider
+import com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToImpexInjectorProvider
+import com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 
-class FlexibleSearchInjector : LanguageInjector {
+class PolyglotQueryInjector : LanguageInjector {
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        FlexibleSearchToImpexInjectorProvider.instance
+        PolyglotQueryToImpexInjectorProvider.instance
             ?.inject(host, injectionPlacesRegistrar)
-            ?: FlexibleSearchToKotlinInjectorProvider.instance
+            ?: PolyglotQueryToKotlinInjectorProvider.instance
                 ?.inject(host, injectionPlacesRegistrar)
     }
-
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,42 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
-import com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjectorProvider
-import com.intellij.lang.Language
+import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.psi.InjectedLanguagePlaces
-import com.intellij.psi.PsiLanguageInjectionHost
-import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.idea.KotlinLanguage
-import org.jetbrains.kotlin.psi.KtBinaryExpression
-import org.jetbrains.kotlin.psi.KtReferenceExpression
-import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 
-class FlexibleSearchToKotlinInjectorProvider : FlexibleSearchInjectorProvider() {
+class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage.INSTANCE) {
 
-    override val language: Language = KotlinLanguage.INSTANCE
-
-    override fun tryInject(
-        host: PsiLanguageInjectionHost,
-        injectionPlacesRegistrar: InjectedLanguagePlaces
-    ) {
-        if (host !is KtStringTemplateExpression) return
-        if (host.parent is KtBinaryExpression) return
-        if (PsiTreeUtil.findChildOfType(host, KtReferenceExpression::class.java) != null) return
-
-        val expression = host.text
-        if (!FxSUtils.isFlexibleSearchQuery(expression)) return
-
-        if (expression.startsWith("\"\"\"")) {
-            registerInjectionPlace(injectionPlacesRegistrar, host, 3)
-        } else {
-            registerInjectionPlace(injectionPlacesRegistrar, host, 1)
-        }
-    }
+    override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 
     companion object {
-        val instance: FlexibleSearchInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToKotlinInjectorProvider::class.java)
+        val instance: FlexibleSearchToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToKotlinInjectorProvider::class.java)
     }
 
 }

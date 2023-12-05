@@ -1,3 +1,31 @@
+## [2023.2.13]
+
+### Features
+- Rely on `intelliLang` plugin to inject `FlexibleSearch` and `Polyglot Query` languages into the Java code [#817](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/817)
+- Inject `FlexibleSearch` language into the `FlexibleSearchQuery` and its descendants in Java code [#819](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/819)
+- Added navigation to the `items.xml` Ordering Attribute from the generated classes [#818](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/818)
+
+### `Project Import` enhancements
+- Register `? - Web Classes` library only for non-custom modules [#820](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/820)
+- Register `acceleratoraddon` module dependencies on other `acceleratoraddon` modules [#821](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/821)
+- Register `commonwebsrc` and `addonsrc` as generated sources for modifiable web modules [#822](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/822)
+- Register `src` dirs for `platformservices` module [#823](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/823)
+
+### `Polyglot Query` enhancements
+- Added possibility to preview preformatted Polyglot Queries and copy them to Clipboard [#810](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/810)
+- Inject Polyglot Query Language into `ImpEx` string literals [#811](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/811)
+- Inject Polyglot Query Language into `Java` string literals [#812](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/812)
+- Inject Polyglot Query Language into `Kotlin` string literals [#813](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/813)
+
+### `Cockpit NG` enhancements
+- Added Spring bean reference resolution for `wz:custom`:`handler` [#809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/809)
+
+### `CCv2` enhancements
+- Updated commerce and js-storefront manifest [#816](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/816)
+
+### Fixes
+- NPE on copy to console [#815](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/815)
+
 ## [2023.2.12]
 
 ### `Project Import` enhancements

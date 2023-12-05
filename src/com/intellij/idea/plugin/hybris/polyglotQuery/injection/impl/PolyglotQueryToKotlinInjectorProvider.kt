@@ -15,24 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.injection
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider
-import com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider
-import com.intellij.psi.InjectedLanguagePlaces
-import com.intellij.psi.LanguageInjector
-import com.intellij.psi.PsiLanguageInjectionHost
+package com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl
 
-class FlexibleSearchInjector : LanguageInjector {
+import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
+import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
+import com.intellij.openapi.application.ApplicationManager
 
-    override fun getLanguagesToInject(
-        host: PsiLanguageInjectionHost,
-        injectionPlacesRegistrar: InjectedLanguagePlaces
-    ) {
-        FlexibleSearchToImpexInjectorProvider.instance
-            ?.inject(host, injectionPlacesRegistrar)
-            ?: FlexibleSearchToKotlinInjectorProvider.instance
-                ?.inject(host, injectionPlacesRegistrar)
+class PolyglotQueryToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(PolyglotQueryLanguage.instance) {
+
+    override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)
+
+    companion object {
+        val instance: PolyglotQueryToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(PolyglotQueryToKotlinInjectorProvider::class.java)
     }
 
 }
