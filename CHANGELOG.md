@@ -1,3 +1,8 @@
+## [2023.3.1]
+
+### Other
+- Adjust optional dependency on `AntPlugin` during project refresh [#833](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/833)
+
 ## [2023.3.0]
 
 ### Other
