@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,7 +52,7 @@ public class DefaultImpexColumnHighlighterService
     @Override
     @Contract
     public void highlight(@NotNull final Editor editor) {
-        highlightColumnOfValueUnderCaret(editor);
+        ApplicationManager.getApplication().invokeLater(() -> highlightColumnOfValueUnderCaret(editor));
     }
 
     @Contract
@@ -84,16 +85,14 @@ public class DefaultImpexColumnHighlighterService
             return;
         }
 
-        ApplicationManager.getApplication().invokeLater(() -> {
-            final var currentHighlightedElement = editor.getUserData(CACHE_KEY);
-            editor.putUserData(CACHE_KEY, null);
-            if (null != currentHighlightedElement) {
-                modifyHighlightedArea(editor, currentHighlightedElement, true);
-            }
+        final var currentHighlightedElement = editor.getUserData(CACHE_KEY);
+        editor.putUserData(CACHE_KEY, null);
+        if (null != currentHighlightedElement) {
+            modifyHighlightedArea(editor, currentHighlightedElement, true);
+        }
 
-            editor.putUserData(CACHE_KEY, values);
-            modifyHighlightedArea(editor, values, false);
-        });
+        editor.putUserData(CACHE_KEY, values);
+        modifyHighlightedArea(editor, values, false);
     }
 
     @Contract
@@ -101,7 +100,7 @@ public class DefaultImpexColumnHighlighterService
         final var column = editor.getUserData(CACHE_KEY);
         if (column != null) {
             editor.putUserData(CACHE_KEY, null);
-            ApplicationManager.getApplication().invokeLater(() -> modifyHighlightedArea(editor, column, true));
+            modifyHighlightedArea(editor, column, true);
         }
     }
 
