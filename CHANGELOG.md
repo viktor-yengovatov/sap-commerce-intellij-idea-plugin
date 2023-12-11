@@ -1,3 +1,36 @@
+## [2023.3.1]
+
+### Features
+- Inject `Java` language into the `items.xml` custom properties value tags [#849](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/849)
+
+### `Groovy` enhancements
+- Added shortcut `control + shift + alt + enter` for execute Groovy Script with commit action [#842](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/842)
+- Added shortcut `shift + alt + enter` for execute Groovy Script action [#843](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/843)
+
+### `Polyglot Query` enhancements
+- Added shortcut `shift + alt + enter` for execute Polyglot Query action [#841](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/841)
+
+### `FlexibleSearch` enhancements
+- Added shortcut `shift + alt + enter` for execute FlexibleSearch Query action [#840](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/840)
+
+### `ImpEx` enhancements
+- Added shortcut `control + shift + alt + backspace` for remove table action [#836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/836)
+- Added shortcut `control + shift + alt + backslash` for split table action [#837](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/837)
+- Added shortcuts `control + shift + alt` + `,` | `.` for move left | right column actions [#838](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/838)
+- Added shortcut `shift + alt + enter` for execute ImpEx action [#839](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/839)
+- Added shortcut `control + alt + V` for Validate ImpEx action [#844](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/844)
+- Added shortcut `control + shift + alt + O` for Open ImpEx action [#845](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/845)
+- Omit slow operation on Column Highlighting under the caret [#847](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/847)
+- Enable column actions on value groups with whitespaces [#848](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/848)
+
+### Other
+- Adjust optional dependency on `AntPlugin` during project refresh [#833](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/833)
+- Invoke later slow operation `ImpEx Column header name Highlight` [#834](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/834)
+- Invoke later slow operation `ImpEx Column values Highlight` [#835](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/835)
+- Omit slow operation on `HybrisWritingAccessProvider` [#846](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/846)
+- Added custom icon for `buildcallbacks.xml` file [#850](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/850)
+- Simplify `HybrisWritingAccessProvider` logic due slow operations [#851](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/851)
+
 ## [2023.3.0]
 
 ### Other
