@@ -1,5 +1,8 @@
 ## [2023.3.2]
 
+### `ImpEx` enhancements
+- Inject `ImpEx` language into `header` property of the `DefaultImpexConverter` spring bean declaration [#858](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/858) 
+
 ### Other
 - Made `java`, `properties` and `xdebugger` mandatory dependencies [#855](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/855)
 - Updated [Code of Conduct](CODE_OF_CONDUCT.md) [#854](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/854)
