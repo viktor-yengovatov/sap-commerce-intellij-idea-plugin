@@ -1,3 +1,20 @@
+## [2023.3.2]
+
+### `Project Import` enhancements
+- Do not scan `hidden` directories for extensions [#862](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/862)
+
+### `ImpEx` enhancements
+- Inject `ImpEx` language into `header` property of the `DefaultImpexConverter` spring bean declaration [#858](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/858) 
+- Inject `ImpEx` language into `header` property of the `abstractDefaultImpexConverter` spring bean declaration [#859](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/859) 
+
+### Other
+- Made `java`, `properties` and `xdebugger` mandatory dependencies [#855](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/855)
+- Updated [Code of Conduct](CODE_OF_CONDUCT.md) [#854](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/854)
+- Execute IntelliLang Startup Activity in smart mode [#856](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/856)
+
+### Fixes
+- Windows: Problems with Type System `items.xml` - Not Yet Generated Message [#860](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/860)
+
 ## [2023.3.1]
 
 ### Features
