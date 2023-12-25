@@ -29,8 +29,8 @@ import com.intellij.database.model.DasDataSource
 import com.intellij.database.util.DataSourceUtil
 import com.intellij.database.util.DbImplUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator
 import com.intellij.idea.plugin.hybris.properties.PropertyService
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
@@ -39,21 +39,22 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
 
+class DataSourcesConfigurator {
 
-class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
+    fun configureAfterImport(project: Project): List<() -> Unit> {
+        val propertyService = PropertyService.getInstance(project) ?: return emptyList()
 
-    override fun configure(project: Project) {
-        val propertyService = PropertyService.getInstance(project) ?: return
-
+        val projectProperties = propertyService.findAllProperties()
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
+
         dataSourceRegistry.setImportedFlag(false)
         dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
-            .withUrl(propertyService.findProperty("db.url"))
-            .withUser(propertyService.findProperty("db.username"))
-            .withPassword(propertyService.findProperty("db.password"))
+            .withUrl(projectProperties["db.url"])
+            .withUser(projectProperties["db.username"])
+            .withPassword(projectProperties["db.password"])
             .withAuthProviderId(DatabaseAuthProviderNames.CREDENTIALS_ID)
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {
@@ -64,15 +65,16 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
             })
             .commit()
 
-        DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, DatabaseCredentials.getInstance())
+        return listOf {
+            DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, DatabaseCredentials.getInstance())
 
-        for (dataSource in dataSources) {
-            LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
-            DataSourceUtil.performAutoSyncTask(project, dataSource)
-            loadDatabaseDriver(project, dataSource)
+            for (dataSource in dataSources) {
+                LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
+                DataSourceUtil.performAutoSyncTask(project, dataSource)
+                loadDatabaseDriver(project, dataSource)
+            }
         }
     }
-
 
     private fun loadDatabaseDriver(project: Project, dataSource: LocalDataSource) {
         if (DbImplUtil.hasDriverFiles(dataSource)) return
@@ -81,7 +83,7 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
 
         if (driver.additionalClasspathElements.isNotEmpty()) return
 
-        // let's try to pickup suitable driver located in the Database Drivers library
+        // let's try to pick up a suitable driver located in the Database Drivers library
         ModuleManager.getInstance(project).modules
             .firstOrNull { it.name.endsWith(HybrisConstants.EXTENSION_NAME_PLATFORM) }
             ?.let { LibraryUtil.findLibrary(it, HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY) }
@@ -99,6 +101,10 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
 
         dataSource.resolveDriver()
         dataSource.ensureDriverConfigured()
+    }
+
+    companion object {
+        fun getInstance(): DataSourcesConfigurator? = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)
     }
 
 }
