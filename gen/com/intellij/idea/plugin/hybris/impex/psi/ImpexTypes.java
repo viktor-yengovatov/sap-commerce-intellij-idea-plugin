@@ -89,13 +89,13 @@ public interface ImpexTypes {
   IElementType END_USERRIGHTS = new ImpexTokenType("END_USERRIGHTS");
   IElementType FIELD_LIST_ITEM_SEPARATOR = new ImpexTokenType("FIELD_LIST_ITEM_SEPARATOR");
   IElementType FIELD_VALUE = new ImpexTokenType("FIELD_VALUE");
+  IElementType FIELD_VALUE_EXPLODED_JAR_PREFIX = new ImpexTokenType("FIELD_VALUE_EXPLODED_JAR_PREFIX");
   IElementType FIELD_VALUE_FILE_PREFIX = new ImpexTokenType("FIELD_VALUE_FILE_PREFIX");
   IElementType FIELD_VALUE_HTTP_PREFIX = new ImpexTokenType("FIELD_VALUE_HTTP_PREFIX");
   IElementType FIELD_VALUE_IGNORE = new ImpexTokenType("FIELD_VALUE_IGNORE");
   IElementType FIELD_VALUE_JAR_PREFIX = new ImpexTokenType("FIELD_VALUE_JAR_PREFIX");
   IElementType FIELD_VALUE_NULL = new ImpexTokenType("FIELD_VALUE_NULL");
   IElementType FIELD_VALUE_SEPARATOR = new ImpexTokenType("FIELD_VALUE_SEPARATOR");
-  IElementType FIELD_VALUE_URL = new ImpexTokenType("FIELD_VALUE_URL");
   IElementType FIELD_VALUE_ZIP_PREFIX = new ImpexTokenType("FIELD_VALUE_ZIP_PREFIX");
   IElementType FUNCTION = new ImpexTokenType("FUNCTION");
   IElementType HEADER_MODE_INSERT = new ImpexTokenType("HEADER_MODE_INSERT");
