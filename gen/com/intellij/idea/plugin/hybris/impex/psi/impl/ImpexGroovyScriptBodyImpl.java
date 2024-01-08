@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexGroovyScriptBodyImpl extends ASTWrapperPsiElement implements ImpexGroovyScriptBody {
+public class ImpexGroovyScriptBodyImpl extends ImpexGroovyScriptBodyMixin implements ImpexGroovyScriptBody {
 
   public ImpexGroovyScriptBodyImpl(@NotNull ASTNode node) {
     super(node);
