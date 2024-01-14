@@ -6,6 +6,9 @@
 - Unified consoles execution settings visual representation [#942](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/942)
 - Omit slow operations for simple Spring bean resolution in a Community edition [#949](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/949)
 
+### `SAP CX Run Configuration` Feature
+- SAP CX Run Configuration for simple Starting and Debugging SAP CX Platform [#936](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/936)
+
 ### `Project Build` enhancements
 - Re-generate the code and `models.jar` before the `Build` -> `Rebuild Project` [#906](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/906)
 - Added configurable setting to toggle automatic re-generation of the code [#907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/907)

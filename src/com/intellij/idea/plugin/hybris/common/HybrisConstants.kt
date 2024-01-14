@@ -179,6 +179,7 @@ object HybrisConstants {
     const val HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml"
     const val HYBRIS_IMPEX_XML_FILE_ENDING = ".$IMPEX_FILE_EXTENSION"
 
+    const val DEBUG_HOST = "localhost"
     const val DEBUG_PORT = "8000"
 
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"
@@ -413,6 +414,8 @@ object HybrisConstants {
 
     @JvmField
     val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
+    @JvmField
+    val HYBRIS_SERVER_BASH_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.bat")
 
     @JvmField
     val PLATFORM_MODULE = FileUtilRt.toSystemDependentName("hybris/bin/platform")
