@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,51 +23,59 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.tools.remote.console.CatalogVersionOption
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
-import org.apache.commons.lang3.StringUtils
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
+import javax.swing.JSpinner
+import javax.swing.SpinnerNumberModel
 
-class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage.getInstance()) {
+class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage) {
 
-    object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
+    private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
-    private val panel = JPanel(WrappedFlowLayout(0, 0))
-    private val catalogVersionLabel = JBLabel("Catalog Version")
-
-    val catalogVersionComboBox = ComboBox(arrayOf(
-            CatalogVersionOption("doesn't change", StringUtils.EMPTY),
-            CatalogVersionOption("changes to ${HybrisConstants.IMPEX_CATALOG_VERSION_STAGED}",
-                HybrisConstants.IMPEX_CATALOG_VERSION_STAGED
-            ),
-            CatalogVersionOption("changes to ${HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE}",
-                HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE
-            )
-    ))
-
-    private val legacyModeCheckbox = JBCheckBox()
-    private val legacyModeLabel = JBLabel("Legacy mode: ")
+    private val legacyModeCheckbox = JBCheckBox("Legacy mode")
+        .also { it.border = borders10 }
+    private val enableCodeExecutionCheckbox = JBCheckBox("Enable code execution", true)
+        .also { it.border = borders10 }
+    private val directPersistenceCheckbox = JBCheckBox("Direct persistence", true)
+        .also { it.border = borders10 }
+    private val maxThreadsSpinner = JSpinner(SpinnerNumberModel(1, 1, 100, 1))
+        .also { it.border = borders5 }
+    private val importModeComboBox = ComboBox(arrayOf("IMPORT_STRICT", "IMPORT_RELAXED"), 175)
+        .also {
+            it.border = borders5
+            it.selectedItem = "IMPORT_STRICT"
+            it.renderer = SimpleListCellRenderer.create("...") { value -> value }
+        }
 
     init {
-        createUI()
+        isEditable = true
+
+        val panel = JPanel(WrappedFlowLayout(0, 0))
+        panel.add(JBLabel("UTF-8").also { it.border = borders10 })
+        panel.add(JBLabel("Validation mode:").also { it.border = bordersLabel })
+        panel.add(importModeComboBox)
+        panel.add(JBLabel("Max threads:").also { it.border = bordersLabel })
+        panel.add(maxThreadsSpinner)
+        panel.add(enableCodeExecutionCheckbox)
+        panel.add(directPersistenceCheckbox)
+        panel.add(legacyModeCheckbox)
+
+        add(panel, BorderLayout.NORTH)
+
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
     }
 
-    override fun preProcessors() = listOf(HybrisConsolePreProcessorCatalogVersion())
     override fun title(): String = HybrisConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
     override fun icon(): Icon = HybrisIcons.IMPEX_FILE
@@ -82,42 +90,26 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         return HybrisHacHttpClient.getInstance(project).validateImpex(project, requestParams)
     }
 
-    private fun createUI() {
-        catalogVersionComboBox.renderer = SimpleListCellRenderer.create("...") { it.name }
-        catalogVersionComboBox.addItemListener {
-            preProcessors().forEach { processor ->
-                ApplicationManager.getApplication().invokeLater { this.setInputText(processor.process(this)) }
-            }
-        }
-        catalogVersionLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
-        legacyModeLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
-        legacyModeCheckbox.border = JBUI.Borders.emptyRight(5)
-
-        panel.add(catalogVersionLabel)
-        panel.add(catalogVersionComboBox)
-        panel.add(legacyModeLabel)
-        panel.add(legacyModeCheckbox)
-
-        add(panel, BorderLayout.NORTH)
-        isEditable = true
-    }
-
     private fun getRequestParams(query: String): MutableMap<String, String> {
         val requestParams = mutableMapOf(
             "scriptContent" to query,
-            "validationEnum" to "IMPORT_STRICT",
+            "validationEnum" to importModeComboBox.selectedItem as String,
             "encoding" to "UTF-8",
-            "maxThreads" to "4",
-            "_legacyMode" to "on"
+            "maxThreads" to maxThreadsSpinner.value as String,
+            "_legacyMode" to "on", // Legacy Mode
+            "_enableCodeExecution" to "on",
+            "_distributedMode" to "on", // Distributed mode
+            "_sldEnabled" to "on", // Direct Persistence
         )
-        if (legacyModeCheckbox.isSelected) {
-            requestParams["legacyMode"] = "true"
-        }
+        if (legacyModeCheckbox.isSelected) requestParams["legacyMode"] = "true"
+        if (enableCodeExecutionCheckbox.isSelected) requestParams["enableCodeExecution"] = "true"
+        if (directPersistenceCheckbox.isSelected) requestParams["sldEnabled"] = "true"
+
         return requestParams
     }
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -8798339041999147739L
+        private val serialVersionUID: Long = -8798339041999147739L
     }
 }

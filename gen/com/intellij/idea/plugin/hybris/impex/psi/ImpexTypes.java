@@ -1,6 +1,10 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,12 +33,14 @@ public interface ImpexTypes {
   IElementType ANY_HEADER_MODE = new ImpexElementType("ANY_HEADER_MODE");
   IElementType ANY_HEADER_PARAMETER_NAME = new ImpexElementType("ANY_HEADER_PARAMETER_NAME");
   IElementType ATTRIBUTE = new ImpexElementType("ATTRIBUTE");
-  IElementType BEAN_SHELL = new ImpexElementType("BEAN_SHELL");
+  IElementType BEANSHELL_SCRIPT_BODY = new ImpexElementType("BEANSHELL_SCRIPT_BODY");
   IElementType COMMENT = new ImpexElementType("COMMENT");
   IElementType FULL_HEADER_PARAMETER = new ImpexElementType("FULL_HEADER_PARAMETER");
   IElementType FULL_HEADER_TYPE = new ImpexElementType("FULL_HEADER_TYPE");
+  IElementType GROOVY_SCRIPT_BODY = new ImpexElementType("GROOVY_SCRIPT_BODY");
   IElementType HEADER_LINE = new ImpexElementType("HEADER_LINE");
   IElementType HEADER_TYPE_NAME = new ImpexElementType("HEADER_TYPE_NAME");
+  IElementType JAVASCRIPT_SCRIPT_BODY = new ImpexElementType("JAVASCRIPT_SCRIPT_BODY");
   IElementType MACRO_DECLARATION = new ImpexElementType("MACRO_DECLARATION");
   IElementType MACRO_NAME_DEC = new ImpexElementType("MACRO_NAME_DEC");
   IElementType MACRO_USAGE_DEC = new ImpexElementType("MACRO_USAGE_DEC");
@@ -43,6 +49,7 @@ public interface ImpexTypes {
   IElementType PARAMETER = new ImpexElementType("PARAMETER");
   IElementType PARAMETERS = new ImpexElementType("PARAMETERS");
   IElementType ROOT_MACRO_USAGE = new ImpexElementType("ROOT_MACRO_USAGE");
+  IElementType SCRIPT = new ImpexElementType("SCRIPT");
   IElementType STRING = new ImpexElementType("STRING");
   IElementType SUB_PARAMETERS = new ImpexElementType("SUB_PARAMETERS");
   IElementType SUB_TYPE_NAME = new ImpexElementType("SUB_TYPE_NAME");
@@ -68,7 +75,6 @@ public interface ImpexTypes {
   IElementType ATTRIBUTE_NAME = new ImpexTokenType("ATTRIBUTE_NAME");
   IElementType ATTRIBUTE_SEPARATOR = new ImpexTokenType("ATTRIBUTE_SEPARATOR");
   IElementType ATTRIBUTE_VALUE = new ImpexTokenType("ATTRIBUTE_VALUE");
-  IElementType BEAN_SHELL_BODY = new ImpexTokenType("BEAN_SHELL_BODY");
   IElementType BEAN_SHELL_MARKER = new ImpexTokenType("BEAN_SHELL_MARKER");
   IElementType BOOLEAN = new ImpexTokenType("BOOLEAN");
   IElementType COLLECTION_APPEND_PREFIX = new ImpexTokenType("COLLECTION_APPEND_PREFIX");
@@ -85,11 +91,17 @@ public interface ImpexTypes {
   IElementType END_USERRIGHTS = new ImpexTokenType("END_USERRIGHTS");
   IElementType FIELD_LIST_ITEM_SEPARATOR = new ImpexTokenType("FIELD_LIST_ITEM_SEPARATOR");
   IElementType FIELD_VALUE = new ImpexTokenType("FIELD_VALUE");
+  IElementType FIELD_VALUE_EXPLODED_JAR_PREFIX = new ImpexTokenType("FIELD_VALUE_EXPLODED_JAR_PREFIX");
+  IElementType FIELD_VALUE_FILE_PREFIX = new ImpexTokenType("FIELD_VALUE_FILE_PREFIX");
+  IElementType FIELD_VALUE_HTTP_PREFIX = new ImpexTokenType("FIELD_VALUE_HTTP_PREFIX");
   IElementType FIELD_VALUE_IGNORE = new ImpexTokenType("FIELD_VALUE_IGNORE");
+  IElementType FIELD_VALUE_JAR_PREFIX = new ImpexTokenType("FIELD_VALUE_JAR_PREFIX");
   IElementType FIELD_VALUE_NULL = new ImpexTokenType("FIELD_VALUE_NULL");
+  IElementType FIELD_VALUE_PASSWORD_ENCODING_PREFIX = new ImpexTokenType("FIELD_VALUE_PASSWORD_ENCODING_PREFIX");
   IElementType FIELD_VALUE_SEPARATOR = new ImpexTokenType("FIELD_VALUE_SEPARATOR");
-  IElementType FIELD_VALUE_URL = new ImpexTokenType("FIELD_VALUE_URL");
+  IElementType FIELD_VALUE_ZIP_PREFIX = new ImpexTokenType("FIELD_VALUE_ZIP_PREFIX");
   IElementType FUNCTION = new ImpexTokenType("FUNCTION");
+  IElementType GROOVY_MARKER = new ImpexTokenType("GROOVY_MARKER");
   IElementType HEADER_MODE_INSERT = new ImpexTokenType("HEADER_MODE_INSERT");
   IElementType HEADER_MODE_INSERT_UPDATE = new ImpexTokenType("HEADER_MODE_INSERT_UPDATE");
   IElementType HEADER_MODE_REMOVE = new ImpexTokenType("HEADER_MODE_REMOVE");
@@ -97,6 +109,7 @@ public interface ImpexTypes {
   IElementType HEADER_PARAMETER_NAME = new ImpexTokenType("HEADER_PARAMETER_NAME");
   IElementType HEADER_SPECIAL_PARAMETER_NAME = new ImpexTokenType("HEADER_SPECIAL_PARAMETER_NAME");
   IElementType HEADER_TYPE = new ImpexTokenType("HEADER_TYPE");
+  IElementType JAVASCRIPT_MARKER = new ImpexTokenType("JAVASCRIPT_MARKER");
   IElementType LEFT_ROUND_BRACKET = new ImpexTokenType("LEFT_ROUND_BRACKET");
   IElementType LEFT_SQUARE_BRACKET = new ImpexTokenType("LEFT_SQUARE_BRACKET");
   IElementType LINE_COMMENT = new ImpexTokenType("LINE_COMMENT");
@@ -112,6 +125,8 @@ public interface ImpexTypes {
   IElementType PERMISSION_DENIED = new ImpexTokenType("PERMISSION_DENIED");
   IElementType RIGHT_ROUND_BRACKET = new ImpexTokenType("RIGHT_ROUND_BRACKET");
   IElementType RIGHT_SQUARE_BRACKET = new ImpexTokenType("RIGHT_SQUARE_BRACKET");
+  IElementType SCRIPT_ACTION = new ImpexTokenType("SCRIPT_ACTION");
+  IElementType SCRIPT_BODY_VALUE = new ImpexTokenType("SCRIPT_BODY_VALUE");
   IElementType SINGLE_STRING = new ImpexTokenType("SINGLE_STRING");
   IElementType START_USERRIGHTS = new ImpexTokenType("START_USERRIGHTS");
   IElementType TARGET = new ImpexTokenType("TARGET");
@@ -137,8 +152,8 @@ public interface ImpexTypes {
       else if (type == ATTRIBUTE) {
         return new ImpexAttributeImpl(node);
       }
-      else if (type == BEAN_SHELL) {
-        return new ImpexBeanShellImpl(node);
+      else if (type == BEANSHELL_SCRIPT_BODY) {
+        return new ImpexBeanshellScriptBodyImpl(node);
       }
       else if (type == COMMENT) {
         return new ImpexCommentImpl(node);
@@ -149,11 +164,17 @@ public interface ImpexTypes {
       else if (type == FULL_HEADER_TYPE) {
         return new ImpexFullHeaderTypeImpl(node);
       }
+      else if (type == GROOVY_SCRIPT_BODY) {
+        return new ImpexGroovyScriptBodyImpl(node);
+      }
       else if (type == HEADER_LINE) {
         return new ImpexHeaderLineImpl(node);
       }
       else if (type == HEADER_TYPE_NAME) {
         return new ImpexHeaderTypeNameImpl(node);
+      }
+      else if (type == JAVASCRIPT_SCRIPT_BODY) {
+        return new ImpexJavascriptScriptBodyImpl(node);
       }
       else if (type == MACRO_DECLARATION) {
         return new ImpexMacroDeclarationImpl(node);
@@ -178,6 +199,9 @@ public interface ImpexTypes {
       }
       else if (type == ROOT_MACRO_USAGE) {
         return new ImpexRootMacroUsageImpl(node);
+      }
+      else if (type == SCRIPT) {
+        return new ImpexScriptImpl(node);
       }
       else if (type == STRING) {
         return new ImpexStringImpl(node);

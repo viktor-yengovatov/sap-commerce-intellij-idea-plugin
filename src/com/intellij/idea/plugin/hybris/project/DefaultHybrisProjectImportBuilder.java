@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescri
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -161,13 +160,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.performProjectsCleanup(allModules);
 
         new ImportProjectProgressModalWindow(
-            project, model, configuratorFactory, hybrisProjectDescriptor, modules
+            project, model, configuratorFactory, hybrisProjectDescriptor, modules, refresh
         ).queue();
 
         if (refresh) {
             PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, refresh);
         } else {
-            project.putUserData(HybrisProjectImportStartupActivity.getFinalizeProjectImportKey(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
+            project.putUserData(HybrisConstants.getKEY_FINALIZE_PROJECT_IMPORT(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
         }
         notifyImportNotFinishedYet(project);
         return modules;
@@ -210,7 +209,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     private List<File> getModulesChosenForImportFiles(final Iterable<ModuleDescriptor> modulesChosenForImport) {
-        List<File> alreadyExistingModuleFiles = new ArrayList<>();
+        final List<File> alreadyExistingModuleFiles = new ArrayList<>();
         for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
             final File ideaModuleFile = moduleDescriptor.ideaModuleFile();
             if (ideaModuleFile.exists()) {
@@ -316,12 +315,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public void setList(final List<ModuleDescriptor> list) throws ConfigurationException {
+        final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
 
-        final List<ModuleDescriptor> chosenForImport = new ArrayList<ModuleDescriptor>(list);
+        final var chosenForImport = new ArrayList<>(list);
+        final var alreadyOpenedModules = hybrisProjectDescriptor.getAlreadyOpenedModules();
+        chosenForImport.removeAll(alreadyOpenedModules);
 
-        chosenForImport.removeAll(this.getHybrisProjectDescriptor().getAlreadyOpenedModules());
-
-        this.getHybrisProjectDescriptor().setModulesChosenForImport(chosenForImport);
+        hybrisProjectDescriptor.setModulesChosenForImport(chosenForImport);
     }
 
     @Override

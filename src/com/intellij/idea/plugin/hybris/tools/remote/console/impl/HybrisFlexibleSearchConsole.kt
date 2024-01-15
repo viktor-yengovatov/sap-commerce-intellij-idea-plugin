@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,12 +24,10 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.io.Serial
@@ -37,58 +35,31 @@ import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
-import javax.swing.border.EmptyBorder
 
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage.INSTANCE) {
+class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
     private val panel = JPanel(WrappedFlowLayout(0, 0))
 
-    private val commitCheckbox = JBCheckBox()
-    private val commitLabel = JBLabel("Commit mode: ")
-
-    private val plainSqlCheckbox = JBCheckBox()
-    private val plainSqlLabel = JBLabel("SQL: ")
-
+    private val commitCheckbox = JBCheckBox("Commit mode")
+        .also { it.border = borders10 }
+    private val plainSqlCheckbox = JBCheckBox("Plain SQL")
+        .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
-    private val maxRowsLabel = JBLabel("Rows (max 100): ")
-
-    private val labelInsets = JBUI.insets(0, 10, 0, 1)
-
-    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "FLEXIBLE_SEARCH")
+        .also { it.border = borders5 }
 
     init {
-        createUI()
-        ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
-    }
-
-    private fun createUI() {
-        initCommitElements()
-        initPlainSqlElements()
-        initMaxRowsElements()
-
-        panel.add(queryConsolePanel)
-        add(panel, BorderLayout.NORTH)
         isEditable = true
-    }
 
-    private fun initCommitElements() {
-        commitLabel.border = EmptyBorder(labelInsets)
-        panel.add(commitLabel)
         panel.add(commitCheckbox)
-    }
-
-    private fun initPlainSqlElements() {
-        plainSqlLabel.border = EmptyBorder(labelInsets)
-        panel.add(plainSqlLabel)
         panel.add(plainSqlCheckbox)
-    }
-
-    private fun initMaxRowsElements() {
-        maxRowsLabel.border = EmptyBorder(labelInsets)
-        panel.add(maxRowsLabel)
+        panel.add(JBLabel("Rows (max 100):").also { it.border = bordersLabel })
         panel.add(maxRowsSpinner)
+
+        add(panel, BorderLayout.NORTH)
+
+        ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
     }
 
     override fun execute(query: String) = HybrisHacHttpClient.getInstance(project)
@@ -106,6 +77,6 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -112651125533211607L
+        private val serialVersionUID: Long = -112651125533211607L
     }
 }

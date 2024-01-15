@@ -96,11 +96,6 @@ object TSMetaHelper {
         "java.lang.Boolean.TRUE" == customProperty.value.rawText
             || "Boolean.TRUE" == customProperty.value.rawText
 
-    fun parseIntValue(customProperty: CustomProperty) = customProperty.value.rawText
-        ?.replace("Integer.valueOf(", "")
-        ?.replace(")", "")
-        ?.toIntOrNull()
-
     fun parseCommaSeparatedStringValue(customProperty: CustomProperty) = parseStringValue(customProperty)
         ?.split(",")
         ?.map { it.trim() }
@@ -129,6 +124,20 @@ object TSMetaHelper {
     fun isAttributeDescriptor(it: TSGlobalMetaItem) = (HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == it.name
         || it.allExtends.any { extends -> HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == extends.name })
 
+    fun getAttributeHandler(itemTypeDom: ItemType, attributeDom: Attribute, persistence: Persistence): String? {
+        if (persistence.type.value != PersistenceType.DYNAMIC) return null
+
+        val explicitAttributeHandler = persistence.attributeHandler.stringValue
+        if (explicitAttributeHandler != null) return explicitAttributeHandler
+
+        val typeCode = itemTypeDom.code.stringValue ?: return null
+        val attributeQualifier = attributeDom.qualifier.stringValue ?: return null
+
+        return getAttributeHandlerId(typeCode, attributeQualifier)
+    }
+
+    // Magic starts here, see official documentation: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/8bb46096866910149208fae7c4ec7596.html?locale=en-US
+    fun getAttributeHandlerId(typeCode: String, attributeQualifier: String) = typeCode + "_" + attributeQualifier + "AttributeHandler"
 
     private fun getExtendsMetaItem(metaModel: TSGlobalMetaModel, itemName: String?, extendsName: String?): TSGlobalMetaItem? {
         val realExtendedMetaItemName = extendsName

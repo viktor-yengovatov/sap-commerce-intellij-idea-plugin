@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -47,14 +48,14 @@ backslash   = [\\]
 
 multiline_separator   = {backslash}{crlf}
 
-line_comment = [#][^\r\n]*
-
-bean_shell_marker = [#][%]
-bean_shell_body = (({double_string})|{not_crlf}*)
+line_comment = [#]{not_crlf}*
 
 single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
+
+script_action = (beforeEach | afterEach | if | endif)[:]
+script_body_value = [^ '\"\r\n]+
 
 macro_name_declaration = [$](([\w\d-]|{white_space})+({backslash}\s*)*)+[=]
 root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
@@ -107,9 +108,10 @@ header_type = {identifier}+
 
 value_subtype      = {identifier}+
 field_value        = ({not_crlf}|{identifier}+)
-field_value_url    = ([/]{identifier}+)+[.]{identifier}+
+//field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
 field_value_null   = "<null>"
+field_value_prefix_password_encoding = "*:" | "plain:" | "sha-256:" | "sha-512:" | "md5:" | "pbkdf2:"
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
@@ -120,6 +122,8 @@ end_userrights                    = [$]END_USERRIGHTS
 %state HEADER_LINE
 %state FIELD_VALUE
 %state BEAN_SHELL
+%state SCRIPT
+%state SCRIPT_BODY
 %state MODIFIERS_BLOCK
 %state WAITING_ATTR_OR_PARAM_VALUE
 %state HEADER_PARAMETERS
@@ -137,10 +141,41 @@ end_userrights                    = [$]END_USERRIGHTS
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 
 <YYINITIAL> {
-    {bean_shell_marker}                                     { yybegin(BEAN_SHELL); return ImpexTypes.BEAN_SHELL_MARKER; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 
-    {line_comment}                                          { return ImpexTypes.LINE_COMMENT; }
+    {line_comment}                                          {
+                                                                final String text = yytext().toString().trim();
+                                                                int index = text.indexOf("#%groovy%");
+
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 9);
+                                                                    return ImpexTypes.GROOVY_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%javascript%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 13);
+                                                                    return ImpexTypes.JAVASCRIPT_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%bsh%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 6);
+                                                                    return ImpexTypes.BEAN_SHELL_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 2);
+                                                                    return ImpexTypes.BEAN_SHELL_MARKER;
+                                                                }
+
+                                                                return ImpexTypes.LINE_COMMENT;
+                                                            }
 
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return ImpexTypes.START_USERRIGHTS; }
     {root_macro_usage}                                      { return ImpexTypes.MACRO_USAGE; }
@@ -216,12 +251,25 @@ end_userrights                    = [$]END_USERRIGHTS
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
-<BEAN_SHELL> {
-    {bean_shell_body}                                       { return ImpexTypes.BEAN_SHELL_BODY; }
+<SCRIPT_BODY> {
+    {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
+    {script_action}                                         { return ImpexTypes.SCRIPT_ACTION;}
+    {single_string}                                         { return ImpexTypes.SINGLE_STRING; }
+    {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
+    {script_body_value}                                     { return ImpexTypes.SCRIPT_BODY_VALUE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <FIELD_VALUE> {
+    {field_value_prefix_password_encoding}                  { return ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX; }
+    "zip:"                                                  { return ImpexTypes.FIELD_VALUE_ZIP_PREFIX; }
+    "file:"                                                 { return ImpexTypes.FIELD_VALUE_FILE_PREFIX; }
+    "jar:"                                                  { return ImpexTypes.FIELD_VALUE_JAR_PREFIX; }
+    "/medias/"                                              { return ImpexTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX; }
+    "http:http"                                             {
+                                                                yypushback(4);
+                                                                return ImpexTypes.FIELD_VALUE_HTTP_PREFIX;
+                                                            }
     {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
     {multiline_separator}                                   { return ImpexTypes.MULTILINE_SEPARATOR; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
@@ -242,7 +290,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
 
-    {field_value_url}                                       { return ImpexTypes.FIELD_VALUE_URL; }
+//    {field_value_url}                                       { return ImpexTypes.FIELD_VALUE_URL; }
     {field_value}                                           { return ImpexTypes.FIELD_VALUE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }

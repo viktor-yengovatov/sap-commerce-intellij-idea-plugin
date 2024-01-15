@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,7 @@ class HybrisApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
     override fun createConfigurable() = SettingsConfigurable()
 
-    class SettingsConfigurable() : BoundSearchableConfigurable(
+    class SettingsConfigurable : BoundSearchableConfigurable(
         "[y] SAP Commerce", "[y] SAP Commerce plugin configuration."
     ) {
 
@@ -50,14 +50,6 @@ class HybrisApplicationSettingsConfigurableProvider : ConfigurableProvider() {
             row {
                 checkBox(message("hybris.project.view.tree.hide.empty.middle.folders"))
                     .bindSelected(state::hideEmptyMiddleFolders)
-            }
-            row {
-                checkBox(message("hybris.project.maven.download.sources.folders"))
-                    .bindSelected(state::withMavenSources)
-            }
-            row {
-                checkBox(message("hybris.project.maven.download.javadocs.folders"))
-                    .bindSelected(state::withMavenJavadocs)
             }
             row {
                 checkBox(message("hybris.project.import.ignore.non.existing.sources"))

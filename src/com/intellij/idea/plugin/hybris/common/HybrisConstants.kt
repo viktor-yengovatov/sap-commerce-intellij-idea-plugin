@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,10 +17,19 @@
  */
 package com.intellij.idea.plugin.hybris.common
 
+import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.facet.FacetTypeId
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.facet.YFacetType
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
+import com.intellij.psi.tree.IFileElementType
 
 object HybrisConstants {
 
@@ -33,21 +42,21 @@ object HybrisConstants {
     const val CCV2_DATAHUB_NAME = "datahub"
     const val CCV2_JS_STOREFRONT_NAME = "js-storefront"
     val CCV2_COMMERCE_CLOUD_EXTENSIONS = arrayOf(
-            "azurecloudhotfolder",
-            "cloudmediaconversion",
-            "cloudcommons",
-            "cloudhotfolder",
-            "cloudstorestorefront",
-            "cloudstoreinitialdata",
-            "cloudstorefulfilmentprocess",
-            "cloudstorefacades",
-            "cloudstorecore",
-            "cloudstorecockpits"
+        "azurecloudhotfolder",
+        "cloudmediaconversion",
+        "cloudcommons",
+        "cloudhotfolder",
+        "cloudstorestorefront",
+        "cloudstoreinitialdata",
+        "cloudstorefulfilmentprocess",
+        "cloudstorefacades",
+        "cloudstorecore",
+        "cloudstorecockpits"
     )
     val CCV2_COMMERCE_EXTENSION_PACKS = arrayOf(
-            "hybris-commerce-integrations",
-            "cx-commerce-crm-integrations",
-            "media-telco"
+        "hybris-commerce-integrations",
+        "cx-commerce-crm-integrations",
+        "media-telco"
     )
 
     val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
@@ -110,12 +119,12 @@ object HybrisConstants {
     const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
 
     val EXTENSION_INFO_META_KEYS = listOf(
-            EXTENSION_META_KEY_BACKOFFICE_MODULE,
-            EXTENSION_META_KEY_HAC_MODULE,
-            EXTENSION_META_KEY_CLASSPATHGEN,
-            EXTENSION_META_KEY_DEPRECATED,
-            EXTENSION_META_KEY_EXT_GEN,
-            EXTENSION_META_KEY_MODULE_GEN
+        EXTENSION_META_KEY_BACKOFFICE_MODULE,
+        EXTENSION_META_KEY_HAC_MODULE,
+        EXTENSION_META_KEY_CLASSPATHGEN,
+        EXTENSION_META_KEY_DEPRECATED,
+        EXTENSION_META_KEY_EXT_GEN,
+        EXTENSION_META_KEY_MODULE_GEN
     )
 
     const val BACKOFFICE_MODULE_DIRECTORY = "backoffice"
@@ -170,6 +179,7 @@ object HybrisConstants {
     const val HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml"
     const val HYBRIS_IMPEX_XML_FILE_ENDING = ".$IMPEX_FILE_EXTENSION"
 
+    const val DEBUG_HOST = "localhost"
     const val DEBUG_PORT = "8000"
 
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"
@@ -182,6 +192,9 @@ object HybrisConstants {
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
     const val PROPERTY_LANG_PACKS = "lang.packs"
     const val PROPERTY_IMPEX_HEADER_REPLACEMENT = "impex.header.replacement"
+    const val PROPERTY_ENV_PROPERTY_PREFIX = "env.properties.prefix"
+
+    const val PROPERTY_STANDALONE_JDKMODULESEXPORTS = "standalone.jdkmodulesexports"
 
     const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
@@ -238,8 +251,6 @@ object HybrisConstants {
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
     const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
     const val TS_CATALOG_VERSION_ATTRIBUTE_QUALIFIER = "catalogVersionAttributeQualifier"
-    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE = "catalog.sync.default.root.type"
-    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE_ORDER = "catalog.sync.default.root.type.order"
     const val TS_PRIMITIVE_BYTE = "byte"
     const val TS_PRIMITIVE_SHORT = "short"
     const val TS_PRIMITIVE_INT = "int"
@@ -248,9 +259,12 @@ object HybrisConstants {
     const val TS_PRIMITIVE_DOUBLE = "double"
     const val TS_PRIMITIVE_CHAR = "char"
     const val TS_PRIMITIVE_BOOLEAN = "boolean"
-    val TS_PRIMITIVE_TYPES = setOf(TS_PRIMITIVE_BYTE, TS_PRIMITIVE_SHORT, TS_PRIMITIVE_INT, TS_PRIMITIVE_LONG, TS_PRIMITIVE_FLOAT, TS_PRIMITIVE_DOUBLE, TS_PRIMITIVE_CHAR, TS_PRIMITIVE_BOOLEAN)
+    const val TS_META_VIEW_TYPE = "ViewType"
+    const val TS_META_COMPOSED_TYPE = "ComposedType"
+    val TS_PRIMITIVE_TYPES =
+        setOf(TS_PRIMITIVE_BYTE, TS_PRIMITIVE_SHORT, TS_PRIMITIVE_INT, TS_PRIMITIVE_LONG, TS_PRIMITIVE_FLOAT, TS_PRIMITIVE_DOUBLE, TS_PRIMITIVE_CHAR, TS_PRIMITIVE_BOOLEAN)
 
-    val TS_TYPECODE_MIN_ALLOWED = 10000
+    const val TS_TYPECODE_MIN_ALLOWED = 10000
     val TS_TYPECODE_RANGE_B2BCOMMERCE = TS_TYPECODE_MIN_ALLOWED..10099
     val TS_TYPECODE_RANGE_COMMONS = 13200..13299
     val TS_TYPECODE_RANGE_XPRINT = 24400..24599
@@ -262,23 +276,32 @@ object HybrisConstants {
     const val HYBRIS = "[y]"
     const val DEBUG_MODEL_RENDERER_PREFIX = HYBRIS
     const val SEARCH_SCOPE_Y_PREFIX = HYBRIS
-    const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
 
     const val CLASS_FQN_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_FQN_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_NAME_ENUM = "HybrisEnumValue"
+    const val CLASS_FQN_INTERCEPTOR_TYPE = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorExecutionPolicy.InterceptorType"
     const val CLASS_FQN_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
     const val CLASS_FQN_ANNOTATION_ACCESSOR = "de.hybris.bootstrap.annotations.Accessor"
     const val CLASS_FQN_CONFIG_IMPORT_PROCESSOR = "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor"
     const val CLASS_FQN_CONVERTER = "de.hybris.platform.servicelayer.dto.converter.Converter"
     const val CLASS_FQN_POPULATOR = "de.hybris.platform.converters.Populator"
     const val CLASS_FQN_IMPEX_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
-    const val CLASS_FQN_IMPEX_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
+    const val CLASS_FQN_IMPEX_ABSTRACT_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
+    const val CLASS_FQN_IMPEX_SPECIAL_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.SpecialValueTranslator"
+    const val CLASS_FQN_IMPEX_HEADER_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.HeaderCellTranslator"
     const val CLASS_FQN_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
     const val CLASS_FQN_FLEXIBLE_SEARCH_QUERY = "de.hybris.platform.servicelayer.search.FlexibleSearchQuery"
+    const val CLASS_FQN_CODE_GENERATOR = "de.hybris.bootstrap.codegenerator.CodeGenerator"
     const val CLASS_NAME_FLEXIBLE_SEARCH_QUERY = "FlexibleSearchQuery"
+
+    val CLASS_FQN_IMPEX_TRANSLATORS = arrayOf(
+        CLASS_FQN_IMPEX_SPECIAL_TRANSLATOR,
+        CLASS_FQN_IMPEX_HEADER_TRANSLATOR,
+        CLASS_FQN_IMPEX_ABSTRACT_TRANSLATOR
+    )
 
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
@@ -301,19 +324,30 @@ object HybrisConstants {
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"
     const val RESOURCES_DIRECTORY = "resources"
-    const val LOCAL_PROPERTIES = "local.properties"
-    const val PROJECT_PROPERTIES = "project.properties"
+    const val LOCAL_PROPERTIES_FILE = "local.properties"
+    const val PROJECT_PROPERTIES_FILE = "project.properties"
+    const val ENV_PROPERTIES_FILE = "env.properties"
+    const val ADVANCED_PROPERTIES_FILE = "advanced.properties"
     const val SPRING_WEB_FILE_SET_NAME = "web application context"
     const val APPLICATION_CONTEXT_SPRING_FILES = "application-context"
     const val ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs"
     const val GLOBAL_CONTEXT_SPRING_FILES = "global-context"
-    const val HYBRIS_CONFIG_DIR_KEY = "HYBRIS_CONFIG_DIR"
+
+    const val ENV_HYBRIS_CONFIG_DIR = "HYBRIS_CONFIG_DIR"
+    const val ENV_HYBRIS_RUNTIME_PROPERTIES = "HYBRIS_RUNTIME_PROPERTIES"
+    const val ENV_HYBRIS_OPT_CONFIG_DIR = "HYBRIS_OPT_CONFIG_DIR"
+    const val ENV_HYBRIS_DATA_DIR = "HYBRIS_DATA_DIR"
+    const val ENV_HYBRIS_BOOTSTRAP_BIN_DIR = "HYBRIS_BOOTSTRAP_BIN_DIR"
+
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
     const val JAVADOC_FALLBACK_URL = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
     const val JAVADOC_URL = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s/en-US"
 
+    const val SPRING_NAMESPACE = "http://www.springframework.org/schema/beans"
+
     const val QUOTE_LENGTH = 2
+
     // see: de.hybris.bootstrap.config.PlatformConfig -> readMaxDepthAttribute(..)
     const val DEFAULT_EXTENSIONS_PATH_DEPTH = 10
 
@@ -323,6 +357,8 @@ object HybrisConstants {
 
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
     const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
+
+    const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
@@ -355,7 +391,7 @@ object HybrisConstants {
         "node_modules",
         "apps/**/node_modules",
         "common/temp/node_modules"
-    );
+    )
 
     const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SRC_DIRECTORY = "src"
@@ -374,84 +410,112 @@ object HybrisConstants {
     @JvmField
     val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = FileUtilRt.toSystemDependentName("/.idea/idea-modules")
 
-    @JvmField
     val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
+
     @JvmField
     val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
+    @JvmField
+    val HYBRIS_SERVER_BASH_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.bat")
 
     @JvmField
     val PLATFORM_MODULE = FileUtilRt.toSystemDependentName("hybris/bin/platform")
+
     @JvmField
     val PLATFORM_MODULE_PREFIX = FileUtilRt.toSystemDependentName("/bin/platform/")
+
     @JvmField
     val PLATFORM_EXT_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/platform/ext/")
+
     @JvmField
     val PLATFORM_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/ext-")
+
     @JvmField
     val PLATFORM_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("bin/modules/")
+
     @JvmField
     val PLATFORM_DB_DRIVER = FileUtilRt.toSystemDependentName("lib/dbdriver")
 
     @JvmField
     val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/bin/ext-")
+
     @JvmField
     val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/bin/modules/")
 
     @JvmField
     val EXCLUDE_TMP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tmp")
+
     @JvmField
     val EXCLUDE_TCSERVER_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tcServer")
+
     @JvmField
     val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat")
+
     @JvmField
     val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat-6")
+
     @JvmField
     val EXCLUDE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/lib")
+
     @JvmField
     val EXCLUDE_RESOURCES_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/resources")
+
     @JvmField
     val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/eclipsebin")
 
     @JvmField
     val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/bootstrap")
+
     @JvmField
     val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
+
     @JvmField
     val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
+
     @JvmField
     val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
+
     @JvmField
     val EXCLUDE_DATA_DIRECTORY = FileUtilRt.toSystemDependentName("/data")
+
     @JvmField
     val EXCLUDE_SVN_DIRECTORY = FileUtilRt.toSystemDependentName("/.svn")
+
     @JvmField
     val EXCLUDE_GIT_DIRECTORY = FileUtilRt.toSystemDependentName("/.git")
+
     @JvmField
     val EXCLUDE_GITHUB_DIRECTORY = FileUtilRt.toSystemDependentName("/.github")
+
     @JvmField
     val EXCLUDE_GRADLE_DIRECTORY = FileUtilRt.toSystemDependentName("/.gradle")
+
     @JvmField
     val EXCLUDE_TEMP_DIRECTORY = FileUtilRt.toSystemDependentName("/temp")
+
     @JvmField
     val EXCLUDE_IDEA_DIRECTORY = FileUtilRt.toSystemDependentName("/.idea")
+
     @JvmField
     val EXCLUDE_MACOSX_DIRECTORY = FileUtilRt.toSystemDependentName("/__MACOSX")
 
     @JvmField
     val CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("bin/custom")
+
     @JvmField
     val CONFIG_RELATIVE_PATH = FileUtilRt.toSystemDependentName("/../../config")
+
     @JvmField
     val ADVANCED_PROPERTIES = FileUtilRt.toSystemDependentName("resources/advanced.properties")
+
     @JvmField
     val BUILD_NUMBER_FILE_PATH = FileUtilRt.toSystemDependentName("/bin/platform/build.number")
 
     @JvmField
     val WEBROOT_WEBINF_WEB_XML_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/web.xml")
+
     @JvmField
     val WEBROOT_WEBINF_CLASSES_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/classes")
-    @JvmField
-    val WEB_SRC_PATH = FileUtilRt.toSystemDependentName("web/src")
+
     @JvmField
     val WEBROOT_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
 
@@ -459,22 +523,26 @@ object HybrisConstants {
     val ACCELERATOR_ADDON_WEB_PATH = FileUtilRt.toSystemDependentName("acceleratoraddon/web")
 
     @JvmField
-    val COMMONWEB_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("commonweb/webroot/WEB-INF/lib")
-    @JvmField
     val DOC_SOURCES_JAR_PATH = FileUtilRt.toSystemDependentName("doc/sources")
 
     @JvmField
     val PL_BOOTSTRAP_LIB_PATH = FileUtilRt.toSystemDependentName("bootstrap/bin")
+
     @JvmField
     val PL_BOOTSTRAP_GEN_SRC_PATH = FileUtilRt.toSystemDependentName("bootstrap/gensrc")
+
     @JvmField
     val PL_TOMCAT_LIB_PATH = FileUtilRt.toSystemDependentName("tomcat/lib")
+
     @JvmField
     val PL_TOMCAT_BIN_PATH = FileUtilRt.toSystemDependentName("tomcat/bin")
+
     @JvmField
     val PL_TOMCAT_6_LIB_PATH = FileUtilRt.toSystemDependentName("tomcat-6/lib")
+
     @JvmField
     val PL_TOMCAT_6_BIN_PATH = FileUtilRt.toSystemDependentName("tomcat-6/bin")
+
     @JvmField
     val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
 
@@ -483,15 +551,18 @@ object HybrisConstants {
 
     @JvmField
     val BACKOFFICE_LIB_PATH = FileUtilRt.toSystemDependentName("backoffice/bin")
+
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
 
-    @JvmField
-    val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
+    const val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
+
     @JvmField
     val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
+
     @JvmField
     val ALL_SRC_DIR_NAMES = listOf(GEN_SRC_DIRECTORY, SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
+
     @JvmField
     val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, KOTLIN_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
 
@@ -501,6 +572,7 @@ object HybrisConstants {
         Add a property group.override and value group name.
         If you use subgroups use / as a separator. For example group.override=mygroup/mysubgroup
         """.trimIndent()
+
     @JvmField
     val GLOBAL_GROUP_OVERRIDE_COMMENTS = """
         In this file you can override default module group for your extensions.
@@ -511,57 +583,58 @@ object HybrisConstants {
         Use ANT_OPTS to override ant properties. Current default value is
         ANT_OPTS=-Xmx512m -Dfile.encoding=UTF-8
         """.trimIndent()
+
     @JvmField
     val DICTIONARY_WORDS = setOf(
-            "creationtime",
-            "modifiedtime",
-            "argumenttype",
-            "atomictype",
-            "autocreate",
-            "backoffice",
-            "beanutils",
-            "builddate",
-            "cockpitng",
-            "collectiontype",
-            "columntype",
-            "creationmode",
-            "cronjobs",
-            "defaultvalue",
-            "dontoptimize",
-            "elementtype",
-            "extname",
-            "hybris",
-            "impex",
-            "itemtype",
-            "jalo",
-            "jaloclass",
-            "jaloonly",
-            "jalosession",
-            "jspc",
-            "jstl",
-            "maptypes",
-            "metatype",
-            "metatype",
-            "nimda",
-            "NOPMD",
-            "partof",
-            "pojos",
-            "positiveshort",
-            "postgresql",
-            "propertytable",
-            "releasedate",
-            "returntype",
-            "servicelayer",
-            "solr",
-            "solrconfig",
-            "sqlserver",
-            "taglibs",
-            "typecode",
-            "typegroup",
-            "typesystem",
-            "webroot",
-            "ybackoffice",
-            "ybootstrap"
+        "creationtime",
+        "modifiedtime",
+        "argumenttype",
+        "atomictype",
+        "autocreate",
+        "backoffice",
+        "beanutils",
+        "builddate",
+        "cockpitng",
+        "collectiontype",
+        "columntype",
+        "creationmode",
+        "cronjobs",
+        "defaultvalue",
+        "dontoptimize",
+        "elementtype",
+        "extname",
+        "hybris",
+        "impex",
+        "itemtype",
+        "jalo",
+        "jaloclass",
+        "jaloonly",
+        "jalosession",
+        "jspc",
+        "jstl",
+        "maptypes",
+        "metatype",
+        "metatype",
+        "nimda",
+        "NOPMD",
+        "partof",
+        "pojos",
+        "positiveshort",
+        "postgresql",
+        "propertytable",
+        "releasedate",
+        "returntype",
+        "servicelayer",
+        "solr",
+        "solrconfig",
+        "sqlserver",
+        "taglibs",
+        "typecode",
+        "typegroup",
+        "typesystem",
+        "webroot",
+        "ybackoffice",
+        "ybootstrap"
     )
 
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/ActionsBundle.properties
@@ -573,29 +646,101 @@ object HybrisConstants {
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/EditorBundle.properties
     @JvmField
     val TYPING_EDITOR_ACTIONS = arrayOf(
-            "Typing",
-            "Delete to Word Start",
-            "Delete to Word End",
-            "Duplicate Line or Selection",
-            "Duplicate Entire Lines",
-            "Backspace",
-            "Delete",
-            "Delete Line",
-            "Cut",
-            "Paste",
-            "Paste _without Formatting",
-            "Paste without formatting, autoimport, literal escaping etc.",
-            "Paste from X clipboard",
-            "Hungry Backspace",
-            "Acts as the Backspace except that removes all whitespace symbols before the caret (if any)",
-            "Move Line Up",
-            "Move Line Down",
-            "Move Statement Up",
-            "Move Statement Down",
-            "Move Element Left",
-            "Move Element Right",
-            "Reformat Code",
-            "Undo Reformat Code",
-            "Auto-Indent Lines"
+        "Typing",
+        "Delete to Word Start",
+        "Delete to Word End",
+        "Duplicate Line or Selection",
+        "Duplicate Entire Lines",
+        "Backspace",
+        "Delete",
+        "Delete Line",
+        "Cut",
+        "Paste",
+        "Paste _without Formatting",
+        "Paste without formatting, autoimport, literal escaping etc.",
+        "Paste from X clipboard",
+        "Hungry Backspace",
+        "Acts as the Backspace except that removes all whitespace symbols before the caret (if any)",
+        "Move Line Up",
+        "Move Line Down",
+        "Move Statement Up",
+        "Move Statement Down",
+        "Move Element Left",
+        "Move Element Right",
+        "Reformat Code",
+        "Undo Reformat Code",
+        "Auto-Indent Lines"
+    )
+
+    @JvmStatic
+    val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
+    val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
+
+    const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+    val FXS_SUPPORTED_ELEMENT_TYPES = setOf(
+        FlexibleSearchTypes.TABLE_ALIAS_NAME,
+        FlexibleSearchTypes.COLUMN_ALIAS_NAME
+    )
+
+    val IMPEX_FILE_NODE_TYPE = IFileElementType(ImpexLanguage)
+    val FXS_FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage)
+
+    val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
+    val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()
+    val PGQ_RESERVED_KEYWORDS = setOf(
+        PolyglotQueryTypes.AND,
+        PolyglotQueryTypes.ASC,
+        PolyglotQueryTypes.BY,
+        PolyglotQueryTypes.DESC,
+        PolyglotQueryTypes.GET,
+        PolyglotQueryTypes.IS,
+        PolyglotQueryTypes.NOT,
+        PolyglotQueryTypes.NULL,
+        PolyglotQueryTypes.OR,
+        PolyglotQueryTypes.ORDER,
+        PolyglotQueryTypes.WHERE
+    )
+
+
+    val FXS_RESERVED_KEYWORDS = setOf(
+        FlexibleSearchTypes.ALL,
+        FlexibleSearchTypes.AND,
+        FlexibleSearchTypes.AS,
+        FlexibleSearchTypes.ASC,
+        FlexibleSearchTypes.BETWEEN,
+        FlexibleSearchTypes.BY,
+        FlexibleSearchTypes.CASE,
+        FlexibleSearchTypes.CAST,
+        FlexibleSearchTypes.DESC,
+        FlexibleSearchTypes.DISTINCT,
+        FlexibleSearchTypes.ELSE,
+        FlexibleSearchTypes.END,
+        FlexibleSearchTypes.EXISTS,
+        FlexibleSearchTypes.FROM,
+        FlexibleSearchTypes.FULL,
+        FlexibleSearchTypes.GROUP,
+        FlexibleSearchTypes.HAVING,
+        FlexibleSearchTypes.IN,
+        FlexibleSearchTypes.INNER,
+        FlexibleSearchTypes.INTERVAL,
+        FlexibleSearchTypes.IS,
+        FlexibleSearchTypes.JOIN,
+        FlexibleSearchTypes.LEFT,
+        FlexibleSearchTypes.LIKE,
+        FlexibleSearchTypes.LIMIT,
+        FlexibleSearchTypes.NOT,
+        FlexibleSearchTypes.NULL,
+        FlexibleSearchTypes.OFFSET,
+        FlexibleSearchTypes.ON,
+        FlexibleSearchTypes.OR,
+        FlexibleSearchTypes.ORDER,
+        FlexibleSearchTypes.OUTER,
+        FlexibleSearchTypes.RIGHT,
+        FlexibleSearchTypes.SELECT,
+        FlexibleSearchTypes.THEN,
+        FlexibleSearchTypes.UNION,
+        FlexibleSearchTypes.USING,
+        FlexibleSearchTypes.WHEN,
+        FlexibleSearchTypes.WHERE,
     )
 }

@@ -1,6 +1,10 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -162,32 +166,13 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // BEAN_SHELL_MARKER (BEAN_SHELL_BODY | MACRO_USAGE)?
-  public static boolean bean_shell(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "bean_shell")) return false;
-    if (!nextTokenIs(b, BEAN_SHELL_MARKER)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, BEAN_SHELL, null);
-    r = consumeToken(b, BEAN_SHELL_MARKER);
-    p = r; // pin = 1
-    r = r && bean_shell_1(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // (BEAN_SHELL_BODY | MACRO_USAGE)?
-  private static boolean bean_shell_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "bean_shell_1")) return false;
-    bean_shell_1_0(b, l + 1);
-    return true;
-  }
-
-  // BEAN_SHELL_BODY | MACRO_USAGE
-  private static boolean bean_shell_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "bean_shell_1_0")) return false;
+  // script_body
+  public static boolean beanshell_script_body(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "beanshell_script_body")) return false;
     boolean r;
-    r = consumeToken(b, BEAN_SHELL_BODY);
-    if (!r) r = consumeToken(b, MACRO_USAGE);
+    Marker m = enter_section_(b, l, _NONE_, BEANSHELL_SCRIPT_BODY, "<beanshell script body>");
+    r = script_body(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -260,6 +245,17 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "full_header_type_1")) return false;
     modifiers(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // script_body
+  public static boolean groovy_script_body(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "groovy_script_body")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, GROOVY_SCRIPT_BODY, "<groovy script body>");
+    r = script_body(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -338,6 +334,17 @@ public class ImpexParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "impexFile", c)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // script_body
+  public static boolean javascript_script_body(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "javascript_script_body")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, JAVASCRIPT_SCRIPT_BODY, "<javascript script body>");
+    r = script_body(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -816,6 +823,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //   |  LINE_COMMENT
   //   |  macro_name_dec
   //   |  BEAN_SHELL_MARKER
+  //   |  GROOVY_MARKER
+  //   |  JAVASCRIPT_MARKER
   //   |  DOUBLE_STRING
   //   |  SINGLE_STRING
   //   |  MACRO_USAGE
@@ -840,6 +849,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //   |  LINE_COMMENT
   //   |  macro_name_dec
   //   |  BEAN_SHELL_MARKER
+  //   |  GROOVY_MARKER
+  //   |  JAVASCRIPT_MARKER
   //   |  DOUBLE_STRING
   //   |  SINGLE_STRING
   //   |  MACRO_USAGE
@@ -857,6 +868,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, LINE_COMMENT);
     if (!r) r = macro_name_dec(b, l + 1);
     if (!r) r = consumeToken(b, BEAN_SHELL_MARKER);
+    if (!r) r = consumeToken(b, GROOVY_MARKER);
+    if (!r) r = consumeToken(b, JAVASCRIPT_MARKER);
     if (!r) r = consumeToken(b, DOUBLE_STRING);
     if (!r) r = consumeToken(b, SINGLE_STRING);
     if (!r) r = consumeToken(b, MACRO_USAGE);
@@ -913,8 +926,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | root_macro_usage
   //     | header_line
   //     | value_line
+  //     | script
   //     | comment
-  //     | bean_shell
   //     | (string (';')?)
   //     | macro_declaration
   static boolean root_group(PsiBuilder b, int l) {
@@ -925,8 +938,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = root_macro_usage(b, l + 1);
     if (!r) r = header_line(b, l + 1);
     if (!r) r = value_line(b, l + 1);
+    if (!r) r = script(b, l + 1);
     if (!r) r = comment(b, l + 1);
-    if (!r) r = bean_shell(b, l + 1);
     if (!r) r = root_group_6(b, l + 1);
     if (!r) r = macro_declaration(b, l + 1);
     exit_section_(b, l, m, r, false, ImpexParser::not_line_break);
@@ -983,6 +996,108 @@ public class ImpexParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "root_macro_usage_1", c)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // GROOVY_MARKER SCRIPT_ACTION? groovy_script_body
+  //     | JAVASCRIPT_MARKER SCRIPT_ACTION? javascript_script_body
+  //     | BEAN_SHELL_MARKER SCRIPT_ACTION? beanshell_script_body
+  public static boolean script(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, SCRIPT, "<script>");
+    r = script_0(b, l + 1);
+    if (!r) r = script_1(b, l + 1);
+    if (!r) r = script_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // GROOVY_MARKER SCRIPT_ACTION? groovy_script_body
+  private static boolean script_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, GROOVY_MARKER);
+    r = r && script_0_1(b, l + 1);
+    r = r && groovy_script_body(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // SCRIPT_ACTION?
+  private static boolean script_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_0_1")) return false;
+    consumeToken(b, SCRIPT_ACTION);
+    return true;
+  }
+
+  // JAVASCRIPT_MARKER SCRIPT_ACTION? javascript_script_body
+  private static boolean script_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, JAVASCRIPT_MARKER);
+    r = r && script_1_1(b, l + 1);
+    r = r && javascript_script_body(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // SCRIPT_ACTION?
+  private static boolean script_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_1_1")) return false;
+    consumeToken(b, SCRIPT_ACTION);
+    return true;
+  }
+
+  // BEAN_SHELL_MARKER SCRIPT_ACTION? beanshell_script_body
+  private static boolean script_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BEAN_SHELL_MARKER);
+    r = r && script_2_1(b, l + 1);
+    r = r && beanshell_script_body(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // SCRIPT_ACTION?
+  private static boolean script_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_2_1")) return false;
+    consumeToken(b, SCRIPT_ACTION);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // (SCRIPT_BODY_VALUE
+  //     | MACRO_USAGE
+  //     | SINGLE_STRING
+  //     | DOUBLE_STRING
+  //     )*
+  static boolean script_body(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_body")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!script_body_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "script_body", c)) break;
+    }
+    return true;
+  }
+
+  // SCRIPT_BODY_VALUE
+  //     | MACRO_USAGE
+  //     | SINGLE_STRING
+  //     | DOUBLE_STRING
+  private static boolean script_body_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "script_body_0")) return false;
+    boolean r;
+    r = consumeToken(b, SCRIPT_BODY_VALUE);
+    if (!r) r = consumeToken(b, MACRO_USAGE);
+    if (!r) r = consumeToken(b, SINGLE_STRING);
+    if (!r) r = consumeToken(b, DOUBLE_STRING);
+    return r;
   }
 
   /* ********************************************************** */
@@ -1573,7 +1688,13 @@ public class ImpexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // FIELD_VALUE
-  //     | FIELD_VALUE_URL
+  //     | FIELD_VALUE_PASSWORD_ENCODING_PREFIX
+  //     | FIELD_VALUE_JAR_PREFIX
+  //     | FIELD_VALUE_EXPLODED_JAR_PREFIX
+  //     | FIELD_VALUE_FILE_PREFIX
+  //     | FIELD_VALUE_ZIP_PREFIX
+  //     | FIELD_VALUE_HTTP_PREFIX
+  // //    | FIELD_VALUE_URL
   //     | BOOLEAN
   //     | DIGIT
   //     | string
@@ -1589,7 +1710,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "value_dec")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE);
-    if (!r) r = consumeToken(b, FIELD_VALUE_URL);
+    if (!r) r = consumeToken(b, FIELD_VALUE_PASSWORD_ENCODING_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_JAR_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_EXPLODED_JAR_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_FILE_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_ZIP_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_HTTP_PREFIX);
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
     if (!r) r = string(b, l + 1);

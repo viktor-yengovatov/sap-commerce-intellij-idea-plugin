@@ -1,7 +1,7 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
   ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -26,24 +26,20 @@
 
         <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
 
-        <indexedRootsProvider implementation="com.intellij.idea.plugin.hybris.indexing.HybrisProjectRootIndexedRootsProvider"/>
+        <indexedRootsProvider
+                implementation="com.intellij.idea.plugin.hybris.indexing.HybrisProjectRootIndexedRootsProvider"/>
 
-        <treeStructureProvider order="first" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
+        <treeStructureProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectView"/>
 
-        <projectViewNodeDecorator order="last" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectViewNodeDecorator"/>
-        
-        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
-        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
-        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
+        <projectViewNodeDecorator order="last"
+                                  implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectViewNodeDecorator"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionService"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionEntityService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionEntityService"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.impl.HybrisConsoleInMemoryRegionsCache"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultConsolePersistenceService"/>
+        <psi.referenceContributor language="XML"
+                                  implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
+        <psi.referenceContributor language="XML"
+                                  implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
+        <psi.referenceContributor language="XML"
+                                  implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
 
         <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
                         serviceImplementation="com.intellij.idea.plugin.hybris.project.view.impl.HybrisProjectViewDirectoryHelper"
@@ -51,7 +47,8 @@
                         overrides="true"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
-        <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.project.indexing.HybrisDirectoryIndexExcludePolicy"/>
+        <directoryIndexExcludePolicy
+                implementation="com.intellij.idea.plugin.hybris.project.indexing.HybrisDirectoryIndexExcludePolicy"/>
 
         <applicationConfigurable id="hybris.settings" parentId="root"
                                  displayName="[y] SAP Commerce"
@@ -60,10 +57,12 @@
                                  key="hybris.settings.application.project_import.title"
                                  provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectImportApplicationSettingsConfigurableProvider"/>
 
-        <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true" dynamic="true"
+        <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
+                             dynamic="true"
                              key="hybris.settings.project.title"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsConfigurableProvider"/>
-        <projectConfigurable id="hybris.project.remote_instances.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
+        <projectConfigurable id="hybris.project.remote_instances.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
                              key="hybris.settings.project.remote_instances.title"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider"/>
 
@@ -71,6 +70,9 @@
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
 
         <iconProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>
+
+        <configurationType
+                implementation="com.intellij.idea.plugin.hybris.runConfigurations.LocalSapCXConfigurationType"/>
     </extensions>
 
     <actions>
@@ -80,11 +82,11 @@
                class="com.intellij.idea.plugin.hybris.actions.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
-<!--        <action id="GenerateDomModel"-->
-<!--                class="com.intellij.idea.plugin.hybris.system.type.model.generator.GenerateDomModelAction"-->
-<!--                text="Generate DOM Model...">-->
-<!--            <add-to-group group-id="ToolsMenu" anchor="last"/>-->
-<!--        </action>-->
+        <!--        <action id="GenerateDomModel"-->
+        <!--                class="com.intellij.idea.plugin.hybris.system.type.model.generator.GenerateDomModelAction"-->
+        <!--                text="Generate DOM Model...">-->
+        <!--            <add-to-group group-id="ToolsMenu" anchor="last"/>-->
+        <!--        </action>-->
         <action id="Console.Execute.Immediately"
                 class="com.intellij.openapi.actionSystem.EmptyAction"
                 text="Execute Current Statement">

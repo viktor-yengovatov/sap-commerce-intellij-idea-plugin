@@ -33,9 +33,6 @@ public interface ConfiguratorFactory {
     @NotNull
     SpringConfigurator getSpringConfigurator();
 
-    @Nullable
-    XsdSchemaConfigurator getXsdSchemaConfigurator();
-
     @NotNull
     ModuleDependenciesConfigurator getModulesDependenciesConfigurator();
 
@@ -52,19 +49,13 @@ public interface ConfiguratorFactory {
     GroupModuleConfigurator getGroupModuleConfigurator();
 
     @NotNull
-    JavadocModuleConfigurator getJavadocModuleConfigurator();
-
-    @NotNull
     ModuleSettingsConfigurator getModuleSettingsConfigurator();
 
     @NotNull
     VersionControlSystemConfigurator getVersionControlSystemConfigurator();
 
     @NotNull
-    RunConfigurationConfigurator getDebugRunConfigurationConfigurator();
-
-    @Nullable
-    AntConfigurator getAntConfigurator();
+    RunConfigurationConfigurator getDefaultRunConfigurationConfigurator();
 
     @Nullable
     MavenConfigurator getMavenConfigurator();
@@ -82,11 +73,6 @@ public interface ConfiguratorFactory {
     GradleConfigurator getGradleConfigurator();
 
     @Nullable
-    DataSourcesConfigurator getDataSourcesConfigurator();
-
-    @Nullable
     JavaCompilerConfigurator getJavaCompilerConfigurator();
 
-    @Nullable
-    KotlinCompilerConfigurator getKotlinCompilerConfigurator();
 }

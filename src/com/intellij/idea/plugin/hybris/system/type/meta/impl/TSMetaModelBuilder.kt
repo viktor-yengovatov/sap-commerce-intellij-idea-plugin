@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils
 
 class TSMetaModelBuilder(
     private val myModule: Module,
-    private val myPsiFile: PsiFile,
+    myPsiFile: PsiFile,
     private val myCustom: Boolean
 ) {
 
@@ -92,7 +92,7 @@ class TSMetaModelBuilder(
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaItemImpl(
             dom, myModule, name, myCustom,
-            attributes = create(dom.attributes),
+            attributes = create(dom, dom.attributes),
             indexes = create(dom.indexes),
             customProperties = create(dom.customProperties),
             deployment = create(dom.deployment)
@@ -140,7 +140,7 @@ class TSMetaModelBuilder(
             return create(source, source.retrieveDom()!!, target.qualifier!!)
         }
 
-        return null;
+        return null
     }
 
     private fun create(
@@ -192,22 +192,27 @@ class TSMetaModelBuilder(
             TSMetaDeploymentImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
         else null
 
-    private fun create(dom: Persistence): TSMetaPersistence {
-        return TSMetaPersistenceImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
-    }
+    private fun create(itemTypeDom: ItemType, attributeDom: Attribute, dom: Persistence) = TSMetaPersistenceImpl(
+        itemTypeDom,
+        attributeDom,
+        dom,
+        myModule,
+        TSMetaModelNameProvider.extract(dom),
+        myCustom
+    )
 
-    private fun create(dom: Attribute): TSMetaItem.TSMetaItemAttribute? {
+    private fun create(itemTypeDom: ItemType, dom: Attribute): TSMetaItem.TSMetaItemAttribute? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaItemImpl.TSMetaItemAttributeImpl(
             dom, myModule, name, myCustom,
             customProperties = create(dom.customProperties),
-            persistence = create(dom.persistence),
+            persistence = create(itemTypeDom, dom, dom.persistence),
             modifiers = create(dom.modifiers)
         )
     }
 
-    private fun create(dom: Attributes): Map<String, TSMetaItem.TSMetaItemAttribute> = dom.attributes
-        .mapNotNull { attr -> create(attr) }
+    private fun create(itemTypeDom: ItemType, dom: Attributes): Map<String, TSMetaItem.TSMetaItemAttribute> = dom.attributes
+        .mapNotNull { attr -> create(itemTypeDom, attr) }
         .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun create(dom: CustomProperties): Map<String, TSMetaCustomProperty> = dom.properties

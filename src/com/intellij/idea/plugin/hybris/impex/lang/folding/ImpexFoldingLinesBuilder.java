@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExFoldingLinesFilter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
@@ -36,8 +37,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.*;
-
 public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
 
     private static final String LINE_GROUP_NAME = "impex_fold_line";
@@ -45,13 +44,13 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
     @NotNull
     @Override
     public FoldingDescriptor[] buildFoldRegionsInternal(
-        @NotNull final PsiElement root,
+        @NotNull final PsiElement psi,
         @NotNull final Document document,
         final boolean quick
     ) {
         FoldingGroup currentLineGroup = FoldingGroup.newGroup(LINE_GROUP_NAME);
 
-        final List<PsiElement> foldingBlocks = foldingLines(root);
+        final List<PsiElement> foldingBlocks = foldingLines(psi);
 
         PsiElement startGroupElement = foldingBlocks.isEmpty() ? null : foldingBlocks.get(0);
 
@@ -64,7 +63,7 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
             final int nextIdx = Math.min(i + 1, size - 1);
 
             final PsiElement element = foldingBlocks.get(i);
-            if (isHeaderLine(element) || isUserRightsMacros(element)) {
+            if (ImpexPsiUtils.isHeaderLine(element) || ImpexPsiUtils.isUserRightsMacros(element)) {
                 startGroupElement = foldingBlocks.get(nextIdx);
                 if (groupIsNotFresh) {
                     currentLineGroup = FoldingGroup.newGroup(LINE_GROUP_NAME);
@@ -72,8 +71,8 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
                     groupIsNotFresh = false;
                 }
             } else {
-                if (nextElementIsHeaderLine(element)
-                    || nextElementIsUserRightsMacros(element)
+                if (ImpexPsiUtils.nextElementIsHeaderLine(element)
+                    || ImpexPsiUtils.nextElementIsUserRightsMacros(element)
                     || nextIdx == size) {
                     if (countLinesOnGroup > 1) {
                         descriptors.add(new ImpexFoldingDescriptor(
@@ -82,8 +81,8 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
                             element.getTextRange().getEndOffset(),
                             currentLineGroup,
                             (elm) -> {
-                                final PsiElement prevSibling = getPrevNonWhitespaceElement(elm);
-                                if ((isHeaderLine(prevSibling) || isUserRightsMacros(prevSibling))) {
+                                final PsiElement prevSibling = ImpexPsiUtils.getPrevNonWhitespaceElement(elm);
+                                if ((ImpexPsiUtils.isHeaderLine(prevSibling) || ImpexPsiUtils.isUserRightsMacros(prevSibling))) {
                                     return ";....;....";
                                 }
                                 return "";
@@ -93,7 +92,7 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
                     groupIsNotFresh = true;
                 }
             }
-            if (isImpexValueLine(element)) {
+            if (ImpexPsiUtils.isImpexValueLine(element)) {
                 countLinesOnGroup++;
             }
         }
@@ -123,9 +122,6 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
 
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
-        if (Objects.equals(node.getElementType(), ImpexTypes.VALUE_LINE)) {
-            return false;
-        }
-        return true;
+        return !Objects.equals(node.getElementType(), ImpexTypes.VALUE_LINE);
     }
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,6 +42,10 @@ object ImpExElementFactory {
         .getChildOfType<ImpexMacroDeclaration>()
         ?.getChildOfType<ImpexMacroNameDec>()
 
+    fun createSingleQuotedString(project: Project, value: String) = createFile(project, "\$macro = '$value'")
+        .getChildOfType<ImpexMacroDeclaration>()
+        ?.getChildOfType<ImpexString>()
+
     fun createValueGroup(project: Project, value: String? = "") = createFile(project, """
      INSERT Product;
                    ;$value
@@ -53,5 +57,5 @@ object ImpExElementFactory {
         ?.firstOrNull()
 
     fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
-        .createFileFromText("dummy.impex", ImpexFileType.INSTANCE, text) as ImpexFile
+        .createFileFromText("dummy.impex", ImpexFileType, text) as ImpexFile
 }

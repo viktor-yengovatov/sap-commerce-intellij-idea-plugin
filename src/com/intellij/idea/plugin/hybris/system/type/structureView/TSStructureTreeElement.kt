@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.structureView
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -94,13 +93,10 @@ class TSStructureTreeElement(
 
     private fun resolveLocationString(dom: CollectionType) = dom.type.value.toString() + (dom.elementType.stringValue?.let { " of $it" } ?: "")
 
-    private fun resolveLocationString(dom: Description): String? {
-        val xmlElement = dom.xmlElement
-        if (xmlElement is XmlTag) {
-            return xmlElement.value.trimmedText
-        }
-        return null
-    }
+    private fun resolveLocationString(dom: Description) = dom.xmlElement
+        ?.let { it as? XmlTag }
+        ?.value
+        ?.trimmedText
 
     private fun resolveLocationString(dom: Deployment) = listOfNotNull(
         dom.table.stringValue,
@@ -158,7 +154,14 @@ class TSStructureTreeElement(
     }
 
     override fun getIcon(open: Boolean) = when (element) {
-        is Description -> AllIcons.Windows.Help
+        is Description -> HybrisIcons.TS_DESCRIPTION
+        is AtomicTypes -> HybrisIcons.TS_GROUP_ATOMIC
+        is CollectionTypes -> HybrisIcons.TS_GROUP_COLLECTION
+        is MapTypes -> HybrisIcons.TS_GROUP_MAP
+        is Relations -> HybrisIcons.TS_GROUP_RELATION
+        is ItemTypes -> HybrisIcons.TS_GROUP_ITEM
+        is TypeGroup -> HybrisIcons.TS_GROUP_ITEM
+        is EnumTypes -> HybrisIcons.TS_GROUP_ENUM
         is AtomicType -> HybrisIcons.TS_ATOMIC
         is EnumType -> HybrisIcons.TS_ENUM
         is EnumValue -> HybrisIcons.TS_ENUM_VALUE
@@ -174,15 +177,4 @@ class TSStructureTreeElement(
         else -> null
     }
 
-//    : Icon? {
-//        val dom = element
-//        // TODO: add icons
-//        if (dom is Attribute) {
-//            val value = resolveValue(dom.type)
-//            if (StringUtils.startsWith(value, TS_ATTRIBUTE_LOCALIZED_PREFIX)) {
-//                return HybrisIcons.LOCALIZED
-//            }
-//        }
-//        return null
-//    }
 }

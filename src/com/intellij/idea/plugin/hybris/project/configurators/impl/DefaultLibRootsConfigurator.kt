@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor
@@ -29,8 +28,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDe
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.DependencyScope
@@ -63,7 +60,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
             if (javaLibraryDescriptor.directoryWithClasses) {
                 addClassesToModuleLibs(modifiableRootModel, modifiableModelsProvider, sourceCodeRoot, javaLibraryDescriptor)
             } else {
-                addJarFolderToModuleLibs(modifiableRootModel, modifiableModelsProvider, javaLibraryDescriptor, moduleDescriptor, indicator)
+                addJarFolderToModuleLibs(modifiableRootModel, modifiableModelsProvider, javaLibraryDescriptor)
             }
         }
 
@@ -86,7 +83,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
                     val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
                     val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
                     YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, classes, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, false)
-                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, library, HybrisConstants.BACKOFFICE_LIBRARY_GROUP,)
+                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, library, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
                 }
             }
         }
@@ -134,9 +131,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
     private fun addJarFolderToModuleLibs(
         modifiableRootModel: ModifiableRootModel,
         modifiableModelsProvider: IdeModifiableModelsProvider,
-        javaLibraryDescriptor: JavaLibraryDescriptor,
-        moduleDescriptor: ModuleDescriptor,
-        progressIndicator: ProgressIndicator
+        javaLibraryDescriptor: JavaLibraryDescriptor
     ) {
         val projectLibraryTable = modifiableRootModel.moduleLibraryTable
         val library = javaLibraryDescriptor.name
@@ -146,7 +141,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), true)
         // we have to add each jar file explicitly, otherwise Spring will not recognise `classpath:/META-INF/my.xml` in the jar files
-        // Jetbrains Intellij IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
+        // Jetbrains IntelliJ IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
         javaLibraryDescriptor.jarFiles.forEach {
             libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(it), OrderRootType.CLASSES)
         }
@@ -159,12 +154,6 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         }
 
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.scope)
-
-        val mavenSources = resolveMavenSources(modifiableRootModel, javaLibraryDescriptor, moduleDescriptor, progressIndicator)
-
-        for (resultLib in mavenSources) {
-            libraryModifiableModel.addRoot("jar://$resultLib!/", OrderRootType.SOURCES)
-        }
     }
 
     private fun addLibsToModule(
@@ -190,15 +179,6 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
     private fun setLibraryEntryScope(modifiableRootModel: ModifiableRootModel, library: Library, scope: DependencyScope) {
         findOrderEntryForLibrary(modifiableRootModel, library).scope = scope
     }
-
-    private fun resolveMavenSources(
-        modifiableRootModel: ModifiableRootModel,
-        javaLibraryDescriptor: JavaLibraryDescriptor,
-        moduleDescriptor: ModuleDescriptor,
-        progressIndicator: ProgressIndicator
-    ) = if (LibraryDescriptorType.LIB == javaLibraryDescriptor.descriptorType && PluginCommon.isPluginActive(PluginCommon.MAVEN_PLUGIN_ID)) {
-        MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator, HybrisApplicationSettingsComponent.getInstance().state)
-    } else emptyList()
 
     private fun attachSourceFiles(
         javaLibraryDescriptor: JavaLibraryDescriptor,

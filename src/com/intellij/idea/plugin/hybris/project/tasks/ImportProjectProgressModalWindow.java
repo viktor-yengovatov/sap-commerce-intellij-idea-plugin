@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -73,7 +73,6 @@ import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.spellchecker.dictionary.EditableDictionary;
 import com.intellij.spellchecker.dictionary.ProjectDictionary;
 import com.intellij.spellchecker.dictionary.UserDictionary;
 import com.intellij.spellchecker.state.ProjectDictionaryState;
@@ -109,6 +108,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private final ConfiguratorFactory configuratorFactory;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
     private final List<Module> modules;
+    private final boolean refresh;
     @NotNull
     private IdeModifiableModelsProvider modifiableModelsProvider;
 
@@ -117,8 +117,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ModifiableModuleModel model,
         final ConfiguratorFactory configuratorFactory,
         final HybrisProjectDescriptor hybrisProjectDescriptor,
-        final List<Module> modules
-    ) {
+        final List<Module> modules,
+        final boolean refresh) {
         super(project, message("hybris.project.import.commit"), false);
         this.project = project;
         this.model = model;
@@ -126,6 +126,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.configuratorFactory = configuratorFactory;
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
         this.modules = modules;
+        this.refresh = refresh;
     }
 
     @Override
@@ -149,9 +150,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.initializeHybrisProjectSettings(project, hybrisProjectSettings);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
         this.selectSdk(project);
-        this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
+
+        if (!refresh) {
+            this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
+        }
+
         this.saveImportedSettings(project, hybrisProjectSettings, appSettings, projectSettingsComponent);
-        this.disableWrapOnType(ImpexLanguage.getInstance());
+        this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
 
@@ -186,7 +191,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         configuratorFactory.getModulesDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
         configuratorFactory.getSpringConfigurator().configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
-        configuratorFactory.getDebugRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
+        configuratorFactory.getDefaultRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
         configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
         configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, appSettings, rootProjectModifiableModel);
 
@@ -283,7 +288,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLibRootsConfigurator().configure(indicator, allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
         configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
         configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
-        configuratorFactory.getJavadocModuleConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
 
         indicator.setText2(message("hybris.project.import.module.facet"));
         for (final FacetConfigurator facetConfigurator : configuratorFactory.getFacetConfigurators()) {
@@ -311,12 +315,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
-        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
+        final var compilerConfigurator = KotlinCompilerConfigurator.Companion.getInstance();
 
         if (compilerConfigurator == null) return;
 
         indicator.setText(message("hybris.project.import.compiler.kotlin"));
-        compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
+        compilerConfigurator.configure(hybrisProjectDescriptor, project);
     }
 
     private void configureEclipseModules(final @NotNull ProgressIndicator indicator) {
@@ -356,7 +360,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 .map(GradleModuleDescriptor.class::cast)
                 .collect(Collectors.toList());
             if (!gradleModules.isEmpty()) {
-                gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules);
+                gradleConfigurator.configure(project, gradleModules);
             }
         } catch (Exception e) {
             LOG.error("Can not import Gradle modules due to an error.", e);
@@ -370,12 +374,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ProjectDictionaryState dictionaryState = project.getService(ProjectDictionaryState.class);
         final ProjectDictionary projectDictionary = dictionaryState.getProjectDictionary();
         projectDictionary.getEditableWords();//ensure dictionaries exist
-        EditableDictionary hybrisDictionary = projectDictionary.getDictionaries().stream()
-            .filter(e -> DICTIONARY_NAME.equals(e.getName())).findFirst().orElse(null);
-        if (hybrisDictionary == null) {
-            hybrisDictionary = new UserDictionary(DICTIONARY_NAME);
-            projectDictionary.getDictionaries().add(hybrisDictionary);
-        }
+        final var hybrisDictionary = projectDictionary.getDictionaries().stream()
+            .filter(e -> DICTIONARY_NAME.equals(e.getName()))
+            .findFirst()
+            .orElseGet(() -> {
+                final var dictionary = new UserDictionary(DICTIONARY_NAME);
+                projectDictionary.getDictionaries().add(dictionary);
+                return dictionary;
+            });
         hybrisDictionary.addToDictionary(DICTIONARY_WORDS);
         hybrisDictionary.addToDictionary(project.getName().toLowerCase());
         final Set<String> moduleNames = modules.stream()
@@ -464,8 +470,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             appSettings.setExternalDbDriversDirectory("");
         }
 
-        appSettings.setWithMavenSources(hybrisProjectDescriptor.isWithMavenSources());
-        appSettings.setWithMavenJavadocs(hybrisProjectDescriptor.isWithMavenJavadocs());
         appSettings.setIgnoreNonExistingSourceDirectories(hybrisProjectDescriptor.isIgnoreNonExistingSourceDirectories());
         appSettings.setWithStandardProvidedSources(hybrisProjectDescriptor.isWithStandardProvidedSources());
 
@@ -522,12 +526,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final CodeStyleScheme currentScheme = CodeStyleSchemes.getInstance().getCurrentScheme();
         final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
         if (impexLanguage != null) {
-            CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
+            final CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
             langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
         }
     }
 
-    private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
+    private void excludeFrameworkDetection(final Project project, final FacetTypeId facetTypeId) {
         final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
         final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
         final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);

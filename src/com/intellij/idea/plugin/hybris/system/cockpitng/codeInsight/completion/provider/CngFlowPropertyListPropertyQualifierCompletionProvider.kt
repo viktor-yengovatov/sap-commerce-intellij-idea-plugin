@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.java.psi.JavaPsiHelper
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
 import com.intellij.openapi.application.ApplicationManager
@@ -45,7 +44,6 @@ class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarat
 
         if (type.contains(".")
             && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
-            && PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID)
         ) addJavaPojoCompletions(project, type, result)
         else super.addCompletions(parameters, context, result)
     }
@@ -54,13 +52,19 @@ class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarat
         JavaPsiFacade.getInstance(project)
             .findClass(className, GlobalSearchScope.allScope(project))
             ?.let { psiClass ->
-                val fields = psiClass.fields
+                val fields = psiClass.allFields
 
                 return@let if (psiClass.isRecord) fields.toList()
                 else fields
-                    .filter { JavaPsiHelper.hasGetter(psiClass, it) && JavaPsiHelper.hasSetter(psiClass, it) }
+                    .filter {
+                        val targetClass = it.containingClass ?: return@filter false
+                        JavaPsiHelper.hasGetter(targetClass, it) && JavaPsiHelper.hasSetter(targetClass, it)
+                    }
             }
-            ?.map { JavaLookupElementBuilder.forField(it) }
+            ?.map {
+                JavaLookupElementBuilder.forField(it, it.name, it.containingClass)
+                    .withTypeText(it.type.presentableText, true)
+            }
             ?.forEach { result.addElement(it) }
     }
 

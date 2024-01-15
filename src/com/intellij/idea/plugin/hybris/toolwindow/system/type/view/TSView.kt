@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -37,6 +37,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import java.awt.GridBagLayout
+import java.io.Serial
 
 class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
@@ -123,7 +124,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             true
         )
     ) {
-        templatePresentation.icon = AllIcons.Actions.Show
+        templatePresentation.icon = HybrisIcons.TS_PREVIEW_SHOW
 
         addSeparator(message("hybris.toolwindow.action.separator.show"))
         add(ShowOnlyCustomAction(mySettings))
@@ -145,7 +146,8 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     companion object {
-        private const val serialVersionUID: Long = 74100584202830949L
+        @Serial
+        private val serialVersionUID: Long = 74100584202830949L
     }
 
 }

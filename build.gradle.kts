@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
@@ -81,15 +82,23 @@ tasks {
     }
 
     runIde {
-        jvmArgs = listOf(properties("intellij.jvm.args").get())
+        jvmArgs = mutableListOf<String>().apply {
+            add(properties("intellij.jvm.args").get())
+
+            if (OperatingSystem.current().isMacOsX) {
+                add("-Xdock:name=SAP-Commerce-Developers-Toolset")
+                // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
+                add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
+            }
+        }
         maxHeapSize = "3g"
         /*
-        To be able to start IDEA Community edition one has to uncomment `ideDir` property and specify absolute path to the Application
+        To be able to start IDEA Community edition one has to uncomment `ideDir` property and specify an absolute path to the Application
         references:
          - issue > https://github.com/JetBrains/gradle-intellij-plugin/issues/578
          - docs > https://plugins.jetbrains.com/docs/intellij/dev-alternate-products.html#configuring-gradle-build-script-using-the-intellij-idea-product-attribute
          */
-//        ideDir = file("/Users/<user>/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-0/231.8770.65/IntelliJ IDEA CE.app/Contents")
+//        ideDir = file("/Users/<user>/Applications/IntelliJ IDEA Community Edition.app/Contents")
     }
 
     patchPluginXml {

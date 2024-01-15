@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -26,9 +26,11 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdRefer
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSAttributeReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSItemReference
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
+import java.io.Serial
 
 abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexParameter {
 
@@ -73,11 +75,12 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
     }
 
     override fun subtreeChanged() {
-        putUserData(ImpexFunctionTSItemReference.CACHE_KEY, null)
-        putUserData(ImpexFunctionTSAttributeReference.CACHE_KEY, null)
+        removeUserData(ImpexFunctionTSItemReference.CACHE_KEY)
+        removeUserData(ImpexFunctionTSAttributeReference.CACHE_KEY)
     }
 
     companion object {
-        private const val serialVersionUID: Long = -8834268360363491069L
+        @Serial
+        private val serialVersionUID: Long = -8834268360363491069L
     }
 }

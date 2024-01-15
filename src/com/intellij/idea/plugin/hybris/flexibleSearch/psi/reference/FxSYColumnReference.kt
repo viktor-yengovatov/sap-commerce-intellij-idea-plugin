@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,14 +24,13 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -68,11 +67,11 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         val hasColumnAlias = isAliasedReference()
         val canFallback = canFallbackToTableName()
 
-        if (!hasColumnAlias && FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER == element.text && hasTableAlias) {
+        if (!hasColumnAlias && HybrisConstants.FXS_DUMMY_IDENTIFIER == element.text && hasTableAlias) {
             return getSuitablePrefixes()
         }
 
-        if (!hasColumnAlias && FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER == element.text && !hasTableAlias) {
+        if (!hasColumnAlias && HybrisConstants.FXS_DUMMY_IDENTIFIER == element.text && !hasTableAlias) {
             return getSuitablePrefixes() + getColumns(type)
         }
         if ((hasColumnAlias && hasTableAlias)
@@ -98,8 +97,8 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     private fun getPostfixes(type: String): Array<LookupElementBuilder> = if (element.parent.text.contains("[")) {
         emptyArray()
     } else {
-        val text = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
-        element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+        val text = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+        element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
             .takeIf { it.isBlank() && text.isNotBlank() }
             ?.let {
                 resolve(element.project, type, text)
@@ -116,10 +115,10 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators
      */
     private fun getSuitablePrefixes(): Array<LookupElementBuilder> {
-        val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
-        val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+        val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
+        val aliasText = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
 
-        val separators: Array<LookupElementBuilder> = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
+        val separators: Array<LookupElementBuilder> = element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
             .takeIf { it.isBlank() && aliasText.isNotBlank() }
             ?.let {
                 arrayOf(
@@ -140,7 +139,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     fun isAliasedReference() = PsiTreeUtilExt
         .getPrevSiblingOfElementType(element, FlexibleSearchTypes.SELECTED_TABLE_NAME) != null
 
-    fun canFallbackToTableName() = HybrisProjectSettingsComponent.getInstance(element.project)
+    fun canFallbackToTableName() = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(element.project)
         .state
         .flexibleSearchSettings
         .fallbackToTableNameIfNoAliasProvided
