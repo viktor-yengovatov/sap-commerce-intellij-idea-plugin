@@ -18,11 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.selected
+import javax.swing.JCheckBox
 
 class HybrisProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
@@ -34,6 +38,14 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
     ) {
 
         private val state = HybrisProjectSettingsComponent.getInstance(project).state
+        private lateinit var generateCodeOnRebuildCheckBox: JCheckBox
+
+        private val excludedFromScanning = CRUDListPanel(
+            "hybris.import.settings.excludedFromScanning.directory.popup.add.title",
+            "hybris.import.settings.excludedFromScanning.directory.popup.add.text",
+            "hybris.import.settings.excludedFromScanning.directory.popup.edit.title",
+            "hybris.import.settings.excludedFromScanning.directory.popup.edit.text",
+        )
 
         override fun createPanel() = panel {
             group(message("hybris.settings.project.details.title")) {
@@ -59,14 +71,22 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
 
             group(message("hybris.settings.project.build.title")) {
                 row {
-                    checkBox("Generate code before the Rebuild Project action")
-                        .comment("""
+                    generateCodeOnRebuildCheckBox = checkBox("Generate code before the Rebuild Project action")
+                        .comment(
+                            """
                             If checked, beans and models will be re-generated to the <strong>boostrap/gensrc</strong> before the compilation process.<br>
                             Once generated, compilation will be triggered and create class files which will be placed under <strong>boostrap/modelclasses</strong>.<br>
                             After that, <strong>models.jar</strong> will be created from the <strong>boostrap/modelclasses</strong> folder.<br>
                             As a final step, project compilation will continue.
-                        """.trimIndent())
+                        """.trimIndent()
+                        )
                         .bindSelected(state::generateCodeOnRebuild)
+                        .component
+                }
+                row("Code generation timeout (in seconds)") {
+                    spinner(1..10000, 1)
+                        .bindIntValue(state::generateCodeTimeoutSeconds)
+                        .enabledIf(generateCodeOnRebuildCheckBox.selected)
                 }
             }
 
@@ -104,6 +124,19 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                 row {
                     checkBox(message("hybris.project.import.importCustomAntBuildFiles"))
                         .bindSelected(state::importCustomAntBuildFiles)
+                }
+            }
+
+            group("Directories excluded from the project scanning", false) {
+                row {
+                    comment("Specify directories related to the project root, use '/' separator for sub-directories.")
+                }
+                row {
+                    cell(excludedFromScanning)
+                        .align(AlignX.FILL)
+                        .onApply { state.excludedFromScanning = excludedFromScanning.data.toMutableSet() }
+                        .onReset { excludedFromScanning.data = state.excludedFromScanning.toList() }
+                        .onIsModified { excludedFromScanning.data.equalsIgnoreOrder(state.excludedFromScanning.toList()).not() }
                 }
             }
         }

@@ -1,3 +1,25 @@
+## [2023.3.4]
+
+### Features
+- Pre-load project properties on project startup [#957](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/957)
+
+### `Project Import` enhancements
+- Added possibility to exclude directories from the project scanning during the Project Refresh [#962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/962)
+- Added possibility to exclude directories from the project scanning during the Project Import [#964](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/964)
+
+### `Project Build` enhancements
+- Make code generation timeout configurable [#954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/954)
+- Do not unlink gradle projects during the project refresh [#956](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/956)
+- Changed output directory for custom modules to `classes` [#958](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/958)
+- Re-generate `jrebel.xml` on project refresh [#960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/960)
+
+### Other
+- Updated project libraries [#959](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/959)
+
+### Fixes
+- `AntInstallation` class not found on project refresh [#955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/955)
+- Fixed Kotlin library automatic registration [#961](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/961)
+
 ## [2023.3.3]
 
 ### Features

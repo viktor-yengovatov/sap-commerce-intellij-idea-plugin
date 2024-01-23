@@ -25,6 +25,7 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
@@ -49,6 +50,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.extension
 import kotlin.io.path.name
 
+// TODO: add progress indicator
 class ProjectBeforeCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
@@ -79,7 +81,7 @@ class ProjectBeforeCompilerTask : CompileTask {
             ?: return true
 
         val bootstrapDirectory = platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
-        if (!invokeCodeGeneration(context, platformModuleRoot, bootstrapDirectory, coreModuleRoot, vmExecutablePath)) {
+        if (!invokeCodeGeneration(context, platformModuleRoot, bootstrapDirectory, coreModuleRoot, vmExecutablePath, settings.state)) {
             ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
             return false
         }
@@ -101,6 +103,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         bootstrapDirectory: Path,
         coreModuleRoot: Path,
         vmExecutablePath: String,
+        settings: HybrisProjectSettings,
     ): Boolean {
         val pathToBeDeleted = bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY)
         cleanDirectory(context, pathToBeDeleted)
@@ -144,9 +147,10 @@ class ProjectBeforeCompilerTask : CompileTask {
         })
 
         handler.startNotify()
-        val waitFor = handler.waitFor(10000)
+
+        val waitFor = handler.waitFor(settings.generateCodeTimeoutSeconds * 1000L)
         if (!waitFor) {
-            context.addMessage(CompilerMessageCategory.ERROR, "[y] Code generation failed after waiting for 10 seconds.", null, -1, -1)
+            context.addMessage(CompilerMessageCategory.ERROR, "[y] Code generation failed after waiting for ${settings.generateCodeTimeoutSeconds} second(s).", null, -1, -1)
             handler.destroyProcess()
         }
         return result

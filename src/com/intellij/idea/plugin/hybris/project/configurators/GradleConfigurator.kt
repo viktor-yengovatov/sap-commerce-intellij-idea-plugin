@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.gradle.service.project.open.linkAndRefreshGradleProject
+import org.jetbrains.plugins.gradle.settings.GradleSettings
 
 class GradleConfigurator {
 
@@ -34,7 +34,8 @@ class GradleConfigurator {
             .forEach { linkAndRefreshGradleProject(it, project) }
     }
 
-    companion object {
-        fun getInstance(): GradleConfigurator? = ApplicationManager.getApplication().getService(GradleConfigurator::class.java)
+    fun clearLinkedProjectSettings(project: Project) {
+        GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
     }
+
 }

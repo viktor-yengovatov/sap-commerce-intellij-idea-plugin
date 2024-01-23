@@ -18,19 +18,36 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModifiableRootModel
+import com.intellij.openapi.vfs.VfsUtilCore
+import java.io.File
 
-interface CompilerOutputPathsConfigurator {
+@Service
+class CompilerOutputPathsConfigurator {
+
     fun configure(
         indicator: ProgressIndicator,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor
-    )
+    ) {
+        indicator.text2 = HybrisI18NBundleUtils.message("hybris.project.import.module.outputpath")
 
-    companion object {
-        fun getInstance(): CompilerOutputPathsConfigurator = ApplicationManager.getApplication().getService(CompilerOutputPathsConfigurator::class.java)
+        val outputDirectory = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) File(moduleDescriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH)
+        else File(moduleDescriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH)
+
+        with (modifiableRootModel.getModuleExtension(CompilerModuleExtension::class.java)) {
+            setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.absolutePath))
+            setCompilerOutputPathForTests(VfsUtilCore.pathToUrl(outputDirectory.absolutePath))
+
+            isExcludeOutput = true
+            inheritCompilerOutputPath(false)
+        }
     }
 }

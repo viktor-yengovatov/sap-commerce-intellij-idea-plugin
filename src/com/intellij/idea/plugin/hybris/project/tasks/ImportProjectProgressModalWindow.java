@@ -78,7 +78,6 @@ import com.intellij.spellchecker.dictionary.UserDictionary;
 import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -146,16 +145,23 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
 
         final var projectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
-        final var hybrisProjectSettings = projectSettingsComponent.getState();
-        this.initializeHybrisProjectSettings(project, hybrisProjectSettings);
+        final var projectSettings = projectSettingsComponent.getState();
+
+        final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
+        if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
+            modulesFilesDirectory.mkdirs();
+        }
+
+        this.initializeHybrisProjectSettings(project, projectSettings);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
         this.selectSdk(project);
 
         if (!refresh) {
-            this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
+            this.saveCustomDirectoryLocation(project, projectSettings);
+            projectSettings.setExcludedFromScanning(hybrisProjectDescriptor.getExcludedFromScanning());
         }
 
-        this.saveImportedSettings(project, hybrisProjectSettings, appSettings, projectSettingsComponent);
+        this.saveImportedSettings(project, projectSettings, appSettings, projectSettingsComponent);
         this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
@@ -189,9 +195,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             }
         }
 
-        configuratorFactory.getModulesDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
+        configuratorFactory.getModuleDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
         configuratorFactory.getSpringConfigurator().configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
-        configuratorFactory.getDefaultRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
+        configuratorFactory.getRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
         configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
         configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, appSettings, rootProjectModifiableModel);
 
@@ -286,7 +292,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modifiableRootModel.inheritSdk();
 
         configuratorFactory.getLibRootsConfigurator().configure(indicator, allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-        configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
+        configuratorFactory.getContentRootConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
         configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
 
         indicator.setText2(message("hybris.project.import.module.facet"));
@@ -315,7 +321,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
-        final var compilerConfigurator = KotlinCompilerConfigurator.Companion.getInstance();
+        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
 
         if (compilerConfigurator == null) return;
 
@@ -392,8 +398,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void initializeHybrisProjectSettings(@NotNull final Project project, final @NotNull HybrisProjectSettings hybrisProjectSettings) {
-        Validate.notNull(project);
-
         hybrisProjectSettings.setHybrisProject(true);
         final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
 
@@ -404,8 +408,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void selectSdk(@NotNull final Project project) {
-        Validate.notNull(project);
-
         final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
 
         final Sdk projectSdk = projectRootManager.getProjectSdk();

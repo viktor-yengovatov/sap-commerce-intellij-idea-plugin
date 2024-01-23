@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellire IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ class HybrisProjectSettings : BaseState() {
     var ideModulesFilesDirectory by string(null)
     var hybrisProject by property(false)
     var generateCodeOnRebuild by property(true)
+    var generateCodeTimeoutSeconds by property(20)
     var importOotbModulesInReadOnlyMode by property(false)
     var followSymlink by property(false)
     var scanThroughExternalModule by property(true)
@@ -47,5 +48,6 @@ class HybrisProjectSettings : BaseState() {
     var unusedExtensions by stringSet()
     var modulesOnBlackList by stringSet()
     var availableExtensions by property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
+    var excludedFromScanning by stringSet()
 
 }
