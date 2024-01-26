@@ -38,6 +38,8 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
         private val state = HybrisApplicationSettingsComponent.getInstance().state
 
         private lateinit var groupModulesCheckBox: JCheckBox
+        private lateinit var externalModulesCheckBox: JCheckBox
+
 
         private val junkList = CRUDListPanel(
             "hybris.import.settings.junk.directory.popup.add.title",
@@ -100,6 +102,22 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
                             .bindText(state::groupCCv2)
                     }.layout(RowLayout.PARENT_GRID)
                 }.visibleIf(groupModulesCheckBox.selected)
+                row {
+                    externalModulesCheckBox = checkBox("Group external modules")
+                        .bindSelected(state::groupExternalModules)
+                        .comment(message("hybris.project.view.external.module.tooltip"))
+                        .component
+
+                }
+                indent {
+                    row {
+                        icon(HybrisIcons.MODULE_EXTERNAL_GROUP)
+                        textField()
+                            .label("External modules:")
+                            .bindText(state::groupNameExternalModules)
+                            .enabledIf(externalModulesCheckBox.selected)
+                    }
+                }
             }
 
             group(message("hybris.import.settings.junk.directory.name"), false) {
