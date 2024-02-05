@@ -43,10 +43,9 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.layout.selected
 import com.intellij.ui.scale.JBUIScale
-import com.intellij.ui.util.maximumHeight
-import com.intellij.ui.util.preferredHeight
 import org.apache.commons.lang3.StringUtils
 import org.intellij.images.fileTypes.impl.SvgFileType
+import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -281,8 +280,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
     override fun getComponent() = with(JBScrollPane(panel)) {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-        preferredHeight = JBUIScale.scale(600)
-        maximumHeight = JBUIScale.scale(600)
+        preferredSize = Dimension(preferredSize.width,  JBUIScale.scale(600))
         this
     }
 
