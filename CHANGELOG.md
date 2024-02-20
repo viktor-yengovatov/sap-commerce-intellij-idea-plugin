@@ -7,7 +7,7 @@
 - Added custom icon for `hybrislicence.jar` [#1000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1000)
 
 ### `CCv2` enhancements
-- Added new extension pack `hybris-datahub-integration-suite` [#1013](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009) | [#1010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1013)
+- Added new extension pack `hybris-datahub-integration-suite` [#1013](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009)
 
 ### `items.xml` enhancements
 - Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009) | [#1010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1010)
