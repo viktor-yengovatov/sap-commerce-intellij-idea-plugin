@@ -1,7 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,9 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.common
 
-object JavaConstants {
+package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-    const val SETTER_PREFIX = "set"
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
+import com.intellij.lang.ASTNode
+import java.io.Serial
+
+abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementImpl(node), ImpexDocumentIdDec {
+
+    companion object {
+        @Serial
+        private val serialVersionUID: Long = 8447559537730205946L
+    }
 }

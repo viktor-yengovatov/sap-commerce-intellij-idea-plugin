@@ -1,3 +1,67 @@
+## [2024.1.0]
+
+### Features
+- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel [#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967) | [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975) | [#980](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/980)
+- Use blue logo for custom module groups in the project view [#973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/973)
+- Show globe icon for localized attributes in the code completion pane [#999](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/999)
+- Added custom icon for `hybrislicence.jar` [#1000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1000)
+
+### `CCv2` enhancements
+- Added new extension pack `hybris-datahub-integration-suite` [#1013](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009)
+
+### `items.xml` enhancements
+- Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009) | [#1010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1010)
+
+### `Remote Connection` enhancements
+- Introduced `Project` and `Personal` scope for remote connections [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)
+- Redesign HAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968) | [#986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/986) | [#987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/987)
+- Redesign SOLR connection settings and rely on `PasswordSafe` to store passwords [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971) | [#985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/985)
+- Focus connection name field on dialog show [#972](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/972)
+- Store connection credentials in the [Sensitive Storage](https://plugins.jetbrains.com/docs/intellij/persisting-sensitive-data.html#storage) [#988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/988) | [#995](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/995)
+- Show inline test HAC connection results in the dialog [#989](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/989)
+- Show inline test SOLR connection results and unify both dialogs [#990](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/990)
+- Show current host details for each request in the Console [#996](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/996)
+
+### `Project Import` enhancements
+- Redesigned `check required plugins` import step [#983](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/983)
+- Added web links to missing plugins on `check required plugins` import step [#984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/984)
+- Update platform and javadoc version on project refresh [#991](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/991)
+
+### `Project Build` enhancements
+- Added ability to change the output directory for custom modules from `classes` to `eclipsebin` [#1012](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1012)
+
+### `ImpEx` enhancements
+- Inject `FlexibleSearch` language into suitable ImpExValue elements [#992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/992) | [#994](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/994)
+- Improved reference resolution for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997) | [#1001](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1001)
+- Added find usages for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
+- Added inline renaming capabilities for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
+- Temporary disabled `odd` / `even` lines coloring as it affect performance [#1004](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1004)
+
+### `FlexibleSearch` enhancements
+- Improved language parser to support bind parameters in the `IN` expression [#993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/993)
+
+### `Cockpit NG` enhancements
+- Inject spring bean reference into `n:dynamic-node`:`populator-bean-id` [#1006](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1006)
+- Register `backoffice-widgets.xml` as `Widgets` [#1014](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1014)
+- Register `http://www.hybris.com/schema/cockpitng/widgets.xsd` schema during project import [#1015](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1015)
+
+### `items.xml` inspection rules
+- Show details for attribute type validation message [#1007](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1007)
+- Show details for various validation messages [#1008](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1008)
+
+### Other
+- IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966) | [#998](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/998)
+- Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)
+- Redesigned SAP Commerce facet dialog layout [#974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/974)
+- Slow operation in the After Compiler Task [#1003](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1003)
+
+### Fixes
+- IDE error when running FlexibleSearch query [#976](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/976)
+- SOLR connection settings are not properly changed [#977](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/977)
+- Fixed code generation on Windows [#979](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/979)
+- Fixed request param cast issue for ImpEx execution [#1002](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1002)
+- Fixed duplicated remote connections settings [#1005](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1005)
+
 ## [2023.3.4]
 
 ### Features
@@ -1207,8 +1271,8 @@
 [#63](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/63),
 [#66](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/66),
 [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
-- Added support for the Enum completion in ImpEx/FSQ
-- Added support for the Relation completion in ImpEx/FSQ
+- Added support for the Enum completion in ImpEx/FlexibleSearch
+- Added support for the Relation completion in ImpEx/FlexibleSearch
 - Added MapType support for `items.xml`
 - Added postgresql DB mapping
 - Added next `typecode` suggestion via `items.xml` Inspection

@@ -83,7 +83,7 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                         .bindSelected(state::generateCodeOnRebuild)
                         .component
                 }
-                row("Code generation timeout (in seconds)") {
+                row("Code generation timeout (in seconds):") {
                     spinner(1..10000, 1)
                         .bindIntValue(state::generateCodeTimeoutSeconds)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)
@@ -103,6 +103,11 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                     checkBox("Remove external modules")
                         .comment("If checked, non SAP Commerce external modules will be removed during the project refresh.")
                         .bindSelected(state::removeExternalModulesOnRefresh)
+                }
+                row {
+                    checkBox("Use fake output path for custom extensions")
+                        .comment("When enabled the ‘eclipsebin’ folder will be used as an output path for both custom and OOTB extensions.")
+                        .bindSelected(state::useFakeOutputPathForCustomExtensions)
                 }
                 row {
                     checkBox(message("hybris.import.wizard.import.ootb.modules.read.only.label"))

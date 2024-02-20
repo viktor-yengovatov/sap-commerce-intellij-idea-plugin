@@ -32,6 +32,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBScrollPane
@@ -42,10 +43,9 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.layout.selected
 import com.intellij.ui.scale.JBUIScale
-import com.intellij.ui.util.maximumHeight
-import com.intellij.ui.util.preferredHeight
 import org.apache.commons.lang3.StringUtils
 import org.intellij.images.fileTypes.impl.SvgFileType
+import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -78,6 +78,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private lateinit var sourceCodeCheckBox: JBCheckBox
     private lateinit var storeModuleFilesInCheckBox: JBCheckBox
     private lateinit var excludedFromScanningCheckBox: JBCheckBox
+    private lateinit var useFakeOutputPathForCustomExtensionsCheckbox: JBCheckBox
 
     private val excludedFromScanningList = CRUDListPanel(
         "hybris.import.settings.excludedFromScanning.directory.popup.add.title",
@@ -191,9 +192,13 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     .enabledIf(sourceCodeCheckBox.selected)
                     .component
             }.layout(RowLayout.PARENT_GRID)
-
             row {
-                importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode")
+                useFakeOutputPathForCustomExtensionsCheckbox = checkBox("Use fake output path for custom extensions")
+                    .comment("When enabled the `eclipsebin’ folder will be used as an output path for both custom and OOTB extensions")
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
+            row {
+                importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode test")
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -280,8 +285,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
     override fun getComponent() = with(JBScrollPane(panel)) {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-        preferredHeight = JBUIScale.scale(600)
-        maximumHeight = JBUIScale.scale(600)
+        preferredSize = Dimension(preferredSize.width,  JBUIScale.scale(600))
         this
     }
 
@@ -304,6 +308,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isExcludeTestSources = excludeTestSourcesCheckBox.isSelected
             this.isImportCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected
             this.isScanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected
+            this.isUseFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected
 
             this.setExcludedFromScanning(excludedFromScanningList.data)
 
@@ -440,8 +445,14 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         context.cleanup()
 
         with(context.getHybrisProjectDescriptor()) {
-            this.javadocUrl = settings.javadocUrl
-            this.hybrisVersion = settings.hybrisVersion
+            this.hybrisVersion = project?.basePath
+                ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), false) }
+                ?: settings.hybrisVersion
+            this.javadocUrl = project?.basePath
+                ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), true) }
+                ?.let { getDefaultJavadocUrl(it) }
+                ?.takeIf { it.isNotBlank() }
+                ?: settings.javadocUrl
             this.sourceCodeFile = FileUtils.toFile(settings.sourceCodeFile, true)
             this.externalExtensionsDirectory = FileUtils.toFile(settings.externalExtensionsDirectory, true)
             this.externalConfigDirectory = FileUtils.toFile(settings.externalConfigDirectory, true)
@@ -451,6 +462,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isExcludeTestSources = settings.excludeTestSources
             this.isImportCustomAntBuildFiles = settings.importCustomAntBuildFiles
             this.isScanThroughExternalModule = settings.scanThroughExternalModule
+            this.isUseFakeOutputPathForCustomExtensions = settings.useFakeOutputPathForCustomExtensions
 
             val appSettings = HybrisApplicationSettingsComponent.getInstance().state
             this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories

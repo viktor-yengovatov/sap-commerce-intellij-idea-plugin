@@ -28,6 +28,9 @@ import com.intellij.psi.PsiElement;
 public interface ImpexAnyHeaderParameterName extends PsiElement {
 
   @Nullable
+  ImpexDocumentIdDec getDocumentIdDec();
+
+  @Nullable
   ImpexMacroUsageDec getMacroUsageDec();
 
   @Nullable

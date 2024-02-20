@@ -20,8 +20,9 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.google.gson.Gson;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject;
@@ -64,9 +65,9 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return project.getService(HybrisHacHttpClient.class);
     }
 
-    public @NotNull
-    HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
-        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+    @NotNull
+    public HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
+        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final HttpResponse response = getHttpResponse(project, "/console/impex/import/validate", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
@@ -106,7 +107,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     ) {
         final List<BasicNameValuePair> params = createParamsList(requestParams);
-        final String actionUrl = getHostHacURL(project) + urlSuffix;
+        final String actionUrl = settings.getGeneratedURL() + urlSuffix;
         return post(project, actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
     }
 
@@ -116,9 +117,9 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             .collect(Collectors.toList());
     }
 
-    public @NotNull
-    HybrisHttpResult importImpex(final Project project, final Map<String, String> requestParams) {
-        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+    @NotNull
+    public HybrisHttpResult importImpex(final Project project, final Map<String, String> requestParams) {
+        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final HttpResponse response = getHttpResponse(project, "/console/impex/import", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
@@ -154,27 +155,27 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return resultBuilder.errorMessage("No data in response").build();
     }
 
-    public @NotNull
-    HybrisHttpResult executeFlexibleSearch(
+    @NotNull
+    public HybrisHttpResult executeFlexibleSearch(
         final Project project,
         final boolean shouldCommit,
         final boolean isPlainSQL,
         final String maxRows,
         final String content
     ) {
-        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final var params = Arrays.asList(
             new BasicNameValuePair("scriptType", "flexibleSearch"),
             new BasicNameValuePair("commit", BooleanUtils.toStringTrueFalse(shouldCommit)),
             new BasicNameValuePair("flexibleSearchQuery", isPlainSQL ? "" : content),
             new BasicNameValuePair("sqlQuery", isPlainSQL ? content : ""),
             new BasicNameValuePair("maxCount", maxRows),
-            new BasicNameValuePair("user", settings.getHacLogin())
+            new BasicNameValuePair("user", settings.getUsername())
 //            new BasicNameValuePair("dataSource", "master"),
 //            new BasicNameValuePair("locale", "en")
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = getHostHacURL(project) + "/console/flexsearch/execute";
+        final String actionUrl = settings.getGeneratedURL() + "/console/flexsearch/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true, DEFAULT_HAC_TIMEOUT, settings);
         final StatusLine statusLine = response.getStatusLine();
@@ -193,22 +194,30 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         if (fsResultStatus == null) {
             return resultBuilder.errorMessage("No data in response").build();
         }
-        final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        final Map json = parseResponse(fsResultStatus);
+
+        if (json == null) {
+            return createResult()
+                .errorMessage("Cannot parse response from the server...")
+                .build();
+        }
+
         if (json.get("exception") != null) {
             return createResult()
                 .errorMessage(((Map<String, Object>) json.get("exception")).get("message").toString())
                 .build();
-        } else {
-            final TableBuilder tableBuilder = new TableBuilder();
-
-            final List<String> headers = (List<String>) json.get("headers");
-            final List<List<String>> resultList = (List<List<String>>) json.get("resultList");
-
-            tableBuilder.addRow(headers.toArray(new String[]{}));
-            resultList.forEach(row -> tableBuilder.addRow(row.toArray(new String[]{})));
-
-            return resultBuilder.output(tableBuilder.toString()).build();
         }
+
+
+        final TableBuilder tableBuilder = new TableBuilder();
+
+        final List<String> headers = (List<String>) json.get("headers");
+        final List<List<String>> resultList = (List<List<String>>) json.get("resultList");
+
+        tableBuilder.addRow(headers.toArray(new String[]{}));
+        resultList.forEach(row -> tableBuilder.addRow(row.toArray(new String[]{})));
+
+        return resultBuilder.output(tableBuilder.toString()).build();
     }
 
     public @NotNull
@@ -216,14 +225,14 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final Project project, final String content, final boolean isCommitMode, final int timeout
     ) {
 
-        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final var params = Arrays.asList(
             new BasicNameValuePair("scriptType", "groovy"),
             new BasicNameValuePair("commit", String.valueOf(isCommitMode)),
             new BasicNameValuePair("script", content)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = getHostHacURL(project) + "/console/scripting/execute";
+        final String actionUrl = settings.getGeneratedURL() + "/console/scripting/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true, timeout, settings);
         final StatusLine statusLine = response.getStatusLine();
@@ -242,20 +251,27 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         if (fsResultStatus == null) {
             return resultBuilder.errorMessage("No data in response").build();
         }
-        final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        final Map json = parseResponse(fsResultStatus);
+
+        if (json == null) {
+            return createResult()
+                .errorMessage("Cannot parse response from the server...")
+                .build();
+        }
+
         if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
             return createResult()
                 .errorMessage(json.get("stacktraceText").toString())
                 .build();
-        } else {
-            if (json.get("outputText") != null) {
-                resultBuilder.output(json.get("outputText").toString());
-            }
-            if (json.get("executionResult") != null) {
-                resultBuilder.result(json.get("executionResult").toString());
-            }
-            return resultBuilder.build();
         }
+
+        if (json.get("outputText") != null) {
+            resultBuilder.output(json.get("outputText").toString());
+        }
+        if (json.get("executionResult") != null) {
+            resultBuilder.result(json.get("executionResult").toString());
+        }
+        return resultBuilder.build();
     }
 
     @NotNull
@@ -269,5 +285,14 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             .httpCode(HttpStatus.SC_BAD_GATEWAY)
             .errorMessage("Unable to connect to Solr server. Please, check connection configuration")
             .build();
+    }
+
+    private static @Nullable Map parseResponse(final Elements fsResultStatus) {
+        try {
+            return new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        } catch (final Exception e) {
+            LOG.error("Cannot parse response", e);
+            return null;
+        }
     }
 }

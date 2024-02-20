@@ -47,6 +47,12 @@ public class ImpexParameterImpl extends ImpexParameterMixin implements ImpexPara
   }
 
   @Override
+  @Nullable
+  public ImpexDocumentIdUsage getDocumentIdUsage() {
+    return findChildByClass(ImpexDocumentIdUsage.class);
+  }
+
+  @Override
   @NotNull
   public List<ImpexMacroUsageDec> getMacroUsageDecList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexMacroUsageDec.class);

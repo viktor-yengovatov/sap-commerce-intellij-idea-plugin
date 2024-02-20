@@ -18,16 +18,16 @@
 package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.ActionButton
-import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.ListSeparator
@@ -58,16 +58,15 @@ class HacChooseConnectionAction : ActionGroup() {
         val project = e.project ?: return
         val presentation = e.presentation
 
-        val devSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-        val hacSettings = devSettings.getActiveHacRemoteConnectionSettings(project)
+        val hacSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
         presentation.text = "$hacSettings"
         presentation.isEnabledAndVisible = true
-        presentation.icon = HybrisIcons.Y_REMOTE
+        presentation.icon = HybrisIcons.Y_REMOTE_GREEN
 
         presentation.description = createHTML().div {
             p { +"Switch active connection" }
             hacSettings.generatedURL
-                ?.let { p { +it } }
+                .let { p { +it } }
         }
     }
 
@@ -78,9 +77,8 @@ class HacChooseConnectionAction : ActionGroup() {
         val component = (eventSource as? Component)
             ?: return
 
-        val devSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-        val items = getItems(devSettings, project)
-        val step = ListPopupStep(project, component, devSettings, items)
+        val items = getItems(project)
+        val step = ListPopupStep(project, component, items)
         val popup = PopupFactoryImpl.getInstance().createListPopup(project, step) { superRenderer -> superRenderer }
 
         if (eventSource !is InplaceButton && eventSource !is ActionButton) {
@@ -93,12 +91,9 @@ class HacChooseConnectionAction : ActionGroup() {
         popup.pack(true, true)
     }
 
-    private fun getItems(
-        devSettings: HybrisDeveloperSpecificProjectSettingsComponent,
-        project: Project
-    ): List<ListItem> {
-        val activeConnection = devSettings.getActiveHacRemoteConnectionSettings(project)
-        val connectionItems = devSettings.hacRemoteConnectionSettings
+    private fun getItems(project: Project): List<ListItem> {
+        val activeConnection = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+        val connectionItems = RemoteConnectionUtil.getRemoteConnections(project, RemoteConnectionType.Hybris)
             .map {
                 if (it == activeConnection) ActiveConnectionItem(it)
                 else ConnectionItem(it)
@@ -133,48 +128,44 @@ class HacChooseConnectionAction : ActionGroup() {
 
     open class ConnectionItem(val settings: HybrisRemoteConnectionSettings) : ListItem() {
         override fun getText() = settings.toString()
-        override fun getIcon(): Icon = HybrisIcons.Y_REMOTE_GREEN
+        override fun getIcon(): Icon = HybrisIcons.Y_REMOTE
     }
 
     class ActiveConnectionItem(settings: HybrisRemoteConnectionSettings) : ConnectionItem(settings) {
-        override fun getIcon(): Icon = HybrisIcons.Y_REMOTE
+        override fun getIcon(): Icon = HybrisIcons.Y_REMOTE_GREEN
     }
 
     private class ListPopupStep(
         private val project: Project,
         private val owner: Component,
-        private val devSettings: HybrisDeveloperSpecificProjectSettingsComponent,
         items: List<ListItem>
     ) : BaseListPopupStep<ListItem>(null, items) {
 
-        private val connectionItems = items
+        private val firstConnectionItem = items
             .filterIsInstance<ConnectionItem>()
+            .firstOrNull()
 
-        override fun onChosen(selectedValue: ListItem?, finalChoice: Boolean): PopupStep<*>? {
-            invokeLater {
-                when (selectedValue) {
-                    is CreateConnectionItem -> consumeConnectionSettings(devSettings.getDefaultHacRemoteConnectionSettings(project))
-                    is EditConnectionItem -> consumeConnectionSettings(devSettings.getActiveHacRemoteConnectionSettings(project))
-                    is ConnectionSettingsItem -> ShowSettingsUtil.getInstance()
-                        .showSettingsDialog(project, HybrisProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable::class.java)
-
-                    is ConnectionItem -> devSettings.setActiveHacRemoteConnectionSettings(selectedValue.settings)
+        override fun onChosen(selectedValue: ListItem?, finalChoice: Boolean): PopupStep<*>? = super.doFinalStep() {
+            when (selectedValue) {
+                is CreateConnectionItem -> {
+                    val settings = RemoteConnectionUtil.createDefaultRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+                    if (RemoteHacConnectionDialog(project, owner, settings).showAndGet()) {
+                        RemoteConnectionUtil.addRemoteConnection(project, settings)
+                    }
                 }
-            }
 
-            return FINAL_CHOICE
-        }
+                is EditConnectionItem -> {
+                    val settings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+                    RemoteHacConnectionDialog(project, owner, settings).showAndGet()
+                }
+                is ConnectionSettingsItem -> ShowSettingsUtil.getInstance()
+                    .showSettingsDialog(project, HybrisProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable::class.java)
 
-        private fun consumeConnectionSettings(connection: HybrisRemoteConnectionSettings) {
-            val dialog = RemoteHacConnectionDialog(project, owner, connection)
-            if (dialog.showAndGet()) {
-                val connections = HashSet(devSettings.hacRemoteConnectionSettings)
-                connections.add(connection)
-                devSettings.saveRemoteConnectionSettingsList(HybrisRemoteConnectionSettings.Type.Hybris, connections.toList())
+                is ConnectionItem -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, selectedValue.settings)
             }
         }
 
-        override fun getSeparatorAbove(value: ListItem?) = if (connectionItems.firstOrNull() == value) ListSeparator("Available Connections")
+        override fun getSeparatorAbove(value: ListItem?) = if (firstConnectionItem == value) ListSeparator("Available Connections")
         else null
 
         override fun isAutoSelectionEnabled() = false

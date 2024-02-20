@@ -18,32 +18,70 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import java.io.Serial
-import java.io.Serializable
+import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.credentialStore.Credentials
+import com.intellij.ide.passwordSafe.PasswordSafe
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
+import com.intellij.openapi.components.BaseState
+import com.intellij.util.xmlb.Accessor
+import com.intellij.util.xmlb.annotations.Transient
 
-class HybrisRemoteConnectionSettings : Serializable {
+class HybrisRemoteConnectionSettings : BaseState(), Comparable<HybrisRemoteConnectionSettings> {
 
-    var isSsl: Boolean = false
-    var uuid: String? = null
-    var displayName: String? = null
-    var hostIP: String? = null
-    var port: String? = null
-    var adminLogin: String? = null
-    var adminPassword: String? = null
-    var sslProtocol: String? = null
-    var generatedURL: String? = null
-    var solrWebroot: String? = null
-    var hacWebroot: String? = null
-    var hacLogin: String? = null
-    var hacPassword: String? = null
-    var type: Type = Type.Hybris
+    var uuid by string(null)
+    @Transient
+    var credentials: Credentials? = null
+    var displayName by string(null)
+    var scope by property(RemoteConnectionScope.PROJECT_PERSONAL) { false }
+    var type by property(RemoteConnectionType.Hybris) { false }
+    var hostIP by string(HybrisConstants.DEFAULT_HOST_URL)
+    var port by string(null)
+    var isSsl by property(true)
+    var sslProtocol by string(HybrisConstants.DEFAULT_SSL_PROTOCOL)
 
+    var solrWebroot by string("solr")
+    var hacWebroot by string("")
 
-    override fun toString() = displayName
+    val username: String
+        get() = credentials?.userName
+            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.userName
+            ?: if (type == RemoteConnectionType.Hybris) "admin"
+            else "solrserver"
+    val password: String
+        get() = credentials?.getPasswordAsString()
+            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.getPasswordAsString()
+            ?: if (type == RemoteConnectionType.Hybris) "nimda"
+            else "server123"
+
+    val generatedURL: String
+        get() {
+            return when (type) {
+                RemoteConnectionType.Hybris -> RemoteConnectionUtil.generateUrl(isSsl, hostIP, port, hacWebroot)
+                RemoteConnectionType.SOLR -> RemoteConnectionUtil.generateUrl(isSsl, hostIP, port, solrWebroot)
+            }
+        }
+
+    override fun toString() = (displayName
         ?.takeIf { it.isNotBlank() }
         ?: generatedURL
-            ?.takeIf { it.isNotBlank() }
+            .takeIf { it.isNotBlank() }
         ?: super.toString()
+        )
+        .let { scope.shortTitle + " : " + it }
+
+    override fun accepts(accessor: Accessor, bean: Any) = accessor.name != "credentials"
+        && accessor.name != "username"
+        && accessor.name != "password"
+        && accessor.name != "scope"
+
+    override fun compareTo(other: HybrisRemoteConnectionSettings) = uuid
+        ?.compareTo(other.uuid ?: "")
+        ?: -1
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -55,15 +93,9 @@ class HybrisRemoteConnectionSettings : Serializable {
     }
 
     override fun hashCode(): Int {
-        return uuid?.hashCode() ?: 0
+        var result = super.hashCode()
+        result = 31 * result + (uuid?.hashCode() ?: 0)
+        return result
     }
 
-    companion object {
-        @Serial
-        private val serialVersionUID: Long = -5898943547737648391L
-    }
-
-    enum class Type {
-        Hybris, SOLR
-    }
 }

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.common.utils
 
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
 import icons.GradleIcons
@@ -45,6 +44,7 @@ object HybrisIcons {
 
     val DECLARATION = getIcon("/icons/declaration.svg")
 
+    val Y_LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
     val Y_LOGO_BLUE = getIcon("/icons/hybrisIcon.svg")
     val Y_LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg")
     val Y_LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg")
@@ -70,11 +70,13 @@ object HybrisIcons {
     val MODULE_ECLIPSE = AllIcons.Providers.Eclipse
     val MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo
     val MODULE_CONFLICT = AllIcons.Actions.Cancel
-    val MODULE_GRADLE = if (isPluginActive(PluginCommon.GRADLE_PLUGIN_ID)) GradleIcons.Gradle else AllIcons.Nodes.Module
+    val MODULE_GRADLE = if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_GRADLE)) GradleIcons.Gradle else AllIcons.Nodes.Module
     val MODULE_CCV2 = getIcon("/icons/module/cloud.svg")
     val MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
     val MODULE_COMMERCE_GROUP = Y_LOGO_GREEN
     val MODULE_PLATFORM_GROUP = Y_LOGO_ORANGE
+    val MODULE_CUSTOM_GROUP = Y_LOGO_BLUE
+    val MODULE_EXTERNAL_GROUP = AllIcons.Nodes.ModuleGroup
 
     val EXTENSION_CONFIG = AllIcons.Nodes.ConfigFolder
     val EXTENSION_CLOUD = getIcon("/icons/extension/cloud.svg")

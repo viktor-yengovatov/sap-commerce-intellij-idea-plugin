@@ -55,6 +55,7 @@ object HybrisConstants {
     )
     val CCV2_COMMERCE_EXTENSION_PACKS = arrayOf(
         "hybris-commerce-integrations",
+        "hybris-datahub-integration-suite",
         "cx-commerce-crm-integrations",
         "media-telco"
     )
@@ -68,15 +69,13 @@ object HybrisConstants {
 
     const val IMPEX_CONFIG_PREFIX = "\$config"
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
-    const val IMPEX_CATALOG_VERSION_ONLINE = "Online"
-    const val IMPEX_CATALOG_VERSION_STAGED = "Staged"
     const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
 
     const val CONSOLE_TITLE_IMPEX = "[y] ImpEx Console"
     const val CONSOLE_TITLE_IMPEX_MONITOR = "[y] Monitor Console"
     const val CONSOLE_TITLE_GROOVY = "[y] Groovy Console"
-    const val CONSOLE_TITLE_FLEXIBLE_SEARCH = "[y] FS Console"
+    const val CONSOLE_TITLE_FLEXIBLE_SEARCH = "[y] FxS Console"
     const val CONSOLE_TITLE_SOLR_SEARCH = "[y] Solr search"
     const val CONSOLE_TITLE_POLYGLOT_QUERY = "[y] PolyglotQuery"
 
@@ -96,6 +95,7 @@ object HybrisConstants {
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
     const val EXTENSIONS_XML = "extensions.xml"
     const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
+    const val HYBRIS_LICENCE_JAR = "hybrislicence.jar"
 
     const val HYBRIS_DIRECTORY = "hybris"
     const val HYBRIS_DATA_DIRECTORY = "data"
@@ -183,6 +183,7 @@ object HybrisConstants {
     const val DEBUG_PORT = "8000"
 
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"
+    const val PROPERTY_ADMIN_INITIAL_PASSWORD = "initialpassword.admin"
     const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
     const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
     const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
@@ -554,8 +555,6 @@ object HybrisConstants {
 
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
-
-    const val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
 
     @JvmField
     val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)

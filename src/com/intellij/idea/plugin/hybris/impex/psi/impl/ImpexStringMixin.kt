@@ -19,12 +19,13 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.lang.ASTNode
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import java.io.Serial
 
-abstract class ImpexStringMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost {
+abstract class ImpexStringMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost, ImpexString {
 
     override fun isValidHost() = true
     override fun updateText(text: String) = this

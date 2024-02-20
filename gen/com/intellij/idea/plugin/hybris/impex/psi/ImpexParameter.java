@@ -27,6 +27,9 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpexParameter extends PsiElement {
 
+  @Nullable
+  ImpexDocumentIdUsage getDocumentIdUsage();
+
   @NotNull
   List<ImpexMacroUsageDec> getMacroUsageDecList();
 
