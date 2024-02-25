@@ -86,5 +86,10 @@ class CngCompletionContributor : CompletionContributor() {
             PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_SETTING),
             CngWidgetSettingCompletionProvider.instance
         )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_COMPONENT_RENDERER_CLASS),
+            CngWidgetComponentRendererClassCompletionProvider.instance
+        )
     }
 }

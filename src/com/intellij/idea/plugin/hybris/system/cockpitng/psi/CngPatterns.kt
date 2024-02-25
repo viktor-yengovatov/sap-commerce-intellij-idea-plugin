@@ -65,6 +65,18 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
 
+    val WIDGET_COMPONENT_RENDERER_CLASS = XmlPatterns.or(
+        attributeValue(
+            "class",
+            "column",
+            "list-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_LIST_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile)
+
+    )
+
     val EDITOR_DEFINITION = XmlPatterns.or(
         attributeValue(
             "editor",
