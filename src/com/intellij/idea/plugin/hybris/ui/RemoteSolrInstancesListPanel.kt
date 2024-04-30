@@ -18,20 +18,19 @@
 package com.intellij.idea.plugin.hybris.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteSolrConnectionDialog
 import com.intellij.openapi.project.Project
 import java.io.Serial
-import javax.swing.event.ListDataEvent
 
 class RemoteSolrInstancesListPanel(
     project: Project,
-    private val onDataChanged: (ListDataEvent, Set<HybrisRemoteConnectionSettings>) -> Unit = { _, _ -> }
+    private val onDataChanged: (EventType, Set<RemoteConnectionSettings>) -> Unit = { _, _ -> }
 ) : RemoteInstancesListPanel(project, RemoteConnectionType.SOLR, HybrisIcons.CONSOLE_SOLR) {
 
-    override fun editSelectedItem(item: HybrisRemoteConnectionSettings): HybrisRemoteConnectionSettings? {
+    override fun editSelectedItem(item: RemoteConnectionSettings): RemoteConnectionSettings? {
         val ok = RemoteSolrConnectionDialog(myProject, this, item).showAndGet()
         return if (ok) item
         else null
@@ -46,9 +45,9 @@ class RemoteSolrInstancesListPanel(
     }
 
     override fun onDataChanged(
-        e: ListDataEvent,
-        data: Set<HybrisRemoteConnectionSettings>
-    ) = onDataChanged.invoke(e, data)
+        eventType: EventType,
+        data: Set<RemoteConnectionSettings>
+    ) = onDataChanged.invoke(eventType, data)
 
     companion object {
         @Serial

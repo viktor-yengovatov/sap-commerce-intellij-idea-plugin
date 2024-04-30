@@ -30,6 +30,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.tree.IFileElementType
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 object HybrisConstants {
 
@@ -132,9 +134,11 @@ object HybrisConstants {
 
     const val GEN_SRC_DIRECTORY = "gensrc"
     const val TEST_SRC_DIRECTORY = "testsrc"
+    const val IDE_CONSOLES_PATH = "consoles/ide/"
     const val GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc"
     const val KOTLIN_TEST_SRC_DIRECTORY = "kotlintestsrc"
     const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
+    const val BOOTSTRAP_GEN_SRC_PATH = "bootstrap/gensrc"
 
     const val HMC_MODULE_DIRECTORY = "hmc"
     const val HAC_MODULE_DIRECTORY = "hac"
@@ -280,6 +284,7 @@ object HybrisConstants {
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
 
+    const val CLASS_FQN_JALO_ITEM_ROOT = "de.hybris.platform.jalo.Item"
     const val CLASS_FQN_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_FQN_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_NAME_ENUM = "HybrisEnumValue"
@@ -294,6 +299,7 @@ object HybrisConstants {
     const val CLASS_FQN_IMPEX_SPECIAL_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.SpecialValueTranslator"
     const val CLASS_FQN_IMPEX_HEADER_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.HeaderCellTranslator"
     const val CLASS_FQN_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
+    const val CLASS_FQN_CNG_WIDGET_COMPONENT_RENDERER = "com.hybris.cockpitng.widgets.common.WidgetComponentRenderer"
     const val CLASS_FQN_FLEXIBLE_SEARCH_QUERY = "de.hybris.platform.servicelayer.search.FlexibleSearchQuery"
     const val CLASS_FQN_CODE_GENERATOR = "de.hybris.bootstrap.codegenerator.CodeGenerator"
     const val CLASS_NAME_FLEXIBLE_SEARCH_QUERY = "FlexibleSearchQuery"
@@ -342,8 +348,9 @@ object HybrisConstants {
 
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
-    const val JAVADOC_FALLBACK_URL = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
-    const val JAVADOC_URL = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s/en-US"
+    const val URL_HELP_JAVADOC_FALLBACK = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
+    const val URL_HELP_JAVADOC = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s/en-US"
+    const val URL_HELP_GENERATING_API_TOKENS = "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html"
 
     const val SPRING_NAMESPACE = "http://www.springframework.org/schema/beans"
 
@@ -355,11 +362,14 @@ object HybrisConstants {
     const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
     const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
     const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
+    const val COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX = "SPRING_BEAN_"
 
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
     const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
 
     const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
+
+    const val SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN = "SAP CX CCv2 Token"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
@@ -404,6 +414,11 @@ object HybrisConstants {
     const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
+
+    val CCV2_DATE_FORMAT_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
+    val CCV2_DATE_FORMAT_CCM_NANO: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    val CCV2_DATE_FORMAT_CCM: DateTimeFormatter = DateTimeFormatter.ISO_DATE
+    val ZONE_GMT = ZoneId.of("GMT")
 
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")

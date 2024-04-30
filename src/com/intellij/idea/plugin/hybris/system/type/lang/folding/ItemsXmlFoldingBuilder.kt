@@ -19,9 +19,9 @@ package com.intellij.idea.plugin.hybris.system.type.lang.folding
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.TypeSystemFoldingSettings
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.model.*
-import com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemFoldingSettings
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -30,8 +30,6 @@ import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
-import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
-import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 
 class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettings, Items>(Items::class.java), DumbAware {
 
@@ -66,7 +64,7 @@ class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSett
         }
     }
 
-    override fun initSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+    override fun initSettings(project: Project) = DeveloperSettingsComponent.getInstance(project).state
         .typeSystemSettings
         .folding
 
@@ -84,7 +82,8 @@ class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSett
 
             EnumTypes.ENUMTYPE -> psi.getAttributeValue(EnumType.CODE)
 
-            Persistence.COLUMNTYPE -> "[type] " + (psi.getAttributeValue(ColumnType.DATABASE)?.let { "$it : " } ?: "") + (psi.getChildOfType<XmlTag>()
+            Persistence.COLUMNTYPE -> "[type] " + (psi.getAttributeValue(ColumnType.DATABASE)?.let { "$it : " } ?: "") + (psi.childrenOfType<XmlTag>()
+                .firstOrNull()
                 ?.value
                 ?.trimmedText
                 ?: "")
@@ -111,7 +110,8 @@ class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSett
             CustomProperties.PROPERTY -> (psi.getAttributeValue(CustomProperty.NAME)
                 ?.let { tablify(psi, it, getCachedFoldingSettings(psi)?.tablifyItemCustomProperties, CustomProperties.PROPERTY, CustomProperty.NAME) }
                 ?: FALLBACK_PLACEHOLDER) +
-                (psi.getChildOfType<XmlTag>()
+                (psi.childrenOfType<XmlTag>()
+                    .firstOrNull()
                     ?.value
                     ?.trimmedText
                     ?.let { TYPE_SEPARATOR + if (it.length > 50) it.substring(0, 50) + "..." else it }
@@ -158,7 +158,7 @@ class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSett
         else -> FALLBACK_PLACEHOLDER
     }
 
-    private fun mandatory(psi: PsiElement) = psi.getChildrenOfType<XmlTag>().firstOrNull { it.name == Attribute.MODIFIERS }
+    private fun mandatory(psi: PsiElement) = psi.childrenOfType<XmlTag>().firstOrNull { it.name == Attribute.MODIFIERS }
         ?.getAttribute(Modifiers.OPTIONAL)
         ?.value
         ?.let {

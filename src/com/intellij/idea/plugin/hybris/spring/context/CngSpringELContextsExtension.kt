@@ -19,9 +19,11 @@ package com.intellij.idea.plugin.hybris.spring.context
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Labels
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Preview
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.AbstractAction
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.javaee.el.util.ELImplicitVariable
@@ -52,8 +54,12 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
 
         return when {
             context is XmlText
-                && tag.localName == Labels.LABEL
-                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(context, project)
+                && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION)
+                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
+
+            context is XmlAttributeValue
+                && context.parentOfType<XmlAttribute>()?.localName == Preview.URL_QUALIFIER
+                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
 
             context is XmlAttributeValue
                 && context.parentOfType<XmlAttribute>()?.localName == AbstractAction.VISIBLE
@@ -63,8 +69,7 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
         }
     }
 
-    private fun process(context: XmlText, project: Project) = context
-        .let { CngPsiHelper.resolveContextType(it) }
+    private fun process(type: String?, project: Project) = type
         ?.let { findClassByHybrisTypeName(project, it) }
         ?.let { process(it) }
         ?.toMutableList()
@@ -76,8 +81,16 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
             val name = it.first ?: return@let null
             val type = it.second ?: return@let null
 
-            val psiClass = if (type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE) findClassByFQN(project, type)
-            else findClassByHybrisTypeName(project, type)
+            val psiClass = when {
+                type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                    SpringHelper.resolveBeanClass(context, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+
+                type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+                    findClassByFQN(project, type)
+
+                else -> findClassByHybrisTypeName(project, type)
+            }
+
             if (psiClass == null) return@let null
 
             name to psiClass

@@ -51,13 +51,14 @@ class DataSourcesConfigurator {
         dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
-            .withUrl(projectProperties["db.url"])
+            .withUrl(projectProperties["db.url"]?.replace("\\", ""))
             .withUser(projectProperties["db.username"])
             .withPassword(projectProperties["db.password"])
             .withAuthProviderId(DatabaseAuthProviderNames.CREDENTIALS_ID)
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {
                     if (dataSource is LocalDataSource) {
+                        dataSource.passwordStorage = LocalDataSource.Storage.PERSIST
                         dataSources += dataSource
                     }
                 }

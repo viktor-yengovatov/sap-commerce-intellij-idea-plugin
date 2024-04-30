@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -33,18 +33,6 @@
 
         <xmlStructureViewBuilderProvider order="first" implementation="com.intellij.idea.plugin.hybris.system.type.structureView.TSXmlStructureViewBuilderProvider"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelProcessor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelProcessorImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelCollector"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelCollectorImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelMerger"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelMergerImpl"/>
-
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaItemServiceImpl"/>
 
@@ -54,7 +42,7 @@
         <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
-                             provider="com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemConfigurableProvider"/>
+                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectTypeSystemConfigurableProvider"/>
 
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
     </extensions>

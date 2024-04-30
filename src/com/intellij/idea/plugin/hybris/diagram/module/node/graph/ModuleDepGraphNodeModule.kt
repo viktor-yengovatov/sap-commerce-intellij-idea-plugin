@@ -19,10 +19,30 @@
 package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import com.intellij.openapi.module.Module
 
 data class ModuleDepGraphNodeModule(
     val module: Module,
     val type: ModuleDescriptorType,
-    override val name: String
-) : ModuleDepGraphNode
+    val subModuleType: SubModuleDescriptorType?,
+    override val name: String,
+    override val properties: Array<ModuleDepGraphField>
+) : ModuleDepGraphNode {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ModuleDepGraphNodeModule) return false
+
+        if (module != other.module) return false
+        if (type != other.type) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = module.hashCode()
+        result = 31 * result + type.hashCode()
+        return result
+    }
+}

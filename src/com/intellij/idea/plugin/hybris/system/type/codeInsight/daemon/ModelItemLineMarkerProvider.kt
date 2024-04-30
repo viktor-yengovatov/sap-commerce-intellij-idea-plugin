@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLin
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -32,12 +32,12 @@ class ModelItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiCla
 
     override fun getName() = message("hybris.editor.gutter.ts.model.item.name")
     override fun getIcon(): Icon = HybrisIcons.TS_ITEM
-    override fun canProcess(psi: PsiClass) = ModelsUtils.isItemModelFile(psi)
+    override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.nameIdentifier != null }
 
     override fun collectDeclarations(psi: PsiClass) = TSMetaModelAccess.getInstance(psi.project)
-        .findMetaItemByName(ModelsUtils.cleanSearchName(psi.name))
+        .findMetaItemByName(TSUtils.cleanItemModelSearchName(psi.name))
         ?.retrieveAllDoms()
         ?.mapNotNull { it.code.xmlAttributeValue }
         ?.takeIf { it.isNotEmpty() }

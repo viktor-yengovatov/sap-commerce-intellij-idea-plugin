@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.java.psi.reference.JavaClassReference
+import com.intellij.idea.plugin.hybris.java.psi.reference.SpringBeanJavaClassReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.openapi.application.ApplicationManager
@@ -37,10 +38,17 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
         val type = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
             ?: return emptyArray()
 
-        return if (type.contains(".")
-            && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
-        ) arrayOf(JavaClassReference(element, type))
-        else arrayOf(CngFlowTSItemAttributeReference(element))
+        val reference = when {
+            type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                SpringBeanJavaClassReference(element, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+
+            type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+                JavaClassReference(element, type)
+
+            else -> CngFlowTSItemAttributeReference(element)
+        }
+
+        return arrayOf(reference)
     }
 
     companion object {

@@ -21,13 +21,12 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
 import com.intellij.openapi.vfs.VfsUtil
-import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 import java.io.File
 
 object YModuleLibDescriptorUtil {
@@ -75,7 +74,8 @@ object YModuleLibDescriptorUtil {
         addRootLib(descriptor, libs)
 
         if (descriptor.hasBackofficeModule) {
-            descriptor.getSubModules().firstIsInstanceOrNull<YBackofficeSubModuleDescriptor>()
+            descriptor.getSubModules()
+                .firstOrNull { it is YBackofficeSubModuleDescriptor }
                 ?.let { yModule ->
                     val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
                     val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
@@ -398,7 +398,7 @@ object YModuleLibDescriptorUtil {
     private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
         ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
 
-    private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (HybrisApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+    private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
         val rootDescriptor = if (descriptor is YSubModuleDescriptor) descriptor.owner
         else descriptor
 

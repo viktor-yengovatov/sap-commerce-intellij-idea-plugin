@@ -25,8 +25,8 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -58,7 +58,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
             ?: return true
 
-        val settings = HybrisProjectSettingsComponent.getInstance(context.project)
+        val settings = ProjectSettingsComponent.getInstance(context.project)
         if (!settings.isHybrisProject()) return true
         if (!settings.state.generateCodeOnRebuild) {
             context.addMessage(CompilerMessageCategory.WARNING, "[y] Code generation is disabled, to enable it adjust SAP Commerce Project specific settings.", null, -1, -1)
@@ -103,7 +103,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         bootstrapDirectory: Path,
         coreModuleRoot: Path,
         vmExecutablePath: String,
-        settings: HybrisProjectSettings,
+        settings: ProjectSettings,
     ): Boolean {
         val pathToBeDeleted = bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY)
         cleanDirectory(context, pathToBeDeleted)
@@ -226,9 +226,9 @@ class ProjectBeforeCompilerTask : CompileTask {
     private fun invokeModelsJarCreation(context: CompileContext, bootstrapDirectory: Path): Boolean {
         context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started creation of the models.jar file...", null, -1, -1)
 
-        val bootstrapDir = (System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
+        val bootstrapDir = System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
             ?.let { Paths.get(it) }
-            ?: bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY))
+            ?: bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY)
 
         val modelsFile = bootstrapDir.resolve(HybrisConstants.JAR_MODELS).toFile()
         if (modelsFile.exists()) modelsFile.delete()

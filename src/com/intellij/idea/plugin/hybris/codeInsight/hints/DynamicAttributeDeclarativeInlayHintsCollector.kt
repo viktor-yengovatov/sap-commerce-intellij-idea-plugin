@@ -23,11 +23,11 @@ import com.intellij.codeInsight.completion.JavaMethodCallElement
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
-import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
-import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.*
 
 class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
@@ -41,10 +41,10 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
             ?: return
 
         if (method !is PsiMethod) return
-        if (method.containingClass == null) return
-        if (!ModelsUtils.isItemModelFile(method.containingClass)) return
+        val psiClass = method.containingClass ?: return
+        if (!TSUtils.isItemModelFile(psiClass)) return
 
-        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(method.containingClass?.name)) ?: return
+        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(psiClass.name)) ?: return
         val annotation = method.getAnnotation(HybrisConstants.CLASS_FQN_ANNOTATION_ACCESSOR) ?: return
 
         val qualifier = annotation.parameterList.attributes
@@ -62,7 +62,7 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 
         val inlayActionData = attribute.persistence
             .attributeHandler
-            ?.let { TSSpringHelper.resolveBeanClass(element, it) }
+            ?.let { SpringHelper.resolveBeanClass(element, it) }
             ?.let { SmartPointerManager.getInstance(element.project).createSmartPsiElementPointer(it) }
             ?.let {
                 InlayActionData(

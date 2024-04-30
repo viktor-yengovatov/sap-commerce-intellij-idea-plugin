@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,19 +19,21 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
 class SpringReference(
     element: PsiElement,
     val name: String,
+    private val textRange: TextRange? = null
 ) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
 
-    override fun calculateDefaultRangeInElement() = if (element.text.startsWith("\"") || element.text.startsWith("'")) TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
-    else TextRange.from(0, element.textLength)
+    override fun calculateDefaultRangeInElement() = textRange
+        ?: if (element.text.startsWith("\"") || element.text.startsWith("'")) TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
+        else TextRange.from(0, element.textLength)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = TSSpringHelper.resolveBeanClass(element, name)
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = SpringHelper.resolveBeanClass(element, name)
         ?.let { PsiElementResolveResult.createResults(it) }
         ?: ResolveResult.EMPTY_ARRAY
 

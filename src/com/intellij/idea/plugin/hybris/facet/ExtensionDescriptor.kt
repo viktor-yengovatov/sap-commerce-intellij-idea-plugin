@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorTy
 
 class ExtensionDescriptor(
     var name: String = "",
+    var description: String? = null,
     var readonly: Boolean = false,
     var useMaven: Boolean = false,
     var type: ModuleDescriptorType = ModuleDescriptorType.NONE,
@@ -34,8 +35,13 @@ class ExtensionDescriptor(
     var coreModule: Boolean = false,
     var deprecated: Boolean = false,
     var extGenTemplateExtension: Boolean = false,
+    var jaloLogicFree: Boolean = false,
     var addon: Boolean = false,
+    var requiredByAll: Boolean = false,
     var classPathGen: String? = null,
     var moduleGenName: String? = null,
+    var packageRoot: String? = null,
+    var webRoot: String? = null,
+    var version: String? = null,
     var installedIntoExtensions: Set<String> = emptySet(),
 )

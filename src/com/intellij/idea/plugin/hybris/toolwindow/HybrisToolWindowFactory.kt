@@ -18,8 +18,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
 import com.intellij.openapi.project.DumbAware
@@ -38,11 +39,12 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
             createTSContent(toolWindow, TSView(project)),
             createBSContent(toolWindow, BSView(project)),
             createConsolesContent(toolWindow, project, HybrisConsolesView(project)),
+            createCCv2CLIContent(toolWindow, project, CCv2View(project)),
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
-    override suspend fun isApplicableAsync(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
-    override fun shouldBeAvailable(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override suspend fun isApplicableAsync(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun shouldBeAvailable(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
 
     private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TS_ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
@@ -70,10 +72,21 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         this
     }
 
+    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) = with(toolWindow.contentManager.factory.createContent(panel, CCV2, true)) {
+        Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
+        Disposer.register(toolWindow.disposable, panel)
+
+        icon = HybrisIcons.CCV2
+        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+
+        this
+    }
+
     companion object {
         const val ID = "SAP CX"
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"
+        const val CCV2 = "CCv2"
     }
 }

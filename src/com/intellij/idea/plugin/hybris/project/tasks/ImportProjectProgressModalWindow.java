@@ -19,6 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
+import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.FacetTypeId;
 import com.intellij.facet.FacetTypeRegistry;
@@ -26,6 +27,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
+import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.ide.util.PropertiesComponent;
@@ -38,10 +40,10 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -140,9 +142,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
         final var allModuleDescriptors = allModules.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
-        final var appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final var appSettings = ApplicationSettingsComponent.getInstance().getState();
 
-        final var projectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
+        final var projectSettingsComponent = ProjectSettingsComponent.getInstance(project);
         final var projectSettings = projectSettingsComponent.getState();
 
         final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
@@ -159,7 +161,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             projectSettings.setExcludedFromScanning(hybrisProjectDescriptor.getExcludedFromScanning());
         }
 
-        this.saveImportedSettings(project, projectSettings, appSettings, projectSettingsComponent);
+        this.saveImportedSettings(projectSettings, appSettings, projectSettingsComponent);
         this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
@@ -269,7 +271,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private Module createJavaModule(final @NotNull ProgressIndicator indicator,
                                     final Map<String, YModuleDescriptor> allYModules,
                                     final ModifiableModuleModel rootProjectModifiableModel,
-                                    final ModuleDescriptor moduleDescriptor, final @NotNull HybrisApplicationSettings appSettings
+                                    final ModuleDescriptor moduleDescriptor, final @NotNull ApplicationSettings appSettings
     ) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
@@ -289,6 +291,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         modifiableRootModel.inheritSdk();
 
+        configuratorFactory.getJavadocSettingsConfigurator().configure(modifiableRootModel, moduleDescriptor);
         configuratorFactory.getLibRootsConfigurator().configure(indicator, allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
         configuratorFactory.getContentRootConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
         configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
@@ -395,14 +398,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisDictionary.addToDictionary(moduleNames);
     }
 
-    private void initializeHybrisProjectSettings(@NotNull final Project project, final @NotNull HybrisProjectSettings hybrisProjectSettings) {
-        hybrisProjectSettings.setHybrisProject(true);
+    private void initializeHybrisProjectSettings(@NotNull final Project project, final @NotNull ProjectSettings projectSettings) {
+        projectSettings.setHybrisProject(true);
         final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
 
         if (plugin == null) return;
 
         final String version = plugin.getVersion();
-        hybrisProjectSettings.setImportedByVersion(version);
+        projectSettings.setImportedByVersion(version);
     }
 
     private void selectSdk(@NotNull final Project project) {
@@ -424,7 +427,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
-    private void saveCustomDirectoryLocation(final Project project, final HybrisProjectSettings hybrisProjectSettings) {
+    private void saveCustomDirectoryLocation(final Project project, final ProjectSettings projectSettings) {
         final File customDirectory = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         final File hybrisDirectory = hybrisProjectDescriptor.getHybrisDistributionDirectory();
         final VirtualFile projectDir = ProjectUtil.guessProjectDir(project);
@@ -435,36 +438,36 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final Path projectPath = Paths.get(baseDirectory.getAbsolutePath());
         final Path hybrisPath = Paths.get(hybrisDirectory.getAbsolutePath());
         final Path relativeHybrisPath = projectPath.relativize(hybrisPath);
-        hybrisProjectSettings.setHybrisDirectory(relativeHybrisPath.toString());
+        projectSettings.setHybrisDirectory(relativeHybrisPath.toString());
         if (customDirectory != null) {
             final Path customPath = Paths.get(customDirectory.getAbsolutePath());
             final Path relativeCustomPath = hybrisPath.relativize(customPath);
-            hybrisProjectSettings.setCustomDirectory(relativeCustomPath.toString());
+            projectSettings.setCustomDirectory(relativeCustomPath.toString());
         }
     }
 
-    private void saveImportedSettings(final Project project, @NotNull final HybrisProjectSettings hybrisProjectSettings,
-                                      @NotNull final HybrisApplicationSettings appSettings,
-                                      @NotNull final HybrisProjectSettingsComponent hybrisSettingsComponent) {
-        hybrisProjectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
+    private void saveImportedSettings(@NotNull final ProjectSettings projectSettings,
+                                      @NotNull final ApplicationSettings appSettings,
+                                      @NotNull final ProjectSettingsComponent hybrisSettingsComponent) {
+        projectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
         final File extDir = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         if (extDir != null && extDir.isDirectory()) {
-            hybrisProjectSettings.setExternalExtensionsDirectory(FileUtil.toSystemIndependentName(extDir.getPath()));
+            projectSettings.setExternalExtensionsDirectory(FileUtil.toSystemIndependentName(extDir.getPath()));
         }
         File configDir = hybrisProjectDescriptor.getExternalConfigDirectory();
         if (configDir != null && configDir.isDirectory()) {
-            hybrisProjectSettings.setExternalConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
+            projectSettings.setExternalConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
         }
         final ConfigModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         if (configModule != null) {
             configDir = configModule.getModuleRootDirectory();
             if (configDir.isDirectory()) {
-                hybrisProjectSettings.setConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
+                projectSettings.setConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
             }
         }
         final File dbDriversDir = hybrisProjectDescriptor.getExternalDbDriversDirectory();
         if (dbDriversDir != null && dbDriversDir.isDirectory()) {
-            hybrisProjectSettings.setExternalDbDriversDirectory(FileUtil.toSystemIndependentName(dbDriversDir.getPath()));
+            projectSettings.setExternalDbDriversDirectory(FileUtil.toSystemIndependentName(dbDriversDir.getPath()));
             appSettings.setExternalDbDriversDirectory(FileUtil.toSystemIndependentName(dbDriversDir.getPath()));
         } else {
             appSettings.setExternalDbDriversDirectory("");
@@ -476,7 +479,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();
 
         if (sourceCodeFile != null && sourceCodeFile.exists()) {
-            hybrisProjectSettings.setSourceCodeFile(FileUtil.toSystemIndependentName(sourceCodeFile.getPath()));
+            projectSettings.setSourceCodeFile(FileUtil.toSystemIndependentName(sourceCodeFile.getPath()));
             final boolean directory = sourceCodeFile.isDirectory();
             appSettings.setSourceCodeDirectory(FileUtil.toSystemIndependentName(
                 directory ? sourceCodeFile.getPath() : sourceCodeFile.getParent()));
@@ -484,13 +487,23 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
         final File modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (modulesFilesDirectory != null && modulesFilesDirectory.isDirectory()) {
-            hybrisProjectSettings.setIdeModulesFilesDirectory(FileUtil.toSystemIndependentName(modulesFilesDirectory.getPath()));
+            projectSettings.setIdeModulesFilesDirectory(FileUtil.toSystemIndependentName(modulesFilesDirectory.getPath()));
         }
-        hybrisProjectSettings.setFollowSymlink(hybrisProjectDescriptor.isFollowSymlink());
-        hybrisProjectSettings.setScanThroughExternalModule(hybrisProjectDescriptor.isScanThroughExternalModule());
-        hybrisProjectSettings.setModulesOnBlackList(createModulesOnBlackList());
-        hybrisProjectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
-        hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
+        projectSettings.setFollowSymlink(hybrisProjectDescriptor.isFollowSymlink());
+        projectSettings.setScanThroughExternalModule(hybrisProjectDescriptor.isScanThroughExternalModule());
+        projectSettings.setModulesOnBlackList(createModulesOnBlackList());
+        projectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
+
+
+        final var sapCLIDirectory = hybrisProjectDescriptor.getSAPCLIDirectory();
+        if (sapCLIDirectory != null && sapCLIDirectory.isDirectory()) {
+            appSettings.setSapCLIDirectory(FileUtil.toSystemIndependentName(sapCLIDirectory.getPath()));
+        }
+
+        final var credentialAttributes = new CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN);
+        PasswordSafe.getInstance().setPassword(credentialAttributes, hybrisProjectDescriptor.getSAPCLIToken());
+
+        projectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
         final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
             .filter(e -> !(e instanceof MavenModuleDescriptor)
                 && !(e instanceof EclipseModuleDescriptor)
@@ -503,10 +516,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .map(YModuleDescriptor.class::cast)
             .collect(Collectors.toSet());
         hybrisSettingsComponent.setAvailableExtensions(completeSetOfHybrisModules);
-        hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules.stream()
+        projectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules.stream()
             .map(ModuleDescriptor::getName)
             .collect(Collectors.toSet()));
-        hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
+        projectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
     }
 
     private Set<String> createModulesOnBlackList() {

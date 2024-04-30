@@ -21,14 +21,14 @@ package com.intellij.idea.plugin.hybris.impex.constants.modifier
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
-import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.idea.plugin.hybris.impex.constants.InterceptorType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
+import com.intellij.idea.plugin.hybris.java.completion.JavaClassCompletionService
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
@@ -58,7 +58,7 @@ enum class TypeModifier(
                 .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))
                 ?: return emptySet()
 
-            return TSSpringHelper.getBeansLazy(interceptorClass).value
+            return SpringHelper.resolveInterceptorBeansLazy(interceptorClass).value
                 .mapNotNull {
                     it.springBean.beanName
                         ?.let { lookupElement -> ImpExLookupElementFactory.buildInterceptor(lookupElement, it.beanClass?.name) }
@@ -76,7 +76,7 @@ enum class TypeModifier(
     CACHE_UNIQUE("cacheUnique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     IMPEX_LEGACY_MODE("impex.legacy.mode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     PROCESSOR("processor") {
-        override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
+        override fun getLookupElements(project: Project) = JavaClassCompletionService.getInstance(project)
             .getImplementationsForClasses(HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
     };
 

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.utils
 
 import com.intellij.icons.AllIcons
+import com.intellij.icons.ExpUiIcons
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
@@ -90,7 +91,7 @@ object HybrisIcons {
     val EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder
     val EXTENSION_HMC = AllIcons.Nodes.Folder
     val EXTENSION_HAC = AllIcons.Nodes.Folder
-    val EXTENSION_KOTLIN_NATURE = KotlinIcons.SMALL_LOGO
+    val EXTENSION_KOTLIN_NATURE = if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_KOTLIN)) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
 
     val TYPE_SYSTEM = getIcon("/icons/typeSystem.svg")
     val SPRING_BEAN = getIcon("icons/springBean.svg")
@@ -181,6 +182,13 @@ object HybrisIcons {
     val BP_DIAGRAM_PARAMETER_OPTIONAL = AllIcons.Nodes.Pluginobsolete
     val BP_DIAGRAM_PROPERTIES = AllIcons.Nodes.Property
 
+    val MODULE_DEP_DIAGRAM_PROPERTY = BS_PROPERTY
+    val MODULE_DEP_DIAGRAM_DESCRIPTION = AllIcons.Windows.Help
+    val MODULE_DEP_DIAGRAM_MAVEN_ENABLED = MODULE_MAVEN
+    val MODULE_DEP_DIAGRAM_DEPRECATED = AllIcons.General.ExclMark
+    val MODULE_DEP_DIAGRAM_TEMPLATE = AllIcons.Nodes.Template
+    val MODULE_DEP_DIAGRAM_JALO_LOGIC_FREE = getIcon("/icons/flexibleSearch/star.svg")
+
     val TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property
     val TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object
     val TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg")
@@ -208,6 +216,59 @@ object HybrisIcons {
     val CONSOLE_EXECUTE = AllIcons.Actions.Execute
     val CONSOLE_SUSPEND = AllIcons.Actions.Suspend
     val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
+
+    val CCV2 = getIcon("/icons/ccv2/ccv2.svg")
+    val CCV2_FETCH = AllIcons.Vcs.Fetch
+    val CCV2_ENVIRONMENTS = EXTENSION_CLOUD
+    val CCV2_BUILDS = BUILD_CALLBACKS
+    val CCV2_DEPLOYMENTS = AllIcons.Nodes.Deploy
+    val CCV2_BACKUPS = AllIcons.Nodes.Undeploy
+    val CCV2_ENDPOINTS = AllIcons.General.Web
+    val CCV2_PROTOCOL = AllIcons.General.InheritedMethod
+    val CCV2_PROTOCOL_CCM = AllIcons.Actions.StartMemoryProfile
+    val CCV2_PROTOCOL_NATIVE = AllIcons.General.Web
+
+    val CCV2_BUILD_BRANCH = AllIcons.Vcs.Branch
+    val CCV2_BUILD_CREATED_BY = AllIcons.General.User
+    val CCV2_BUILD_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_BUILD_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
+    val CCV2_BUILD_STATUS_BUILDING = ExpUiIcons.Run.TestCustom
+    val CCV2_BUILD_STATUS_SUCCESS = ExpUiIcons.Run.TestPassed
+    val CCV2_BUILD_STATUS_FAIL = ExpUiIcons.Run.TestFailed
+    val CCV2_BUILD_STATUS_DELETED = ExpUiIcons.Run.KillProcess
+    val CCV2_BUILD_CREATE = AllIcons.Actions.Execute
+    val CCV2_BUILD_REDO = AllIcons.Actions.BuildAutoReloadChanges
+    val CCV2_BUILD_DEPLOY = AllIcons.Nodes.Deploy
+    val CCV2_BUILD_DELETE = ExpUiIcons.General.Delete
+
+    val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User
+    val CCV2_DEPLOYMENT_UPDATE_MODE_NONE = AllIcons.Diff.GutterCheckBox
+    val CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE = ExpUiIcons.General.PluginUpdate
+    val CCV2_DEPLOYMENT_UPDATE_MODE_INIT = AllIcons.General.ExclMark
+    val CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE = AllIcons.Gutter.RecursiveMethod
+    val CCV2_DEPLOYMENT_STRATEGY_RECREATE = AllIcons.Gutter.WriteAccess
+    val CCV2_DEPLOYMENT_STRATEGY_GREEN = AllIcons.Gutter.ReadAccess
+    val CCV2_DEPLOYMENT_STRATEGY_UNKNOWN = ExpUiIcons.Run.TestUnknown
+
+    val CCV2_DEPLOYMENT_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
+    val CCV2_DEPLOYMENT_STATUS_DEPLOYING = ExpUiIcons.Run.TestCustom
+    val CCV2_DEPLOYMENT_STATUS_DEPLOYED = ExpUiIcons.Run.TestPassed
+    val CCV2_DEPLOYMENT_STATUS_UNDEPLOYED = ExpUiIcons.Run.TestSkipped
+    val CCV2_DEPLOYMENT_STATUS_FAIL = ExpUiIcons.Run.TestError
+    val CCV2_DEPLOYMENT_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+
+    val CCV2_ENV_STATUS_PROVISIONING = AllIcons.Actions.ProfileYellow
+    val CCV2_ENV_STATUS_AVAILABLE = AllIcons.Actions.ProjectWideAnalysisOn
+    val CCV2_ENV_STATUS_TERMINATING = AllIcons.Actions.ProfileRed
+    val CCV2_ENV_STATUS_TERMINATED = AllIcons.Actions.ProjectWideAnalysisOff
+    val CCV2_ENV_STATUS_READY_FOR_DEPLOYMENT = AllIcons.Actions.ShowReadAccess
+    val CCV2_ENV_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+
+    val CCV2_ENV_ENVIRONMENT_TYPE_DEV = AllIcons.Nodes.AnonymousClass
+    val CCV2_ENV_ENVIRONMENT_TYPE_STG = AllIcons.Nodes.Type
+    val CCV2_ENV_ENVIRONMENT_TYPE_PROD = AllIcons.Nodes.AbstractException
+    val CCV2_ENV_ENVIRONMENT_TYPE_UNKNOWN = AllIcons.Nodes.ErrorIntroduction
 
     val CONNECTION_ADD = AllIcons.General.Add
     val CONNECTION_EDIT = AllIcons.Actions.Edit

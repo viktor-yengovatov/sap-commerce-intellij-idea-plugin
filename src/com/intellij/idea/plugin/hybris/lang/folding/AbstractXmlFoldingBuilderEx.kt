@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.lang.folding
 
 import com.intellij.idea.plugin.hybris.settings.FoldingSettings
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
@@ -32,11 +32,11 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(private val clazz: Class<T>) : FoldingBuilderEx() {
 
@@ -45,7 +45,7 @@ abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(
     private val cachedFoldingSettings: Key<S> = Key.create("hybris_folding_settings_" + clazz.simpleName)
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!HybrisProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
+        if (!ProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
         if (root !is XmlFile) return emptyArray()
         DomManager.getDomManager(root.project).getFileElement(root, clazz)
             ?: return emptyArray()
@@ -69,7 +69,7 @@ abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(
     }
 
     internal abstract fun initSettings(project: Project): S
-    internal fun getCachedFoldingSettings(psi: PsiElement) = psi.getParentOfType<XmlFile>(false)
+    internal fun getCachedFoldingSettings(psi: PsiElement) = psi.parentOfType<XmlFile>(false)
         ?.getUserData(cachedFoldingSettings)
 
     fun tablify(psi: PsiElement, value: String, tablify: Boolean?, tagName: String, attributeName: String, prepend: Boolean = false) = if (tablify == true) {
