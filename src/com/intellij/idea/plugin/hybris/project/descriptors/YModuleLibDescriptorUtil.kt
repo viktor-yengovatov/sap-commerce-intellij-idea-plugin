@@ -26,6 +26,7 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
+import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.openapi.vfs.VfsUtil
 import java.io.File
 
@@ -48,6 +49,7 @@ object YModuleLibDescriptorUtil {
     fun addRootProjectLibrary(
         modifiableModelsProvider: IdeModifiableModelsProvider,
         libraryDirRoot: File,
+        sourcesDirRoot: File? = null,
         libraryName: String,
         addJarDirectory: Boolean = true
     ) {
@@ -63,6 +65,9 @@ object YModuleLibDescriptorUtil {
             val libraryModel = modifiableModelsProvider.getModifiableLibraryModel(library)
             if (addJarDirectory) libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
             else libraryModel.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
+            if (sourcesDirRoot != null && ApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+                libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(sourcesDirRoot), true, OrderRootType.SOURCES)
+            }
         }
     }
 
