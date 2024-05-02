@@ -3,6 +3,9 @@
 ### `CCv2 CI/CD` enhancements
 - Removed `SAP CCM` based integration [#1098](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1098)
 
+### `Project Import` enhancements
+- Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)
+
 ## [2024.1.1]
 
 ### `Project Import` enhancements
