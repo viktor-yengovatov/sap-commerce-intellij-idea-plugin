@@ -71,7 +71,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
                 if (moduleDescriptor.hasBackofficeModule) {
                     val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_PATH)
                     if (backofficeJarDirectory.exists()) {
-                        YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
+                        YModuleLibDescriptorUtil.addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
                     }
                 }
                 if (moduleDescriptor.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
@@ -82,8 +82,9 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
                 if (moduleDescriptor.owner.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
                     val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
                     val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
-                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, classes, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, false)
-                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, library, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
+                    val sources = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_PARENT_JAR_PATH)
+                    YModuleLibDescriptorUtil.addBackofficeRootProjectLibrary(modifiableModelsProvider, classes, null, false)
+                    YModuleLibDescriptorUtil.addBackofficeRootProjectLibrary(modifiableModelsProvider, library, sources)
                 }
             }
         }

@@ -538,6 +538,9 @@ object HybrisConstants {
     val DOC_SOURCES_JAR_PATH = FileUtilRt.toSystemDependentName("doc/sources")
 
     @JvmField
+    val DOC_SOURCES_PARENT_JAR_PATH = FileUtilRt.toSystemDependentName("../doc/sources")
+
+    @JvmField
     val PL_BOOTSTRAP_LIB_PATH = FileUtilRt.toSystemDependentName("bootstrap/bin")
 
     @JvmField
