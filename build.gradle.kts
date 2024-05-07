@@ -20,6 +20,7 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
+import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -167,21 +168,31 @@ intellijPlatform {
 }
 
 tasks {
+    val jvmArguments = mutableListOf<String>().apply {
+        add(properties("intellij.jvm.args").get())
+
+        if (OperatingSystem.current().isMacOsX) {
+            add("-Xdock:name=${project.name}")
+            // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
+            add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
+        }
+    }
+
     wrapper {
         gradleVersion = properties("gradle.version").get()
     }
 
     runIde {
-        jvmArgs = mutableListOf<String>().apply {
-            add(properties("intellij.jvm.args").get())
+        jvmArgs = jvmArguments
+        maxHeapSize = properties("intellij.maxHeapSize").get()
+    }
 
-            if (OperatingSystem.current().isMacOsX) {
-                add("-Xdock:name=${project.name}")
-                // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
-                add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
-            }
-        }
-        maxHeapSize = "3g"
+    val runIdeCommunity by registering(RunIdeTask::class) {
+        type = IntelliJPlatformType.IntellijIdeaCommunity
+        version = properties("intellij.version")
+
+        jvmArgs = jvmArguments
+        maxHeapSize = properties("intellij.maxHeapSize").get()
     }
 
     clean {
@@ -235,7 +246,6 @@ dependencies {
 
         instrumentationTools()
         pluginVerifier()
-//        testFramework(TestFrameworkType.Platform.JUnit4)
 
         // printBundledPlugins for bundled plugins
         bundledPlugin("com.intellij.java")
