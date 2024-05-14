@@ -16,13 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccm
+package com.intellij.idea.plugin.hybris.ui
 
-import java.io.Serial
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.JBEmptyBorder
 
-class SAPCCMClientException(message: String) : RuntimeException(message) {
-    companion object {
-        @Serial
-        private val serialVersionUID: Long = -1924151538575575994L
+object Dsl {
+
+    fun scrollPanel(content: DialogPanel) = panel {
+        row {
+            scrollCell(content)
+                .align(Align.FILL)
+                .resizableColumn()
+                .applyToComponent {
+                    (this.parent.parent as? JBScrollPane)
+                        ?.border = JBEmptyBorder(0)
+                }
+
+        }.resizableRow()
     }
 }

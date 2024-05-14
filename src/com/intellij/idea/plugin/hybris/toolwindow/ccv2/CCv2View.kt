@@ -22,11 +22,11 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.*
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2IntegrationProtocolEnum
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2DeploymentsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDataView
@@ -37,6 +37,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.dsl.builder.Align
@@ -107,13 +108,8 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
 
-            add(actionManager.getAction("ccv2.action.settings"))
-            addSeparator()
+            add(actionManager.getAction("ccv2.toolbar.actions"))
 
-            add(actionManager.getAction("ccv2.action.environment.fetch"))
-            add(actionManager.getAction("ccv2.action.deployment.fetch"))
-            add(actionManager.getAction("ccv2.action.build.fetch"))
-            add(actionManager.getAction("ccv2.action.build.create"))
             actionManager.createActionToolbar("SAP_CX_CCv2_View", this, false)
         }
         toolbar.targetComponent = this
@@ -131,21 +127,19 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.fetchingInProgressPanel(subscriptions) }
 
-                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
+                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 {
                     val dataPanel = CCv2EnvironmentsDataView.dataPanel(data)
-                    if (DeveloperSettingsComponent.getInstance(project).state.currentCCv2IntegrationProtocol == CCv2IntegrationProtocolEnum.NATIVE) {
-                        CCv2Service.getInstance(project).fetchEnvironmentsBuilds(data)
-                    }
+                    CCv2Service.getInstance(project).fetchEnvironmentsBuilds(data)
 
                     dataPanel
                 }
 
-                override fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
+                override fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.dataPanelWithBuilds(data) }
 
                 override fun onFetchingBuildDetailsCompleted(
-                    data: Map<CCv2Subscription, Collection<CCv2Environment>>,
+                    data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>,
                 ) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.dataPanelWithBuilds(data) }
             })
@@ -155,7 +149,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.BUILDS)
                 { CCv2BuildsDataView.fetchingInProgressPanel(subscriptions) }
 
-                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Build>>) = onFetchingCompleted(CCv2Tab.BUILDS)
+                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2BuildDto>>) = onFetchingCompleted(CCv2Tab.BUILDS)
                 { CCv2BuildsDataView.dataPanel(data) }
             })
 
@@ -164,7 +158,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.DEPLOYMENTS)
                 { CCv2DeploymentsDataView.fetchingInProgressPanel(subscriptions) }
 
-                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Deployment>>) = onFetchingCompleted(CCv2Tab.DEPLOYMENTS)
+                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2DeploymentDto>>) = onFetchingCompleted(CCv2Tab.DEPLOYMENTS)
                 { CCv2DeploymentsDataView.dataPanel(data) }
             })
 
@@ -193,5 +187,13 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     companion object {
         @Serial
         private val serialVersionUID: Long = -3734294049693312978L
+
+        fun getActiveTab(project: Project) = ToolWindowManager.getInstance(project)
+            .getToolWindow(HybrisToolWindowFactory.ID)
+            ?.contentManager
+            ?.findContent(HybrisToolWindowFactory.CCV2)
+            ?.component
+            ?.let { it as? CCv2View }
+            ?.getActiveTab()
     }
 }

@@ -45,12 +45,13 @@ object YModuleLibDescriptorUtil {
         else -> emptyList()
     }
 
-    fun addRootProjectLibrary(
+    fun addBackofficeRootProjectLibrary(
         modifiableModelsProvider: IdeModifiableModelsProvider,
         libraryDirRoot: File,
-        libraryName: String,
+        sourcesDirRoot: File? = null,
         addJarDirectory: Boolean = true
     ) {
+        val libraryName = HybrisConstants.BACKOFFICE_LIBRARY_GROUP
         val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
         val library = libraryTableModifiableModel.getLibraryByName(libraryName)
             ?: libraryTableModifiableModel.createLibrary(libraryName)
@@ -63,6 +64,9 @@ object YModuleLibDescriptorUtil {
             val libraryModel = modifiableModelsProvider.getModifiableLibraryModel(library)
             if (addJarDirectory) libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
             else libraryModel.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
+            if (sourcesDirRoot != null && ApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+                libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(sourcesDirRoot), true, OrderRootType.SOURCES)
+            }
         }
     }
 

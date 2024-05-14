@@ -11,12 +11,15 @@ x-sap-shortText: Manage Commerce Cloud Automation.
 x-sap-stateInfo:
   state: Beta
 servers:
-  - url: https://{uri}/v2
+  - url: https://{uri}/{version}
     description: Environment URL
     variables:
       uri:
         default: 'portalrotapi.hana.ondemand.com'
         description: Environment URI
+      version:
+        default: 'v2'
+        description: API version
 tags:
   - name: build
     description: Endpoints for managing builds
@@ -912,7 +915,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
 security:
-  - OAuth2: []
+  - OAuth2: [ ]
 components:
   securitySchemes:
     OAuth2:
@@ -920,7 +923,7 @@ components:
       flows:
         authorizationCode:
           scopes:
-            {}
+            { }
           authorizationUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/authorize'
           tokenUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/token'
   parameters:

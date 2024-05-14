@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.tree.IFileElementType
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object HybrisConstants {
@@ -39,6 +38,8 @@ object HybrisConstants {
     const val PLATFORM_VERSION_5_0 = "5.0"
     const val PLATFORM_VERSION_5_2 = "5.2"
 
+    const val CCV2_DOMAIN = "portal.commerce.ondemand.com"
+    const val CCV2_SERVICE_CUSTOMER_PROPERTIES_CODE = "customer-properties"
     const val CCV2_MANIFEST_NAME = "manifest.json"
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
     const val CCV2_DATAHUB_NAME = "datahub"
@@ -415,10 +416,7 @@ object HybrisConstants {
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
 
-    val CCV2_DATE_FORMAT_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
-    val CCV2_DATE_FORMAT_CCM_NANO: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-    val CCV2_DATE_FORMAT_CCM: DateTimeFormatter = DateTimeFormatter.ISO_DATE
-    val ZONE_GMT = ZoneId.of("GMT")
+    val CCV2_DATE_TIME_FORMATTER_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
 
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
@@ -540,6 +538,9 @@ object HybrisConstants {
 
     @JvmField
     val DOC_SOURCES_JAR_PATH = FileUtilRt.toSystemDependentName("doc/sources")
+
+    @JvmField
+    val DOC_SOURCES_PARENT_JAR_PATH = FileUtilRt.toSystemDependentName("../doc/sources")
 
     @JvmField
     val PL_BOOTSTRAP_LIB_PATH = FileUtilRt.toSystemDependentName("bootstrap/bin")

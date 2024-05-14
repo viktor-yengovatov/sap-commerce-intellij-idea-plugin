@@ -18,16 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2IntegrationProtocolEnum
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.openapi.components.BaseState
 import com.intellij.util.xmlb.annotations.Tag
+import java.util.*
 
 @Tag("HybrisDeveloperSpecificProjectSettings")
 class DeveloperSettings : BaseState() {
     var activeRemoteConnectionID by string(null)
     var activeSolrConnectionID by string(null)
     var activeCCv2SubscriptionID by string(null)
-    var currentCCv2IntegrationProtocol by enum<CCv2IntegrationProtocolEnum>(CCv2IntegrationProtocolEnum.CCM)
     var remoteConnectionSettingsList by list<RemoteConnectionSettings>()
     var typeSystemDiagramSettings by property(TypeSystemDiagramSettings()) { false }
     var beanSystemSettings by property(BeanSystemSettings()) { false }
@@ -38,4 +39,19 @@ class DeveloperSettings : BaseState() {
     var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
     var impexSettings by property(ImpexSettings()) { false }
     var groovySettings by property(GroovySettings()) { false }
+    var ccv2Settings by property(CCv2Settings()) { false }
 }
+
+data class CCv2Settings(
+    var showBuildStatuses: EnumSet<CCv2BuildStatus> = EnumSet.of(
+        CCv2BuildStatus.BUILDING,
+        CCv2BuildStatus.SUCCESS,
+        CCv2BuildStatus.FAIL,
+        CCv2BuildStatus.SCHEDULED,
+        CCv2BuildStatus.UNKNOWN
+    ),
+    var showEnvironmentStatuses: EnumSet<CCv2EnvironmentStatus> = EnumSet.of(
+        CCv2EnvironmentStatus.PROVISIONING,
+        CCv2EnvironmentStatus.AVAILABLE,
+    ),
+)

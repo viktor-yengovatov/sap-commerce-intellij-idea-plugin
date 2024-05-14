@@ -18,21 +18,65 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import javax.swing.Icon
 
-data class CCv2Environment(
+data class CCv2EnvironmentDto(
     val code: String,
     val name: String,
     val type: CCv2EnvironmentType,
     val status: CCv2EnvironmentStatus,
     val deploymentStatus: CCv2DeploymentStatusEnum,
     val deploymentAllowed: Boolean = false,
-    var deployedBuild: CCv2Build? = null
-) : CCv2DTO, Comparable<CCv2Environment> {
+    var deployedBuild: CCv2BuildDto? = null,
+    val dynatraceLink: String? = null,
+    val loggingLink: String? = null,
+    val problems: Int? = null,
+    val link: String?,
+    val mediaStorages: Collection<CCv2MediaStorageDto>,
+    var services: Collection<CCv2ServiceDto>? = null,
+) : CCv2DTO, Comparable<CCv2EnvironmentDto> {
 
-    override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)
+    override fun compareTo(other: CCv2EnvironmentDto) = name.compareTo(other.name)
+
+    companion object {
+
+        fun map(
+            environment: EnvironmentDetailDTO,
+            deploymentStatus: Boolean,
+            v1Environment: com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO?,
+            v1EnvironmentHealth: EnvironmentHealthDTO?
+        ): CCv2EnvironmentDto {
+            val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
+            val code = environment.code
+
+            val link = if (v1Environment != null && status == CCv2EnvironmentStatus.AVAILABLE)
+                "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/$code"
+            else null
+
+            val mediaStorages = (v1Environment
+                ?.mediaStorages
+                ?.map { CCv2MediaStorageDto.map(environment, it) }
+                ?: emptyList())
+
+            return CCv2EnvironmentDto(
+                code = code ?: "N/A",
+                name = environment.name ?: "N/A",
+                status = status,
+                type = CCv2EnvironmentType.tryValueOf(environment.type),
+                deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
+                deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
+                dynatraceLink = v1Environment?.dynatraceUrl,
+                loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
+                problems = v1EnvironmentHealth?.problems,
+                link = link,
+                mediaStorages = mediaStorages
+            )
+        }
+    }
 }
 
 enum class CCv2EnvironmentType(val title: String, val icon: Icon) {

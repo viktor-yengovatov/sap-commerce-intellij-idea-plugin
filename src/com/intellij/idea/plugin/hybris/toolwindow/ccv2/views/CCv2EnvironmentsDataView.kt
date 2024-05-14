@@ -18,60 +18,62 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowEnvironmentDetailsAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
-import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.RightGap
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
+import java.util.*
 
-object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
+object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.ENVIRONMENTS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Environment>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(data)
+
+    fun dataPanelWithBuilds(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(data, true)
+
+    private fun panel(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>, showBuilds: Boolean = false): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, environments) ->
             collapsibleGroup(subscription.toString()) {
                 if (environments.isEmpty()) {
                     noData()
                 } else {
-                    environments.forEach { environment(it) }
+                    environments
+                        .sortedWith(compareBy({ it.type }, { it.name }))
+                        .forEach { environment(subscription, it, showBuilds) }
                 }
             }
-                .expanded = true
+                .expanded = showBuilds
         }
     }
-        .let { scrollPanel(it) }
+        .let { Dsl.scrollPanel(it) }
 
-    fun dataPanelWithBuilds(data: Map<CCv2Subscription, Collection<CCv2Environment>>): DialogPanel = if (data.isEmpty()) noDataPanel()
-    else panel {
-        data.forEach { (subscription, environments) ->
-            collapsibleGroup(subscription.toString()) {
-                if (environments.isEmpty()) {
-                    noData()
-                } else {
-                    environments.forEach { environment(it, true) }
-                }
-            }
-                .expanded = true
-        }
-    }
-        .let { scrollPanel(it) }
-
-    private fun Panel.environment(environment: CCv2Environment, showBuilds: Boolean = false) {
+    private fun Panel.environment(subscription: CCv2Subscription, environment: CCv2EnvironmentDto, showBuilds: Boolean = false) {
         row {
-            val deployedBuild = environment.deployedBuild
+            panel {
+                row {
+                    actionButton(
+                        CCv2ShowEnvironmentDetailsAction(subscription, environment),
+                        ActionPlaces.TOOLWINDOW_CONTENT
+                    )
+                }
+            }.gap(RightGap.SMALL)
 
             panel {
                 row {
-                    label(environment.name)
-                        .comment(environment.code)
+                    val environmentName = environment.link
+                        ?.let { browserLink(environment.name, it) }
+                        ?: label(environment.name)
+                    environmentName.comment(environment.code)
                         .bold()
                 }
             }.gap(RightGap.COLUMNS)
@@ -79,6 +81,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             panel {
                 row {
                     icon(environment.type.icon)
+                        .gap(RightGap.SMALL)
                     label(environment.type.title)
                         .comment("Type")
                 }
@@ -87,6 +90,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             panel {
                 row {
                     icon(environment.status.icon)
+                        .gap(RightGap.SMALL)
                     label(environment.status.title)
                         .comment("Status")
                 }
@@ -95,42 +99,70 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             panel {
                 row {
                     icon(environment.deploymentStatus.icon)
+                        .gap(RightGap.SMALL)
                     label(environment.deploymentStatus.title)
                         .comment("Deployment status")
                 }
             }.gap(RightGap.COLUMNS)
 
-            if (showBuilds) {
-                if (deployedBuild != null) {
-                    panel {
-                        row {
-                            label(deployedBuild.name)
-                                .bold()
-                                .comment("Build name")
-                        }
-                    }.gap(RightGap.COLUMNS)
-                    panel {
-                        row {
-                            label(deployedBuild.code)
-                                .comment("Build code")
-                        }
-                    }.gap(RightGap.COLUMNS)
-
-                    panel {
-                        row {
-                            label(deployedBuild.branch)
-                                .comment("Build branch")
-                        }
-                    }
-                } else {
-                    panel {
-                        row {
-                            icon(AnimatedIcon.Default.INSTANCE)
-                                .comment("Build details")
-                        }
-                    }
+            panel {
+                row {
+                    icon(HybrisIcons.DYNATRACE)
+                        .gap(RightGap.SMALL)
+                    browserLink("Dynatrace", environment.dynatraceLink ?: "")
+                        .enabled(environment.dynatraceLink != null)
+                        .comment(environment.problems
+                            ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
                 }
+            }.gap(RightGap.SMALL)
+
+            panel {
+                row {
+                    icon(HybrisIcons.OPENSEARCH)
+                        .gap(RightGap.SMALL)
+                    browserLink("OpenSearch", environment.loggingLink ?: "")
+                        .enabled(environment.loggingLink != null)
+                        .comment("&nbsp;")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            if (showBuilds) {
+                buildPanel(environment)
             }
         }.layout(RowLayout.PARENT_GRID)
+    }
+
+    private fun Row.buildPanel(environment: CCv2EnvironmentDto) {
+        val deployedBuild = environment.deployedBuild
+        if (deployedBuild != null) {
+            panel {
+                row {
+                    label(deployedBuild.name)
+                        .bold()
+                        .comment("Build name")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(deployedBuild.code)
+                        .comment("Build code")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(deployedBuild.branch)
+                        .comment("Build branch")
+                }
+            }
+        } else if (!EnumSet.of(CCv2DeploymentStatusEnum.UNDEPLOYED, CCv2DeploymentStatusEnum.UNKNOWN).contains(environment.deploymentStatus)) {
+            panel {
+                row {
+                    icon(AnimatedIcon.Default.INSTANCE)
+                        .comment("Build details")
+                }
+            }
+        }
     }
 }

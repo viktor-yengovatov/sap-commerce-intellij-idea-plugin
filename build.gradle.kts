@@ -18,6 +18,10 @@
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+import org.jetbrains.intellij.platform.gradle.models.ProductRelease
+import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -33,6 +37,11 @@ plugins {
 
 repositories {
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+        jetbrainsRuntime()
+    }
 }
 
 java {
@@ -42,17 +51,6 @@ java {
 
 kotlin {
     jvmToolchain(17)
-}
-
-intellij {
-    type = properties("intellij.type")
-    version = properties("intellij.version")
-    pluginName = properties("intellij.plugin.name")
-    downloadSources = properties("intellij.download.sources").get().toBoolean()
-    updateSinceUntilBuild = properties("intellij.update.since.until.build").get().toBoolean()
-
-    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-    plugins = properties("intellij.plugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
 }
 
 sourceSets {
@@ -82,69 +80,55 @@ changelog {
 // https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
 // OpenAPI - Kotlin generator
 // https://openapi-generator.tech/docs/generators/kotlin/
-openApiGenerate {
-    generatorName.set("kotlin")
-    inputSpec.set("$rootDir/resources/specs/commerce-cloud-management-api.yaml")
-    outputDir.set("$rootDir/ccv2")
+val ccv2OpenApiSpecs = listOf(
+    Triple("ccv1OpenApiGenerate", "commerce-cloud-management-api-v1.yaml", "com.intellij.idea.plugin.hybris.ccv1"),
+    Triple("ccv2OpenApiGenerate", "commerce-cloud-management-api-v2.yaml", "com.intellij.idea.plugin.hybris.ccv2"),
+)
+val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, packagePrefix) ->
+    tasks.register<GenerateTask>(taskName) {
+        group = "openapi tools"
+        generatorName.set("kotlin")
+        inputSpec.set("$rootDir/resources/specs/$schema")
+        outputDir.set("$rootDir/ccv2")
 
-    apiPackage.set("com.intellij.idea.plugin.hybris.ccv2.api")
-    packageName.set("com.intellij.idea.plugin.hybris.ccv2.invoker")
-    modelPackage.set("com.intellij.idea.plugin.hybris.ccv2.model")
+        apiPackage.set("$packagePrefix.api")
+        packageName.set("$packagePrefix.invoker")
+        modelPackage.set("$packagePrefix.model")
 
-    skipOperationExample.set(true)
-    cleanupOutput.set(true)
-    generateApiDocumentation.set(false)
-    generateApiTests.set(false)
-    generateModelTests.set(false)
+        cleanupOutput.set(index == 0)
+        skipOperationExample.set(true)
+        generateApiDocumentation.set(false)
+        generateApiTests.set(false)
+        generateModelTests.set(false)
 
-    globalProperties.set(
-        mapOf(
-            "modelDocs" to "false",
+        globalProperties.set(
+            mapOf(
+                "modelDocs" to "false",
+            )
         )
-    )
-    configOptions.set(
-        mapOf(
-            "useSettingsGradle" to "false",
-            "omitGradlePluginVersions" to "true",
-            "omitGradleWrapper" to "true",
-            "useCoroutines" to "true",
-            "sourceFolder" to "",
+        configOptions.set(
+            mapOf(
+                "useSettingsGradle" to "false",
+                "omitGradlePluginVersions" to "true",
+                "omitGradleWrapper" to "true",
+                "useCoroutines" to "true",
+                "sourceFolder" to "",
+            )
         )
-    )
+
+        if (index > 0) {
+            val previousTaskName = ccv2OpenApiSpecs[index - 1].first
+            dependsOn(previousTaskName)
+        }
+    }
 }
 
-tasks {
-    wrapper {
-        gradleVersion = properties("gradle.version").get()
-    }
-
-    runIde {
-        jvmArgs = mutableListOf<String>().apply {
-            add(properties("intellij.jvm.args").get())
-
-            if (OperatingSystem.current().isMacOsX) {
-                add("-Xdock:name=SAP-Commerce-Developers-Toolset")
-                // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
-                add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
-            }
-        }
-        maxHeapSize = "3g"
-        /*
-        To be able to start IDEA Community edition one has to uncomment `ideDir` property and specify an absolute path to the Application
-        references:
-         - issue > https://github.com/JetBrains/gradle-intellij-plugin/issues/578
-         - docs > https://plugins.jetbrains.com/docs/intellij/dev-alternate-products.html#configuring-gradle-build-script-using-the-intellij-idea-product-attribute
-         */
-//        ideDir = file("/Users/<user>/Applications/IntelliJ IDEA Community Edition.app/Contents")
-    }
-
-    patchPluginXml {
+intellijPlatform {
+    pluginConfiguration {
+        id = "com.intellij.idea.plugin.sap.commerce"
+        name = properties("intellij.plugin.name")
         version = properties("intellij.plugin.version")
-        sinceBuild = properties("intellij.plugin.since.build")
-        untilBuild = properties("intellij.plugin.until.build")
-
-        // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+        description = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
             val start = "<!-- Plugin description -->"
             val end = "<!-- Plugin description end -->"
 
@@ -155,7 +139,6 @@ tasks {
                 subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
             }
         }
-
         val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
         changeNotes = with(changelog) {
@@ -170,10 +153,63 @@ tasks {
                     )
                 }
         }
+
+        ideaVersion {
+            sinceBuild = properties("intellij.plugin.since.build")
+            untilBuild = properties("intellij.plugin.until.build")
+        }
+
+        vendor {
+            name = "EPAM_Systems"
+            email = "hybrisideaplugin@epam.com"
+            url = "https://github.com/epam/sap-commerce-intellij-idea-plugin"
+        }
     }
 
-    runPluginVerifier {
-        ideVersions.add(properties("plugin.verifier.ide.versions"))
+    verifyPlugin {
+        ides {
+            ide(properties("plugin.verifier.ide.versions"))
+            recommended()
+            select {
+                types = listOf(IntelliJPlatformType.IntellijIdeaUltimate)
+                channels = listOf(ProductRelease.Channel.RELEASE)
+                sinceBuild = properties("intellij.plugin.since.build")
+                untilBuild = properties("intellij.plugin.until.build")
+            }
+        }
+    }
+}
+
+tasks {
+    val jvmArguments = mutableListOf<String>().apply {
+        add(properties("intellij.jvm.args").get())
+
+        if (OperatingSystem.current().isMacOsX) {
+            add("-Xdock:name=${project.name}")
+            // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
+            add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
+        }
+    }
+
+    wrapper {
+        gradleVersion = properties("gradle.version").get()
+    }
+
+    runIde {
+        jvmArgs = jvmArguments
+        maxHeapSize = properties("intellij.maxHeapSize").get()
+
+        applyRunIdeSystemSettings()
+    }
+
+    val runIdeCommunity by registering(RunIdeTask::class) {
+        type = IntelliJPlatformType.IntellijIdeaCommunity
+        version = properties("intellij.version")
+
+        jvmArgs = jvmArguments
+        maxHeapSize = properties("intellij.maxHeapSize").get()
+
+        applyRunIdeSystemSettings()
     }
 
     clean {
@@ -187,17 +223,26 @@ tasks {
     }
 
     compileJava {
-        dependsOn(openApiGenerate)
+        dependsOn(ccv2OpenApiTasks)
     }
 
     compileKotlin {
-        dependsOn(openApiGenerate)
+        dependsOn(ccv2OpenApiTasks)
+    }
+
+    printProductsReleases {
+        channels = listOf(ProductRelease.Channel.EAP)
+        types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
+        untilBuild = provider { null }
+
+        doLast {
+            productsReleases.get().max()
+        }
     }
 }
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-
     implementation(libs.bundles.openapi)
     implementation(libs.bundles.commons)
     implementation(libs.bundles.jaxb)
@@ -212,4 +257,46 @@ dependencies {
         exclude("org.apache.httpcomponents", "httpmime")
     }
     testImplementation(kotlin("test"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version"))
+
+        instrumentationTools()
+        pluginVerifier()
+
+        // printBundledPlugins for bundled plugins
+        bundledPlugin("com.intellij.java")
+        bundledPlugin("com.intellij.java-i18n")
+        bundledPlugin("org.intellij.intelliLang")
+        bundledPlugin("com.intellij.copyright")
+        bundledPlugin("com.intellij.database")
+        bundledPlugin("com.intellij.diagram")
+        bundledPlugin("com.intellij.spring")
+        bundledPlugin("com.intellij.properties")
+        bundledPlugin("org.intellij.groovy")
+        bundledPlugin("com.intellij.gradle")
+        bundledPlugin("com.intellij.javaee")
+        bundledPlugin("com.intellij.javaee.el")
+        bundledPlugin("com.intellij.javaee.web")
+        bundledPlugin("com.intellij.platform.images")
+        bundledPlugin("org.jetbrains.idea.maven")
+        bundledPlugin("org.jetbrains.idea.maven.model")
+        bundledPlugin("org.jetbrains.idea.maven.server.api")
+        bundledPlugin("org.jetbrains.idea.eclipse")
+        bundledPlugin("org.jetbrains.kotlin")
+        bundledPlugin("JavaScript")
+        bundledPlugin("JUnit")
+
+        // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
+        plugin("AntSupport:241.14494.158")
+        plugin("PsiViewer:241.14494.158-EAP-SNAPSHOT")
+        plugin("JRebelPlugin:2024.2.0")
+    }
+}
+
+fun RunIdeTask.applyRunIdeSystemSettings() {
+    systemProperty("ide.experimental.ui", "true")
+    systemProperty("ide.show.tips.on.startup.default.value", false)
+    systemProperty("idea.trust.all.projects", true)
+    systemProperty("jb.consents.confirmation.enabled", false)
 }

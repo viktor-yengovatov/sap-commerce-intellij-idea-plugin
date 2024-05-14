@@ -18,29 +18,47 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.CCv2Settings
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.actionSystem.ToggleAction
+import java.util.*
 import javax.swing.Icon
 
-abstract class AbstractCCv2Action(
-    val tab: CCv2Tab,
+abstract class AbstractCCv2ShowWithStatusAction<T : Enum<T>>(
+    private val tab: CCv2Tab,
+    private val status: T,
     text: String,
-    description: String? = null,
     icon: Icon
-) : DumbAwareAction(text, description, icon) {
+) : ToggleAction(text, null, icon) {
 
-    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+    override fun isSelected(e: AnActionEvent) = getCCv2Settings(e)
+        ?.let { getStatuses(it) }
+        ?.contains(status)
+        ?: false
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        getCCv2Settings(e)
+            ?.let { getStatuses(it) }
+            ?.let {
+                if (state) it.add(status)
+                else it.remove(status)
+            }
+    }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabled = isEnabled()
+        super.update(e)
         e.presentation.isVisible = e.project
             ?.let { CCv2View.getActiveTab(it) == tab }
             ?: false
     }
 
-    protected open fun isEnabled() = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
+    protected abstract fun getStatuses(settings: CCv2Settings): EnumSet<T>?
+
+    private fun getCCv2Settings(e: AnActionEvent) = e.project
+        ?.let { DeveloperSettingsComponent.getInstance(it).state.ccv2Settings }
 }

@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -28,15 +28,40 @@
     </extensions>
 
     <actions>
-        <action id="ccv2.action.settings"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
-        <action id="ccv2.action.environment.fetch"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
-        <action id="ccv2.action.deployment.fetch"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchDeploymentsAction"/>
-        <action id="ccv2.action.build.fetch"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
-        <action id="ccv2.action.build.create"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
+        <action id="ccv2.open.settings.action" class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
+
+        <group id="ccv2.toolbar.actions">
+            <reference id="ccv2.open.settings.action"/>
+            <separator/>
+
+            <group text="View Options"
+                   popup="true"
+                   icon="AllIcons.Actions.Show">
+                <separator text="Show With Status"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowSuccessBuildsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowScheduledBuildsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowBuildingBuildsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowFailedBuildsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowDeletedBuildsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowUnknownBuildsAction"/>
+
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowProvisioningEnvironmentsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowAvailableEnvironmentsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowTerminatingEnvironmentsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowTerminatedEnvironmentsAction"/>
+            </group>
+            <separator/>
+
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchDeploymentsAction"/>
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
+
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
+        </group>
+
+        <group id="ccv2.environment.toolbar.actions">
+            <reference id="ccv2.open.settings.action"/>
+            <separator/>
+        </group>
     </actions>
 </idea-plugin>

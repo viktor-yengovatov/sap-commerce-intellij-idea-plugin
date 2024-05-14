@@ -16,12 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import javax.swing.Icon
+import com.intellij.idea.plugin.hybris.ccv1.model.ServiceReplicaDTO
 
-enum class CCv2IntegrationProtocolEnum(val title: String, val icon: Icon) {
-    NATIVE("Native (OpenAPI)", HybrisIcons.CCV2_PROTOCOL_NATIVE),
-    CCM("SAP CCM (CLI)", HybrisIcons.CCV2_PROTOCOL_CCM);
+data class CCv2ServiceReplicaDto(
+    val name: String,
+    val status: String,
+    val ready: Boolean,
+) {
+
+    companion object {
+        fun map(environment: CCv2EnvironmentDto, dto: ServiceReplicaDTO) = CCv2ServiceReplicaDto(
+            name = dto.name,
+            status = dto.status,
+            ready = dto.ready ?: false
+        )
+    }
 }

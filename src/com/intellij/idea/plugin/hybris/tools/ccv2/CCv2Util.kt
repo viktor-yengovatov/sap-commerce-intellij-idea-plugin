@@ -15,8 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.psi.tree.IElementType
+package com.intellij.idea.plugin.hybris.tools.ccv2
 
-class FlexibleSearchElementType(debugName: String) : IElementType(debugName, FlexibleSearchLanguage)
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import java.time.OffsetDateTime
+import java.time.ZoneId
+
+object CCv2Util {
+
+    fun formatTime(time: OffsetDateTime?) = time
+        ?.atZoneSameInstant(ZoneId.systemDefault())
+        ?.format(HybrisConstants.CCV2_DATE_TIME_FORMATTER_LOCAL)
+        ?: "N/A";
+}

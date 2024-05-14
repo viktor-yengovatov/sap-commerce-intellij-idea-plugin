@@ -22,19 +22,21 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2DeleteBuildAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2DeployBuildAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2DownloadBuildLogsAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2RedoBuildAction
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 
-object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
+object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.BUILDS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Build>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2BuildDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, builds) ->
             collapsibleGroup(subscription.toString()) {
@@ -47,9 +49,9 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
                 .expanded = true
         }
     }
-        .let { scrollPanel(it) }
+        .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.build(subscription: CCv2Subscription, build: CCv2Build) {
+    private fun Panel.build(subscription: CCv2Subscription, build: CCv2BuildDto) {
         row {
             panel {
                 row {
@@ -58,6 +60,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
                             CCv2RedoBuildAction(subscription, build),
                             if (build.canDeploy()) CCv2DeployBuildAction(subscription, build) else null,
                             if (build.canDelete()) CCv2DeleteBuildAction(subscription, build) else null,
+                            if (build.canDownloadLogs()) CCv2DownloadBuildLogsAction(subscription, build) else null,
                         ).toTypedArray(),
                         ActionPlaces.TOOLWINDOW_CONTENT
                     )
@@ -66,7 +69,10 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
-                    label(build.name)
+                    val buildName = build.link
+                        ?.let { browserLink(build.name, it) }
+                        ?: label(build.name)
+                    buildName
                         .comment(build.code)
                         .bold()
                 }
@@ -82,6 +88,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
             panel {
                 row {
                     icon(HybrisIcons.CCV2_BUILD_BRANCH)
+                        .gap(RightGap.SMALL)
                     label(build.branch)
                         .comment("Branch")
                 }
@@ -90,6 +97,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
             panel {
                 row {
                     icon(build.status.icon)
+                        .gap(RightGap.SMALL)
                     label(build.status.title)
                         .comment("Status")
                 }
@@ -98,6 +106,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
             panel {
                 row {
                     icon(HybrisIcons.CCV2_BUILD_CREATED_BY)
+                        .gap(RightGap.SMALL)
                     label(build.createdBy)
                         .comment("Created by")
                 }

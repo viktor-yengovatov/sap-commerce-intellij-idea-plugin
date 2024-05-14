@@ -217,6 +217,9 @@ object HybrisIcons {
     val CONSOLE_SUSPEND = AllIcons.Actions.Suspend
     val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
 
+    val DYNATRACE = getIcon("/icons/dynatrace.svg")
+    val OPENSEARCH = getIcon("/icons/opensearch.svg")
+
     val CCV2 = getIcon("/icons/ccv2/ccv2.svg")
     val CCV2_FETCH = AllIcons.Vcs.Fetch
     val CCV2_ENVIRONMENTS = EXTENSION_CLOUD
@@ -224,9 +227,7 @@ object HybrisIcons {
     val CCV2_DEPLOYMENTS = AllIcons.Nodes.Deploy
     val CCV2_BACKUPS = AllIcons.Nodes.Undeploy
     val CCV2_ENDPOINTS = AllIcons.General.Web
-    val CCV2_PROTOCOL = AllIcons.General.InheritedMethod
-    val CCV2_PROTOCOL_CCM = AllIcons.Actions.StartMemoryProfile
-    val CCV2_PROTOCOL_NATIVE = AllIcons.General.Web
+    val CCV2_SHOW = AllIcons.Actions.Show
 
     val CCV2_BUILD_BRANCH = AllIcons.Vcs.Branch
     val CCV2_BUILD_CREATED_BY = AllIcons.General.User
@@ -240,6 +241,12 @@ object HybrisIcons {
     val CCV2_BUILD_REDO = AllIcons.Actions.BuildAutoReloadChanges
     val CCV2_BUILD_DEPLOY = AllIcons.Nodes.Deploy
     val CCV2_BUILD_DELETE = ExpUiIcons.General.Delete
+    val CCV2_BUILD_LOGS = ExpUiIcons.General.Download
+
+    val CCV2_ENVIRONMENT_DETAILS = getIcon("/icons/module/cloud.svg")
+
+    val CCV2_SERVICE = AllIcons.Nodes.Services
+    val CCV2_SERVICE_MODIFIED_BY = AllIcons.General.User
 
     val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User
     val CCV2_DEPLOYMENT_UPDATE_MODE_NONE = AllIcons.Diff.GutterCheckBox
