@@ -76,6 +76,16 @@ changelog {
     headerParserRegex = """(\d+(.\d+)*)""".toRegex()
 }
 
+val projectJvmArguments = mutableListOf<String>().apply {
+    add(properties("intellij.jvm.args").get())
+
+    if (OperatingSystem.current().isMacOsX) {
+        add("-Xdock:name=${project.name}")
+        // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
+        add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
+    }
+}
+
 // OpenAPI - Gradle plugin
 // https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
 // OpenAPI - Kotlin generator
@@ -88,8 +98,14 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
     tasks.register<GenerateTask>(taskName) {
         group = "openapi tools"
         generatorName.set("kotlin")
+
         inputSpec.set("$rootDir/resources/specs/$schema")
         outputDir.set("$rootDir/ccv2")
+
+        // Custom template required to enable request-specific headers for Authentication
+        // https://openapi-generator.tech/docs/templating
+        // https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/kotlin-client/libraries/jvm-okhttp
+        templateDir.set("$rootDir/resources/openapi/templates")
 
         apiPackage.set("$packagePrefix.api")
         packageName.set("$packagePrefix.invoker")
@@ -119,13 +135,17 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
         if (index > 0) {
             val previousTaskName = ccv2OpenApiSpecs[index - 1].first
             dependsOn(previousTaskName)
+        } else {
+            dependsOn("copyChangelog")
         }
     }
 }
 
 intellijPlatform {
+    buildSearchableOptions = true
+
     pluginConfiguration {
-        id = "com.intellij.idea.plugin.sap.commerce"
+        id = properties("intellij.plugin.id")
         name = properties("intellij.plugin.name")
         version = properties("intellij.plugin.version")
         description = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
@@ -164,15 +184,16 @@ intellijPlatform {
             email = "hybrisideaplugin@epam.com"
             url = "https://github.com/epam/sap-commerce-intellij-idea-plugin"
         }
+
     }
 
     verifyPlugin {
+        freeArgs = listOf("-mute", "TemplateWordInPluginId,TemplateWordInPluginName,ForbiddenPluginIdPrefix")
+
         ides {
-            ide(properties("plugin.verifier.ide.versions"))
-            recommended()
             select {
-                types = listOf(IntelliJPlatformType.IntellijIdeaUltimate)
-                channels = listOf(ProductRelease.Channel.RELEASE)
+                types = listOf(IntelliJPlatformType.IntellijIdeaUltimate, IntelliJPlatformType.IntellijIdeaCommunity)
+                channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
                 sinceBuild = properties("intellij.plugin.since.build")
                 untilBuild = properties("intellij.plugin.until.build")
             }
@@ -181,14 +202,13 @@ intellijPlatform {
 }
 
 tasks {
-    val jvmArguments = mutableListOf<String>().apply {
-        add(properties("intellij.jvm.args").get())
+    val copyChangelog by registering(Copy::class) {
+        from("CHANGELOG.md")
+        into("resources")
+    }
 
-        if (OperatingSystem.current().isMacOsX) {
-            add("-Xdock:name=${project.name}")
-            // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
-            add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
-        }
+    patchPluginXml {
+        dependsOn(copyChangelog)
     }
 
     wrapper {
@@ -196,17 +216,7 @@ tasks {
     }
 
     runIde {
-        jvmArgs = jvmArguments
-        maxHeapSize = properties("intellij.maxHeapSize").get()
-
-        applyRunIdeSystemSettings()
-    }
-
-    val runIdeCommunity by registering(RunIdeTask::class) {
-        type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = properties("intellij.version")
-
-        jvmArgs = jvmArguments
+        jvmArgs = projectJvmArguments
         maxHeapSize = properties("intellij.maxHeapSize").get()
 
         applyRunIdeSystemSettings()
@@ -241,6 +251,23 @@ tasks {
     }
 }
 
+intellijPlatformTesting {
+    runIde {
+        val runIdeCommunity by registering {
+            type = IntelliJPlatformType.IntellijIdeaCommunity
+            version = properties("intellij.version")
+
+            task {
+                jvmArgs = projectJvmArguments
+                maxHeapSize = properties("intellij.maxHeapSize").get()
+
+                applyRunIdeSystemSettings()
+            }
+        }
+    }
+}
+
+
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     implementation(libs.bundles.openapi)
@@ -265,32 +292,67 @@ dependencies {
         pluginVerifier()
 
         // printBundledPlugins for bundled plugins
-        bundledPlugin("com.intellij.java")
-        bundledPlugin("com.intellij.java-i18n")
-        bundledPlugin("org.intellij.intelliLang")
-        bundledPlugin("com.intellij.copyright")
-        bundledPlugin("com.intellij.database")
-        bundledPlugin("com.intellij.diagram")
-        bundledPlugin("com.intellij.spring")
-        bundledPlugin("com.intellij.properties")
-        bundledPlugin("org.intellij.groovy")
-        bundledPlugin("com.intellij.gradle")
-        bundledPlugin("com.intellij.javaee")
-        bundledPlugin("com.intellij.javaee.el")
-        bundledPlugin("com.intellij.javaee.web")
-        bundledPlugin("com.intellij.platform.images")
-        bundledPlugin("org.jetbrains.idea.maven")
-        bundledPlugin("org.jetbrains.idea.maven.model")
-        bundledPlugin("org.jetbrains.idea.maven.server.api")
-        bundledPlugin("org.jetbrains.idea.eclipse")
-        bundledPlugin("org.jetbrains.kotlin")
-        bundledPlugin("JavaScript")
-        bundledPlugin("JUnit")
+        bundledPlugins(
+            "com.intellij.java",
+            "com.intellij.java-i18n",
+            "org.intellij.intelliLang",
+            "com.intellij.copyright",
+            "com.intellij.database",
+            "com.intellij.diagram",
+            "com.intellij.spring",
+            "com.intellij.properties",
+            "org.intellij.groovy",
+            "com.intellij.gradle",
+            "com.intellij.javaee",
+            "com.intellij.javaee.el",
+            "com.intellij.javaee.web",
+            "com.intellij.platform.images",
+            "org.jetbrains.idea.maven",
+            "org.jetbrains.idea.maven.model",
+            "org.jetbrains.idea.maven.server.api",
+            "org.jetbrains.idea.eclipse",
+            "org.jetbrains.kotlin",
+            "JavaScript",
+            "JUnit",
+        )
 
         // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
-        plugin("AntSupport:241.14494.158")
+
+        // Ant:
+        // https://plugins.jetbrains.com/plugin/23025-ant
+        plugin("AntSupport:241.17011.48")
+
+        // PsiViewer:
+        // https://plugins.jetbrains.com/plugin/227-psiviewer
         plugin("PsiViewer:241.14494.158-EAP-SNAPSHOT")
-        plugin("JRebelPlugin:2024.2.0")
+
+        // JRebel and XRebel:
+        // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
+        plugin("JRebelPlugin:2024.2.1")
+
+        // Big Data Tools:
+        // incredibly sad, but as for now API cannot be used by 3rd-party plugins
+        // https://plugins.jetbrains.com/bundles/8-big-data-tools
+//        plugins(
+//            // https://plugins.jetbrains.com/plugin/12494-big-data-tools
+//            "com.intellij.bigdatatools:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21713-big-data-tools-core
+//            "com.intellij.bigdatatools.core:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21701-big-data-file-viewer
+//            "com.intellij.bigdatatools.binary.files:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21712-metastore-core
+//            "com.intellij.bigdatatools.metastore.core:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21700-spark/versions
+//            "com.intellij.bigdatatools.spark:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21673-zeppelin
+//            "com.intellij.bigdatatools.zeppelin:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21702-flink
+//            "com.intellij.bigdatatools.flink:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21704-kafka
+//            "com.intellij.bigdatatools.kafka:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21706-remote-file-systems
+//            "com.intellij.bigdatatools.rfs:241.15989.150",
+//        )
     }
 }
 
