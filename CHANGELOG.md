@@ -1,3 +1,8 @@
+## [2024.2.0]
+
+### Other
+- Added 2024.2 IntelliJ IDEA support [#1156](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1156)
+
 ## [2024.1.3]
 
 ### `Project Import` enhancements
