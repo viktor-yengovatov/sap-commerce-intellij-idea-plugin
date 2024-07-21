@@ -28,11 +28,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 
-public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implements ImpexFullHeaderParameter {
+public class ImpexFullHeaderParameterImpl extends ImpexFullHeaderParameterMixin implements ImpexFullHeaderParameter {
 
   public ImpexFullHeaderParameterImpl(@NotNull ASTNode node) {
     super(node);
@@ -70,11 +69,6 @@ public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implement
   @Nullable
   public ImpexHeaderLine getHeaderLine() {
     return ImpexPsiUtil.getHeaderLine(this);
-  }
-
-  @Override
-  public int getColumnNumber() {
-    return ImpexPsiUtil.getColumnNumber(this);
   }
 
   @Override

@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexUserRightsFirstValueGroupImpl extends ASTWrapperPsiElement implements ImpexUserRightsFirstValueGroup {
+public class ImpexUserRightsFirstValueGroupImpl extends ImpexUserRightsFirstValueGroupMixin implements ImpexUserRightsFirstValueGroup {
 
   public ImpexUserRightsFirstValueGroupImpl(@NotNull ASTNode node) {
     super(node);
@@ -69,12 +68,6 @@ public class ImpexUserRightsFirstValueGroupImpl extends ASTWrapperPsiElement imp
   @Nullable
   public ImpexUserRightsSingleValue getUserRightsSingleValue() {
     return findChildByClass(ImpexUserRightsSingleValue.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexValueLine getValueLine() {
-    return ImpexPsiUtil.getValueLine(this);
   }
 
 }
