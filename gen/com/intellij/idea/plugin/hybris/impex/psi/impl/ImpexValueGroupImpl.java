@@ -52,10 +52,4 @@ public class ImpexValueGroupImpl extends ImpexValueGroupMixin implements ImpexVa
     return findChildByClass(ImpexValue.class);
   }
 
-  @Override
-  @Nullable
-  public String computeValue() {
-    return ImpexPsiUtil.computeValue(this);
-  }
-
 }

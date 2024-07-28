@@ -77,10 +77,4 @@ public class ImpexFullHeaderParameterImpl extends ImpexFullHeaderParameterMixin 
     return ImpexPsiUtil.getAttribute(this, attributeModifier);
   }
 
-  @Override
-  @NotNull
-  public List<ImpexValueGroup> getValueGroups() {
-    return ImpexPsiUtil.getValueGroups(this);
-  }
-
 }
