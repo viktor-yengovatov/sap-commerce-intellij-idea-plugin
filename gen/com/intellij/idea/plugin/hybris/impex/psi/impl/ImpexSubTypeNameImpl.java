@@ -48,12 +48,6 @@ public class ImpexSubTypeNameImpl extends ImpexSubTypeNameMixin implements Impex
 
   @Override
   @Nullable
-  public ImpexValueLine getValueLine() {
-    return ImpexPsiUtil.getValueLine(this);
-  }
-
-  @Override
-  @Nullable
   public ImpexHeaderTypeName getHeaderTypeName() {
     return ImpexPsiUtil.getHeaderTypeName(this);
   }

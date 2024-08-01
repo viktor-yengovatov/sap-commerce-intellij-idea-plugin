@@ -79,7 +79,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                     ccv2SubscriptionsModel,
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                         if (value != null) {
-                            label.icon = HybrisIcons.MODULE_CCV2
+                            label.icon = HybrisIcons.Module.CCV2
                             label.text = value.toString()
                         } else {
                             label.text = "-- all subscriptions --"
@@ -111,7 +111,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
             add(actionManager.getAction("ccv2.toolbar.actions"))
 
-            actionManager.createActionToolbar("SAP_CX_CCv2_View", this, false)
+            actionManager.createActionToolbar(PLACE, this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)
@@ -188,6 +188,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     companion object {
         @Serial
         private val serialVersionUID: Long = -3734294049693312978L
+        const val PLACE = "SAP_CX_CCv2_View"
 
         fun getActiveTab(project: Project) = ToolWindowManager.getInstance(project)
             .getToolWindow(HybrisToolWindowFactory.ID)

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,21 +26,18 @@ import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupEl
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.model.AbstractPojo
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 
-@Service
 class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     private val staticLookupElements by lazy {
-        primitives.map { BSLookupElementFactory.buildPropertyType(it, 5.0, 5, HybrisIcons.TYPE_PRIMITIVE, "Primitive") } +
-            objects.map { BSLookupElementFactory.buildPropertyType(it, 4.0, 4, HybrisIcons.TYPE_OBJECT, "Object") } +
-            boxed.map { BSLookupElementFactory.buildPropertyType(it, 3.0, 3, HybrisIcons.TYPE_BOXED, "Boxed") } +
-            collections.map { BSLookupElementFactory.buildPropertyType(it, 2.0, 2, HybrisIcons.TYPE_COLLECTION, "Collection") } +
-            maps.map { BSLookupElementFactory.buildPropertyType(it, 1.0, 1, HybrisIcons.TYPE_MAP, "Map") }
+        primitives.map { BSLookupElementFactory.buildPropertyType(it, 5.0, 5, HybrisIcons.Types.PRIMITIVE, "Primitive") } +
+            objects.map { BSLookupElementFactory.buildPropertyType(it, 4.0, 4, HybrisIcons.Types.OBJECT, "Object") } +
+            boxed.map { BSLookupElementFactory.buildPropertyType(it, 3.0, 3, HybrisIcons.Types.BOXED, "Boxed") } +
+            collections.map { BSLookupElementFactory.buildPropertyType(it, 2.0, 2, HybrisIcons.Types.COLLECTION, "Collection") } +
+            maps.map { BSLookupElementFactory.buildPropertyType(it, 1.0, 1, HybrisIcons.Types.MAP, "Map") }
     }
 
     override fun addCompletions(
@@ -55,7 +52,7 @@ class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParame
             .firstOrNull { it.localName == Beans.BEAN }
             ?.getAttributeValue(AbstractPojo.CLASS)
             ?.let { BSMetaHelper.getGenerics(it) }
-            ?.map { BSLookupElementFactory.buildPropertyType(it, 6.0, 6, HybrisIcons.TYPE_GENERIC, "Bean Generic") }
+            ?.map { BSLookupElementFactory.buildPropertyType(it, 6.0, 6, HybrisIcons.Types.GENERIC, "Bean Generic") }
             ?.let { result.addAllElements(it) }
 
         BSClassCompletionProvider.getInstance().addCompletionVariants(parameters, context, result)
@@ -67,6 +64,5 @@ class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParame
         val primitives = setOf("boolean", "int", "long", "float", "double", "char", "short", "byte")
         val maps = setOf("java.util.Map", "java.util.SortedMap")
         val collections = setOf("java.util.Collection", "java.util.Set", "java.util.List", "java.util.Enumeration")
-        fun getInstance(): BSBeanPropertyTypeCompletionProvider = ApplicationManager.getApplication().getService(BSBeanPropertyTypeCompletionProvider::class.java)
     }
 }

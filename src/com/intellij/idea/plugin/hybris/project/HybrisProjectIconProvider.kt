@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,10 +29,12 @@ class HybrisProjectIconProvider : IconProvider() {
         val file = element.containingFile ?: return null
 
         return when {
-            file.name == HybrisConstants.BUILD_CALLBACKS_XML -> HybrisIcons.BUILD_CALLBACKS
-            file.name == HybrisConstants.UNMANAGED_DEPENDENCIES_TXT -> HybrisIcons.UNMANAGED_DEPENDENCIES
-            file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML -> HybrisIcons.EXTERNAL_DEPENDENCIES
-            file.name == HybrisConstants.HYBRIS_LICENCE_JAR -> HybrisIcons.Y_LICENCE
+            file.name == HybrisConstants.BUILD_CALLBACKS_XML -> HybrisIcons.BuildCallbacks.FILE
+            file.name == HybrisConstants.UNMANAGED_DEPENDENCIES_TXT -> HybrisIcons.UnmanagedDependencies.FILE
+            file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML -> HybrisIcons.ExternalDependencies.FILE
+            file.name == HybrisConstants.HYBRIS_LICENCE_JAR -> HybrisIcons.Y.LICENCE
+            file.name == HybrisConstants.EXTENSION_INFO_XML -> HybrisIcons.ExtensionInfo.FILE
+            file.name == HybrisConstants.LOCAL_EXTENSIONS_XML -> HybrisIcons.LocalExtensions.FILE
             file.name.endsWith(HybrisConstants.IMPORT_OVERRIDE_FILENAME) -> HybrisIcons.PLUGIN_SETTINGS
             else -> null
         }

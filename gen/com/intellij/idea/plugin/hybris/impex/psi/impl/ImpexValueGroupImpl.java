@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexValueGroupImpl extends ASTWrapperPsiElement implements ImpexValueGroup {
+public class ImpexValueGroupImpl extends ImpexValueGroupMixin implements ImpexValueGroup {
 
   public ImpexValueGroupImpl(@NotNull ASTNode node) {
     super(node);
@@ -51,29 +50,6 @@ public class ImpexValueGroupImpl extends ASTWrapperPsiElement implements ImpexVa
   @Nullable
   public ImpexValue getValue() {
     return findChildByClass(ImpexValue.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexFullHeaderParameter getFullHeaderParameter() {
-    return ImpexPsiUtil.getFullHeaderParameter(this);
-  }
-
-  @Override
-  public int getColumnNumber() {
-    return ImpexPsiUtil.getColumnNumber(this);
-  }
-
-  @Override
-  @Nullable
-  public ImpexValueLine getValueLine() {
-    return ImpexPsiUtil.getValueLine(this);
-  }
-
-  @Override
-  @Nullable
-  public String computeValue() {
-    return ImpexPsiUtil.computeValue(this);
   }
 
 }

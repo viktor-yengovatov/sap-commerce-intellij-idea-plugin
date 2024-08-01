@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,19 +22,16 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.idea.maven.dom.MavenDomProjectModelDescription
 import javax.swing.Icon
 
 class EDDomFileDescription : MavenDomProjectModelDescription() {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.EXTERNAL_DEPENDENCIES
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.ExternalDependencies.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.virtualFile != null
         && file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,35 +21,80 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.currentThreadCoroutineScope
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
+import com.intellij.platform.util.progress.forEachWithProgress
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
 
+    private val commandName = "Remove Column"
+    private val groupID = "action.sap.cx.impex.column.remove"
+
     init {
         with(templatePresentation) {
-            text = "Remove Column"
+            text = commandName
             description = "Remove current column"
-            icon = HybrisIcons.TABLE_COLUMN_REMOVE
+            icon = HybrisIcons.ImpEx.Actions.REMOVE_COLUMN
         }
     }
 
-    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-        when (element) {
-            is ImpexFullHeaderParameter -> {
-                ImpexPsiUtils.getColumnForHeader(element)
-                    .forEach { it.delete() }
-                PsiTreeUtilExt.getPrevSiblingOfElementType(element, ImpexTypes.PARAMETERS_SEPARATOR)
-                    ?.delete()
-                element.delete()
+    override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
+        currentThreadCoroutineScope().launch {
+            val fullHeaderParameter = readAction {
+                if (!psiFile.isValid) return@readAction null
+
+                when (element) {
+                    is ImpexFullHeaderParameter -> element
+                    is ImpexValueGroup -> {
+                        val headerParameter = element.fullHeaderParameter
+                            ?: return@readAction null
+                        return@readAction headerParameter
+                    }
+
+                    else -> return@readAction null
+                }
+            } ?: return@launch
+
+            val elements = readAction {
+                fullHeaderParameter.valueGroups
+                    .filter { it.isValid }
+                    .reversed()
             }
 
-            is ImpexValueGroup -> {
-                val headerParameter = element.fullHeaderParameter ?: return
-                performCommand(project, editor, headerParameter)
+            withContext(Dispatchers.EDT) {
+                PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
+                    runWithModalProgressBlocking(project, "Removing '${fullHeaderParameter.text}' column") {
+                        elements.forEachWithProgress {
+                            WriteCommandAction.runWriteCommandAction(
+                                project, commandName, groupID,
+                                { it.delete() },
+                                psiFile
+                            )
+                        }
+
+                        WriteCommandAction.runWriteCommandAction(
+                            project, commandName, groupID,
+                            {
+                                PsiTreeUtilExt.getPrevSiblingOfElementType(fullHeaderParameter, ImpexTypes.PARAMETERS_SEPARATOR)
+                                    ?.delete()
+                                fullHeaderParameter.delete()
+                            },
+                            psiFile
+                        )
+                    }
+                }
             }
         }
     }

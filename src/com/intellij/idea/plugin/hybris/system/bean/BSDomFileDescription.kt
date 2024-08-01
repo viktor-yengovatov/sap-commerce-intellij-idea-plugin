@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,22 +22,21 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
 class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans") {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BEAN_FILE
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BeanSystem.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.virtualFile != null
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
         && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
-        && file.rootTag
-        ?.attributes
-        ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "beans.xsd" }
-        ?: false
+        && hasNamespace(file)
+        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+
+    private fun hasNamespace(file: XmlFile) = file.rootTag
+            ?.attributes
+            ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "beans.xsd" }
+            ?: false
 }

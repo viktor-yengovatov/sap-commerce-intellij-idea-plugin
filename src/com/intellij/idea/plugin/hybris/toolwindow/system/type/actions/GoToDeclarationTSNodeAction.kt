@@ -28,7 +28,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
 import javax.swing.JTree
 
@@ -38,7 +38,7 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
     }
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val tsNode = getSelectedNode(e)
@@ -49,7 +49,7 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
         }
 
         e.presentation.isEnabledAndVisible = true
-        e.presentation.icon = HybrisIcons.DECLARATION
+        e.presentation.icon = HybrisIcons.Actions.GO_TO_DECLARATION
     }
 
     override fun actionPerformed(e: AnActionEvent) {

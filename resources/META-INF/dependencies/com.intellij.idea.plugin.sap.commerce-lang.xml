@@ -25,23 +25,12 @@
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
-    <projectListeners>
-        <listener class="com.intellij.idea.plugin.hybris.startup.event.ItemsXmlFileEditorManagerListener"
-                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
-    </projectListeners>
-
     <extensions defaultExtensionNs="com.intellij">
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->
         <!-- ####################################################################################################### -->
         <runLineMarkerContributor language="XML"
                                   implementationClass="com.intellij.idea.plugin.hybris.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
-
-        <!-- ####################################################################################################### -->
-        <!--                                        Completion Providers                                             -->
-        <!-- ####################################################################################################### -->
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Facet                                                        -->

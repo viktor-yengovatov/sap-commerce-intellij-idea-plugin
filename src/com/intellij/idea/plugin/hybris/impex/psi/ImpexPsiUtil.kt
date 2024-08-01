@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,26 +22,16 @@ package com.intellij.idea.plugin.hybris.impex.psi
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.siblings
-import com.intellij.refactoring.suggested.endOffset
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.*
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpexHeaderLine::class.java)
-
-fun getHeaderLine(element: ImpexValueLine): ImpexHeaderLine? = PsiTreeUtil
-    .getPrevSiblingOfType(element, ImpexHeaderLine::class.java)
 
 fun getValueGroup(element: ImpexString): ImpexValueGroup? = PsiTreeUtil
     .getParentOfType(element, ImpexValueGroup::class.java)
@@ -49,41 +39,15 @@ fun getValueGroup(element: ImpexString): ImpexValueGroup? = PsiTreeUtil
 fun getValueGroup(element: ImpexValue): ImpexValueGroup? = PsiTreeUtil
     .getParentOfType(element, ImpexValueGroup::class.java)
 
-fun getColumnNumber(element: ImpexValueGroup): Int = ImpexPsiUtils
-    .getColumnNumber(element)
-
-fun getColumnNumber(element: ImpexFullHeaderParameter): Int = ImpexPsiUtils
-    .getColumnNumber(element)
-
 fun getValueGroup(element: ImpexValueLine, columnNumber: Int): ImpexValueGroup? = element
     .childrenOfType<ImpexValueGroup>()
     .getOrNull(columnNumber)
-
-fun getValueLine(element: PsiElement): ImpexValueLine? = PsiTreeUtil
-    .getParentOfType(element, ImpexValueLine::class.java)
 
 fun getAnyAttributeName(element: ImpexAnyAttributeValue): ImpexAnyAttributeName? = PsiTreeUtil
     .getPrevSiblingOfType(element, ImpexAnyAttributeName::class.java)
 
 fun getAnyAttributeValue(element: ImpexAnyAttributeName): ImpexAnyAttributeValue? = PsiTreeUtil
     .getNextSiblingOfType(element, ImpexAnyAttributeValue::class.java)
-
-fun getFullHeaderParameter(element: ImpexValueGroup): ImpexFullHeaderParameter? = ImpexPsiUtils
-    .getHeaderForValueGroup(element) as? ImpexFullHeaderParameter
-
-fun getValueLines(element: ImpexHeaderLine): Collection<ImpexValueLine> {
-    val subTypesIterator = element.siblings(withSelf = false).iterator()
-    var proceed = true
-    val valueLines = mutableListOf<ImpexValueLine>()
-
-    while (proceed && subTypesIterator.hasNext()) {
-        when (val psi = subTypesIterator.next()) {
-            is ImpexHeaderLine -> proceed = false
-            is ImpexValueLine -> valueLines.add(psi)
-        }
-    }
-    return valueLines
-}
 
 fun getUniqueFullHeaderParameters(element: ImpexHeaderLine) = element.fullHeaderParameterList
     .filter { it.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.textMatches("true") ?: false }
@@ -128,46 +92,16 @@ fun addValueGroups(element: ImpexValueLine, groupsToAdd: Int) {
     }
 }
 
-/**
- * This method will get the value of the value group and if it's empty will check for value in the default attribute
- */
-fun computeValue(element: ImpexValueGroup): String? {
-    val computedValue = element
-        .value
-        ?.text
-        ?: element.fullHeaderParameter
-            ?.getAttribute(AttributeModifier.DEFAULT)
-            ?.anyAttributeValue
-            ?.let {
-                it.stringList.firstOrNull()
-                    ?.text
-                    ?: it.text
-            }
-    return computedValue
-        ?.let { StringUtil.unquoteString(it) }
-        ?.trim()
-}
-
 fun getAttribute(element: ImpexFullHeaderParameter, attributeModifier: AttributeModifier): ImpexAttribute? = element
     .modifiersList
     .flatMap { it.attributeList }
     .find { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
-
-fun getValueGroups(element: ImpexFullHeaderParameter): List<ImpexValueGroup> = element
-    .headerLine
-    ?.valueLines
-    ?.mapNotNull { it.getValueGroup(element.columnNumber) }
-    ?: emptyList()
 
 fun getHeaderTypeName(element: ImpexSubTypeName): ImpexHeaderTypeName? = element
     .valueLine
     ?.headerLine
     ?.fullHeaderType
     ?.headerTypeName
-
-fun getFullHeaderParameter(element: ImpexHeaderLine, parameterName: String): ImpexFullHeaderParameter? = element
-    .fullHeaderParameterList
-    .find { it.anyHeaderParameterName.text.equals(parameterName, true) }
 
 fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
     if (!element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null

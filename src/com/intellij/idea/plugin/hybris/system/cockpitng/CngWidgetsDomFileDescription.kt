@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,17 +24,15 @@ import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsCompon
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
 class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.java, CngPatterns.WIDGETS_ROOT) {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG_WIDGETS
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.CockpitNG.WIDGETS
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
         && (hasNamespace(file) || "backoffice-widgets.xml" == file.name)
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 

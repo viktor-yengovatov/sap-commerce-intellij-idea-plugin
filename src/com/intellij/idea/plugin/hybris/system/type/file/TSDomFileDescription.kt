@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.util.Iconable.IconFlags
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
@@ -30,16 +29,17 @@ import javax.swing.Icon
 
 class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, HybrisConstants.ROOT_TAG_ITEMS_XML) {
 
+    override fun getFileIcon(@IconFlags flags: Int): Icon = HybrisIcons.TypeSystem.FILE
+
     override fun isMyFile(
         file: XmlFile, module: Module?
     ) = super.isMyFile(file, module)
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
         && file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
-        && file.rootTag
-        ?.attributes
-        ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "items.xsd" }
-        ?: false
+        && hasNamespace(file)
+        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 
-    override fun getFileIcon(@IconFlags flags: Int): Icon = HybrisIcons.TYPE_SYSTEM
+    private fun hasNamespace(file: XmlFile) = file.rootTag
+            ?.attributes
+            ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "items.xsd" }
+            ?: false
 }

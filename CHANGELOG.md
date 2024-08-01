@@ -1,3 +1,44 @@
+## [2024.2.0]
+
+### `CCv2` enhancements
+- Introduced possibility to restart a service replica [#1183](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1183)
+
+### `ImpEx` enhancements
+- Improved PSI operations performance [#1167](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1167)
+- Migrated `Remove Column` to coroutine with progress [#1169](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1169)
+- Migrated `Remove Table` to coroutine with progress [#1170](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1170)
+- Migrated `Split Table` to coroutine with progress [#1171](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1171)
+- Re-enabled `odd` | `even` value lines coloring [#1178](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1178)
+- Cache value lines by header line [#1180](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1180)
+
+### `Cockpit NG` enhancements
+- Added `Spring EL` language injection into the body of the `y:shortLabel` tag [#1168](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1168)
+- Added code completion for `cb:available-molds`:`default-mold` [#1175](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1175)
+- Added code completion and reference resolution for `cb:mold`:`class` [#1176](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1176)
+- Added code folding for `cb:available-molds`:`cb:mold` [#1177](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1177)
+
+### `Type System` enhancements
+- Improved resolution and navigation from Java to `items.xml` [#1162](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1162)
+
+### `items.xml` inspection rules
+- Enum values must be all uppercase [#1159](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1159), see [Java Enum Types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
+
+### Fixes
+- Improved connection with remote `HAC` instances [#1182](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1182)
+- Class initialization must not depend on services [#1158](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1158), [#1160](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1160)
+- `What's New` is not shown when JCEF is not supported by the JDK [#1161](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1161)
+- Moved actions from `EDT` to `BGT` [#1166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1166)
+- CCv2 actions should not be available outside the ToolWindow [#1172](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1172)
+- Console statement is not executed on first time [#1181](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1181)
+
+### Other
+- Migrated to `IntelliJ Platform Gradle Plugin 2.0` [#1184](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1184)
+- Improved resolution of the XML Dom based files [#1164](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1164)
+- Dropped legacy `items.xml` XML based validation [#1157](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1157)
+- Added 2024.2 IntelliJ IDEA support [#1156](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1156)
+- Declare explicit dependency on JBR 21 [#1163](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1163)
+- Added dependency on Foojay Toolchains Plugin [#1165](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1165)
+
 ## [2024.1.3]
 
 ### `Project Import` enhancements

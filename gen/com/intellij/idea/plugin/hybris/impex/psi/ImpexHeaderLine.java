@@ -41,6 +41,9 @@ public interface ImpexHeaderLine extends PsiElement {
   @Nullable
   ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
 
+  @Nullable
+  ImpexFullHeaderParameter getFullHeaderParameter(int index);
+
   @NotNull
   Collection<ImpexValueLine> getValueLines();
 
