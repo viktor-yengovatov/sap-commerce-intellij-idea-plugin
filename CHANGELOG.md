@@ -12,6 +12,9 @@
 ### Fixes
 - Actions for CCv2 Build were not showing [#1191](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1191)
 
+### `CCv2` enhancements
+- Added build details sections to know more about the build.
+
 ## [2024.2.0]
 
 ### `CCv2` enhancements
