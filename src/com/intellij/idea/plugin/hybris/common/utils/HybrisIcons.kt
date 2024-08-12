@@ -186,6 +186,7 @@ object HybrisIcons {
 
     object TypeSystem {
         val FILE = getIcon("/icons/typeSystem.svg")
+        val DEPLOYMENT_MODEL = AllIcons.Nodes.Undeploy
 
         val LOCALIZED = getIcon("/icons/typeSystem/localized.svg")
         val INTERCEPTOR = getIcon("/icons/typeSystem/interceptor.svg")
@@ -197,18 +198,13 @@ object HybrisIcons {
         val GROUP_MAP = getIcon("/icons/typeSystem/groupByMap.svg")
         val GROUP_RELATION = getIcon("/icons/typeSystem/groupByRelation.svg")
         val DESCRIPTION = AllIcons.Windows.Help
-        val ENUM = getIcon("/icons/typeSystem/enum.svg")
         val ENUM_VALUE = getIcon("/icons/typeSystem/enumValue.svg")
-        val ATOMIC = getIcon("/icons/typeSystem/atomic.svg")
         val ITEM = getIcon("/icons/typeSystem/item.svg")
-        val MAP = getIcon("/icons/typeSystem/map.svg")
-        val RELATION = getIcon("/icons/typeSystem/relation.svg")
         val CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg")
         val ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg")
         val ORDERING_ATTRIBUTE = getIcon("/icons/typeSystem/orderingAttribute.svg")
         val RELATION_SOURCE = getIcon("/icons/typeSystem/relationSource.svg")
         val RELATION_TARGET = getIcon("/icons/typeSystem/relationTarget.svg")
-        val COLLECTION = getIcon("/icons/typeSystem/collection.svg")
         val INDEX = getIcon("/icons/typeSystem/index.svg")
         val INDEX_UNIQUE = getIcon("/icons/typeSystem/indexUnique.svg")
         val INDEX_REPLACE = getIcon("/icons/typeSystem/indexReplace.svg")
@@ -216,6 +212,17 @@ object HybrisIcons {
         val HEADER_ABBREVIATION = getIcon("/icons/typeSystem/headerAbbreviation.svg")
         val ALTERNATIVE_DECLARATION = AllIcons.Actions.Forward
         val SIBLING = AllIcons.Gutter.OverridenMethod
+
+        object Types {
+            val ATOMIC = getIcon("/icons/typeSystem/atomic.svg")
+            val MAP = getIcon("/icons/typeSystem/map.svg")
+            val RELATION = getIcon("/icons/typeSystem/relation.svg")
+            val ENUM = getIcon("/icons/typeSystem/enum.svg")
+            val COLLECTION = getIcon("/icons/typeSystem/collection.svg")
+            val PRIMITIVE = HybrisIcons.Types.PRIMITIVE
+            val OBJECT = HybrisIcons.Types.OBJECT
+            val SPECIAL = AllIcons.FileTypes.Yaml
+        }
 
         object Preview {
             object Actions {
@@ -334,6 +341,7 @@ object HybrisIcons {
                 val DEPLOY = AllIcons.Nodes.Deploy
                 val DELETE = AllIcons.General.Delete
                 val DOWNLOAD_LOGS = AllIcons.Actions.Download
+                val SHOW_DETAILS = getIcon("/icons/module/cloud.svg")
             }
         }
 

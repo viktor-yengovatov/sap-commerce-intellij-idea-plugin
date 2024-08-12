@@ -16,24 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2
+// Generated on Sun Aug 04 12:09:12 CEST 2024
+// DTD/Schema  :    null
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
+package com.intellij.idea.plugin.hybris.system.type.model.deployment;
 
-object CCv2Util {
+import com.intellij.util.xml.Attribute;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import org.jetbrains.annotations.NotNull;
 
-    fun formatTime(time: OffsetDateTime?) = time
-        ?.atZoneSameInstant(ZoneId.systemDefault())
-        ?.format(HybrisConstants.CCV2_DATE_TIME_FORMATTER_LOCAL)
-        ?: "N/A";
+/**
+ * null:tableElemType interface.
+ */
+public interface Table extends DomElement {
 
-    fun getTimeDiffInMinutes(startTime: OffsetDateTime?, endTime: OffsetDateTime?): Long {
-        if (startTime == null || endTime == null) {
-            return -1;
-        }
-        return ChronoUnit.MINUTES.between(startTime, endTime)
-    }
+    /**
+     * Returns the value of the name child.
+     *
+     * @return the value of the name child.
+     */
+    @NotNull
+    @Attribute("name")
+    GenericAttributeValue<String> getName();
+
+
 }

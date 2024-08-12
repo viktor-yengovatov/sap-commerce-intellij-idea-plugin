@@ -16,31 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Wed Jan 18 00:44:24 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpit/config/hybris
+// Generated on Sun Aug 04 12:09:12 CEST 2024
+// DTD/Schema  :    null
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
+package com.intellij.idea.plugin.hybris.system.type.model.deployment;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * http://www.hybris.com/cockpit/config/hybris:action-group-extended interface.
+ * null:type-mappingElemType interface.
  */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface ActionGroupExtended extends DomElement, ActionGroup {
+@Stubbed
+@StubbedOccurrence
+public interface TypeMapping extends DomElement {
 
     /**
-     * Returns the value of the extended-action child.
+     * Returns the value of the type child.
      *
-     * @return the value of the extended-action child.
+     * @return the value of the type child.
      */
     @NotNull
-    @SubTag("extended-action")
-    Action getExtendedAction();
+    @com.intellij.util.xml.Attribute("type")
+    @Required
+    @Stubbed
+    @NameValue
+    GenericAttributeValue<String> getType();
+
+
+    /**
+     * Returns the value of the persistence-type child.
+     *
+     * @return the value of the persistence-type child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute("persistence-type")
+    @Required
+    @Stubbed
+    GenericAttributeValue<String> getPersistenceType();
 
 
 }

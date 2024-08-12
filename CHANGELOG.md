@@ -1,3 +1,20 @@
+## [2024.2.1]
+
+### `Type System` enhancements
+- Added dom model for `core-advanced-deployment.xml` [#1187](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1187)
+- Added code completion and reference resolution for primitive types [#1188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1188)
+- Added code completion and reference resolution for additional object types [#1189](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1189)
+- Added code completion and reference resolution for special types [#1190](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1190)
+
+### Other
+- Omit internal IntelliJ API usage in `ProjectBeforeCompilerTask` [#1186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1186)
+
+### Fixes
+- Actions for CCv2 Build were not showing [#1191](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1191)
+
+### `CCv2` enhancements
+- Added build details sections to know more about the build.
+
 ## [2024.2.0]
 
 ### `CCv2` enhancements
