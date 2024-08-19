@@ -1,4 +1,18 @@
+## [2024.2.2]
+
+### `CCv2` enhancements
+- Added icon for build details deployment status [#1196](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1196)
+- Added deployment date for build details [#1197](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1197)
+- Unable to fetch CCv2 information if user have any subscription without environment permission [#1199](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1199)
+
+### `Type System` enhancements
+- Added `String` to allowed types [#1195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1195)
+- Added folding for `core-advanced-deployment.xml` [#1198](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1198)
+
 ## [2024.2.1]
+
+### `CCv2` enhancements
+- Added build details sections to know more about the build [#1192](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1192)
 
 ### `Type System` enhancements
 - Added dom model for `core-advanced-deployment.xml` [#1187](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1187)
@@ -11,9 +25,6 @@
 
 ### Fixes
 - Actions for CCv2 Build were not showing [#1191](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1191)
-
-### `CCv2` enhancements
-- Added build details sections to know more about the build.
 
 ## [2024.2.0]
 
