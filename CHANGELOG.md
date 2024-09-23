@@ -1,10 +1,40 @@
+## [2024.2.4]
+
+### `Type System` enhancements
+- Cache item and attribute references [#1221](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1221)
+
+### `Cockpit NG` enhancements
+- Added folding for `na:notifications` [#1228](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1228)
+- Added code completion and reference resolution for `wz:assign`:`property` [#1225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1225)
+- Improved resolution of the flow references [#1224](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1224)
+- Improved resolution of the nested references to editors [#1222](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1222)
+- Cache various references [#1220](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1220)
+
+### `Bean System` enhancements
+- Cache bean references [#1219](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1219)
+
+### `OCC` enhancements
+- Added reference resolution and code completion for nested properties [#1226](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1226)
+- Improved resolution of the OCC level references [#1223](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1223)
+- Highlight only unresolved references [#1216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1216)
+- Respect spaces in the property reference [#1217](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1217)
+- Cache property references [#1218](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1218)
+- Improved property reference resolution when it ends with `)` [#1227](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1227)
+
+### `CCv2` enhancements
+- Added possibility to specify alias for S-User [#1215](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1215)
+- Use build icon for build details [#1214](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1214)
+- Show build icon in the environments view per build [#1213](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1213)
+- Open build details from the environments view [#1212](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1212)
+- Copy Cloud Storage account name on click [#1211](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1211)
+
 ## [2024.2.3]
 
 ### `CCv2` enhancements
 - Build status view options are not displayed [#1202](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1202)
 - Show deployments as groups for the build [#1203](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1203)
 - Show environments even if there is no response from the v1 API [#1208](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1208)
-- Hide environment from the deployment list if the is no link to it [#1209](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1209)
+- Hide environment from the deployment list if there is no link to it [#1209](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1209)
 
 ### Other
 - Enable K2 compiler [#1207](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1207)
@@ -14,7 +44,7 @@
 ### `CCv2` enhancements
 - Added icon for build details deployment status [#1196](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1196)
 - Added deployment date for build details [#1197](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1197)
-- Unable to fetch CCv2 information if user have any subscription without environment permission [#1199](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1199)
+- Unable to fetch CCv2 information if a user has any subscription without environment permission [#1199](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1199)
 
 ### `Type System` enhancements
 - Added `String` to allowed types [#1195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1195)

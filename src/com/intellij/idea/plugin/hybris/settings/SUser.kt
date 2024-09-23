@@ -15,17 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.settings
 
-package com.intellij.idea.plugin.hybris.system.bean.meta.model
+import com.intellij.openapi.components.BaseState
 
-import com.intellij.idea.plugin.hybris.system.bean.model.Property
+class SUser : BaseState(), Comparable<SUser> {
+    var id by string()
+    var alias by string(null)
 
-interface BSMetaProperty : BSMetaClassifier<Property>, BSTypedClassifier {
-    val type: String?
-    val referencedType: String?
-    val description: String?
-    val isEquals: Boolean
-    val isDeprecated: Boolean
-    val annotations: List<BSMetaAnnotations>
-    val hints: Map<String, BSMetaHint>
+    override fun compareTo(other: SUser) = toString().compareTo(other.toString())
+
+    override fun toString() = alias
+        ?: id
+        ?: "?"
+
+    fun toDto() = SUserDto(id, alias)
+}
+
+data class SUserDto(
+    var id: String? = null,
+    var alias: String? = null,
+) {
+    fun toModel() = SUser()
+        .also {
+            it.id = id
+            it.alias = alias
+        }
+
+    fun copy() = SUserDto(id, alias)
+
+    override fun toString() = alias
+        ?: id
+        ?: "?"
 }

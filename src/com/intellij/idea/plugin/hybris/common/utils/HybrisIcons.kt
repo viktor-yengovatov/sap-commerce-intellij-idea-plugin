@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.common.utils
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.util.IconLoader
-import com.intellij.util.ReflectionUtil
 import icons.GradleIcons
 import icons.OpenapiIcons
 import org.jetbrains.kotlin.idea.KotlinIcons
@@ -341,7 +340,7 @@ object HybrisIcons {
                 val DEPLOY = AllIcons.Nodes.Deploy
                 val DELETE = AllIcons.General.Delete
                 val DOWNLOAD_LOGS = AllIcons.Actions.Download
-                val SHOW_DETAILS = getIcon("/icons/module/cloud.svg")
+                val SHOW_DETAILS = BUILDS
             }
         }
 
@@ -447,7 +446,5 @@ object HybrisIcons {
         }
     }
 
-    private fun getIcon(path: String): Icon = ReflectionUtil.getGrandCallerClass()
-        ?.let { IconLoader.getIcon(path, it) }
-        ?: error(path)
+    private fun getIcon(path: String): Icon = IconLoader.getIcon(path, HybrisIcons::class.java.classLoader)
 }

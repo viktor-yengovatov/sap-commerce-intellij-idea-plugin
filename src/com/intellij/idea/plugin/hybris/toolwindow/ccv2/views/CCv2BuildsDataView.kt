@@ -22,9 +22,11 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 
@@ -33,14 +35,14 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
     override val tab: CCv2Tab
         get() = CCv2Tab.BUILDS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2BuildDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2BuildDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, builds) ->
             collapsibleGroup(subscription.toString()) {
                 if (builds.isEmpty()) {
                     noData()
                 } else {
-                    builds.forEach { build(subscription, it) }
+                    builds.forEach { build(project, subscription, it) }
                 }
             }
                 .expanded = true
@@ -48,7 +50,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
     }
         .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.build(subscription: CCv2Subscription, build: CCv2BuildDto) {
+    private fun Panel.build(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
         row {
             panel {
                 row {
@@ -103,10 +105,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCv2.Build.CREATED_BY)
-                        .gap(RightGap.SMALL)
-                    label(build.createdBy)
-                        .comment("Created by")
+                    sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY)
                 }
             }.gap(RightGap.COLUMNS)
 
