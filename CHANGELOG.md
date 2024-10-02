@@ -1,3 +1,12 @@
+## [2024.3.0]
+
+### Other
+- Added 2024.3 IntelliJ IDEA support [#1231](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1231)
+
+### Deprecated
+- Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
+- Resource bundle fallback message [#1233](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1233)
+
 ## [2024.2.4]
 
 ### `Type System` enhancements
