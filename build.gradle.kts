@@ -324,13 +324,14 @@ dependencies {
             "org.jetbrains.kotlin",
             "JavaScript",
             "JUnit",
+            "com.intellij.modules.json",
         )
 
         // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
 
         // JSON:
         // https://plugins.jetbrains.com/plugin/25364-json
-        plugin("com.intellij.modules.json:243.19420.21")
+        plugin("com.intellij.modules.json:243.20847.40")
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
