@@ -1,3 +1,8 @@
+## [2024.3.1]
+
+### Fixes
+- Correctly define Scope to filter for Properties File (#1247)[https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247]
+
 ## [2024.3.0]
 
 ### `Project Import` enhancements
