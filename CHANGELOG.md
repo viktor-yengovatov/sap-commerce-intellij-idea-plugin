@@ -2,6 +2,7 @@
 
 ### Fixes
 - Correctly define Scope to filter for Properties File (#1247)[https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247]
+- Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)
 
 ## [2024.3.0]
 
