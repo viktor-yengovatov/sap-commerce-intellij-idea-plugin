@@ -8,6 +8,17 @@
 ### Other
 - Compatibility release [#1324](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1324)
 
+## [2024.3.7]
+
+### `CCv2` enhancements
+- Added Node.js version 22 to the CCv2 js-storefront manifest file [#1327](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1327)
+
+### Fixes
+- Fixed incorrect class import in the ImpEx Monitor [#1328](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1328)
+- Load VM Properties no longer from the Properties File. Use instead the wrapper.conf files from the Tomcat Folder [#1330](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1330)
+- Debugger is sometimes not attached correctly when Starting in Debug Mode [#1331](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1331)
+- Fixed `test connection` for HAC and SOLR settings [#1333](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1333)
+
 ## [2024.3.6]
 
 ### `CCv2` enhancements
