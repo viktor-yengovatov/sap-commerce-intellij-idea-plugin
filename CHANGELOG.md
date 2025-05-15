@@ -18,6 +18,11 @@
 ### Other
 - Compatibility release [#1324](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1324)
 
+## [2024.3.8]
+
+### `JUnit` enhancements
+- Fix File Path Handling on Windows [#1339](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1339)
+
 ## [2024.3.7]
 
 ### `CCv2` enhancements
